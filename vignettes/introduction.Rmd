@@ -1,0 +1,30 @@
+---
+title: "Einführung"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r Setup, include=}
+
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+
+library(tidyverse)
+library(volker)
+theme_set(theme_bw())
+
+data <- volker::chatgpt
+
+```
+
+```{r Descriptives}
+
+
+tab_compare_items(data, starts_with("cg_adoption_"), sd_geschlecht)
+
+plot_compare_items(data, starts_with("cg_adoption_"), sd_geschlecht)
+
+```
+
