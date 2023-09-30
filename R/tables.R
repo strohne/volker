@@ -138,22 +138,67 @@ tab_means <- function(data, cols_groups, cols_values, digits = 1, .quiet = F) {
   invisible(result)
 }
 
-#' Compare & Table factor value by group
+#' Count and compare groups (cross table)
 #'
 #' @param data A tibble
-#' @param col_category The column holding factor values
+#' @param col The column holding factor values
 #' @param col_group The column holding groups to compare
+#' @param digits The digits to print
+#' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_compare_factor <- function(data, col_category, col_group) {
+tab_count_groups <- function(data, col, col_group, digits = 1, .quiet=F) {
 
-  col_category <- enquo(col_category)
-  col_group <- enquo(col_group)
+  result_grouped <- data %>%
+    dplyr::count({{col}}, {{col_group}}) %>%
+    dplyr::group_by({{col_group}}) %>%
+    dplyr::mutate(
+      p = n / sum(n)
+    ) %>%
+    # dplyr::mutate(
+    #   p_val = dplyr::if_else(
+    #     is.na({{col}}),
+    #     NA_real_,
+    #     n / sum( na.omit(.)$n)
+    #   )
+    # ) %>%
+    ungroup() %>%
+    dplyr::mutate(
+      {{col_group}} := tidyr::replace_na({{col_group}},"Fehlend")
+    )
 
-  data <- data %>%
-    dplyr::count(!!col_group,!!col_category) %>%
-    dplyr::group_by(!!col_category) %>%
-    dplyr::mutate(p = n / sum(n)) %>%
-    dplyr::ungroup()
+  result_grouped <- result_grouped %>%
+    pivot_wider(names_from = {{col_group}}, values_from = c(n,p), values_fill=list("n"=0,"p"=0))
+
+
+  result_total <-  data %>%
+    dplyr::count({{col}}) %>%
+    dplyr::mutate(
+      p = n / sum(n)
+    ) %>%
+    # dplyr::mutate(
+    #   p_val = dplyr::if_else(
+    #     is.na({{col}}),
+    #     NA_real_,
+    #     n / sum( na.omit(.)$n)
+    #   )
+    # ) %>%
+    dplyr::mutate(
+      {{col}} := tidyr::replace_na({{col}},"Fehlend")
+    )
+
+  result <- full_join(result_grouped, result_total)
+
+  result <- result %>%
+    janitor::adorn_totals()
+
+
+  if (!.quiet) {
+    result %>%
+      knitr::kable(digits=digits) %>%
+      print()
+  }
+
+  invisible(result)
 }
 
 #' Compare & Table items
