@@ -22,13 +22,19 @@ skim_metrics <- skimr::skim_with(
 #' @param data A tibble
 #' @export
 get_labels <- function(data) {
-  tibble(
+  labels <- tibble(
     item = colnames(data),
     label = sapply(data,attr,"comment"),
     value = lapply(data,attributes)
   ) %>%
     mutate(label=as.character(label)) %>%
-    unnest_longer(value) %>%
+    unnest_longer(value)
+
+  if ("value_id" %in% colnames(labels)) {
+  labels <- labels %>%
     filter(value_id != "comment", value_id != "class" ) %>%
     mutate(value = as.character(value))
+  }
+
+  labels
 }
