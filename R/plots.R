@@ -33,30 +33,6 @@ plot_compare_factor <- function(data, col_category, col_group, relative=F) {
 
 }
 
-#' Helper function taken from the biobase package
-#'
-#' Duplicated here instead of loading the package to avoid overhead.
-#' See https://github.com/Bioconductor/Biobase
-#'
-#' @param x Charaxcter vector
-#' @param ignore.case Whether case matters
-#' @return The longest common prefix of the strings
-#' @rdname plot_compare_items
-#' @export
-common_prefix <- function (x, ignore.case = FALSE)
-{
-  x <- as.character(x)
-  if (ignore.case)
-    x <- toupper(x)
-  nc <- nchar(x, type = "char")
-  for (i in 1:min(nc)) {
-    ss <- substr(x, 1, i)
-    if (any(ss != ss[1])) {
-      return(substr(x[1], 1, i - 1))
-    }
-  }
-  substr(x[1], 1, i)
-}
 
 
 #' Compare and plot items
@@ -96,7 +72,7 @@ plot_counts <- function(data, cols_items, col_group) {
     mutate(label = str_remove(label,"^.*: ")) %>%
     mutate(label = str_trunc(label,50) ) %>%
 
-    mutate(item=str_remove(item,common_prefix(.$item))) %>%
+    mutate(item=str_remove(item,get_prefix(.$item))) %>%
     mutate(item=paste0(item," ",label)) %>%
     mutate(item=forcats::fct_reorder(item,no, .desc=T)) %>%
 
