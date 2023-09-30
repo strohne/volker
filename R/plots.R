@@ -65,20 +65,12 @@ common_prefix <- function (x, ignore.case = FALSE)
 #' @param col_group Optional faceting variable
 #' @importFrom dplyr filter
 #' @export
-plot_compare_items <- function(data, cols_items, col_group) {
+plot_counts <- function(data, cols_items, col_group) {
 
   col_group <- enquo(col_group)
 
   # Get code labels from the attributes
-  codes <- tibble(
-    item = colnames(data),
-    label = sapply(data,attr,"comment"),
-    value = lapply(data,attributes)
-  ) %>%
-    mutate(label=as.character(label)) %>%
-    unnest_longer(value) %>%
-    filter(value_id != "comment", value_id != "class" ) %>%
-    mutate(value = as.character(value))
+  codes <- get_labels(data)
 
   # Filter item labels
   items <- codes %>%

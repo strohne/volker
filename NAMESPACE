@@ -2,8 +2,10 @@
 
 export("%>%")
 export(common_prefix)
+export(get_labels)
 export(plot_compare_factor)
-export(plot_compare_items)
+export(plot_counts)
+export(skim_metrics)
 export(tab_compare_items)
 export(tab_count_groups)
 export(tab_counts)

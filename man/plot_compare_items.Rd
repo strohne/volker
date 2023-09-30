@@ -2,23 +2,14 @@
 % Please edit documentation in R/plots.R
 \name{common_prefix}
 \alias{common_prefix}
-\alias{plot_compare_items}
 \title{Helper function taken from the biobase package}
 \usage{
 common_prefix(x, ignore.case = FALSE)
-
-plot_compare_items(data, cols_items, col_group)
 }
 \arguments{
 \item{x}{Charaxcter vector}
 
 \item{ignore.case}{Whether case matters}
-
-\item{data}{A tibble containing item measures}
-
-\item{cols_items}{Tidyselect item variables (e.g. starts_with...)}
-
-\item{col_group}{Optional faceting variable}
 }
 \value{
 The longest common prefix of the strings

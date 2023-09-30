@@ -77,6 +77,7 @@ tab_metrics <- function(data, cols_values, digits = 1, .quiet = F) {
   invisible(result)
 }
 
+
 #' Output the means for groups in one or multiple columns
 #'
 #' @param data A tibble
@@ -92,7 +93,7 @@ tab_means <- function(data, cols_groups, cols_values, digits = 1, .quiet = F) {
     expr = enquo(cols_groups),
     data = data[unique(names(data))],
     allow_rename = FALSE,
-    error_call = error_call
+    error_call = rlang::error_call
   )
 
   vals <- enquo(cols_values)
@@ -127,6 +128,19 @@ tab_means <- function(data, cols_groups, cols_values, digits = 1, .quiet = F) {
 
   result <- dplyr::inner_join(all, result, by="skim_variable") %>%
     dplyr::rename(variable=skim_variable)
+
+
+  codes <- data %>%
+    dplyr::select(!!vals) %>%
+    get_labels() %>%
+    distinct(item, label)
+
+  if (nrow(codes) > 0) {
+    result <- result %>%
+      left_join(codes,by=c("variable"="item")) %>%
+      mutate(variable = ifelse(is.na(label), variable, label)) %>%
+      select(-label)
+  }
 
 
   if (!.quiet) {

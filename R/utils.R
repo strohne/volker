@@ -1,4 +1,5 @@
 #' A reduced skimmer for metric variables
+#' @export
 skim_metrics <- skimr::skim_with(
   numeric = skimr::sfl(
     min = ~ base::min(., na.rm = T),
@@ -15,3 +16,19 @@ skim_metrics <- skimr::skim_with(
   ),
   append = FALSE
 )
+
+#' Get variable labels from their comment attributes
+#'
+#' @param data A tibble
+#' @export
+get_labels <- function(data) {
+  tibble(
+    item = colnames(data),
+    label = sapply(data,attr,"comment"),
+    value = lapply(data,attributes)
+  ) %>%
+    mutate(label=as.character(label)) %>%
+    unnest_longer(value) %>%
+    filter(value_id != "comment", value_id != "class" ) %>%
+    mutate(value = as.character(value))
+}
