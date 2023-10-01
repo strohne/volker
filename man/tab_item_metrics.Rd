@@ -2,7 +2,7 @@
 % Please edit documentation in R/tables.R
 \name{tab_item_metrics}
 \alias{tab_item_metrics}
-\title{Output a five point summary table for the values multiple columns}
+\title{Output a five point summary table for groups in a variable}
 \usage{
 tab_item_metrics(data, cols_values, digits = 1, .quiet = F)
 }
@@ -16,5 +16,5 @@ tab_item_metrics(data, cols_values, digits = 1, .quiet = F)
 \item{.quiet}{Set to true to suppress printing the output}
 }
 \description{
-Output a five point summary table for the values multiple columns
+Output a five point summary table for groups in a variable
 }

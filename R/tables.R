@@ -221,50 +221,105 @@ tab_var_metrics <- function(data, col, digits = 1, .quiet = F) {
       n
     )
 
-  if (!.quiet) {
-    result %>%
-      mutate(across(c(missing, n), ~ as.character(round(.,0)))) %>%
-      mutate(across(c(min, q1, median, q3, max), ~ as.character(round(.,digits)))) %>%
-      mutate(across(c(m, sd), ~ as.character(round(.,digits)))) %>%
-      pivot_longer(-item) %>%
-      dplyr::select(-item, {{col}} := name, value) %>%
+  result <- result %>%
+    mutate(across(c(missing, n), ~ as.character(round(.,0)))) %>%
+    mutate(across(c(min, q1, median, q3, max), ~ as.character(round(.,digits)))) %>%
+    mutate(across(c(m, sd), ~ as.character(round(.,digits)))) %>%
+    pivot_longer(-item) %>%
+    dplyr::select(-item, {{col}} := name, value)
 
-      knitr::kable() %>%
+
+  if (!.quiet) {
+      result %>%
+        knitr::kable() %>%
+        print()
+  }
+
+  invisible(result)
+}
+
+#' #' Output a five point summary for groups
+#'
+#' @param data A tibble
+#' @param col The column holding metric values
+#' @param col_group The column holding groups to compare
+#' @param .quiet Set to true to suppress printing the output
+#' @export
+tab_group_metrics <- function(data, col, col_group, .quiet=F) {
+
+  result_grouped <- data %>%
+    dplyr::group_by({{col_group}}) %>%
+    skim_metrics({{col}}) %>%
+    ungroup() %>%
+    dplyr::mutate(
+      {{col_group}} := tidyr::replace_na(as.character({{col_group}}), "Fehlend")
+    ) %>%
+    select(-skim_variable, -skim_type)
+
+  result_total <-  data %>%
+    skim_metrics({{col}}) %>%
+    mutate({{col_group}} := "Total")
+
+  result <- bind_rows(
+    result_grouped,
+    result_total
+  ) %>%
+    dplyr::select(
+      {{col_group}},
+      min = numeric.min,
+      q1 = numeric.q1,
+      median = numeric.median,
+      q3 = numeric.q3,
+      max = numeric.max,
+      m = numeric.mean,
+      sd = numeric.sd,
+      missing,
+      n
+    )
+
+
+  if (!.quiet) {
+
+    result %>%
+      knitr::kable(digits=0) %>%
       print()
   }
 
   invisible(result)
 }
 
-#' Output a five point summary table for the values multiple columns
+
+#' Output a five point summary table for multiple items
 #'
 #' @param data A tibble
 #' @param cols_values The columns holding metric values
 #' @param digits The digits to print
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_item_metrics <- function(data, cols_values, digits = 1, .quiet = F) {
+tab_item_metrics <- function(data, cols, digits = 1, .quiet = F) {
 
-  cols_values <- enquo(cols_values)
+  cols <- enquo(cols)
 
   result <- data %>%
-    dplyr::select(!!cols_values) %>%
+    dplyr::select(!!cols) %>%
     skim_metrics()
+
+  result <- result %>%
+    dplyr::select(
+      "item" = skim_variable,
+      min = numeric.min,
+      q1 = numeric.q1,
+      median = numeric.median,
+      q3 = numeric.q3,
+      max = numeric.max,
+      m = numeric.mean,
+      sd = numeric.sd,
+      missing,
+      n
+    )
 
   if (!.quiet) {
     result %>%
-      dplyr::select(
-        "item" = skim_variable,
-        min = numeric.min,
-        q1 = numeric.q1,
-        median = numeric.median,
-        q3 = numeric.q3,
-        max = numeric.max,
-        m = numeric.mean,
-        sd = numeric.sd,
-        missing,
-        n
-      ) %>%
       knitr::kable(digits=digits) %>%
       print()
   }
@@ -273,7 +328,10 @@ tab_item_metrics <- function(data, cols_values, digits = 1, .quiet = F) {
 }
 
 
+
 #' Output the means for groups in one or multiple columns
+#'
+#' TODO: handle completely missing data in single groups
 #'
 #' @param data A tibble
 #' @param cols_values The columns that hold the values to summarize
@@ -282,7 +340,7 @@ tab_item_metrics <- function(data, cols_values, digits = 1, .quiet = F) {
 #' @param digits The digits to print
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_group_metrics <- function(data, cols_values, cols_groups, value="numeric.mean", digits = 1, .quiet = F) {
+tab_group_means <- function(data, cols_values, cols_groups, value="numeric.mean", digits = 1, .quiet = F) {
 
   # Get positions of group cols
   cols <- tidyselect::eval_select(
@@ -348,58 +406,58 @@ tab_group_metrics <- function(data, cols_values, cols_groups, value="numeric.mea
   invisible(result)
 }
 
+
+#' Compare
 #'
-#' #' Compare
-#' #'
-#' #' @param data A tibble containing item measures
-#' #' @param cols_items Tidyselect item variables (e.g. starts_with...)
-#' #' @param col_group Optional faceting variable
-#' #' @export
-#' tab_groups_items <- function(data, cols_items, col_group) {
-#'
-#'   col_group <- enquo(col_group)
-#'
-#'   # Get code labels from the attributes
-#'   codes <- tibble(
-#'     item = colnames(data),
-#'     label = sapply(data,attr,"comment"),
-#'     value = lapply(data,attributes)
-#'   ) %>%
-#'     dplyr::mutate(label=as.character(label)) %>%
-#'     tidyr::unnest_longer(value) %>%
-#'     dplyr::filter(value_id != "comment", value_id != "class" ) %>%
-#'     dplyr::mutate(value = as.character(value))
-#'
-#'   # Filter item labels
-#'   items <- codes %>%
-#'     #na.omit() %>%
-#'     dplyr::distinct(item,label) %>%
-#'     dplyr::mutate(no = row_number())
-#'
-#'   # Calculate
-#'   data_grouped <- data %>%
-#'
-#'     tidyr::pivot_longer(tidyselect::all_of(cols_items), names_to="item",values_to="value_id") %>%
-#'
-#'     dplyr::count(!!col_group,item,value_id) %>%
-#'     dplyr::group_by(!!col_group,item) %>%
-#'     dplyr::mutate(p= n / sum(n)) %>%
-#'     dplyr::ungroup() %>%
-#'
-#'     # Labeling
-#'     dplyr::mutate(value_id = as.character(value_id)) %>%
-#'     dplyr::left_join(items,by=c("item")) %>%
-#'     dplyr::left_join(select(codes,item,value_id,value),by=c("item","value_id")) %>%
-#'
-#'     dplyr::mutate(label = str_remove(label,"^.*: ")) %>%
-#'     dplyr::mutate(label = str_trunc(label,50) ) %>%
-#'
-#'     dplyr::mutate(item=str_remove(item,get_prefix(.$item))) %>%
-#'     dplyr::mutate(item=paste0(item," ",label)) %>%
-#'     dplyr::mutate(item=forcats::fct_reorder(item,no, .desc=T)) %>%
-#'
-#'     dplyr::mutate(value=paste0(value_id, " ", value))
-#'
-#'   data_grouped
-#' }
+#' @param data A tibble containing item measures
+#' @param cols_items Tidyselect item variables (e.g. starts_with...)
+#' @param col_group Optional faceting variable
+#' @export
+tab_groups_items <- function(data, cols_items, col_group) {
+
+  col_group <- enquo(col_group)
+
+  # Get code labels from the attributes
+  codes <- tibble(
+    item = colnames(data),
+    label = sapply(data,attr,"comment"),
+    value = lapply(data,attributes)
+  ) %>%
+    dplyr::mutate(label=as.character(label)) %>%
+    tidyr::unnest_longer(value) %>%
+    dplyr::filter(value_id != "comment", value_id != "class" ) %>%
+    dplyr::mutate(value = as.character(value))
+
+  # Filter item labels
+  items <- codes %>%
+    #na.omit() %>%
+    dplyr::distinct(item,label) %>%
+    dplyr::mutate(no = row_number())
+
+  # Calculate
+  data_grouped <- data %>%
+
+    tidyr::pivot_longer(tidyselect::all_of(cols_items), names_to="item",values_to="value_id") %>%
+
+    dplyr::count(!!col_group,item,value_id) %>%
+    dplyr::group_by(!!col_group,item) %>%
+    dplyr::mutate(p= n / sum(n)) %>%
+    dplyr::ungroup() %>%
+
+    # Labeling
+    dplyr::mutate(value_id = as.character(value_id)) %>%
+    dplyr::left_join(items,by=c("item")) %>%
+    dplyr::left_join(select(codes,item,value_id,value),by=c("item","value_id")) %>%
+
+    dplyr::mutate(label = str_remove(label,"^.*: ")) %>%
+    dplyr::mutate(label = str_trunc(label,50) ) %>%
+
+    dplyr::mutate(item=str_remove(item,get_prefix(.$item))) %>%
+    dplyr::mutate(item=paste0(item," ",label)) %>%
+    dplyr::mutate(item=forcats::fct_reorder(item,no, .desc=T)) %>%
+
+    dplyr::mutate(value=paste0(value_id, " ", value))
+
+  data_grouped
+}
 
