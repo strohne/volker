@@ -2,9 +2,9 @@
 % Please edit documentation in R/tables.R
 \name{tab_group_counts}
 \alias{tab_group_counts}
-\title{Count and compare groups (cross table)}
+\title{Output frequencies cross tabulated with a grouping column}
 \usage{
-tab_group_counts(data, col, col_group, value = "n", digits = 1, .quiet = F)
+tab_group_counts(data, col, col_group, value = "n", .quiet = F)
 }
 \arguments{
 \item{data}{A tibble}
@@ -15,10 +15,8 @@ tab_group_counts(data, col, col_group, value = "n", digits = 1, .quiet = F)
 
 \item{value}{The value to output: n (frequency) or p (percentage)}
 
-\item{digits}{The digits to print}
-
 \item{.quiet}{Set to true to suppress printing the output}
 }
 \description{
-Count and compare groups (cross table)
+Output frequencies cross tabulated with a grouping column
 }
