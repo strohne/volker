@@ -100,17 +100,20 @@ tab_group_counts <- function(data, col, col_group, value="n", .quiet=F) {
     ) %>%
     select({{col}}, Alle = !!sym(value))
 
-  result <- full_join(result_grouped, result_total, by = deparse(substitute(col)))
+  result <- full_join(
+    result_grouped,
+    result_total,
+    by = deparse(substitute(col))
+  )
 
   result <- result %>%
     janitor::adorn_totals()
-
 
   if (!.quiet) {
 
     if (value == "p") {
       result <- result %>%
-        dplyr::mutate(across(where(is.numeric), ~ round(. * 100,0) ))
+        dplyr::mutate(across(where(is.numeric), ~ paste0(round(. * 100,0),"%" )))
     }
 
     result %>%
@@ -185,7 +188,7 @@ tab_item_counts <- function(data, cols_items, value="n", .quiet=F) {
 
     if (value == "p") {
       result <- result %>%
-        dplyr::mutate(across(where(is.numeric), ~ round(. * 100,0) ))
+        dplyr::mutate(across(where(is.numeric), ~ paste0(round(. * 100,0),"%" )))
     }
 
     result %>%
@@ -291,6 +294,8 @@ tab_group_metrics <- function(data, col, col_group, .quiet=F) {
 
 #' Output a five point summary table for multiple items
 #'
+#' TODO: add labels (using get_labels())
+#'
 #' @param data A tibble
 #' @param cols_values The columns holding metric values
 #' @param digits The digits to print
@@ -332,6 +337,7 @@ tab_item_metrics <- function(data, cols, digits = 1, .quiet = F) {
 #' Output the means for groups in one or multiple columns
 #'
 #' TODO: handle completely missing data in single groups
+#' TODO: zip mean and sd
 #'
 #' @param data A tibble
 #' @param cols_values The columns that hold the values to summarize
@@ -340,7 +346,7 @@ tab_item_metrics <- function(data, cols, digits = 1, .quiet = F) {
 #' @param digits The digits to print
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_group_means <- function(data, cols_values, cols_groups, value="numeric.mean", digits = 1, .quiet = F) {
+tab_item_group_metrics <- function(data, cols_values, cols_groups, value="numeric.mean", digits = 1, .quiet = F) {
 
   # Get positions of group cols
   cols <- tidyselect::eval_select(
@@ -395,7 +401,6 @@ tab_group_means <- function(data, cols_values, cols_groups, value="numeric.mean"
       mutate(variable = ifelse(is.na(label), variable, label)) %>%
       select(-label)
   }
-
 
   if (!.quiet) {
     result %>%
