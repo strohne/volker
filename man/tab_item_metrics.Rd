@@ -2,19 +2,19 @@
 % Please edit documentation in R/tables.R
 \name{tab_item_metrics}
 \alias{tab_item_metrics}
-\title{Output a five point summary table for groups in a variable}
+\title{Output a five point summary table for multiple items}
 \usage{
-tab_item_metrics(data, cols_values, digits = 1, .quiet = F)
+tab_item_metrics(data, cols, digits = 1, .quiet = F)
 }
 \arguments{
 \item{data}{A tibble}
 
-\item{cols_values}{The columns holding metric values}
-
 \item{digits}{The digits to print}
 
 \item{.quiet}{Set to true to suppress printing the output}
+
+\item{cols_values}{The columns holding metric values}
 }
 \description{
-Output a five point summary table for groups in a variable
+TODO: add labels (using get_labels())
 }
