@@ -2,30 +2,19 @@
 % Please edit documentation in R/tables.R
 \name{tab_group_metrics}
 \alias{tab_group_metrics}
-\title{Output the means for groups in one or multiple columns}
+\title{#' Output a five point summary for groups}
 \usage{
-tab_group_metrics(
-  data,
-  cols_values,
-  cols_groups,
-  value = "numeric.mean",
-  digits = 1,
-  .quiet = F
-)
+tab_group_metrics(data, col, col_group, .quiet = F)
 }
 \arguments{
 \item{data}{A tibble}
 
-\item{cols_values}{The columns that hold the values to summarize}
+\item{col}{The column holding metric values}
 
-\item{value}{The output metric, choosen from values of skim_metrics()}
-
-\item{digits}{The digits to print}
+\item{col_group}{The column holding groups to compare}
 
 \item{.quiet}{Set to true to suppress printing the output}
-
-\item{cols_group}{The columns holding groups to compare}
 }
 \description{
-Output the means for groups in one or multiple columns
+#' Output a five point summary for groups
 }
