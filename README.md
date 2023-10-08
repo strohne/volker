@@ -4,7 +4,7 @@
 
 ## Concept
 
-Das VolkeR-Package ist dafür gemacht, schnelle einfache Übersichten über Datensätze zu erstellen. 
+Das VolkeR-Package ist dafür gemacht, schnelle und einfache Übersichten über Datensätze zu erstellen. 
 Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Auswahl der Funktionen:
 
 - Tabelle oder Grafik? 

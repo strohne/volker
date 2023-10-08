@@ -13,14 +13,14 @@ tab_var_counts <- function(data, col, .quiet = F) {
       p = n / sum(n)
     ) %>%
     dplyr::mutate(
-      p_val = dplyr::if_else(
+      valid = dplyr::if_else(
         is.na({{col}}),
         NA_real_,
         n / sum( na.omit(.)$n)
       )
     ) %>%
     dplyr::mutate(
-      {{col}} := tidyr::replace_na(as.character({{col}}),"Fehlend")
+      {{col}} := tidyr::replace_na(as.character({{col}}), "Fehlend")
     )
 
   result <- result %>%
@@ -29,14 +29,10 @@ tab_var_counts <- function(data, col, .quiet = F) {
   if (!.quiet) {
     result %>%
       dplyr::mutate(
-        p = round(p * 100,0),
-        p_val = round(p_val * 100,0)
+        p = paste0(round(p * 100,0),"%"),
+        valid = ifelse(!is.na(valid), paste0(round(valid * 100,0),"%"), "-")
       ) %>%
-      dplyr::rename(
-        `%` = p,
-        `% (gültig)` = p_val
-      ) %>%
-      knitr::kable() %>%
+      knitr::kable(align="lrrr") %>%
       print()
   }
 
@@ -116,8 +112,10 @@ tab_group_counts <- function(data, col, col_group, value="n", .quiet=F) {
         dplyr::mutate(across(where(is.numeric), ~ paste0(round(. * 100,0),"%" )))
     }
 
+
+
     result %>%
-      knitr::kable(digits=0) %>%
+      knitr::kable(digits=0, align=c("l", rep("r",ncol(result) - 1))) %>%
       print()
   }
 
@@ -152,11 +150,17 @@ tab_item_counts <- function(data, cols_items, value="n", .quiet=F) {
     dplyr::count(item, value) %>%
     dplyr::group_by(item) %>%
     dplyr::mutate(p= n / sum(n)) %>%
-    dplyr::ungroup() %>%
+    dplyr::ungroup()
+
+
+  group_values <- unique(result_grouped$value)
+
+  result_grouped <- result_grouped  %>%
 
     dplyr::mutate(
-      value = tidyr::replace_na(as.character(value), "Fehlend")
-    )
+      value = factor(tidyr::replace_na(as.character(value), "Fehlend"), levels=c(group_values, "Fehlend"))
+    ) %>%
+    arrange(value)
 
   result_grouped <- result_grouped %>%
     select(item, value, !!sym(value)) %>%
@@ -166,6 +170,10 @@ tab_item_counts <- function(data, cols_items, value="n", .quiet=F) {
       values_fill = setNames(list(0), value)
     ) %>%
     janitor::adorn_totals("col")
+
+  # Remove common item prefix
+  result_grouped <- result_grouped %>%
+    dplyr::mutate(item = str_remove(item, get_prefix(.$item)))
 
     # # Labeling
     # dplyr::mutate(value_id = as.character(value_id)) %>%
@@ -192,7 +200,7 @@ tab_item_counts <- function(data, cols_items, value="n", .quiet=F) {
     }
 
     result %>%
-      knitr::kable(digits=0) %>%
+      knitr::kable(digits=0, align=c("l", rep("r",ncol(result) - 1))) %>%
       print()
   }
 
@@ -207,7 +215,7 @@ tab_item_counts <- function(data, cols_items, value="n", .quiet=F) {
 #' @param digits The digits to print
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_var_metrics <- function(data, col, digits = 1, .quiet = F) {
+tab_var_metrics <- function(data, col, digits=1, .quiet=F) {
 
   result <- data %>%
     skim_metrics({{col}}) %>%
@@ -248,7 +256,7 @@ tab_var_metrics <- function(data, col, digits = 1, .quiet = F) {
 #' @param col_group The column holding groups to compare
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_group_metrics <- function(data, col, col_group, .quiet=F) {
+tab_group_metrics <- function(data, col, col_group, digits=1, .quiet=F) {
 
   result_grouped <- data %>%
     dplyr::group_by({{col_group}}) %>%
@@ -284,7 +292,7 @@ tab_group_metrics <- function(data, col, col_group, .quiet=F) {
   if (!.quiet) {
 
     result %>%
-      knitr::kable(digits=0) %>%
+      knitr::kable(digits=digits) %>%
       print()
   }
 
@@ -301,7 +309,7 @@ tab_group_metrics <- function(data, col, col_group, .quiet=F) {
 #' @param digits The digits to print
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_item_metrics <- function(data, cols, digits = 1, .quiet = F) {
+tab_item_metrics <- function(data, cols, digits=1, .quiet=F) {
 
   cols <- enquo(cols)
 
@@ -322,6 +330,10 @@ tab_item_metrics <- function(data, cols, digits = 1, .quiet = F) {
       missing,
       n
     )
+
+  # Remove common item prefix
+  result <- result %>%
+    dplyr::mutate(item = str_remove(item, get_prefix(.$item)))
 
   if (!.quiet) {
     result %>%
