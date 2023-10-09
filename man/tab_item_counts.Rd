@@ -4,14 +4,16 @@
 \alias{tab_item_counts}
 \title{Output frequencies for multiple variables}
 \usage{
-tab_item_counts(data, cols_items, value = "n", .quiet = F)
+tab_item_counts(data, cols, values = c("n", "p"), .labels = T, .quiet = F)
 }
 \arguments{
 \item{data}{A tibble containing item measures}
 
-\item{cols_items}{Tidyselect item variables (e.g. starts_with...)}
+\item{cols}{Tidyselect item variables (e.g. starts_with...)}
 
-\item{value}{The value to output: n (frequency) or p (percentage)}
+\item{values}{The values to output: n (frequency) or p (percentage)}
+
+\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 
 \item{.quiet}{Set to true to suppress printing the output}
 }

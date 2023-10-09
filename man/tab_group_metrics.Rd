@@ -4,7 +4,7 @@
 \alias{tab_group_metrics}
 \title{#' Output a five point summary for groups}
 \usage{
-tab_group_metrics(data, col, col_group, .quiet = F)
+tab_group_metrics(data, col, col_group, digits = 1, .quiet = F)
 }
 \arguments{
 \item{data}{A tibble}

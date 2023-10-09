@@ -1,15 +1,17 @@
 ---
-title: "Einführung"
+title: "Introduction"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{introduction}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Introduction}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
-```{r Setup, include=}
+```{r include=FALSE}
 
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo=TRUE)
 
 library(tidyverse)
 library(volker)
@@ -17,14 +19,58 @@ theme_set(theme_bw())
 
 data <- volker::chatgpt
 
+# Recode -9 to NA
+data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(.,-9)  ))
+
 ```
 
-```{r Descriptives}
+## One variable
 
+### Frequency table for one categorial variable: Gender
+```{r results='asis'}
 
-tab_compare_items(data, starts_with("cg_adoption_"), sd_geschlecht)
+tab_var_counts(data, sd_geschlecht)
 
-plot_compare_items(data, starts_with("cg_adoption_"), sd_geschlecht)
+```
+
+### Distribution table for one metric variable: Age
+```{r results='asis'}
+
+tab_var_metrics(data, sd_alter)
+
+```
+
+## Multiple items
+
+### Frequency table for multiple categorial variables: Adoption factors
+```{r results='asis'}
+
+tab_item_counts(data, starts_with("cg_adoption_"))
+
+```
+
+### Distribution table for multiple metric items: Adoption factors
+```{r results='asis'}
+
+tab_item_metrics(data, starts_with("cg_adoption_"))
+
+```
+
+## Two variables
+
+### Cross table of categorial variables: Innovator type by gender
+
+```{r results='asis'}
+
+tab_group_counts(data, in_adoption, sd_geschlecht)
+
+```
+
+### Group comparison of a metric variable: Age by gender
+
+```{r results='asis'}
+
+tab_group_metrics(data, sd_alter, sd_geschlecht)
 
 ```
 

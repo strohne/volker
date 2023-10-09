@@ -1,4 +1,3 @@
-
 #' Output a frequency table for the values in one column
 #'
 #' @param data A tibble
@@ -45,12 +44,12 @@ tab_var_counts <- function(data, col, .quiet = F) {
 #' @param data A tibble
 #' @param col The column holding factor values
 #' @param col_group The column holding groups to compare
-#' @param value The value to output: n (frequency) or p (percentage)
+#' @param values The values to output: n (frequency) or p (percentage).
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_group_counts <- function(data, col, col_group, value="n", .quiet=F) {
+tab_group_counts <- function(data, col, col_group, values=c("n","p"), .quiet=F) {
 
-  result_grouped <- data %>%
+  grouped <- data %>%
     dplyr::count({{col}}, {{col_group}}) %>%
     dplyr::group_by({{col_group}}) %>%
     dplyr::mutate(
@@ -69,8 +68,8 @@ tab_group_counts <- function(data, col, col_group, value="n", .quiet=F) {
       {{col}} := tidyr::replace_na(as.character({{col}}), "Fehlend")
     )
 
-  result_grouped <- result_grouped %>%
-    #pivot_wider(names_from = {{col_group}}, values_from = c(n,p), values_fill=list("n"=0,"p"=0))
+  value <- "n"
+  grouped_n <- grouped %>%
     select({{col_group}}, {{col}}, !!sym(value)) %>%
     pivot_wider(
       names_from = {{col_group}},
@@ -78,8 +77,16 @@ tab_group_counts <- function(data, col, col_group, value="n", .quiet=F) {
       values_fill = setNames(list(0), value)
     )
 
+  value <- "p"
+  grouped_p <- grouped %>%
+    select({{col_group}}, {{col}}, !!sym(value)) %>%
+    pivot_wider(
+      names_from = {{col_group}},
+      values_from = !!sym(value),
+      values_fill = setNames(list(0), value)
+    )
 
-  result_total <-  data %>%
+  total <-  data %>%
     dplyr::count({{col}}) %>%
     dplyr::mutate(
       p = n / sum(n, na.rm = T)
@@ -93,26 +100,49 @@ tab_group_counts <- function(data, col, col_group, value="n", .quiet=F) {
     # ) %>%
     dplyr::mutate(
       {{col}} := tidyr::replace_na(as.character({{col}}), "Fehlend")
+    )
+
+  value <- "n"
+  total_n <- total %>%
+    select({{col}}, Total = !!sym(value))
+
+  value <- "p"
+  total_p <- total %>%
+    select({{col}}, Total = !!sym(value))
+
+  result_n <-
+    full_join(
+      grouped_n,
+      total_n,
+      by = deparse(substitute(col))
     ) %>%
-    select({{col}}, Alle = !!sym(value))
-
-  result <- full_join(
-    result_grouped,
-    result_total,
-    by = deparse(substitute(col))
-  )
-
-  result <- result %>%
     janitor::adorn_totals()
 
+  result_p <-
+    full_join(
+      grouped_p,
+      total_p,
+      by = deparse(substitute(col))
+    ) %>%
+    janitor::adorn_totals()
+
+  result_p <- result_p %>%
+    dplyr::mutate(across(where(is.numeric), ~ paste0(round(. * 100,0),"%" )))
+
+  # Zip
+  if (("n" %in% values) && ("p" %in% values)) {
+    result <- zip_tables(result_n, result_p)
+  }
+
+  else if ("p" %in% values) {
+    result <- result_p
+  }
+
+  else {
+    result <- result_n
+  }
+
   if (!.quiet) {
-
-    if (value == "p") {
-      result <- result %>%
-        dplyr::mutate(across(where(is.numeric), ~ paste0(round(. * 100,0),"%" )))
-    }
-
-
 
     result %>%
       knitr::kable(digits=0, align=c("l", rep("r",ncol(result) - 1))) %>%
@@ -123,46 +153,39 @@ tab_group_counts <- function(data, col, col_group, value="n", .quiet=F) {
 }
 
 
-
 #' Output frequencies for multiple variables
 #'
 #' @param data A tibble containing item measures
-#' @param cols_items Tidyselect item variables (e.g. starts_with...)
-#' @param value The value to output: n (frequency) or p (percentage)
+#' @param cols Tidyselect item variables (e.g. starts_with...)
+#' @param values The values to output: n (frequency) or p (percentage)
+#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_item_counts <- function(data, cols_items, value="n", .quiet=F) {
+tab_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .quiet=F) {
 
-  # Get code labels from the attributes
-  # codes <- get_labels(data)
-  #
-  # # Filter item labels
-  # items <- codes %>%
-  #   #na.omit() %>%
-  #   dplyr::distinct(item,label) %>%
-  #   dplyr::mutate(no = row_number())
+  # Calculate n and p
+  result <- data %>%
 
-  # Calculate
-  result_grouped <- data %>%
-
-    tidyr::pivot_longer(tidyselect::all_of(cols_items), names_to="item",values_to="value") %>%
+    tidyr::pivot_longer(tidyselect::all_of(cols), names_to="item",values_to="value") %>%
 
     dplyr::count(item, value) %>%
     dplyr::group_by(item) %>%
     dplyr::mutate(p= n / sum(n)) %>%
     dplyr::ungroup()
 
-
-  group_values <- unique(result_grouped$value)
-
-  result_grouped <- result_grouped  %>%
-
+  # Recode NA to "Fehlend"
+  result <- result  %>%
     dplyr::mutate(
-      value = factor(tidyr::replace_na(as.character(value), "Fehlend"), levels=c(group_values, "Fehlend"))
+      value = factor(
+        tidyr::replace_na(as.character(value), "Fehlend"),
+        levels=c(unique(result$value), "Fehlend")
+      )
     ) %>%
     arrange(value)
 
-  result_grouped <- result_grouped %>%
+  # Absolute frequency
+  value <- "n"
+  result_n <- result %>%
     select(item, value, !!sym(value)) %>%
     pivot_wider(
       names_from = value,
@@ -171,34 +194,53 @@ tab_item_counts <- function(data, cols_items, value="n", .quiet=F) {
     ) %>%
     janitor::adorn_totals("col")
 
+  # Relative frequency
+  value <- "p"
+  result_p <- result %>%
+    select(item, value, !!sym(value)) %>%
+    pivot_wider(
+      names_from = value,
+      values_from = !!sym(value),
+      values_fill = setNames(list(0), value)
+    ) %>%
+    janitor::adorn_totals("col")
+
+  result_p <- result_p %>%
+    dplyr::mutate(across(where(is.numeric), ~ paste0(round(. * 100,0),"%" )))
+
+  if (("n" %in% values) && ("p" %in% values)) {
+    result <- zip_tables(result_n, result_p)
+  }
+
+  else if ("p" %in% values) {
+    result <- result_p
+  }
+
+  else {
+    result <- result_n
+  }
+
+  # Get item labels from the attributes
+  if (.labels) {
+    codes <- data %>%
+      dplyr::select(!!cols) %>%
+      get_labels() %>%
+      distinct(item, label)
+  }
+
+  if (.labels && (nrow(codes) > 0)) {
+    result <- result %>%
+      left_join(codes, by=c("item")) %>%
+      mutate(item = dplyr::coalesce(label, item)) %>%
+      select(-label)
+  }
+
   # Remove common item prefix
-  result_grouped <- result_grouped %>%
+  result <- result %>%
     dplyr::mutate(item = str_remove(item, get_prefix(.$item)))
 
-    # # Labeling
-    # dplyr::mutate(value_id = as.character(value_id)) %>%
-    # dplyr::left_join(items,by=c("item")) %>%
-    # dplyr::left_join(select(codes,item,value_id,value),by=c("item","value_id")) %>%
-    #
-    # dplyr::mutate(label = str_remove(label, get_prefix(.$label))) %>%
-    # dplyr::mutate(label = str_trunc(label,50) ) %>%
-    #
-    # dplyr::mutate(item=str_remove(item,get_prefix(.$item))) %>%
-    # dplyr::mutate(item=paste0(item," ",label)) %>%
-    # dplyr::mutate(item=forcats::fct_reorder(item, no, .desc=T)) %>%
-    #
-    # dplyr::mutate(value=paste0(value_id, " ", value))
-
-
-  result <- result_grouped
 
   if (!.quiet) {
-
-    if (value == "p") {
-      result <- result %>%
-        dplyr::mutate(across(where(is.numeric), ~ paste0(round(. * 100,0),"%" )))
-    }
-
     result %>%
       knitr::kable(digits=0, align=c("l", rep("r",ncol(result) - 1))) %>%
       print()
@@ -208,7 +250,7 @@ tab_item_counts <- function(data, cols_items, value="n", .quiet=F) {
 }
 
 
-#' Output a five point summary table for the values multiple columns
+#' Output a five point summary table for the values in multiple columns
 #'
 #' @param data A tibble
 #' @param col The columns holding metric values
@@ -302,14 +344,13 @@ tab_group_metrics <- function(data, col, col_group, digits=1, .quiet=F) {
 
 #' Output a five point summary table for multiple items
 #'
-#' TODO: add labels (using get_labels())
-#'
 #' @param data A tibble
 #' @param cols_values The columns holding metric values
 #' @param digits The digits to print
+#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_item_metrics <- function(data, cols, digits=1, .quiet=F) {
+tab_item_metrics <- function(data, cols, digits=1, .labels=T, .quiet=F) {
 
   cols <- enquo(cols)
 
@@ -330,6 +371,21 @@ tab_item_metrics <- function(data, cols, digits=1, .quiet=F) {
       missing,
       n
     )
+
+  # Get item labels from the attributes
+  if (.labels) {
+    codes <- data %>%
+      dplyr::select(!!cols) %>%
+      get_labels() %>%
+      distinct(item, label)
+  }
+
+  if (.labels && (nrow(codes) > 0)) {
+    result <- result %>%
+      left_join(codes, by=c("item")) %>%
+      mutate(item = dplyr::coalesce(label, item)) %>%
+      select(-label)
+  }
 
   # Remove common item prefix
   result <- result %>%

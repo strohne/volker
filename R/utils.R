@@ -49,7 +49,6 @@ get_labels <- function(data) {
 #' @param x Charaxcter vector
 #' @param ignore.case Whether case matters
 #' @return The longest common prefix of the strings
-#' @rdname plot_compare_items
 #' @export
 get_prefix <- function (x, ignore.case = FALSE)
 {
@@ -64,4 +63,38 @@ get_prefix <- function (x, ignore.case = FALSE)
     }
   }
   substr(x[1], 1, i)
+}
+
+#' Combine two identically shaped data frames
+#' by adding values of each column from the second data frame
+#' into the corresponding column in the first dataframe using parentheses
+#'
+#' TODO: implement newline parameter
+#'
+#' @param x The first data frame
+#' @param y The second data frame
+#' @param newline Whether to add a new line character between the values (default: TRUE).
+#' @return A combined data frame
+#' @export
+zip_tables <- function(x, y, newline=TRUE) {
+
+  for (i in 2:ncol(x)) {
+    x[[i]] <- paste0(x[[i]], " (", y[[i]], ")")
+  }
+  x
+}
+
+
+knit_table <- function(df){
+  if (knitr::is_html_output()) {
+    df %>%
+      knitr::kable("html", escape = F) %>%
+      kableExtra::kable_styling()
+  } else {
+    df <- data.frame(lapply(df, function(x) {gsub("<br>", "\n", x)}), stringsAsFactors = F)
+
+    df %>%
+      dplyr::mutate_all(kableExtra::linebreak) %>%
+      knitr::kable("latex", booktabs = T, escape = F)
+  }
 }
