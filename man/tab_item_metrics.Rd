@@ -9,13 +9,13 @@ tab_item_metrics(data, cols, digits = 1, .labels = T, .quiet = F)
 \arguments{
 \item{data}{A tibble}
 
+\item{cols}{The columns holding metric values}
+
 \item{digits}{The digits to print}
 
 \item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 
 \item{.quiet}{Set to true to suppress printing the output}
-
-\item{cols_values}{The columns holding metric values}
 }
 \description{
 Output a five point summary table for multiple items

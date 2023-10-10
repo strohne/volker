@@ -24,7 +24,7 @@ data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(.,-9)  ))
 
 ```
 
-## One variable
+## 1. One variable
 
 ### Frequency table for one categorial variable: Gender
 ```{r results='asis'}
@@ -40,7 +40,7 @@ tab_var_metrics(data, sd_alter)
 
 ```
 
-## Multiple items
+## 2. Multiple items
 
 ### Frequency table for multiple categorial variables: Adoption factors
 ```{r results='asis'}
@@ -56,7 +56,7 @@ tab_item_metrics(data, starts_with("cg_adoption_"))
 
 ```
 
-## Two variables
+## 3. Two variables (one being categorical)
 
 ### Cross table of categorial variables: Innovator type by gender
 
@@ -74,3 +74,18 @@ tab_group_metrics(data, sd_alter, sd_geschlecht)
 
 ```
 
+## 4. Multiple metric variables
+
+### Compare means of multiple items: Adoption factors by gender
+```{r results='asis'}
+
+tab_multi_means(data, starts_with("cg_adoption_"), sd_geschlecht)
+
+```
+
+### Correlation of items: Adoption factors by adoption factors
+```{r results='asis'}
+
+tab_multi_corr(data, starts_with("cg_adoption_"))
+
+```

@@ -31,13 +31,54 @@ tab_var_counts <- function(data, col, .quiet = F) {
         p = paste0(round(p * 100,0),"%"),
         valid = ifelse(!is.na(valid), paste0(round(valid * 100,0),"%"), "-")
       ) %>%
-      knitr::kable(align="lrrr") %>%
+      knit_table() %>%
       print()
   }
 
   invisible(result)
 }
 
+
+#' Output a five point summary table for the values in multiple columns
+#'
+#' @param data A tibble
+#' @param col The columns holding metric values
+#' @param digits The digits to print
+#' @param .quiet Set to true to suppress printing the output
+#' @export
+tab_var_metrics <- function(data, col, digits=1, .quiet=F) {
+
+  result <- data %>%
+    skim_metrics({{col}}) %>%
+    dplyr::select(
+      "item" = skim_variable,
+      min = numeric.min,
+      q1 = numeric.q1,
+      median = numeric.median,
+      q3 = numeric.q3,
+      max = numeric.max,
+      m = numeric.mean,
+      sd = numeric.sd,
+      missing,
+      n
+    )
+
+  result <- result %>%
+    mutate(across(c(missing, n), ~ as.character(round(.,0)))) %>%
+    mutate(across(c(min, q1, median, q3, max), ~ as.character(round(.,digits)))) %>%
+    mutate(across(c(m, sd), ~ as.character(round(.,digits)))) %>%
+    pivot_longer(-item) %>%
+    dplyr::select(-item, {{col}} := name, value)
+
+
+  if (!.quiet) {
+    result %>%
+      knit_table() %>%
+      print()
+  }
+
+  invisible(result)
+}
 
 #' Output frequencies cross tabulated with a grouping column
 #'
@@ -99,7 +140,7 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), .quiet=F) 
     #   )
     # ) %>%
     dplyr::mutate(
-      {{col}} := tidyr::replace_na(as.character({{col}}), "Fehlend")
+      {{col}} := tidyr::replace_na(as.character({{col}}), "Missing")
     )
 
   value <- "n"
@@ -112,16 +153,16 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), .quiet=F) 
 
   result_n <-
     full_join(
-      grouped_n,
       total_n,
+      grouped_n,
       by = deparse(substitute(col))
     ) %>%
     janitor::adorn_totals()
 
   result_p <-
     full_join(
-      grouped_p,
       total_p,
+      grouped_p,
       by = deparse(substitute(col))
     ) %>%
     janitor::adorn_totals()
@@ -145,13 +186,63 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), .quiet=F) 
   if (!.quiet) {
 
     result %>%
-      knitr::kable(digits=0, align=c("l", rep("r",ncol(result) - 1))) %>%
+      knit_table(digits=0) %>%
       print()
   }
 
   invisible(result)
 }
 
+
+#' #' Output a five point summary for groups
+#'
+#' @param data A tibble
+#' @param col The column holding metric values
+#' @param col_group The column holding groups to compare
+#' @param .quiet Set to true to suppress printing the output
+#' @export
+tab_group_metrics <- function(data, col, col_group, digits=1, .quiet=F) {
+
+  result_grouped <- data %>%
+    dplyr::group_by({{col_group}}) %>%
+    skim_metrics({{col}}) %>%
+    ungroup() %>%
+    dplyr::mutate(
+      {{col_group}} := tidyr::replace_na(as.character({{col_group}}), "Fehlend")
+    ) %>%
+    select(-skim_variable, -skim_type)
+
+  result_total <-  data %>%
+    skim_metrics({{col}}) %>%
+    mutate({{col_group}} := "Total")
+
+  result <- bind_rows(
+    result_grouped,
+    result_total
+  ) %>%
+    dplyr::select(
+      {{col_group}},
+      min = numeric.min,
+      q1 = numeric.q1,
+      median = numeric.median,
+      q3 = numeric.q3,
+      max = numeric.max,
+      m = numeric.mean,
+      sd = numeric.sd,
+      missing,
+      n
+    )
+
+
+  if (!.quiet) {
+
+    result %>%
+      knit_table(digits=digits) %>%
+      print()
+  }
+
+  invisible(result)
+}
 
 #' Output frequencies for multiple variables
 #'
@@ -237,115 +328,25 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .quiet=F)
 
   # Remove common item prefix
   result <- result %>%
-    dplyr::mutate(item = str_remove(item, get_prefix(.$item)))
+    dplyr::mutate(item = str_remove(item, get_prefix(.$item))) %>%
+    rename(Item=item)
 
 
   if (!.quiet) {
     result %>%
-      knitr::kable(digits=0, align=c("l", rep("r",ncol(result) - 1))) %>%
+      knit_table(digits=0) %>%
       print()
   }
 
   invisible(result)
 }
 
-
-#' Output a five point summary table for the values in multiple columns
-#'
-#' @param data A tibble
-#' @param col The columns holding metric values
-#' @param digits The digits to print
-#' @param .quiet Set to true to suppress printing the output
-#' @export
-tab_var_metrics <- function(data, col, digits=1, .quiet=F) {
-
-  result <- data %>%
-    skim_metrics({{col}}) %>%
-    dplyr::select(
-      "item" = skim_variable,
-      min = numeric.min,
-      q1 = numeric.q1,
-      median = numeric.median,
-      q3 = numeric.q3,
-      max = numeric.max,
-      m = numeric.mean,
-      sd = numeric.sd,
-      missing,
-      n
-    )
-
-  result <- result %>%
-    mutate(across(c(missing, n), ~ as.character(round(.,0)))) %>%
-    mutate(across(c(min, q1, median, q3, max), ~ as.character(round(.,digits)))) %>%
-    mutate(across(c(m, sd), ~ as.character(round(.,digits)))) %>%
-    pivot_longer(-item) %>%
-    dplyr::select(-item, {{col}} := name, value)
-
-
-  if (!.quiet) {
-      result %>%
-        knitr::kable() %>%
-        print()
-  }
-
-  invisible(result)
-}
-
-#' #' Output a five point summary for groups
-#'
-#' @param data A tibble
-#' @param col The column holding metric values
-#' @param col_group The column holding groups to compare
-#' @param .quiet Set to true to suppress printing the output
-#' @export
-tab_group_metrics <- function(data, col, col_group, digits=1, .quiet=F) {
-
-  result_grouped <- data %>%
-    dplyr::group_by({{col_group}}) %>%
-    skim_metrics({{col}}) %>%
-    ungroup() %>%
-    dplyr::mutate(
-      {{col_group}} := tidyr::replace_na(as.character({{col_group}}), "Fehlend")
-    ) %>%
-    select(-skim_variable, -skim_type)
-
-  result_total <-  data %>%
-    skim_metrics({{col}}) %>%
-    mutate({{col_group}} := "Total")
-
-  result <- bind_rows(
-    result_grouped,
-    result_total
-  ) %>%
-    dplyr::select(
-      {{col_group}},
-      min = numeric.min,
-      q1 = numeric.q1,
-      median = numeric.median,
-      q3 = numeric.q3,
-      max = numeric.max,
-      m = numeric.mean,
-      sd = numeric.sd,
-      missing,
-      n
-    )
-
-
-  if (!.quiet) {
-
-    result %>%
-      knitr::kable(digits=digits) %>%
-      print()
-  }
-
-  invisible(result)
-}
 
 
 #' Output a five point summary table for multiple items
 #'
 #' @param data A tibble
-#' @param cols_values The columns holding metric values
+#' @param cols The columns holding metric values
 #' @param digits The digits to print
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .quiet Set to true to suppress printing the output
@@ -389,11 +390,12 @@ tab_item_metrics <- function(data, cols, digits=1, .labels=T, .quiet=F) {
 
   # Remove common item prefix
   result <- result %>%
-    dplyr::mutate(item = str_remove(item, get_prefix(.$item)))
+    dplyr::mutate(item = str_remove(item, get_prefix(.$item))) %>%
+    rename(Item=item)
 
   if (!.quiet) {
     result %>%
-      knitr::kable(digits=digits) %>%
+      knit_table(digits=digits) %>%
       print()
   }
 
@@ -405,41 +407,51 @@ tab_item_metrics <- function(data, cols, digits=1, .labels=T, .quiet=F) {
 #' Output the means for groups in one or multiple columns
 #'
 #' TODO: handle completely missing data in single groups
-#' TODO: zip mean and sd
 #'
 #' @param data A tibble
-#' @param cols_values The columns that hold the values to summarize
+#' @param cols The item columns that hold the values to summarize
 #' @param cols_group The columns holding groups to compare
-#' @param value The output metric, choosen from values of skim_metrics()
+#' @param values The output metrics, mean or sd
 #' @param digits The digits to print
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_item_group_metrics <- function(data, cols_values, cols_groups, value="numeric.mean", digits = 1, .quiet = F) {
+tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), digits = 1, .quiet = F) {
 
   # Get positions of group cols
-  cols <- tidyselect::eval_select(
+  cols_groups <- tidyselect::eval_select(
     expr = enquo(cols_groups),
     data = data[unique(names(data))],
     allow_rename = FALSE,
     error_call = rlang::error_call
   )
 
-  vals <- enquo(cols_values)
+  cols <- enquo(cols)
 
-  all <- data %>%
-    dplyr::select(!!vals) %>%
+  # Total means
+  value <- "numeric.mean"
+  total_mean <- data %>%
+    dplyr::select(!!cols) %>%
     skim_metrics() %>%
-    dplyr::select(skim_variable, all=!!sym(value))
+    dplyr::select(skim_variable, Total=!!sym(value))
 
-  result <- map(
-    cols,
+  # Total sd
+  value <- "numeric.sd"
+  total_sd <- data %>%
+    dplyr::select(!!cols) %>%
+    skim_metrics() %>%
+    dplyr::select(skim_variable, Total=!!sym(value))
+
+  # Grouped means
+  value <- "numeric.mean"
+  grouped_mean <- map(
+    cols_groups,
     function(col) {
       col <- names(data)[col]
 
       data %>%
         dplyr::filter(!is.na(!!sym(col))) %>%
         dplyr::group_by(!!sym(col)) %>%
-        dplyr::select(!!sym(col),!!vals) %>%
+        dplyr::select(!!sym(col),!!cols) %>%
         skim_metrics() %>%
         dplyr::ungroup() %>%
         dplyr::select(skim_variable, !!sym(col), !!sym(value)) %>%
@@ -454,25 +466,77 @@ tab_item_group_metrics <- function(data, cols_values, cols_groups, value="numeri
       by="skim_variable"
     )
 
-  result <- dplyr::inner_join(all, result, by="skim_variable") %>%
-    dplyr::rename(variable=skim_variable)
+  # Grouped sd
+  value <- "numeric.sd"
+  grouped_sd <- map(
+    cols_groups,
+    function(col) {
+      col <- names(data)[col]
+
+      data %>%
+        dplyr::filter(!is.na(!!sym(col))) %>%
+        dplyr::group_by(!!sym(col)) %>%
+        dplyr::select(!!sym(col),!!cols) %>%
+        skim_metrics() %>%
+        dplyr::ungroup() %>%
+        dplyr::select(skim_variable, !!sym(col), !!sym(value)) %>%
+        tidyr::pivot_wider(
+          names_from = !!sym(col),
+          values_from = !!sym(value)
+        )
+    }
+  ) %>%
+    purrr::reduce(
+      dplyr::inner_join,
+      by="skim_variable"
+    )
 
 
+  result_mean <- dplyr::inner_join(total_mean, grouped_mean, by="skim_variable") %>%
+    dplyr::rename(item=skim_variable)
+
+  result_sd <- dplyr::inner_join(total_sd, grouped_sd, by="skim_variable") %>%
+    dplyr::rename(item=skim_variable)
+
+
+  # Zip
+  if (("mean" %in% values) && ("sd" %in% values)) {
+
+    result_mean <- mutate(result_mean, across(where(is.numeric),~format(round(., digits), nsmall = digits)))
+    result_sd <- mutate(result_sd, across(where(is.numeric),~format(round(., digits), nsmall = digits)))
+    result <- zip_tables(result_mean, result_sd)
+  }
+
+  else if ("sd" %in% values) {
+    result <- result_sd
+  }
+
+  else {
+    result <- result_mean
+  }
+
+  # Add labels
   codes <- data %>%
-    dplyr::select(!!vals) %>%
+    dplyr::select(!!cols) %>%
     get_labels() %>%
     distinct(item, label)
 
   if (nrow(codes) > 0) {
     result <- result %>%
-      left_join(codes, by=c("variable"="item")) %>%
-      mutate(variable = ifelse(is.na(label), variable, label)) %>%
+      left_join(codes, by=c("item")) %>%
+      mutate(item = dplyr::coalesce(label, item)) %>%
       select(-label)
   }
 
+
+  # Remove common item prefix
+  result <- result %>%
+    dplyr::mutate(item = str_remove(item, get_prefix(.$item))) %>%
+    rename(Item=item)
+
   if (!.quiet) {
     result %>%
-      knitr::kable(digits=digits) %>%
+      knit_table(digits=digits) %>%
       print()
   }
 
@@ -480,57 +544,73 @@ tab_item_group_metrics <- function(data, cols_values, cols_groups, value="numeri
 }
 
 
-#' Compare
+#' Output a correlation table
 #'
-#' @param data A tibble containing item measures
-#' @param cols_items Tidyselect item variables (e.g. starts_with...)
-#' @param col_group Optional faceting variable
+#' @param data A tibble
+#' @param cols1 The source items
+#' @param cols2 The target items or NULL to calculate correlations within the source items
+#' @param values The output metrics, p = Pearson's R, s = Spearman's rho
+#' @param digits The digits to print
+#' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_groups_items <- function(data, cols_items, col_group) {
+tab_multi_corr <- function(data, cols1, cols2, values="p", digits = 1, .quiet = F) {
 
-  col_group <- enquo(col_group)
+  # Get positions of cols
+  cols1 <- tidyselect::eval_select(
+    expr = enquo(cols1),
+    data = data[unique(names(data))],
+    allow_rename = FALSE,
+    error_call = rlang::error_call
+  )
 
-  # Get code labels from the attributes
-  codes <- tibble(
-    item = colnames(data),
-    label = sapply(data,attr,"comment"),
-    value = lapply(data,attributes)
-  ) %>%
-    dplyr::mutate(label=as.character(label)) %>%
-    tidyr::unnest_longer(value) %>%
-    dplyr::filter(value_id != "comment", value_id != "class" ) %>%
-    dplyr::mutate(value = as.character(value))
+  # Same or different items?
+  if (missing(cols2)) {
+    cols2 <- cols1
+  } else {
 
-  # Filter item labels
-  items <- codes %>%
-    #na.omit() %>%
-    dplyr::distinct(item,label) %>%
-    dplyr::mutate(no = row_number())
+    cols2 <- tidyselect::eval_select(
+      expr = enquo(cols2),
+      data = data[unique(names(data))],
+      allow_rename = FALSE,
+      error_call = rlang::error_call
+    )
+  }
 
-  # Calculate
-  data_grouped <- data %>%
+  vars1 <- dplyr::select(data, !!cols1)
+  vars2 <- dplyr::select(data, !!cols2)
 
-    tidyr::pivot_longer(tidyselect::all_of(cols_items), names_to="item",values_to="value_id") %>%
+  result <- cor(vars1, vars2, use="p", method=values) %>%
+    tibble::as_tibble(rownames="item") %>%
+    tidyr::pivot_longer(-item, names_to="target", values_to="value")
 
-    dplyr::count(!!col_group,item,value_id) %>%
-    dplyr::group_by(!!col_group,item) %>%
-    dplyr::mutate(p= n / sum(n)) %>%
-    dplyr::ungroup() %>%
 
-    # Labeling
-    dplyr::mutate(value_id = as.character(value_id)) %>%
-    dplyr::left_join(items,by=c("item")) %>%
-    dplyr::left_join(select(codes,item,value_id,value),by=c("item","value_id")) %>%
+  # Add labels
+  # codes <- data %>%
+  #   dplyr::select(!!cols) %>%
+  #   get_labels() %>%
+  #   distinct(item, label)
+  #
+  # if (nrow(codes) > 0) {
+  #   result <- result %>%
+  #     left_join(codes, by=c("item")) %>%
+  #     mutate(item = dplyr::coalesce(label, item)) %>%
+  #     select(-label)
+  # }
 
-    dplyr::mutate(label = str_remove(label,"^.*: ")) %>%
-    dplyr::mutate(label = str_trunc(label,50) ) %>%
 
-    dplyr::mutate(item=str_remove(item,get_prefix(.$item))) %>%
-    dplyr::mutate(item=paste0(item," ",label)) %>%
-    dplyr::mutate(item=forcats::fct_reorder(item,no, .desc=T)) %>%
+  # Remove common item prefix
+  result <- result %>%
+    dplyr::mutate(item = str_remove(item, get_prefix(.$item))) %>%
+    dplyr::mutate(target = str_remove(target, get_prefix(.$target))) %>%
+    tidyr::pivot_wider(names_from="target", values_from="value") %>%
+    rename(Item=item)
 
-    dplyr::mutate(value=paste0(value_id, " ", value))
+  if (!.quiet) {
+    result %>%
+      knit_table(digits=digits) %>%
+      #kableExtra::row_spec(0, angle = -90) %>%
+      print()
+  }
 
-  data_grouped
+  invisible(result)
 }
-

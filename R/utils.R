@@ -78,23 +78,36 @@ get_prefix <- function (x, ignore.case = FALSE)
 #' @export
 zip_tables <- function(x, y, newline=TRUE) {
 
+  newline <- newline && (knitr::is_html_output() || knitr::is_latex_output())
+  sep <- ifelse(newline,"\n"," ")
+
   for (i in 2:ncol(x)) {
-    x[[i]] <- paste0(x[[i]], " (", y[[i]], ")")
+    x[[i]] <- paste0(x[[i]], sep, "(", y[[i]], ")")
   }
   x
 }
 
 
-knit_table <- function(df){
+#' Knit table with defaults for the package
+#'
+#' @param df Data frame
+#' @return Formatted table
+knit_table <- function(df, ...){
   if (knitr::is_html_output()) {
-    df %>%
-      knitr::kable("html", escape = F) %>%
-      kableExtra::kable_styling()
-  } else {
-    df <- data.frame(lapply(df, function(x) {gsub("<br>", "\n", x)}), stringsAsFactors = F)
+
+    # Replace \n by <br>
+    df <- dplyr::mutate(df, across(dplyr::where(is.character), ~ gsub("\n", "<br>", .)))
 
     df %>%
+      knitr::kable("html", escape = F, align=c("l", rep("r",ncol(df) - 1)), ...) %>%
+      kableExtra::kable_styling()
+
+  } else if (knitr::is_latex_output()) {
+    df %>%
       dplyr::mutate_all(kableExtra::linebreak) %>%
-      knitr::kable("latex", booktabs = T, escape = F)
+      knitr::kable("latex", booktabs = T, escape = F, align=c("l", rep("r",ncol(df) - 1)), ...)
+  } else {
+    df %>%
+      knitr::kable("pipe" , align=c("l", rep("r",ncol(df) - 1)), ...)
   }
 }
