@@ -33,6 +33,13 @@ Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Ausw
 
 ## Examples
 
+
+|  <img src="plots/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="100" height="233" style="margin-right: 20px; margin-bottom: 20px; vertical-align: top;"> `tab_var_metrics()` | <img src="plots/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="210" height="130" style="margin-left: px; margin-bottom: 20px; vertical-align: top;"> `tab_var_counts()` |
+|-----------------------------|-----------------------------|
+| <img src="plots/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="210" height="100" style="margin-right: 20px; margin-top: 10px; margin-bottom: 20px; vertical-align: top;"> Text 3 | ![Bild 4](URL_Bild4) Text 4 |
+|-----------------------------|-----------------------------|
+| ![Bild 5](URL_Bild5) Text 5 | ![Bild 6](URL_Bild6) Text 6 |
+
 **Eine Variable**
 
 Mit `tab_var_metrics()` wird eine tabellarische Übersicht der Verteilung einer metrischen Variable erstellt. 
