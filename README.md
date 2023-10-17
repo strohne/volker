@@ -38,14 +38,13 @@ Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Ausw
 Mit `tab_var_metrics()` wird eine tabellarische Übersicht der Verteilung einer metrischen Variable erstellt. 
 Mit `tab_var_counts()` wird eine Häufigkeitstabelle für eine kategoriale Variable erstellt. 
 
-<img src="plots/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="100" height="233" style="margin-right: 20px; margin-bottom: 20px; vertical-align: top;">
-<img src="plots/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="210" height="130" style="margin-left: 20px; margin-bottom: 20px; vertical-align: top;"> 
+<img src="plots/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="100" height="233" style="margin-right: 20px; margin-bottom: 20px; vertical-align: top;"> <img src="plots/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="210" height="130" style="margin-left: 20px; margin-bottom: 20px; vertical-align: top;"> 
 
 **Mehrere Items** 
 
 Hier ist eine Itembatterie mit 5 Antwortmöglichkeiten (1-5) dargestellt. `tab_item_count()` erstellt eine Übersicht der Häufigkeiten der gegebenen Antworten. Äquivalent kann ein Plot mit `plot_counts()` erstellt werden. 
 
-<img src="plots/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="" height="" style="margin-right: 20px; margin-bottom: 20px; vertical-align: top;"> 
+<img src="plots/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="210" height="100" style="margin-right: 20px; margin-bottom: 20px; vertical-align: top;"> 
 <img src="plots/plot_counts.png" alt="Plot einer Häufigkeitsübersicht einer Itembatterie" title="Plot Häufigkeit von Items" width="" height="" style="margin-right: 20px; margin-bottom: 20px; vertical-align: top;">
 
 Mit `tab_item_metrics()` kann zudem eine Verteilungsübersicht der einzelnen Items erstellt werden. Genau wie bei der Verteilungsübersicht für eine Variable sind die Verteilungsparameter wie z.B. Mittelwert oder Quartile angegeben. 
