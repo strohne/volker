@@ -33,11 +33,12 @@ Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Ausw
 
 ## Examples
 
-
-| <img src="plots/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="200" height="160" style="margin: 10px;"> `tab_var_metrics()` | <img src="plots/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="200" height="160" style="margin: 10px;"> `tab_var_counts()` |
+| <img src="plots/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="400" height="160" style="margin: 10px;"> `tab_var_metrics()` | <img src="plots/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="400" height="160" style="margin: 10px;"> `tab_var_counts()` |
 |-----------------------------|-----------------------------|
-| <img src="plots/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="200" height="160" style="margin: 10px;"> `tab_item_count()` | <img src="plots/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="200" height="160" style="margin: 10px;"> `tab_item_metrics()` |
-| <img src="plots/tab_group_metrics.png" alt="" title="Verteilungsübersicht Gruppenvergleich" width="200" height="160" style="margin: 10px;"> `tab_group_metrics()` | <img src="plots/tab_multi_means.png" alt="Mittelwertvergleich von Items nach Gruppe" title="Mittelwertvergleich" width="200" height="160" style="margin: 10px;"> `tab_multi_means()` |
+| <img src="plots/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="400" height="160" style="margin: 10px;"> `tab_item_count()` | <img src="plots/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="400" height="160" style="margin: 10px;"> `tab_item_metrics()` |
+| <img src="plots/tab_group_metrics.png" alt="" title="Verteilungsübersicht Gruppenvergleich" width="400" height="160" style="margin: 10px;"> `tab_group_metrics()` | <img src="plots/tab_multi_means.png" alt="Mittelwertvergleich von Items nach Gruppe" title="Mittelwertvergleich" width="400" height="160" style="margin: 10px;"> `tab_multi_means()` |
+
+
 
 
 
