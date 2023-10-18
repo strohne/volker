@@ -29,7 +29,7 @@ data <- set_item_labels(data, tibble("sd_alter","Alter"))
 
 ## 1. One variable
 
-### Frequency table for one categorial variable: Gender
+### Frequency table for one categorical variable: Gender
 ```{r results='asis'}
 
 tab_var_counts(data, sd_geschlecht)
@@ -45,7 +45,7 @@ tab_var_metrics(data, sd_alter)
 
 ## 2. Multiple items
 
-### Frequency table for multiple categorial variables: Adoption factors
+### Frequency table for multiple categorical variables: Adoption factors
 ```{r results='asis'}
 
 tab_item_counts(data, starts_with("cg_adoption_"))
@@ -61,7 +61,7 @@ tab_item_metrics(data, starts_with("cg_adoption_"))
 
 ## 3. Two variables (one being categorical)
 
-### Cross table of categorial variables: Innovator type by gender
+### Cross table of categorical variables: Innovator type by gender
 
 ```{r results='asis'}
 
