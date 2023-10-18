@@ -33,14 +33,21 @@ Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Ausw
 
 ## Examples
 
+
+
+
+
+
+
+
 |  | | |
 |----------------------------------------|--------------------------------------------|---|
 |                    |       metrisch                                     |  kategorial |
 |**Eine Variable**                                 | <img src="plots/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="100" height="233" style="margin: 10px;"> `tab_var_metrics()` | <img src="plots/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="270" height="180" style="margin: 10px;"> `tab_var_counts()` |
 |                      |   metrisch                                         | kategorial  |
-| **Mehrere Items**                                    | <img src="plots/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="400" height="160" style="margin: 10px;"> `tab_item_metrics()` | <img src="plots/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="400" height="160" style="margin: 10px;"> `tab_item_count()` |
+| **Mehrere Items**                                    | <img src="plots/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="410" height="130" style="margin: 10px;"> `tab_item_metrics()` | <img src="plots/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="410" height="130" style="margin: 10px;"> `tab_item_count()` |
 |                      |  metrisch & kategorial                                      | metrisch & kategorial   |
-|       **Zwei Variablen**                                 | <img src="plots/tab_group_metrics.png" alt="" title="Verteilungsübersicht Gruppenvergleich" width="400" height="160" style="margin: 10px;"> `tab_group_metrics()` | <img src="plots/tab_multi_means.png" alt="Mittelwertvergleich von Items nach Gruppe" title="Mittelwertvergleich" width="400" height="160" style="margin: 10px;"> `tab_multi_means()` |
+|       **Zwei Variablen**                                 | <img src="plots/tab_group_metrics.png" alt="" title="Verteilungsübersicht Gruppenvergleich" width="410" height="130" style="margin: 10px;"> `tab_group_metrics()` | <img src="plots/tab_multi_means.png" alt="Mittelwertvergleich von Items nach Gruppe" title="Mittelwertvergleich" width="410" height="130" style="margin: 10px;"> `tab_multi_means()` |
 
 
 **to be continued** 
