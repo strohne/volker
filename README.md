@@ -43,7 +43,7 @@ Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Ausw
 |  | | |
 |----------------------------------------|--------------------------------------------|---|
 |                    |       metrisch                                     |  kategorial |
-|**Eine Variable**                                 | <img src="plots/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="100" height="233" style="margin: 10px;"> `tab_var_metrics()` | <img src="plots/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="270" height="180" style="margin: 10px;"> `tab_var_counts()` |
+|**Eine Variable**                                 | <img src="plots/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="100" height="233" style="margin: 10px;"> `tab_var_metrics()` | <img src="plots/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="220" height="150" style="margin: 10px;"> `tab_var_counts()` |
 |                      |   metrisch                                         | kategorial  |
 | **Mehrere Items**                                    | <img src="plots/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="410" height="130" style="margin: 10px;"> `tab_item_metrics()` | <img src="plots/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="410" height="130" style="margin: 10px;"> `tab_item_count()` |
 |                      |  metrisch & kategorial                                      | metrisch & kategorial   |
