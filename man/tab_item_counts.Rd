@@ -4,7 +4,7 @@
 \alias{tab_item_counts}
 \title{Output frequencies for multiple variables}
 \usage{
-tab_item_counts(data, cols, values = c("n", "p"), .labels = T, .quiet = F)
+tab_item_counts(data, cols, values = c("n", "p"), .labels = T)
 }
 \arguments{
 \item{data}{A tibble containing item measures}

@@ -4,10 +4,13 @@
 \alias{get_labels}
 \title{Get variable labels from their comment attributes}
 \usage{
-get_labels(data)
+get_labels(data, cols)
 }
 \arguments{
 \item{data}{A tibble}
+}
+\value{
+A tibble with the columns item_name, item_label, value_name, and value_label
 }
 \description{
 Get variable labels from their comment attributes

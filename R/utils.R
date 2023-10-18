@@ -20,23 +20,55 @@ skim_metrics <- skimr::skim_with(
 #' Get variable labels from their comment attributes
 #'
 #' @param data A tibble
+#' @return A tibble with the columns item_name, item_label, value_name, and value_label
 #' @export
-get_labels <- function(data) {
-  labels <- tibble(
-    item = colnames(data),
-    label = sapply(data,attr,"comment"),
-    value = lapply(data,attributes)
-  ) %>%
-    mutate(label=as.character(label)) %>%
-    unnest_longer(value)
+get_labels <- function(data, cols) {
 
-  if ("value_id" %in% colnames(labels)) {
+  if (!missing(cols)) {
+    data <- dplyr::select(data,{{cols}})
+  }
+
+  labels <- tibble(
+    item_name = colnames(data),
+    item_label = sapply(data,attr,"comment"),
+    value_label = lapply(data,attributes)
+  ) %>%
+    dplyr::mutate(item_label=as.character(item_label)) %>%
+    tidyr::unnest_longer(value_label)
+
+  if ("value_label_id" %in% colnames(labels)) {
+    labels_codes <- labels %>%
+      dplyr::rename(value_name = value_label_id) %>%
+      dplyr::filter(value_name != "comment", value_name != "class", value_name != "levels") %>%
+      dplyr::mutate(value_label = as.character(value_label)) %>%
+      dplyr::select(item_name, item_label, value_name, value_label)
+
     labels <- labels %>%
-      filter(value_id != "comment", value_id != "class" ) %>%
-      mutate(value = as.character(value))
+      dplyr::rename(value_name = value_label_id) %>%
+      dplyr::select(item_name, item_label) %>%
+      anti_join(labels_codes, by="item_name") %>%
+      bind_rows(labels_codes)
   }
 
   labels
+}
+
+
+#' Set variable labels by setting their comment attributes
+#'
+#' @param data A tibble
+#' @param labels A tibble with variable names in the first column (item_name) and their labels in the second column (item_label)
+#' @return A tibble with new variable labels
+#' @export
+set_item_labels <- function(data, labels) {
+
+  for (no in c(1:nrow(labels))) {
+    item_name <- labels[[1]][no]
+    item_label <- labels[[2]][no]
+    comment(data[[item_name]]) <- item_label
+  }
+
+  data
 }
 
 
@@ -93,21 +125,28 @@ zip_tables <- function(x, y, newline=TRUE) {
 #' @param df Data frame
 #' @return Formatted table
 knit_table <- function(df, ...){
+
   if (knitr::is_html_output()) {
 
     # Replace \n by <br>
-    df <- dplyr::mutate(df, across(dplyr::where(is.character), ~ gsub("\n", "<br>", .)))
-
-    df %>%
+    df <- df %>%
+      dplyr::mutate(across(dplyr::where(is.character), ~ gsub("\n", "<br>", .))) %>%
       knitr::kable("html", escape = F, align=c("l", rep("r",ncol(df) - 1)), ...) %>%
       kableExtra::kable_styling()
 
+
   } else if (knitr::is_latex_output()) {
-    df %>%
+
+    df <- df %>%
       dplyr::mutate_all(kableExtra::linebreak) %>%
       knitr::kable("latex", booktabs = T, escape = F, align=c("l", rep("r",ncol(df) - 1)), ...)
+
   } else {
-    df %>%
+
+    df <- df %>%
       knitr::kable("pipe" , align=c("l", rep("r",ncol(df) - 1)), ...)
+
   }
+
+  df
 }

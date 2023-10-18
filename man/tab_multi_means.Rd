@@ -4,14 +4,7 @@
 \alias{tab_multi_means}
 \title{Output the means for groups in one or multiple columns}
 \usage{
-tab_multi_means(
-  data,
-  cols,
-  cols_groups,
-  values = c("mean", "sd"),
-  digits = 1,
-  .quiet = F
-)
+tab_multi_means(data, cols, cols_groups, values = c("mean", "sd"), digits = 1)
 }
 \arguments{
 \item{data}{A tibble}
@@ -21,8 +14,6 @@ tab_multi_means(
 \item{values}{The output metrics, mean or sd}
 
 \item{digits}{The digits to print}
-
-\item{.quiet}{Set to true to suppress printing the output}
 
 \item{cols_group}{The columns holding groups to compare}
 }

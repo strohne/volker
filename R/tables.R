@@ -2,9 +2,10 @@
 #'
 #' @param data A tibble
 #' @param col The column holding values to count
-#' @param .quiet Set to true to suppress printing the output
+#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @param .formatted Set to FALSE to prevent calculating percents from proportions
 #' @export
-tab_var_counts <- function(data, col, .quiet = F) {
+tab_var_counts <- function(data, col, .labels=T, .formatted=T) {
 
   result <- data %>%
     dplyr::count({{col}}) %>%
@@ -22,21 +23,34 @@ tab_var_counts <- function(data, col, .quiet = F) {
       {{col}} := tidyr::replace_na(as.character({{col}}), "Fehlend")
     )
 
+  # Get item label from the attributes
+  if (.labels) {
+    codes <- data %>%
+      get_labels({{col}}) %>%
+      distinct(item_name, item_label)
+  }
+
+  if (.labels && (nrow(codes) > 0)) {
+    label <- codes$item_label[1]
+    result <- result %>%
+      dplyr::rename({{label}} := {{col}})
+  }
+
   result <- result %>%
     janitor::adorn_totals()
 
-  if (!.quiet) {
-    result %>%
+  if (.formatted) {
+    result <- result %>%
       dplyr::mutate(
         p = paste0(round(p * 100,0),"%"),
         valid = ifelse(!is.na(valid), paste0(round(valid * 100,0),"%"), "-")
-      ) %>%
-      knit_table() %>%
-      print()
+    )
   }
 
-  invisible(result)
+  class(result) <- c("vlkr_tbl", class(result))
+  result
 }
+
 
 
 #' Output a five point summary table for the values in multiple columns
@@ -44,9 +58,9 @@ tab_var_counts <- function(data, col, .quiet = F) {
 #' @param data A tibble
 #' @param col The columns holding metric values
 #' @param digits The digits to print
-#' @param .quiet Set to true to suppress printing the output
+#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-tab_var_metrics <- function(data, col, digits=1, .quiet=F) {
+tab_var_metrics <- function(data, col, digits=1, .labels=T) {
 
   result <- data %>%
     skim_metrics({{col}}) %>%
@@ -70,14 +84,21 @@ tab_var_metrics <- function(data, col, digits=1, .quiet=F) {
     pivot_longer(-item) %>%
     dplyr::select(-item, {{col}} := name, value)
 
-
-  if (!.quiet) {
-    result %>%
-      knit_table() %>%
-      print()
+  # Get item label from the attributes
+  if (.labels) {
+    codes <- data %>%
+      get_labels({{col}}) %>%
+      distinct(item_name, item_label)
   }
 
-  invisible(result)
+  if (.labels && (nrow(codes) > 0)) {
+    label <- codes$item_label[1]
+    result <- result %>%
+      dplyr::rename({{label}} := {{col}})
+  }
+
+  class(result) <- c("vlkr_tbl", class(result))
+  result
 }
 
 #' Output frequencies cross tabulated with a grouping column
@@ -86,9 +107,9 @@ tab_var_metrics <- function(data, col, digits=1, .quiet=F) {
 #' @param col The column holding factor values
 #' @param col_group The column holding groups to compare
 #' @param values The values to output: n (frequency) or p (percentage).
-#' @param .quiet Set to true to suppress printing the output
+#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-tab_group_counts <- function(data, col, col_group, values=c("n","p"), .quiet=F) {
+tab_group_counts <- function(data, col, col_group, values=c("n","p"), .labels=T) {
 
   grouped <- data %>%
     dplyr::count({{col}}, {{col_group}}) %>%
@@ -183,14 +204,23 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), .quiet=F) 
     result <- result_n
   }
 
-  if (!.quiet) {
-
-    result %>%
-      knit_table(digits=0) %>%
-      print()
+  # Get item label from the attributes
+  if (.labels) {
+    codes <- data %>%
+      get_labels({{col}}) %>%
+      distinct(item_name, item_label)
   }
 
-  invisible(result)
+  if (.labels && (nrow(codes) > 0)) {
+    label <- codes$item_label[1]
+    result <- result %>%
+      dplyr::rename({{label}} := {{col}})
+  }
+
+
+  attr(result,"digits") <- 0
+  class(result) <- c("vlkr_tbl", class(result))
+  result
 }
 
 
@@ -199,9 +229,10 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), .quiet=F) 
 #' @param data A tibble
 #' @param col The column holding metric values
 #' @param col_group The column holding groups to compare
-#' @param .quiet Set to true to suppress printing the output
+#' @param digits The digits to print
+#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-tab_group_metrics <- function(data, col, col_group, digits=1, .quiet=F) {
+tab_group_metrics <- function(data, col, col_group, digits=1, .labels=T) {
 
   result_grouped <- data %>%
     dplyr::group_by({{col_group}}) %>%
@@ -233,15 +264,23 @@ tab_group_metrics <- function(data, col, col_group, digits=1, .quiet=F) {
       n
     )
 
-
-  if (!.quiet) {
-
-    result %>%
-      knit_table(digits=digits) %>%
-      print()
+  # Get item label from the attributes
+  if (.labels) {
+    codes <- data %>%
+      get_labels({{col_group}}) %>%
+      distinct(item_name, item_label)
   }
 
-  invisible(result)
+  if (.labels && (nrow(codes) > 0)) {
+    label <- codes$item_label[1]
+    result <- result %>%
+      dplyr::rename({{label}} := {{col_group}})
+  }
+
+
+  attr(result,"digits") <- digits
+  class(result) <- c("vlkr_tbl", setdiff(class(result),"skim_df"))
+  result
 }
 
 #' Output frequencies for multiple variables
@@ -252,7 +291,7 @@ tab_group_metrics <- function(data, col, col_group, digits=1, .quiet=F) {
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .quiet=F) {
+tab_item_counts <- function(data, cols, values= c("n","p"), .labels=T) {
 
   # Calculate n and p
   result <- data %>%
@@ -314,31 +353,29 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .quiet=F)
   # Get item labels from the attributes
   if (.labels) {
     codes <- data %>%
-      dplyr::select(!!cols) %>%
-      get_labels() %>%
-      distinct(item, label)
+      get_labels(!!cols) %>%
+      distinct(item_name, item_label)
   }
 
   if (.labels && (nrow(codes) > 0)) {
     result <- result %>%
-      left_join(codes, by=c("item")) %>%
-      mutate(item = dplyr::coalesce(label, item)) %>%
-      select(-label)
+      left_join(codes, by=c("item"="item_name")) %>%
+      mutate(item = dplyr::coalesce(item_label, item)) %>%
+      select(-item_label)
   }
 
   # Remove common item prefix
-  result <- result %>%
-    dplyr::mutate(item = str_remove(item, get_prefix(.$item))) %>%
-    rename(Item=item)
-
-
-  if (!.quiet) {
-    result %>%
-      knit_table(digits=0) %>%
-      print()
+  prefix <- get_prefix(result$item)
+  if (prefix != "") {
+    result <- dplyr::mutate(result, item = str_remove(item, prefix))
   }
 
-  invisible(result)
+  result <- rename(result, Item=item)
+
+
+  attr(result,"digits") <- 0
+  class(result) <- c("vlkr_tbl", class(result))
+  result
 }
 
 
@@ -349,9 +386,8 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .quiet=F)
 #' @param cols The columns holding metric values
 #' @param digits The digits to print
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
-#' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_item_metrics <- function(data, cols, digits=1, .labels=T, .quiet=F) {
+tab_item_metrics <- function(data, cols, digits=1, .labels=T) {
 
   cols <- enquo(cols)
 
@@ -376,30 +412,28 @@ tab_item_metrics <- function(data, cols, digits=1, .labels=T, .quiet=F) {
   # Get item labels from the attributes
   if (.labels) {
     codes <- data %>%
-      dplyr::select(!!cols) %>%
-      get_labels() %>%
-      distinct(item, label)
+      get_labels(!!cols) %>%
+      distinct(item_name, item_label)
   }
 
   if (.labels && (nrow(codes) > 0)) {
     result <- result %>%
-      left_join(codes, by=c("item")) %>%
-      mutate(item = dplyr::coalesce(label, item)) %>%
-      select(-label)
+      left_join(codes, by=c("item"="item_name")) %>%
+      mutate(item = dplyr::coalesce(item_label, item)) %>%
+      select(-item_label)
   }
 
   # Remove common item prefix
-  result <- result %>%
-    dplyr::mutate(item = str_remove(item, get_prefix(.$item))) %>%
-    rename(Item=item)
-
-  if (!.quiet) {
-    result %>%
-      knit_table(digits=digits) %>%
-      print()
+  prefix <- get_prefix(result$item)
+  if (prefix != "") {
+    result <- dplyr::mutate(result, item = str_remove(item, prefix))
   }
 
-  invisible(result)
+  result <- rename(result, Item=item)
+
+  attr(result,"digits") <- digits
+  class(result) <- c("vlkr_tbl", class(result))
+  result
 }
 
 
@@ -413,9 +447,8 @@ tab_item_metrics <- function(data, cols, digits=1, .labels=T, .quiet=F) {
 #' @param cols_group The columns holding groups to compare
 #' @param values The output metrics, mean or sd
 #' @param digits The digits to print
-#' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), digits = 1, .quiet = F) {
+tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), digits = 1) {
 
   # Get positions of group cols
   cols_groups <- tidyselect::eval_select(
@@ -517,30 +550,28 @@ tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), dig
 
   # Add labels
   codes <- data %>%
-    dplyr::select(!!cols) %>%
-    get_labels() %>%
-    distinct(item, label)
+    get_labels(!!cols) %>%
+    distinct(item_name, item_label)
 
   if (nrow(codes) > 0) {
     result <- result %>%
-      left_join(codes, by=c("item")) %>%
-      mutate(item = dplyr::coalesce(label, item)) %>%
-      select(-label)
+      left_join(codes, by=c("item"="item_name")) %>%
+      mutate(item = dplyr::coalesce(item_label, item)) %>%
+      select(-item_label)
   }
 
 
   # Remove common item prefix
-  result <- result %>%
-    dplyr::mutate(item = str_remove(item, get_prefix(.$item))) %>%
-    rename(Item=item)
-
-  if (!.quiet) {
-    result %>%
-      knit_table(digits=digits) %>%
-      print()
+  prefix <- get_prefix(result$item)
+  if (prefix != "") {
+    result <- dplyr::mutate(result, item = str_remove(item, prefix))
   }
 
-  invisible(result)
+  result <- rename(result, Item=item)
+
+  attr(result,"digits") <- digits
+  class(result) <- c("vlkr_tbl", class(result))
+  result
 }
 
 
@@ -551,9 +582,8 @@ tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), dig
 #' @param cols2 The target items or NULL to calculate correlations within the source items
 #' @param values The output metrics, p = Pearson's R, s = Spearman's rho
 #' @param digits The digits to print
-#' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_multi_corr <- function(data, cols1, cols2, values="p", digits = 1, .quiet = F) {
+tab_multi_corr <- function(data, cols1, cols2, values="p", digits = 1) {
 
   # Get positions of cols
   cols1 <- tidyselect::eval_select(
@@ -599,18 +629,36 @@ tab_multi_corr <- function(data, cols1, cols2, values="p", digits = 1, .quiet = 
 
 
   # Remove common item prefix
+  prefix <- get_prefix(result$item)
+  if (prefix != "") {
+    result <- dplyr::mutate(result, item = str_remove(item, prefix))
+  }
+
+  prefix <- get_prefix(result$target)
+  if (prefix != "") {
+    result <- dplyr::mutate(result, target = str_remove(target, prefix))
+  }
+
   result <- result %>%
-    dplyr::mutate(item = str_remove(item, get_prefix(.$item))) %>%
-    dplyr::mutate(target = str_remove(target, get_prefix(.$target))) %>%
     tidyr::pivot_wider(names_from="target", values_from="value") %>%
     rename(Item=item)
 
-  if (!.quiet) {
-    result %>%
-      knit_table(digits=digits) %>%
-      #kableExtra::row_spec(0, angle = -90) %>%
-      print()
+  attr(result,"digits") <- digits
+  class(result) <- c("vlkr_tbl", class(result))
+  result
+}
+
+#' Printing method for volker tables.
+#'
+#' @param obj The volker table
+#' @export
+print.vlkr_tbl <- function(obj) {
+  digits <- attr(obj,"digits", exact=T)
+
+  if (is.null(digits)) {
+    digits = getOption("digits")
   }
 
-  invisible(result)
+  obj <- knit_table(obj, digits=digits)
+  print(obj)
 }

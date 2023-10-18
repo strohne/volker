@@ -4,7 +4,7 @@
 \alias{tab_multi_corr}
 \title{Output a correlation table}
 \usage{
-tab_multi_corr(data, cols1, cols2, values = "p", digits = 1, .quiet = F)
+tab_multi_corr(data, cols1, cols2, values = "p", digits = 1)
 }
 \arguments{
 \item{data}{A tibble}
@@ -16,8 +16,6 @@ tab_multi_corr(data, cols1, cols2, values = "p", digits = 1, .quiet = F)
 \item{values}{The output metrics, p = Pearson's R, s = Spearman's rho}
 
 \item{digits}{The digits to print}
-
-\item{.quiet}{Set to true to suppress printing the output}
 }
 \description{
 Output a correlation table

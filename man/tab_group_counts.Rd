@@ -4,7 +4,7 @@
 \alias{tab_group_counts}
 \title{Output frequencies cross tabulated with a grouping column}
 \usage{
-tab_group_counts(data, col, col_group, values = c("n", "p"), .quiet = F)
+tab_group_counts(data, col, col_group, values = c("n", "p"), .labels = T)
 }
 \arguments{
 \item{data}{A tibble}
@@ -15,7 +15,7 @@ tab_group_counts(data, col, col_group, values = c("n", "p"), .quiet = F)
 
 \item{values}{The values to output: n (frequency) or p (percentage).}
 
-\item{.quiet}{Set to true to suppress printing the output}
+\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 }
 \description{
 Output frequencies cross tabulated with a grouping column
