@@ -4,7 +4,7 @@
 \alias{tab_group_metrics}
 \title{#' Output a five point summary for groups}
 \usage{
-tab_group_metrics(data, col, col_group, digits = 1, .quiet = F)
+tab_group_metrics(data, col, col_group, digits = 1, .labels = T)
 }
 \arguments{
 \item{data}{A tibble}
@@ -13,7 +13,9 @@ tab_group_metrics(data, col, col_group, digits = 1, .quiet = F)
 
 \item{col_group}{The column holding groups to compare}
 
-\item{.quiet}{Set to true to suppress printing the output}
+\item{digits}{The digits to print}
+
+\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 }
 \description{
 #' Output a five point summary for groups

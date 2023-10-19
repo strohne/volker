@@ -4,14 +4,16 @@
 \alias{tab_var_counts}
 \title{Output a frequency table for the values in one column}
 \usage{
-tab_var_counts(data, col, .quiet = F)
+tab_var_counts(data, col, .labels = T, .formatted = T)
 }
 \arguments{
 \item{data}{A tibble}
 
 \item{col}{The column holding values to count}
 
-\item{.quiet}{Set to true to suppress printing the output}
+\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
+
+\item{.formatted}{Set to FALSE to prevent calculating percents from proportions}
 }
 \description{
 Output a frequency table for the values in one column

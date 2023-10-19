@@ -4,7 +4,7 @@
 \alias{tab_var_metrics}
 \title{Output a five point summary table for the values in multiple columns}
 \usage{
-tab_var_metrics(data, col, digits = 1, .quiet = F)
+tab_var_metrics(data, col, digits = 1, .labels = T)
 }
 \arguments{
 \item{data}{A tibble}
@@ -13,7 +13,7 @@ tab_var_metrics(data, col, digits = 1, .quiet = F)
 
 \item{digits}{The digits to print}
 
-\item{.quiet}{Set to true to suppress printing the output}
+\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 }
 \description{
 Output a five point summary table for the values in multiple columns
