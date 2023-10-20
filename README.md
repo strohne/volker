@@ -32,15 +32,28 @@ Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Ausw
 
 *Frequencies and distributions (univariable)*  
 
-|  | | |
-|----------------------------------------|--------------------------------------------|---|
-|                    |       **Metric**                                 |  **Categorical** |
-|**One variable**                                 | `tab_var_metrics()`<br><img src="plots/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="100" style="margin: 10px;"> | `tab_var_counts()`<br><img src="plots/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="220" style="margin: 10px;"> |
-| **Multiple items**                                    | `tab_item_metrics()`<br><img src="plots/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="400" style="margin: 10px;"> | `tab_item_counts()`<br><img src="plots/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="400"  style="margin: 10px;"> |
+<table>
+<tbody>
+<tr>
+<td></td>
+<td><strong>Metric</strong></td>
+<td><strong>Categorical</strong></td>
+</tr>
+<tr>
+<td><strong>One variable</strong></td>
+<td valign="top"><code>tab_var_metrics()</code><br><img src="plots/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="100"></td>
+<td valign="top"><code>tab_var_counts()</code><br><img src="plots/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="220"></td>
+</tr>
+<tr>
+<td><strong>Multiple items</strong></td>
+<td valign="top"><code>tab_item_metrics()</code><br><img src="plots/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="400""></td>
+<td valign="top"><code>tab_item_counts()</code><br><img src="plots/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="400"></a></td>
+</tr>
+</tbody>
+</table>
 
 *Correlations and comparisons (multivariable)*  
 
-|  | | |
 |----------------------------------------|--------------------------------------------|---|
 |                      |  **Metric & x**                                      | **Categorical & x**   |
 |       **Two variables**                                 | `tab_group_metrics()`<br><img src="plots/tab_group_metrics.png" alt="" title="Verteilungsübersicht Gruppenvergleich" width="400" style="margin: 10px;"> | `tab_group_counts()`<br><img src="plots/tab_group_counts.png" alt="Kreuztabelle" title="Kreuztabelle" width="400" style="margin: 10px;"> |
