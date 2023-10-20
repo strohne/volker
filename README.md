@@ -34,18 +34,16 @@ Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Ausw
 
 |  | | |
 |----------------------------------------|--------------------------------------------|---|
-|                    |       Metric                                     |  Categorical |
+|                    |       **Metric**                                 |  **Categorical** |
 |**One variable**                                 | `tab_var_metrics()`<br><img src="plots/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="100" style="margin: 10px;"> | `tab_var_counts()`<br><img src="plots/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="220" style="margin: 10px;"> |
-|                      |   Metric                                         | Categorical  |
 | **Multiple items**                                    | `tab_item_metrics()`<br><img src="plots/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="400" style="margin: 10px;"> | `tab_item_counts()`<br><img src="plots/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="400"  style="margin: 10px;"> |
 
 *Correlations and comparisons (multivariable)*  
 
 |  | | |
 |----------------------------------------|--------------------------------------------|---|
-|                      |  Metric & categorical                                      | Categorical & categorical   |
+|                      |  **Metric & x**                                      | **Categorical & x**   |
 |       **Two variables**                                 | `tab_group_metrics()`<br><img src="plots/tab_group_metrics.png" alt="" title="Verteilungsübersicht Gruppenvergleich" width="400" style="margin: 10px;"> | `tab_group_counts()`<br><img src="plots/tab_group_counts.png" alt="Kreuztabelle" title="Kreuztabelle" width="400" style="margin: 10px;"> |
-|                      |  Metric & metric                                      | Metric & categorical   |
 |       **Multiple items**                                 | `tab_multi_corr()`<br><img src="plots/tab_multi_corr.png" alt="" title="Korrelation mehrerer Items mit metrischen Variablen" width="200" style="margin: 10px;"> | `tab_multi_means()`<br><img src="plots/tab_multi_means.png" alt="Mittelwertvergleich von Items nach Gruppe" title="Mittelwertvergleich" width="400" style="margin: 10px;"> |
 
 
