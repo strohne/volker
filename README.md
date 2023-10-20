@@ -55,10 +55,10 @@ Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Ausw
 *Correlations and comparisons (multivariable)*  
 
 
-|----------------------------------------|--------------------------------------------|---|
-|                      |  **Metric & x**                                      | **Categorical & x**   |
-|       **Two variables**                                 | `tab_group_metrics()`<br><img src="plots/tab_group_metrics.png" alt="" title="Verteilungsübersicht Gruppenvergleich" width="400" style="margin: 10px;"> | `tab_group_counts()`<br><img src="plots/tab_group_counts.png" alt="Kreuztabelle" title="Kreuztabelle" width="400" style="margin: 10px;"> |
-|       **Multiple items**                                 | `tab_multi_corr()`<br><img src="plots/tab_multi_corr.png" alt="" title="Korrelation mehrerer Items mit metrischen Variablen" width="200" style="margin: 10px;"> | `tab_multi_means()`<br><img src="plots/tab_multi_means.png" alt="Mittelwertvergleich von Items nach Gruppe" title="Mittelwertvergleich" width="400" style="margin: 10px;"> |
+|--------------------------|--------------------------------------------|-----------------------|
+|                          |  **Metric & x**                            | **Categorical & x**   |
+| **Two variables**        | `tab_group_metrics()`<br><img src="plots/tab_group_metrics.png" alt="" title="Verteilungsübersicht Gruppenvergleich" width="400" style="margin: 10px;"> | `tab_group_counts()`<br><img src="plots/tab_group_counts.png" alt="Kreuztabelle" title="Kreuztabelle" width="400" style="margin: 10px;"> |
+| **Multiple items**       | `tab_multi_corr()`<br><img src="plots/tab_multi_corr.png" alt="" title="Korrelation mehrerer Items mit metrischen Variablen" width="200" style="margin: 10px;"> | `tab_multi_means()`<br><img src="plots/tab_multi_means.png" alt="Mittelwertvergleich von Items nach Gruppe" title="Mittelwertvergleich" width="400" style="margin: 10px;"> |
 
 
 ## Installation
