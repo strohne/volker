@@ -71,7 +71,11 @@ After installing the package, load it:
 library(volker)
 ```
   
-  
+## Troubleshooting
+
+The kableExtra package produces an error in R 4.3 when knitting documents: ` .onLoad in loadNamespace() für 'kableExtra' fehlgeschlagen`. As a work around, remove PDF and Word settings from the output options in you markdown document (the yml section at the top).
+
+
 ## Authors and citation
 
 Maintainer: Jakob Jünger. 

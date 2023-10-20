@@ -33,7 +33,8 @@ get_labels <- function(data, cols) {
     item_label = sapply(data,attr,"comment"),
     value_label = lapply(data,attributes)
   ) %>%
-    dplyr::mutate(item_label=as.character(item_label)) %>%
+
+    dplyr::mutate(item_label=as.character(sapply(item_label,function(x) ifelse(is.null(x),NA,x)))) %>%
     tidyr::unnest_longer(value_label)
 
   if ("value_label_id" %in% colnames(labels)) {

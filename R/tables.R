@@ -27,7 +27,8 @@ tab_var_counts <- function(data, col, .labels=T, .formatted=T) {
   if (.labels) {
     codes <- data %>%
       get_labels({{col}}) %>%
-      distinct(item_name, item_label)
+      distinct(item_name, item_label) %>%
+      na.omit()
   }
 
   if (.labels && (nrow(codes) > 0)) {
@@ -88,7 +89,8 @@ tab_var_metrics <- function(data, col, digits=1, .labels=T) {
   if (.labels) {
     codes <- data %>%
       get_labels({{col}}) %>%
-      distinct(item_name, item_label)
+      distinct(item_name, item_label)  %>%
+      na.omit()
   }
 
   if (.labels && (nrow(codes) > 0)) {
@@ -208,7 +210,8 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), .labels=T)
   if (.labels) {
     codes <- data %>%
       get_labels({{col}}) %>%
-      distinct(item_name, item_label)
+      distinct(item_name, item_label) %>%
+      na.omit()
   }
 
   if (.labels && (nrow(codes) > 0)) {
@@ -268,7 +271,8 @@ tab_group_metrics <- function(data, col, col_group, digits=1, .labels=T) {
   if (.labels) {
     codes <- data %>%
       get_labels({{col_group}}) %>%
-      distinct(item_name, item_label)
+      distinct(item_name, item_label) %>%
+      na.omit()
   }
 
   if (.labels && (nrow(codes) > 0)) {
@@ -354,7 +358,8 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .labels=T) {
   if (.labels) {
     codes <- data %>%
       get_labels(!!cols) %>%
-      distinct(item_name, item_label)
+      distinct(item_name, item_label) %>%
+      na.omit()
   }
 
   if (.labels && (nrow(codes) > 0)) {
@@ -413,7 +418,8 @@ tab_item_metrics <- function(data, cols, digits=1, .labels=T) {
   if (.labels) {
     codes <- data %>%
       get_labels(!!cols) %>%
-      distinct(item_name, item_label)
+      distinct(item_name, item_label) %>%
+      na.omit()
   }
 
   if (.labels && (nrow(codes) > 0)) {
