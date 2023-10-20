@@ -40,12 +40,12 @@ Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Ausw
 <td><strong>Categorical</strong></td>
 </tr>
 <tr>
-<td><strong>One variable</strong></td>
+<td><strong style="display: block;transform: rotate(-90deg);">One variable</strong></td>
 <td valign="top"><code>tab_var_metrics()</code><br><img src="plots/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="100"></td>
 <td valign="top"><code>tab_var_counts()</code><br><img src="plots/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="220"></td>
 </tr>
 <tr>
-<td><strong>Multiple items</strong></td>
+<td><strong style="display: block;transform: rotate(-90deg);">Multiple items</strong></td>
 <td valign="top"><code>tab_item_metrics()</code><br><img src="plots/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="400""></td>
 <td valign="top"><code>tab_item_counts()</code><br><img src="plots/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="400"></a></td>
 </tr>
@@ -53,6 +53,7 @@ Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Ausw
 </table>
 
 *Correlations and comparisons (multivariable)*  
+
 
 |----------------------------------------|--------------------------------------------|---|
 |                      |  **Metric & x**                                      | **Categorical & x**   |
