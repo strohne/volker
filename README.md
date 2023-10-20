@@ -58,18 +58,18 @@ Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Ausw
 <tbody>
   <tr>
     <td></td>
-    <td><strong>*Metric & x</strong></td>
+    <td><strong>Metric & x</strong></td>
     <td><strong>Categorical & x</strong></td>
   </tr>
   <tr>
     <td><strong style="display: block;transform: rotate(-90deg);">Two variables</strong></td>
-    <td valign="top"><img src="plots/tab_group_metrics.png" alt="Compare metric items by group" width="100"><br><code>tab_group_metrics()</code></td>
-    <td valign="top"><img src="plots/tab_group_counts.png" alt="Cross tabulate two variables" width="220"><code>tab_group_counts()</code></td>
+    <td valign="top"><code>tab_group_metrics()</code><br><img src="plots/tab_group_metrics.png" alt="Compare metric items by group" width="400"></td>
+    <td valign="top"><code>tab_group_counts()</code><br><img src="plots/tab_group_counts.png" alt="Cross tabulate two variables" width="220"></td>
   </tr>
   <tr>
     <td><strong style="display: block;transform: rotate(-90deg);">Multiple items</strong></td>
-    <td valign="top"><img src="plots/tab_multi_corr.png" alt="Correlation matrix" width="400""><br><code>tab_multi_corr()</code></td>
-    <td valign="top"><img src="plots/tab_multi_means.png" alt="Item means by groups" width="400"><br><code>tab_multi_means()</code></td>
+    <td valign="top"><code>tab_multi_corr()</code><br><img src="plots/tab_multi_corr.png" alt="Correlation matrix" width="200""></td>
+    <td valign="top"><code>tab_multi_means()</code><br><img src="plots/tab_multi_means.png" alt="Item means by groups" width="400"></td>
   </tr>
 </tbody>
 </table>
