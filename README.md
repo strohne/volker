@@ -25,7 +25,7 @@ Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Ausw
   Werden kategoriale Variablen gruppiert, entstehen Kreuztabellen (z.B. Kombinationen aus Bildungsgrad und Geschlecht), die mit `tab_group_counts()` erstellt werden können.  
   Um Zusammenhänge zwischen vielen Variablen darzustellen, können entweder mit `tab_multi_means()` alle Mittelwerte von Items zwischen Gruppen verglichen werden oder mit `tab_multi_corr()` Korrelationsmatrizen ausgegeben werden.
 
-- Markdown oder Dataframe? Alle Tabellenfunktionen geben Dataframes zurück, die in Objekten abgelegt und weiterverarbeitet werden können. Die Tabellen verfügen über eine eigene print-Funktion, sodass der Output aller Funktionen direkt in Markdown-Dokumenten eingesetzt werden kann, um formatierte Tabellen auszugeben. Dazu muss im Code-Chunk der Parameter `results='asis'` gesetzt werden, siehe die [Beispiele in der Vignette](blob/main/vignettes/introduction.Rmd). 
+- Markdown oder Dataframe? Alle Tabellenfunktionen geben Dataframes zurück, die in Objekten abgelegt und weiterverarbeitet werden können. Die Tabellen verfügen über eine eigene print-Funktion, sodass der Output aller Funktionen direkt in Markdown-Dokumenten eingesetzt werden kann, um formatierte Tabellen auszugeben. Dazu muss im Code-Chunk der Parameter `results='asis'` gesetzt werden, siehe die [Beispiele in der Vignette](vignettes/introduction.Rmd). 
 
 
 ## Examples
@@ -73,6 +73,22 @@ Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Ausw
   </tr>
 </tbody>
 </table>
+<br>
+<br>
+
+
+All functions take a data frame as their first argument, followed by column selections, e.g.:  
+
+```
+tab_multi_means(
+  data,
+  starts_with("cg_adoption_advantage"),
+  sd_gender
+)
+```
+
+For more example code, see the [introductionary vignette](vignettes/introduction.Rmd). 
+
 
 ## Installation
 As with all other packages you'll have to install the package and load the library first.
