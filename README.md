@@ -47,19 +47,32 @@ Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Ausw
 <tr>
 <td><strong style="display: block;transform: rotate(-90deg);">Multiple items</strong></td>
 <td valign="top"><code>tab_item_metrics()</code><br><img src="plots/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="400""></td>
-<td valign="top"><code>tab_item_counts()</code><br><img src="plots/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="400"></a></td>
+<td valign="top"><code>tab_item_counts()</code><br><img src="plots/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="400"></td>
 </tr>
 </tbody>
 </table>
 
 *Correlations and comparisons (multivariable)*  
 
-
-|--------------------------|--------------------------------------------|-----------------------|
-|                          |  **Metric & x**                            | **Categorical & x**   |
-| **Two variables**        | `tab_group_metrics()`<br><img src="plots/tab_group_metrics.png" alt="" title="Verteilungsübersicht Gruppenvergleich" width="400" style="margin: 10px;"> | `tab_group_counts()`<br><img src="plots/tab_group_counts.png" alt="Kreuztabelle" title="Kreuztabelle" width="400" style="margin: 10px;"> |
-| **Multiple items**       | `tab_multi_corr()`<br><img src="plots/tab_multi_corr.png" alt="" title="Korrelation mehrerer Items mit metrischen Variablen" width="200" style="margin: 10px;"> | `tab_multi_means()`<br><img src="plots/tab_multi_means.png" alt="Mittelwertvergleich von Items nach Gruppe" title="Mittelwertvergleich" width="400" style="margin: 10px;"> |
-
+<table>
+<tbody>
+  <tr>
+    <td></td>
+    <td><strong>*Metric & x</strong></td>
+    <td><strong>Categorical & x</strong></td>
+  </tr>
+  <tr>
+    <td><strong style="display: block;transform: rotate(-90deg);">Two variables</strong></td>
+    <td valign="top"><img src="plots/tab_group_metrics.png" alt="Compare metric items by group" width="100"><br><code>tab_group_metrics()</code></td>
+    <td valign="top"><img src="plots/tab_group_counts.png" alt="Cross tabulate two variables" width="220"><code>tab_group_counts()</code></td>
+  </tr>
+  <tr>
+    <td><strong style="display: block;transform: rotate(-90deg);">Multiple items</strong></td>
+    <td valign="top"><img src="plots/tab_multi_corr.png" alt="Correlation matrix" width="400""><br><code>tab_multi_corr()</code></td>
+    <td valign="top"><img src="plots/tab_multi_means.png" alt="Item means by groups" width="400"><br><code>tab_multi_means()</code></td>
+  </tr>
+</tbody>
+</table>
 
 ## Installation
 As with all other packages you'll have to install the package and load the library first.
