@@ -28,6 +28,10 @@ Es ist besonders für Befragungsdaten geeignet. Überlegen Sie sich vor der Ausw
 - *Markdown oder Dataframe?*  
   Alle Tabellenfunktionen geben Dataframes zurück, die in Objekten abgelegt und weiterverarbeitet werden können. Die Tabellen verfügen über eine eigene print-Funktion, sodass der Output aller Funktionen direkt in Markdown-Dokumenten eingesetzt werden kann, um formatierte Tabellen auszugeben. Dazu muss im Code-Chunk der Parameter `results='asis'` gesetzt werden, siehe die [Beispiele in der Vignette](vignettes/introduction.Rmd). 
 
+## Special features
+
+- Labeling of table outputs
+- Tidyverse column selection
 
 ## Examples
 
@@ -113,6 +117,14 @@ library(volker)
 ## Troubleshooting
 
 The kableExtra package produces an error in R 4.3 when knitting documents: ` .onLoad in loadNamespace() für 'kableExtra' fehlgeschlagen`. As a work around, remove PDF and Word settings from the output options in you markdown document (the yml section at the top).
+
+## Roadmap
+
+|-- Version --|-- Features ------------|-- Status --------|
+|1.0          | Descriptive tables     | work in progress |
+|1.1          | Descriptive plots      | work in progress |
+|1.2          | Regression tables      | work in progress |
+|1.3          | SociSurvey integration | work in progress |
 
 
 ## Authors and citation
