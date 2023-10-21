@@ -120,11 +120,13 @@ The kableExtra package produces an error in R 4.3 when knitting documents: ` .on
 
 ## Roadmap
 
-|-- Version --|-- Features ------------|-- Status --------|
-|1.0          | Descriptive tables     | work in progress |
-|1.1          | Descriptive plots      | work in progress |
-|1.2          | Regression tables      | work in progress |
-|1.3          | SociSurvey integration | work in progress |
+
+| Version | Features               | Status           |  
+| ------- | ---------------------- | ---------------- |  
+| 1.0     | Descriptive tables     | work in progress | 
+| 1.1     | Descriptive plots      | work in progress |  
+| 1.2     | Regression tables      | work in progress |  
+| 1.3     | SociSurvey integration | work in progress |  
 
 
 ## Authors and citation
