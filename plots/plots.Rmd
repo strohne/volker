@@ -28,7 +28,8 @@ data <- set_item_labels(data, tibble("sd_alter","Alter"))
 ### Frequency table for one categorical variable: Gender
 ```{r results='asis'}
 
-tab_var_counts(data, sd_geschlecht)
+data %>% 
+  tab_var_counts(sd_geschlecht)
 
 ```
 
@@ -88,6 +89,7 @@ data %>%
     str_detect(in_adoption,"Ich warte eher ab") ~ "Ich warte eher ab",
     str_detect(in_adoption,"wenn ich nicht mehr anders kann") ~ "Erst wenn es sein muss",
   )) %>% 
+  volker::set_item_labels(tibble("in_adoption","Adopter type")) %>% 
   tab_group_counts(in_adoption, sd_geschlecht)
 
 ```

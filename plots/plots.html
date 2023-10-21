@@ -345,7 +345,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="frequency-table-for-one-categorical-variable-gender" class="section level3">
 <h3>Frequency table for one categorical variable: Gender</h3>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">tab_var_counts</span>(data, sd_geschlecht)</span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="fu">tab_var_counts</span>(sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -818,12 +819,13 @@ Macht mehr Spaß
 <span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    <span class="fu">str_detect</span>(in_adoption,<span class="st">&quot;Ich warte eher ab&quot;</span>) <span class="sc">~</span> <span class="st">&quot;Ich warte eher ab&quot;</span>,</span>
 <span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    <span class="fu">str_detect</span>(in_adoption,<span class="st">&quot;wenn ich nicht mehr anders kann&quot;</span>) <span class="sc">~</span> <span class="st">&quot;Erst wenn es sein muss&quot;</span>,</span>
 <span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="fu">tab_group_counts</span>(in_adoption, sd_geschlecht)</span></code></pre></div>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  volker<span class="sc">::</span><span class="fu">set_item_labels</span>(<span class="fu">tibble</span>(<span class="st">&quot;in_adoption&quot;</span>,<span class="st">&quot;Adopter type&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="fu">tab_group_counts</span>(in_adoption, sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-in_adoption
+Adopter type
 </th>
 <th style="text-align:right;">
 Total
