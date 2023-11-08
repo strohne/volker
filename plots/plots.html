@@ -351,7 +351,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <thead>
 <tr>
 <th style="text-align:left;">
-Geschlecht
+Gender
 </th>
 <th style="text-align:right;">
 n
@@ -367,7 +367,7 @@ valid
 <tbody>
 <tr>
 <td style="text-align:left;">
-weiblich
+female
 </td>
 <td style="text-align:right;">
 46
@@ -381,7 +381,7 @@ weiblich
 </tr>
 <tr>
 <td style="text-align:left;">
-männlich
+male
 </td>
 <td style="text-align:right;">
 68
@@ -395,7 +395,7 @@ männlich
 </tr>
 <tr>
 <td style="text-align:left;">
-divers
+diverse
 </td>
 <td style="text-align:right;">
 1
@@ -427,12 +427,13 @@ Total
 <div id="distribution-table-for-one-metric-variable-age" class="section level3">
 <h3>Distribution table for one metric variable: Age</h3>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">tab_var_metrics</span>(data, sd_alter)</span></code></pre></div>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">tab_var_metrics</span>(sd_alter)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-Alter
+Age
 </th>
 <th style="text-align:right;">
 value
@@ -525,10 +526,10 @@ factors</h3>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>newlabels <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
 <span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="sc">~</span>item_name, <span class="sc">~</span>item_label,</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_01&quot;</span>, <span class="st">&quot;Allgemeine Vorteile&quot;</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_02&quot;</span>, <span class="st">&quot;Finanzielle Vorteile&quot;</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_03&quot;</span>, <span class="st">&quot;Vorteile bei der Arbeit&quot;</span>,</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_04&quot;</span>, <span class="st">&quot;Macht mehr Spaß&quot;</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_01&quot;</span>, <span class="st">&quot;General Benefits&quot;</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_02&quot;</span>, <span class="st">&quot;Financial Benefits&quot;</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_03&quot;</span>, <span class="st">&quot;Workplace Benefits&quot;</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_04&quot;</span>, <span class="st">&quot;More Enjoyable&quot;</span></span>
 <span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>)</span>
 <span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a></span>
 <span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
@@ -564,7 +565,7 @@ Total
 <tbody>
 <tr>
 <td style="text-align:left;">
-Allgemeine Vorteile
+General Benefits
 </td>
 <td style="text-align:right;">
 5<br>(20%)
@@ -581,7 +582,7 @@ Allgemeine Vorteile
 </tr>
 <tr>
 <td style="text-align:left;">
-Finanzielle Vorteile
+Financial Benefits
 </td>
 <td style="text-align:right;">
 9<br>(36%)
@@ -598,7 +599,7 @@ Finanzielle Vorteile
 </tr>
 <tr>
 <td style="text-align:left;">
-Vorteile bei der Arbeit
+Workplace Benefits
 </td>
 <td style="text-align:right;">
 5<br>(20%)
@@ -615,7 +616,7 @@ Vorteile bei der Arbeit
 </tr>
 <tr>
 <td style="text-align:left;">
-Macht mehr Spaß
+More Enjoyable
 </td>
 <td style="text-align:right;">
 5<br>(20%)
@@ -678,7 +679,7 @@ n
 <tbody>
 <tr>
 <td style="text-align:left;">
-Allgemeine Vorteile
+General Benefits
 </td>
 <td style="text-align:right;">
 1
@@ -710,7 +711,7 @@ Allgemeine Vorteile
 </tr>
 <tr>
 <td style="text-align:left;">
-Finanzielle Vorteile
+Financial Benefits
 </td>
 <td style="text-align:right;">
 1
@@ -742,7 +743,7 @@ Finanzielle Vorteile
 </tr>
 <tr>
 <td style="text-align:left;">
-Vorteile bei der Arbeit
+Workplace Benefits
 </td>
 <td style="text-align:right;">
 1
@@ -774,7 +775,7 @@ Vorteile bei der Arbeit
 </tr>
 <tr>
 <td style="text-align:left;">
-Macht mehr Spaß
+More Enjoyable
 </td>
 <td style="text-align:right;">
 1
@@ -815,9 +816,9 @@ Macht mehr Spaß
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">in_adoption =</span> <span class="fu">case_when</span>(</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    <span class="fu">str_detect</span>(in_adoption,<span class="st">&quot;Ich probiere &quot;</span>) <span class="sc">~</span> <span class="st">&quot;Ich probiere schnell aus&quot;</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    <span class="fu">str_detect</span>(in_adoption,<span class="st">&quot;Ich warte eher ab&quot;</span>) <span class="sc">~</span> <span class="st">&quot;Ich warte eher ab&quot;</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    <span class="fu">str_detect</span>(in_adoption,<span class="st">&quot;wenn ich nicht mehr anders kann&quot;</span>) <span class="sc">~</span> <span class="st">&quot;Erst wenn es sein muss&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    <span class="fu">str_detect</span>(in_adoption,<span class="st">&quot;Ich probiere &quot;</span>) <span class="sc">~</span> <span class="st">&quot;I try quickly&quot;</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    <span class="fu">str_detect</span>(in_adoption,<span class="st">&quot;Ich warte eher ab&quot;</span>) <span class="sc">~</span> <span class="st">&quot;I tend to wait&quot;</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    <span class="fu">str_detect</span>(in_adoption,<span class="st">&quot;wenn ich nicht mehr anders kann&quot;</span>) <span class="sc">~</span> <span class="st">&quot;Only when necessary&quot;</span>,</span>
 <span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  volker<span class="sc">::</span><span class="fu">set_item_labels</span>(<span class="fu">tibble</span>(<span class="st">&quot;in_adoption&quot;</span>,<span class="st">&quot;Adopter type&quot;</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="fu">tab_group_counts</span>(in_adoption, sd_geschlecht)</span></code></pre></div>
@@ -831,29 +832,29 @@ Adopter type
 Total
 </th>
 <th style="text-align:right;">
-männlich
+female
 </th>
 <th style="text-align:right;">
-weiblich
+male
 </th>
 <th style="text-align:right;">
-divers
+diverse
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-Erst wenn es sein muss
+I tend to wait
 </td>
 <td style="text-align:right;">
-2<br>(2%)
+26<br>(23%)
 </td>
 <td style="text-align:right;">
-2<br>(3%)
+15<br>(33%)
 </td>
 <td style="text-align:right;">
-0<br>(0%)
+11<br>(16%)
 </td>
 <td style="text-align:right;">
 0<br>(0%)
@@ -861,16 +862,16 @@ Erst wenn es sein muss
 </tr>
 <tr>
 <td style="text-align:left;">
-Ich probiere schnell aus
+I try quickly
 </td>
 <td style="text-align:right;">
 87<br>(76%)
 </td>
 <td style="text-align:right;">
-55<br>(81%)
+31<br>(67%)
 </td>
 <td style="text-align:right;">
-31<br>(67%)
+55<br>(81%)
 </td>
 <td style="text-align:right;">
 1<br>(100%)
@@ -878,16 +879,16 @@ Ich probiere schnell aus
 </tr>
 <tr>
 <td style="text-align:left;">
-Ich warte eher ab
+Only when necessary
 </td>
 <td style="text-align:right;">
-26<br>(23%)
+2<br>(2%)
 </td>
 <td style="text-align:right;">
-11<br>(16%)
+0<br>(0%)
 </td>
 <td style="text-align:right;">
-15<br>(33%)
+2<br>(3%)
 </td>
 <td style="text-align:right;">
 0<br>(0%)
@@ -901,10 +902,10 @@ Total
 115<br>(100%)
 </td>
 <td style="text-align:right;">
-68<br>(100%)
+46<br>(100%)
 </td>
 <td style="text-align:right;">
-46<br>(100%)
+68<br>(100%)
 </td>
 <td style="text-align:right;">
 1<br>(100%)
@@ -921,7 +922,7 @@ Total
 <thead>
 <tr>
 <th style="text-align:left;">
-Geschlecht
+Gender
 </th>
 <th style="text-align:right;">
 min
@@ -955,7 +956,7 @@ n
 <tbody>
 <tr>
 <td style="text-align:left;">
-weiblich
+female
 </td>
 <td style="text-align:right;">
 18
@@ -987,7 +988,7 @@ weiblich
 </tr>
 <tr>
 <td style="text-align:left;">
-männlich
+male
 </td>
 <td style="text-align:right;">
 19
@@ -1019,7 +1020,7 @@ männlich
 </tr>
 <tr>
 <td style="text-align:left;">
-divers
+diverse
 </td>
 <td style="text-align:right;">
 33
@@ -1103,20 +1104,20 @@ Item
 Total
 </th>
 <th style="text-align:right;">
-weiblich
+female
 </th>
 <th style="text-align:right;">
-männlich
+male
 </th>
 <th style="text-align:right;">
-divers
+diverse
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-Allgemeine Vorteile
+General Benefits
 </td>
 <td style="text-align:right;">
 3.5<br>(1.0)
@@ -1133,7 +1134,7 @@ Allgemeine Vorteile
 </tr>
 <tr>
 <td style="text-align:left;">
-Finanzielle Vorteile
+Financial Benefits
 </td>
 <td style="text-align:right;">
 2.7<br>(1.2)
@@ -1150,7 +1151,7 @@ Finanzielle Vorteile
 </tr>
 <tr>
 <td style="text-align:left;">
-Vorteile bei der Arbeit
+Workplace Benefits
 </td>
 <td style="text-align:right;">
 3.6<br>(1.1)
@@ -1167,7 +1168,7 @@ Vorteile bei der Arbeit
 </tr>
 <tr>
 <td style="text-align:left;">
-Macht mehr Spaß
+More Enjoyable
 </td>
 <td style="text-align:right;">
 3.5<br>(1.0)

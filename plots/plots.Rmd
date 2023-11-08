@@ -18,8 +18,16 @@ data <- volker::chatgpt
 # Recode -9 to NA
 data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(.,-9)  ))
 
+# add label to sd_geschlecht and recode levels
+data <- set_item_labels(data, tibble("sd_geschlecht", "Gender")) %>% 
+  mutate(sd_geschlecht = recode(sd_geschlecht,
+    "männlich" = "male",
+    "weiblich" = "female",
+    "divers" = "diverse"
+  ))
+
 # Add label to sd_alter
-data <- set_item_labels(data, tibble("sd_alter","Alter")) 
+data <- set_item_labels(data, tibble("sd_alter","Age"))
 
 ```
 
@@ -36,7 +44,8 @@ data %>%
 ### Distribution table for one metric variable: Age
 ```{r results='asis'}
 
-tab_var_metrics(data, sd_alter)
+data %>%
+  tab_var_metrics(sd_alter)
 
 ```
 
@@ -48,10 +57,10 @@ tab_var_metrics(data, sd_alter)
 
 newlabels <- tribble(
   ~item_name, ~item_label,
-  "cg_adoption_advantage_01", "Allgemeine Vorteile",
-  "cg_adoption_advantage_02", "Finanzielle Vorteile",
-  "cg_adoption_advantage_03", "Vorteile bei der Arbeit",
-  "cg_adoption_advantage_04", "Macht mehr Spaß"
+  "cg_adoption_advantage_01", "General Benefits",
+  "cg_adoption_advantage_02", "Financial Benefits",
+  "cg_adoption_advantage_03", "Workplace Benefits",
+  "cg_adoption_advantage_04", "More Enjoyable"
 )
 
 data %>% 
@@ -85,9 +94,9 @@ data %>%
 
 data %>% 
   mutate(in_adoption = case_when(
-    str_detect(in_adoption,"Ich probiere ") ~ "Ich probiere schnell aus",
-    str_detect(in_adoption,"Ich warte eher ab") ~ "Ich warte eher ab",
-    str_detect(in_adoption,"wenn ich nicht mehr anders kann") ~ "Erst wenn es sein muss",
+    str_detect(in_adoption,"Ich probiere ") ~ "I try quickly",
+    str_detect(in_adoption,"Ich warte eher ab") ~ "I tend to wait",
+    str_detect(in_adoption,"wenn ich nicht mehr anders kann") ~ "Only when necessary",
   )) %>% 
   volker::set_item_labels(tibble("in_adoption","Adopter type")) %>% 
   tab_group_counts(in_adoption, sd_geschlecht)

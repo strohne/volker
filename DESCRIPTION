@@ -1,34 +1,38 @@
 Package: volker
 Type: Package
-Title: Ein Package für Übersichten und Grafiken zu Befragungsdaten
-Version: 0.1.0
-Authors@R: 
-    person("Datavana Team", role = c("aut", "cre"), email="jakob.juenger@uni-muenster.de")
-Description: Dieses Package enthält Funktionen zur Erstellung von Übersichten und Grafiken zu Befragungsdaten.
+Title: A Package for Survey Data Summaries and Graphics
+Version: 1.0
+Date: 2023-10-23
+Authors@R:
+  c(person("Jakob", "Jünger", email = "jakob.juenger@uni-muenster.de", role = c("aut", "cre")),
+    person("Henrieke", "Kotthoff", email = "henrieke.kotthoff@uni-muenster.de", role = "ctb"))
+Description: This package contains functions for creating summaries and graphics for survey data.
 License: MIT
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 LazyData: true
-Imports: 
-    forcats,
-    dplyr,
-    rlang,
-    lifecycle,
-    cli,
-    glue,
-    withr,
-    magrittr,
-    tidyr,
-    tidyselect,
-    skimr,
-    knitr,
-    kableExtra,
-    janitor
-Depends: 
-    R (>= 2.10)
-Suggests: 
-    knitr,
-    kableExtra,
-    rmarkdown
+Imports:
+  forcats,
+  dplyr,
+  rlang,
+  lifecycle,
+  cli,
+  glue,
+  withr,
+  magrittr,
+  tidyr,
+  tidyselect,
+  skimr,
+  knitr,
+  kableExtra,
+  janitor
+Depends:
+  R (>= 2.10)
+Suggests:
+  knitr,
+  kableExtra,
+  rmarkdown, 
+  testthat (>= 3.0.0)
 VignetteBuilder: knitr
+Config/testthat/edition: 3
