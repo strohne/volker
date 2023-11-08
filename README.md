@@ -128,6 +128,10 @@ The kableExtra package produces an error in R 4.3 when knitting documents: ` .on
 | 1.2     | Regression tables      | work in progress |  
 | 1.3     | SosciSurvey integration | work in progress |  
 
+## Similar packages
+
+https://github.com/kassambara/rstatix
+
 
 ## Authors and citation
 
