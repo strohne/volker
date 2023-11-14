@@ -373,6 +373,7 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .labels=T) {
   prefix <- get_prefix(result$item)
   if (prefix != "") {
     result <- dplyr::mutate(result, item = str_remove(item, prefix))
+    result <- dplyr::mutate(result, item = ifelse(item=="", prefix, item))
   }
 
   result <- rename(result, Item=item)
@@ -433,6 +434,7 @@ tab_item_metrics <- function(data, cols, digits=1, .labels=T) {
   prefix <- get_prefix(result$item)
   if (prefix != "") {
     result <- dplyr::mutate(result, item = str_remove(item, prefix))
+    result <- dplyr::mutate(result, item = ifelse(item=="", prefix, item))
   }
 
   result <- rename(result, Item=item)
@@ -457,13 +459,7 @@ tab_item_metrics <- function(data, cols, digits=1, .labels=T) {
 tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), digits = 1) {
 
   # Get positions of group cols
-  cols_groups <- tidyselect::eval_select(
-    expr = enquo(cols_groups),
-    data = data[unique(names(data))],
-    allow_rename = FALSE,
-    error_call = rlang::error_call
-  )
-
+  cols_groups <- tidyselect::eval_select(expr = enquo(cols_groups), data=data)
   cols <- enquo(cols)
 
   # Total means
@@ -530,6 +526,30 @@ tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), dig
       by="skim_variable"
     )
 
+  # Significance of lm
+  # TODO
+  # grouped_p <- map(
+  #   cols_groups,
+  #   function(col) {
+  #     col <- names(data)[col]
+  #
+  #     data %>%
+  #       dplyr::filter(!is.na(!!sym(col))) %>%
+  #       dplyr::group_by(!!sym(col)) %>%
+  #       dplyr::select(!!sym(col),!!cols) %>%
+  #       skim_metrics() %>%
+  #       dplyr::ungroup() %>%
+  #       dplyr::select(skim_variable, !!sym(col), !!sym(value)) %>%
+  #       tidyr::pivot_wider(
+  #         names_from = !!sym(col),
+  #         values_from = !!sym(value)
+  #       )
+  #   }
+  # ) %>%
+  #   purrr::reduce(
+  #     dplyr::inner_join,
+  #     by="skim_variable"
+  #   )
 
   result_mean <- dplyr::inner_join(total_mean, grouped_mean, by="skim_variable") %>%
     dplyr::rename(item=skim_variable)
@@ -571,6 +591,7 @@ tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), dig
   prefix <- get_prefix(result$item)
   if (prefix != "") {
     result <- dplyr::mutate(result, item = str_remove(item, prefix))
+    result <- dplyr::mutate(result, item = ifelse(item=="", prefix, item))
   }
 
   result <- rename(result, Item=item)
@@ -586,38 +607,56 @@ tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), dig
 #' @param data A tibble
 #' @param cols1 The source items
 #' @param cols2 The target items or NULL to calculate correlations within the source items
-#' @param values The output metrics, p = Pearson's R, s = Spearman's rho
+#' @param method The output metrics, p = Pearson's R, s = Spearman's rho
+#' @param significant Only show significant values
 #' @param digits The digits to print
 #' @export
-tab_multi_corr <- function(data, cols1, cols2, values="p", digits = 1) {
+tab_multi_corr <- function(data, cols1, cols2, method="p", significant=F, digits = 2) {
 
-  # Get positions of cols
-  cols1 <- tidyselect::eval_select(
-    expr = enquo(cols1),
-    data = data[unique(names(data))],
-    allow_rename = FALSE,
-    error_call = rlang::error_call
-  )
+  # # Get positions of cols
+  # cols1 <- tidyselect::eval_select(
+  #   expr = enquo(cols1),
+  #   data = data[unique(names(data))],
+  #   allow_rename = FALSE,
+  #   error_call = rlang::error_call
+  # )
 
   # Same or different items?
+  # if (missing(cols2)) {
+  #   cols2 <- cols1
+  # }
+
+  # else {
+  #
+  #   cols2 <- tidyselect::eval_select(
+  #     expr = enquo(cols2),
+  #     data = data[unique(names(data))],
+  #     allow_rename = FALSE,
+  #     error_call = rlang::error_call
+  #   )
+  # }
+
+
+  cols1 <- tidyselect::eval_select(expr = enquo(cols1), data=data)
+
   if (missing(cols2)) {
     cols2 <- cols1
   } else {
-
-    cols2 <- tidyselect::eval_select(
-      expr = enquo(cols2),
-      data = data[unique(names(data))],
-      allow_rename = FALSE,
-      error_call = rlang::error_call
-    )
+    cols2 <- tidyselect::eval_select(expr = enquo(cols2), data=data)
   }
 
-  vars1 <- dplyr::select(data, !!cols1)
-  vars2 <- dplyr::select(data, !!cols2)
-
-  result <- cor(vars1, vars2, use="p", method=values) %>%
-    tibble::as_tibble(rownames="item") %>%
-    tidyr::pivot_longer(-item, names_to="target", values_to="value")
+  result <- expand.grid(x = cols1, y = cols2,  stringsAsFactors = FALSE) %>%
+    dplyr::mutate(x_name = names(x), y_name=names(y)) %>%
+    dplyr::mutate(
+      test = purrr::map2(
+        .$x, .$y,
+        function(x, y) cor.test(data[[x]], data[[y]], method=method)
+      ),
+      p = map(test, function(x) x$p.value),
+      value = map(test, function(x) as.numeric(x$estimate)),
+      stars = get_stars(p)
+    ) %>%
+    dplyr::select(item=x_name, target=y_name, value, p, stars)
 
 
   # Add labels
@@ -638,12 +677,20 @@ tab_multi_corr <- function(data, cols1, cols2, values="p", digits = 1) {
   prefix <- get_prefix(result$item)
   if (prefix != "") {
     result <- dplyr::mutate(result, item = str_remove(item, prefix))
+    result <- dplyr::mutate(result, item = ifelse(item=="", prefix, item))
   }
 
   prefix <- get_prefix(result$target)
   if (prefix != "") {
     result <- dplyr::mutate(result, target = str_remove(target, prefix))
+    result <- dplyr::mutate(result, target = ifelse(target=="", prefix, target))
   }
+
+  # Create table
+  result <- result %>%
+    mutate(value = paste0(round(unlist(value), digits), stars)) %>%
+    mutate(value = ifelse(significant & (p >= 0.1), "", value)) %>%
+    select(item, target, value)
 
   result <- result %>%
     tidyr::pivot_wider(names_from="target", values_from="value") %>%

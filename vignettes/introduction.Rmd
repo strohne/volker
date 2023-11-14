@@ -87,10 +87,12 @@ tab_multi_means(data, starts_with("cg_adoption_"), sd_geschlecht)
 
 ```
 
-### Correlation of items: Adoption factors by adoption factors
+### Correlation of items: Adoption factors
 ```{r results='asis'}
 
-tab_multi_corr(data, starts_with("cg_adoption_"))
+tab_multi_corr(data, starts_with("cg_adoption_adv"))
+
+tab_multi_corr(data, starts_with("cg_adoption_adv"),starts_with("cg_nutzen"))
 
 ```
 

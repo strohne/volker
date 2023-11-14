@@ -4,7 +4,7 @@
 \alias{tab_multi_corr}
 \title{Output a correlation table}
 \usage{
-tab_multi_corr(data, cols1, cols2, values = "p", digits = 1)
+tab_multi_corr(data, cols1, cols2, method = "p", significant = F, digits = 2)
 }
 \arguments{
 \item{data}{A tibble}
@@ -13,7 +13,9 @@ tab_multi_corr(data, cols1, cols2, values = "p", digits = 1)
 
 \item{cols2}{The target items or NULL to calculate correlations within the source items}
 
-\item{values}{The output metrics, p = Pearson's R, s = Spearman's rho}
+\item{method}{The output metrics, p = Pearson's R, s = Spearman's rho}
+
+\item{significant}{Only show significant values}
 
 \item{digits}{The digits to print}
 }
