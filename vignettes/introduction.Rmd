@@ -29,6 +29,7 @@ data <- set_item_labels(data, tibble("sd_alter","Alter"))
 
 ## 1. One variable
 
+
 ### Frequency table for one categorical variable: Gender
 ```{r results='asis'}
 
