@@ -82,6 +82,20 @@ get_labels <- function(data, cols) {
   labels
 }
 
+#' Remove all comments from the selected columns
+#'
+#' @param data A tibble
+#' @param cols Tidyselect columns
+#' @param labels The attributes to remove
+#' @return A tibble with comments removed
+#' @export
+remove_labels <- function(data, cols, labels = "comment") {
+  data %>%
+    dplyr::mutate(across({{cols}}, function(x) {
+    attr(x,labels) <- NULL
+    x
+  }))
+}
 
 #' Set variable labels by setting their comment attributes
 #'

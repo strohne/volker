@@ -82,6 +82,7 @@ tab_var_metrics <- function(data, col, digits=1, .labels=T) {
     mutate(across(c(missing, n), ~ as.character(round(.,0)))) %>%
     mutate(across(c(min, q1, median, q3, max), ~ as.character(round(.,digits)))) %>%
     mutate(across(c(m, sd), ~ as.character(round(.,digits)))) %>%
+    #remove_labels(-item) %>%
     pivot_longer(-item) %>%
     dplyr::select(-item, {{col}} := name, value)
 
@@ -299,7 +300,7 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .labels=T) {
 
   # Calculate n and p
   result <- data %>%
-
+    remove_labels(tidyselect::all_of(cols)) %>%
     tidyr::pivot_longer(tidyselect::all_of(cols), names_to="item",values_to="value") %>%
 
     dplyr::count(item, value) %>%
