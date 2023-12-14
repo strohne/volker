@@ -20,7 +20,7 @@ tab_var_counts <- function(data, col, .labels=T, .formatted=T) {
       )
     ) %>%
     dplyr::mutate(
-      {{col}} := tidyr::replace_na(as.character({{col}}), "Fehlend")
+      {{col}} := tidyr::replace_na(as.character({{col}}), "Missing")
     )
 
   # Get item label from the attributes
@@ -129,8 +129,8 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), .labels=T)
     # ) %>%
     ungroup() %>%
     dplyr::mutate(
-      {{col_group}} := tidyr::replace_na(as.character({{col_group}}), "Fehlend"),
-      {{col}} := tidyr::replace_na(as.character({{col}}), "Fehlend")
+      {{col_group}} := tidyr::replace_na(as.character({{col_group}}), "Missing"),
+      {{col}} := tidyr::replace_na(as.character({{col}}), "Missing")
     )
 
   value <- "n"
@@ -243,7 +243,7 @@ tab_group_metrics <- function(data, col, col_group, digits=1, .labels=T) {
     skim_metrics({{col}}) %>%
     ungroup() %>%
     dplyr::mutate(
-      {{col_group}} := tidyr::replace_na(as.character({{col_group}}), "Fehlend")
+      {{col_group}} := tidyr::replace_na(as.character({{col_group}}), "Missing")
     ) %>%
     select(-skim_variable, -skim_type)
 
@@ -308,12 +308,12 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .labels=T) {
     dplyr::mutate(p= n / sum(n)) %>%
     dplyr::ungroup()
 
-  # Recode NA to "Fehlend"
+  # Recode NA to "Missing"
   result <- result  %>%
     dplyr::mutate(
       value = factor(
-        tidyr::replace_na(as.character(value), "Fehlend"),
-        levels=c(unique(result$value), "Fehlend")
+        tidyr::replace_na(as.character(value), "Missing"),
+        levels=c(unique(result$value), "Missing")
       )
     ) %>%
     arrange(value)

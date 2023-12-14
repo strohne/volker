@@ -1,3 +1,54 @@
+#' Output frequencies for multiple variables
+#'
+#' @param data A tibble containing item measures
+#' @param cols Tidyselect item variables (e.g. starts_with...)
+#' @param values The values to print on the bars: n (frequency) or p (percentage)
+#' @param .binary In case of boolean values, only one category is plotted. Set to TRUE to plot all categories.
+#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @export
+plot_item_counts <- function(data, cols, values= c("n","p"), .binary=NULL, .labels=T) {
+
+
+  result <- data %>%
+      tab_item_counts(cols, values="n")
+
+  values <- select(result,-matches("^Item|Total|Missing")) %>% colnames()
+
+
+  pl <- result %>%
+    tidyr::pivot_longer(-matches("^Item|Total|Missing"), names_to="value", values_to="n") %>%
+    dplyr::mutate(p = (n / Total) * 100) %>%
+
+    ggplot(aes(Item, y=p, fill=value)) +
+    geom_col() +
+    #scale_fill_manual(values=c("transparent", "black")) +
+    #scale_y_reverse(labels=c("100%","75%","50%","25%","0%")) +
+    scale_y_continuous(labels=c("0%","25%","50%","75%","100%")) +
+
+    geom_text(aes(label=n),position=position_stack(vjust=0.5),size=3, color="white") +
+    ylab("Share in percent") +
+    coord_flip() +
+    theme(
+      axis.title.x=element_blank(),
+      axis.title.y=element_blank(),
+      legend.title = element_blank()
+    )
+
+  if ((length(values) == 2) && (is.null(.binary) || (.binary))) {
+    pl <- pl +
+      scale_fill_manual(values=c("transparent", "black")) +
+      theme(
+        #legend.position="bottom",
+        #legend.justification="left",
+        legend.position="none"
+      )
+  }
+
+  pl
+}
+
+
+
 #' Compare and plot factor value by group
 #'
 #' @param data A tibble containing data

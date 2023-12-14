@@ -4,12 +4,17 @@
 \name{volker-package}
 \alias{volker}
 \alias{volker-package}
-\title{volker: Ein Package für Übersichten und Grafiken zu Befragungsdaten}
+\title{volker: A Package for Survey Data Summaries and Graphics}
 \description{
-Dieses Package enthält Funktionen zur Erstellung von Übersichten und Grafiken zu Befragungsdaten.
+This package contains functions for creating summaries and graphics for survey data.
 }
 \author{
-\strong{Maintainer}: Datavana Team \email{jakob.juenger@uni-muenster.de}
+\strong{Maintainer}: Jakob Jünger \email{jakob.juenger@uni-muenster.de}
+
+Other contributors:
+\itemize{
+  \item Henrieke Kotthoff \email{henrieke.kotthoff@uni-muenster.de} [contributor]
+}
 
 }
 \keyword{internal}
