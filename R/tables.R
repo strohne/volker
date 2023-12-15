@@ -180,7 +180,7 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), .formatted
     full_join(
       total_n,
       grouped_n,
-      by = deparse(substitute(col))
+      by = as.character(rlang::get_expr(rlang::enquo(col))) # deparse(substitute(col))
     ) %>%
     janitor::adorn_totals()
 
@@ -188,7 +188,7 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), .formatted
     full_join(
       total_p,
       grouped_p,
-      by = deparse(substitute(col))
+      by = as.character(rlang::get_expr(rlang::enquo(col))) # deparse(substitute(col))
     ) %>%
     janitor::adorn_totals()
 
