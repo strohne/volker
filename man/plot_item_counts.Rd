@@ -4,7 +4,13 @@
 \alias{plot_item_counts}
 \title{Output frequencies for multiple variables}
 \usage{
-plot_item_counts(data, cols, values = c("n", "p"), .labels = T, .binary = NULL)
+plot_item_counts(
+  data,
+  cols,
+  values = c("n", "p"),
+  .labels = T,
+  .category = NULL
+)
 }
 \arguments{
 \item{data}{A tibble containing item measures}
@@ -15,8 +21,8 @@ plot_item_counts(data, cols, values = c("n", "p"), .labels = T, .binary = NULL)
 
 \item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 
-\item{.binary}{Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.}
+\item{.category}{Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.}
 }
 \description{
-Output frequencies for multiple variables
+Note: only non-missing cases are used to calculate the percentage.
 }

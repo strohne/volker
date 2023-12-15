@@ -10,7 +10,13 @@ get_labels(data, cols)
 \item{data}{A tibble}
 }
 \value{
-A tibble with the columns item_name, item_label, value_name, and value_label
+A tibble with the columns:
+- item_group: First part of the column name, up to an underscore
+- item_class: The last class value of an item (e.g. numeric, factor)
+- item_name: The column name,
+- item_label: The comment attribute of the column
+- value_name: In case a column has multiple attributes, the attribute names
+- value_label: In case a column has multiple attributes, the attribute values
 }
 \description{
 Get variable labels from their comment attributes

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{plot_var_counts}
 \alias{plot_var_counts}
-\title{Plot the frequency of  values in one column}
+\title{Plot the frequency of  values in one column.}
 \usage{
 plot_var_counts(data, col, .labels = T)
 }
@@ -14,5 +14,5 @@ plot_var_counts(data, col, .labels = T)
 \item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 }
 \description{
-Plot the frequency of  values in one column
+Note: only non-missing cases are used to calculate the percentage.
 }

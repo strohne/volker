@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{plot_group_counts}
 \alias{plot_group_counts}
-\title{Output frequencies for multiple variables}
+\title{Plot frequencies cross tabulated with a grouping column}
 \usage{
 plot_group_counts(
   data,
@@ -10,7 +10,7 @@ plot_group_counts(
   col_group,
   values = c("n", "p"),
   .labels = T,
-  .binary = NULL
+  .category = NULL
 )
 }
 \arguments{
@@ -24,8 +24,8 @@ plot_group_counts(
 
 \item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 
-\item{.binary}{Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.}
+\item{.category}{Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.}
 }
 \description{
-Output frequencies for multiple variables
+Note: only non-missing cases are used to calculate the percentage.
 }

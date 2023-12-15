@@ -48,7 +48,13 @@ skim_metrics <- skimr::skim_with(
 #' Get variable labels from their comment attributes
 #'
 #' @param data A tibble
-#' @return A tibble with the columns item_name, item_label, value_name, and value_label
+#' @return A tibble with the columns:
+#'        - item_group: First part of the column name, up to an underscore
+#'        - item_class: The last class value of an item (e.g. numeric, factor)
+#'        - item_name: The column name,
+#'        - item_label: The comment attribute of the column
+#'        - value_name: In case a column has multiple attributes, the attribute names
+#'        - value_label: In case a column has multiple attributes, the attribute values
 #' @export
 get_labels <- function(data, cols) {
 
@@ -58,25 +64,45 @@ get_labels <- function(data, cols) {
 
   labels <- tibble(
     item_name = colnames(data),
-    item_label = sapply(data,attr,"comment"),
+    item_class = sapply(data,attr,"class", simplify = F),
+    item_label = sapply(data,attr,"comment", simplify = F),
     value_label = lapply(data,attributes)
   ) %>%
 
     dplyr::mutate(item_label=as.character(sapply(item_label,function(x) ifelse(is.null(x),NA,x)))) %>%
+    dplyr::mutate(item_group=stringr::str_remove(item_name,"_.*")) %>%
+    dplyr::mutate(item_class=as.character(sapply(item_class, function(x) ifelse(length(x) > 1, x[[length(x)]],x)))) %>%
+    select(item_group, item_class, item_name, item_label, value_label) %>%
     tidyr::unnest_longer(value_label)
 
+
   if ("value_label_id" %in% colnames(labels)) {
+
+    #Get items with codes
     labels_codes <- labels %>%
       dplyr::rename(value_name = value_label_id) %>%
-      dplyr::filter(value_name != "comment", value_name != "class", value_name != "levels") %>%
+      dplyr::filter(!(value_name %in% c("comment", "class","levels","tzone"))) %>%
       dplyr::mutate(value_label = as.character(value_label)) %>%
-      dplyr::select(item_name, item_label, value_name, value_label)
+      dplyr::select(item_group, item_class, item_name, item_label, value_name, value_label)
 
+    labels_levels <- labels %>%
+      #dplyr::rename(value_name = value_label_id) %>%
+      dplyr::filter(value_label_id == "levels") %>%
+      dplyr::select(item_group, item_class, item_name, item_label, value_label) %>%
+      tidyr::unnest_longer(value_label) %>%
+      dplyr::mutate(value_label = as.character(value_label))
+
+
+    # Combine items without codes and items with codes
     labels <- labels %>%
-      dplyr::rename(value_name = value_label_id) %>%
-      dplyr::select(item_name, item_label) %>%
+      #dplyr::rename(value_name = value_label_id) %>%
+      dplyr::distinct(item_group, item_class, item_name, item_label) %>%
+
       anti_join(labels_codes, by="item_name") %>%
-      bind_rows(labels_codes)
+      bind_rows(labels_codes) %>%
+
+      anti_join(labels_levels, by="item_name") %>%
+      bind_rows(labels_levels)
   }
 
   labels
