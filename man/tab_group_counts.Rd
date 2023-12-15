@@ -4,7 +4,14 @@
 \alias{tab_group_counts}
 \title{Output frequencies cross tabulated with a grouping column}
 \usage{
-tab_group_counts(data, col, col_group, values = c("n", "p"), .labels = T)
+tab_group_counts(
+  data,
+  col,
+  col_group,
+  values = c("n", "p"),
+  .formatted = T,
+  .labels = T
+)
 }
 \arguments{
 \item{data}{A tibble}
@@ -14,6 +21,8 @@ tab_group_counts(data, col, col_group, values = c("n", "p"), .labels = T)
 \item{col_group}{The column holding groups to compare}
 
 \item{values}{The values to output: n (frequency) or p (percentage).}
+
+\item{.formatted}{Set to FALSE to prevent calculating percents from proportions}
 
 \item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 }

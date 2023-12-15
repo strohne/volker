@@ -110,9 +110,10 @@ tab_var_metrics <- function(data, col, digits=1, .labels=T) {
 #' @param col The column holding factor values
 #' @param col_group The column holding groups to compare
 #' @param values The values to output: n (frequency) or p (percentage).
+#' @param .formatted Set to FALSE to prevent calculating percents from proportions
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-tab_group_counts <- function(data, col, col_group, values=c("n","p"), .labels=T) {
+tab_group_counts <- function(data, col, col_group, values=c("n","p"), .formatted=T, .labels=T) {
 
   grouped <- data %>%
     dplyr::count({{col}}, {{col_group}}) %>%
@@ -191,8 +192,11 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), .labels=T)
     ) %>%
     janitor::adorn_totals()
 
-  result_p <- result_p %>%
-    dplyr::mutate(across(where(is.numeric), ~ paste0(round(. * 100,0),"%" )))
+  if (.formatted) {
+    result_p <- result_p %>%
+      dplyr::mutate(across(where(is.numeric), ~ paste0(round(. * 100,0),"%" )))
+  }
+
 
   # Zip
   if (("n" %in% values) && ("p" %in% values)) {
@@ -293,10 +297,11 @@ tab_group_metrics <- function(data, col, col_group, digits=1, .labels=T) {
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
 #' @param values The values to output: n (frequency) or p (percentage)
+#' @param .formatted Set to FALSE to prevent calculating percents from proportions
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_item_counts <- function(data, cols, values= c("n","p"), .labels=T) {
+tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .labels=T) {
 
   # Calculate n and p
   result <- data %>%
@@ -340,8 +345,12 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .labels=T) {
     ) %>%
     janitor::adorn_totals("col")
 
-  result_p <- result_p %>%
-    dplyr::mutate(across(where(is.numeric), ~ paste0(round(. * 100,0),"%" )))
+  # Add % sign
+  if (.formatted) {
+    result_p <- result_p %>%
+      dplyr::mutate(across(where(is.numeric), ~ paste0(round(. * 100,0),"%" )))
+
+  }
 
   if (("n" %in% values) && ("p" %in% values)) {
     result <- zip_tables(result_n, result_p)

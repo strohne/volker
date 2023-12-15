@@ -1,16 +1,74 @@
+
+#' Plot the frequency of  values in one column
+#'
+#' @param data A tibble
+#' @param col The column holding values to count
+#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @export
+plot_var_counts <- function(data, col, .labels=T) {
+  data %>%
+    tab_var_counts({{col}}, .labels=.labels, .formatted=F) %>%
+    dplyr::mutate(p = p * 100) %>%
+    dplyr::rename(Item = 1) %>%
+    dplyr::filter(! (Item %in% c("Total", "Missing"))) %>%
+
+    # TODO: Make dry, see plot_item_counts and tab_group_counts
+    ggplot(aes(Item, y=p)) +
+      geom_col(fill="black") +
+      scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
+
+      geom_text(aes(label=n),position=position_stack(vjust=0.5),size=3, color="white") +
+      ylab("Share in percent") +
+      coord_flip() +
+      theme(
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.title = element_blank()
+      )
+}
+
+#' Output frequencies for multiple variables
+#'
+#' @param data A tibble
+#' @param col The column holding factor values
+#' @param col_group The column holding groups to compare
+#' @param values The values to print on the bars: n (frequency) or p (percentage).Not implemented yet.
+#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @param .binary Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
+#' @export
+plot_group_counts <- function(data, col, col_group, values=c("n","p"), .labels=T, .binary=NULL) {
+
+  result <- data %>%
+    tab_group_counts({{col}}, {{col_group}}, values="n",.labels = .labels, .formatted = F)
+
+  values <- dplyr::select(result,-matches("^Item|Total|Missing")) %>% colnames()
+
+  result <- result %>%
+    rename(Item = 1) %>%
+    tidyr::pivot_longer(-matches("^Item|Total|Missing"), names_to="value", values_to="n") %>%
+    dplyr::mutate(p = (n / Total) * 100)
+
+  if ((length(values) == 2) && (is.null(.binary))) {
+    .binary <- "TRUE"
+  }
+
+  .plot_grouped_bars(result)
+
+}
+
 #' Output frequencies for multiple variables
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param values The values to print on the bars: n (frequency) or p (percentage)
-#' @param .binary In case of boolean values, only one category is plotted. Set to FALSE to plot all categories or select a value to plot.
+#' @param values The values to print on the bars: n (frequency) or p (percentage). Not implemented yet.
+#' @param .binary Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-plot_item_counts <- function(data, cols, values= c("n","p"), .binary=NULL, .labels=T) {
+plot_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .binary=NULL) {
 
 
   result <- data %>%
-      tab_item_counts(cols, values="n")
+      tab_item_counts(cols, values="n", .formatted=F)
 
   values <- dplyr::select(result,-matches("^Item|Total|Missing")) %>% colnames()
 
@@ -23,12 +81,21 @@ plot_item_counts <- function(data, cols, values= c("n","p"), .binary=NULL, .labe
     .binary <- "TRUE"
   }
 
+  .plot_grouped_bars(result)
+
+}
+
+#' Helper function: plot grouped bar chart
+#'
+#' @param data Dataframe with the columns Item, value, p, n
+#' @param  .binary Category for filtering the dataframe
+.plot_grouped_bars <- function(data, .binary=NULL) {
+
   if (!is.null(.binary)) {
-    result <- result %>%
-      filter(value == .binary)
+    data <- filter(data, value == .binary)
   }
 
-  pl <- result %>%
+  pl <- data %>%
 
     ggplot(aes(Item, y=p, fill=value)) +
     geom_col() +
@@ -56,111 +123,4 @@ plot_item_counts <- function(data, cols, values= c("n","p"), .binary=NULL, .labe
   }
 
   pl
-}
-
-
-
-#' Compare and plot factor value by group
-#'
-#' @param data A tibble containing data
-#' @param col_category The column holding factor values
-#' @param col_group The column holding groups to compare
-#' @param relative Show absolute (F) or relative values (T)
-#' @export
-plot_compare_factor <- function(data, col_category, col_group, relative=F) {
-
-  col_category <- enquo(col_category)
-  col_group <- enquo(col_group)
-
-  data <- data %>%
-    count(!!col_group,!!col_category) %>%
-    group_by(!!col_category) %>%
-    mutate(p = n / sum(n)) %>%
-    ungroup()
-
-  if (relative) {
-    col_value <- quo(p)
-  } else {
-    col_value <- quo(n)
-  }
-
-  data %>%
-    mutate(!!col_category := forcats::fct_rev(!!col_category)) %>%
-    ggplot(aes(!!col_category,y=!!col_value,fill=!!col_group)) +
-    geom_col() +
-    scale_fill_brewer(type="seq") +
-    geom_text(aes(label=n),position=position_stack(vjust=0.5)) +
-
-    coord_flip()
-
-}
-
-
-
-#' Compare and plot items
-#' @param data A tibble containing item measures
-#' @param cols_items Tidyselect item variables (e.g. starts_with...)
-#' @param col_group Optional faceting variable
-#' @importFrom dplyr filter
-#' @export
-plot_counts <- function(data, cols_items, col_group) {
-
-  col_group <- enquo(col_group)
-
-  # Get code labels from the attributes
-  codes <- get_labels(data)
-
-  # Filter item labels
-  items <- codes %>%
-    #na.omit() %>%
-    distinct(item,label) %>%
-    mutate(no = row_number())
-
-  # Calculate
-  data_grouped <- data %>%
-
-    pivot_longer(all_of(cols_items), names_to="item",values_to="value_id") %>%
-
-    count(!!col_group,item,value_id) %>%
-    group_by(!!col_group,item) %>%
-    mutate(p= n / sum(n)) %>%
-    ungroup() %>%
-
-    # Labeling
-    mutate(value_id = as.character(value_id)) %>%
-    left_join(items,by=c("item")) %>%
-    left_join(select(codes,item,value_id,value),by=c("item","value_id")) %>%
-
-    mutate(label = str_remove(label,"^.*: ")) %>%
-    mutate(label = str_trunc(label,50) ) %>%
-
-    mutate(item=str_remove(item,get_prefix(.$item))) %>%
-    mutate(item=paste0(item," ",label)) %>%
-    mutate(item=forcats::fct_reorder(item,no, .desc=T)) %>%
-
-    mutate(value=paste0(value_id, " ", value))
-
-  # Plot
-  data_grouped %>%
-    ggplot(aes(item,y=p,fill=value)) +
-
-    geom_col() +
-    geom_text(aes(label=n),position=position_stack(vjust=0.5),size=3) +
-
-    scale_fill_brewer(type="qual") +
-    scale_y_reverse(labels=c("100%","75%","50%","25%","0%")) +
-    scale_x_discrete(position="top") +
-
-    coord_flip()  +
-    facet_wrap(vars(!!col_group)) +
-
-    ylab("Anteil je Item in Prozent") +
-
-    theme(
-      legend.position="bottom",
-      legend.justification="left",
-      legend.title = element_blank(),
-      axis.text.x=element_blank(),
-      axis.title.y=element_blank()
-    )
 }
