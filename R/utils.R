@@ -62,10 +62,17 @@ get_labels <- function(data, cols) {
     data <- dplyr::select(data,{{cols}})
   }
 
+  # Replace empty classes with NA
+  item_classes <- sapply(data,attr,"class", simplify = F)
+  item_classes <- ifelse(sapply(item_classes, is.null),NA, item_classes)
+
+  item_comments = sapply(data,attr,"comment", simplify = F)
+  item_comments <- ifelse(sapply(item_comments, is.null),NA, item_comments)
+
   labels <- tibble(
     item_name = colnames(data),
-    item_class = sapply(data,attr,"class", simplify = F),
-    item_label = sapply(data,attr,"comment", simplify = F),
+    item_class = item_classes,
+    item_label = item_comments,
     value_label = lapply(data,attributes)
   ) %>%
 
