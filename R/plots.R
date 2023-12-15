@@ -1,5 +1,7 @@
 
-#' Plot the frequency of  values in one column
+#' Plot the frequency of  values in one column.
+#'
+#' Note: only non-missing cases are used to calculate the percentage.
 #'
 #' @param data A tibble
 #' @param col The column holding values to count
@@ -8,12 +10,12 @@
 plot_var_counts <- function(data, col, .labels=T) {
   data %>%
     tab_var_counts({{col}}, .labels=.labels, .formatted=F) %>%
-    dplyr::mutate(p = p * 100) %>%
+    dplyr::mutate(valid = valid * 100) %>%
     dplyr::rename(Item = 1) %>%
     dplyr::filter(! (Item %in% c("Total", "Missing"))) %>%
 
     # TODO: Make dry, see plot_item_counts and tab_group_counts
-    ggplot(aes(Item, y=p)) +
+    ggplot(aes(Item, y=valid)) +
       geom_col(fill="black") +
       scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
 
@@ -27,7 +29,9 @@ plot_var_counts <- function(data, col, .labels=T) {
       )
 }
 
-#' Output frequencies for multiple variables
+#' Plot frequencies cross tabulated with a grouping column
+#'
+#' Note: only non-missing cases are used to calculate the percentage.
 #'
 #' @param data A tibble
 #' @param col The column holding factor values
@@ -45,8 +49,16 @@ plot_group_counts <- function(data, col, col_group, values=c("n","p"), .labels=T
 
   result <- result %>%
     rename(Item = 1) %>%
-    tidyr::pivot_longer(-matches("^Item|Total|Missing"), names_to="value", values_to="n") %>%
-    dplyr::mutate(p = (n / Total) * 100)
+    dplyr::filter(! (Item %in% c("Total", "Missing"))) %>%
+    dplyr::select(-Total, -Missing) %>%
+    tidyr::pivot_longer(
+      -Item,
+      names_to="value",
+      values_to="n",
+    ) %>%
+    #group_by(Item) %>%
+    dplyr::mutate(p = (n / sum(n)) * 100)# %>%
+    #ungroup()
 
   if ((length(values) == 2) && (is.null(.binary))) {
     .binary <- "TRUE"
@@ -57,6 +69,8 @@ plot_group_counts <- function(data, col, col_group, values=c("n","p"), .labels=T
 }
 
 #' Output frequencies for multiple variables
+#'
+#' Note: only non-missing cases are used to calculate the percentage.
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
@@ -74,8 +88,15 @@ plot_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .binary=
 
 
   result <- result %>%
-    tidyr::pivot_longer(-matches("^Item|Total|Missing"), names_to="value", values_to="n") %>%
-    dplyr::mutate(p = (n / Total) * 100)
+    dplyr::select(-Total, -Missing) %>%
+    tidyr::pivot_longer(
+      -Item,
+      names_to="value",
+      values_to="n"
+    ) %>%
+    dplyr::group_by(Item) %>%
+    dplyr::mutate(p = (n / sum(n)) * 100) %>%
+    ungroup()
 
   if ((length(values) == 2) && (is.null(.binary))) {
     .binary <- "TRUE"
@@ -101,7 +122,9 @@ plot_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .binary=
     geom_col() +
     #scale_fill_manual(values=c("transparent", "black")) +
     #scale_y_reverse(labels=c("100%","75%","50%","25%","0%")) +
-    scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
+
+    # Add 0.1 to avoid "Removed 1 rows containing missing values (`geom_col()`)."
+    scale_y_continuous(limits =c(0,100.1), labels=c("0%","25%","50%","75%","100%")) +
 
     geom_text(aes(label=n),position=position_stack(vjust=0.5),size=3, color="white") +
     ylab("Share in percent") +
