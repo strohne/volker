@@ -4,6 +4,8 @@
 #' - If it matches a single column, use tab_var_counts and plot_var_counts
 #' - If it matches multiple columns, use tab_items_counts and plot_item_counts
 #'
+#' TODO: Check whether the matched items are present
+#'
 #' @param data A tibble
 #' @param scopes A list of column prefixes, e.g. "UM" or "WB.
 #' @export

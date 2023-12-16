@@ -110,6 +110,8 @@ get_labels <- function(data, cols) {
 
       anti_join(labels_levels, by="item_name") %>%
       bind_rows(labels_levels)
+  } else {
+    labels$value_name <- NA
   }
 
   labels
@@ -119,13 +121,17 @@ get_labels <- function(data, cols) {
 #'
 #' @param data A tibble
 #' @param cols Tidyselect columns
-#' @param labels The attributes to remove
+#' @param labels The attributes to remove. NULL to remove all attributes.
 #' @return A tibble with comments removed
 #' @export
-remove_labels <- function(data, cols, labels = "comment") {
+remove_labels <- function(data, cols, labels = NULL) {
   data %>%
     dplyr::mutate(across({{cols}}, function(x) {
-    attr(x,labels) <- NULL
+      if (is.null(labels)) {
+        attributes(x) <- NULL
+      } else {
+        attr(x,labels) <- NULL
+      }
     x
   }))
 }
