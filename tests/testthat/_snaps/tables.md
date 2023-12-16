@@ -38,20 +38,20 @@
     Output
       
       
-      |Item                                                                      |        1|        2|        3|        4|        5| Missing|      Total|
-      |:-------------------------------------------------------------------------|--------:|--------:|--------:|--------:|--------:|-------:|----------:|
-      |ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.       |   6 (5%)|  10 (9%)| 40 (35%)| 40 (35%)| 17 (15%)|  2 (2%)| 115 (100%)|
-      |Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.             | 24 (21%)| 24 (21%)| 33 (29%)| 25 (22%)|   9 (8%)|  0 (0%)| 115 (100%)|
-      |Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.              |   6 (5%)| 13 (11%)| 25 (22%)| 51 (44%)| 20 (17%)|  0 (0%)| 115 (100%)|
-      |Im Vergleich zu anderen Systemen macht die Nutzung von ChatGPT mehr Spaß. |   6 (5%)|   5 (4%)| 43 (37%)| 44 (38%)| 17 (15%)|  0 (0%)| 115 (100%)|
-      |Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.              |   6 (5%)| 28 (24%)| 37 (32%)| 27 (23%)| 17 (15%)|  0 (0%)| 115 (100%)|
-      |Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.                  |  10 (9%)| 21 (18%)| 49 (43%)| 18 (16%)| 17 (15%)|  0 (0%)| 115 (100%)|
-      |Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.     |   3 (3%)| 26 (23%)| 47 (41%)| 21 (18%)| 17 (15%)|  1 (1%)| 115 (100%)|
-      |Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.    | 11 (10%)| 41 (36%)| 34 (30%)| 20 (17%)|   9 (8%)|  0 (0%)| 115 (100%)|
-      |In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.             | 22 (19%)| 40 (35%)| 28 (24%)| 17 (15%)|   7 (6%)|  1 (1%)| 115 (100%)|
-      |Fast alle Personen in meinem Umfeld nutzen ChatGPT.                       | 31 (27%)| 36 (31%)| 28 (24%)| 12 (10%)|   8 (7%)|  0 (0%)| 115 (100%)|
-      |Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.                  | 50 (43%)| 31 (27%)| 18 (16%)|   8 (7%)|   7 (6%)|  1 (1%)| 115 (100%)|
-      |Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.         | 35 (30%)| 30 (26%)| 25 (22%)| 17 (15%)|   8 (7%)|  0 (0%)| 115 (100%)|
+      |Item                                                                      | trifft gar nicht zu| trifft eher nicht zu| teils teils| trifft eher zu| trifft voll zu| Missing|      Total|
+      |:-------------------------------------------------------------------------|-------------------:|--------------------:|-----------:|--------------:|--------------:|-------:|----------:|
+      |ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.       |              6 (5%)|              10 (9%)|    40 (35%)|       40 (35%)|       17 (15%)|  2 (2%)| 115 (100%)|
+      |Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.             |            24 (21%)|             24 (21%)|    33 (29%)|       25 (22%)|         9 (8%)|  0 (0%)| 115 (100%)|
+      |Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.              |              6 (5%)|             13 (11%)|    25 (22%)|       51 (44%)|       20 (17%)|  0 (0%)| 115 (100%)|
+      |Im Vergleich zu anderen Systemen macht die Nutzung von ChatGPT mehr Spaß. |              6 (5%)|               5 (4%)|    43 (37%)|       44 (38%)|       17 (15%)|  0 (0%)| 115 (100%)|
+      |Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.              |              6 (5%)|             28 (24%)|    37 (32%)|       27 (23%)|       17 (15%)|  0 (0%)| 115 (100%)|
+      |Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.                  |             10 (9%)|             21 (18%)|    49 (43%)|       18 (16%)|       17 (15%)|  0 (0%)| 115 (100%)|
+      |Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.     |              3 (3%)|             26 (23%)|    47 (41%)|       21 (18%)|       17 (15%)|  1 (1%)| 115 (100%)|
+      |Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.    |            11 (10%)|             41 (36%)|    34 (30%)|       20 (17%)|         9 (8%)|  0 (0%)| 115 (100%)|
+      |In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.             |            22 (19%)|             40 (35%)|    28 (24%)|       17 (15%)|         7 (6%)|  1 (1%)| 115 (100%)|
+      |Fast alle Personen in meinem Umfeld nutzen ChatGPT.                       |            31 (27%)|             36 (31%)|    28 (24%)|       12 (10%)|         8 (7%)|  0 (0%)| 115 (100%)|
+      |Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.                  |            50 (43%)|             31 (27%)|    18 (16%)|         8 (7%)|         7 (6%)|  1 (1%)| 115 (100%)|
+      |Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.         |            35 (30%)|             30 (26%)|    25 (22%)|       17 (15%)|         8 (7%)|  0 (0%)| 115 (100%)|
 
 # Distribution table for multiple metric items
 

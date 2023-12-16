@@ -4,10 +4,17 @@ library(testthat)
 library(volker)
 library(knitr)
 
-# Rendering vignette
-test_that("Vignette Test Rendering", {
+# Rendering tables vignette
+test_that("Tables in vignette render without error", {
   expect_no_error({
-    result <- rmarkdown::render("../../vignettes/introduction.Rmd")
+    result <- rmarkdown::render("../../vignettes/tables.Rmd")
+  })
+})
+
+# Rendering plots vignette
+test_that("Plots in vignette render without error", {
+  expect_no_error({
+    result <- rmarkdown::render("../../vignettes/plots.Rmd")
   })
 })
 
