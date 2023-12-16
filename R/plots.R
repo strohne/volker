@@ -11,7 +11,9 @@ plot_var_counts <- function(data, col, .labels=T) {
   result <- data %>%
     tab_var_counts({{col}}, .labels=.labels, .formatted=F)
 
-  caption <- colnames(result)[1]
+  # TODO: implement meta data property in tab_var_counts()
+  title <- colnames(result)[1]
+  base_n <- sum(result$n[! (result[[1]] %in% c("Total", "Missing"))])
 
   result <- result %>%
     dplyr::mutate(valid = valid * 100) %>%
@@ -32,12 +34,16 @@ plot_var_counts <- function(data, col, .labels=T) {
       theme(
         axis.title.x=element_blank(),
         axis.title.y=element_blank(),
+        axis.text.y = element_text(size=11),
+
         legend.title = element_blank(),
-        axis.text.y = element_text(size=11)
+        plot.title.position = "plot",
+        plot.caption = element_text(hjust = 0),
+        plot.caption.position = "plot"
       )
 
   if (.labels) {
-    pl <- pl + ggtitle(label = caption)
+    pl <- pl + labs(title = title, caption = paste0("n=", base_n))
   }
 
   pl
@@ -59,12 +65,15 @@ plot_group_counts <- function(data, col, col_group, values=c("n","p"), .labels=T
   result <- data %>%
     tab_group_counts({{col}}, {{col_group}}, values="n",.labels = .labels, .formatted = F)
 
-  caption <- colnames(result)[1]
+  title <- colnames(result)[1]
+  base_n <- sum(result$Total[! (result[[1]] %in% c("Total", "Missing"))])
   values <- dplyr::select(result,-1,-matches("^Total|Missing")) %>% colnames()
 
   # Detect whether the values are a numeric sequence and choose direction
-  .ordered <- suppressWarnings(as.numeric(c(values)))
-  .direction <- dplyr::coalesce(ifelse(all(diff(.ordered) >= 0) | any(!is.na(.ordered)), -1 , 1), 1)
+  ordered <- suppressWarnings(as.numeric(c(values)))
+  positive <- ordered[ordered >= 0]
+  direction <- dplyr::coalesce(ifelse(any(diff(positive) >= 0) | any(is.na(ordered)), -1 , 1), 1)
+
 
   # Detect whether the values are binary
   if ((length(values) == 2) && (is.null(.category)) && ("TRUE" %in% values)) {
@@ -89,9 +98,10 @@ plot_group_counts <- function(data, col, col_group, values=c("n","p"), .labels=T
 
   plot_grouped_bars(
     result,
-    .category=.category,
-    .direction = .direction,
-    caption = ifelse(.labels, caption, NULL)
+    category= .category,
+    direction = direction,
+    title = ifelse(.labels, title, NULL),
+    caption = ifelse(.labels, paste0("n=", base_n), NULL)
   )
 
 }
@@ -112,12 +122,14 @@ plot_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .categor
   result <- data %>%
     tab_item_counts(cols, values="n", .formatted=F)
 
-  caption <- colnames(result)[1]
+  title <- colnames(result)[1]
   values <- dplyr::select(result,-1,-matches("^Total|Missing")) %>% colnames()
+  base_n <- sum(dplyr::select(result,-1,-matches("^Total|Missing"))[1,])
 
   # Detect whether the values are a numeric sequence and choose direction
-  .ordered <- suppressWarnings(as.numeric(c(values)))
-  .direction <- dplyr::coalesce(ifelse(all(diff(.ordered) >= 0) | any(!is.na(.ordered)), -1 , 1), 1)
+  ordered <- suppressWarnings(as.numeric(c(values)))
+  positive <- ordered[ordered >= 0]
+  direction <- dplyr::coalesce(ifelse(any(diff(positive) >= 0) | any(is.na(ordered)), -1 , 1), 1)
 
 
    # Detect whether the values are binary
@@ -141,8 +153,10 @@ plot_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .categor
 
   plot_grouped_bars(
     result,
-    .category=.category, .direction = .direction,
-    caption = ifelse(.labels, caption, NULL)
+    category=.category,
+    direction = direction,
+    title = ifelse(.labels, title, NULL),
+    caption = ifelse(.labels, paste0("n=", base_n, "; multiple responses possible"), NULL)
   )
 
 }
@@ -150,13 +164,14 @@ plot_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .categor
 #' Helper function: plot grouped bar chart
 #'
 #' @param data Dataframe with the columns Item, value, p, n
-#' @param caption The plot caption or NULL
-#' @param  .category Category for filtering the dataframe
-#' @param .direction Direction of the viridis scale, either -1 or 1.
-plot_grouped_bars <- function(data, caption=NULL, .category=NULL, .direction=-1) {
+#' @param category Category for filtering the dataframe
+#' @param direction Direction of the viridis scale, either -1 or 1.
+#' @param title The plot title or NULL
+#' @param caption The plot caption or NULL. The caption is used for notes.
+plot_grouped_bars <- function(data, category=NULL, direction=-1, title=NULL, caption=NULL) {
 
-  if (!is.null(.category)) {
-    data <- filter(data, value == .category)
+  if (!is.null(category)) {
+    data <- filter(data, value == category)
   }
 
   pl <- data %>%
@@ -176,12 +191,15 @@ plot_grouped_bars <- function(data, caption=NULL, .category=NULL, .direction=-1)
     theme(
       axis.title.x=element_blank(),
       axis.title.y=element_blank(),
+      axis.text.y = element_text(size=11),
       legend.title = element_blank(),
-      axis.text.y = element_text(size=11)
+      plot.caption = element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position = "plot"
     )
 
   # Simplify binary plot
-  if (!is.null(.category)) {
+  if (!is.null(category)) {
     pl <- pl +
       scale_fill_manual(values=c("#611F53FF")) +
       theme(
@@ -193,12 +211,17 @@ plot_grouped_bars <- function(data, caption=NULL, .category=NULL, .direction=-1)
       viridis::scale_fill_viridis(
         discrete=TRUE,
         option="rocket",
-        direction = .direction
+        direction = direction
       )
   }
 
+  if (!is.null(title)) {
+    pl <- pl + ggtitle(label = title)
+  }
+
+
   if (!is.null(caption)) {
-    pl <- pl + ggtitle(label = caption)
+    pl <- pl + labs (caption = caption)
   }
 
   pl
