@@ -4,7 +4,7 @@
 \alias{tab_item_metrics}
 \title{Output a five point summary table for multiple items}
 \usage{
-tab_item_metrics(data, cols, digits = 1, .labels = T)
+tab_item_metrics(data, cols, digits = 1, .negative = F, .labels = T)
 }
 \arguments{
 \item{data}{A tibble}
@@ -12,6 +12,8 @@ tab_item_metrics(data, cols, digits = 1, .labels = T)
 \item{cols}{The columns holding metric values}
 
 \item{digits}{The digits to print}
+
+\item{.negative}{If True (default), negative values are recoded to missing values}
 
 \item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 }

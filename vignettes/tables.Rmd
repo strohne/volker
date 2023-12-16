@@ -29,29 +29,37 @@ data <- set_item_labels(data, tibble("sd_alter","Alter"))
 
 ```
 
-## 1. One variable
+## Frequencies of categorical variables
 
-
-### Frequency table for one categorical variable: Gender
+### 1. One variable: Frequency table of gender
 ```{r results='asis'}
 
 tab_var_counts(data, sd_geschlecht)
 
 ```
 
+### 2. Multiple items: Frequency table of adoption factors
+```{r results='asis'}
+
+tab_item_counts(data, starts_with("cg_adoption_"))
+
+```
+
+
+### 3. Two variables: Cross table of innovator type by gender
+
+```{r results='asis'}
+
+tab_group_counts(data, in_adoption, sd_geschlecht)
+
+```
+
+## Distributions of metric variables
+
 ### Distribution table for one metric variable: Age
 ```{r results='asis'}
 
 tab_var_metrics(data, sd_alter)
-
-```
-
-## 2. Multiple items
-
-### Frequency table for multiple categorical variables: Adoption factors
-```{r results='asis'}
-
-tab_item_counts(data, starts_with("cg_adoption_"))
 
 ```
 
@@ -62,15 +70,6 @@ tab_item_metrics(data, starts_with("cg_adoption_"))
 
 ```
 
-## 3. Two variables (one being categorical)
-
-### Cross table of categorical variables: Innovator type by gender
-
-```{r results='asis'}
-
-tab_group_counts(data, in_adoption, sd_geschlecht)
-
-```
 
 ### Group comparison of a metric variable: Age by gender
 
@@ -80,7 +79,7 @@ tab_group_metrics(data, sd_alter, sd_geschlecht)
 
 ```
 
-## 4. Multiple metric variables
+## Multiple metric variables
 
 ### Compare means of multiple items: Adoption factors by gender
 ```{r results='asis'}

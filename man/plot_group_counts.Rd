@@ -8,7 +8,7 @@ plot_group_counts(
   data,
   col,
   col_group,
-  values = c("n", "p"),
+  .numbers = NULL,
   .labels = T,
   .category = NULL
 )
@@ -20,7 +20,7 @@ plot_group_counts(
 
 \item{col_group}{The column holding groups to compare}
 
-\item{values}{The values to print on the bars: n (frequency) or p (percentage).Not implemented yet.}
+\item{.numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
 
 \item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 

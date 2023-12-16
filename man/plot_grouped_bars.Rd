@@ -4,14 +4,27 @@
 \alias{plot_grouped_bars}
 \title{Helper function: plot grouped bar chart}
 \usage{
-plot_grouped_bars(data, .category = NULL, .direction = -1)
+plot_grouped_bars(
+  data,
+  category = NULL,
+  numbers = NULL,
+  direction = -1,
+  title = NULL,
+  caption = NULL
+)
 }
 \arguments{
 \item{data}{Dataframe with the columns Item, value, p, n}
 
-\item{.category}{Category for filtering the dataframe}
+\item{category}{Category for filtering the dataframe}
 
-\item{.direction}{Direction of the viridis scale, either -1 or 1.}
+\item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
+
+\item{direction}{Direction of the viridis scale, either -1 or 1.}
+
+\item{title}{The plot title or NULL}
+
+\item{caption}{The plot caption or NULL. The caption is used for notes.}
 }
 \description{
 Helper function: plot grouped bar chart

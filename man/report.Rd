@@ -18,3 +18,6 @@ For each column prefix:
 \item If it matches multiple columns, use tab_items_counts and plot_item_counts
 }
 }
+\details{
+TODO: Check whether the matched items are present
+}

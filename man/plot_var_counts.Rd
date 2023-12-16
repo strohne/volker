@@ -4,12 +4,14 @@
 \alias{plot_var_counts}
 \title{Plot the frequency of  values in one column.}
 \usage{
-plot_var_counts(data, col, .labels = T)
+plot_var_counts(data, col, .numbers = NULL, .labels = T)
 }
 \arguments{
 \item{data}{A tibble}
 
 \item{col}{The column holding values to count}
+
+\item{.numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
 
 \item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 }

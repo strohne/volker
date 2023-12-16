@@ -427,14 +427,22 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .label
 #' @param data A tibble
 #' @param cols The columns holding metric values
 #' @param digits The digits to print
+#' @param .negative If True (default), negative values are recoded to missing values
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-tab_item_metrics <- function(data, cols, digits=1, .labels=T) {
+tab_item_metrics <- function(data, cols, digits=1, .negative=F, .labels=T) {
 
   cols <- enquo(cols)
 
   result <- data %>%
-    dplyr::select(!!cols) %>%
+    dplyr::select(!!cols)
+
+  # TODO: warn if any negative values were recoded
+  if (!.negative) {
+    result <- dplyr::mutate(result, across(where(is.numeric), ~ ifelse(. < 0, NA, .)))
+  }
+
+  result <- result %>%
     skim_metrics()
 
   result <- result %>%

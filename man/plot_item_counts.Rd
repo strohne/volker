@@ -4,20 +4,14 @@
 \alias{plot_item_counts}
 \title{Output frequencies for multiple variables}
 \usage{
-plot_item_counts(
-  data,
-  cols,
-  values = c("n", "p"),
-  .labels = T,
-  .category = NULL
-)
+plot_item_counts(data, cols, .numbers = NULL, .labels = T, .category = NULL)
 }
 \arguments{
 \item{data}{A tibble containing item measures}
 
 \item{cols}{Tidyselect item variables (e.g. starts_with...)}
 
-\item{values}{The values to print on the bars: n (frequency) or p (percentage). Not implemented yet.}
+\item{.numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
 
 \item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 

@@ -4,14 +4,14 @@
 \alias{remove_labels}
 \title{Remove all comments from the selected columns}
 \usage{
-remove_labels(data, cols, labels = "comment")
+remove_labels(data, cols, labels = NULL)
 }
 \arguments{
 \item{data}{A tibble}
 
 \item{cols}{Tidyselect columns}
 
-\item{labels}{The attributes to remove}
+\item{labels}{The attributes to remove. NULL to remove all attributes.}
 }
 \value{
 A tibble with comments removed

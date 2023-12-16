@@ -28,33 +28,49 @@ data <- set_item_labels(data, tibble("sd_alter","Alter"))
 
 ```
 
-## 1. One variable
+## Frequencies of categorical variables
 
-
-### Frequency plot for one categorical variable: Gender
+### 1. One variable: Frequency plot of Gender
 ```{r results='asis'}
 
 plot_var_counts(data, sd_geschlecht)
 
 ```
 
-
-## 2. Multiple items
-
-### Frequency plot for multiple categorical variables: Adoption factors
+### 2. Multiple items: Frequency plot for adoption factors
 ```{r results='asis'}
 
-plot_item_counts(data, starts_with("cg_adoption_"))
+# Use the .numbers parameter to add counts to the bars
+plot_item_counts(data, starts_with("cg_adoption_"), .numbers="n")
 
 ```
 
-## 3. Two variables (one being categorical)
-
-### Stacked frequency plot of categorical variables: Innovator type by gender
+### 3. Two variables: Stacked frequency plot of innovator type by gender
 
 ```{r results='asis'}
 
 plot_group_counts(data, in_adoption, sd_geschlecht)
+
+```
+
+## Metric distributions
+
+### Distribution table for one metric variable: Age
+```{r results='asis'}
+
+#tab_var_metrics(data, sd_alter)
+
+#plot_var_metrics(data, sd_alter)
+
+```
+
+
+### Distribution of multiple metric items: Adoption factors
+```{r results='asis'}
+
+# Note that negative values are omitted, 
+# you can change the behavior with the .negative parameter
+plot_item_metrics(data, starts_with("cg_adoption_"))
 
 ```
 
