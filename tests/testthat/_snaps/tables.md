@@ -38,7 +38,7 @@
     Output
       
       
-      |ChatGPT-Erwartung:                                                        | trifft gar nicht zu| trifft eher nicht zu| teils teils| trifft eher zu| trifft voll zu| Missing|      Total|
+      |ChatGPT-Erwartung                                                         | trifft gar nicht zu| trifft eher nicht zu| teils teils| trifft eher zu| trifft voll zu| Missing|      Total|
       |:-------------------------------------------------------------------------|-------------------:|--------------------:|-----------:|--------------:|--------------:|-------:|----------:|
       |ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.       |              6 (5%)|              10 (9%)|    40 (35%)|       40 (35%)|       17 (15%)|  2 (2%)| 115 (100%)|
       |Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.             |            24 (21%)|             24 (21%)|    33 (29%)|       25 (22%)|         9 (8%)|  0 (0%)| 115 (100%)|
@@ -60,7 +60,7 @@
     Output
       
       
-      |ChatGPT-Erwartung:                                                        | min|  q1| median|  q3| max|   m|  sd| missing|   n|
+      |ChatGPT-Erwartung                                                         | min|  q1| median|  q3| max|   m|  sd| missing|   n|
       |:-------------------------------------------------------------------------|---:|---:|------:|---:|---:|---:|---:|-------:|---:|
       |ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.       |   1| 3.0|      4| 4.0|   5| 3.5| 1.0|       2| 115|
       |Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.             |   1| 2.0|      3| 4.0|   5| 2.7| 1.2|       0| 115|
@@ -111,7 +111,7 @@
     Output
       
       
-      |ChatGPT-Erwartung:                                                        |     Total|  weiblich|  männlich|   divers|
+      |ChatGPT-Erwartung                                                         |     Total|  weiblich|  männlich|   divers|
       |:-------------------------------------------------------------------------|---------:|---------:|---------:|--------:|
       |ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.       | 3.5 (1.0)| 3.6 (1.0)| 3.3 (1.0)| 4.0 (NA)|
       |Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.             | 2.7 (1.2)| 2.7 (1.3)| 2.8 (1.2)| 3.0 (NA)|
