@@ -352,6 +352,7 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .label
 
   }
 
+  # Combine n and p if requested
   if (("n" %in% values) && ("p" %in% values)) {
     result <- zip_tables(result_n, result_p)
   }
@@ -364,17 +365,24 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .label
     result <- result_n
   }
 
-  # Get item labels from the attributes
+  # Get labels from the attributes
   if (.labels) {
-    codes <- data %>%
+    labels_items <- data %>%
       get_labels(!!cols) %>%
       distinct(item_name, item_label) %>%
       na.omit()
+
+    # Get category labels from the attributes
+    labels_categories <- data %>%
+      get_labels(!!cols) %>%
+      distinct(value_name, value_label) %>%
+      na.omit()
   }
 
-  if (.labels && (nrow(codes) > 0)) {
+  # Replace item labels
+  if (.labels && (nrow(labels_items) > 0)) {
     result <- result %>%
-      left_join(codes, by=c("item"="item_name")) %>%
+      left_join(labels_items, by=c("item"="item_name")) %>%
       mutate(item = dplyr::coalesce(item_label, item)) %>%
       select(-item_label)
   }
@@ -385,6 +393,19 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .label
     result <- dplyr::mutate(result, item = str_remove(item, prefix))
     result <- dplyr::mutate(result, item = ifelse(item=="", prefix, item))
   }
+
+  # Replace category labels
+  if (.labels && (nrow(labels_categories) > 0)) {
+    colnames(result) <- sapply(
+      colnames(result),
+      function(x) {
+        dplyr::coalesce(
+          setNames(labels_categories$value_label, labels_categories$value_name)[x],x
+        )
+      }
+    )
+  }
+
 
   result <- rename(result, Item=item)
 
