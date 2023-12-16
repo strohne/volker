@@ -18,13 +18,17 @@ data <- volker::chatgpt
 # Recode -9 to NA
 data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(.,-9)  ))
 
-# add label to sd_geschlecht and recode levels
-data <- set_item_labels(data, tibble("sd_geschlecht", "Gender")) %>% 
-  mutate(sd_geschlecht = recode(sd_geschlecht,
-    "männlich" = "male",
-    "weiblich" = "female",
-    "divers" = "diverse"
-  ))
+# Add label to sd_geschlecht and recode levels
+data <- data %>% 
+  set_item_labels(tibble("sd_geschlecht", "Gender")) %>% 
+  mutate(
+    sd_geschlecht = recode(
+      sd_geschlecht,
+      "männlich" = "male",
+      "weiblich" = "female",
+      "divers" = "diverse"
+    )
+  )
 
 # Add label to sd_alter
 data <- set_item_labels(data, tibble("sd_alter","Age"))
@@ -128,20 +132,6 @@ data %>%
 data %>% 
   set_item_labels(newlabels) %>% 
   tab_multi_corr(starts_with("cg_adoption_advantage"))
-
-```
-
-## Plots
-
-```{r}
-
-# Plots
-#plot_compare_factor(data, in_adoption, sd_geschlecht)
-# ggsave("plots/plot_compater_factor.png", width = 13, height = 6)
-
-#plot_counts(data, starts_with("cg_adoption_advantage"))
-# ggsave("plots/plot_counts2.png", width = 13, height = 6)
-
 
 ```
 
