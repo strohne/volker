@@ -125,6 +125,12 @@ get_labels <- function(data, cols) {
 #' @return A tibble with comments removed
 #' @export
 remove_labels <- function(data, cols, labels = NULL) {
+  # if (missing(cols)) {
+  #   cols <- c(1:ncol(data))
+  # } else {
+  #   cols <- {{cols}}
+  # }
+
   data %>%
     dplyr::mutate(across({{cols}}, function(x) {
       if (is.null(labels)) {

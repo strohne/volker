@@ -51,7 +51,7 @@ tab_var_metrics(data, sd_alter)
 ### Frequency table for multiple categorical variables: Adoption factors
 ```{r results='asis'}
 
-tab_item_counts(tmp, starts_with("cg_adoption_"))
+tab_item_counts(data, starts_with("cg_adoption_"))
 
 ```
 
@@ -118,6 +118,18 @@ newlabels <- tribble(
 data %>% 
   set_item_labels(newlabels) %>% 
   tab_item_metrics(starts_with("cg_adoption_advantage_"))
+
+
+```
+
+
+You can remove all labels to get a plain dataset
+
+```{r results='asis'}
+
+data %>% 
+  remove_labels(everything()) %>% 
+  tab_item_counts(starts_with("cg_adoption_advantage_"))
 
 
 ```
