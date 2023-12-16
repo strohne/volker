@@ -67,6 +67,7 @@ plot_group_counts <- function(data, col, col_group, values=c("n","p"), .labels=T
       names_to="value",
       values_to="n",
     ) %>%
+    dplyr::mutate(value = factor(value, levels= values)) %>%
     #group_by(Item) %>%
     dplyr::mutate(p = (n / sum(n)) * 100)# %>%
     #ungroup()
@@ -112,6 +113,7 @@ plot_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .categor
       names_to="value",
       values_to="n"
     ) %>%
+    dplyr::mutate(value = factor(value, levels= values)) %>%
     dplyr::group_by(Item) %>%
     dplyr::mutate(p = (n / sum(n)) * 100) %>%
     ungroup()
