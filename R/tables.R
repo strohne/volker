@@ -407,7 +407,12 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .label
   }
 
 
-  result <- rename(result, Item=item)
+  # Rename first column
+  if (prefix != "") {
+    colnames(result)[1] <-  sub("[ :,]+$", "",  prefix)
+  } else {
+    result <- rename(result, Item=item)
+  }
 
 
   attr(result,"digits") <- 0
@@ -468,7 +473,13 @@ tab_item_metrics <- function(data, cols, digits=1, .labels=T) {
     result <- dplyr::mutate(result, item = ifelse(item=="", prefix, item))
   }
 
-  result <- rename(result, Item=item)
+
+  # Rename first column
+  if (prefix != "") {
+    colnames(result)[1] <-  sub("[ :,]+$", "",  prefix)
+  } else {
+    result <- rename(result, Item=item)
+  }
 
   attr(result,"digits") <- digits
   class(result) <- c("vlkr_tbl", class(result))
@@ -625,7 +636,14 @@ tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), dig
     result <- dplyr::mutate(result, item = ifelse(item=="", prefix, item))
   }
 
-  result <- rename(result, Item=item)
+
+  # Rename first column
+  if (prefix != "") {
+    colnames(result)[1] <-  sub("[ :,]+$", "",  prefix)
+  } else {
+    result <- rename(result, Item=item)
+  }
+
 
   attr(result,"digits") <- digits
   class(result) <- c("vlkr_tbl", class(result))

@@ -8,16 +8,23 @@
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
 plot_var_counts <- function(data, col, .labels=T) {
-  data %>%
-    tab_var_counts({{col}}, .labels=.labels, .formatted=F) %>%
+  result <- data %>%
+    tab_var_counts({{col}}, .labels=.labels, .formatted=F)
+
+  caption <- colnames(result)[1]
+
+  result <- result %>%
     dplyr::mutate(valid = valid * 100) %>%
     dplyr::rename(Item = 1) %>%
-    dplyr::filter(! (Item %in% c("Total", "Missing"))) %>%
+    dplyr::filter(! (Item %in% c("Total", "Missing")))
+
 
     # TODO: Make dry, see plot_item_counts and tab_group_counts
-    ggplot(aes(Item, y=valid)) +
+  pl <- result %>%
+    ggplot(aes(Item, y=valid / 100)) +
       geom_col(fill="#611F53FF") +
-      scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
+      #scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
+      scale_y_continuous(labels = scales::percent) +
 
       geom_text(aes(label=n),position=position_stack(vjust=0.5),size=3, color="white") +
       ylab("Share in percent") +
@@ -28,6 +35,12 @@ plot_var_counts <- function(data, col, .labels=T) {
         legend.title = element_blank(),
         axis.text.y = element_text(size=11)
       )
+
+  if (.labels) {
+    pl <- pl + ggtitle(label = caption)
+  }
+
+  pl
 }
 
 #' Plot frequencies cross tabulated with a grouping column
@@ -46,12 +59,12 @@ plot_group_counts <- function(data, col, col_group, values=c("n","p"), .labels=T
   result <- data %>%
     tab_group_counts({{col}}, {{col_group}}, values="n",.labels = .labels, .formatted = F)
 
-  values <- dplyr::select(result,-matches("^Item|Total|Missing")) %>% colnames()
+  caption <- colnames(result)[1]
+  values <- dplyr::select(result,-1,-matches("^Total|Missing")) %>% colnames()
 
   # Detect whether the values are a numeric sequence and choose direction
   .ordered <- suppressWarnings(as.numeric(c(values)))
-  .direction <- ifelse(all(diff(.ordered) >= 0) | any(is.na(.ordered)), -1 , 1)
-
+  .direction <- dplyr::coalesce(ifelse(all(diff(.ordered) >= 0) | any(!is.na(.ordered)), -1 , 1), 1)
 
   # Detect whether the values are binary
   if ((length(values) == 2) && (is.null(.category)) && ("TRUE" %in% values)) {
@@ -74,7 +87,12 @@ plot_group_counts <- function(data, col, col_group, values=c("n","p"), .labels=T
 
 
 
-  plot_grouped_bars(result, .category=.category, .direction = .direction)
+  plot_grouped_bars(
+    result,
+    .category=.category,
+    .direction = .direction,
+    caption = ifelse(.labels, caption, NULL)
+  )
 
 }
 
@@ -92,13 +110,14 @@ plot_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .categor
 
 
   result <- data %>%
-      tab_item_counts(cols, values="n", .formatted=F)
+    tab_item_counts(cols, values="n", .formatted=F)
 
-  values <- dplyr::select(result,-matches("^Item|Total|Missing")) %>% colnames()
+  caption <- colnames(result)[1]
+  values <- dplyr::select(result,-1,-matches("^Total|Missing")) %>% colnames()
 
   # Detect whether the values are a numeric sequence and choose direction
   .ordered <- suppressWarnings(as.numeric(c(values)))
-  .direction <- ifelse(all(diff(.ordered) >= 0) | any(is.na(.ordered)), -1 , 1)
+  .direction <- dplyr::coalesce(ifelse(all(diff(.ordered) >= 0) | any(!is.na(.ordered)), -1 , 1), 1)
 
 
    # Detect whether the values are binary
@@ -107,6 +126,7 @@ plot_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .categor
    }
 
   result <- result %>%
+    dplyr::rename(Item=1) %>%
     dplyr::select(-matches("^Total|Missing$"))%>%
     tidyr::pivot_longer(
       -Item,
@@ -119,17 +139,21 @@ plot_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .categor
     ungroup()
 
 
-
-  plot_grouped_bars(result, .category=.category, .direction=.direction)
+  plot_grouped_bars(
+    result,
+    .category=.category, .direction = .direction,
+    caption = ifelse(.labels, caption, NULL)
+  )
 
 }
 
 #' Helper function: plot grouped bar chart
 #'
 #' @param data Dataframe with the columns Item, value, p, n
+#' @param caption The plot caption or NULL
 #' @param  .category Category for filtering the dataframe
 #' @param .direction Direction of the viridis scale, either -1 or 1.
-plot_grouped_bars <- function(data, .category=NULL, .direction=-1) {
+plot_grouped_bars <- function(data, caption=NULL, .category=NULL, .direction=-1) {
 
   if (!is.null(.category)) {
     data <- filter(data, value == .category)
@@ -137,13 +161,14 @@ plot_grouped_bars <- function(data, .category=NULL, .direction=-1) {
 
   pl <- data %>%
 
-    ggplot(aes(Item, y=p, fill=value)) +
+    ggplot(aes(Item, y=p / 100, fill=value)) +
     geom_col() +
     #scale_fill_manual(values=c("transparent", "black")) +
     #scale_y_reverse(labels=c("100%","75%","50%","25%","0%")) +
 
     # Add 0.1 to avoid "Removed 1 rows containing missing values (`geom_col()`)."
-    scale_y_continuous(limits =c(0,100.1), labels=c("0%","25%","50%","75%","100%")) +
+    #scale_y_continuous(limits =c(0,100.1), labels=c("0%","25%","50%","75%","100%")) +
+    scale_y_continuous(labels = scales::percent) +
     scale_x_discrete(labels = scales::label_wrap(40)) +
     geom_text(aes(label=n),position=position_stack(vjust=0.5),size=3, color="white") +
     ylab("Share in percent") +
@@ -170,6 +195,10 @@ plot_grouped_bars <- function(data, .category=NULL, .direction=-1) {
         option="rocket",
         direction = .direction
       )
+  }
+
+  if (!is.null(caption)) {
+    pl <- pl + ggtitle(label = caption)
   }
 
   pl
