@@ -61,7 +61,7 @@ plot_group_counts <- function(data, col, col_group, values=c("n","p"), .labels=T
   result <- result %>%
     rename(Item = 1) %>%
     dplyr::filter(! (Item %in% c("Total", "Missing"))) %>%
-    dplyr::select(-Total, -Missing) %>%
+    dplyr::select(-matches("^Total|Missing")) %>%
     tidyr::pivot_longer(
       -Item,
       names_to="value",
@@ -106,7 +106,7 @@ plot_item_counts <- function(data, cols, values= c("n","p"), .labels=T, .categor
    }
 
   result <- result %>%
-    dplyr::select(-Total, -Missing) %>%
+    dplyr::select(-matches("^Total|Missing$"))%>%
     tidyr::pivot_longer(
       -Item,
       names_to="value",
