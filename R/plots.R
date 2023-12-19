@@ -193,11 +193,12 @@ plot_item_counts <- function(data, cols, .numbers=NULL, .labels=T, .category=NUL
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
+#' @param limits The scale limits. Set NULL to extract limits from the labels.
 #' @param .numbers The values to print on the bars: "m" or NULL
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .negative If False (default) negative values are recoded as missing values
 #' @export
-plot_item_metrics <- function(data, cols, .numbers=NULL, .labels=T, .negative=F) {
+plot_item_metrics <- function(data, cols, limits=NULL, .numbers=NULL, .labels=T, .negative=F) {
 
   result <- data %>%
     tab_item_metrics(cols, .labels=.labels, .negative=.negative)
@@ -213,11 +214,18 @@ plot_item_metrics <- function(data, cols, .numbers=NULL, .labels=T, .negative=F)
     dplyr::rename(Item=1) %>%
 
     ggplot(aes(Item, y=m)) +
-      geom_col(fill="#611F53FF") +
+      geom_col(fill="#611F53FF")
+
+  if (is.null(limits)) {
+    limits <- attr(result,"limits")
+  }
+
+  # Add scales, labels and theming
+  pl <- pl +
       scale_y_continuous() +
       scale_x_discrete(labels = scales::label_wrap(40)) +
       ylab("Mean values") +
-      coord_flip() +
+      coord_flip(ylim = limits) +
       theme(
         axis.title.x=element_blank(),
         axis.title.y=element_blank(),

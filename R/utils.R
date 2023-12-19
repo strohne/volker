@@ -117,6 +117,30 @@ get_labels <- function(data, cols) {
   labels
 }
 
+#' Get the numeric range from the labels
+#'
+#' @param data The labeled data frame
+#' @param cols A tidy variable selection
+#' @negative Whether to include negative values
+#' @export
+get_limits <- function(data, cols, negative=F) {
+  values <- get_labels(data, {{cols}}) %>%
+    distinct(value_name) %>%
+    pull(value_name) %>%
+    as.numeric()
+
+  values <- suppressWarnings(as.numeric(c(values)))
+  if (!negative) {
+    values <- values[values >= 0]
+  }
+
+  if (any(!is.na(values))) {
+    return (range(values, na.rm=T))
+  }
+
+  return (NULL)
+}
+
 #' Remove all comments from the selected columns
 #'
 #' @param data A tibble

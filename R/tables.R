@@ -465,6 +465,8 @@ tab_item_metrics <- function(data, cols, digits=1, .negative=F, .labels=T) {
       get_labels(!!cols) %>%
       distinct(item_name, item_label) %>%
       na.omit()
+
+    attr(result, "limits") <- get_limits(data,!!cols, .negative)
   }
 
   if (.labels && (nrow(codes) > 0)) {
