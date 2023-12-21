@@ -110,88 +110,140 @@ tab_var_metrics <- function(data, col, digits=1, .labels=T) {
 #' @param col The column holding factor values
 #' @param col_group The column holding groups to compare
 #' @param values The values to output: n (frequency) or p (percentage).
+#' @param prop The basis of percent calculation: total (the default), cols, or rows
 #' @param .formatted Set to FALSE to prevent calculating percents from proportions
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-tab_group_counts <- function(data, col, col_group, values=c("n","p"), .formatted=T, .labels=T) {
+tab_group_counts <- function(data, col, col_group, values=c("n","p"), prop="total", .formatted=T, .labels=T) {
 
+  #
+  # 1. Count
+  #
   grouped <- data %>%
     dplyr::count({{col}}, {{col_group}}) %>%
-    dplyr::group_by({{col_group}}) %>%
-    dplyr::mutate(
-      p = n / sum(n)
-    ) %>%
-    # dplyr::mutate(
-    #   p_val = dplyr::if_else(
-    #     is.na({{col}}),
-    #     NA_real_,
-    #     n / sum( na.omit(.)$n)
-    #   )
-    # ) %>%
-    ungroup() %>%
     dplyr::mutate(
       {{col_group}} := tidyr::replace_na(as.character({{col_group}}), "Missing"),
       {{col}} := tidyr::replace_na(as.character({{col}}), "Missing")
     )
 
-  value <- "n"
-  grouped_n <- grouped %>%
-    select({{col_group}}, {{col}}, !!sym(value)) %>%
-    pivot_wider(
+  #
+  # 2. N
+  #
+  rows_n <- grouped %>%
+    dplyr::select({{col_group}}, {{col}}, n) %>%
+    tidyr::pivot_wider(
       names_from = {{col_group}},
-      values_from = !!sym(value),
-      values_fill = setNames(list(0), value)
+      values_from = n,
+      values_fill = list(n=0)
     )
 
-  value <- "p"
-  grouped_p <- grouped %>%
-    select({{col_group}}, {{col}}, !!sym(value)) %>%
-    pivot_wider(
-      names_from = {{col_group}},
-      values_from = !!sym(value),
-      values_fill = setNames(list(0), value)
-    )
-
-  total <-  data %>%
+  # Total column
+  total_col_n <- data %>%
     dplyr::count({{col}}) %>%
     dplyr::mutate(
-      p = n / sum(n, na.rm = T)
-    ) %>%
-    # dplyr::mutate(
-    #   p_val = dplyr::if_else(
-    #     is.na({{col}}),
-    #     NA_real_,
-    #     n / sum( na.omit(.)$n)
-    #   )
-    # ) %>%
-    dplyr::mutate(
       {{col}} := tidyr::replace_na(as.character({{col}}), "Missing")
+    ) %>%
+  dplyr::select({{col}}, Total = n)
+
+  # Total row
+  total_row_n <- grouped %>%
+    dplyr::group_by({{col_group}}) %>%
+    dplyr::summarise(n=sum(n)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate({{col}} := "Total") %>%
+    tidyr::pivot_wider(
+      names_from = {{col_group}},
+      values_from = n,
+      values_fill = list(n=0)
     )
 
-  value <- "n"
-  total_n <- total %>%
-    select({{col}}, Total = !!sym(value))
+  # Total
+  total_n <- data %>%
+    dplyr::count() %>%
+    mutate({{col}} := "Total") %>%
+    dplyr::select({{col}}, Total = n)
 
-  value <- "p"
-  total_p <- total %>%
-    select({{col}}, Total = !!sym(value))
-
+  # Join
   result_n <-
-    full_join(
-      total_n,
-      grouped_n,
-      by = as.character(rlang::get_expr(rlang::enquo(col))) # deparse(substitute(col))
+    dplyr::full_join(
+      total_col_n,
+      rows_n,
+      by = as.character(rlang::get_expr(rlang::enquo(col)))
     ) %>%
-    janitor::adorn_totals()
+    dplyr::bind_rows(
+      left_join(
+        total_n,
+        total_row_n,
+        by = as.character(rlang::get_expr(rlang::enquo(col)))
+      )
+    )
 
+  #
+  # 3. P
+  #
+  if (prop == "cols") {
+    rows_p <- grouped %>%
+      dplyr::group_by({{col_group}}) %>%
+      dplyr::mutate( p = n / sum(n)) %>%
+      dplyr::ungroup()
+
+    total_col_p <- total_col_n %>%
+      dplyr::mutate(Total = Total / sum(Total))
+
+    total_row_p <- total_row_n %>%
+      dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), ~ 1))
+  }
+  else if (prop == "rows") {
+    rows_p <- grouped %>%
+      dplyr::group_by({{col}}) %>%
+      dplyr::mutate( p = n / sum(n)) %>%
+      dplyr::ungroup()
+
+    total_col_p <- total_col_n %>%
+      dplyr::mutate(Total = 1)
+
+    total_row_p <- total_row_n %>%
+      dplyr::mutate(across(tidyselect::where(is.numeric), ~ .x / total_n$Total))
+
+  }
+  else {
+    rows_p <- grouped %>%
+      dplyr::mutate( p = n / sum(n))
+
+    total_col_p <- total_col_n %>%
+      dplyr::mutate(Total = Total / sum(Total))
+
+    total_row_p <- total_row_n %>%
+      dplyr::mutate(across(tidyselect::where(is.numeric), ~ .x / total_n$Total))
+  }
+
+  rows_p <- rows_p %>%
+    dplyr::select({{col_group}}, {{col}}, p) %>%
+    tidyr::pivot_wider(
+      names_from = {{col_group}},
+      values_from = p,
+      values_fill = list(p=0)
+    )
+
+  total_p <- tibble("Total" = 1) %>%
+    mutate({{col}} := "Total")
+
+  # Join
   result_p <-
-    full_join(
-      total_p,
-      grouped_p,
-      by = as.character(rlang::get_expr(rlang::enquo(col))) # deparse(substitute(col))
+    dplyr::full_join(
+      total_col_p,
+      rows_p,
+      by = as.character(rlang::get_expr(rlang::enquo(col)))
     ) %>%
-    janitor::adorn_totals()
+    dplyr::bind_rows(
+      left_join(
+        total_p,
+        total_row_p,
+        by = as.character(rlang::get_expr(rlang::enquo(col)))
+      )
+    )
 
+  # Round and add % sign
   if (.formatted) {
     result_p <- result_p %>%
       dplyr::mutate(across(where(is.numeric), ~ paste0(round(. * 100,0),"%" )))
@@ -215,7 +267,7 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), .formatted
   if (.labels) {
     codes <- data %>%
       get_labels({{col}}) %>%
-      distinct(item_name, item_label) %>%
+      dplyr::distinct(item_name, item_label) %>%
       na.omit()
   }
 

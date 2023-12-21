@@ -4,14 +4,23 @@
 \alias{plot_item_metrics}
 \title{Output averages for multiple variables}
 \usage{
-plot_item_metrics(data, cols, .numbers = NULL, .labels = T, .negative = F)
+plot_item_metrics(
+  data,
+  cols,
+  limits = NULL,
+  numbers = NULL,
+  .labels = T,
+  .negative = F
+)
 }
 \arguments{
 \item{data}{A tibble containing item measures}
 
 \item{cols}{Tidyselect item variables (e.g. starts_with...)}
 
-\item{.numbers}{The values to print on the bars: "m" or NULL}
+\item{limits}{The scale limits. Set NULL to extract limits from the labels.}
+
+\item{numbers}{The values to print on the bars: "m" or NULL}
 
 \item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 

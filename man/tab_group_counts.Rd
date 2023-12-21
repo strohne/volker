@@ -9,6 +9,7 @@ tab_group_counts(
   col,
   col_group,
   values = c("n", "p"),
+  prop = "total",
   .formatted = T,
   .labels = T
 )
@@ -21,6 +22,8 @@ tab_group_counts(
 \item{col_group}{The column holding groups to compare}
 
 \item{values}{The values to output: n (frequency) or p (percentage).}
+
+\item{prop}{The basis of percent calculation: total (the default), cols, or rows}
 
 \item{.formatted}{Set to FALSE to prevent calculating percents from proportions}
 

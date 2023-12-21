@@ -41,7 +41,7 @@ plot_var_counts(data, sd_geschlecht)
 ```{r results='asis'}
 
 # Use the .numbers parameter to add counts to the bars
-plot_item_counts(data, starts_with("cg_adoption_"), .numbers="n")
+plot_item_counts(data, starts_with("cg_adoption_"), numbers="n")
 
 ```
 
@@ -49,7 +49,7 @@ plot_item_counts(data, starts_with("cg_adoption_"), .numbers="n")
 
 ```{r results='asis'}
 
-plot_group_counts(data, in_adoption, sd_geschlecht)
+plot_group_counts(data, in_adoption, sd_geschlecht, prop="rows")
 
 ```
 

@@ -5,10 +5,10 @@
 #'
 #' @param data A tibble
 #' @param col The column holding values to count
-#' @param .numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
+#' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-plot_var_counts <- function(data, col, .numbers=NULL, .labels=T) {
+plot_var_counts <- function(data, col, numbers=NULL, .labels=T) {
   result <- data %>%
     tab_var_counts({{col}}, .labels=.labels, .formatted=F)
 
@@ -22,12 +22,11 @@ plot_var_counts <- function(data, col, .numbers=NULL, .labels=T) {
     dplyr::filter(! (Item %in% c("Total", "Missing")))  %>%
     dplyr::mutate(
       .values = case_when(
-        all(.numbers == "n") ~ as.character(n),
-        all(.numbers == "p") ~ paste0(round(valid,0), "%"),
+        all(numbers == "n") ~ as.character(n),
+        all(numbers == "p") ~ paste0(round(valid,0), "%"),
         TRUE ~ paste0(n,"\n",round(valid,0), "%")
       )
     )
-
 
     # TODO: Make dry, see plot_item_counts and tab_group_counts
   pl <- result %>%
@@ -48,7 +47,7 @@ plot_var_counts <- function(data, col, .numbers=NULL, .labels=T) {
         plot.caption.position = "plot"
       )
 
-    if (!is.null(.numbers)) {
+    if (!is.null(numbers)) {
       pl <- pl +
         geom_text(aes(label=.values),position=position_stack(vjust=0.5),size=3, color="white")
     }
@@ -67,27 +66,33 @@ plot_var_counts <- function(data, col, .numbers=NULL, .labels=T) {
 #' @param data A tibble
 #' @param col The column holding factor values
 #' @param col_group The column holding groups to compare
-#' @param .numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
+#' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
+#' @param prop The basis of percent calculation: total (the default) or rows. To display column proportions, swap the first column and the grouping column.
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .category Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
 #' @export
-plot_group_counts <- function(data, col, col_group, .numbers=NULL, .labels=T, .category=NULL) {
+plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", .labels=T, .category=NULL) {
+
+
+  if (prop == "cols") {
+    stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
+  }
 
   result <- data %>%
     tab_group_counts({{col}}, {{col_group}}, values="n",.labels = .labels, .formatted = F)
 
   title <- colnames(result)[1]
   base_n <- sum(result$Total[! (result[[1]] %in% c("Total", "Missing"))])
-  values <- dplyr::select(result,-1,-matches("^Total|Missing")) %>% colnames()
+  categories <- dplyr::select(result,-1,-matches("^Total|Missing")) %>% colnames()
 
-  # Detect whether the values are a numeric sequence and choose direction
-  ordered <- suppressWarnings(as.numeric(c(values)))
+  # Detect whether the categories are a numeric sequence and choose direction
+  ordered <- suppressWarnings(as.numeric(c(categories)))
   positive <- ordered[ordered >= 0]
   direction <- dplyr::coalesce(ifelse(any(diff(positive) >= 0) | any(is.na(ordered)), -1 , 1), 1)
 
 
-  # Detect whether the values are binary
-  if ((length(values) == 2) && (is.null(.category)) && ("TRUE" %in% values)) {
+  # Detect whether the categories are binary
+  if ((length(categories) == 2) && (is.null(.category)) && ("TRUE" %in% categories)) {
     .category <- "TRUE"
   }
 
@@ -100,14 +105,23 @@ plot_group_counts <- function(data, col, col_group, .numbers=NULL, .labels=T, .c
       names_to="value",
       values_to="n",
     ) %>%
-    dplyr::mutate(value = factor(value, levels= values)) %>%
-    #group_by(Item) %>%
-    dplyr::mutate(p = (n / sum(n)) * 100) %>%
-    #ungroup()
+    dplyr::mutate(value = factor(value, levels= categories))
+
+  if (prop == "rows") {
+    result <- result %>%
+      group_by(Item) %>%
+      dplyr::mutate(p = (n / sum(n)) * 100) %>%
+      ungroup()
+
+  } else {
+    result <- result %>%
+      dplyr::mutate(p = (n / sum(n)) * 100)
+  }
+  result <- result %>%
     dplyr::mutate(
       .values = case_when(
-        all(.numbers == "n") ~ as.character(n),
-        all(.numbers == "p") ~ paste0(round(p,0), "%"),
+        all(numbers == "n") ~ as.character(n),
+        all(numbers == "p") ~ paste0(round(p, 0), "%"),
         TRUE ~ paste0(n,"\n",round(p,0), "%")
       )
     )
@@ -116,7 +130,7 @@ plot_group_counts <- function(data, col, col_group, .numbers=NULL, .labels=T, .c
   plot_grouped_bars(
     result,
     category= .category,
-    numbers=.numbers,
+    numbers=numbers,
     direction = direction,
     title = ifelse(.labels, title, NULL),
     caption = ifelse(.labels, paste0("n=", base_n), NULL)
@@ -130,28 +144,28 @@ plot_group_counts <- function(data, col, col_group, .numbers=NULL, .labels=T, .c
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param .numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
+#' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param .category Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-plot_item_counts <- function(data, cols, .numbers=NULL, .labels=T, .category=NULL) {
+plot_item_counts <- function(data, cols, numbers=NULL, .labels=T, .category=NULL) {
 
 
   result <- data %>%
     tab_item_counts(cols, values="n", .formatted=F)
 
   title <- colnames(result)[1]
-  values <- dplyr::select(result,-1,-matches("^Total|Missing")) %>% colnames()
+  categories <- dplyr::select(result,-1,-matches("^Total|Missing")) %>% colnames()
   base_n <- sum(dplyr::select(result,-1,-matches("^Total|Missing"))[1,])
 
-  # Detect whether the values are a numeric sequence and choose direction
-  ordered <- suppressWarnings(as.numeric(c(values)))
+  # Detect whether the categories are a numeric sequence and choose direction
+  ordered <- suppressWarnings(as.numeric(c(categories)))
   positive <- ordered[ordered >= 0]
   direction <- dplyr::coalesce(ifelse(any(diff(positive) >= 0) | any(is.na(ordered)), -1 , 1), 1)
 
 
-   # Detect whether the values are binary
-   if ((length(values) == 2) && (is.null(.category)) && ("TRUE" %in% values)) {
+   # Detect whether the categories are binary
+   if ((length(categories) == 2) && (is.null(.category)) && ("TRUE" %in% categories)) {
      .category <- "TRUE"
    }
 
@@ -163,14 +177,14 @@ plot_item_counts <- function(data, cols, .numbers=NULL, .labels=T, .category=NUL
       names_to="value",
       values_to="n"
     ) %>%
-    dplyr::mutate(value = factor(value, levels= values)) %>%
+    dplyr::mutate(value = factor(value, levels= categories)) %>%
     dplyr::group_by(Item) %>%
     dplyr::mutate(p = (n / sum(n)) * 100) %>%
     ungroup() %>%
     dplyr::mutate(
       .values = case_when(
-        all(.numbers == "n") ~ as.character(n),
-        all(.numbers == "p") ~ paste0(round(p,0), "%"),
+        all(numbers == "n") ~ as.character(n),
+        all(numbers == "p") ~ paste0(round(p,0), "%"),
         TRUE ~ paste0(n,"\n",round(p,0), "%")
       )
     )
@@ -179,7 +193,7 @@ plot_item_counts <- function(data, cols, .numbers=NULL, .labels=T, .category=NUL
   plot_grouped_bars(
     result,
     category=.category,
-    numbers = .numbers,
+    numbers = numbers,
     direction = direction,
     title = ifelse(.labels, title, NULL),
     caption = ifelse(.labels, paste0("n=", base_n, "; multiple responses possible"), NULL)
@@ -194,11 +208,11 @@ plot_item_counts <- function(data, cols, .numbers=NULL, .labels=T, .category=NUL
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
 #' @param limits The scale limits. Set NULL to extract limits from the labels.
-#' @param .numbers The values to print on the bars: "m" or NULL
+#' @param numbers The values to print on the bars: "m" or NULL
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .negative If False (default) negative values are recoded as missing values
 #' @export
-plot_item_metrics <- function(data, cols, limits=NULL, .numbers=NULL, .labels=T, .negative=F) {
+plot_item_metrics <- function(data, cols, limits=NULL, numbers=NULL, .labels=T, .negative=F) {
 
   result <- data %>%
     tab_item_metrics(cols, .labels=.labels, .negative=.negative)
@@ -237,7 +251,7 @@ plot_item_metrics <- function(data, cols, limits=NULL, .numbers=NULL, .labels=T,
       )
 
 
-  if (!is.null(.numbers)) {
+  if (!is.null(numbers)) {
     pl <- pl +
       geom_text(
         #aes(label=paste0("⌀", round(m,1))),

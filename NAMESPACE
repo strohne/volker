@@ -3,6 +3,7 @@
 S3method(print,vlkr_tbl)
 export("%>%")
 export(get_labels)
+export(get_limits)
 export(get_prefix)
 export(get_stars)
 export(plot_group_counts)

@@ -82,13 +82,13 @@
     Output
       
       
-      |Typologie                                                      |      Total|  weiblich|  männlich|   divers|
-      |:--------------------------------------------------------------|----------:|---------:|---------:|--------:|
-      |Ich probiere neue Angebote sofort aus.                         |   21 (18%)|   5 (11%)|  15 (22%)| 1 (100%)|
-      |Ich probiere neue Angebote eher schnell aus.                   |   66 (57%)|  26 (57%)|  40 (59%)|   0 (0%)|
-      |Ich warte eher ab, bis sich die Angebote durchgesetzt haben.   |   26 (23%)|  15 (33%)|  11 (16%)|   0 (0%)|
-      |Ich nutze neue Angebote erst, wenn ich nicht mehr anders kann. |     2 (2%)|    0 (0%)|    2 (3%)|   0 (0%)|
-      |Total                                                          | 115 (100%)| 46 (100%)| 68 (100%)| 1 (100%)|
+      |Typologie                                                      |      Total| weiblich| männlich| divers|
+      |:--------------------------------------------------------------|----------:|--------:|--------:|------:|
+      |Ich probiere neue Angebote sofort aus.                         |   21 (18%)|   5 (4%)| 15 (13%)| 1 (1%)|
+      |Ich probiere neue Angebote eher schnell aus.                   |   66 (57%)| 26 (23%)| 40 (35%)| 0 (0%)|
+      |Ich warte eher ab, bis sich die Angebote durchgesetzt haben.   |   26 (23%)| 15 (13%)| 11 (10%)| 0 (0%)|
+      |Ich nutze neue Angebote erst, wenn ich nicht mehr anders kann. |     2 (2%)|   0 (0%)|   2 (2%)| 0 (0%)|
+      |Total                                                          | 115 (100%)| 46 (40%)| 68 (59%)| 1 (1%)|
 
 # Group comparison of a metric variable
 

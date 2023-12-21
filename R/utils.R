@@ -121,7 +121,7 @@ get_labels <- function(data, cols) {
 #'
 #' @param data The labeled data frame
 #' @param cols A tidy variable selection
-#' @negative Whether to include negative values
+#' @param negative Whether to include negative values
 #' @export
 get_limits <- function(data, cols, negative=F) {
   values <- get_labels(data, {{cols}}) %>%
