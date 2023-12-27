@@ -2,9 +2,12 @@
 % Please edit documentation in R/tables.R
 \name{tab_var_counts}
 \alias{tab_var_counts}
+\alias{tab_counts_var}
 \title{Output a frequency table for the values in one column}
 \usage{
 tab_var_counts(data, col, .labels = T, .formatted = T)
+
+tab_counts_var(data, col, .labels = T, .formatted = T)
 }
 \arguments{
 \item{data}{A tibble}
@@ -17,4 +20,6 @@ tab_var_counts(data, col, .labels = T, .formatted = T)
 }
 \description{
 Output a frequency table for the values in one column
+
+Alias for tab_var_counts
 }

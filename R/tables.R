@@ -52,7 +52,11 @@ tab_var_counts <- function(data, col, .labels=T, .formatted=T) {
   result
 }
 
-
+#' Alias for tab_var_counts
+#'
+#' @rdname tab_var_counts
+#' @export
+tab_counts_var <- tab_var_counts
 
 #' Output a five point summary table for the values in multiple columns
 #'
@@ -75,15 +79,27 @@ tab_var_metrics <- function(data, col, digits=1, .labels=T) {
       m = numeric.mean,
       sd = numeric.sd,
       missing,
-      n
+      n,
+      items = numeric.items,
+      alpha = numeric.alpha
     )
 
+  # Remove items and alpha if not and index
+  if (all(is.na(result$items)) || all(is.na(result$alpha))) {
+    result$items <- NULL
+    result$alpha <- NULL
+  } else {
+    result <- result %>%
+      dplyr::mutate(across(c(items), ~ as.character(round(., 0)))) %>%
+      dplyr::mutate(across(c(alpha), ~ as.character(round(., 2))))
+  }
+
   result <- result %>%
-    mutate(across(c(missing, n), ~ as.character(round(.,0)))) %>%
-    mutate(across(c(min, q1, median, q3, max), ~ as.character(round(.,digits)))) %>%
-    mutate(across(c(m, sd), ~ as.character(round(.,digits)))) %>%
+    dplyr::mutate(across(c(missing, n), ~ as.character(round(.,0)))) %>%
+    dplyr::mutate(across(c(min, q1, median, q3, max), ~ as.character(round(.,digits)))) %>%
+    dplyr::mutate(across(c(m, sd), ~ as.character(round(.,digits)))) %>%
     #remove_labels(-item) %>%
-    pivot_longer(-item) %>%
+    tidyr::pivot_longer(-item) %>%
     dplyr::select(-item, {{col}} := name, value)
 
   # Get item label from the attributes
@@ -103,6 +119,11 @@ tab_var_metrics <- function(data, col, digits=1, .labels=T) {
   class(result) <- c("vlkr_tbl", class(result))
   result
 }
+
+#' Alias for tab_var_metrics
+#' @rdname tab_var_metrics
+#' @export
+tab_metrics_var <- tab_var_metrics
 
 #' Output frequencies cross tabulated with a grouping column
 #'
@@ -491,7 +512,7 @@ tab_item_metrics <- function(data, cols, digits=1, .negative=F, .labels=T) {
 
   # TODO: warn if any negative values were recoded
   if (!.negative) {
-    result <- dplyr::mutate(result, across(where(is.numeric), ~ ifelse(. < 0, NA, .)))
+    result <- dplyr::mutate(result, across(where(is.numeric), ~ if_else(. < 0, NA, .)))
   }
 
   result <- result %>%
@@ -508,8 +529,20 @@ tab_item_metrics <- function(data, cols, digits=1, .negative=F, .labels=T) {
       m = numeric.mean,
       sd = numeric.sd,
       missing,
-      n
+      n,
+      items=numeric.items,
+      alpha=numeric.alpha
     )
+
+  # Remove items and alpha if not and index
+  if (all(is.na(result$items)) || all(is.na(result$alpha))) {
+    result$items <- NULL
+    result$alpha <- NULL
+  } else {
+    result <- result %>%
+      dplyr::mutate(across(c(items), ~ as.character(round(., 0)))) %>%
+      dplyr::mutate(across(c(alpha), ~ as.character(round(., 2))))
+  }
 
   # Get item labels from the attributes
   if (.labels) {

@@ -2,10 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{skim_metrics}
 \alias{skim_metrics}
-\title{A reduced skimmer for metric variables}
+\title{A reduced skimmer for metric variables
+Returns a five point summary, mean and sd, items count and alpha for scales added by add_idx()}
 \usage{
 skim_metrics(data, ..., .data_name = NULL)
 }
 \description{
 A reduced skimmer for metric variables
+Returns a five point summary, mean and sd, items count and alpha for scales added by add_idx()
 }

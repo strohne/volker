@@ -72,6 +72,5 @@ plot_group_counts(data, in_adoption, sd_geschlecht, prop="rows")
 # you can change the behavior with the .negative parameter
 plot_item_metrics(data, starts_with("cg_adoption_"))
 
-
 ```
 

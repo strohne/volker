@@ -2,9 +2,12 @@
 % Please edit documentation in R/tables.R
 \name{tab_var_metrics}
 \alias{tab_var_metrics}
+\alias{tab_metrics_var}
 \title{Output a five point summary table for the values in multiple columns}
 \usage{
 tab_var_metrics(data, col, digits = 1, .labels = T)
+
+tab_metrics_var(data, col, digits = 1, .labels = T)
 }
 \arguments{
 \item{data}{A tibble}
@@ -17,4 +20,6 @@ tab_var_metrics(data, col, digits = 1, .labels = T)
 }
 \description{
 Output a five point summary table for the values in multiple columns
+
+Alias for tab_var_metrics
 }

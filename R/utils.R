@@ -27,6 +27,7 @@ get_stars <- function(x) {
 }
 
 #' A reduced skimmer for metric variables
+#' Returns a five point summary, mean and sd, items count and alpha for scales added by add_idx()
 #' @export
 skim_metrics <- skimr::skim_with(
   numeric = skimr::sfl(
@@ -36,7 +37,9 @@ skim_metrics <- skimr::skim_with(
     q3 = ~stats::quantile(., probs = 0.75, na.rm = TRUE, names = FALSE),
     max = ~ base::max(., na.rm = T),
     mean = ~ base::mean(., na.rm=T),
-    sd = ~ stats::sd(., na.rm=T)
+    sd = ~ stats::sd(., na.rm=T),
+    items = ~ get_idx_alpha(.)$items,
+    alpha = ~ get_idx_alpha(.)$alpha
   ),
   base = skimr::sfl(
     n = length,
@@ -64,7 +67,7 @@ get_labels <- function(data, cols) {
 
   # Replace empty classes with NA
   item_classes <- sapply(data,attr,"class", simplify = F)
-  item_classes <- ifelse(sapply(item_classes, is.null),NA, item_classes)
+  item_classes <- ifelse(sapply(item_classes, is.null), NA, item_classes)
 
   item_comments = sapply(data,attr,"comment", simplify = F)
   item_comments <- ifelse(sapply(item_comments, is.null),NA, item_comments)
@@ -126,12 +129,16 @@ get_labels <- function(data, cols) {
 get_limits <- function(data, cols, negative=F) {
   values <- get_labels(data, {{cols}}) %>%
     distinct(value_name) %>%
-    pull(value_name) %>%
-    as.numeric()
+    pull(value_name)
 
   values <- suppressWarnings(as.numeric(c(values)))
+
+  if (all(is.na(values))) {
+    return(NULL)
+  }
+
   if (!negative) {
-    values <- values[values >= 0]
+    values <- suppressWarnings(values[values >= 0])
   }
 
   if (any(!is.na(values))) {
