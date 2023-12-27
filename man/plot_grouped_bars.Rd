@@ -7,8 +7,8 @@
 plot_grouped_bars(
   data,
   category = NULL,
+  scale = NULL,
   numbers = NULL,
-  direction = -1,
   title = NULL,
   caption = NULL
 )
@@ -18,9 +18,10 @@ plot_grouped_bars(
 
 \item{category}{Category for filtering the dataframe}
 
-\item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
+\item{scale}{Direction of the scale: 0 = no direction for categories,
+-1 = descending or 1 = ascending values.}
 
-\item{direction}{Direction of the viridis scale, either -1 or 1.}
+\item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
 
 \item{title}{The plot title or NULL}
 

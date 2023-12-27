@@ -85,12 +85,6 @@ plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", 
   base_n <- sum(result$Total[! (result[[1]] %in% c("Total", "Missing"))])
   categories <- dplyr::select(result,-1,-matches("^Total|Missing")) %>% colnames()
 
-  # Detect whether the categories are a numeric sequence and choose direction
-  ordered <- suppressWarnings(as.numeric(c(categories)))
-  positive <- ordered[ordered >= 0]
-  direction <- dplyr::coalesce(ifelse(any(diff(positive) >= 0) | any(is.na(ordered)), -1 , 1), 1)
-
-
   # Detect whether the categories are binary
   if ((length(categories) == 2) && (is.null(.category)) && ("TRUE" %in% categories)) {
     .category <- "TRUE"
@@ -130,8 +124,8 @@ plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", 
   plot_grouped_bars(
     result,
     category= .category,
+    scale = get_scale(data, {{col}}, categories),
     numbers=numbers,
-    direction = direction,
     title = ifelse(.labels, title, NULL),
     caption = ifelse(.labels, paste0("n=", base_n), NULL)
   )
@@ -158,12 +152,6 @@ plot_item_counts <- function(data, cols, numbers=NULL, .labels=T, .category=NULL
   categories <- dplyr::select(result,-1,-matches("^Total|Missing")) %>% colnames()
   base_n <- sum(dplyr::select(result,-1,-matches("^Total|Missing"))[1,])
 
-  # Detect whether the categories are a numeric sequence and choose direction
-  ordered <- suppressWarnings(as.numeric(c(categories)))
-  positive <- ordered[ordered >= 0]
-  direction <- dplyr::coalesce(ifelse(any(diff(positive) >= 0) | any(is.na(ordered)), -1 , 1), 1)
-
-
    # Detect whether the categories are binary
    if ((length(categories) == 2) && (is.null(.category)) && ("TRUE" %in% categories)) {
      .category <- "TRUE"
@@ -189,12 +177,11 @@ plot_item_counts <- function(data, cols, numbers=NULL, .labels=T, .category=NULL
       )
     )
 
-
   plot_grouped_bars(
     result,
     category=.category,
+    scale = get_scale(data, cols, categories),
     numbers = numbers,
-    direction = direction,
     title = ifelse(.labels, title, NULL),
     caption = ifelse(.labels, paste0("n=", base_n, "; multiple responses possible"), NULL)
   )
@@ -279,11 +266,12 @@ plot_item_metrics <- function(data, cols, limits=NULL, numbers=NULL, .labels=T, 
 #'
 #' @param data Dataframe with the columns Item, value, p, n
 #' @param category Category for filtering the dataframe
+#' @param scale Direction of the scale: 0 = no direction for categories,
+#'              -1 = descending or 1 = ascending values.
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
-#' @param direction Direction of the viridis scale, either -1 or 1.
 #' @param title The plot title or NULL
 #' @param caption The plot caption or NULL. The caption is used for notes.
-plot_grouped_bars <- function(data, category=NULL, numbers=NULL, direction=-1, title=NULL, caption=NULL) {
+plot_grouped_bars <- function(data, category=NULL, scale=NULL, numbers=NULL, title=NULL, caption=NULL) {
 
   if (!is.null(category)) {
     data <- filter(data, value == category)
@@ -320,13 +308,16 @@ plot_grouped_bars <- function(data, category=NULL, numbers=NULL, direction=-1, t
         legend.position="bottom",
         legend.justification="left"
       )
-  } else {
+  } else if ((scale > 0) || (scale < 0)) {
     pl <- pl +
       viridis::scale_fill_viridis(
         discrete=TRUE,
         option="rocket",
-        direction = direction
+        direction = scale
       )
+  } else {
+    pl <- pl +
+      ggplot2::scale_fill_discrete()
   }
 
   if (!is.null(numbers)) {

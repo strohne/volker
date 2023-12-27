@@ -148,6 +148,35 @@ get_limits <- function(data, cols, negative=F) {
   return (NULL)
 }
 
+#' Detect whether a scale is a numeric sequence
+#'
+#' @param data The dataframe
+#' @param cols The tidy selection
+#' @param categories Category names
+#' @return 0 = an undirected scale, -1 = descending values, 1 = ascending values
+get_scale <- function(data, cols, categories) {
+
+  # Detect whether the categories are a numeric sequence and choose direction
+  scale_numeric <- data %>%
+    dplyr::select({{cols}}) %>%
+    sapply(is.numeric) %>%
+    all()
+
+  scale_ordered <- suppressWarnings(as.numeric(c(categories)))
+  scale_positive <- scale_ordered[scale_ordered >= 0]
+
+  if (!scale_numeric && all(is.na(scale_ordered))) {
+    categories_scale = 0
+  }
+  else if (any(diff(scale_positive) >= 0) | any(is.na(scale_ordered))) {
+    categories_scale = -1
+  } else {
+    categories_scale = 1
+  }
+
+  categories_scale
+}
+
 #' Remove all comments from the selected columns
 #'
 #' @param data A tibble
