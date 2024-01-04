@@ -4,7 +4,15 @@
 \alias{tab_multi_means}
 \title{Output the means for groups in one or multiple columns}
 \usage{
-tab_multi_means(data, cols, cols_groups, values = c("mean", "sd"), digits = 1)
+tab_multi_means(
+  data,
+  cols,
+  cols_groups,
+  values = c("mean", "sd"),
+  digits = 1,
+  .negative = F,
+  .labels = T
+)
 }
 \arguments{
 \item{data}{A tibble}
@@ -14,6 +22,10 @@ tab_multi_means(data, cols, cols_groups, values = c("mean", "sd"), digits = 1)
 \item{values}{The output metrics, mean or sd}
 
 \item{digits}{The digits to print}
+
+\item{.negative}{If True (default), negative values are recoded to missing values}
+
+\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 
 \item{cols_group}{The columns holding groups to compare}
 }

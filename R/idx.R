@@ -2,14 +2,30 @@
 #' Calculate the mean value of multiple items
 #'
 #' @param data A dataframe
-#' @param newcol Name of the index as a character value
 #' @param cols A tidy selection of item columns
+#' @param newcol Name of the index as a character value.
+#'              Set to NULL (default) to automatically build a name
+#'              from the common column prefix, prefixed with "idx_"
 #' @param .negative If TRUE, all negative values are recoded to NA
 #' @export
-add_idx <- function(data, newcol, cols, .negative=FALSE) {
+add_idx <- function(data, cols, newcol=NULL, .negative=FALSE) {
 
   idx <- data %>%
     dplyr::select({{cols}})
+
+  prefix <- get_prefix(colnames(idx), F, T)
+  if(is.null(newcol)) {
+    newcol <- paste0("idx_", prefix)
+  }
+
+  # Create a label
+  newlabel <- get_labels(idx) %>%
+    distinct(item_label)  %>%
+    na.omit() %>%
+    pull(item_label) %>%
+    get_prefix(F, T) %>%
+    paste0(" ",prefix)
+
 
   # TODO: warn if any negative values were recoded
   if (!.negative) {
@@ -21,6 +37,10 @@ add_idx <- function(data, newcol, cols, .negative=FALSE) {
 
   data[[newcol]] <- idx$scores
   attr(data[[newcol]],"psych.alpha") <- idx
+  attr(data[[newcol]],"comment") <- newlabel
+
+  #TODO: add limits/range
+  attr(data[[newcol]], "limits") <- get_limits(data,!!cols, .negative)
 
   data
 }

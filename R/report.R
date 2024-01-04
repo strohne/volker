@@ -7,9 +7,10 @@
 #' TODO: Check whether the matched items are present
 #'
 #' @param data A tibble
-#' @param scopes A list of column prefixes, e.g. "UM" or "WB.
+#' @param scopes A list of column prefixes, e.g. "UM" or "WB" (character).
+#' @param col_group A tidyselect column holding groups to compare, e.g. sd_gender (column name without quotes)
 #' @export
-report <- function(data, scopes) {
+report <- function(data, scopes, col_group=NULL) {
 
   # Get item label from the attributes
   labels <- data %>%
@@ -32,14 +33,31 @@ report <- function(data, scopes) {
        }
 
 
-       if ((nrow(items) == 1) &&  (scope %in% colnames(data))) {
+       is_items <- nrow(items) > 1
+       is_var <- !is_items &&  (scope %in% colnames(data))
+       is_scale <- get_scale(data, starts_with(scope))
+
+       # A single variable
+       if (is_var && is.null(col_group)) {
          tab_var_counts(data, !!rlang::sym(scope)) %>%
            print()
 
          plot_var_counts(data, !!rlang::sym(scope)) %>%
            print()
        }
-       else if (nrow(items) > 1) {
+
+       # A single variable by group
+       else if (is_var && !is.null(col_group)) {
+         tab_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop="rows") %>%
+           print()
+
+         plot_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop="rows") %>%
+           print()
+       }
+
+       # Multiple items
+       else if (is_items && is.null(col_group)) {
+
          tab_item_counts(data, starts_with(scope)) %>%
            print()
 
@@ -47,9 +65,49 @@ report <- function(data, scopes) {
            print()
 
        }
+
+       # Multiple items by group
+       else if (is_items && !is.null(col_group)) {
+
+         tab_multi_means(data, starts_with(scope), !!rlang::sym(col_group)) %>%
+           print()
+
+         plot_multi_means(data, starts_with(scope), !!rlang::sym(col_group)) %>%
+            print()
+
+       }
        else {
          warning("Can't autodetect the table type for the scope ", scope)
        }
+
+
+       # Output index
+       if (is_items && is_scale != 0) {
+         idx <- add_idx(data, starts_with(scope))
+         idx_name <- setdiff(colnames(idx), colnames(data))
+
+
+         if (is.null(col_group)) {
+           idx %>%
+             tab_var_metrics(!!rlang::sym(idx_name)) %>%
+             print()
+
+           idx %>%
+             plot_var_metrics(!!rlang::sym(idx_name)) %>%
+             print()
+         }
+         else {
+           idx %>%
+             tab_group_metrics(!!rlang::sym(idx_name), !!rlang::sym(col_group)) %>%
+             print()
+
+           idx %>%
+             plot_group_metrics(!!rlang::sym(idx_name), !!rlang::sym(col_group)) %>%
+             print()
+
+         }
+       }
+
   }
 
 #

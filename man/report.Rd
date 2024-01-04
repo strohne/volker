@@ -4,12 +4,14 @@
 \alias{report}
 \title{Automatically detect the table type and output table and plot}
 \usage{
-report(data, scopes)
+report(data, scopes, col_group = NULL)
 }
 \arguments{
 \item{data}{A tibble}
 
-\item{scopes}{A list of column prefixes, e.g. "UM" or "WB.}
+\item{scopes}{A list of column prefixes, e.g. "UM" or "WB" (character).}
+
+\item{col_group}{A tidyselect column holding groups to compare, e.g. sd_gender (column name without quotes)}
 }
 \description{
 For each column prefix:

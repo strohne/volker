@@ -111,13 +111,13 @@ are printed by `tab_var_metrics()` or `tab_item_metrics()`.
 
 # Add a single index
 data %>% 
-  add_idx("idx_cg_adoption", starts_with("cg_adoption_")) %>% 
-  tab_var_metrics(idx_cg_adoption)
+  add_idx(starts_with("cg_adoption_")) %>% 
+  tab_var_metrics(idx_cg_adoption_)
 
 # Compare the index values by group
 data %>% 
-  add_idx("idx_cg_adoption", starts_with("cg_adoption_")) %>% 
-  tab_group_metrics(idx_cg_adoption,in_adoption)
+  add_idx(starts_with("cg_adoption_")) %>% 
+  tab_group_metrics(idx_cg_adoption_,in_adoption)
 
 ```
 
@@ -126,11 +126,11 @@ data %>%
 
 # Add multiple indizes and summarize them
 data %>% 
-  add_idx("idx_cg_adoption", starts_with("cg_adoption_")) %>% 
+  add_idx(starts_with("cg_adoption_")) %>% 
 
-  add_idx("idx_cg_adoption_advantage", starts_with("cg_adoption_advantage")) %>%
-  add_idx("idx_cg_adoption_fearofuse", starts_with("cg_adoption_fearofuse")) %>% 
-  add_idx("idx_cg_adoption_social", starts_with("cg_adoption_social")) %>% 
+  add_idx(starts_with("cg_adoption_advantage")) %>%
+  add_idx(starts_with("cg_adoption_fearofuse")) %>% 
+  add_idx(starts_with("cg_adoption_social")) %>% 
   
   tab_item_metrics(starts_with("idx_cg_adoption"))
   

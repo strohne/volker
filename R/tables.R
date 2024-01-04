@@ -58,73 +58,6 @@ tab_var_counts <- function(data, col, .labels=T, .formatted=T) {
 #' @export
 tab_counts_var <- tab_var_counts
 
-#' Output a five point summary table for the values in multiple columns
-#'
-#' @param data A tibble
-#' @param col The columns holding metric values
-#' @param digits The digits to print
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
-#' @export
-tab_var_metrics <- function(data, col, digits=1, .labels=T) {
-
-  result <- data %>%
-    skim_metrics({{col}}) %>%
-    dplyr::select(
-      "item" = skim_variable,
-      min = numeric.min,
-      q1 = numeric.q1,
-      median = numeric.median,
-      q3 = numeric.q3,
-      max = numeric.max,
-      m = numeric.mean,
-      sd = numeric.sd,
-      missing,
-      n,
-      items = numeric.items,
-      alpha = numeric.alpha
-    )
-
-  # Remove items and alpha if not and index
-  if (all(is.na(result$items)) || all(is.na(result$alpha))) {
-    result$items <- NULL
-    result$alpha <- NULL
-  } else {
-    result <- result %>%
-      dplyr::mutate(across(c(items), ~ as.character(round(., 0)))) %>%
-      dplyr::mutate(across(c(alpha), ~ as.character(round(., 2))))
-  }
-
-  result <- result %>%
-    dplyr::mutate(across(c(missing, n), ~ as.character(round(.,0)))) %>%
-    dplyr::mutate(across(c(min, q1, median, q3, max), ~ as.character(round(.,digits)))) %>%
-    dplyr::mutate(across(c(m, sd), ~ as.character(round(.,digits)))) %>%
-    #remove_labels(-item) %>%
-    tidyr::pivot_longer(-item) %>%
-    dplyr::select(-item, {{col}} := name, value)
-
-  # Get item label from the attributes
-  if (.labels) {
-    codes <- data %>%
-      get_labels({{col}}) %>%
-      distinct(item_name, item_label)  %>%
-      na.omit()
-  }
-
-  if (.labels && (nrow(codes) > 0)) {
-    label <- codes$item_label[1]
-    result <- result %>%
-      dplyr::rename({{label}} := {{col}})
-  }
-
-  class(result) <- c("vlkr_tbl", class(result))
-  result
-}
-
-#' Alias for tab_var_metrics
-#' @rdname tab_var_metrics
-#' @export
-tab_metrics_var <- tab_var_metrics
-
 #' Output frequencies cross tabulated with a grouping column
 #'
 #' @param data A tibble
@@ -304,67 +237,6 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), prop="tota
   result
 }
 
-
-#' #' Output a five point summary for groups
-#'
-#' @param data A tibble
-#' @param col The column holding metric values
-#' @param col_group The column holding groups to compare
-#' @param digits The digits to print
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
-#' @export
-tab_group_metrics <- function(data, col, col_group, digits=1, .labels=T) {
-
-  result_grouped <- data %>%
-    dplyr::group_by({{col_group}}) %>%
-    skim_metrics({{col}}) %>%
-    ungroup() %>%
-    dplyr::mutate(
-      {{col_group}} := tidyr::replace_na(as.character({{col_group}}), "Missing")
-    ) %>%
-    select(-skim_variable, -skim_type)
-
-  result_total <-  data %>%
-    skim_metrics({{col}}) %>%
-    mutate({{col_group}} := "Total")
-
-  result <- bind_rows(
-    result_grouped,
-    result_total
-  ) %>%
-    dplyr::select(
-      {{col_group}},
-      min = numeric.min,
-      q1 = numeric.q1,
-      median = numeric.median,
-      q3 = numeric.q3,
-      max = numeric.max,
-      m = numeric.mean,
-      sd = numeric.sd,
-      missing,
-      n
-    )
-
-  # Get item label from the attributes
-  if (.labels) {
-    codes <- data %>%
-      get_labels({{col_group}}) %>%
-      distinct(item_name, item_label) %>%
-      na.omit()
-  }
-
-  if (.labels && (nrow(codes) > 0)) {
-    label <- codes$item_label[1]
-    result <- result %>%
-      dplyr::rename({{label}} := {{col_group}})
-  }
-
-
-  attr(result,"digits") <- digits
-  class(result) <- c("vlkr_tbl", setdiff(class(result),"skim_df"))
-  result
-}
-
 #' Output frequencies for multiple variables
 #'
 #' @param data A tibble containing item measures
@@ -438,26 +310,9 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .label
     result <- result_n
   }
 
-  # Get labels from the attributes
-  if (.labels) {
-    labels_items <- data %>%
-      get_labels(!!cols) %>%
-      distinct(item_name, item_label) %>%
-      na.omit()
-
-    # Get category labels from the attributes
-    labels_categories <- data %>%
-      get_labels(!!cols) %>%
-      distinct(value_name, value_label) %>%
-      na.omit()
-  }
-
   # Replace item labels
-  if (.labels && (nrow(labels_items) > 0)) {
-    result <- result %>%
-      left_join(labels_items, by=c("item"="item_name")) %>%
-      mutate(item = dplyr::coalesce(item_label, item)) %>%
-      select(-item_label)
+  if (.labels) {
+    result <- replace_item_values(result, data, cols)
   }
 
   # Remove common item prefix
@@ -468,15 +323,23 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .label
   }
 
   # Replace category labels
-  if (.labels && (nrow(labels_categories) > 0)) {
-    colnames(result) <- sapply(
-      colnames(result),
-      function(x) {
-        dplyr::coalesce(
-          setNames(labels_categories$value_label, labels_categories$value_name)[x],x
-        )
-      }
-    )
+  if (.labels) {
+
+    labels_categories <- data %>%
+      get_labels(!!cols) %>%
+      distinct(value_name, value_label) %>%
+      na.omit()
+
+    if (nrow(labels_categories) > 0) {
+      colnames(result) <- sapply(
+        colnames(result),
+        function(x) {
+          dplyr::coalesce(
+            setNames(labels_categories$value_label, labels_categories$value_name)[x],x
+          )
+        }
+      )
+    }
   }
 
 
@@ -493,6 +356,138 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .label
   result
 }
 
+
+#' Output a five point summary table for the values in multiple columns
+#'
+#' @param data A tibble
+#' @param col The columns holding metric values
+#' @param digits The digits to print
+#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @export
+tab_var_metrics <- function(data, col, digits=1, .labels=T) {
+
+  result <- data %>%
+    skim_metrics({{col}}) %>%
+    dplyr::select(
+      "item" = skim_variable,
+      min = numeric.min,
+      q1 = numeric.q1,
+      median = numeric.median,
+      q3 = numeric.q3,
+      max = numeric.max,
+      m = numeric.mean,
+      sd = numeric.sd,
+      missing,
+      n,
+      items = numeric.items,
+      alpha = numeric.alpha
+    )
+
+  # Remove items and alpha if not and index
+  if (all(is.na(result$items)) || all(is.na(result$alpha))) {
+    result$items <- NULL
+    result$alpha <- NULL
+  } else {
+    result <- result %>%
+      dplyr::mutate(across(c(items), ~ as.character(round(., 0)))) %>%
+      dplyr::mutate(across(c(alpha), ~ as.character(round(., 2))))
+  }
+
+  result <- result %>%
+    dplyr::mutate(across(c(missing, n), ~ as.character(round(.,0)))) %>%
+    dplyr::mutate(across(c(min, q1, median, q3, max), ~ as.character(round(.,digits)))) %>%
+    dplyr::mutate(across(c(m, sd), ~ as.character(round(.,digits)))) %>%
+    #remove_labels(-item) %>%
+    tidyr::pivot_longer(-item) %>%
+    dplyr::select(-item, {{col}} := name, value)
+
+  # Get item label from the attributes
+  if (.labels) {
+    label <- get_col_label(data,{{col}})
+    result <- result %>%
+      dplyr::rename({{label}} := {{col}})
+  }
+
+  class(result) <- c("vlkr_tbl", class(result))
+  result
+}
+
+#' Alias for tab_var_metrics
+#' @rdname tab_var_metrics
+#' @export
+tab_metrics_var <- tab_var_metrics
+
+
+#' #' Output a five point summary for groups
+#'
+#' @param data A tibble
+#' @param col The column holding metric values
+#' @param col_group The column holding groups to compare
+#' @param .negative If True (default), negative values are recoded to missing values
+#' @param digits The digits to print
+#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @export
+tab_group_metrics <- function(data, col, col_group, .negative=F, digits=1, .labels=T) {
+
+  data <- convert_data(data)
+
+  # TODO: warn if any negative values were recoded
+  # TODO: only for the metric column (col parameter)
+  if (!.negative) {
+    data <- dplyr::mutate(data, across(where(is.numeric), ~ if_else(. < 0, NA, .)))
+  }
+
+  result_grouped <- data %>%
+    dplyr::group_by({{col_group}}) %>%
+    skim_metrics({{col}}) %>%
+    ungroup() %>%
+    dplyr::mutate(
+      {{col_group}} := tidyr::replace_na(as.character({{col_group}}), "Missing")
+    ) %>%
+    select(-skim_variable, -skim_type)
+
+  result_total <-  data %>%
+    skim_metrics({{col}}) %>%
+    mutate({{col_group}} := "Total")
+
+  result <- bind_rows(
+    result_grouped,
+    result_total
+  ) %>%
+    dplyr::select(
+      {{col_group}},
+      min = numeric.min,
+      q1 = numeric.q1,
+      median = numeric.median,
+      q3 = numeric.q3,
+      max = numeric.max,
+      m = numeric.mean,
+      sd = numeric.sd,
+      missing,
+      n
+    )
+
+  # Get item label from the attributes
+  if (.labels) {
+    codes <- data %>%
+      get_labels({{col_group}}) %>%
+      distinct(item_name, item_label) %>%
+      na.omit()
+  }
+
+  if (.labels && (nrow(codes) > 0)) {
+    label <- codes$item_label[1]
+    result <- result %>%
+      dplyr::rename({{label}} := {{col_group}})
+  }
+
+  #TODO: Add limits
+  #attr(data[[newcol]],"limits")
+
+  attr(result,"digits") <- digits
+  class(result) <- c("vlkr_tbl", setdiff(class(result),"skim_df"))
+  result
+}
 
 
 #' Output a five point summary table for multiple items
@@ -546,19 +541,8 @@ tab_item_metrics <- function(data, cols, digits=1, .negative=F, .labels=T) {
 
   # Get item labels from the attributes
   if (.labels) {
-    codes <- data %>%
-      get_labels(!!cols) %>%
-      distinct(item_name, item_label) %>%
-      na.omit()
-
+    result <- replace_item_values(result, data, cols)
     attr(result, "limits") <- get_limits(data,!!cols, .negative)
-  }
-
-  if (.labels && (nrow(codes) > 0)) {
-    result <- result %>%
-      left_join(codes, by=c("item"="item_name")) %>%
-      mutate(item = dplyr::coalesce(item_label, item)) %>%
-      select(-item_label)
   }
 
   # Remove common item prefix
@@ -592,12 +576,20 @@ tab_item_metrics <- function(data, cols, digits=1, .negative=F, .labels=T) {
 #' @param cols_group The columns holding groups to compare
 #' @param values The output metrics, mean or sd
 #' @param digits The digits to print
+#' @param .negative If True (default), negative values are recoded to missing values
+#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), digits = 1) {
+tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), digits = 1, .negative=F, .labels=T) {
 
   # Get positions of group cols
   cols_groups <- tidyselect::eval_select(expr = enquo(cols_groups), data=data)
   cols <- enquo(cols)
+
+  # TODO: warn if any negative values were recoded
+  # TODO: only selected columns
+  if (!.negative) {
+    data <- dplyr::mutate(data, across(where(is.numeric), ~ if_else(. < 0, NA, .)))
+  }
 
   # Total means
   value <- "numeric.mean"
@@ -712,17 +704,9 @@ tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), dig
   }
 
   # Add labels
-  codes <- data %>%
-    get_labels(!!cols) %>%
-    distinct(item_name, item_label)
-
-  if (nrow(codes) > 0) {
-    result <- result %>%
-      left_join(codes, by=c("item"="item_name")) %>%
-      mutate(item = dplyr::coalesce(item_label, item)) %>%
-      select(-item_label)
+  if (.labels) {
+    result <- replace_item_values(result, data, cols)
   }
-
 
   # Remove common item prefix
   prefix <- get_prefix(result$item)
@@ -730,7 +714,6 @@ tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), dig
     result <- dplyr::mutate(result, item = str_remove(item, prefix))
     result <- dplyr::mutate(result, item = ifelse(item=="", prefix, item))
   }
-
 
   # Rename first column
   if (prefix != "") {
@@ -858,4 +841,5 @@ print.vlkr_tbl <- function(obj) {
 
   obj <- knit_table(obj, digits=digits)
   print(obj)
+  cat("\n")
 }

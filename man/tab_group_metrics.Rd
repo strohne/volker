@@ -4,7 +4,7 @@
 \alias{tab_group_metrics}
 \title{#' Output a five point summary for groups}
 \usage{
-tab_group_metrics(data, col, col_group, digits = 1, .labels = T)
+tab_group_metrics(data, col, col_group, .negative = F, digits = 1, .labels = T)
 }
 \arguments{
 \item{data}{A tibble}
@@ -12,6 +12,8 @@ tab_group_metrics(data, col, col_group, digits = 1, .labels = T)
 \item{col}{The column holding metric values}
 
 \item{col_group}{The column holding groups to compare}
+
+\item{.negative}{If True (default), negative values are recoded to missing values}
 
 \item{digits}{The digits to print}
 
