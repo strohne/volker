@@ -1,3 +1,20 @@
+#' Check whether a column exist and stop if not
+#'
+#' @param data A data frame
+#' @param col A column name
+#' @param stopit If true, the execution stops when a column is missing
+#' @return boolean
+has_column <- function(data, col, stopit = T) {
+  colname <- as.character(rlang::get_expr(rlang::enquo(col)))
+
+  if (! (colname %in% colnames(data))) {
+    stop("The column ", colname, " does not exist, check your parameters.", call.=F)
+  }
+
+  colname %in% colnames(data)
+}
+
+
 #' Prepare metadata and types of dataframe columns
 #'
 #' - Removes the avector class from all columns

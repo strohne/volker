@@ -53,7 +53,7 @@ plot_var_counts <- function(data, col, numbers=NULL, .labels=T) {
     }
 
   if (.labels) {
-    pl <- pl + labs(title = title, caption = paste0("n=", base_n))
+    pl <- pl + labs(title = title, caption = paste0("n=", base_n,"; without missings"))
   }
 
   pl
@@ -73,6 +73,9 @@ plot_var_counts <- function(data, col, numbers=NULL, .labels=T) {
 #' @export
 plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", .labels=T, .category=NULL) {
 
+  # Check columns
+  has_column(data, {{col}})
+  has_column(data, {{col_group}})
 
   if (prop == "cols") {
     stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
@@ -111,6 +114,7 @@ plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", 
     result <- result %>%
       dplyr::mutate(p = (n / sum(n)) * 100)
   }
+
   result <- result %>%
     dplyr::mutate(
       .values = case_when(
@@ -120,14 +124,13 @@ plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", 
       )
     )
 
-
   .plot_grouped_bars(
     result,
     category= .category,
     scale = get_scale(data, {{col}}, categories),
     numbers=numbers,
     title = ifelse(.labels, title, NULL),
-    caption = ifelse(.labels, paste0("n=", base_n), NULL)
+    caption = ifelse(.labels, paste0("n=", base_n,"; without missings."), NULL)
   )
 
 }
@@ -183,7 +186,7 @@ plot_item_counts <- function(data, cols, numbers=NULL, .labels=T, .category=NULL
     scale = get_scale(data, cols, categories),
     numbers = numbers,
     title = ifelse(.labels, title, NULL),
-    caption = ifelse(.labels, paste0("n=", base_n, "; multiple responses possible"), NULL)
+    caption = ifelse(.labels, paste0("n=", base_n, "; multiple responses possible, without missings."), NULL)
   )
 
 }
@@ -196,6 +199,8 @@ plot_item_counts <- function(data, cols, numbers=NULL, .labels=T, .category=NULL
 #' @export
 plot_var_metrics <- function(data, col, .labels=T) {
 
+  data <- drop_na(data,{{col}})
+
   # TODO: make configurable: density, boxplot or histogram
   pl <- data %>%
     ggplot(aes({{col}})) +
@@ -205,9 +210,9 @@ plot_var_metrics <- function(data, col, .labels=T) {
 
   if (.labels) {
     title <- get_col_label(data,{{col}})
-    base_n <- drop_na(data,{{col}}) %>%  nrow()
+    base_n <- data %>%  nrow()
     pl <- pl +
-      labs(title = title, caption = paste0("n=", base_n)) +
+      labs(title = title, caption = paste0("n=", base_n, "; without missings")) +
       xlab(title)
   }
 
@@ -340,7 +345,7 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
     # TODO: remove missing values, get group sizes
     base_n <- nrow(data)
     pl <- pl + ggtitle(label =trim_label(prefix))
-    pl <- pl + labs (caption = paste0("n=", base_n))
+    pl <- pl + labs (caption = paste0("n=", base_n, "; with missings"))
   }
 
   pl

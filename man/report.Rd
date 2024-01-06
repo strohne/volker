@@ -4,7 +4,7 @@
 \alias{report}
 \title{Automatically detect the table type and output table and plot}
 \usage{
-report(data, scopes, col_group = NULL)
+report(data, scopes, col_group = NULL, prop = "total")
 }
 \arguments{
 \item{data}{A tibble}
@@ -12,6 +12,8 @@ report(data, scopes, col_group = NULL)
 \item{scopes}{A list of column prefixes, e.g. "UM" or "WB" (character).}
 
 \item{col_group}{A tidyselect column holding groups to compare, e.g. sd_gender (column name without quotes)}
+
+\item{prop}{The basis of percent calculation when comparing groups: total (the default), cols, or rows}
 }
 \description{
 For each column prefix:

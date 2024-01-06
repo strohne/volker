@@ -70,6 +70,10 @@ tab_counts_var <- tab_var_counts
 #' @export
 tab_group_counts <- function(data, col, col_group, values=c("n","p"), prop="total", .formatted=T, .labels=T) {
 
+  # Check columns
+  has_column(data, {{col}})
+  has_column(data, {{col_group}})
+
   #
   # 1. Count
   #
@@ -429,8 +433,6 @@ tab_metrics_var <- tab_var_metrics
 #' @export
 tab_group_metrics <- function(data, col, col_group, .negative=F, digits=1, .labels=T) {
 
-  data <- convert_data(data)
-
   # TODO: warn if any negative values were recoded
   # TODO: only for the metric column (col parameter)
   if (!.negative) {
@@ -464,8 +466,20 @@ tab_group_metrics <- function(data, col, col_group, .negative=F, digits=1, .labe
       m = numeric.mean,
       sd = numeric.sd,
       missing,
-      n
+      n,
+      items=numeric.items,
+      alpha=numeric.alpha
     )
+
+  # Remove items and alpha if not and index
+  if (all(is.na(result$items)) || all(is.na(result$alpha))) {
+    result$items <- NULL
+    result$alpha <- NULL
+  } else {
+    result <- result %>%
+      dplyr::mutate(across(c(items), ~ as.character(round(., 0)))) %>%
+      dplyr::mutate(across(c(alpha), ~ as.character(round(., 2))))
+  }
 
   # Get item label from the attributes
   if (.labels) {

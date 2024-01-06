@@ -24,7 +24,7 @@ add_idx <- function(data, cols, newcol=NULL, .negative=FALSE) {
     na.omit() %>%
     pull(item_label) %>%
     get_prefix(F, T) %>%
-    paste0(" ",prefix)
+    paste0(" (Index ",prefix, ")")
 
 
   # TODO: warn if any negative values were recoded
@@ -33,7 +33,7 @@ add_idx <- function(data, cols, newcol=NULL, .negative=FALSE) {
   }
 
   idx <- idx %>%
-    psych::alpha()
+    psych::alpha(check.keys = T)
 
   data[[newcol]] <- idx$scores
   attr(data[[newcol]],"psych.alpha") <- idx

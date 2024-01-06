@@ -9,8 +9,9 @@
 #' @param data A tibble
 #' @param scopes A list of column prefixes, e.g. "UM" or "WB" (character).
 #' @param col_group A tidyselect column holding groups to compare, e.g. sd_gender (column name without quotes)
+#' @param prop The basis of percent calculation when comparing groups: total (the default), cols, or rows
 #' @export
-report <- function(data, scopes, col_group=NULL) {
+report <- function(data, scopes, col_group=NULL, prop="total") {
 
   # Get item label from the attributes
   labels <- data %>%
@@ -37,8 +38,8 @@ report <- function(data, scopes, col_group=NULL) {
        is_var <- !is_items &&  (scope %in% colnames(data))
        is_scale <- get_scale(data, starts_with(scope))
 
-       # A single variable
-       if (is_var && is.null(col_group)) {
+       # A single categorical variable
+       if (is_var && is_scale == 0 && is.null(col_group)) {
          tab_var_counts(data, !!rlang::sym(scope)) %>%
            print()
 
@@ -46,12 +47,21 @@ report <- function(data, scopes, col_group=NULL) {
            print()
        }
 
-       # A single variable by group
-       else if (is_var && !is.null(col_group)) {
-         tab_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop="rows") %>%
+       # A single metric variable
+       else if (is_var && is_scale != 0 && is.null(col_group)) {
+         tab_var_metrics(data, !!rlang::sym(scope)) %>%
            print()
 
-         plot_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop="rows") %>%
+         plot_var_metrics(data, !!rlang::sym(scope)) %>%
+           print()
+       }
+
+       # A single variable by group
+       else if (is_var && !is.null(col_group)) {
+         tab_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop=prop) %>%
+           print()
+
+         plot_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop=prop) %>%
            print()
        }
 
@@ -77,7 +87,7 @@ report <- function(data, scopes, col_group=NULL) {
 
        }
        else {
-         warning("Can't autodetect the table type for the scope ", scope)
+         warning("Could't find columns to autodetect the table type for the scope ", scope,". Check your parameters.")
        }
 
 
