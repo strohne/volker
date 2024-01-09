@@ -854,6 +854,8 @@ print.vlkr_tbl <- function(obj) {
   }
 
   obj <- knit_table(obj, digits=digits)
+  #obj <- knitr::asis_output(obj)
+  #knitr::knit_print(obj)
   print(obj)
-  cat("\n")
+  #cat("\n")
 }

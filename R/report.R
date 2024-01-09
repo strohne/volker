@@ -56,12 +56,21 @@ report <- function(data, scopes, col_group=NULL, prop="total") {
            print()
        }
 
-       # A single variable by group
-       else if (is_var && !is.null(col_group)) {
+       # A single categorical variable by group
+       else if (is_var && is_scale == 0 && !is.null(col_group)) {
          tab_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop=prop) %>%
            print()
 
          plot_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop=prop) %>%
+           print()
+       }
+
+       # A single metric variable by group
+       else if (is_var && is_scale != 0 && !is.null(col_group)) {
+         tab_group_metrics(data, !!rlang::sym(scope), !!rlang::sym(col_group)) %>%
+           print()
+
+         plot_group_metrics(data, !!rlang::sym(scope), !!rlang::sym(col_group)) %>%
            print()
        }
 
