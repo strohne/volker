@@ -4,7 +4,15 @@
 \alias{report}
 \title{Automatically detect the table type and output table and plot}
 \usage{
-report(data, scopes, col_group = NULL, prop = "total")
+report(
+  data,
+  scopes,
+  col_group = NULL,
+  prop = "total",
+  numbers = "p",
+  missings = F,
+  ordered = NULL
+)
 }
 \arguments{
 \item{data}{A tibble}
@@ -14,6 +22,16 @@ report(data, scopes, col_group = NULL, prop = "total")
 \item{col_group}{A tidyselect column holding groups to compare, e.g. sd_gender (column name without quotes)}
 
 \item{prop}{The basis of percent calculation when comparing groups: total (the default), cols, or rows}
+
+\item{numbers}{The numbers plotted on bars: p (the default), n, both or NULL.}
+
+\item{missings}{Include missing values (default FALSE)}
+
+\item{ordered}{Values can be nominal (0) or ordered ascending (1) descending (-1).
+By default (NULL), the ordering is automatically detected.
+An appropriate color scale should be choosen depending on the ordering.
+For unordered values, the default scale is used.
+For ordered values, the viridis scale is used.}
 }
 \description{
 For each column prefix:

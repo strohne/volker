@@ -19,14 +19,53 @@ has_column <- function(data, col, stopit = T) {
 #'
 #' - Removes the avector class from all columns
 #'   (comes from Sosci and prevents combining vectors)
+#' - Recode residual factor values to NA ("[NA] nicht beantwortet")
 #'
 #' @param data Data frame
+#' @param remove.na Whether residual values should be replaced by NA
 #' @return Data frame
 #' @export
-clean_columns <- function(data) {
+clean_columns <- function(data, remove.na=T) {
   for (i in c(1:ncol(data))) {
     class(data[[i]]) <- setdiff(class(data[[i]]),"avector")
   }
+
+
+  # Recode missings
+
+  if (remove.na != FALSE) {
+    if (is.logical(remove.na)) {
+      remove.na <- "[NA] nicht beantwortet"
+    }
+
+    data <- dplyr::mutate(
+      data,
+      dplyr::across(
+        tidyselect::where(
+          ~ is.factor(.) & (remove.na %in% levels(.))
+        ),
+        ~ na_if(.,remove.na)
+      )
+    )
+  }
+
+  # Add whitespace for better breaks
+  data <- dplyr::mutate(
+    data,
+    dplyr::across(
+      tidyselect::where(is.character),
+      ~ stringr::str_replace_all(., stringr::fixed("/"), "/\u200B")
+    )
+  )
+
+  data <- dplyr::mutate(
+    data,
+    dplyr::across(
+      tidyselect::where(is.factor),
+      ~ forcats::fct_relabel(. ~ stringr::str_replace_all(., stringr::fixed("/"), "/\u200B"))
+    )
+  )
+
   data
 }
 
@@ -62,15 +101,24 @@ skim_metrics <- skimr::skim_with(
 #' @param x The first data frame
 #' @param y The second data frame
 #' @param newline Whether to add a new line character between the values (default: TRUE).
+#' @param brackets Whether to set the secondary values in brackets (default: FALSE).
 #' @return A combined data frame
 #' @export
-zip_tables <- function(x, y, newline=TRUE) {
+zip_tables <- function(x, y, newline=TRUE, brackets=FALSE) {
 
   newline <- newline && (knitr::is_html_output() || knitr::is_latex_output())
   sep <- ifelse(newline,"\n"," ")
 
+  if (brackets) {
+    prefix <- "("
+    postfix <- ")"
+  } else {
+    prefix <- ""
+    postfix <- ""
+  }
+
   for (i in 2:ncol(x)) {
-    x[[i]] <- paste0(x[[i]], sep, "(", y[[i]], ")")
+    x[[i]] <- paste0(x[[i]], sep, prefix, y[[i]], postfix)
   }
   x
 }

@@ -49,6 +49,7 @@ plot_item_counts(data, starts_with("cg_adoption_"), numbers="n")
 
 ```{r results='asis'}
 
+# TODO: use number=c("n","p")
 plot_group_counts(data, in_adoption, sd_geschlecht, prop="rows")
 
 ```

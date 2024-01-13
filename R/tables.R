@@ -27,7 +27,7 @@ tab_var_counts <- function(data, col, .labels=T, .formatted=T) {
   if (.labels) {
     codes <- data %>%
       get_labels({{col}}) %>%
-      distinct(item_name, item_label) %>%
+      dplyr::distinct(item_name, item_label) %>%
       na.omit()
   }
 
@@ -44,7 +44,7 @@ tab_var_counts <- function(data, col, .labels=T, .formatted=T) {
     result <- result %>%
       dplyr::mutate(
         p = paste0(round(p * 100,0),"%"),
-        valid = ifelse(!is.na(valid), paste0(round(valid * 100,0),"%"), "-")
+        valid = ifelse(!is.na(valid), paste0(round(valid * 100,0),"%"), "`-`")
     )
   }
 
@@ -65,14 +65,21 @@ tab_counts_var <- tab_var_counts
 #' @param col_group The column holding groups to compare
 #' @param values The values to output: n (frequency) or p (percentage).
 #' @param prop The basis of percent calculation: total (the default), cols, or rows
+#' @param missings Include missing values (default FALSE)
 #' @param .formatted Set to FALSE to prevent calculating percents from proportions
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-tab_group_counts <- function(data, col, col_group, values=c("n","p"), prop="total", .formatted=T, .labels=T) {
+tab_group_counts <- function(data, col, col_group, values=c("n","p"), prop="total", missings=F, .formatted=T, .labels=T) {
 
   # Check columns
   has_column(data, {{col}})
   has_column(data, {{col_group}})
+
+  # Remove missings
+  if (!missings) {
+    data <- data %>%
+      tidyr::drop_na({{col}},{{col_group}})
+  }
 
   #
   # 1. Count
@@ -90,27 +97,27 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), prop="tota
   rows_n <- grouped %>%
     dplyr::select({{col_group}}, {{col}}, n) %>%
     tidyr::pivot_wider(
-      names_from = {{col_group}},
+      names_from = {{col}},
       values_from = n,
       values_fill = list(n=0)
     )
 
   # Total column
   total_col_n <- data %>%
-    dplyr::count({{col}}) %>%
+    dplyr::count({{col_group}}) %>%
     dplyr::mutate(
-      {{col}} := tidyr::replace_na(as.character({{col}}), "Missing")
+      {{col_group}} := tidyr::replace_na(as.character({{col_group}}), "Missing")
     ) %>%
-  dplyr::select({{col}}, Total = n)
+  dplyr::select({{col_group}}, Total = n)
 
   # Total row
   total_row_n <- grouped %>%
-    dplyr::group_by({{col_group}}) %>%
+    dplyr::group_by({{col}}) %>%
     dplyr::summarise(n=sum(n)) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate({{col}} := "Total") %>%
+    dplyr::mutate({{col_group}} := "Total") %>%
     tidyr::pivot_wider(
-      names_from = {{col_group}},
+      names_from = {{col}},
       values_from = n,
       values_fill = list(n=0)
     )
@@ -118,21 +125,21 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), prop="tota
   # Total
   total_n <- data %>%
     dplyr::count() %>%
-    mutate({{col}} := "Total") %>%
-    dplyr::select({{col}}, Total = n)
+    mutate({{col_group}} := "Total") %>%
+    dplyr::select({{col_group}}, Total = n)
 
   # Join
   result_n <-
     dplyr::full_join(
       total_col_n,
       rows_n,
-      by = as.character(rlang::get_expr(rlang::enquo(col)))
+      by = as.character(rlang::get_expr(rlang::enquo(col_group)))
     ) %>%
     dplyr::bind_rows(
       left_join(
         total_n,
         total_row_n,
-        by = as.character(rlang::get_expr(rlang::enquo(col)))
+        by = as.character(rlang::get_expr(rlang::enquo(col_group)))
       )
     )
 
@@ -141,7 +148,7 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), prop="tota
   #
   if (prop == "cols") {
     rows_p <- grouped %>%
-      dplyr::group_by({{col_group}}) %>%
+      dplyr::group_by({{col}}) %>%
       dplyr::mutate( p = n / sum(n)) %>%
       dplyr::ungroup()
 
@@ -153,7 +160,7 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), prop="tota
   }
   else if (prop == "rows") {
     rows_p <- grouped %>%
-      dplyr::group_by({{col}}) %>%
+      dplyr::group_by({{col_group}}) %>%
       dplyr::mutate( p = n / sum(n)) %>%
       dplyr::ungroup()
 
@@ -176,28 +183,28 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), prop="tota
   }
 
   rows_p <- rows_p %>%
-    dplyr::select({{col_group}}, {{col}}, p) %>%
+    dplyr::select({{col}}, {{col_group}}, p) %>%
     tidyr::pivot_wider(
-      names_from = {{col_group}},
+      names_from = {{col}},
       values_from = p,
       values_fill = list(p=0)
     )
 
   total_p <- tibble("Total" = 1) %>%
-    mutate({{col}} := "Total")
+    mutate({{col_group}} := "Total")
 
   # Join
   result_p <-
     dplyr::full_join(
       total_col_p,
       rows_p,
-      by = as.character(rlang::get_expr(rlang::enquo(col)))
+      by = as.character(rlang::get_expr(rlang::enquo(col_group)))
     ) %>%
     dplyr::bind_rows(
       left_join(
         total_p,
         total_row_p,
-        by = as.character(rlang::get_expr(rlang::enquo(col)))
+        by = as.character(rlang::get_expr(rlang::enquo(col_group)))
       )
     )
 
@@ -210,7 +217,7 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), prop="tota
 
   # Zip
   if (("n" %in% values) && ("p" %in% values)) {
-    result <- zip_tables(result_n, result_p)
+    result <- zip_tables(result_p, result_n, brackets=T)
   }
 
   else if ("p" %in% values) {
@@ -224,17 +231,17 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), prop="tota
   # Get item label from the attributes
   if (.labels) {
     codes <- data %>%
-      get_labels({{col}}) %>%
+      get_labels({{col_group}}) %>%
       dplyr::distinct(item_name, item_label) %>%
       na.omit()
-  }
 
-  if (.labels && (nrow(codes) > 0)) {
-    label <- codes$item_label[1]
-    result <- result %>%
-      dplyr::rename({{label}} := {{col}})
-  }
+    if (nrow(codes) > 0) {
+      label <- codes$item_label[1]
+      result <- result %>%
+        dplyr::rename({{label}} := {{col_group}})
+    }
 
+  }
 
   attr(result,"digits") <- 0
   class(result) <- c("vlkr_tbl", class(result))
@@ -243,14 +250,24 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), prop="tota
 
 #' Output frequencies for multiple variables
 #'
+#' TODO: Reorder boolean categories: first TRUE, then FALSE
+#'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
 #' @param values The values to output: n (frequency) or p (percentage)
+#' @param missings Include missing values (default FALSE)
 #' @param .formatted Set to FALSE to prevent calculating percents from proportions
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .labels=T) {
+tab_item_counts <- function(data, cols, values= c("n","p"), missings=F, .formatted=T, .labels=T) {
+
+  # Remove missings
+  if (!missings) {
+    data <- data %>%
+      tidyr::drop_na(tidyselect::all_of(cols))
+  }
+
 
   # Calculate n and p
   result <- data %>%
@@ -270,13 +287,13 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .label
         levels=c(unique(result$value), "Missing")
       )
     ) %>%
-    arrange(value)
+    dplyr::arrange(value)
 
   # Absolute frequency
   value <- "n"
   result_n <- result %>%
-    select(item, value, !!sym(value)) %>%
-    pivot_wider(
+    dplyr::select(item, value, !!sym(value)) %>%
+    tidyr::pivot_wider(
       names_from = value,
       values_from = !!sym(value),
       values_fill = setNames(list(0), value)
@@ -286,8 +303,8 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .label
   # Relative frequency
   value <- "p"
   result_p <- result %>%
-    select(item, value, !!sym(value)) %>%
-    pivot_wider(
+    dplyr::select(item, value, !!sym(value)) %>%
+    tidyr::pivot_wider(
       names_from = value,
       values_from = !!sym(value),
       values_fill = setNames(list(0), value)
@@ -303,7 +320,7 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .label
 
   # Combine n and p if requested
   if (("n" %in% values) && ("p" %in% values)) {
-    result <- zip_tables(result_n, result_p)
+    result <- zip_tables(result_p, result_n, brackets=T)
   }
 
   else if ("p" %in% values) {
@@ -322,7 +339,7 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .label
   # Remove common item prefix
   prefix <- get_prefix(result$item)
   if (prefix != "") {
-    result <- dplyr::mutate(result, item = str_remove(item, prefix))
+    result <- dplyr::mutate(result, item = stringr::str_remove(item, prefix))
     result <- dplyr::mutate(result, item = ifelse(item=="", prefix, item))
   }
 
@@ -331,7 +348,7 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .label
 
     labels_categories <- data %>%
       get_labels(!!cols) %>%
-      distinct(value_name, value_label) %>%
+      dplyr::distinct(value_name, value_label) %>%
       na.omit()
 
     if (nrow(labels_categories) > 0) {
@@ -339,7 +356,8 @@ tab_item_counts <- function(data, cols, values= c("n","p"), .formatted=T, .label
         colnames(result),
         function(x) {
           dplyr::coalesce(
-            setNames(labels_categories$value_label, labels_categories$value_name)[x],x
+            setNames(labels_categories$value_label, labels_categories$value_name)[x],
+            x
           )
         }
       )
@@ -442,15 +460,15 @@ tab_group_metrics <- function(data, col, col_group, .negative=F, digits=1, .labe
   result_grouped <- data %>%
     dplyr::group_by({{col_group}}) %>%
     skim_metrics({{col}}) %>%
-    ungroup() %>%
+    dplyr::ungroup() %>%
     dplyr::mutate(
       {{col_group}} := tidyr::replace_na(as.character({{col_group}}), "Missing")
     ) %>%
-    select(-skim_variable, -skim_type)
+    dplyr::select(-skim_variable, -skim_type)
 
   result_total <-  data %>%
     skim_metrics({{col}}) %>%
-    mutate({{col_group}} := "Total")
+    dplyr::mutate({{col_group}} := "Total")
 
   result <- bind_rows(
     result_grouped,
@@ -485,7 +503,7 @@ tab_group_metrics <- function(data, col, col_group, .negative=F, digits=1, .labe
   if (.labels) {
     codes <- data %>%
       get_labels({{col_group}}) %>%
-      distinct(item_name, item_label) %>%
+      dplyr::distinct(item_name, item_label) %>%
       na.omit()
   }
 
@@ -562,7 +580,7 @@ tab_item_metrics <- function(data, cols, digits=1, .negative=F, .labels=T) {
   # Remove common item prefix
   prefix <- get_prefix(result$item)
   if (prefix != "") {
-    result <- dplyr::mutate(result, item = str_remove(item, prefix))
+    result <- dplyr::mutate(result, item = stringr::str_remove(item, prefix))
     result <- dplyr::mutate(result, item = ifelse(item=="", prefix, item))
   }
 
@@ -706,7 +724,7 @@ tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), dig
 
     result_mean <- mutate(result_mean, across(where(is.numeric),~format(round(., digits), nsmall = digits)))
     result_sd <- mutate(result_sd, across(where(is.numeric),~format(round(., digits), nsmall = digits)))
-    result <- zip_tables(result_mean, result_sd)
+    result <- zip_tables(result_mean, result_sd, brackets=T)
   }
 
   else if ("sd" %in% values) {
@@ -725,7 +743,7 @@ tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), dig
   # Remove common item prefix
   prefix <- get_prefix(result$item)
   if (prefix != "") {
-    result <- dplyr::mutate(result, item = str_remove(item, prefix))
+    result <- dplyr::mutate(result, item = stringr::str_remove(item, prefix))
     result <- dplyr::mutate(result, item = ifelse(item=="", prefix, item))
   }
 
@@ -804,26 +822,26 @@ tab_multi_corr <- function(data, cols1, cols2, method="p", significant=F, digits
   # codes <- data %>%
   #   dplyr::select(!!cols) %>%
   #   get_labels() %>%
-  #   distinct(item, label)
+  #   dplyr::distinct(item, label)
   #
   # if (nrow(codes) > 0) {
   #   result <- result %>%
-  #     left_join(codes, by=c("item")) %>%
-  #     mutate(item = dplyr::coalesce(label, item)) %>%
-  #     select(-label)
+  #     dplyr::left_join(codes, by=c("item")) %>%
+  #     dplyr::mutate(item = dplyr::coalesce(label, item)) %>%
+  #     dplyr::select(-label)
   # }
 
 
   # Remove common item prefix
   prefix <- get_prefix(result$item)
   if (prefix != "") {
-    result <- dplyr::mutate(result, item = str_remove(item, prefix))
+    result <- dplyr::mutate(result, item = stringr::str_remove(item, prefix))
     result <- dplyr::mutate(result, item = ifelse(item=="", prefix, item))
   }
 
   prefix <- get_prefix(result$target)
   if (prefix != "") {
-    result <- dplyr::mutate(result, target = str_remove(target, prefix))
+    result <- dplyr::mutate(result, target = stringr::str_remove(target, prefix))
     result <- dplyr::mutate(result, target = ifelse(target=="", prefix, target))
   }
 
@@ -854,8 +872,14 @@ print.vlkr_tbl <- function(obj) {
   }
 
   obj <- knit_table(obj, digits=digits)
-  #obj <- knitr::asis_output(obj)
-  #knitr::knit_print(obj)
-  print(obj)
+
+  if (knitr::is_html_output()) {
+    #obj <- knitr::asis_output(obj)
+    #knitr::knit_print(obj)
+
+    print(obj)
+  } else {
+    print(obj)
+  }
   #cat("\n")
 }

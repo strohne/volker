@@ -24,7 +24,7 @@ get_labels <- function(data, cols) {
   item_comments = sapply(data,attr,"comment", simplify = F)
   item_comments <- ifelse(sapply(item_comments, is.null),NA, item_comments)
 
-  labels <- tibble(
+  labels <- dplyr::tibble(
     item_name = colnames(data),
     item_class = item_classes,
     item_label = item_comments,
@@ -34,7 +34,7 @@ get_labels <- function(data, cols) {
     dplyr::mutate(item_label=as.character(sapply(item_label,function(x) ifelse(is.null(x),NA,x)))) %>%
     dplyr::mutate(item_group=stringr::str_remove(item_name,"_.*")) %>%
     dplyr::mutate(item_class=as.character(sapply(item_class, function(x) ifelse(length(x) > 1, x[[length(x)]],x)))) %>%
-    select(item_group, item_class, item_name, item_label, value_label) %>%
+    dplyr::select(item_group, item_class, item_name, item_label, value_label) %>%
     tidyr::unnest_longer(value_label)
 
 
@@ -61,11 +61,11 @@ get_labels <- function(data, cols) {
       #dplyr::rename(value_name = value_label_id) %>%
       dplyr::distinct(item_group, item_class, item_name, item_label) %>%
 
-      anti_join(labels_codes, by="item_name") %>%
-      bind_rows(labels_codes) %>%
+      dplyr::anti_join(labels_codes, by="item_name") %>%
+      dplyr::bind_rows(labels_codes) %>%
 
-      anti_join(labels_levels, by="item_name") %>%
-      bind_rows(labels_levels)
+      dplyr::anti_join(labels_levels, by="item_name") %>%
+      dplyr::bind_rows(labels_levels)
   } else {
     labels$value_name <- NA
   }
@@ -81,7 +81,7 @@ get_labels <- function(data, cols) {
 #' @export
 get_limits <- function(data, cols, negative=F) {
   values <- get_labels(data, {{cols}}) %>%
-    distinct(value_name) %>%
+    dplyr::distinct(value_name) %>%
     pull(value_name)
 
   values <- suppressWarnings(as.numeric(c(values)))
@@ -103,15 +103,30 @@ get_limits <- function(data, cols, negative=F) {
 
 #' Detect whether a scale is a numeric sequence
 #'
+#' From all values in the selected columns, the numbers are extracted.
+#' If no numeric values can be found, returns 0.
+#' Otherwise, if any positive values form an ascending sequence, returns -1.
+#' In all other cases, returns 1.
+#'
 #' @param data The dataframe
 #' @param cols The tidy selection
-#' @param categories Category names from a labeled dataframe
+#' @param extract Whether to extract numeric values from characters
 #' @return 0 = an undirected scale, -1 = descending values, 1 = ascending values
-get_scale <- function(data, cols, categories=c()) {
+get_scale <- function(data, cols, extract=T) {
+
+  data <- dplyr::select(data, {{cols}})
+
+  # Get all values
+  categories <- data %>%
+    dplyr::mutate(across(tidyselect::everything(), as.character)) %>%
+    tidyr::pivot_longer(tidyselect::everything()) %>%
+    dplyr::arrange(value) %>%
+    dplyr::mutate(value = ifelse(extract, stringr::str_extract(value,"[0-9-]+"), value)) %>%
+    dplyr::distinct(value) %>%
+    dplyr::pull(value)
 
   # Detect whether the categories are a numeric sequence and choose direction
   scale_numeric <- data %>%
-    dplyr::select({{cols}}) %>%
     sapply(is.numeric) %>%
     all()
 
@@ -139,7 +154,7 @@ get_col_label <- function(data, col) {
 
   labels <- data %>%
     get_labels({{col}}) %>%
-    distinct(item_name, item_label)  %>%
+    dplyr::distinct(item_name, item_label)  %>%
     na.omit()
 
 
@@ -199,8 +214,11 @@ remove_labels <- function(data, cols, labels = NULL) {
 
 #' Set variable labels by setting their comment attributes
 #'
+#' TODO: merge with set_col_label()
+#'
 #' @param data A tibble
-#' @param labels A tibble with variable names in the first column (item_name) and their labels in the second column (item_label)
+#' @param labels A tibble with variable names in the first column (item_name)
+#'               and their labels in the second column (item_label)
 #' @return A tibble with new variable labels
 #' @export
 set_item_labels <- function(data, labels) {
@@ -223,14 +241,14 @@ set_item_labels <- function(data, labels) {
 replace_item_values <- function(result, data, cols) {
   labels_items <- data %>%
     get_labels(!!cols) %>%
-    distinct(item_name, item_label) %>%
+    dplyr::distinct(item_name, item_label) %>%
     na.omit()
 
   if (nrow(labels_items) > 0) {
     result <- result %>%
-      left_join(labels_items, by=c("item"="item_name")) %>%
-      mutate(item = dplyr::coalesce(item_label, item)) %>%
-      select(-item_label)
+      dplyr::left_join(labels_items, by=c("item"="item_name")) %>%
+      dplyr::mutate(item = dplyr::coalesce(item_label, item)) %>%
+      dplyr::select(-item_label)
   }
 
   result

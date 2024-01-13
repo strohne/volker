@@ -4,10 +4,12 @@
 \alias{clean_columns}
 \title{Prepare metadata and types of dataframe columns}
 \usage{
-clean_columns(data)
+clean_columns(data, remove.na = T)
 }
 \arguments{
 \item{data}{Data frame}
+
+\item{remove.na}{Whether residual values should be replaced by NA}
 }
 \value{
 Data frame
@@ -16,5 +18,6 @@ Data frame
 \itemize{
 \item Removes the avector class from all columns
 (comes from Sosci and prevents combining vectors)
+\item Recode residual factor values to NA ("\link{NA} nicht beantwortet")
 }
 }

@@ -4,7 +4,7 @@
 \alias{.plot_means}
 \title{Helper function to plot means as bars, e.g. for plot_item_metrics and plot_group_metrics}
 \usage{
-.plot_means(result, limits, numbers, .labels)
+.plot_means(result, limits, numbers, title = NULL, .labels)
 }
 \arguments{
 \item{result}{The result table of tab_item_metrics() or tab_group_metrics()}
@@ -12,6 +12,8 @@
 \item{limits}{The scale limits. Set NULL to extract limits from the labels.}
 
 \item{numbers}{The values to print on the bars: "m" or NULL}
+
+\item{title}{The plot title or NULL}
 
 \item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 }

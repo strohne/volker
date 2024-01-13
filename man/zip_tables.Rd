@@ -6,7 +6,7 @@
 by adding values of each column from the second data frame
 into the corresponding column in the first dataframe using parentheses}
 \usage{
-zip_tables(x, y, newline = TRUE)
+zip_tables(x, y, newline = TRUE, brackets = FALSE)
 }
 \arguments{
 \item{x}{The first data frame}
@@ -14,6 +14,8 @@ zip_tables(x, y, newline = TRUE)
 \item{y}{The second data frame}
 
 \item{newline}{Whether to add a new line character between the values (default: TRUE).}
+
+\item{brackets}{Whether to set the secondary values in brackets (default: FALSE).}
 }
 \value{
 A combined data frame

@@ -4,18 +4,21 @@
 \alias{get_scale}
 \title{Detect whether a scale is a numeric sequence}
 \usage{
-get_scale(data, cols, categories = c())
+get_scale(data, cols, extract = T)
 }
 \arguments{
 \item{data}{The dataframe}
 
 \item{cols}{The tidy selection}
 
-\item{categories}{Category names from a labeled dataframe}
+\item{extract}{Whether to extract numeric values from characters}
 }
 \value{
 0 = an undirected scale, -1 = descending values, 1 = ascending values
 }
 \description{
-Detect whether a scale is a numeric sequence
+From all values in the selected columns, the numbers are extracted.
+If no numeric values can be found, returns 0.
+Otherwise, if any positive values form an ascending sequence, returns -1.
+In all other cases, returns 1.
 }

@@ -21,7 +21,7 @@ plot_var_counts <- function(data, col, numbers=NULL, .labels=T) {
     dplyr::rename(Item = 1) %>%
     dplyr::filter(! (Item %in% c("Total", "Missing")))  %>%
     dplyr::mutate(
-      .values = case_when(
+      .values = dplyr::case_when(
         all(numbers == "n") ~ as.character(n),
         all(numbers == "p") ~ paste0(round(valid,0), "%"),
         TRUE ~ paste0(n,"\n",round(valid,0), "%")
@@ -53,7 +53,7 @@ plot_var_counts <- function(data, col, numbers=NULL, .labels=T) {
     }
 
   if (.labels) {
-    pl <- pl + labs(title = title, caption = paste0("n=", base_n,"; without missings"))
+    pl <- pl + labs(title = title, caption = paste0("n=", base_n)) # TODO: report missing cases
   }
 
   pl
@@ -67,11 +67,18 @@ plot_var_counts <- function(data, col, numbers=NULL, .labels=T) {
 #' @param col The column holding factor values
 #' @param col_group The column holding groups to compare
 #' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
-#' @param prop The basis of percent calculation: total (the default) or rows. To display column proportions, swap the first column and the grouping column.
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @param prop The basis of percent calculation: total (the default) or rows.
+#'             To display column proportions, swap the first column with the grouping column.
+#' @param ordered Values can be nominal (0) or ordered ascending (1) descending (-1).
+#'                By default (NULL), the ordering is automatically detected.
+#'                An appropriate color scale should be choosen depending on the ordering.
+#'                For unordered values, the default scale is used.
+#'                For ordered values, the viridis scale is used.
+#' @param missings Include missing values (default FALSE)
+#' @param .labels If TRUE (default) extracts item labels from the attributes, see get_labels()
 #' @param .category Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
 #' @export
-plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", .labels=T, .category=NULL) {
+plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", ordered=NULL, missings=F, .labels=T, .category=NULL) {
 
   # Check columns
   has_column(data, {{col}})
@@ -82,7 +89,7 @@ plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", 
   }
 
   result <- data %>%
-    tab_group_counts({{col}}, {{col_group}}, values="n",.labels = .labels, .formatted = F)
+    tab_group_counts({{col}}, {{col_group}}, values="n", missings=missings, .labels = .labels, .formatted = F)
 
   title <- colnames(result)[1]
   base_n <- sum(result$Total[! (result[[1]] %in% c("Total", "Missing"))])
@@ -96,7 +103,7 @@ plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", 
   result <- result %>%
     rename(Item = 1) %>%
     dplyr::filter(! (Item %in% c("Total", "Missing"))) %>%
-    dplyr::select(-matches("^Total|Missing")) %>%
+    dplyr::select(-matches("^Total")) %>%
     tidyr::pivot_longer(
       -Item,
       names_to="value",
@@ -106,9 +113,9 @@ plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", 
 
   if (prop == "rows") {
     result <- result %>%
-      group_by(Item) %>%
+      dplyr::group_by(Item) %>%
       dplyr::mutate(p = (n / sum(n)) * 100) %>%
-      ungroup()
+      dplyr::ungroup()
 
   } else {
     result <- result %>%
@@ -117,7 +124,7 @@ plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", 
 
   result <- result %>%
     dplyr::mutate(
-      .values = case_when(
+      .values = dplyr::case_when(
         all(numbers == "n") ~ as.character(n),
         all(numbers == "p") ~ paste0(round(p, 0), "%"),
         TRUE ~ paste0(n,"\n",round(p,0), "%")
@@ -127,33 +134,39 @@ plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", 
   .plot_grouped_bars(
     result,
     category= .category,
-    scale = get_scale(data, {{col}}, categories),
+    scale = coalesce(ordered, get_scale(data, {{col}})),
     numbers=numbers,
     title = ifelse(.labels, title, NULL),
-    caption = ifelse(.labels, paste0("n=", base_n,"; without missings."), NULL)
+    caption = ifelse(.labels, paste0("n=", base_n), NULL) # TODO: report missing cases
   )
 
 }
 
 #' Output frequencies for multiple variables
 #'
-#' Note: only non-missing cases are used to calculate the percentage.
+#' TODO: move missings to the end
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
+#' @param ordered Values can be nominal (0) or ordered ascending (1) descending (-1).
+#'                By default (NULL), the ordering is automatically detected.
+#'                An appropriate color scale should be choosen depending on the ordering.
+#'                For unordered values, the default scale is used.
+#'                For ordered values, the viridis scale is used.
+#' @param missings Include missing values (default FALSE)
 #' @param .category Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-plot_item_counts <- function(data, cols, numbers=NULL, .labels=T, .category=NULL) {
+plot_item_counts <- function(data, cols, numbers=NULL, ordered=NULL, missings=F, .labels=T, .category=NULL) {
 
 
   result <- data %>%
-    tab_item_counts(cols, values="n", .formatted=F)
+    tab_item_counts(cols, values="n", missings=missings, .formatted=F)
 
   title <- colnames(result)[1]
   categories <- dplyr::select(result,-1,-matches("^Total|Missing")) %>% colnames()
-  base_n <- sum(dplyr::select(result,-1,-matches("^Total|Missing"))[1,])
+  base_n <- sum(dplyr::select(result,-1,-matches("^Total"))[1,])
 
    # Detect whether the categories are binary
    if ((length(categories) == 2) && (is.null(.category)) && ("TRUE" %in% categories)) {
@@ -162,7 +175,7 @@ plot_item_counts <- function(data, cols, numbers=NULL, .labels=T, .category=NULL
 
   result <- result %>%
     dplyr::rename(Item=1) %>%
-    dplyr::select(-matches("^Total|Missing$"))%>%
+    dplyr::select(-matches("^Total$"))%>%
     tidyr::pivot_longer(
       -Item,
       names_to="value",
@@ -171,9 +184,9 @@ plot_item_counts <- function(data, cols, numbers=NULL, .labels=T, .category=NULL
     dplyr::mutate(value = factor(value, levels= categories)) %>%
     dplyr::group_by(Item) %>%
     dplyr::mutate(p = (n / sum(n)) * 100) %>%
-    ungroup() %>%
+    dplyr::ungroup() %>%
     dplyr::mutate(
-      .values = case_when(
+      .values = dplyr::case_when(
         all(numbers == "n") ~ as.character(n),
         all(numbers == "p") ~ paste0(round(p,0), "%"),
         TRUE ~ paste0(n,"\n",round(p,0), "%")
@@ -183,10 +196,10 @@ plot_item_counts <- function(data, cols, numbers=NULL, .labels=T, .category=NULL
   .plot_grouped_bars(
     result,
     category=.category,
-    scale = get_scale(data, cols, categories),
+    scale = dplyr::coalesce(ordered, get_scale(data, cols)),
     numbers = numbers,
     title = ifelse(.labels, title, NULL),
-    caption = ifelse(.labels, paste0("n=", base_n, "; multiple responses possible, without missings."), NULL)
+    caption = ifelse(.labels, paste0("n=", base_n, "; multiple responses possible"), NULL) # TODO: report missing cases
   )
 
 }
@@ -208,11 +221,13 @@ plot_var_metrics <- function(data, col, .labels=T) {
     #geom_density(fill="#611F53FF")
 
 
+  # TODO: report missings
+
   if (.labels) {
     title <- get_col_label(data,{{col}})
     base_n <- data %>%  nrow()
     pl <- pl +
-      labs(title = title, caption = paste0("n=", base_n, "; without missings")) +
+      labs(title = title, caption = paste0("n=", base_n)) +
       xlab(title)
   }
 
@@ -237,8 +252,9 @@ plot_group_metrics <- function(data, col, col_group, limits=NULL, numbers=NULL, 
   # Pimp the result
   result <- result[result[[1]] != "Total", ]
   colnames(result)[1] <- get_col_label(data, {{col}})
+  title <- colnames(result)[1]
 
-  .plot_means(result, limits, numbers, .labels)
+  .plot_means(result, limits, numbers, title, .labels)
 }
 
 #' Output averages for multiple variables
@@ -252,9 +268,9 @@ plot_group_metrics <- function(data, col, col_group, limits=NULL, numbers=NULL, 
 #' @param .negative If False (default) negative values are recoded as missing values
 #' @export
 plot_item_metrics <- function(data, cols, limits=NULL, numbers=NULL, .labels=T, .negative=F) {
-  data %>%
-    tab_item_metrics(cols, .labels=.labels, .negative=.negative) %>%
-    .plot_means(limits, numbers, .labels)
+  result <- tab_item_metrics(data, cols, .labels=.labels, .negative=.negative)
+  title <- colnames(result)[1]
+  .plot_means(result, limits, numbers, title, .labels)
 }
 
 
@@ -314,7 +330,7 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
   # Remove common item prefix
   prefix <- get_prefix(result$item)
   if (prefix != "") {
-    result <- dplyr::mutate(result, item = str_remove(item, prefix))
+    result <- dplyr::mutate(result, item = stringr::str_remove(item, prefix))
     result <- dplyr::mutate(result, item = ifelse(item=="", prefix, item))
   }
 
@@ -328,7 +344,7 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
   # Add scales, labels and theming
   pl <- pl +
     scale_y_continuous() +
-    scale_x_discrete(labels = scales::label_wrap(40)) +
+    scale_x_discrete(labels = scales::label_wrap(40), limits=rev) +
     ylab("Mean values") +
     coord_flip(ylim = limits) +
     theme(
@@ -366,6 +382,11 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
     data <- filter(data, value == category)
   }
 
+  if (scale < 0) {
+    data  <- data %>%
+      dplyr::mutate(value = forcats::fct_rev(value))
+  }
+
   pl <- data %>%
 
     ggplot(aes(Item, y=p / 100, fill=value)) +
@@ -376,7 +397,7 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
     # Add 0.1 to avoid "Removed 1 rows containing missing values (`geom_col()`)."
     #scale_y_continuous(limits =c(0,100.1), labels=c("0%","25%","50%","75%","100%")) +
     scale_y_continuous(labels = scales::percent) +
-    scale_x_discrete(labels = scales::label_wrap(40)) +
+    scale_x_discrete(labels = scales::label_wrap(40), limits=rev) +
     ylab("Share in percent") +
     coord_flip() +
     theme(
@@ -392,7 +413,7 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
   # Simplify binary plot
   if (!is.null(category)) {
     pl <- pl +
-      scale_fill_manual(values=c("#611F53FF")) +
+      scale_fill_manual(values=c("#611F53FF"), guide = guide_legend(reverse = TRUE)) +
       theme(
         legend.position="bottom",
         legend.justification="left"
@@ -402,11 +423,14 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
       viridis::scale_fill_viridis(
         discrete=TRUE,
         option="rocket",
-        direction = scale
+        direction = -1,
+        guide = guide_legend(reverse = TRUE)
       )
   } else {
     pl <- pl +
-      ggplot2::scale_fill_discrete()
+      ggplot2::scale_fill_discrete(
+        guide = guide_legend(reverse = TRUE)
+      )
   }
 
   if (!is.null(numbers)) {
@@ -431,12 +455,10 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
 #' @param result The result table of tab_item_metrics() or tab_group_metrics()
 #' @param limits The scale limits. Set NULL to extract limits from the labels.
 #' @param numbers The values to print on the bars: "m" or NULL
+#' @param title The plot title or NULL
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @return Plot
-.plot_means <- function(result, limits, numbers, .labels) {
-
-
-  title <- colnames(result)[1]
+.plot_means <- function(result, limits, numbers, title=NULL, .labels) {
 
   # TODO: minus missing values, output range
   base_n <- max(result$n)
@@ -484,6 +506,10 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
   if (!is.null(.labels)) {
     pl <- pl + ggtitle(label = title)
     pl <- pl + labs (caption = paste0("n=", base_n))
+  }
+
+  if (!is.null(title)) {
+    pl <- pl + ggtitle(label = title)
   }
 
   pl

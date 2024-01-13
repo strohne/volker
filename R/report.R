@@ -10,8 +10,15 @@
 #' @param scopes A list of column prefixes, e.g. "UM" or "WB" (character).
 #' @param col_group A tidyselect column holding groups to compare, e.g. sd_gender (column name without quotes)
 #' @param prop The basis of percent calculation when comparing groups: total (the default), cols, or rows
+#' @param numbers The numbers plotted on bars: p (the default), n, both or NULL.
+#' @param missings Include missing values (default FALSE)
+#' @param ordered Values can be nominal (0) or ordered ascending (1) descending (-1).
+#'                By default (NULL), the ordering is automatically detected.
+#'                An appropriate color scale should be choosen depending on the ordering.
+#'                For unordered values, the default scale is used.
+#'                For ordered values, the viridis scale is used.
 #' @export
-report <- function(data, scopes, col_group=NULL, prop="total") {
+report <- function(data, scopes, col_group=NULL, prop="total", numbers="p", missings=F, ordered=NULL) {
 
   # Get item label from the attributes
   labels <- data %>%
@@ -30,20 +37,30 @@ report <- function(data, scopes, col_group=NULL, prop="total") {
            dplyr::count(item_class,sort=T) %>%
            dplyr::slice_head(n=1)
 
-         items <- semi_join(items, item_types, by=c("item_class"))
+         items <- dplyr::semi_join(items, item_types, by=c("item_class"))
        }
 
 
        is_items <- nrow(items) > 1
        is_var <- !is_items &&  (scope %in% colnames(data))
-       is_scale <- get_scale(data, starts_with(scope))
+       is_scale <- get_scale(data, tidyselect::starts_with(scope), F)
 
        # A single categorical variable
        if (is_var && is_scale == 0 && is.null(col_group)) {
+
+          # knitr::knit_child(text = c(
+          #   '## Regression on "`r x`"',
+          #   '',
+          #   '```{r}',
+          #   '',
+          #   '```',
+          #   ''
+          # )) %>%  print()
+
          tab_var_counts(data, !!rlang::sym(scope)) %>%
            print()
 
-         plot_var_counts(data, !!rlang::sym(scope)) %>%
+         plot_var_counts(data, !!rlang::sym(scope), numbers=numbers) %>%
            print()
        }
 
@@ -58,10 +75,10 @@ report <- function(data, scopes, col_group=NULL, prop="total") {
 
        # A single categorical variable by group
        else if (is_var && is_scale == 0 && !is.null(col_group)) {
-         tab_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop=prop) %>%
+         tab_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop=prop, missings=missings) %>%
            print()
 
-         plot_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop=prop) %>%
+         plot_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop=prop, numbers=numbers, ordered=ordered, missings=missings) %>%
            print()
        }
 
@@ -77,10 +94,10 @@ report <- function(data, scopes, col_group=NULL, prop="total") {
        # Multiple items
        else if (is_items && is.null(col_group)) {
 
-         tab_item_counts(data, starts_with(scope)) %>%
+         tab_item_counts(data, tidyselect::starts_with(scope)) %>%
            print()
 
-         plot_item_counts(data, starts_with(scope)) %>%
+         plot_item_counts(data, tidyselect::starts_with(scope), numbers=numbers, ordered=ordered) %>%
            print()
 
        }
@@ -88,10 +105,10 @@ report <- function(data, scopes, col_group=NULL, prop="total") {
        # Multiple items by group
        else if (is_items && !is.null(col_group)) {
 
-         tab_multi_means(data, starts_with(scope), !!rlang::sym(col_group)) %>%
+         tab_multi_means(data, tidyselect::starts_with(scope), !!rlang::sym(col_group)) %>%
            print()
 
-         plot_multi_means(data, starts_with(scope), !!rlang::sym(col_group)) %>%
+         plot_multi_means(data, tidyselect::starts_with(scope), !!rlang::sym(col_group)) %>%
             print()
 
        }
@@ -102,7 +119,9 @@ report <- function(data, scopes, col_group=NULL, prop="total") {
 
        # Output index
        if (is_items && is_scale != 0) {
-         idx <- add_idx(data, starts_with(scope))
+         #cat("**Index for ", scope, "**  \n")
+
+         idx <- add_idx(data, tidyselect::starts_with(scope))
          idx_name <- setdiff(colnames(idx), colnames(data))
 
 

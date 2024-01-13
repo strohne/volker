@@ -4,7 +4,15 @@
 \alias{plot_item_counts}
 \title{Output frequencies for multiple variables}
 \usage{
-plot_item_counts(data, cols, numbers = NULL, .labels = T, .category = NULL)
+plot_item_counts(
+  data,
+  cols,
+  numbers = NULL,
+  ordered = NULL,
+  missings = F,
+  .labels = T,
+  .category = NULL
+)
 }
 \arguments{
 \item{data}{A tibble containing item measures}
@@ -13,10 +21,18 @@ plot_item_counts(data, cols, numbers = NULL, .labels = T, .category = NULL)
 
 \item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
 
+\item{ordered}{Values can be nominal (0) or ordered ascending (1) descending (-1).
+By default (NULL), the ordering is automatically detected.
+An appropriate color scale should be choosen depending on the ordering.
+For unordered values, the default scale is used.
+For ordered values, the viridis scale is used.}
+
+\item{missings}{Include missing values (default FALSE)}
+
 \item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 
 \item{.category}{Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.}
 }
 \description{
-Note: only non-missing cases are used to calculate the percentage.
+TODO: move missings to the end
 }

@@ -9,11 +9,12 @@ set_item_labels(data, labels)
 \arguments{
 \item{data}{A tibble}
 
-\item{labels}{A tibble with variable names in the first column (item_name) and their labels in the second column (item_label)}
+\item{labels}{A tibble with variable names in the first column (item_name)
+and their labels in the second column (item_label)}
 }
 \value{
 A tibble with new variable labels
 }
 \description{
-Set variable labels by setting their comment attributes
+TODO: merge with set_col_label()
 }

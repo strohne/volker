@@ -10,6 +10,8 @@ plot_group_counts(
   col_group,
   numbers = NULL,
   prop = "total",
+  ordered = NULL,
+  missings = F,
   .labels = T,
   .category = NULL
 )
@@ -23,9 +25,18 @@ plot_group_counts(
 
 \item{numbers}{The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.}
 
-\item{prop}{The basis of percent calculation: total (the default) or rows. To display column proportions, swap the first column and the grouping column.}
+\item{prop}{The basis of percent calculation: total (the default) or rows.
+To display column proportions, swap the first column with the grouping column.}
 
-\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
+\item{ordered}{Values can be nominal (0) or ordered ascending (1) descending (-1).
+By default (NULL), the ordering is automatically detected.
+An appropriate color scale should be choosen depending on the ordering.
+For unordered values, the default scale is used.
+For ordered values, the viridis scale is used.}
+
+\item{missings}{Include missing values (default FALSE)}
+
+\item{.labels}{If TRUE (default) extracts item labels from the attributes, see get_labels()}
 
 \item{.category}{Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.}
 }

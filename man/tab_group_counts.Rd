@@ -10,6 +10,7 @@ tab_group_counts(
   col_group,
   values = c("n", "p"),
   prop = "total",
+  missings = F,
   .formatted = T,
   .labels = T
 )
@@ -24,6 +25,8 @@ tab_group_counts(
 \item{values}{The values to output: n (frequency) or p (percentage).}
 
 \item{prop}{The basis of percent calculation: total (the default), cols, or rows}
+
+\item{missings}{Include missing values (default FALSE)}
 
 \item{.formatted}{Set to FALSE to prevent calculating percents from proportions}
 

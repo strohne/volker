@@ -4,7 +4,14 @@
 \alias{tab_item_counts}
 \title{Output frequencies for multiple variables}
 \usage{
-tab_item_counts(data, cols, values = c("n", "p"), .formatted = T, .labels = T)
+tab_item_counts(
+  data,
+  cols,
+  values = c("n", "p"),
+  missings = F,
+  .formatted = T,
+  .labels = T
+)
 }
 \arguments{
 \item{data}{A tibble containing item measures}
@@ -13,6 +20,8 @@ tab_item_counts(data, cols, values = c("n", "p"), .formatted = T, .labels = T)
 
 \item{values}{The values to output: n (frequency) or p (percentage)}
 
+\item{missings}{Include missing values (default FALSE)}
+
 \item{.formatted}{Set to FALSE to prevent calculating percents from proportions}
 
 \item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
@@ -20,5 +29,5 @@ tab_item_counts(data, cols, values = c("n", "p"), .formatted = T, .labels = T)
 \item{.quiet}{Set to true to suppress printing the output}
 }
 \description{
-Output frequencies for multiple variables
+TODO: Reorder boolean categories: first TRUE, then FALSE
 }

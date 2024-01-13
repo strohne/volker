@@ -6,12 +6,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ```{r include=FALSE}
 
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo=TRUE)
+knitr::opts_chunk$set(comment = "", echo=TRUE)
 
 library(tidyverse)
 library(volker)
@@ -31,14 +31,14 @@ data <- set_item_labels(data, tibble("sd_alter","Alter"))
 
 
 ### Frequency table for one categorical variable: Gender
-```{r results='asis'}
+```{r, results='asis'}
 
 tab_var_counts(data, sd_geschlecht)
 
 ```
 
 ### Distribution table for one metric variable: Age
-```{r results='asis'}
+```{r, results='asis'}
 
 tab_var_metrics(data, sd_alter)
 
@@ -47,14 +47,14 @@ tab_var_metrics(data, sd_alter)
 ## 2. Multiple items
 
 ### Frequency table for multiple categorical variables: Adoption factors
-```{r results='asis'}
+```{r, results='asis'}
 
 tab_item_counts(data, starts_with("cg_adoption_"))
 
 ```
 
 ### Distribution table for multiple metric items: Adoption factors
-```{r results='asis'}
+```{r, results='asis'}
 
 tab_item_metrics(data, starts_with("cg_adoption_"))
 
@@ -64,7 +64,7 @@ tab_item_metrics(data, starts_with("cg_adoption_"))
 
 ### Cross table of categorical variables: Innovator type by gender
 
-```{r results='asis'}
+```{r, results='asis'}
 
 tab_group_counts(data, in_adoption, sd_geschlecht)
 
@@ -72,7 +72,7 @@ tab_group_counts(data, in_adoption, sd_geschlecht)
 
 ### Group comparison of a metric variable: Age by gender
 
-```{r results='asis'}
+```{r, results='asis'}
 
 tab_group_metrics(data, sd_alter, sd_geschlecht)
 
@@ -81,14 +81,14 @@ tab_group_metrics(data, sd_alter, sd_geschlecht)
 ## 4. Multiple metric variables
 
 ### Compare means of multiple items: Adoption factors by gender
-```{r results='asis'}
+```{r, results='asis'}
 
 tab_multi_means(data, starts_with("cg_adoption_"), sd_geschlecht)
 
 ```
 
 ### Correlation of items: Adoption factors
-```{r results='asis'}
+```{r, results='asis'}
 
 tab_multi_corr(data, starts_with("cg_adoption_adv"))
 
@@ -103,7 +103,7 @@ When printing item tables, the labels are used. You can set custom or
 new labels by providing a tibble with item names in the first column
 and item labels in the second.
 
-```{r results='asis'}
+```{r, results='asis'}
 
 newlabels <- tribble(
   ~item_name, ~item_label,
@@ -116,7 +116,6 @@ newlabels <- tribble(
 data %>% 
   set_item_labels(newlabels) %>% 
   tab_item_metrics(starts_with("cg_adoption_advantage_"))
-rlang::as_string
 
 ```
 
@@ -127,9 +126,9 @@ Given a list aof column prefixes, you can automatically output frequency tables 
 - If the prefix matches a single column, tab_var_counts() and plot_var_counts() will be used.
 - If the prefix matches multiple columns, tab_item_counts() and plot_item_counts() will be used.
 
-```{r results='asis'}
+```{r, results='asis'}
 
-volker::report(
+report(
   data, 
   c(
     "cg_adoption_advantage_", 
