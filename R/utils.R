@@ -124,37 +124,6 @@ zip_tables <- function(x, y, newline=TRUE, brackets=FALSE) {
 }
 
 
-#' Knit table with defaults for the package
-#'
-#' @param df Data frame
-#' @return Formatted table
-knit_table <- function(df, ...){
-
-  if (knitr::is_html_output()) {
-
-    # Replace \n by <br>
-    df <- df %>%
-      dplyr::mutate(across(dplyr::where(is.character), ~ gsub("\n", "<br>", .))) %>%
-      knitr::kable("html", escape = F, align=c("l", rep("r",ncol(df) - 1)), ...) %>%
-      kableExtra::kable_styling()
-
-
-  } else if (knitr::is_latex_output()) {
-
-    df <- df %>%
-      dplyr::mutate_all(kableExtra::linebreak) %>%
-      knitr::kable("latex", booktabs = T, escape = F, align=c("l", rep("r",ncol(df) - 1)), ...)
-
-  } else {
-
-    df <- df %>%
-      knitr::kable("pipe" , align=c("l", rep("r",ncol(df) - 1)), ...)
-
-  }
-
-  df
-}
-
 #' Get the p value of an lm model
 #'
 #' @param fit The result of an lm() call

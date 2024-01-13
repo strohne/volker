@@ -30,4 +30,5 @@ tab_item_counts(
 }
 \description{
 TODO: Reorder boolean categories: first TRUE, then FALSE
+TODO: Support single columns
 }

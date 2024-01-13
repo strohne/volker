@@ -251,6 +251,7 @@ tab_group_counts <- function(data, col, col_group, values=c("n","p"), prop="tota
 #' Output frequencies for multiple variables
 #'
 #' TODO: Reorder boolean categories: first TRUE, then FALSE
+#' TODO: Support single columns
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
@@ -265,7 +266,7 @@ tab_item_counts <- function(data, cols, values= c("n","p"), missings=F, .formatt
   # Remove missings
   if (!missings) {
     data <- data %>%
-      tidyr::drop_na(tidyselect::all_of(cols))
+      tidyr::drop_na({{cols}})
   }
 
 
@@ -578,9 +579,10 @@ tab_item_metrics <- function(data, cols, digits=1, .negative=F, .labels=T) {
   }
 
   # Remove common item prefix
+  # TODO: remove common postfix
   prefix <- get_prefix(result$item)
   if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(item, prefix))
+    result <- dplyr::mutate(result, item = stringr::str_remove(item, stringr::fixed(prefix)))
     result <- dplyr::mutate(result, item = ifelse(item=="", prefix, item))
   }
 
@@ -860,26 +862,71 @@ tab_multi_corr <- function(data, cols1, cols2, method="p", significant=F, digits
   result
 }
 
-#' Printing method for volker tables.
+
+#' Knit table with defaults for the package
 #'
-#' @param obj The volker table
-#' @export
-print.vlkr_tbl <- function(obj) {
-  digits <- attr(obj,"digits", exact=T)
+#' @param df Data frame
+#' @return Formatted table
+knit_table <- function(df, ...){
+
+  # TODO: Embed "digits" in the vlkr_options list
+  digits <- attr(df,"digits", exact=T)
 
   if (is.null(digits)) {
     digits = getOption("digits")
   }
 
-  obj <- knit_table(obj, digits=digits)
 
   if (knitr::is_html_output()) {
-    #obj <- knitr::asis_output(obj)
-    #knitr::knit_print(obj)
 
-    print(obj)
+    # Replace \n by <br>
+    df <- df %>%
+      dplyr::mutate(across(dplyr::where(is.character), ~ gsub("\n", "<br>", .))) %>%
+      knitr::kable(
+        "html",
+        escape = F,
+        align=c("l", rep("r",ncol(df) - 1)),
+        digits=digits,
+        ...
+      ) %>%
+      kableExtra::kable_styling()
+
+
+  } else if (knitr::is_latex_output()) {
+
+    df <- df %>%
+      dplyr::mutate_all(kableExtra::linebreak) %>%
+      knitr::kable(
+        "latex",
+        booktabs = T,
+        escape = F,
+        align=c("l", rep("r",ncol(df) - 1)),
+        digits=digits,
+        ...
+      )
+
+  } else {
+
+    df <- df %>%
+      knitr::kable("pipe" , align=c("l", rep("r",ncol(df) - 1)), digits=digits, ...)
+
+  }
+
+  df
+}
+
+
+#' Printing method for volker tables.
+#'
+#' @param obj The volker table
+#' @export
+print.vlkr_tbl <- function(obj) {
+  obj <- knit_table(obj)
+
+  if (knitr::is_html_output()) {
+    obj <- knitr::asis_output(obj)
+    knitr::knit_print(obj)
   } else {
     print(obj)
   }
-  #cat("\n")
 }

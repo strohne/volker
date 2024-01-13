@@ -112,12 +112,12 @@ are printed by `tab_var_metrics()` or `tab_item_metrics()`.
 # Add a single index
 data %>% 
   add_idx(starts_with("cg_adoption_")) %>% 
-  tab_var_metrics(idx_cg_adoption_)
+  tab_var_metrics(idx_cg_adoption)
 
 # Compare the index values by group
 data %>% 
   add_idx(starts_with("cg_adoption_")) %>% 
-  tab_group_metrics(idx_cg_adoption_,in_adoption)
+  tab_group_metrics(idx_cg_adoption,in_adoption)
 
 ```
 

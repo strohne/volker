@@ -56,6 +56,13 @@ plot_var_counts <- function(data, col, numbers=NULL, .labels=T) {
     pl <- pl + labs(title = title, caption = paste0("n=", base_n)) # TODO: report missing cases
   }
 
+  # Pass row number and label length to the knit_plot() function
+  class(pl) <- c("vlkr_plt", class(pl))
+  attr(pl,"vlkr_options") <- list(
+    rows= nrow(pl$data),
+    lablen = max(stringr::str_length(pl$data[[1]]))
+  )
+
   pl
 }
 
@@ -231,6 +238,23 @@ plot_var_metrics <- function(data, col, .labels=T) {
       xlab(title)
   }
 
+  pl <- pl +
+    theme(
+      axis.title.x=element_blank(),
+      #axis.title.y=element_blank(),
+      #axis.text.y = element_text(size=11),
+      #legend.title = element_blank(),
+      plot.caption = element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position = "plot"
+    )
+
+  # Pass row number and label length to the knit_plot() function
+  class(pl) <- c("vlkr_plt", class(pl))
+  attr(pl,"vlkr_options") <- list(
+    rows= 4 # Limit the size
+  )
+
   pl
 }
 
@@ -345,6 +369,8 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
   pl <- pl +
     scale_y_continuous() +
     scale_x_discrete(labels = scales::label_wrap(40), limits=rev) +
+    scale_fill_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +
+
     ylab("Mean values") +
     coord_flip(ylim = limits) +
     theme(
@@ -363,6 +389,13 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
     pl <- pl + ggtitle(label =trim_label(prefix))
     pl <- pl + labs (caption = paste0("n=", base_n, "; with missings"))
   }
+
+  # Pass row number and label length to the knit_plot() function
+  class(pl) <- c("vlkr_plt", class(pl))
+  attr(pl,"vlkr_options") <- list(
+    rows= nrow(pl$data),
+    lablen = max(stringr::str_length(pl$data[[1]]))
+  )
 
   pl
 }
@@ -447,6 +480,13 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
     pl <- pl + labs (caption = caption)
   }
 
+  # Pass row number and label length to the knit_plot() function
+  class(pl) <- c("vlkr_plt", class(pl))
+  attr(pl,"vlkr_options") <- list(
+    rows= nrow(pl$data),
+    lablen = max(stringr::str_length(pl$data[[1]]))
+  )
+
   pl
 }
 
@@ -512,5 +552,45 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
     pl <- pl + ggtitle(label = title)
   }
 
+  # Pass row number and label length to the knit_plot() function
+  class(pl) <- c("vlkr_plt", class(pl))
+  attr(pl,"vlkr_options") <- list(
+    rows= nrow(pl$data),
+    lablen = max(stringr::str_length(pl$data[[1]]))
+  )
+
   pl
 }
+
+
+
+#' Knit plot with automatically calculated height
+#'
+#' @param pl A ggplot object
+#' @return Character string containing a html image tag, including the base64 encoded image
+knit_plot <- function(pl) {
+
+  # Get knitr and volkr chunk options
+  chunk_options <- knitr::opts_chunk$get()
+  plot_options <- attr(pl, "vlkr_options")
+
+  fig_width <- chunk_options$fig.width
+  fig_height <- chunk_options$fig.height
+
+  # Calculate plot height
+  if (!is.null(plot_options[["rows"]])) {
+    #fig_width <- NA
+    wrap <- dplyr::coalesce(plot_options[["labwrap"]], 40)
+    rowheight <- (dplyr::coalesce(plot_options[["lablen"]], 1) %/% wrap) + 1
+    fig_height <- (plot_options[["rows"]] * 0.015) * rowheight
+
+    fig_height <- fig_height + 0.75
+  }
+
+  pngfile <- tempfile(fileext = ".png", tmpdir=chunk_options$cache.path)
+  suppressMessages(ggsave(pngfile, pl,width = fig_width, height = fig_height, dpi = 300, scale = 2.5))
+
+  base64_string <- base64enc::base64encode(pngfile)
+  paste0('<img src="data:image/png;base64,', base64_string, '" width="100%">')
+}
+

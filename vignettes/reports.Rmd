@@ -40,7 +40,6 @@ report(
   )
 )
 
-
 ```
 
 
@@ -48,5 +47,8 @@ report(
 ```{r results='asis'}
 
 report(data, "cg_adoption_", "in_adoption")
+
+  
+
 ```
 

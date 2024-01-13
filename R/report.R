@@ -20,6 +20,8 @@
 #' @export
 report <- function(data, scopes, col_group=NULL, prop="total", numbers="p", missings=F, ordered=NULL) {
 
+  chunks <- list()
+
   # Get item label from the attributes
   labels <- data %>%
     get_labels()
@@ -48,68 +50,59 @@ report <- function(data, scopes, col_group=NULL, prop="total", numbers="p", miss
        # A single categorical variable
        if (is_var && is_scale == 0 && is.null(col_group)) {
 
-          # knitr::knit_child(text = c(
-          #   '## Regression on "`r x`"',
-          #   '',
-          #   '```{r}',
-          #   '',
-          #   '```',
-          #   ''
-          # )) %>%  print()
+         chunks <- tab_var_counts(data, !!rlang::sym(scope)) %>%
+           add_to_report(chunks)
 
-         tab_var_counts(data, !!rlang::sym(scope)) %>%
-           print()
-
-         plot_var_counts(data, !!rlang::sym(scope), numbers=numbers) %>%
-           print()
+         chunks <- plot_var_counts(data, !!rlang::sym(scope), numbers=numbers) %>%
+           add_to_report(chunks)
        }
 
        # A single metric variable
        else if (is_var && is_scale != 0 && is.null(col_group)) {
-         tab_var_metrics(data, !!rlang::sym(scope)) %>%
-           print()
+         chunks <- tab_var_metrics(data, !!rlang::sym(scope)) %>%
+           add_to_report(chunks)
 
-         plot_var_metrics(data, !!rlang::sym(scope)) %>%
-           print()
+         chunks <- plot_var_metrics(data, !!rlang::sym(scope)) %>%
+           add_to_report(chunks)
        }
 
        # A single categorical variable by group
        else if (is_var && is_scale == 0 && !is.null(col_group)) {
-         tab_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop=prop, missings=missings) %>%
-           print()
+         chunks <- tab_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop=prop, missings=missings) %>%
+           add_to_report(chunks)
 
-         plot_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop=prop, numbers=numbers, ordered=ordered, missings=missings) %>%
-           print()
+         chunks <- plot_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop=prop, numbers=numbers, ordered=ordered, missings=missings) %>%
+           add_to_report(chunks)
        }
 
        # A single metric variable by group
        else if (is_var && is_scale != 0 && !is.null(col_group)) {
-         tab_group_metrics(data, !!rlang::sym(scope), !!rlang::sym(col_group)) %>%
-           print()
+         chunks <- tab_group_metrics(data, !!rlang::sym(scope), !!rlang::sym(col_group)) %>%
+           add_to_report(chunks)
 
-         plot_group_metrics(data, !!rlang::sym(scope), !!rlang::sym(col_group)) %>%
-           print()
+         chunks <- plot_group_metrics(data, !!rlang::sym(scope), !!rlang::sym(col_group)) %>%
+           add_to_report(chunks)
        }
 
        # Multiple items
        else if (is_items && is.null(col_group)) {
 
-         tab_item_counts(data, tidyselect::starts_with(scope)) %>%
-           print()
+         chunks <- tab_item_counts(data, tidyselect::starts_with(scope)) %>%
+           add_to_report(chunks)
 
-         plot_item_counts(data, tidyselect::starts_with(scope), numbers=numbers, ordered=ordered) %>%
-           print()
+         chunks <- plot_item_counts(data, tidyselect::starts_with(scope), numbers=numbers, ordered=ordered) %>%
+           add_to_report(chunks)
 
        }
 
        # Multiple items by group
        else if (is_items && !is.null(col_group)) {
 
-         tab_multi_means(data, tidyselect::starts_with(scope), !!rlang::sym(col_group)) %>%
-           print()
+         chunks <- tab_multi_means(data, tidyselect::starts_with(scope), !!rlang::sym(col_group)) %>%
+           add_to_report(chunks)
 
-         plot_multi_means(data, tidyselect::starts_with(scope), !!rlang::sym(col_group)) %>%
-            print()
+         chunks <- plot_multi_means(data, tidyselect::starts_with(scope), !!rlang::sym(col_group)) %>%
+           add_to_report(chunks)
 
        }
        else {
@@ -126,30 +119,68 @@ report <- function(data, scopes, col_group=NULL, prop="total", numbers="p", miss
 
 
          if (is.null(col_group)) {
-           idx %>%
+           chunks <- idx %>%
              tab_var_metrics(!!rlang::sym(idx_name)) %>%
-             print()
+             add_to_report(chunks)
 
-           idx %>%
+           chunks <- idx %>%
              plot_var_metrics(!!rlang::sym(idx_name)) %>%
-             print()
+             add_to_report(chunks)
          }
          else {
-           idx %>%
+           chunks <- idx %>%
              tab_group_metrics(!!rlang::sym(idx_name), !!rlang::sym(col_group)) %>%
-             print()
+             add_to_report(chunks)
 
-           idx %>%
+           chunks <- idx %>%
              plot_group_metrics(!!rlang::sym(idx_name), !!rlang::sym(col_group)) %>%
-             print()
+             add_to_report(chunks)
 
          }
        }
-
   }
 
-#
-#   class(result) <- c("vlkr_tbl", class(result))
-#   result
+  class(chunks) <- c("vlkr_rprt", class(chunks))
+  chunks
 }
 
+#' Add an object to the report list or print it
+#'
+#' @param obj A volker table or plot
+#' @param chunks The current report list
+#' @return A list with volker tables or plots
+add_to_report <- function(obj, chunks) {
+  if (knitr::is_html_output()) {
+
+    if (inherits(obj,"vlkr_tbl")) {
+
+
+      newchunk <-  knit_table(obj)
+    }
+    else if (inherits(obj,"vlkr_plt")) {
+      newchunk <-  knit_plot(obj)
+    } else {
+      warning("Could not determine the volker report chunk type")
+    }
+    chunks <- append(chunks, newchunk)
+  } else {
+    print(obj)
+  }
+  chunks
+}
+
+
+
+#' Printing method for volker reports.
+#'
+#' @param obj The volker report
+#' @export
+print.vlkr_rprt <- function(obj) {
+  if (knitr::is_html_output()) {
+    obj %>%
+      unlist() %>%
+      paste0(collapse="\n")  %>%
+      knitr::asis_output() %>%
+      knitr::knit_print()
+  }
+}
