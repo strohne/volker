@@ -5,7 +5,7 @@ library(volker)
 
 # Load and recode data
 data <- volker::chatgpt
-data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(.,-9)  ))
+data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(., -9)))
 
 # Frequency table
 test_that("Frequency table", {
@@ -44,7 +44,7 @@ test_that("Compare means of multiple items", {
 
 # ...with missings
 data %>%
-  bind_rows(tibble(sd_geschlecht=c("X","X","X"))) %>%
+  bind_rows(tibble(sd_geschlecht = c("X", "X", "X"))) %>%
   volker::tab_multi_means(starts_with("cg_adoption_"), sd_geschlecht) %>%
   expect_snapshot()
 

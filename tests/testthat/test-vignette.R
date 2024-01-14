@@ -17,7 +17,3 @@ test_that("Plots in vignette render without error", {
     result <- rmarkdown::render("../../vignettes/plots.Rmd")
   })
 })
-
-
-
-

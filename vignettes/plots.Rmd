@@ -10,8 +10,7 @@ editor_options:
 ---
 
 ```{r include=FALSE}
-
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo=TRUE)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo = TRUE)
 
 library(tidyverse)
 library(volker)
@@ -21,83 +20,65 @@ data <- volker::chatgpt
 
 
 # Recode -9 to NA
-data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(.,-9)  ))
+data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(., -9)))
 
 # Add label to sd_alter
-data <- set_item_labels(data, tibble("sd_alter","Alter")) 
-
+data <- set_item_labels(data, tibble("sd_alter", "Alter"))
 ```
 
 ## Frequencies of categorical variables
 
 ### 1. One variable: Frequency plot of Gender
 ```{r results='asis'}
-
 plot_var_counts(data, sd_geschlecht)
-
 ```
 
 ### 2. Multiple items: Frequency plot for adoption factors
 ```{r results='asis'}
-
 # Use the .numbers parameter to add counts to the bars
-plot_item_counts(data, starts_with("cg_adoption_"), numbers="n")
-
+plot_item_counts(data, starts_with("cg_adoption_"), numbers = "n")
 ```
 
 ### 3. Two variables: Stacked frequency plot of innovator type by gender
 
 ```{r results='asis'}
-
 # TODO: use number=c("n","p")
-plot_group_counts(data, in_adoption, sd_geschlecht, prop="rows")
-
+plot_group_counts(data, in_adoption, sd_geschlecht, prop = "rows")
 ```
 
 ## Metric distributions
 
 ### 1. Distribution for one metric variable: Age
 ```{r results='asis'}
-
 plot_var_metrics(data, sd_alter)
-
 ```
 
 
 ### 2. Distribution of multiple metric items: Adoption factors
 ```{r results='asis'}
-
-# Note that negative values are omitted, 
+# Note that negative values are omitted,
 # you can change the behavior with the .negative parameter
 plot_item_metrics(data, starts_with("cg_adoption_"))
-
-
 ```
 
 ### 3. Distribution by a grouping variable
 ```{r results='asis'}
-
 plot_group_metrics(data, sd_alter, sd_geschlecht)
 plot_multi_means(data, starts_with("cg_adoption_"), sd_geschlecht)
-
 ```
 
 ### 4. Index  distribution by a grouping variable
 ```{r results='asis'}
-
-data %>% 
+data %>%
   add_idx(starts_with("cg_adoption_social_")) %>%
-  add_idx(starts_with("cg_adoption_fearofuse_")) %>% 
-  add_idx(starts_with("cg_adoption_advantage_")) %>% 
-  
+  add_idx(starts_with("cg_adoption_fearofuse_")) %>%
+  add_idx(starts_with("cg_adoption_advantage_")) %>%
   # Set new labels for the three index columns
   set_col_label(starts_with("idx_cg_adoption"), c(
     "ChatGPT-Erwartung: Social",
     "ChatGPT-Erwartung: Fear of Use",
     "ChatGPT-Erwartung: Advantage"
-  )) %>% 
-
+  )) %>%
   plot_multi_means(starts_with("idx_cg_adoption"), in_adoption)
-
 ```
 

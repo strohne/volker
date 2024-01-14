@@ -7,8 +7,8 @@
 has_column <- function(data, col, stopit = T) {
   colname <- as.character(rlang::get_expr(rlang::enquo(col)))
 
-  if (! (colname %in% colnames(data))) {
-    stop("The column ", colname, " does not exist, check your parameters.", call.=F)
+  if (!(colname %in% colnames(data))) {
+    stop("The column ", colname, " does not exist, check your parameters.", call. = F)
   }
 
   colname %in% colnames(data)
@@ -27,9 +27,9 @@ has_column <- function(data, col, stopit = T) {
 #' @param remove.na Whether residual values should be replaced by NA
 #' @return Data frame
 #' @export
-clean_columns <- function(data, remove.na=T) {
+clean_columns <- function(data, remove.na = T) {
   for (i in c(1:ncol(data))) {
-    class(data[[i]]) <- setdiff(class(data[[i]]),"avector")
+    class(data[[i]]) <- setdiff(class(data[[i]]), "avector")
   }
 
 
@@ -46,11 +46,11 @@ clean_columns <- function(data, remove.na=T) {
         tidyselect::where(
           ~ is.factor(.) & (remove.na %in% levels(.))
         ),
-        ~ na_if(.,remove.na)
+        ~ na_if(., remove.na)
       )
     )
 
-    data <- dplyr::mutate(data, across(where(is.numeric),~ na_if(.,-9)))
+    data <- dplyr::mutate(data, across(where(is.numeric), ~ na_if(., -9)))
   }
 
   # Add whitespace for better breaks
@@ -85,10 +85,9 @@ clean_columns <- function(data, remove.na=T) {
 #' @param brackets Whether to set the secondary values in brackets (default: FALSE).
 #' @return A combined data frame
 #' @export
-zip_tables <- function(x, y, newline=TRUE, brackets=FALSE) {
-
+zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
   newline <- newline && (knitr::is_html_output() || knitr::is_latex_output())
-  sep <- ifelse(newline,"\n"," ")
+  sep <- ifelse(newline, "\n", " ")
 
   if (brackets) {
     prefix <- "("
@@ -111,7 +110,7 @@ zip_tables <- function(x, y, newline=TRUE, brackets=FALSE) {
 #' @return The p value of the model
 lm_pvalue <- function(fit) {
   fstat <- summary(fit)$fstatistic
-  pf(fstat[1], fstat[2], fstat[3], lower.tail=FALSE)
+  pf(fstat[1], fstat[2], fstat[3], lower.tail = FALSE)
 }
 
 #' Get significance stars from p values
@@ -121,14 +120,16 @@ lm_pvalue <- function(fit) {
 #' @export
 get_stars <- function(x) {
   sapply(x, function(p) {
-    if (p < 0.001)
-      return ("***")
-    else if (p < 0.01)
-      return ("**")
-    else if (p < 0.05)
-      return ("*")
-    else if (p < 0.1)
-      return (".")
-    else return ("")
+    if (p < 0.001) {
+      return("***")
+    } else if (p < 0.01) {
+      return("**")
+    } else if (p < 0.05) {
+      return("*")
+    } else if (p < 0.1) {
+      return(".")
+    } else {
+      return("")
+    }
   })
 }

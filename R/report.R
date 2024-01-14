@@ -20,8 +20,7 @@
 #' @param title A character providing the heading or TRUE (default) to output a heading.
 #'               Classes for tabset pills will be added.
 #' @export
-report <- function(data, scopes, col_group=NULL, prop="total", numbers="p", missings=F, ordered=NULL, title=T) {
-
+report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p", missings = F, ordered = NULL, title = T) {
   chunks <- list()
 
   # Get item label from the attributes
@@ -29,144 +28,127 @@ report <- function(data, scopes, col_group=NULL, prop="total", numbers="p", miss
     get_labels()
 
   for (scope in scopes) {
+    # Get column candidates
+    items <- labels %>%
+      dplyr::filter(stringr::str_starts(item_name, scope)) %>%
+      dplyr::distinct(item_group, item_name, item_class, item_label)
 
-       # Get column candidates
-       items <- labels %>%
-         dplyr::filter(stringr::str_starts(item_name, scope)) %>%
-         dplyr::distinct(item_group,item_name, item_class, item_label)
+    # Only keep dominant item type
+    if (nrow(items) > 1) {
+      item_types <- items %>%
+        dplyr::count(item_class, sort = T) %>%
+        dplyr::slice_head(n = 1)
 
-       # Only keep dominant item type
-       if (nrow(items) > 1) {
-         item_types <- items %>%
-           dplyr::count(item_class,sort=T) %>%
-           dplyr::slice_head(n=1)
+      items <- dplyr::semi_join(items, item_types, by = c("item_class"))
+    }
 
-         items <- dplyr::semi_join(items, item_types, by=c("item_class"))
-       }
-
-       is_items <- nrow(items) > 1
-       is_var <- !is_items &&  (scope %in% colnames(data))
-       is_scale <- get_scale(data, tidyselect::starts_with(scope), F)
-
-
-       # Get title
-       if (is.character(title)) {
-         scope_title <- title
-       }
-       else if (title == TRUE) {
-         if (is_var) {
-            scope_title <- get_title(data, !!rlang::sym(scope) )
-         } else
-         {
-           scope_title <- get_title(data, tidyselect::starts_with(scope))
-         }
-       } else {
-         scope_title <- ""
-       }
-
-       if (is.character(scope_title) && knitr::is_html_output()) {
-         chunks <- add_to_report(paste0("\n#### ", scope_title," {.tabset .tabset-pills}  \n") , chunks)
-         plot_title <- F
-       } else {
-         plot_title <- T
-       }
+    is_items <- nrow(items) > 1
+    is_var <- !is_items && (scope %in% colnames(data))
+    is_scale <- get_scale(data, tidyselect::starts_with(scope), F)
 
 
-       # A single categorical variable
-       if (is_var && is_scale == 0 && is.null(col_group)) {
+    # Get title
+    if (is.character(title)) {
+      scope_title <- title
+    } else if (title == TRUE) {
+      if (is_var) {
+        scope_title <- get_title(data, !!rlang::sym(scope))
+      } else {
+        scope_title <- get_title(data, tidyselect::starts_with(scope))
+      }
+    } else {
+      scope_title <- ""
+    }
 
-         chunks <- plot_var_counts(data, !!rlang::sym(scope), numbers=numbers, title=plot_title) %>%
-           add_to_report(chunks, "Plot")
-
-         chunks <- tab_var_counts(data, !!rlang::sym(scope)) %>%
-           add_to_report(chunks, "Table")
-
-
-       }
-
-       # A single metric variable
-       else if (is_var && is_scale != 0 && is.null(col_group)) {
-          chunks <- plot_var_metrics(data, !!rlang::sym(scope), title=plot_title) %>%
-            add_to_report(chunks, "Plot")
-
-          chunks <- tab_var_metrics(data, !!rlang::sym(scope)) %>%
-            add_to_report(chunks, "Table")
-       }
-
-       # A single categorical variable by group
-       else if (is_var && is_scale == 0 && !is.null(col_group)) {
-         chunks <- plot_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop=prop, numbers=numbers, ordered=ordered, missings=missings, title=plot_title) %>%
-           add_to_report(chunks, "Plot")
-
-         chunks <- tab_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop=prop, missings=missings) %>%
-           add_to_report(chunks, "Table")
-
-       }
-
-       # A single metric variable by group
-       else if (is_var && is_scale != 0 && !is.null(col_group)) {
-         chunks <- plot_group_metrics(data, !!rlang::sym(scope), !!rlang::sym(col_group), title=plot_title) %>%
-           add_to_report(chunks, "Plot")
-
-         chunks <- tab_group_metrics(data, !!rlang::sym(scope), !!rlang::sym(col_group)) %>%
-           add_to_report(chunks, "Table")
-
-       }
-
-       # Multiple items
-       else if (is_items && is.null(col_group)) {
-
-         chunks <- plot_item_counts(data, tidyselect::starts_with(scope), numbers=numbers, ordered=ordered, title=plot_title) %>%
-           add_to_report(chunks, "Plot")
-
-         chunks <- tab_item_counts(data, tidyselect::starts_with(scope)) %>%
-           add_to_report(chunks, "Table")
-
-       }
-
-       # Multiple items by group
-       else if (is_items && !is.null(col_group)) {
-
-         chunks <- plot_multi_means(data, tidyselect::starts_with(scope), !!rlang::sym(col_group), title=plot_title) %>%
-           add_to_report(chunks, "Plot")
-
-         chunks <- tab_multi_means(data, tidyselect::starts_with(scope), !!rlang::sym(col_group)) %>%
-           add_to_report(chunks, "Table")
-
-       }
-       else {
-         warning("Could't find columns to autodetect the table type for the scope ", scope,". Check your parameters.")
-       }
+    if (is.character(scope_title) && knitr::is_html_output()) {
+      chunks <- add_to_report(paste0("\n#### ", scope_title, " {.tabset .tabset-pills}  \n"), chunks)
+      plot_title <- F
+    } else {
+      plot_title <- T
+    }
 
 
-       # Output index
-       if (is_items && is_scale != 0) {
+    # A single categorical variable
+    if (is_var && is_scale == 0 && is.null(col_group)) {
+      chunks <- plot_var_counts(data, !!rlang::sym(scope), numbers = numbers, title = plot_title) %>%
+        add_to_report(chunks, "Plot")
 
-         idx <- add_idx(data, tidyselect::starts_with(scope))
-         idx_name <- setdiff(colnames(idx), colnames(data))
+      chunks <- tab_var_counts(data, !!rlang::sym(scope)) %>%
+        add_to_report(chunks, "Table")
+    }
+
+    # A single metric variable
+    else if (is_var && is_scale != 0 && is.null(col_group)) {
+      chunks <- plot_var_metrics(data, !!rlang::sym(scope), title = plot_title) %>%
+        add_to_report(chunks, "Plot")
+
+      chunks <- tab_var_metrics(data, !!rlang::sym(scope)) %>%
+        add_to_report(chunks, "Table")
+    }
+
+    # A single categorical variable by group
+    else if (is_var && is_scale == 0 && !is.null(col_group)) {
+      chunks <- plot_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop = prop, numbers = numbers, ordered = ordered, missings = missings, title = plot_title) %>%
+        add_to_report(chunks, "Plot")
+
+      chunks <- tab_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop = prop, missings = missings) %>%
+        add_to_report(chunks, "Table")
+    }
+
+    # A single metric variable by group
+    else if (is_var && is_scale != 0 && !is.null(col_group)) {
+      chunks <- plot_group_metrics(data, !!rlang::sym(scope), !!rlang::sym(col_group), title = plot_title) %>%
+        add_to_report(chunks, "Plot")
+
+      chunks <- tab_group_metrics(data, !!rlang::sym(scope), !!rlang::sym(col_group)) %>%
+        add_to_report(chunks, "Table")
+    }
+
+    # Multiple items
+    else if (is_items && is.null(col_group)) {
+      chunks <- plot_item_counts(data, tidyselect::starts_with(scope), numbers = numbers, ordered = ordered, title = plot_title) %>%
+        add_to_report(chunks, "Plot")
+
+      chunks <- tab_item_counts(data, tidyselect::starts_with(scope)) %>%
+        add_to_report(chunks, "Table")
+    }
+
+    # Multiple items by group
+    else if (is_items && !is.null(col_group)) {
+      chunks <- plot_multi_means(data, tidyselect::starts_with(scope), !!rlang::sym(col_group), title = plot_title) %>%
+        add_to_report(chunks, "Plot")
+
+      chunks <- tab_multi_means(data, tidyselect::starts_with(scope), !!rlang::sym(col_group)) %>%
+        add_to_report(chunks, "Table")
+    } else {
+      warning("Could't find columns to autodetect the table type for the scope ", scope, ". Check your parameters.")
+    }
 
 
-         if (is.null(col_group)) {
+    # Output index
+    if (is_items && is_scale != 0) {
+      idx <- add_idx(data, tidyselect::starts_with(scope))
+      idx_name <- setdiff(colnames(idx), colnames(data))
 
-           chunks <- idx %>%
-             plot_var_metrics(!!rlang::sym(idx_name), title=plot_title) %>%
-             add_to_report(chunks, "Index: Plot")
 
-           chunks <- idx %>%
-             tab_var_metrics(!!rlang::sym(idx_name)) %>%
-             add_to_report(chunks, "Index: Table")
+      if (is.null(col_group)) {
+        chunks <- idx %>%
+          plot_var_metrics(!!rlang::sym(idx_name), title = plot_title) %>%
+          add_to_report(chunks, "Index: Plot")
 
-         }
-         else {
-           chunks <- idx %>%
-             plot_group_metrics(!!rlang::sym(idx_name), !!rlang::sym(col_group), title=plot_title) %>%
-             add_to_report(chunks, "Index: Plot")
+        chunks <- idx %>%
+          tab_var_metrics(!!rlang::sym(idx_name)) %>%
+          add_to_report(chunks, "Index: Table")
+      } else {
+        chunks <- idx %>%
+          plot_group_metrics(!!rlang::sym(idx_name), !!rlang::sym(col_group), title = plot_title) %>%
+          add_to_report(chunks, "Index: Plot")
 
-           chunks <- idx %>%
-             tab_group_metrics(!!rlang::sym(idx_name), !!rlang::sym(col_group)) %>%
-             add_to_report(chunks, "Index: Table")
-         }
-       }
+        chunks <- idx %>%
+          tab_group_metrics(!!rlang::sym(idx_name), !!rlang::sym(col_group)) %>%
+          add_to_report(chunks, "Index: Table")
+      }
+    }
   }
 
   class(chunks) <- c("vlkr_rprt", class(chunks))
@@ -179,31 +161,26 @@ report <- function(data, scopes, col_group=NULL, prop="total", numbers="p", miss
 #' @param chunks The current report list
 #' @param tab A tabsheet name or NULL
 #' @return A list with volker tables or plots
-add_to_report <- function(obj, chunks, tab=NULL) {
+add_to_report <- function(obj, chunks, tab = NULL) {
   if (knitr::is_html_output()) {
-
     # Tab
     if (!is.null(tab)) {
       tab <- paste0("\n##### ", tab, "  \n")
-      chunks <- add_to_report(tab ,chunks)
+      chunks <- add_to_report(tab, chunks)
     }
 
     # Objects
-    if (inherits(obj,"vlkr_tbl")) {
-      newchunk <-  knit_table(obj)
-    }
-    else if (inherits(obj,"vlkr_plt")) {
-      newchunk <-  knit_plot(obj)
-    }
-    else if (is.character(obj)) {
-      newchunk <-  obj
-    }
-    else {
+    if (inherits(obj, "vlkr_tbl")) {
+      newchunk <- knit_table(obj)
+    } else if (inherits(obj, "vlkr_plt")) {
+      newchunk <- knit_plot(obj)
+    } else if (is.character(obj)) {
+      newchunk <- obj
+    } else {
       warning("Could not determine the volker report chunk type")
     }
 
     chunks <- append(chunks, newchunk)
-
   } else {
     print(obj)
   }
@@ -221,7 +198,7 @@ print.vlkr_rprt <- function(obj) {
   if (knitr::is_html_output()) {
     obj %>%
       unlist() %>%
-      paste0(collapse="\n")  %>%
+      paste0(collapse = "\n") %>%
       knitr::asis_output() %>%
       knitr::knit_print()
   }

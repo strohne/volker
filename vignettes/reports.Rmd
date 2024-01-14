@@ -11,8 +11,7 @@ editor_options:
 ---
 
 ```{r include=FALSE}
-
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo=TRUE)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo = TRUE)
 
 library(tidyverse)
 library(volker)
@@ -22,27 +21,20 @@ data <- volker::chatgpt
 
 
 # Recode -9 to NA
-data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(.,-9)  ))
+data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(., -9)))
 
 # Add label to sd_alter
-data <- set_item_labels(data, tibble("sd_alter","Alter")) 
-
+data <- set_item_labels(data, tibble("sd_alter", "Alter"))
 ```
 
 # Multiple variables
 ```{r}
-
 report(data, c("sd_geschlecht", "cg_adoption_"))
-
 ```
 
 
 # Group comparisons
 ```{r}
-
 report(data, "cg_adoption_", "in_adoption")
-
-  
-
 ```
 
