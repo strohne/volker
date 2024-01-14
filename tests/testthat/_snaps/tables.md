@@ -38,20 +38,20 @@
     Output
       
       
-      |ChatGPT-Erwartung                                                         | trifft gar nicht zu| trifft eher nicht zu| teils teils| trifft eher zu| trifft voll zu| Missing|      Total|
-      |:-------------------------------------------------------------------------|-------------------:|--------------------:|-----------:|--------------:|--------------:|-------:|----------:|
-      |ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.       |              6 (5%)|              10 (9%)|    40 (35%)|       40 (35%)|       17 (15%)|  2 (2%)| 115 (100%)|
-      |Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.             |            24 (21%)|             24 (21%)|    33 (29%)|       25 (22%)|         9 (8%)|  0 (0%)| 115 (100%)|
-      |Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.              |              6 (5%)|             13 (11%)|    25 (22%)|       51 (44%)|       20 (17%)|  0 (0%)| 115 (100%)|
-      |Im Vergleich zu anderen Systemen macht die Nutzung von ChatGPT mehr Spaß. |              6 (5%)|               5 (4%)|    43 (37%)|       44 (38%)|       17 (15%)|  0 (0%)| 115 (100%)|
-      |Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.              |              6 (5%)|             28 (24%)|    37 (32%)|       27 (23%)|       17 (15%)|  0 (0%)| 115 (100%)|
-      |Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.                  |             10 (9%)|             21 (18%)|    49 (43%)|       18 (16%)|       17 (15%)|  0 (0%)| 115 (100%)|
-      |Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.     |              3 (3%)|             26 (23%)|    47 (41%)|       21 (18%)|       17 (15%)|  1 (1%)| 115 (100%)|
-      |Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.    |            11 (10%)|             41 (36%)|    34 (30%)|       20 (17%)|         9 (8%)|  0 (0%)| 115 (100%)|
-      |In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.             |            22 (19%)|             40 (35%)|    28 (24%)|       17 (15%)|         7 (6%)|  1 (1%)| 115 (100%)|
-      |Fast alle Personen in meinem Umfeld nutzen ChatGPT.                       |            31 (27%)|             36 (31%)|    28 (24%)|       12 (10%)|         8 (7%)|  0 (0%)| 115 (100%)|
-      |Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.                  |            50 (43%)|             31 (27%)|    18 (16%)|         8 (7%)|         7 (6%)|  1 (1%)| 115 (100%)|
-      |Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.         |            35 (30%)|             30 (26%)|    25 (22%)|       17 (15%)|         8 (7%)|  0 (0%)| 115 (100%)|
+      |ChatGPT-Erwartung                                                         | trifft gar nicht zu| trifft eher nicht zu| teils teils| trifft eher zu| trifft voll zu|      Total|
+      |:-------------------------------------------------------------------------|-------------------:|--------------------:|-----------:|--------------:|--------------:|----------:|
+      |ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.       |              5% (6)|              9% (10)|    36% (40)|       34% (38)|       15% (17)| 100% (111)|
+      |Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.             |            21% (23)|             22% (24)|    29% (32)|       21% (23)|         8% (9)| 100% (111)|
+      |Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.              |              5% (6)|             12% (13)|    22% (24)|       44% (49)|       17% (19)| 100% (111)|
+      |Im Vergleich zu anderen Systemen macht die Nutzung von ChatGPT mehr Spaß. |              5% (6)|               5% (5)|    38% (42)|       38% (42)|       14% (16)| 100% (111)|
+      |Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.              |              5% (6)|             25% (28)|    32% (35)|       23% (26)|       14% (16)| 100% (111)|
+      |Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.                  |             9% (10)|             19% (21)|    41% (46)|       15% (17)|       15% (17)| 100% (111)|
+      |Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.     |              3% (3)|             23% (26)|    41% (45)|       18% (20)|       15% (17)| 100% (111)|
+      |Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.    |            10% (11)|             34% (38)|    31% (34)|       17% (19)|         8% (9)| 100% (111)|
+      |In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.             |            19% (21)|             34% (38)|    25% (28)|       15% (17)|         6% (7)| 100% (111)|
+      |Fast alle Personen in meinem Umfeld nutzen ChatGPT.                       |            26% (29)|             32% (35)|    24% (27)|       11% (12)|         7% (8)| 100% (111)|
+      |Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.                  |            45% (50)|             26% (29)|    15% (17)|         7% (8)|         6% (7)| 100% (111)|
+      |Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.         |            31% (34)|             25% (28)|    23% (25)|       14% (16)|         7% (8)| 100% (111)|
 
 # Distribution table for multiple metric items
 
@@ -82,13 +82,12 @@
     Output
       
       
-      |Typologie                                                      |      Total| weiblich| männlich| divers|
-      |:--------------------------------------------------------------|----------:|--------:|--------:|------:|
-      |Ich probiere neue Angebote sofort aus.                         |   21 (18%)|   5 (4%)| 15 (13%)| 1 (1%)|
-      |Ich probiere neue Angebote eher schnell aus.                   |   66 (57%)| 26 (23%)| 40 (35%)| 0 (0%)|
-      |Ich warte eher ab, bis sich die Angebote durchgesetzt haben.   |   26 (23%)| 15 (13%)| 11 (10%)| 0 (0%)|
-      |Ich nutze neue Angebote erst, wenn ich nicht mehr anders kann. |     2 (2%)|   0 (0%)|   2 (2%)| 0 (0%)|
-      |Total                                                          | 115 (100%)| 46 (40%)| 68 (59%)| 1 (1%)|
+      |Geschlecht |      Total| Ich probiere neue Angebote sofort aus.| Ich probiere neue Angebote eher schnell aus.| Ich warte eher ab, bis sich die Angebote durchgesetzt haben.| Ich nutze neue Angebote erst, wenn ich nicht mehr anders kann.|
+      |:----------|----------:|--------------------------------------:|--------------------------------------------:|------------------------------------------------------------:|--------------------------------------------------------------:|
+      |weiblich   |   40% (46)|                                 4% (5)|                                     23% (26)|                                                     13% (15)|                                                         0% (0)|
+      |männlich   |   59% (68)|                               13% (15)|                                     35% (40)|                                                     10% (11)|                                                         2% (2)|
+      |divers     |     1% (1)|                                 1% (1)|                                       0% (0)|                                                       0% (0)|                                                         0% (0)|
+      |Total      | 100% (115)|                               18% (21)|                                     57% (66)|                                                     23% (26)|                                                         2% (2)|
 
 # Group comparison of a metric variable
 

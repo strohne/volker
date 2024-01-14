@@ -62,7 +62,7 @@ clean_columns <- function(data, remove.na=T) {
     data,
     dplyr::across(
       tidyselect::where(is.factor),
-      ~ forcats::fct_relabel(. ~ stringr::str_replace_all(., stringr::fixed("/"), "/\u200B"))
+      ~ forcats::fct_relabel(., ~ stringr::str_replace_all(., stringr::fixed("/"), "/\u200B"))
     )
   )
 

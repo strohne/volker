@@ -23,16 +23,9 @@ tab_var_counts <- function(data, col, .labels=T, .formatted=T) {
       {{col}} := tidyr::replace_na(as.character({{col}}), "Missing")
     )
 
-  # Get item label from the attributes
+  # Get variable caption from the attributes
   if (.labels) {
-    codes <- data %>%
-      get_labels({{col}}) %>%
-      dplyr::distinct(item_name, item_label) %>%
-      na.omit()
-  }
-
-  if (.labels && (nrow(codes) > 0)) {
-    label <- codes$item_label[1]
+    label <- get_col_label(data, {{col}})
     result <- result %>%
       dplyr::rename({{label}} := {{col}})
   }
@@ -265,15 +258,17 @@ tab_item_counts <- function(data, cols, values= c("n","p"), missings=F, .formatt
 
   # Remove missings
   if (!missings) {
-    data <- data %>%
-      tidyr::drop_na({{cols}})
+    data <- tidyr::drop_na(data, {{cols}})
   }
-
 
   # Calculate n and p
   result <- data %>%
     remove_labels(tidyselect::all_of(cols)) %>%
-    tidyr::pivot_longer(tidyselect::all_of(cols), names_to="item",values_to="value") %>%
+    tidyr::pivot_longer(
+      tidyselect::all_of(cols),
+      names_to="item",
+      values_to="value"
+    ) %>%
 
     dplyr::count(item, value) %>%
     dplyr::group_by(item) %>%
@@ -314,9 +309,7 @@ tab_item_counts <- function(data, cols, values= c("n","p"), missings=F, .formatt
 
   # Add % sign
   if (.formatted) {
-    result_p <- result_p %>%
-      dplyr::mutate(across(where(is.numeric), ~ paste0(round(. * 100,0),"%" )))
-
+    result_p <- dplyr::mutate(result_p, across(where(is.numeric), ~ paste0(round(. * 100,0),"%" )))
   }
 
   # Combine n and p if requested
@@ -863,7 +856,7 @@ tab_multi_corr <- function(data, cols1, cols2, method="p", significant=F, digits
 }
 
 
-#' Knit table with defaults for the package
+#' Knit volker tables
 #'
 #' @param df Data frame
 #' @return Formatted table

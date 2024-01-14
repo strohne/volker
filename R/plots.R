@@ -6,14 +6,20 @@
 #' @param data A tibble
 #' @param col The column holding values to count
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
+#' @param title Whether to show a plot title
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-plot_var_counts <- function(data, col, numbers=NULL, .labels=T) {
+plot_var_counts <- function(data, col, numbers=NULL, title=T, .labels=T) {
   result <- data %>%
     tab_var_counts({{col}}, .labels=.labels, .formatted=F)
 
   # TODO: implement meta data property in tab_var_counts()
-  title <- colnames(result)[1]
+  if (title == T) {
+    title <- colnames(result)[1]
+  } else if (title == F) {
+    title <- NULL
+  }
+
   base_n <- sum(result$n[! (result[[1]] %in% c("Total", "Missing"))])
 
   result <- result %>%
@@ -57,13 +63,7 @@ plot_var_counts <- function(data, col, numbers=NULL, .labels=T) {
   }
 
   # Pass row number and label length to the knit_plot() function
-  class(pl) <- c("vlkr_plt", class(pl))
-  attr(pl,"vlkr_options") <- list(
-    rows= nrow(pl$data),
-    lablen = max(stringr::str_length(pl$data[[1]]))
-  )
-
-  pl
+  .add_plot_attributes(pl)
 }
 
 #' Plot frequencies cross tabulated with a grouping column
@@ -85,7 +85,7 @@ plot_var_counts <- function(data, col, numbers=NULL, .labels=T) {
 #' @param .labels If TRUE (default) extracts item labels from the attributes, see get_labels()
 #' @param .category Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
 #' @export
-plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", ordered=NULL, missings=F, .labels=T, .category=NULL) {
+plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", ordered=NULL, missings=F, title=T, .labels=T, .category=NULL) {
 
   # Check columns
   has_column(data, {{col}})
@@ -98,7 +98,10 @@ plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", 
   result <- data %>%
     tab_group_counts({{col}}, {{col_group}}, values="n", missings=missings, .labels = .labels, .formatted = F)
 
-  title <- colnames(result)[1]
+  if (title == T) {
+    title <- colnames(result)[1]
+  }
+
   base_n <- sum(result$Total[! (result[[1]] %in% c("Total", "Missing"))])
   categories <- dplyr::select(result,-1,-matches("^Total|Missing")) %>% colnames()
 
@@ -165,13 +168,16 @@ plot_group_counts <- function(data, col, col_group, numbers=NULL, prop="total", 
 #' @param .category Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-plot_item_counts <- function(data, cols, numbers=NULL, ordered=NULL, missings=F, .labels=T, .category=NULL) {
+plot_item_counts <- function(data, cols, numbers=NULL, ordered=NULL, missings=F, title=T, .labels=T, .category=NULL) {
 
 
   result <- data %>%
     tab_item_counts(cols, values="n", missings=missings, .formatted=F)
 
-  title <- colnames(result)[1]
+  if (title == T) {
+    title <- colnames(result)[1]
+  }
+
   categories <- dplyr::select(result,-1,-matches("^Total|Missing")) %>% colnames()
   base_n <- sum(dplyr::select(result,-1,-matches("^Total"))[1,])
 
@@ -217,7 +223,7 @@ plot_item_counts <- function(data, cols, numbers=NULL, ordered=NULL, missings=F,
 #' @param col The columns holding metric values
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-plot_var_metrics <- function(data, col, .labels=T) {
+plot_var_metrics <- function(data, col, title=T, .labels=T) {
 
   data <- drop_na(data,{{col}})
 
@@ -231,7 +237,13 @@ plot_var_metrics <- function(data, col, .labels=T) {
   # TODO: report missings
 
   if (.labels) {
-    title <- get_col_label(data,{{col}})
+
+    if (title == T) {
+      title <- get_col_label(data,{{col}})
+    } else if (title == F) {
+      title <- NULL
+    }
+
     base_n <- data %>%  nrow()
     pl <- pl +
       labs(title = title, caption = paste0("n=", base_n)) +
@@ -250,12 +262,7 @@ plot_var_metrics <- function(data, col, .labels=T) {
     )
 
   # Pass row number and label length to the knit_plot() function
-  class(pl) <- c("vlkr_plt", class(pl))
-  attr(pl,"vlkr_options") <- list(
-    rows= 4 # Limit the size
-  )
-
-  pl
+  .add_plot_attributes(pl, 4)
 }
 
 #' Output averages for multiple variables
@@ -269,14 +276,16 @@ plot_var_metrics <- function(data, col, .labels=T) {
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .negative If False (default) negative values are recoded as missing values
 #' @export
-plot_group_metrics <- function(data, col, col_group, limits=NULL, numbers=NULL, .labels=T, .negative=F) {
+plot_group_metrics <- function(data, col, col_group, limits=NULL, numbers=NULL, title=T, .labels=T, .negative=F) {
 
   result <- tab_group_metrics(data, {{col}}, {{col_group}}, .labels=.labels, .negative=.negative)
 
   # Pimp the result
   result <- result[result[[1]] != "Total", ]
   colnames(result)[1] <- get_col_label(data, {{col}})
-  title <- colnames(result)[1]
+  if (title == T) {
+    title <- colnames(result)[1]
+  }
 
   .plot_means(result, limits, numbers, title, .labels)
 }
@@ -291,9 +300,11 @@ plot_group_metrics <- function(data, col, col_group, limits=NULL, numbers=NULL, 
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .negative If False (default) negative values are recoded as missing values
 #' @export
-plot_item_metrics <- function(data, cols, limits=NULL, numbers=NULL, .labels=T, .negative=F) {
+plot_item_metrics <- function(data, cols, limits=NULL, numbers=NULL, title=T, .labels=T, .negative=F) {
   result <- tab_item_metrics(data, cols, .labels=.labels, .negative=.negative)
-  title <- colnames(result)[1]
+  if (title == T) {
+    title <- colnames(result)[1]
+  }
   .plot_means(result, limits, numbers, title, .labels)
 }
 
@@ -309,7 +320,7 @@ plot_item_metrics <- function(data, cols, limits=NULL, numbers=NULL, .labels=T, 
 #' @param .negative If False (default) negative values are recoded as missing values
 #' @return A plot
 #' @export
-plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL, .labels=T, .negative=F) {
+plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL, title=T, .labels=T, .negative=F) {
 
   # Get positions of group cols
   cols_groups <- tidyselect::eval_select(expr = enquo(cols_groups), data=data)
@@ -358,6 +369,10 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
     result <- dplyr::mutate(result, item = ifelse(item=="", prefix, item))
   }
 
+  if (title == T) {
+    title <- trim_label(prefix)
+  }
+
   #print(result)
   #class(result) <- setdiff(class(result),"skim_df")
 
@@ -386,18 +401,12 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
   if (!is.null(.labels)) {
     # TODO: remove missing values, get group sizes
     base_n <- nrow(data)
-    pl <- pl + ggtitle(label =trim_label(prefix))
+    pl <- pl + ggtitle(label = title)
     pl <- pl + labs (caption = paste0("n=", base_n, "; with missings"))
   }
 
   # Pass row number and label length to the knit_plot() function
-  class(pl) <- c("vlkr_plt", class(pl))
-  attr(pl,"vlkr_options") <- list(
-    rows= nrow(pl$data),
-    lablen = max(stringr::str_length(pl$data[[1]]))
-  )
-
-  pl
+  .add_plot_attributes(pl)
 }
 
 #' Helper function: plot grouped bar chart
@@ -410,6 +419,10 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
 #' @param title The plot title or NULL
 #' @param caption The plot caption or NULL. The caption is used for notes.
 .plot_grouped_bars <- function(data, category=NULL, scale=NULL, numbers=NULL, title=NULL, caption=NULL) {
+
+  if (title == F) {
+    title <- NULL
+  }
 
   if (!is.null(category)) {
     data <- filter(data, value == category)
@@ -481,13 +494,7 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
   }
 
   # Pass row number and label length to the knit_plot() function
-  class(pl) <- c("vlkr_plt", class(pl))
-  attr(pl,"vlkr_options") <- list(
-    rows= nrow(pl$data),
-    lablen = max(stringr::str_length(pl$data[[1]]))
-  )
-
-  pl
+  .add_plot_attributes(pl)
 }
 
 #' Helper function to plot means as bars, e.g. for plot_item_metrics and plot_group_metrics
@@ -499,6 +506,10 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @return Plot
 .plot_means <- function(result, limits, numbers, title=NULL, .labels) {
+
+  if (title == F) {
+    title <- NULL
+  }
 
   # TODO: minus missing values, output range
   base_n <- max(result$n)
@@ -553,18 +564,42 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
   }
 
   # Pass row number and label length to the knit_plot() function
-  class(pl) <- c("vlkr_plt", class(pl))
-  attr(pl,"vlkr_options") <- list(
-    rows= nrow(pl$data),
-    lablen = max(stringr::str_length(pl$data[[1]]))
-  )
-
-  pl
+  .add_plot_attributes(pl)
 }
 
 
+#' Add the volker classes and options
+#'
+#' @param pl A ggplot2 object
+#' @return The plot
+.add_plot_attributes <- function(pl, rows=NULL) {
+  class(pl) <- c("vlkr_plt", class(pl))
 
-#' Knit plot with automatically calculated height
+  if (is.null(rows)) {
+    rows <-  max(
+       dplyr::n_distinct(pl$data[[1]]),
+       dplyr::n_distinct(pl$data[[2]])
+    )
+  }
+
+  attr(pl,"vlkr_options") <- list(
+    rows= rows,
+    lablen = max(stringr::str_length(pl$data[[1]]))
+  )
+  pl
+}
+
+#' Knit volker plots
+#'
+#' Automatically calculates the plot height from
+#' chunk options and volker options.
+#'
+#' Presumptions:
+#' - a screen resolution of 72dpi
+#' - a default plot width of 7 inches = 504px
+#' - a default page width of 700px (vignette) or 910px (report)
+#' - an optimal bar height of 40px for 910px wide plots. i.e. a ratio of 0.04
+#' - an offset of one bar above and one bar below
 #'
 #' @param pl A ggplot object
 #' @return Character string containing a html image tag, including the base64 encoded image
@@ -574,21 +609,41 @@ knit_plot <- function(pl) {
   chunk_options <- knitr::opts_chunk$get()
   plot_options <- attr(pl, "vlkr_options")
 
-  fig_width <- chunk_options$fig.width
-  fig_height <- chunk_options$fig.height
+
+  fig_width <- chunk_options$fig.width * 72
+  fig_height <- chunk_options$fig.height * 72
+  fig_dpi <- 192 #96
+  fig_scale <- fig_dpi / 96
+
+  # TODO: GET PAGE WIDTH FROM SOMEWHERE
+  #page_width <- dplyr::coalesce(chunk_options$page.width, 1)
 
   # Calculate plot height
   if (!is.null(plot_options[["rows"]])) {
-    #fig_width <- NA
-    wrap <- dplyr::coalesce(plot_options[["labwrap"]], 40)
-    rowheight <- (dplyr::coalesce(plot_options[["lablen"]], 1) %/% wrap) + 1
-    fig_height <- (plot_options[["rows"]] * 0.015) * rowheight
 
-    fig_height <- fig_height + 0.75
+    fig_width <- 910
+    px_perline <- 15
+    px_offset <- 7 * px_perline
+
+    rows <- plot_options[["rows"]]
+    wrap <- dplyr::coalesce(plot_options[["labwrap"]], 40)
+    lines <- (dplyr::coalesce(plot_options[["lablen"]], 1) %/% wrap) + 2
+
+    fig_height <- (rows * lines * px_perline) + px_offset
   }
 
   pngfile <- tempfile(fileext = ".png", tmpdir=chunk_options$cache.path)
-  suppressMessages(ggsave(pngfile, pl,width = fig_width, height = fig_height, dpi = 300, scale = 2.5))
+  suppressMessages(ggsave(
+    pngfile,
+    pl,
+    # type = "cairo-png",
+    # antialias = "subpixel",
+    width = fig_width,
+    height = fig_height,
+    units="px",
+    dpi = fig_dpi,
+    scale = fig_scale
+  ))
 
   base64_string <- base64enc::base64encode(pngfile)
   paste0('<img src="data:image/png;base64,', base64_string, '" width="100%">')

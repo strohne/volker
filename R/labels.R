@@ -1,6 +1,7 @@
 #' Get variable labels from their comment attributes
 #'
 #' @param data A tibble
+#' @param cols A tidy variable selections to filter specific columns
 #' @return A tibble with the columns:
 #'        - item_group: First part of the column name, up to an underscore.
 #'        - item_class: The last class value of an item (e.g. numeric, factor).
@@ -71,6 +72,27 @@ get_labels <- function(data, cols) {
   }
 
   labels
+}
+
+#' Get a common title for a column selection
+#'
+#' @param data A tibble
+#' @param cols A tidy column selection
+#' @return A character string
+get_title <- function(data, cols) {
+
+  labels <- get_labels(data, {{cols}})
+
+  if (nrow(labels) > 0) {
+    labels <- labels$item_label
+  } else {
+    labels <- select(data, {{cols}}) %>% colnames()
+  }
+
+  labels %>%
+    get_prefix() %>%
+    trim_label()
+
 }
 
 #' Get the numeric range from the labels

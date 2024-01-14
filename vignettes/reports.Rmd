@@ -30,21 +30,15 @@ data <- set_item_labels(data, tibble("sd_alter","Alter"))
 ```
 
 # Multiple variables
-```{r results='asis'}
+```{r}
 
-report(
-  data, 
-  c(
-    "sd_geschlecht",
-    "cg_adoption_"
-  )
-)
+report(data, c("sd_geschlecht", "cg_adoption_"))
 
 ```
 
 
 # Group comparisons
-```{r results='asis'}
+```{r}
 
 report(data, "cg_adoption_", "in_adoption")
 
