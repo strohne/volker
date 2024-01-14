@@ -11,7 +11,8 @@ report(
   prop = "total",
   numbers = "p",
   missings = F,
-  ordered = NULL
+  ordered = NULL,
+  title = T
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ By default (NULL), the ordering is automatically detected.
 An appropriate color scale should be choosen depending on the ordering.
 For unordered values, the default scale is used.
 For ordered values, the viridis scale is used.}
+
+\item{title}{A character providing the heading or TRUE (default) to output a heading.
+Classes for tabset pills will be added.}
 }
 \description{
 For each column prefix:

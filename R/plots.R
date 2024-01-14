@@ -345,7 +345,8 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
         dplyr::select(!!sym(col),!!cols) %>%
         skim_metrics() %>%
         dplyr::ungroup() %>%
-        dplyr::select(item=skim_variable, group=!!sym(col), numeric.mean)
+        dplyr::select(item=skim_variable, group=!!sym(col), numeric.mean) %>%
+        tidyr::drop_na()
     }
   ) %>%
     purrr::reduce(
@@ -371,6 +372,8 @@ plot_multi_means <- function(data, cols, cols_groups, limits=NULL, numbers=NULL,
 
   if (title == T) {
     title <- trim_label(prefix)
+  } else if (title == F) {
+    title <- NULL
   }
 
   #print(result)

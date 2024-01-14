@@ -2,7 +2,7 @@
 % Please edit documentation in R/tables.R
 \name{knit_table}
 \alias{knit_table}
-\title{Knit table with defaults for the package}
+\title{Knit volker tables}
 \usage{
 knit_table(df, ...)
 }
@@ -13,5 +13,5 @@ knit_table(df, ...)
 Formatted table
 }
 \description{
-Knit table with defaults for the package
+Knit volker tables
 }

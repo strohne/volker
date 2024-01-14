@@ -12,6 +12,7 @@ plot_group_counts(
   prop = "total",
   ordered = NULL,
   missings = F,
+  title = T,
   .labels = T,
   .category = NULL
 )

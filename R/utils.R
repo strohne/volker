@@ -17,9 +17,11 @@ has_column <- function(data, col, stopit = T) {
 
 #' Prepare metadata and types of dataframe columns
 #'
-#' - Removes the avector class from all columns
+#' Prepares Sosci data:
+#' - Remove the avector class from all columns
 #'   (comes from Sosci and prevents combining vectors)
 #' - Recode residual factor values to NA ("[NA] nicht beantwortet")
+#' - Recode -9 values to NA
 #'
 #' @param data Data frame
 #' @param remove.na Whether residual values should be replaced by NA
@@ -47,6 +49,8 @@ clean_columns <- function(data, remove.na=T) {
         ~ na_if(.,remove.na)
       )
     )
+
+    data <- dplyr::mutate(data, across(where(is.numeric),~ na_if(.,-9)))
   }
 
   # Add whitespace for better breaks
@@ -68,29 +72,6 @@ clean_columns <- function(data, remove.na=T) {
 
   data
 }
-
-
-#' A reduced skimmer for metric variables
-#' Returns a five point summary, mean and sd, items count and alpha for scales added by add_idx()
-#' @export
-skim_metrics <- skimr::skim_with(
-  numeric = skimr::sfl(
-    min = ~ base::min(., na.rm = T),
-    q1 = ~ stats::quantile(., probs = 0.25, na.rm = TRUE, names = FALSE),
-    median = ~ stats::median(., na.rm = T),
-    q3 = ~stats::quantile(., probs = 0.75, na.rm = TRUE, names = FALSE),
-    max = ~ base::max(., na.rm = T),
-    mean = ~ base::mean(., na.rm=T),
-    sd = ~ stats::sd(., na.rm=T),
-    items = ~ get_idx_alpha(.)$items,
-    alpha = ~ get_idx_alpha(.)$alpha
-  ),
-  base = skimr::sfl(
-    n = length,
-    missing = skimr::n_missing
-  ),
-  append = FALSE
-)
 
 #' Combine two identically shaped data frames
 #' by adding values of each column from the second data frame

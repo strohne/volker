@@ -2,7 +2,7 @@
 % Please edit documentation in R/tables.R
 \name{tab_group_metrics}
 \alias{tab_group_metrics}
-\title{#' Output a five point summary for groups}
+\title{Output a five point summary for groups}
 \usage{
 tab_group_metrics(data, col, col_group, .negative = F, digits = 1, .labels = T)
 }
@@ -20,5 +20,5 @@ tab_group_metrics(data, col, col_group, .negative = F, digits = 1, .labels = T)
 \item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
 }
 \description{
-#' Output a five point summary for groups
+Output a five point summary for groups
 }

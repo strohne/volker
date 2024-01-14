@@ -9,6 +9,7 @@ plot_item_metrics(
   cols,
   limits = NULL,
   numbers = NULL,
+  title = T,
   .labels = T,
   .negative = F
 )

@@ -4,7 +4,7 @@
 \alias{plot_var_metrics}
 \title{Output a histogram for a single metric variable}
 \usage{
-plot_var_metrics(data, col, .labels = T)
+plot_var_metrics(data, col, title = T, .labels = T)
 }
 \arguments{
 \item{data}{A tibble}

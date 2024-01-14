@@ -10,6 +10,7 @@ plot_multi_means(
   cols_groups,
   limits = NULL,
   numbers = NULL,
+  title = T,
   .labels = T,
   .negative = F
 )

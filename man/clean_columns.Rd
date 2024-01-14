@@ -15,9 +15,11 @@ clean_columns(data, remove.na = T)
 Data frame
 }
 \description{
+Prepares Sosci data:
 \itemize{
-\item Removes the avector class from all columns
+\item Remove the avector class from all columns
 (comes from Sosci and prevents combining vectors)
 \item Recode residual factor values to NA ("\link{NA} nicht beantwortet")
+\item Recode -9 values to NA
 }
 }

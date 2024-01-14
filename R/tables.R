@@ -434,7 +434,7 @@ tab_var_metrics <- function(data, col, digits=1, .labels=T) {
 tab_metrics_var <- tab_var_metrics
 
 
-#' #' Output a five point summary for groups
+#' Output a five point summary for groups
 #'
 #' @param data A tibble
 #' @param col The column holding metric values
@@ -744,7 +744,8 @@ tab_multi_means <- function(data, cols, cols_groups, values=c("mean", "sd"), dig
 
   # Rename first column
   if (prefix != "") {
-    colnames(result)[1] <-  sub("[ :,]+$", "",  prefix)
+    #colnames(result)[1] <-  sub("[ :,]+$", "",  prefix)
+    colnames(result)[1] <- trim_label(prefix)
   } else {
     result <- rename(result, Item=item)
   }

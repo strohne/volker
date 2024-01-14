@@ -8,6 +8,8 @@ get_labels(data, cols)
 }
 \arguments{
 \item{data}{A tibble}
+
+\item{cols}{A tidy variable selections to filter specific columns}
 }
 \value{
 A tibble with the columns:

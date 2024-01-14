@@ -15,7 +15,7 @@
 get_labels <- function(data, cols) {
 
   if (!missing(cols)) {
-    data <- dplyr::select(data,{{cols}})
+    data <- dplyr::select(data, {{cols}})
   }
 
   # Replace empty classes with NA
@@ -81,7 +81,9 @@ get_labels <- function(data, cols) {
 #' @return A character string
 get_title <- function(data, cols) {
 
-  labels <- get_labels(data, {{cols}})
+  labels <- data %>%
+    get_labels({{cols}}) %>%
+    tidyr::drop_na(item_label)
 
   if (nrow(labels) > 0) {
     labels <- labels$item_label

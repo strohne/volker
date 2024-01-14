@@ -10,6 +10,7 @@ plot_item_counts(
   numbers = NULL,
   ordered = NULL,
   missings = F,
+  title = T,
   .labels = T,
   .category = NULL
 )

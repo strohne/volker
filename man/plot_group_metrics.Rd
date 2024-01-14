@@ -10,6 +10,7 @@ plot_group_metrics(
   col_group,
   limits = NULL,
   numbers = NULL,
+  title = T,
   .labels = T,
   .negative = F
 )

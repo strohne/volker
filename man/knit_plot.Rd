@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{knit_plot}
 \alias{knit_plot}
-\title{Knit plot with automatically calculated height}
+\title{Knit volker plots}
 \usage{
 knit_plot(pl)
 }
@@ -13,5 +13,16 @@ knit_plot(pl)
 Character string containing a html image tag, including the base64 encoded image
 }
 \description{
-Knit plot with automatically calculated height
+Automatically calculates the plot height from
+chunk options and volker options.
+}
+\details{
+Presumptions:
+\itemize{
+\item a screen resolution of 72dpi
+\item a default plot width of 7 inches = 504px
+\item a default page width of 700px (vignette) or 910px (report)
+\item an optimal bar height of 40px for 910px wide plots. i.e. a ratio of 0.04
+\item an offset of one bar above and one bar below
+}
 }

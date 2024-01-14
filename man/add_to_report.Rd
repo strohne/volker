@@ -4,12 +4,14 @@
 \alias{add_to_report}
 \title{Add an object to the report list or print it}
 \usage{
-add_to_report(obj, chunks)
+add_to_report(obj, chunks, tab = NULL)
 }
 \arguments{
 \item{obj}{A volker table or plot}
 
 \item{chunks}{The current report list}
+
+\item{tab}{A tabsheet name or NULL}
 }
 \value{
 A list with volker tables or plots
