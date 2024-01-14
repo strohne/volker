@@ -230,8 +230,8 @@ plot_var_metrics <- function(data, col, title=T, .labels=T) {
   # TODO: make configurable: density, boxplot or histogram
   pl <- data %>%
     ggplot(aes({{col}})) +
-    geom_histogram(fill="#611F53FF", bins=20)
-    #geom_density(fill="#611F53FF")
+    #geom_histogram(fill="#611F53FF", bins=20)
+    geom_density(fill="#611F53FF")
 
 
   # TODO: report missings
