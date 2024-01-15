@@ -2,10 +2,10 @@
 % Please edit documentation in R/report.R
 \name{add_styles}
 \alias{add_styles}
-\title{Output styles for the pill navigation in a markdown report}
+\title{Output styles for the pill navigation in markdown reports}
 \usage{
 add_styles()
 }
 \description{
-Output styles for the pill navigation in a markdown report
+Output styles for the pill navigation in markdown reports
 }

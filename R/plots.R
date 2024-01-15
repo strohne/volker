@@ -137,7 +137,7 @@ plot_group_counts <- function(data, col, col_group, numbers = NULL, prop = "tota
       )
     )
 
-  .plot_grouped_bars(
+  .plot_bars(
     result,
     category = .category,
     scale = coalesce(ordered, get_scale(data, {{ col }})),
@@ -199,7 +199,7 @@ plot_item_counts <- function(data, cols, numbers = NULL, ordered = NULL, missing
       )
     )
 
-  .plot_grouped_bars(
+  .plot_bars(
     result,
     category = .category,
     scale = dplyr::coalesce(ordered, get_scale(data, cols)),
@@ -427,7 +427,7 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title The plot title or NULL
 #' @param caption The plot caption or NULL. The caption is used for notes.
-.plot_grouped_bars <- function(data, category = NULL, scale = NULL, numbers = NULL, title = NULL, caption = NULL) {
+.plot_bars <- function(data, category = NULL, scale = NULL, numbers = NULL, title = NULL, caption = NULL) {
   if (title == F) {
     title <- NULL
   }
