@@ -66,6 +66,28 @@ get_labels <- function(data, cols) {
     labels$value_name <- NA
   }
 
+  # Detect groups
+  groups <- labels %>%
+    dplyr::distinct(item_name) %>%
+    dplyr::mutate(
+      item_prefix = get_prefix(item_name),
+      item_postfix = stringr::str_sub(item_name, stringr::str_length(item_prefix) + 1)
+    ) %>%
+    dplyr::arrange(item_postfix) %>%
+    dplyr::mutate(
+      item_next = dplyr::lead(item_postfix),
+      item_prev = dplyr::lag(item_postfix)
+    ) %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(
+      item_infix = ifelse(!is.na(item_next),get_prefix(c(item_postfix, item_next)), ""),
+      item_infix = ifelse(item_infix == "",get_prefix(c(item_postfix, item_prev)), item_infix),
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(item_postfix = stringr::str_sub(item_postfix, stringr::str_length(item_infix) + 1)) %>%
+    dplyr::select(item_name, item_prefix, item_infix, item_postfix)
+
+  labels <- left_join(labels, groups, by="item_name")
   labels
 }
 
@@ -328,6 +350,7 @@ get_prefix <- function(x, ignore.case = FALSE, trim = FALSE) {
   if (ignore.case) {
     x <- toupper(x)
   }
+  x <- na.omit(x)
 
   nc <- nchar(x, type = "char")
   for (i in 1:min(nc)) {
