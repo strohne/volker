@@ -36,7 +36,7 @@ plot_var_counts <- function(data, col, numbers = NULL, title = T, .labels = T) {
   # TODO: Make dry, see plot_item_counts and tab_group_counts
   pl <- result %>%
     ggplot(aes(Item, y = valid / 100)) +
-    geom_col(fill = "#611F53FF") +
+    geom_col(fill = VLKR_FILLCOLOR) +
     # scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
     scale_y_continuous(labels = scales::percent) +
     ylab("Share in percent") +
@@ -221,8 +221,8 @@ plot_var_metrics <- function(data, col, title = T, .labels = T) {
   # TODO: make configurable: density, boxplot or histogram
   pl <- data %>%
     ggplot(aes({{ col }})) +
-    # geom_histogram(fill="#611F53FF", bins=20)
-    geom_density(fill = "#611F53FF")
+    # geom_histogram(fill=VLKR_FILLCOLOR, bins=20)
+    geom_density(fill = VLKR_FILLCOLOR)
 
 
   # TODO: report missings
@@ -276,6 +276,10 @@ plot_group_metrics <- function(data, col, col_group, limits = NULL, numbers = NU
     title <- colnames(result)[1]
   }
 
+  if (is.null(limits)) {
+    limits <- get_limits(data, {{ col }})
+  }
+
   .plot_means(result, limits, numbers, title, .labels)
 }
 
@@ -320,7 +324,6 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
     data <- dplyr::mutate(data, across(where(is.numeric), ~ if_else(. < 0, NA, .)))
   }
 
-
   # Grouped means
   result <- map(
     cols_groups,
@@ -341,10 +344,9 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
       dplyr::bind_rows
     )
 
-  # TODO: Set limits
-  # if (is.null(limits)) {
-  #   limits <- attr(result,"limits")
-  # }
+  if (is.null(limits)) {
+    limits <- get_limits(data, !!cols)
+  }
 
   # Replace item labels
   if (.labels) {
@@ -368,14 +370,30 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
   # class(result) <- setdiff(class(result),"skim_df")
 
   pl <- result %>%
-    ggplot(aes(item, y = numeric.mean, fill = group)) +
-    geom_col(position = "dodge")
+    ggplot(aes(item, y = numeric.mean, color = group, group=group)) +
+    geom_line() +
+    geom_point(size=3, shape=18)
+    #geom_col(position = "dodge")
+
+  # Set the scale
+  # TODO: get from attributes
+  scale <- data %>%
+    get_labels(!!cols) %>%
+    distinct(value_name, value_label) %>%
+    prepare_scale()
+
+  if (length(scale) > 0) {
+    pl <- pl +
+      scale_y_continuous(labels = ~ label_scale(., scale) )
+  } else {
+    pl <- pl +
+      scale_y_continuous()
+  }
 
   # Add scales, labels and theming
   pl <- pl +
-    scale_y_continuous() +
     scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
-    scale_fill_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +
+    scale_color_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +
 
     ylab("Mean values") +
     coord_flip(ylim = limits) +
@@ -448,9 +466,9 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
   # Simplify binary plot
   if (!is.null(category)) {
     pl <- pl +
-      scale_fill_manual(values = c("#611F53FF"), guide = guide_legend(reverse = TRUE)) +
+      scale_fill_manual(values = c(VLKR_FILLCOLOR), guide = guide_legend(reverse = TRUE)) +
       theme(
-        legend.position = "bottom",
+        legend.position = ifelse(category == "TRUE" | category == TRUE, "none","bottom"),
         legend.justification = "left"
       )
   } else if ((scale > 0) || (scale < 0)) {
@@ -502,20 +520,27 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
   # TODO: minus missing values, output range
   base_n <- max(result$n)
 
-  # TODO: set the scale
-
   pl <- result %>%
     dplyr::rename(Item = 1) %>%
     ggplot(aes(Item, y = m)) +
-    geom_col(fill = "#611F53FF")
+    geom_point(color = VLKR_POINTCOLOR, size=4, shape=18)
 
   if (is.null(limits)) {
     limits <- attr(result, "limits")
   }
 
+  # Set the scale
+  scale <- prepare_scale(attr(result,"scale"))
+  if (length(scale) > 0) {
+    pl <- pl +
+      scale_y_continuous(labels = ~ label_scale(., scale) )
+  } else {
+    pl <- pl +
+      scale_y_continuous()
+  }
+
   # Add scales, labels and theming
   pl <- pl +
-    scale_y_continuous() +
     scale_x_discrete(labels = scales::label_wrap(40)) +
     ylab("Mean values") +
     coord_flip(ylim = limits) +
@@ -535,9 +560,11 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
       geom_text(
         # aes(label=paste0("⌀", round(m,1))),
         aes(label = round(m, 1)),
-        position = position_stack(vjust = 0.5),
+        #position = position_stack(vjust = 0.5),
+        hjust = -1,
+        vjust=0.5,
         size = 3,
-        color = "white"
+        color = "black"
       )
   }
 
@@ -565,7 +592,7 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
   if (is.null(rows)) {
     rows <- max(
       dplyr::n_distinct(pl$data[[1]]),
-      dplyr::n_distinct(pl$data[[2]])
+      dplyr::n_distinct(pl$data[[2]]) / 2
     )
   }
 

@@ -480,12 +480,20 @@ tab_group_metrics <- function(data, col, col_group, .negative = F, digits = 1, .
       get_labels({{ col_group }}) %>%
       dplyr::distinct(item_name, item_label) %>%
       na.omit()
-  }
 
-  if (.labels && (nrow(codes) > 0)) {
-    label <- codes$item_label[1]
-    result <- result %>%
-      dplyr::rename({{ label }} := {{ col_group }})
+    if (nrow(codes) > 0) {
+      label <- codes$item_label[1]
+      result <- result %>%
+        dplyr::rename({{ label }} := {{ col_group }})
+    }
+
+    scale <- attr(pull(data, {{ col }}), "scale")
+    if (is.null(scale)) {
+      scale <- data %>%
+        get_labels({{ col }}) %>%
+        distinct(value_name, value_label)
+    }
+    attr(result, "scale")
   }
 
   # TODO: Add limits
@@ -549,6 +557,9 @@ tab_item_metrics <- function(data, cols, digits = 1, .negative = F, .labels = T)
   if (.labels) {
     result <- replace_item_values(result, data, cols)
     attr(result, "limits") <- get_limits(data, !!cols, .negative)
+
+    attr(result, "scale") <- get_labels(data, !!cols) %>%
+      distinct(value_name, value_label)
   }
 
   # Remove common item prefix

@@ -37,8 +37,13 @@ add_idx <- function(data, cols, newcol = NULL, .negative = FALSE) {
   attr(data[[newcol]], "psych.alpha") <- idx
   attr(data[[newcol]], "comment") <- newlabel
 
-  # TODO: add limits/range
+  # Add limits
   attr(data[[newcol]], "limits") <- get_limits(data, !!cols, .negative)
+
+  # Add scale
+  attr(data[[newcol]], "scale") <- data %>%
+    get_labels(!!cols) %>%
+    distinct(value_name, value_label)
 
   data
 }

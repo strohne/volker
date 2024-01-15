@@ -50,15 +50,19 @@ plot_group_counts(data, in_adoption, sd_geschlecht, prop = "rows")
 
 ### 1. Distribution for one metric variable: Age
 ```{r results='asis'}
+
 plot_var_metrics(data, sd_alter)
+
 ```
 
 
 ### 2. Distribution of multiple metric items: Adoption factors
 ```{r results='asis'}
+
 # Note that negative values are omitted,
 # you can change the behavior with the .negative parameter
 plot_item_metrics(data, starts_with("cg_adoption_"))
+
 ```
 
 ### 3. Distribution by a grouping variable
@@ -69,16 +73,21 @@ plot_multi_means(data, starts_with("cg_adoption_"), sd_geschlecht)
 
 ### 4. Index  distribution by a grouping variable
 ```{r results='asis'}
+
 data %>%
   add_idx(starts_with("cg_adoption_social_")) %>%
   add_idx(starts_with("cg_adoption_fearofuse_")) %>%
   add_idx(starts_with("cg_adoption_advantage_")) %>%
+  
   # Set new labels for the three index columns
   set_col_label(starts_with("idx_cg_adoption"), c(
     "ChatGPT-Erwartung: Social",
     "ChatGPT-Erwartung: Fear of Use",
     "ChatGPT-Erwartung: Advantage"
   )) %>%
+  
+  select(starts_with("idx_"), in_adoption) %>% 
   plot_multi_means(starts_with("idx_cg_adoption"), in_adoption)
+  
 ```
 

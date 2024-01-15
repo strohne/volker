@@ -97,11 +97,28 @@ get_title <- function(data, cols) {
 #' @param negative Whether to include negative values
 #' @export
 get_limits <- function(data, cols, negative = F) {
-  values <- get_labels(data, {{ cols }}) %>%
-    dplyr::distinct(value_name) %>%
-    pull(value_name)
 
-  values <- suppressWarnings(as.numeric(c(values)))
+  # First, try to get limits from the column attributes
+  values <- data %>%
+    dplyr::select({{ cols }}) %>%
+    lapply(attr, "limits") %>%
+    unlist()
+
+  # Second, try to get limits from the column labels
+  if (is.null(values)) {
+    values <- get_labels(data, {{ cols }}) %>%
+      dplyr::distinct(value_name) %>%
+      pull(value_name)
+    values <- suppressWarnings(as.numeric(values))
+  }
+
+  # Third, try to get limits from the column values
+  if (is.null(values) | all(is.na(values))) {
+    values <- data %>%
+      dplyr::select({{ cols }}) %>%
+      unlist()
+    values <- suppressWarnings(as.numeric(values))
+  }
 
   if (all(is.na(values))) {
     return(NULL)
@@ -159,6 +176,34 @@ get_scale <- function(data, cols, extract = T) {
 
   categories_scale
 }
+
+#' Prepare the scale attribute values
+#'
+#' @param data A tibble with a scale attribute
+#' @return A named list or NULL
+prepare_scale <- function(scale) {
+  if (!is.null(scale)) {
+    scale <- scale %>%
+      dplyr::mutate(value_name = suppressWarnings(as.numeric(value_name))) %>%
+      dplyr::filter(value_name >= 0) %>%
+      na.omit()
+
+    scale <- setNames(
+      as.character(scale$value_label),
+      as.character(scale$value_name)
+    )
+  }
+  scale
+}
+
+label_scale <- function(x, scale) {
+  ifelse(
+    x %in% names(scale),
+    stringr::str_wrap(scale[as.character(x)], width = 10),
+    x
+  )
+}
+
 
 #' Get a column label
 #'
