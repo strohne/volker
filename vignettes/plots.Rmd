@@ -36,7 +36,8 @@ plot_var_counts(data, sd_geschlecht)
 ### 2. Multiple items: Frequency plot for adoption factors
 ```{r results='asis'}
 # Use the .numbers parameter to add counts to the bars
-plot_item_counts(data, starts_with("cg_adoption_"), numbers = "n")
+plot_item_counts(data, starts_with("cg_adoption_"), numbers = "p")
+
 ```
 
 ### 3. Two variables: Stacked frequency plot of innovator type by gender

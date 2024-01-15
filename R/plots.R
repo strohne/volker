@@ -27,6 +27,7 @@ plot_var_counts <- function(data, col, numbers = NULL, title = T, .labels = T) {
     dplyr::filter(!(Item %in% c("Total", "Missing"))) %>%
     dplyr::mutate(
       .values = dplyr::case_when(
+        p < VLKR_LOWPERCENT ~ "",
         all(numbers == "n") ~ as.character(n),
         all(numbers == "p") ~ paste0(round(valid, 0), "%"),
         TRUE ~ paste0(n, "\n", round(valid, 0), "%")
@@ -106,6 +107,7 @@ plot_group_counts <- function(data, col, col_group, numbers = NULL, prop = "tota
   if ((length(categories) == 2) && (is.null(.category)) && ("TRUE" %in% categories)) {
     .category <- "TRUE"
   }
+  scale <- coalesce(ordered, get_scale(data, {{ col }}))
 
   result <- result %>%
     rename(Item = 1) %>%
@@ -128,9 +130,12 @@ plot_group_counts <- function(data, col, col_group, numbers = NULL, prop = "tota
       dplyr::mutate(p = (n / sum(n)) * 100)
   }
 
+  lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
   result <- result %>%
     dplyr::mutate(
       .values = dplyr::case_when(
+        (is.null(.category)) & (scale != 0) & (value == lastcategory) ~ "",
+        p < VLKR_LOWPERCENT ~ "",
         all(numbers == "n") ~ as.character(n),
         all(numbers == "p") ~ paste0(round(p, 0), "%"),
         TRUE ~ paste0(n, "\n", round(p, 0), "%")
@@ -140,7 +145,7 @@ plot_group_counts <- function(data, col, col_group, numbers = NULL, prop = "tota
   .plot_bars(
     result,
     category = .category,
-    scale = coalesce(ordered, get_scale(data, {{ col }})),
+    scale = scale,
     numbers = numbers,
     title = ifelse(.labels, title, NULL),
     caption = ifelse(.labels, paste0("n=", base_n), NULL) # TODO: report missing cases
@@ -178,6 +183,8 @@ plot_item_counts <- function(data, cols, numbers = NULL, ordered = NULL, missing
   if ((length(categories) == 2) && (is.null(.category)) && ("TRUE" %in% categories)) {
     .category <- "TRUE"
   }
+  scale <- dplyr::coalesce(ordered, get_scale(data, cols))
+  lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
 
   result <- result %>%
     dplyr::rename(Item = 1) %>%
@@ -193,6 +200,8 @@ plot_item_counts <- function(data, cols, numbers = NULL, ordered = NULL, missing
     dplyr::ungroup() %>%
     dplyr::mutate(
       .values = dplyr::case_when(
+        (is.null(.category)) & (scale != 0) & (value == lastcategory) ~ "",
+        p < VLKR_LOWPERCENT ~ "",
         all(numbers == "n") ~ as.character(n),
         all(numbers == "p") ~ paste0(round(p, 0), "%"),
         TRUE ~ paste0(n, "\n", round(p, 0), "%")
@@ -202,7 +211,7 @@ plot_item_counts <- function(data, cols, numbers = NULL, ordered = NULL, missing
   .plot_bars(
     result,
     category = .category,
-    scale = dplyr::coalesce(ordered, get_scale(data, cols)),
+    scale = scale,
     numbers = numbers,
     title = ifelse(.labels, title, NULL),
     caption = ifelse(.labels, paste0("n=", base_n, "; multiple responses possible"), NULL) # TODO: report missing cases
@@ -436,7 +445,7 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
     data <- filter(data, value == category)
   }
 
-  if (scale < 0) {
+  if (scale <= 0) {
     data <- data %>%
       dplyr::mutate(value = forcats::fct_rev(value))
   }
@@ -463,7 +472,10 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
       plot.caption.position = "plot"
     )
 
-  # Simplify binary plot
+  # Select scales:
+  # - Simplify binary plots
+  # - Use viridis rocket colors for ordinal scales
+  # - Use the default color for other cases
   if (!is.null(category)) {
     pl <- pl +
       scale_fill_manual(values = c(VLKR_FILLCOLOR), guide = guide_legend(reverse = TRUE)) +
@@ -472,13 +484,20 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
         legend.justification = "left"
       )
   } else if ((scale > 0) || (scale < 0)) {
+    colors <- scales::gradient_n_pal(VLKR_FILLGRADIENT)(
+      seq(0,1,length.out=length(levels(data$value)))
+    )
+
+
     pl <- pl +
-      viridis::scale_fill_viridis(
-        discrete = TRUE,
-        option = "rocket",
-        direction = -1,
-        guide = guide_legend(reverse = TRUE)
-      )
+      scale_fill_manual(values = colors, guide = guide_legend(reverse = TRUE))
+
+      # viridis::scale_fill_viridis(
+      #   discrete = TRUE,
+      #   option = "rocket",
+      #   direction = -1,
+      #   guide = guide_legend(reverse = TRUE)
+      # )
   } else {
     pl <- pl +
       ggplot2::scale_fill_discrete(
