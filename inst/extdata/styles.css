@@ -1,0 +1,22 @@
+h1.title {font-size:24px; font-weight:bold;}
+.tab-content .tabset-pills {
+  display:flex;
+  flex-wrap:wrap;
+}
+
+.tab-content .tabset-pills h4 {
+  margin-right:1em;
+}
+
+.tab-content .tabset-pills .nav-pills {
+  flex:1;
+  margin:auto;
+}
+
+.tab-content .tabset-pills .nav-pills li a {
+  padding: 0 0.5em;
+}
+
+.tab-content .tabset-pills .tab-content {
+  flex-basis:100%;
+}

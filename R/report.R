@@ -188,7 +188,19 @@ add_to_report <- function(obj, chunks, tab = NULL) {
   chunks
 }
 
+#' Output styles for the pill navigation in markdown reports
+#'
+#' @export
+add_styles <- function() {
+  filename <-  paste0(system.file("extdata", package = "volker"),"/styles.css")
+  styles <- readLines(filename)
+  styles <- paste0(styles, collapse=" ")
+  styles <- paste0("<style>", styles, "</style>")
 
+  styles %>%
+    knitr::asis_output() %>%
+    knitr::knit_print()
+}
 
 #' Printing method for volker reports.
 #'
