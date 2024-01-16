@@ -27,5 +27,7 @@ data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(., -9)))
 
 
 ```{r results='asis'}
-tab_counts_var(data, sd_geschlecht)
+
+
+
 ```

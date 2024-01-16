@@ -9,7 +9,7 @@
 #' @return A data frame with relevance metrics
 lda_get_termrelevance <- function(fit, lambda=0.6) {
 
-  lda_phi <- posterior(fit)$terms %>% as.matrix()
+  lda_phi <- modeltools::posterior(fit)$terms %>% as.matrix()
 
   #' See http://vis.stanford.edu/files/2012-Termite-AVI.pdf and
   #' https://nlp.stanford.edu/events/illvi2014/papers/sievert-illvi2014.pdf
@@ -45,7 +45,7 @@ lda_get_termrelevance <- function(fit, lambda=0.6) {
 lda_add_relevance <- function(data, fit, prefix="tpc_", lambda=0.6, seed=1852) {
 
   # Document relevance
-  lda_theta <- posterior(fit)$topics %>% as.matrix()
+  lda_theta <- modeltools::posterior(fit)$topics %>% as.matrix()
   lda_rel  = (lambda * log(lda_theta)) + (1 - lambda) * log(lda_theta / slam::col_sums(lda_theta))
   lda_rel <- lda_rel %>% as_tibble(rownames ="document") %>%
     pivot_longer(-1, names_to="topic", values_to="relevance")  %>%
