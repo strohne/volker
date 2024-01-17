@@ -523,7 +523,7 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
   .add_plot_attributes(pl)
 }
 
-#' Helper function to plot means as bars, e.g. for plot_item_metrics and plot_group_metrics
+#' Helper function to plot means, e.g. for plot_item_metrics and plot_group_metrics
 #'
 #' @param result The result table of tab_item_metrics() or tab_group_metrics()
 #' @param limits The scale limits. Set NULL to extract limits from the labels.

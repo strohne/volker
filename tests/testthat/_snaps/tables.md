@@ -125,6 +125,28 @@
       |Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.                  | 2.0 (1.2)| 2.0 (1.1)| 2.1 (1.2)| 4.0 (NA)|
       |Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.         | 2.4 (1.3)| 2.5 (1.2)| 2.4 (1.3)| 3.0 (NA)|
 
+---
+
+    Code
+      .
+    Output
+      
+      
+      |cg_adoption  |     Total|        X|   divers|  männlich|  weiblich|
+      |:------------|---------:|--------:|--------:|---------:|---------:|
+      |advantage_01 | 3.5 (1.0)| NaN (NA)| 4.0 (NA)| 3.3 (1.0)| 3.6 (1.0)|
+      |advantage_02 | 2.7 (1.2)| NaN (NA)| 3.0 (NA)| 2.8 (1.2)| 2.7 (1.3)|
+      |advantage_03 | 3.6 (1.1)| NaN (NA)| 4.0 (NA)| 3.5 (1.1)| 3.7 (1.0)|
+      |advantage_04 | 3.5 (1.0)| NaN (NA)| 3.0 (NA)| 3.5 (1.0)| 3.7 (1.0)|
+      |fearofuse_01 | 3.2 (1.1)| NaN (NA)| 3.0 (NA)| 3.1 (1.2)| 3.2 (1.0)|
+      |fearofuse_02 | 3.1 (1.1)| NaN (NA)| 3.0 (NA)| 3.1 (1.2)| 3.1 (1.0)|
+      |fearofuse_03 | 3.2 (1.0)| NaN (NA)| 3.0 (NA)| 3.3 (1.1)| 3.1 (1.0)|
+      |fearofuse_04 | 2.8 (1.1)| NaN (NA)| 4.0 (NA)| 2.8 (1.2)| 2.7 (0.9)|
+      |social_01    | 2.5 (1.1)| NaN (NA)| 4.0 (NA)| 2.5 (1.2)| 2.5 (1.0)|
+      |social_02    | 2.4 (1.2)| NaN (NA)| 4.0 (NA)| 2.3 (1.2)| 2.4 (1.1)|
+      |social_03    | 2.0 (1.2)| NaN (NA)| 4.0 (NA)| 2.1 (1.2)| 2.0 (1.1)|
+      |social_04    | 2.4 (1.3)| NaN (NA)| 3.0 (NA)| 2.4 (1.3)| 2.5 (1.2)|
+
 # Correlation of items
 
     Code
