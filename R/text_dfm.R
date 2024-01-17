@@ -64,7 +64,7 @@ get_dfm <- function(msg_tokens) {
   msg_dfm  <- quanteda::dfm(msg_tokens)
 
   # Remove tokens occuring in less than 5 documents
-  msg_dfm <- quanteda::dfm_trim(msg_dfm,min_docfreq = 5, docfreq_type = "count")
+  msg_dfm <- quanteda::dfm_trim(msg_dfm,min_docfreq = 2, docfreq_type = "count")
 
   # Remove tokens occuring in more than 99% of the documents
   #msg_dfm <- quanteda::dfm_trim(msg_dfm,max_docfreq = 0.99, docfreq_type = "quantile")

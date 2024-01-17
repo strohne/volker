@@ -25,6 +25,6 @@ data <- volker::chatgpt
 
 ```{r results='asis'}
 
-lda_report(data, cg_activities)
+tmp <- lda_report(data, cg_activities, k= 3, lambda=0)
 
 ```

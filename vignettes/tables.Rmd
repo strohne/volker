@@ -31,19 +31,21 @@ data <- set_item_labels(data, tibble("sd_alter", "Alter"))
 
 ### 1. One variable: Frequency table of gender
 ```{r results='asis'}
+
 tab_counts_var(data, sd_geschlecht)
+
 ```
 
 ### 2. Multiple items: Frequency table of adoption factors
 ```{r results='asis'}
-tab_item_counts(data, starts_with("cg_adoption_"))
+tab_item_counts(data, starts_with("cg_adoption_"), missings = F)
 ```
 
 
 ### 3. Two variables: Cross table of innovator type by gender
 
 ```{r results='asis'}
-tab_group_counts(data, in_adoption, sd_geschlecht)
+tab_group_counts(data, in_adoption, sd_geschlecht, missings = T)
 ```
 
 ## Distributions of metric variables

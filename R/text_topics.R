@@ -48,8 +48,8 @@ lda_add_topic <- function(data, col_text, prefix="tpc_", k=NULL, lambda=0.6, see
 
   # Tokenize and convert to dfm
   ds_texts <- data %>%
-    dplyr::mutate(doc = dplyr::row_number())
-    dplyr::select(doc, text={{col_text}})
+    dplyr::mutate(doc = dplyr::row_number()) %>%
+    dplyr::select(doc, text={{col_text}}) %>%
     tidyr::drop_na()
 
   ds_tokens <- get_tokens(ds_texts)

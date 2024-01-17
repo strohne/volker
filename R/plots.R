@@ -164,20 +164,19 @@ plot_group_counts <- function(data, col, col_group, numbers = NULL, prop = "tota
 #'                An appropriate color scale should be choosen depending on the ordering.
 #'                For unordered values, the default scale is used.
 #'                For ordered values, the viridis scale is used.
-#' @param missings Include missing values (default FALSE)
 #' @param .category Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-plot_item_counts <- function(data, cols, numbers = NULL, ordered = NULL, missings = F, title = T, .labels = T, .category = NULL) {
+plot_item_counts <- function(data, cols, numbers = NULL, ordered = NULL, title = T, .labels = T, .category = NULL) {
   result <- data %>%
-    tab_item_counts(cols, values = "n", missings = missings, .formatted = F)
+    tab_item_counts(cols, values = "n", .formatted = F)
 
   if (title == T) {
     title <- colnames(result)[1]
   }
 
   categories <- dplyr::select(result, -1, -matches("^Total|Missing")) %>% colnames()
-  base_n <- sum(dplyr::select(result, -1, -matches("^Total"))[1, ])
+  base_n <- max(dplyr::select(result, "Total"))
 
   # Detect whether the categories are binary
   if ((length(categories) == 2) && (is.null(.category)) && ("TRUE" %in% categories)) {

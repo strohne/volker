@@ -6,39 +6,40 @@
 #' @param .formatted Set to FALSE to prevent calculating percents from proportions
 #' @export
 tab_var_counts <- function(data, col, .labels = T, .formatted = T) {
+
   result <- data %>%
     dplyr::count({{ col }}) %>%
-    dplyr::mutate(
-      p = n / sum(n)
-    ) %>%
-    dplyr::mutate(
-      valid = dplyr::if_else(
-        is.na({{ col }}),
-        NA_real_,
-        n / sum(na.omit(.)$n)
-      )
-    ) %>%
-    dplyr::mutate(
-      {{ col }} := tidyr::replace_na(as.character({{ col }}), "Missing")
-    )
+    tidyr::drop_na() %>%
+    dplyr::mutate(p = n / sum(n))
 
   # Get variable caption from the attributes
   if (.labels) {
     label <- get_col_label(data, {{ col }})
-    result <- result %>%
-      dplyr::rename({{ label }} := {{ col }})
+    result <- dplyr::rename(result, {{ label }} := {{ col }})
   }
-
-  result <- result %>%
-    janitor::adorn_totals()
 
   if (.formatted) {
-    result <- result %>%
-      dplyr::mutate(
-        p = paste0(round(p * 100, 0), "%"),
-        valid = ifelse(!is.na(valid), paste0(round(valid * 100, 0), "%"), "`-`")
-      )
+    result <- dplyr::mutate(result, p = paste0(round(p * 100, 0), "%"))
   }
+
+  # Totals
+  result_total <- tibble(
+    "Total",
+    sum(!is.na(dplyr::select(data, {{ col }}))),
+    ifelse(.formatted, "100%", 1)
+  )
+  colnames(result_total) <- colnames(result)
+
+  # Missings
+  result_missing <- tibble(
+    "Missing",
+    sum(is.na(dplyr::select(data, {{ col }}))),
+    ifelse(.formatted, "", NA)
+  )
+  colnames(result_missing) <- colnames(result)
+
+  # Build table
+  result <- bind_rows(result, result_total, result_missing)
 
   class(result) <- c("vlkr_tbl", class(result))
   result
@@ -239,19 +240,15 @@ tab_group_counts <- function(data, col, col_group, values = c("n", "p"), prop = 
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
 #' @param values The values to output: n (frequency) or p (percentage)
-#' @param missings Include missing values (default FALSE)
 #' @param .formatted Set to FALSE to prevent calculating percents from proportions
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_item_counts <- function(data, cols, values = c("n", "p"), missings = F, .formatted = T, .labels = T) {
-  # Remove missings
-  if (!missings) {
-    data <- tidyr::drop_na(data, {{ cols }})
-  }
+tab_item_counts <- function(data, cols, values = c("n", "p"), .formatted = T, .labels = T) {
 
   # Calculate n and p
   result <- data %>%
+    tidyr::drop_na({{ cols }}) %>%
     remove_labels(tidyselect::all_of(cols)) %>%
     tidyr::pivot_longer(
       tidyselect::all_of(cols),
@@ -261,16 +258,8 @@ tab_item_counts <- function(data, cols, values = c("n", "p"), missings = F, .for
     dplyr::count(item, value) %>%
     dplyr::group_by(item) %>%
     dplyr::mutate(p = n / sum(n)) %>%
-    dplyr::ungroup()
-
-  # Recode NA to "Missing"
-  result <- result %>%
-    dplyr::mutate(
-      value = factor(
-        tidyr::replace_na(as.character(value), "Missing"),
-        levels = c(unique(result$value), "Missing")
-      )
-    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(value = as.factor(value)) %>%
     dplyr::arrange(value)
 
   # Absolute frequency
@@ -308,6 +297,26 @@ tab_item_counts <- function(data, cols, values = c("n", "p"), missings = F, .for
   } else {
     result <- result_n
   }
+
+  # Add missings
+  # Calculate Missings
+  result_missing <-  data %>%
+    remove_labels(tidyselect::all_of(cols)) %>%
+    tidyr::pivot_longer(
+      tidyselect::all_of(cols),
+      names_to = "item",
+      values_to = "value"
+    ) %>%
+    dplyr::mutate(value = is.na(value)) %>%
+    dplyr::count(item, value) %>%
+    tidyr::pivot_wider(
+      names_from = value,
+      values_from = n,
+      values_fill = 0
+    ) %>%
+    dplyr::select(item, Missing = `TRUE`)
+
+  result <- left_join(result, result_missing, by="item")
 
   # Replace item labels
   if (.labels) {
