@@ -257,7 +257,8 @@ get_col_label <- function(data, col) {
 #' @param cols Tidyselect column names
 #' @param labels The new labels
 #' @export
-set_col_label <- function(data, cols, labels) {
+set_col_labels <- function(data, cols, labels) {
+
   cols <- tidyselect::eval_select(expr = enquo(cols), data = data)
 
   for (i in c(1:length(cols))) {
@@ -267,6 +268,12 @@ set_col_label <- function(data, cols, labels) {
   data
 }
 
+#' Alias for set_col_labels
+#'
+#' @rdname set_col_labels
+#' @export
+set_col_label <- set_col_labels
+
 #' Remove all comments from the selected columns
 #'
 #' @param data A tibble
@@ -275,21 +282,22 @@ set_col_label <- function(data, cols, labels) {
 #' @return A tibble with comments removed
 #' @export
 remove_labels <- function(data, cols, labels = NULL) {
-  # if (missing(cols)) {
-  #   cols <- c(1:ncol(data))
-  # } else {
-  #   cols <- {{cols}}
-  # }
 
-  data %>%
-    dplyr::mutate(across({{ cols }}, function(x) {
-      if (is.null(labels)) {
-        attributes(x) <- NULL
-      } else {
-        attr(x, labels) <- NULL
-      }
-      x
-    }))
+  remove_attr <-  function(x) {
+    if (is.null(labels)) {
+      attributes(x) <- NULL
+    } else {
+      attr(x, labels) <- NULL
+    }
+    x
+  }
+
+  if (missing(cols)) {
+    data <-  dplyr::mutate(data, across(everything(), ~remove_attr(.)))
+  } else {
+    data <-  dplyr::mutate(data, across({{ cols }}, ~remove_attr(.)))
+  }
+  data
 }
 
 #' Set variable labels by setting their comment attributes
@@ -302,6 +310,9 @@ remove_labels <- function(data, cols, labels = NULL) {
 #' @return A tibble with new variable labels
 #' @export
 set_item_labels <- function(data, labels) {
+
+  .Deprecated("set_col_labels")
+
   for (no in c(1:nrow(labels))) {
     item_name <- labels[[1]][no]
     item_label <- labels[[2]][no]
@@ -351,6 +362,10 @@ get_prefix <- function(x, ignore.case = FALSE, trim = FALSE) {
     x <- toupper(x)
   }
   x <- na.omit(x)
+
+  if (length(x) == 0) {
+    return (NA)
+  }
 
   nc <- nchar(x, type = "char")
   for (i in 1:min(nc)) {

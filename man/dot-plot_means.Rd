@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{.plot_means}
 \alias{.plot_means}
-\title{Helper function to plot means as bars, e.g. for plot_item_metrics and plot_group_metrics}
+\title{Helper function to plot means, e.g. for plot_item_metrics and plot_group_metrics}
 \usage{
 .plot_means(result, limits, numbers, title = NULL, .labels)
 }
@@ -21,5 +21,5 @@
 Plot
 }
 \description{
-Helper function to plot means as bars, e.g. for plot_item_metrics and plot_group_metrics
+Helper function to plot means, e.g. for plot_item_metrics and plot_group_metrics
 }

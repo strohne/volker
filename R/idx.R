@@ -21,9 +21,12 @@ add_idx <- function(data, cols, newcol = NULL, .negative = FALSE) {
     distinct(item_label) %>%
     na.omit() %>%
     pull(item_label) %>%
-    get_prefix(F, T) %>%
-    paste0(" (Index ", prefix, ")")
+    get_prefix(F, T)
 
+  if (is.na(newlabel)) {
+    newlabel <- prefix
+  }
+  newlabel <- paste0("Index: ", prefix)
 
   # TODO: warn if any negative values were recoded
   if (!.negative) {

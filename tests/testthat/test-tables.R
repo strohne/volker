@@ -52,3 +52,4 @@ data %>%
 test_that("Correlation of items", {
   expect_snapshot(volker::tab_multi_corr(data, starts_with("cg_adoption_")))
 })
+
