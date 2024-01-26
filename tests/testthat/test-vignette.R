@@ -7,13 +7,15 @@ library(knitr)
 # Rendering tables vignette
 test_that("Tables in vignette render without error", {
   expect_no_error({
-    result <- rmarkdown::render("../../vignettes/tables.Rmd")
+    vignette_path <- system.file("vignettes", "tables.Rmd", package = "volker")
+    result <- rmarkdown::render(vignette_path)
   })
 })
 
 # Rendering plots vignette
 test_that("Plots in vignette render without error", {
   expect_no_error({
-    result <- rmarkdown::render("../../vignettes/plots.Rmd")
+    vignette_path <- system.file("vignettes", "plots.Rmd", package = "volker")
+    result <- rmarkdown::render(vignette_path)
   })
 })
