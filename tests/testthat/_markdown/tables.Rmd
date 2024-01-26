@@ -1,0 +1,146 @@
+
+---
+title: "Table variations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Table variations}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo = TRUE)
+
+library(tidyverse)
+library(volker)
+theme_set(theme_bw())
+
+data <- volker::chatgpt
+
+
+# Recode -9 to NA
+data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(., -9)))
+
+# Add label to sd_alter
+data <- set_item_labels(data, tibble("sd_alter", "Alter"))
+```
+
+## Frequencies of categorical variables
+
+### 1. One variable: Frequency table of gender
+```{r results='asis'}
+tab_counts_var(data, sd_geschlecht)
+```
+
+### 2. Multiple items: Frequency table of adoption factors
+```{r results='asis'}
+tab_item_counts(data, starts_with("cg_adoption_"))
+```
+
+
+### 3. Two variables: Cross table of innovator type by gender
+
+```{r results='asis'}
+tab_group_counts(data, in_adoption, sd_geschlecht)
+```
+
+## Distributions of metric variables
+
+### Distribution table for one metric variable: Age
+```{r results='asis'}
+tab_var_metrics(data, sd_alter)
+```
+
+### Distribution table for multiple metric items: Adoption factors
+```{r results='asis'}
+tab_item_metrics(data, starts_with("cg_adoption_"))
+```
+
+
+### Group comparison of a metric variable: Age by gender
+
+```{r results='asis'}
+tab_group_metrics(data, sd_alter, sd_geschlecht)
+```
+
+## Multiple metric variables
+
+### Compare means of multiple items: Adoption factors by gender
+```{r results='asis'}
+tab_multi_means(data, starts_with("cg_adoption_"), sd_geschlecht)
+```
+
+### Correlation of items: Adoption factors
+```{r results='asis'}
+tab_multi_corr(data, starts_with("cg_adoption_adv"))
+
+tab_multi_corr(data, starts_with("cg_adoption_adv"), starts_with("cg_nutzen"))
+```
+
+# Scales
+
+You can calculate mean indizes from a bunch of items using `add_idx()`. 
+A new column is created with the average value of all selected columns
+for each case. 
+
+Reliability and number of items are calculated with `psych::alpha()`
+and stored as column attribute named "psych.alpha". The reliability values 
+are printed by `tab_var_metrics()` or `tab_item_metrics()`.
+
+
+```{r results='asis'}
+# Add a single index
+data %>%
+  add_idx(starts_with("cg_adoption_")) %>%
+  tab_var_metrics(idx_cg_adoption)
+
+# Compare the index values by group
+data %>%
+  add_idx(starts_with("cg_adoption_")) %>%
+  tab_group_metrics(idx_cg_adoption, in_adoption)
+```
+
+
+```{r results='asis'}
+# Add multiple indizes and summarize them
+data %>%
+  add_idx(starts_with("cg_adoption_")) %>%
+  add_idx(starts_with("cg_adoption_advantage")) %>%
+  add_idx(starts_with("cg_adoption_fearofuse")) %>%
+  add_idx(starts_with("cg_adoption_social")) %>%
+  tab_item_metrics(starts_with("idx_cg_adoption"))
+```
+
+
+# Set custom item labels
+
+Item labels are stored in the comment attribute of an item variable. 
+When printing item tables, the labels are used. You can set custom or 
+new labels by providing a tibble with item names in the first column
+and item labels in the second.
+
+```{r results='asis'}
+newlabels <- tribble(
+  ~item_name, ~item_label,
+  "cg_adoption_advantage_01", "Allgemeine Vorteile",
+  "cg_adoption_advantage_02", "Finanzielle Vorteile",
+  "cg_adoption_advantage_03", "Vorteile bei der Arbeit",
+  "cg_adoption_advantage_04", "Macht mehr Spaß"
+)
+
+data %>%
+  set_item_labels(newlabels) %>%
+  tab_item_metrics(starts_with("cg_adoption_advantage_"))
+```
+
+
+You can remove all labels to get a plain dataset
+
+```{r results='asis'}
+data %>%
+  remove_labels(everything()) %>%
+  tab_item_counts(starts_with("cg_adoption_advantage_"))
+```
+
