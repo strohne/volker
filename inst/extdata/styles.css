@@ -1,4 +1,12 @@
-h1.title {font-size:24px; font-weight:bold;}
+#header h1 {
+  font-size:24px; font-weight:bold;
+}
+
+#header h4 {
+  font-size: 0.9em;
+  font-style: italic;
+}
+
 .tab-content .tabset-pills {
   display:flex;
   flex-wrap:wrap;

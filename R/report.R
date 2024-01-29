@@ -149,6 +149,14 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
           add_to_report(chunks, "Index: Table")
       }
     }
+
+
+
+    # Close tabs
+    if (is.character(scope_title) && knitr::is_html_output()) {
+      chunks <- add_to_report(paste0("\n#### {-}  \n"), chunks)
+    }
+
   }
 
   class(chunks) <- c("vlkr_rprt", class(chunks))
