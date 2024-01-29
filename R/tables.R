@@ -309,12 +309,14 @@ tab_item_counts <- function(data, cols, values = c("n", "p"), .formatted = T, .l
     ) %>%
     dplyr::mutate(value = is.na(value)) %>%
     dplyr::count(item, value) %>%
+    mutate(value = factor(value,levels=c("TRUE","FALSE"))) %>%
     tidyr::pivot_wider(
       names_from = value,
       values_from = n,
-      values_fill = 0
+      values_fill = 0,
+      names_expand=T
     ) %>%
-    dplyr::select(item, Missing = `TRUE`)
+    dplyr::select(item, Missing = "TRUE")
 
   result <- left_join(result, result_missing, by="item")
 
