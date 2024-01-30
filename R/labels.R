@@ -12,6 +12,7 @@
 #'                       the attribute values.
 #'                       In case a column has a levels attribute, the levels
 #' @export
+
 get_labels <- function(data, cols) {
   if (!missing(cols)) {
     data <- dplyr::select(data, {{ cols }})
@@ -31,10 +32,11 @@ get_labels <- function(data, cols) {
     value_label = lapply(data, attributes)
   ) %>%
     dplyr::mutate(item_label = as.character(sapply(item_label, function(x) ifelse(is.null(x), NA, x)))) %>%
+    dplyr::mutate(item_label = ifelse(is.na(item_label), item_name, item_label)) %>%
     dplyr::mutate(item_group = stringr::str_remove(item_name, "_.*")) %>%
     dplyr::mutate(item_class = as.character(sapply(item_class, function(x) ifelse(length(x) > 1, x[[length(x)]], x)))) %>%
     dplyr::select(item_group, item_class, item_name, item_label, value_label) %>%
-    tidyr::unnest_longer(value_label)
+    tidyr::unnest_longer(value_label, keep_empty = T)
 
 
   if ("value_label_id" %in% colnames(labels)) {
@@ -90,6 +92,7 @@ get_labels <- function(data, cols) {
   labels <- left_join(labels, groups, by="item_name")
   labels
 }
+
 
 #' Get a common title for a column selection
 #'

@@ -22,21 +22,21 @@ plot_var_counts <- function(data, col, numbers = NULL, title = T, .labels = T) {
   base_n <- sum(result$n[!(result[[1]] %in% c("Total", "Missing"))])
 
   result <- result %>%
-    dplyr::mutate(valid = valid * 100) %>%
+    dplyr::mutate(p = p * 100) %>%
     dplyr::rename(Item = 1) %>%
     dplyr::filter(!(Item %in% c("Total", "Missing"))) %>%
     dplyr::mutate(
       .values = dplyr::case_when(
         p < VLKR_LOWPERCENT ~ "",
         all(numbers == "n") ~ as.character(n),
-        all(numbers == "p") ~ paste0(round(valid, 0), "%"),
-        TRUE ~ paste0(n, "\n", round(valid, 0), "%")
+        all(numbers == "p") ~ paste0(round(p, 0), "%"),
+        TRUE ~ paste0(n, "\n", round(p, 0), "%")
       )
     )
 
   # TODO: Make dry, see plot_item_counts and tab_group_counts
   pl <- result %>%
-    ggplot(aes(Item, y = valid / 100)) +
+    ggplot(aes(Item, y = p / 100)) +
     geom_col(fill = VLKR_FILLCOLOR) +
     # scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
     scale_y_continuous(labels = scales::percent) +
@@ -164,12 +164,13 @@ plot_group_counts <- function(data, col, col_group, numbers = NULL, prop = "tota
 #'                An appropriate color scale should be choosen depending on the ordering.
 #'                For unordered values, the default scale is used.
 #'                For ordered values, the viridis scale is used.
+#' @param missings Include missing values (default FALSE)
 #' @param .category Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-plot_item_counts <- function(data, cols, numbers = NULL, ordered = NULL, title = T, .labels = T, .category = NULL) {
+plot_item_counts <- function(data, cols, numbers = NULL, ordered = NULL, missings=F, title = T, .labels = T, .category = NULL) {
   result <- data %>%
-    tab_item_counts(cols, values = "n", .formatted = F)
+    tab_item_counts(cols, values = "n", .formatted = F, missings=missings)
 
   if (title == T) {
     title <- colnames(result)[1]

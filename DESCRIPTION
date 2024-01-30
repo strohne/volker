@@ -30,7 +30,7 @@ Imports:
   scales,
   viridis
 Depends:
-  R (>= 2.10)
+  R (>= 4.3)
 Suggests:
   knitr,
   kableExtra,

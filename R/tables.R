@@ -240,11 +240,19 @@ tab_group_counts <- function(data, col, col_group, values = c("n", "p"), prop = 
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
 #' @param values The values to output: n (frequency) or p (percentage)
+#' @param missings Include missing values (default FALSE)
 #' @param .formatted Set to FALSE to prevent calculating percents from proportions
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_item_counts <- function(data, cols, values = c("n", "p"), .formatted = T, .labels = T) {
+tab_item_counts <- function(data, cols, values = c("n", "p"), missings=F, .formatted = T, .labels = T) {
+
+  # Remove missings
+  if (!missings) {
+    data <- data %>%
+      tidyr::drop_na({{ cols }})
+  }
+
 
   # Calculate n and p
   result <- data %>%
@@ -289,36 +297,40 @@ tab_item_counts <- function(data, cols, values = c("n", "p"), .formatted = T, .l
     result_p <- dplyr::mutate(result_p, across(where(is.numeric), ~ paste0(round(. * 100, 0), "%")))
   }
 
+  # Add missings
+
+  if (missings) {
+    result_missing <-  data %>%
+      remove_labels(tidyselect::all_of(cols)) %>%
+      tidyr::pivot_longer(
+        tidyselect::all_of(cols),
+        names_to = "item",
+        values_to = "value"
+      ) %>%
+      dplyr::mutate(value = is.na(value)) %>%
+      dplyr::count(item, value) %>%
+      mutate(value = factor(value,levels=c("TRUE","FALSE"))) %>%
+      tidyr::pivot_wider(
+        names_from = value,
+        values_from = n,
+        values_fill = 0,
+        names_expand=T
+      ) %>%
+      dplyr::select(item, Missing = "TRUE")
+
+    result_n <- left_join(result_n, result_missing, by="item")
+    result_p <- mutate(result_p, Missing="")
+  }
   # Combine n and p if requested
   if (("n" %in% values) && ("p" %in% values)) {
-    result <- zip_tables(result_p, result_n, brackets = T)
+    result <- zip_tables(result_p, result_n, brackets = T, newline = F)
   } else if ("p" %in% values) {
     result <- result_p
   } else {
     result <- result_n
   }
 
-  # Add missings
-  # Calculate Missings
-  result_missing <-  data %>%
-    remove_labels(tidyselect::all_of(cols)) %>%
-    tidyr::pivot_longer(
-      tidyselect::all_of(cols),
-      names_to = "item",
-      values_to = "value"
-    ) %>%
-    dplyr::mutate(value = is.na(value)) %>%
-    dplyr::count(item, value) %>%
-    mutate(value = factor(value,levels=c("TRUE","FALSE"))) %>%
-    tidyr::pivot_wider(
-      names_from = value,
-      values_from = n,
-      values_fill = 0,
-      names_expand=T
-    ) %>%
-    dplyr::select(item, Missing = "TRUE")
 
-  result <- left_join(result, result_missing, by="item")
 
   # Replace item labels
   if (.labels) {

@@ -127,11 +127,11 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
 
     # Output index
     if (is_items && is_scale != 0) {
-      idx <- add_idx(data, tidyselect::starts_with(scope))
+      idx <- add_idx(data, tidyselect::starts_with(scope), newcol = ".idx")
       idx_name <- setdiff(colnames(idx), colnames(data))
 
+      if ((length(idx_name) > 0) && is.null(col_group)) {
 
-      if (is.null(col_group)) {
         chunks <- idx %>%
           plot_var_metrics(!!rlang::sym(idx_name), title = plot_title) %>%
           add_to_report(chunks, "Index: Plot")
@@ -139,7 +139,8 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
         chunks <- idx %>%
           tab_var_metrics(!!rlang::sym(idx_name)) %>%
           add_to_report(chunks, "Index: Table")
-      } else {
+
+      } else if (length(idx_name) > 0) {
         chunks <- idx %>%
           plot_group_metrics(!!rlang::sym(idx_name), !!rlang::sym(col_group), title = plot_title) %>%
           add_to_report(chunks, "Index: Plot")
@@ -153,6 +154,9 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
 
 
     # Close tabs
+    if (knitr::is_html_output()) {
+      chunks <- add_to_report(paste0("\n##### {-}  \n"), chunks)
+    }
     if (is.character(scope_title) && knitr::is_html_output()) {
       chunks <- add_to_report(paste0("\n#### {-}  \n"), chunks)
     }
