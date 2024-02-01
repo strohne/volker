@@ -446,7 +446,7 @@ tab_metrics_var <- tab_var_metrics
 #' @param col_group The column holding groups to compare
 #' @param .negative If True (default), negative values are recoded to missing values
 #' @param digits The digits to print
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @param .labels If TRUE (default) extracts item labels from the attributes, see get_labels()
 #' @export
 tab_group_metrics <- function(data, col, col_group, .negative = F, digits = 1, .labels = T) {
   # TODO: warn if any negative values were recoded

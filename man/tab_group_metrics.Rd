@@ -17,7 +17,7 @@ tab_group_metrics(data, col, col_group, .negative = F, digits = 1, .labels = T)
 
 \item{digits}{The digits to print}
 
-\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
+\item{.labels}{If TRUE (default) extracts item labels from the attributes, see get_labels()}
 }
 \description{
 Output a five point summary for groups

@@ -33,7 +33,7 @@ To display column proportions, swap the first column with the grouping column.}
 By default (NULL), the ordering is automatically detected.
 An appropriate color scale should be choosen depending on the ordering.
 For unordered values, the default scale is used.
-For ordered values, the viridis scale is used.}
+For ordered values, shades of the VLKR_FILLGRADIENT option are used.}
 
 \item{missings}{Include missing values (default FALSE)}
 

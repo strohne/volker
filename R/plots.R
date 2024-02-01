@@ -79,7 +79,7 @@ plot_var_counts <- function(data, col, numbers = NULL, title = T, .labels = T) {
 #'                By default (NULL), the ordering is automatically detected.
 #'                An appropriate color scale should be choosen depending on the ordering.
 #'                For unordered values, the default scale is used.
-#'                For ordered values, the viridis scale is used.
+#'                For ordered values, shades of the VLKR_FILLGRADIENT option are used.
 #' @param missings Include missing values (default FALSE)
 #' @param .labels If TRUE (default) extracts item labels from the attributes, see get_labels()
 #' @param .category Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
@@ -163,7 +163,7 @@ plot_group_counts <- function(data, col, col_group, numbers = NULL, prop = "tota
 #'                By default (NULL), the ordering is automatically detected.
 #'                An appropriate color scale should be choosen depending on the ordering.
 #'                For unordered values, the default scale is used.
-#'                For ordered values, the viridis scale is used.
+#'                For ordered values, shaded of the VLKR_FILLGRADIENT option are used.
 #' @param missings Include missing values (default FALSE)
 #' @param .category Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
@@ -474,7 +474,7 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
 
   # Select scales:
   # - Simplify binary plots
-  # - Use viridis rocket colors for ordinal scales
+  # - Generate a color scale for ordinal scales from VLKR_FILLGRADIENT
   # - Use the default color for other cases
   if (!is.null(category)) {
     pl <- pl +
