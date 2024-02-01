@@ -17,13 +17,15 @@
 #'                An appropriate color scale should be choosen depending on the ordering.
 #'                For unordered values, the default scale is used.
 #'                For ordered values, the viridis scale is used.
+#' @param index When multiple metric items are matched by a scope, an index will be calculated using the psych-package.
+#'              Set to FALSE to suppress index generation.
 #' @param title A character providing the heading or TRUE (default) to output a heading.
 #'               Classes for tabset pills will be added.
 #' @param close Whether to close the last tab (default value TRUE) or to keep it open.
 #'              Keep it open to add further custom tabs by adding headers on the fifth level
 #'              in Markdown (e.g. ##### Method)
 #' @export
-report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p", missings = F, ordered = NULL, title = T, close=T) {
+report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p", missings = F, ordered = NULL, index=T, title = T, close=T) {
   chunks <- list()
 
   # Get item label from the attributes
@@ -129,7 +131,7 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
 
 
     # Output index
-    if (is_items && is_scale != 0) {
+    if (index && is_items && (is_scale != 0)) {
       idx <- add_idx(data, tidyselect::starts_with(scope), newcol = ".idx")
       idx_name <- setdiff(colnames(idx), colnames(data))
 

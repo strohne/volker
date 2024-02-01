@@ -12,7 +12,9 @@ report(
   numbers = "p",
   missings = F,
   ordered = NULL,
-  title = T
+  index = T,
+  title = T,
+  close = T
 )
 }
 \arguments{
@@ -34,8 +36,15 @@ An appropriate color scale should be choosen depending on the ordering.
 For unordered values, the default scale is used.
 For ordered values, the viridis scale is used.}
 
+\item{index}{When multiple metric items are matched by a scope, an index will be calculated using the psych-package.
+Set to FALSE to suppress index generation.}
+
 \item{title}{A character providing the heading or TRUE (default) to output a heading.
 Classes for tabset pills will be added.}
+
+\item{close}{Whether to close the last tab (default value TRUE) or to keep it open.
+Keep it open to add further custom tabs by adding headers on the fifth level
+in Markdown (e.g. ##### Method)}
 }
 \description{
 For each column prefix:
