@@ -19,8 +19,11 @@
 #'                For ordered values, the viridis scale is used.
 #' @param title A character providing the heading or TRUE (default) to output a heading.
 #'               Classes for tabset pills will be added.
+#' @param close Whether to close the last tab (default value TRUE) or to keep it open.
+#'              Keep it open to add further custom tabs by adding headers on the fifth level
+#'              in Markdown (e.g. ##### Method)
 #' @export
-report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p", missings = F, ordered = NULL, title = T) {
+report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p", missings = F, ordered = NULL, title = T, close=T) {
   chunks <- list()
 
   # Get item label from the attributes
@@ -154,11 +157,13 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
 
 
     # Close tabs
-    if (knitr::is_html_output()) {
-      chunks <- add_to_report(paste0("\n##### {-}  \n"), chunks)
-    }
-    if (is.character(scope_title) && knitr::is_html_output()) {
-      chunks <- add_to_report(paste0("\n#### {-}  \n"), chunks)
+    if (close) {
+      if (knitr::is_html_output()) {
+        chunks <- add_to_report(paste0("\n##### {-}  \n"), chunks)
+      }
+      if (is.character(scope_title) && knitr::is_html_output()) {
+        chunks <- add_to_report(paste0("\n#### {-}  \n"), chunks)
+      }
     }
 
   }

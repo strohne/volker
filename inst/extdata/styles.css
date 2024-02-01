@@ -7,6 +7,30 @@
   font-style: italic;
 }
 
+
+h3 {
+  font-size: 1.2em;
+  font-weight:bold;
+}
+
+div.summary h3 {
+  font-size: 1em;
+  font-weight:bold;
+  color: #337ab7;
+}
+
+div:not(.summary) > h3::before {
+    content: ":::::::::::::::::::::::::::::::::::::::::::";
+    display: block;
+    font-weight:normal;
+    margin-bottom: 0.5em;
+}
+
+
+.level4.tabset-pills {
+  margin-top:1em;
+}
+
 .tab-content .tabset-pills {
   display:flex;
   flex-wrap:wrap;
@@ -14,6 +38,10 @@
 
 .tab-content .tabset-pills h4 {
   margin-right:1em;
+}
+
+.tab-content .tabset-pills h4:empty {
+  margin-right:0;
 }
 
 .tab-content .tabset-pills .nav-pills {
