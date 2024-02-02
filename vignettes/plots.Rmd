@@ -7,20 +7,25 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   chunk_output_type: console
+
 ---
 
 ```{r include=FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo = TRUE)
+knitr::opts_chunk$set(
+   echo = FALSE,
+   include=TRUE,
+   fig.width=8
+)
 
 library(tidyverse)
 library(volker)
 theme_set(theme_bw())
 
+# Load data
 data <- volker::chatgpt
 
-
 # Recode -9 to NA
-data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(., -9)))
+data <- prepare(data)
 
 # Add label to sd_alter
 data <- set_col_labels(data, sd_alter, c("Alter"))
@@ -30,12 +35,12 @@ data <- set_col_labels(data, sd_alter, c("Alter"))
 ## Frequencies of categorical variables
 
 ### 1. One variable: Frequency plot of Gender
-```{r results='asis'}
+```{r}
 plot_var_counts(data, sd_geschlecht)
 ```
 
 ### 2. Multiple items: Frequency plot for adoption factors
-```{r results='asis'}
+```{r}
 
 # Use the numbers parameter to add counts to the bars
 plot_item_counts(data, starts_with("cg_adoption_"), numbers = "p")
@@ -44,7 +49,7 @@ plot_item_counts(data, starts_with("cg_adoption_"), numbers = "p")
 
 ### 3. Two variables: Stacked frequency plot of innovator type by gender
 
-```{r results='asis'}
+```{r}
 # TODO: use number=c("n","p")
 plot_group_counts(data, in_adoption, sd_geschlecht, prop = "rows")
 ```
@@ -52,7 +57,7 @@ plot_group_counts(data, in_adoption, sd_geschlecht, prop = "rows")
 ## Metric distributions
 
 ### 1. Distribution for one metric variable: Age
-```{r results='asis'}
+```{r}
 
 plot_var_metrics(data, sd_alter)
 
@@ -60,7 +65,7 @@ plot_var_metrics(data, sd_alter)
 
 
 ### 2. Distribution of multiple metric items: Adoption factors
-```{r results='asis'}
+```{r}
 
 # Note that negative values are omitted,
 # you can change the behavior with the .negative parameter
@@ -69,15 +74,17 @@ plot_item_metrics(data, starts_with("cg_adoption_"))
 ```
 
 ### 3. Distribution by a grouping variable
-```{r results='asis'}
-
+```{r}
 plot_group_metrics(data, sd_alter, sd_geschlecht)
-plot_multi_means(data, starts_with("cg_adoption_"), sd_geschlecht)
+```
 
+
+```{r}
+plot_multi_means(data, starts_with("cg_adoption_"), sd_geschlecht)
 ```
 
 ### 4. Index  distribution by a grouping variable
-```{r results='asis'}
+```{r}
 
 data %>%
   add_idx(starts_with("cg_adoption_social_")) %>%
