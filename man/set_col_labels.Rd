@@ -12,12 +12,17 @@ set_col_label(data, cols, labels)
 \arguments{
 \item{data}{A data frame}
 
-\item{cols}{Tidyselect column names}
+\item{cols}{Tidyselect column names (e. g. a single column name without quotes)}
 
-\item{labels}{The new labels}
+\item{labels}{A character vector with the same length as the column selection, containing new labels}
 }
 \description{
 Set column labels by their comment attribute
 
 Alias for set_col_labels
+}
+\examples{
+ds <- volker::chatgpt
+ds <- set_col_labels(ds, sd_alter, "Age")
+
 }

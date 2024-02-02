@@ -276,20 +276,98 @@ plot_var_metrics <- function(data, col, title = T, .labels = T) {
 #' @param .negative If False (default) negative values are recoded as missing values
 #' @export
 plot_group_metrics <- function(data, col, col_group, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
-  result <- tab_group_metrics(data, {{ col }}, {{ col_group }}, .labels = .labels, .negative = .negative)
 
-  # Pimp the result
-  result <- result[result[[1]] != "Total", ]
-  colnames(result)[1] <- get_col_label(data, {{ col }})
-  if (title == T) {
-    title <- colnames(result)[1]
+  # TODO: warn if any negative values were recoded
+  # TODO: only for the metric column (col parameter)
+  if (!.negative) {
+    data <- dplyr::mutate(data, across(where(is.numeric), ~ if_else(. < 0, NA, .)))
   }
 
-  if (is.null(limits)) {
-    limits <- get_limits(data, {{ col }})
+
+  pl <- data %>%
+    #dplyr::rename(Item := {{ col }}) %>%
+    ggplot(aes(y={{ col_group }}, {{ col }})) +
+    geom_boxplot(fill="transparent", color="darkgray") +
+    stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
+    #geom_point(color = VLKR_POINTCOLOR, size=4, shape=18)
+
+
+  # Set the scale
+  # if (is.null(limits)) {
+  #   limits <- get_limits(data, {{ col }})
+  # }
+
+
+  scale <- c()
+  if (.labels) {
+    scale <- attr(pull(data, {{ col }}), "scale")
+    if (is.null(scale)) {
+      scale <- data %>%
+        get_labels({{ col }}) %>%
+        distinct(value_name, value_label)
+    }
+    scale <- prepare_scale(scale)
+  }
+  if (length(scale) > 0) {
+    pl <- pl +
+      scale_x_continuous(labels = ~ label_scale(., scale) )
+  } else {
+    pl <- pl +
+      scale_x_continuous()
   }
 
-  .plot_means(result, limits, numbers, title, .labels)
+  # Add scales, labels and theming
+  pl <- pl +
+    scale_y_discrete(labels = scales::label_wrap(40)) +
+
+    # TODO: set limits
+    #coord_flip(ylim = limits) +
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.y = element_text(size = 11),
+      legend.title = element_blank(),
+      plot.caption = element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position = "plot"
+    )
+
+#
+#   if (!is.null(numbers)) {
+#     pl <- pl +
+#       geom_text(
+#         # aes(label=paste0("⌀", round(m,1))),
+#         aes(label = round(m, 1)),
+#         #position = position_stack(vjust = 0.5),
+#         hjust = -1,
+#         vjust=0.5,
+#         size = 3,
+#         color = "black"
+#       )
+#   }
+
+  if (!is.null(.labels)) {
+
+    # Add title
+    # TODO: minus missing values, output range
+    if (title == T) {
+      title <- get_col_label(data, {{ col }})
+    }
+    else if (title == F) {
+      title <- NULL
+    }
+    if (!is.null(title)) {
+      pl <- pl + ggtitle(label = title)
+    }
+
+    # Add base
+    base_n <- nrow(data)
+    pl <- pl + labs(caption = paste0("n=", base_n))
+  }
+
+
+   # Pass row number and label length to the knit_plot() function
+  .add_plot_attributes(pl)
 }
 
 #' Output averages for multiple variables
@@ -609,10 +687,13 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
   class(pl) <- c("vlkr_plt", class(pl))
 
   if (is.null(rows)) {
-    rows <- max(
-      dplyr::n_distinct(pl$data[[1]]),
-      dplyr::n_distinct(pl$data[[2]]) / 2
-    )
+    plot_data <- ggplot_build(pl)$data[[1]]
+    rows <- length(unique(plot_data$y)) / 2
+
+    # rows <- max(
+    #   dplyr::n_distinct(pl$data[[1]]),
+    #   dplyr::n_distinct(pl$data[[2]]) / 2
+    # )
   }
 
   attr(pl, "vlkr_options") <- list(

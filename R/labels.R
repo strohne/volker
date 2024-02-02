@@ -257,8 +257,12 @@ get_col_label <- function(data, col) {
 #' Set column labels by their comment attribute
 #'
 #' @param data A data frame
-#' @param cols Tidyselect column names
-#' @param labels The new labels
+#' @param cols Tidyselect column names (e. g. a single column name without quotes)
+#' @param labels A character vector with the same length as the column selection, containing new labels
+#' @examples
+#' ds <- volker::chatgpt
+#' ds <- set_col_labels(ds, sd_alter, "Age")
+#'
 #' @export
 set_col_labels <- function(data, cols, labels) {
 
