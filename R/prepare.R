@@ -53,5 +53,5 @@ prepare <- function(data, remove.na = T) {
     )
   )
 
-  data
+  dplyr::as_tibble(data)
 }
