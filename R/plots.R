@@ -231,7 +231,8 @@ plot_var_metrics <- function(data, col, title = T, .labels = T) {
   pl <- data %>%
     ggplot(aes({{ col }})) +
     # geom_histogram(fill=VLKR_FILLCOLOR, bins=20)
-    geom_density(fill = VLKR_FILLCOLOR)
+    geom_density(fill = VLKR_FILLCOLOR) +
+    geom_vline(aes(xintercept=mean({{ col }})), color="black")
 
 
   # TODO: report missings
