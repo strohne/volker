@@ -330,8 +330,6 @@ tab_item_counts <- function(data, cols, values = c("n", "p"), missings=F, .forma
     result <- result_n
   }
 
-
-
   # Replace item labels
   if (.labels) {
     result <- replace_item_values(result, data, cols)
@@ -585,7 +583,7 @@ tab_item_metrics <- function(data, cols, digits = 1, .negative = F, .labels = T)
       distinct(value_name, value_label)
   }
 
-  # Remove common item prefix
+  # Remove common item prefix and title
   # TODO: remove common postfix
   prefix <- get_prefix(result$item)
   if (prefix != "") {

@@ -382,11 +382,106 @@ plot_group_metrics <- function(data, col, col_group, limits = NULL, numbers = NU
 #' @param .negative If False (default) negative values are recoded as missing values
 #' @export
 plot_item_metrics <- function(data, cols, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
-  result <- tab_item_metrics(data, cols, .labels = .labels, .negative = .negative)
-  if (title == T) {
-    title <- colnames(result)[1]
+
+  # Pivot items
+  result <- data %>%
+    tidyr::drop_na({{ cols }}) %>%
+    remove_labels(tidyselect::all_of(cols)) %>%
+    tidyr::pivot_longer(
+      tidyselect::all_of(cols),
+      names_to = "item",
+      values_to = "value"
+    )
+
+  # Remove negative values
+  # TODO: warn if any negative values were recoded
+  # TODO: only for the metric column (col parameter)
+  if (!.negative) {
+    result <- dplyr::mutate(result, value = if_else(value < 0, NA, value))
   }
-  .plot_means(result, limits, numbers, title, .labels)
+
+  # Replace item labels
+  if (.labels) {
+    result <- replace_item_values(result, data, cols)
+  }
+
+  # Remove common item prefix and title
+  # TODO: remove common postfix
+  prefix <- get_prefix(result$item)
+  if (prefix != "") {
+    result <- dplyr::mutate(result, item = stringr::str_remove(item, stringr::fixed(prefix)))
+    result <- dplyr::mutate(result, item = ifelse(item == "", prefix, item))
+  }
+
+
+  # Rename first column
+  if (title == T && (prefix != "")) {
+    title <- sub("[ :,]+$", "", prefix)
+  }
+
+
+  # Create plot
+  pl <- result %>%
+    ggplot(aes(y=item, value)) +
+    geom_boxplot(fill="transparent", color="darkgray") +
+    stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
+
+
+  # Add scale labels
+  scale <- c()
+  if (.labels) {
+    scale <- data %>%
+      get_labels(!!cols) %>%
+      distinct(value_name, value_label) %>%
+      prepare_scale()
+  }
+  if (length(scale) > 0) {
+    pl <- pl +
+      scale_x_continuous(labels = ~ label_scale(., scale) )
+  } else {
+    pl <- pl +
+      scale_x_continuous()
+  }
+
+  # Add scales, labels and theming
+  pl <- pl +
+    scale_y_discrete(labels = scales::label_wrap(40)) +
+
+    # TODO: set limits
+    #coord_flip(ylim = limits) +
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.y = element_text(size = 11),
+      legend.title = element_blank(),
+      plot.caption = element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position = "plot"
+    )
+
+
+  if (!is.null(.labels)) {
+
+    # Add title
+    # TODO: minus missing values, output range
+    if (title == T) {
+      title <- get_col_label(data, {{ col }})
+    }
+    else if (title == F) {
+      title <- NULL
+    }
+    if (!is.null(title)) {
+      pl <- pl + ggtitle(label = title)
+    }
+
+    # Add base
+    base_n <- nrow(data)
+    pl <- pl + labs(caption = paste0("n=", base_n))
+  }
+
+
+  # Pass row number and label length to the knit_plot() function
+  .add_plot_attributes(pl)
 }
 
 

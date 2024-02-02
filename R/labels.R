@@ -329,9 +329,9 @@ set_item_labels <- function(data, labels) {
   data
 }
 
-#' Replace items in the first column by labels found in the dataset
+#' Replace values in the "item" column by labels found in the dataset
 #'
-#' @param result The table with items in the first column,
+#' @param result The table with a "item" column,
 #'               e.g. produced by tab_item_count()
 #' @param data The labeled dataset
 #' @param cols The tidyselect columns
