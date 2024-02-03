@@ -13,20 +13,6 @@ h3 {
   font-weight:bold;
 }
 
-div.summary h3 {
-  font-size: 1em;
-  font-weight:bold;
-  color: #337ab7;
-}
-
-div:not(.summary) > h3::before {
-    content: ":::::::::::::::::::::::::::::::::::::::::::";
-    display: block;
-    font-weight:normal;
-    margin-bottom: 0.5em;
-}
-
-
 .level4.tabset-pills {
   margin-top:1em;
 }

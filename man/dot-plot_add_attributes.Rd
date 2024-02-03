@@ -4,7 +4,7 @@
 \alias{.plot_add_attributes}
 \title{Add the volker classes and options}
 \usage{
-.plot_add_attributes(pl, rows = NULL)
+.plot_add_attributes(pl, rows = NULL, lablen = NULL)
 }
 \arguments{
 \item{pl}{A ggplot2 object}
