@@ -66,7 +66,7 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
     }
 
     if (is.character(scope_title) && knitr::is_html_output()) {
-      chunks <- add_to_report(paste0("\n#### ", scope_title, " {.tabset .tabset-pills}  \n"), chunks)
+      chunks <- report_add(paste0("\n#### ", scope_title, " {.tabset .tabset-pills}  \n"), chunks)
       plot_title <- F
     } else {
       plot_title <- T
@@ -76,55 +76,55 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
     # A single categorical variable
     if (is_var && is_scale == 0 && is.null(col_group)) {
       chunks <- plot_var_counts(data, !!rlang::sym(scope), numbers = numbers, title = plot_title) %>%
-        add_to_report(chunks, "Plot")
+        report_add(chunks, "Plot")
 
       chunks <- tab_var_counts(data, !!rlang::sym(scope)) %>%
-        add_to_report(chunks, "Table")
+        report_add(chunks, "Table")
     }
 
     # A single metric variable
     else if (is_var && is_scale != 0 && is.null(col_group)) {
       chunks <- plot_var_metrics(data, !!rlang::sym(scope), title = plot_title) %>%
-        add_to_report(chunks, "Plot")
+        report_add(chunks, "Plot")
 
       chunks <- tab_var_metrics(data, !!rlang::sym(scope)) %>%
-        add_to_report(chunks, "Table")
+        report_add(chunks, "Table")
     }
 
     # A single categorical variable by group
     else if (is_var && is_scale == 0 && !is.null(col_group)) {
       chunks <- plot_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop = prop, numbers = numbers, ordered = ordered, missings = missings, title = plot_title) %>%
-        add_to_report(chunks, "Plot")
+        report_add(chunks, "Plot")
 
       chunks <- tab_group_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop = prop, missings = missings) %>%
-        add_to_report(chunks, "Table")
+        report_add(chunks, "Table")
     }
 
     # A single metric variable by group
     else if (is_var && is_scale != 0 && !is.null(col_group)) {
       chunks <- plot_group_metrics(data, !!rlang::sym(scope), !!rlang::sym(col_group), title = plot_title) %>%
-        add_to_report(chunks, "Plot")
+        report_add(chunks, "Plot")
 
       chunks <- tab_group_metrics(data, !!rlang::sym(scope), !!rlang::sym(col_group)) %>%
-        add_to_report(chunks, "Table")
+        report_add(chunks, "Table")
     }
 
     # Multiple items
     else if (is_items && is.null(col_group)) {
       chunks <- plot_item_counts(data, tidyselect::starts_with(scope), numbers = numbers, ordered = ordered, title = plot_title) %>%
-        add_to_report(chunks, "Plot")
+        report_add(chunks, "Plot")
 
       chunks <- tab_item_counts(data, tidyselect::starts_with(scope)) %>%
-        add_to_report(chunks, "Table")
+        report_add(chunks, "Table")
     }
 
     # Multiple items by group
     else if (is_items && !is.null(col_group)) {
       chunks <- plot_multi_means(data, tidyselect::starts_with(scope), !!rlang::sym(col_group), title = plot_title) %>%
-        add_to_report(chunks, "Plot")
+        report_add(chunks, "Plot")
 
       chunks <- tab_multi_means(data, tidyselect::starts_with(scope), !!rlang::sym(col_group)) %>%
-        add_to_report(chunks, "Table")
+        report_add(chunks, "Table")
     } else {
       warning("Could't find columns to autodetect the table type for the scope ", scope, ". Check your parameters.")
     }
@@ -139,20 +139,20 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
 
         chunks <- idx %>%
           plot_var_metrics(!!rlang::sym(idx_name), title = plot_title) %>%
-          add_to_report(chunks, "Index: Plot")
+          report_add(chunks, "Index: Plot")
 
         chunks <- idx %>%
           tab_var_metrics(!!rlang::sym(idx_name)) %>%
-          add_to_report(chunks, "Index: Table")
+          report_add(chunks, "Index: Table")
 
       } else if (length(idx_name) > 0) {
         chunks <- idx %>%
           plot_group_metrics(!!rlang::sym(idx_name), !!rlang::sym(col_group), title = plot_title) %>%
-          add_to_report(chunks, "Index: Plot")
+          report_add(chunks, "Index: Plot")
 
         chunks <- idx %>%
           tab_group_metrics(!!rlang::sym(idx_name), !!rlang::sym(col_group)) %>%
-          add_to_report(chunks, "Index: Table")
+          report_add(chunks, "Index: Table")
       }
     }
 
@@ -161,10 +161,10 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
     # Close tabs
     if (close) {
       if (knitr::is_html_output()) {
-        chunks <- add_to_report(paste0("\n##### {-}  \n"), chunks)
+        chunks <- report_add(paste0("\n##### {-}  \n"), chunks)
       }
       if (is.character(scope_title) && knitr::is_html_output()) {
-        chunks <- add_to_report(paste0("\n#### {-}  \n"), chunks)
+        chunks <- report_add(paste0("\n#### {-}  \n"), chunks)
       }
     }
 
@@ -180,12 +180,12 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
 #' @param chunks The current report list
 #' @param tab A tabsheet name or NULL
 #' @return A list with volker tables or plots
-add_to_report <- function(obj, chunks, tab = NULL) {
+report_add <- function(obj, chunks, tab = NULL) {
   if (knitr::is_html_output()) {
     # Tab
     if (!is.null(tab)) {
       tab <- paste0("\n##### ", tab, "  \n")
-      chunks <- add_to_report(tab, chunks)
+      chunks <- report_add(tab, chunks)
     }
 
     # Objects

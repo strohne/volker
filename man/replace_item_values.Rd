@@ -2,12 +2,12 @@
 % Please edit documentation in R/labels.R
 \name{replace_item_values}
 \alias{replace_item_values}
-\title{Replace items in the first column by labels found in the dataset}
+\title{Replace values in the "item" column by labels found in the dataset}
 \usage{
 replace_item_values(result, data, cols)
 }
 \arguments{
-\item{result}{The table with items in the first column,
+\item{result}{The table with a "item" column,
 e.g. produced by tab_item_count()}
 
 \item{data}{The labeled dataset}
@@ -15,5 +15,5 @@ e.g. produced by tab_item_count()}
 \item{cols}{The tidyselect columns}
 }
 \description{
-Replace items in the first column by labels found in the dataset
+Replace values in the "item" column by labels found in the dataset
 }

@@ -62,7 +62,7 @@ plot_var_counts <- function(data, col, numbers = NULL, title = T, .labels = T) {
   }
 
   # Pass row number and label length to the knit_plot() function
-  .add_plot_attributes(pl)
+  .plot_add_attributes(pl)
 }
 
 #' Plot frequencies cross tabulated with a grouping column
@@ -262,11 +262,10 @@ plot_var_metrics <- function(data, col, title = T, .labels = T) {
     )
 
   # Pass row number and label length to the knit_plot() function
-  .add_plot_attributes(pl, 4)
+  .plot_add_attributes(pl, rows=4)
 }
 
 #' Output averages for multiple variables
-#'
 #'
 #' @param data A tibble containing item measures
 #' @param col The column holding metric values
@@ -283,7 +282,6 @@ plot_group_metrics <- function(data, col, col_group, limits = NULL, numbers = NU
   if (!.negative) {
     data <- dplyr::mutate(data, across(where(is.numeric), ~ if_else(. < 0, NA, .)))
   }
-
 
   pl <- data %>%
     #dplyr::rename(Item := {{ col }}) %>%
@@ -367,8 +365,14 @@ plot_group_metrics <- function(data, col, col_group, limits = NULL, numbers = NU
   }
 
 
+  # Maximum label length
+  lablen  <- data %>%
+    dplyr::pull({{col_group}}) %>%
+    stringr::str_length() %>%
+    max()
+
    # Pass row number and label length to the knit_plot() function
-  .add_plot_attributes(pl)
+  .plot_add_attributes(pl, lablen=lablen)
 }
 
 #' Output averages for multiple variables
@@ -479,9 +483,14 @@ plot_item_metrics <- function(data, cols, limits = NULL, numbers = NULL, title =
     pl <- pl + labs(caption = paste0("n=", base_n))
   }
 
+  # Maximum label length
+  lablen  <- result %>%
+    dplyr::pull(item) %>%
+    stringr::str_length() %>%
+    max()
 
   # Pass row number and label length to the knit_plot() function
-  .add_plot_attributes(pl)
+  .plot_add_attributes(pl, lablen=lablen)
 }
 
 
@@ -598,7 +607,7 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
   }
 
   # Pass row number and label length to the knit_plot() function
-  .add_plot_attributes(pl)
+  .plot_add_attributes(pl)
 }
 
 #' Helper function: plot grouped bar chart
@@ -694,7 +703,7 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
   }
 
   # Pass row number and label length to the knit_plot() function
-  .add_plot_attributes(pl)
+  .plot_add_attributes(pl)
 }
 
 #' Helper function to plot means, e.g. for plot_item_metrics and plot_group_metrics
@@ -771,7 +780,7 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
   }
 
   # Pass row number and label length to the knit_plot() function
-  .add_plot_attributes(pl)
+  .plot_add_attributes(pl)
 }
 
 
@@ -779,12 +788,12 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
 #'
 #' @param pl A ggplot2 object
 #' @return The plot
-.add_plot_attributes <- function(pl, rows = NULL) {
+.plot_add_attributes <- function(pl, rows = NULL, lablen=NULL) {
   class(pl) <- c("vlkr_plt", class(pl))
 
   if (is.null(rows)) {
     plot_data <- ggplot_build(pl)$data[[1]]
-    rows <- length(unique(plot_data$y)) / 2
+    rows <- length(unique(plot_data$y))
 
     # rows <- max(
     #   dplyr::n_distinct(pl$data[[1]]),
@@ -792,9 +801,13 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
     # )
   }
 
+  if (is.null(lablen)) {
+    lablen <- max(stringr::str_length(plot_data$data[[1]]))
+  }
+
   attr(pl, "vlkr_options") <- list(
     rows = rows,
-    lablen = max(stringr::str_length(pl$data[[1]]))
+    lablen = lablen
   )
   pl
 }
