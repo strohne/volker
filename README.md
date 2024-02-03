@@ -33,8 +33,9 @@ To represent relationships between many variables, you can either compare all me
 
 ## Special features
 
-- Labeling of table outputs
+- Labeling of table and plot outputs based on attributes. Appropriate attributes, for example, are provided by the Sosci Survey API.
 - Tidyverse column selection
+- Simplified hints for wrong parameters, e.g. if you forget to provide a data frame (work in progress)
 
 ## Examples
 
@@ -124,12 +125,13 @@ The kableExtra package produces an error in R 4.3 when knitting documents: ` .on
 ## Roadmap
 
 
-| Version | Features               | Status           |  
-| ------- | ---------------------- | ---------------- |  
-| 1.0     | Descriptive tables     | work in progress | 
-| 1.1     | Descriptive plots      | work in progress |  
-| 1.2     | Regression tables      | work in progress |  
+| Version | Features                | Status           |  
+| ------- | ----------------------- | ---------------- |  
+| 1.0     | Descriptive tables      | work in progress | 
+| 1.1     | Descriptive plots       | work in progress |  
+| 1.2     | Regression tables       | work in progress |  
 | 1.3     | SosciSurvey integration | work in progress |  
+| 1.4     | Topic modeling          | work in progress |  
 
 ## Similar packages
 
@@ -142,5 +144,4 @@ https://github.com/kassambara/rstatix
 Contributer: Henrieke Kotthoff.
 
 **Citation**: 
-Jünger, J. (2023). volker: A Package for Survey Data Summaries and
-    Graphics. R package version 1.0.
+Jünger, J. (2024). volker: Report summaries and graphics for survey data. R package version 1.0.

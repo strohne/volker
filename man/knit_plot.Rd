@@ -7,7 +7,10 @@
 knit_plot(pl)
 }
 \arguments{
-\item{pl}{A ggplot object}
+\item{pl}{A ggplot object with vlkr_options.
+The vlk_options are added by .plot_add_attributes()
+and provide information about the number of vertical items (rows)
+and the maximum}
 }
 \value{
 Character string containing a html image tag, including the base64 encoded image

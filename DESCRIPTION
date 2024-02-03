@@ -1,6 +1,6 @@
 Package: volker
 Type: Package
-Title: Report ready summaries and graphics for survey data.
+Title: Report summaries and graphics for survey data.
 Version: 0.1
 Date: 2024-02-03
 Authors@R:

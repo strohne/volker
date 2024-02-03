@@ -9,6 +9,8 @@
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
 plot_var_counts <- function(data, col, numbers = NULL, title = T, .labels = T) {
+  check_dataframe(data)
+
   result <- data %>%
     tab_var_counts({{ col }}, .labels = .labels, .formatted = F)
 
@@ -85,7 +87,9 @@ plot_var_counts <- function(data, col, numbers = NULL, title = T, .labels = T) {
 #' @param .category Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
 #' @export
 plot_group_counts <- function(data, col, col_group, numbers = NULL, prop = "total", ordered = NULL, missings = F, title = T, .labels = T, .category = NULL) {
+
   # Check columns
+  check_dataframe(data)
   has_column(data, {{ col }})
   has_column(data, {{ col_group }})
 
@@ -169,6 +173,9 @@ plot_group_counts <- function(data, col, col_group, numbers = NULL, prop = "tota
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
 plot_item_counts <- function(data, cols, numbers = NULL, ordered = NULL, missings=F, title = T, .labels = T, .category = NULL) {
+  # Check parameters
+  check_dataframe(data)
+
   result <- data %>%
     tab_item_counts(cols, values = "n", .formatted = F, missings=missings)
 
@@ -225,6 +232,9 @@ plot_item_counts <- function(data, cols, numbers = NULL, ordered = NULL, missing
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
 plot_var_metrics <- function(data, col, title = T, .labels = T) {
+  # Check parameters
+  check_dataframe(data)
+
   data <- drop_na(data, {{ col }})
 
   # TODO: make configurable: density, boxplot or histogram
@@ -276,6 +286,8 @@ plot_var_metrics <- function(data, col, title = T, .labels = T) {
 #' @param .negative If False (default) negative values are recoded as missing values
 #' @export
 plot_group_metrics <- function(data, col, col_group, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
+  # Check parameters
+  check_dataframe(data)
 
   # TODO: warn if any negative values were recoded
   # TODO: only for the metric column (col parameter)
@@ -366,13 +378,13 @@ plot_group_metrics <- function(data, col, col_group, limits = NULL, numbers = NU
 
 
   # Maximum label length
-  lablen  <- data %>%
+  maxlab  <- data %>%
     dplyr::pull({{col_group}}) %>%
     stringr::str_length() %>%
-    max()
+    max(na.rm=T)
 
    # Pass row number and label length to the knit_plot() function
-  .plot_add_attributes(pl, lablen=lablen)
+  .plot_add_attributes(pl, maxlab=maxlab)
 }
 
 #' Output averages for multiple variables
@@ -386,6 +398,8 @@ plot_group_metrics <- function(data, col, col_group, limits = NULL, numbers = NU
 #' @param .negative If False (default) negative values are recoded as missing values
 #' @export
 plot_item_metrics <- function(data, cols, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
+  # Check parameters
+  check_dataframe(data)
 
   # Pivot items
   result <- data %>%
@@ -484,13 +498,13 @@ plot_item_metrics <- function(data, cols, limits = NULL, numbers = NULL, title =
   }
 
   # Maximum label length
-  lablen  <- result %>%
+  maxlab  <- result %>%
     dplyr::pull(item) %>%
     stringr::str_length() %>%
-    max()
+    max(na.rm = T)
 
   # Pass row number and label length to the knit_plot() function
-  .plot_add_attributes(pl, lablen=lablen)
+  .plot_add_attributes(pl, maxlab=maxlab)
 }
 
 
@@ -506,6 +520,9 @@ plot_item_metrics <- function(data, cols, limits = NULL, numbers = NULL, title =
 #' @return A plot
 #' @export
 plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
+  # Check parameters
+  check_dataframe(data)
+
   # Get positions of group cols
   cols_groups <- tidyselect::eval_select(expr = enquo(cols_groups), data = data)
   cols <- enquo(cols)
@@ -780,27 +797,29 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
 #' Add the volker classes and options
 #'
 #' @param pl A ggplot2 object
+#' @param rows The number of items on the vertical axis
+#' @param maxlab The character length of the longest label to be plotted
+#'               on the vertical axis
 #' @return The plot
-.plot_add_attributes <- function(pl, rows = NULL, lablen=NULL) {
+.plot_add_attributes <- function(pl, rows = NULL, maxlab=NULL) {
   class(pl) <- c("vlkr_plt", class(pl))
 
-  plot_data <- ggplot_build(pl)$data[[1]]
+  plot_data <- ggplot_build(pl)
   if (is.null(rows)) {
-    rows <- length(unique(plot_data$y))
-
-    # rows <- max(
-    #   dplyr::n_distinct(pl$data[[1]]),
-    #   dplyr::n_distinct(pl$data[[2]]) / 2
-    # )
+    labels <- plot_data$layout$panel_scales_x[[1]]$range$range
+    #labels <- unique(plot_data$data[[1]]$y)
+    rows <- length(labels)
   }
 
-  if (is.null(lablen)) {
-    lablen <- max(stringr::str_length(plot_data$data[[1]]))
+  if (is.null(maxlab)) {
+    labels <- plot_data$layout$panel_scales_x[[1]]$range$range
+    #labels <- pl$data[[1]]
+    maxlab <- max(stringr::str_length(labels), na.rm=T)
   }
 
   attr(pl, "vlkr_options") <- list(
     rows = rows,
-    lablen = lablen
+    maxlab = maxlab
   )
   pl
 }
@@ -817,13 +836,15 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
 #' - an optimal bar height of 40px for 910px wide plots. i.e. a ratio of 0.04
 #' - an offset of one bar above and one bar below
 #'
-#' @param pl A ggplot object
+#' @param pl A ggplot object with vlkr_options.
+#'           The vlk_options are added by .plot_add_attributes()
+#'           and provide information about the number of vertical items (rows)
+#'           and the maximum
 #' @return Character string containing a html image tag, including the base64 encoded image
 knit_plot <- function(pl) {
   # Get knitr and volkr chunk options
   chunk_options <- knitr::opts_chunk$get()
   plot_options <- attr(pl, "vlkr_options")
-
 
   fig_width <- chunk_options$fig.width * 72
   fig_height <- chunk_options$fig.height * 72
@@ -837,13 +858,15 @@ knit_plot <- function(pl) {
   if (!is.null(plot_options[["rows"]])) {
     fig_width <- 910
     px_perline <- 15
+
+    # Buffer above and below the diagram
     px_offset <- 7 * px_perline
 
     rows <- plot_options[["rows"]]
-    wrap <- dplyr::coalesce(plot_options[["labwrap"]], 40)
-    lines <- (dplyr::coalesce(plot_options[["lablen"]], 1) %/% wrap) + 2
+    lines_wrap <- dplyr::coalesce(plot_options[["labwrap"]], 40)
+    lines_perrow <- (dplyr::coalesce(plot_options[["maxlab"]], 1) %/% lines_wrap) + 2
 
-    fig_height <- (rows * lines * px_perline) + px_offset
+    fig_height <- (rows * lines_perrow * px_perline) + px_offset
   }
 
   pngfile <- tempfile(fileext = ".png", tmpdir = chunk_options$cache.path)

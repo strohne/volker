@@ -6,6 +6,8 @@
 #' @param .formatted Set to FALSE to prevent calculating percents from proportions
 #' @export
 tab_var_counts <- function(data, col, .labels = T, .formatted = T) {
+  # Check parameters
+  check_dataframe(data)
 
   result <- data %>%
     dplyr::count({{ col }}) %>%
@@ -63,7 +65,9 @@ tab_counts_var <- tab_var_counts
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
 tab_group_counts <- function(data, col, col_group, values = c("n", "p"), prop = "total", missings = F, .formatted = T, .labels = T) {
-  # Check columns
+
+  # Check parameters
+  check_dataframe(data)
   has_column(data, {{ col }})
   has_column(data, {{ col_group }})
 
@@ -246,6 +250,8 @@ tab_group_counts <- function(data, col, col_group, values = c("n", "p"), prop = 
 #' @param .quiet Set to true to suppress printing the output
 #' @export
 tab_item_counts <- function(data, cols, values = c("n", "p"), missings=F, .formatted = T, .labels = T) {
+  # Check parameters
+  check_dataframe(data)
 
   # Remove missings
   if (!missings) {
@@ -385,6 +391,9 @@ tab_item_counts <- function(data, cols, values = c("n", "p"), missings=F, .forma
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
 tab_var_metrics <- function(data, col, digits = 1, .labels = T) {
+  # Check parameters
+  check_dataframe(data)
+
   result <- data %>%
     skim_metrics({{ col }}) %>%
     dplyr::select(
@@ -447,6 +456,9 @@ tab_metrics_var <- tab_var_metrics
 #' @param .labels If TRUE (default) extracts item labels from the attributes, see get_labels()
 #' @export
 tab_group_metrics <- function(data, col, col_group, .negative = F, digits = 1, .labels = T) {
+  # Check parameters
+  check_dataframe(data)
+
   # TODO: warn if any negative values were recoded
   # TODO: only for the metric column (col parameter)
   if (!.negative) {
@@ -535,6 +547,9 @@ tab_group_metrics <- function(data, col, col_group, .negative = F, digits = 1, .
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
 tab_item_metrics <- function(data, cols, digits = 1, .negative = F, .labels = T) {
+  # Check parameters
+  check_dataframe(data)
+
   cols <- enquo(cols)
 
   result <- data %>%
@@ -619,6 +634,9 @@ tab_item_metrics <- function(data, cols, digits = 1, .negative = F, .labels = T)
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
 tab_multi_means <- function(data, cols, cols_groups, values = c("mean", "sd"), digits = 1, .negative = F, .labels = T) {
+  # Check parameters
+  check_dataframe(data)
+
   # Get positions of group cols
   cols_groups <- tidyselect::eval_select(expr = enquo(cols_groups), data = data)
   cols <- enquo(cols)
@@ -773,6 +791,9 @@ tab_multi_means <- function(data, cols, cols_groups, values = c("mean", "sd"), d
 #' @param digits The digits to print
 #' @export
 tab_multi_corr <- function(data, cols1, cols2, method = "p", significant = F, digits = 2) {
+  # Check parameters
+  check_dataframe(data)
+
   # # Get positions of cols
   # cols1 <- tidyselect::eval_select(
   #   expr = enquo(cols1),

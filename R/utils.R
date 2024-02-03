@@ -1,20 +1,3 @@
-#' Check whether a column exist and stop if not
-#'
-#' @param data A data frame
-#' @param col A column name
-#' @param stopit If true, the execution stops when a column is missing
-#' @return boolean
-has_column <- function(data, col, stopit = T) {
-  colname <- as.character(rlang::get_expr(rlang::enquo(col)))
-
-  if (!(colname %in% colnames(data))) {
-    stop("The column ", colname, " does not exist, check your parameters.", call. = F)
-  }
-
-  colname %in% colnames(data)
-}
-
-
 #' Combine two identically shaped data frames
 #' by adding values of each column from the second data frame
 #' into the corresponding column in the first dataframe using parentheses
