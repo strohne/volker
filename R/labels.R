@@ -275,11 +275,6 @@ set_col_labels <- function(data, cols, labels) {
   data
 }
 
-#' Alias for set_col_labels
-#'
-#' @rdname set_col_labels
-#' @export
-set_col_label <- set_col_labels
 
 #' Remove all comments from the selected columns
 #'
@@ -406,3 +401,9 @@ trim_label <- function(x) {
   x <- stringr::str_remove(x, "^[: _-]*")
   x
 }
+
+#' Alias for set_col_labels
+#'
+#' @rdname set_col_labels
+#' @export
+set_col_label <- set_col_labels

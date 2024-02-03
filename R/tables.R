@@ -47,12 +47,6 @@ tab_var_counts <- function(data, col, .labels = T, .formatted = T) {
   result
 }
 
-#' Alias for tab_var_counts
-#'
-#' @rdname tab_var_counts
-#' @export
-tab_counts_var <- tab_var_counts
-
 #' Output frequencies cross tabulated with a grouping column
 #'
 #' @param data A tibble
@@ -439,11 +433,6 @@ tab_var_metrics <- function(data, col, digits = 1, .labels = T) {
   class(result) <- c("vlkr_tbl", class(result))
   result
 }
-
-#' Alias for tab_var_metrics
-#' @rdname tab_var_metrics
-#' @export
-tab_metrics_var <- tab_var_metrics
 
 
 #' Output a five point summary for groups
@@ -942,3 +931,15 @@ print.vlkr_tbl <- function(obj) {
     print(obj)
   }
 }
+
+#' Alias for tab_var_counts
+#'
+#' @rdname tab_var_counts
+#' @export
+tab_counts_var <- tab_var_counts
+
+
+#' Alias for tab_var_metrics
+#' @rdname tab_var_metrics
+#' @export
+tab_metrics_var <- tab_var_metrics

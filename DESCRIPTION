@@ -1,7 +1,7 @@
 Package: volker
 Type: Package
 Title: Report summaries and graphics for survey data.
-Version: 0.1
+Version: 0.0.0.9000
 Date: 2024-02-03
 Authors@R:
   c(person("Jakob", "Jünger", email = "jakob.juenger@uni-muenster.de", role = c("aut", "cre")),

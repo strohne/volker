@@ -207,10 +207,17 @@ report_add <- function(obj, chunks, tab = NULL) {
   chunks
 }
 
-#' Output styles for the pill navigation in markdown reports
+#' Pill navigation for switching between plots and tables in markdown reports
+#'
+#' Call report_styles() in one of your first code chunks to let the magic happen.
+#' Make sure the code chunk's include option is set to TRUE.
+#' Outputs a style tag with css styles that modify the standard bootstrap
+#' theme.
+#'
+#' See the html_report() format for an alternative to include the styles.
 #'
 #' @export
-add_styles <- function() {
+report_styles <- function() {
   filename <-  paste0(system.file("extdata", package = "volker"),"/styles.css")
   styles <- readLines(filename)
   styles <- paste0(styles, collapse=" ")
@@ -219,6 +226,25 @@ add_styles <- function() {
   styles %>%
     knitr::asis_output() %>%
     knitr::knit_print()
+}
+
+
+#' Volker style HTML document format
+#'
+#' Based on the standard theme, tweaks the pill navigation
+#' to switch between tables and plots.
+#' To use the format, in the configuration of your Markdown, simply set
+#' `output: volker::html_report`.
+#'
+#' @param ... Additional arguments passed to html_document
+#' @return R Markdown output format
+#' @export
+html_report <- function(...) {
+  cssfile <-  paste0(system.file("extdata", package = "volker"),"/styles.css")
+  rmarkdown::html_document(
+    css = cssfile,
+    ...
+  )
 }
 
 #' Printing method for volker reports.
