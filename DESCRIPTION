@@ -17,9 +17,11 @@ Imports:
   lifecycle,
   cli,
   glue,
+  tibble,
   dplyr,
   tidyr,
   tidyselect,
+  stringr,
   magrittr,
   forcats,
   skimr,
@@ -31,6 +33,13 @@ Imports:
 Depends:
   R (>= 4.3)
 Suggests:
+  tidytext,
+  quanteda,
+  ldatuning,
+  topicmodels,
+  modeltools,
+  Desctools,
+  slam,
   rmarkdown, 
   testthat (>= 3.0.0)
 VignetteBuilder: knitr

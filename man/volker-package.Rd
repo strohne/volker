@@ -4,9 +4,9 @@
 \name{volker-package}
 \alias{volker}
 \alias{volker-package}
-\title{volker: A Package for Survey Data Summaries and Graphics}
+\title{volker: Report ready summaries and graphics for survey data.}
 \description{
-This package contains functions for creating summaries and graphics for survey data.
+The package provides functions to create tables and plots to be included in Markdown reports. Boiled down to the basics, with labeling features and automatic output selection.
 }
 \author{
 \strong{Maintainer}: Jakob Jünger \email{jakob.juenger@uni-muenster.de}

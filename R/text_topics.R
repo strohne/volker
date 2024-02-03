@@ -33,6 +33,10 @@ lda_find_k <- function(dfm, sample.size=2000, plot=T) {
 
 #' Perform topic modeling on a text column and add the relevance scores of each topic to each row
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' @keywords internal
+#'
 #' @param data A tibble
 #' @param col_text The column containing text
 #' @param prefix A prefix added to the new topic columns
@@ -45,6 +49,8 @@ lda_find_k <- function(dfm, sample.size=2000, plot=T) {
 #' @return A data frame with a new column for each topic
 #' @export
 lda_add_topic <- function(data, col_text, prefix="tpc_", k=NULL, lambda=0.6, seed=1852, plot=F) {
+
+  lifecycle::signal_stage("experimental", "lad_add_topic()")
 
   # Tokenize and convert to dfm
   ds_texts <- data %>%

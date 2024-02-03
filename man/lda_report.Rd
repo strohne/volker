@@ -25,5 +25,6 @@ Fix the random number generator seed to a number for reproducible results.}
 A data frame with topic columns
 }
 \description{
-Summarize a text column by topic modeling
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
+\keyword{internal}
