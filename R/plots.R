@@ -674,13 +674,6 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
 
     pl <- pl +
       scale_fill_manual(values = colors, guide = guide_legend(reverse = TRUE))
-
-      # viridis::scale_fill_viridis(
-      #   discrete = TRUE,
-      #   option = "rocket",
-      #   direction = -1,
-      #   guide = guide_legend(reverse = TRUE)
-      # )
   } else {
     pl <- pl +
       ggplot2::scale_fill_discrete(
@@ -791,8 +784,8 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
 .plot_add_attributes <- function(pl, rows = NULL, lablen=NULL) {
   class(pl) <- c("vlkr_plt", class(pl))
 
+  plot_data <- ggplot_build(pl)$data[[1]]
   if (is.null(rows)) {
-    plot_data <- ggplot_build(pl)$data[[1]]
     rows <- length(unique(plot_data$y))
 
     # rows <- max(

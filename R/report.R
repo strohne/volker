@@ -16,7 +16,7 @@
 #'                By default (NULL), the ordering is automatically detected.
 #'                An appropriate color scale should be choosen depending on the ordering.
 #'                For unordered values, the default scale is used.
-#'                For ordered values, the viridis scale is used.
+#'                For ordered values, shades of the VLKR_FILLGRADIENT option are used.
 #' @param index When multiple metric items are matched by a scope, an index will be calculated using the psych-package.
 #'              Set to FALSE to suppress index generation.
 #' @param title A character providing the heading or TRUE (default) to output a heading.

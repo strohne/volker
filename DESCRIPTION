@@ -1,39 +1,36 @@
 Package: volker
 Type: Package
-Title: A Package for Survey Data Summaries and Graphics
-Version: 1.0
-Date: 2023-10-23
+Title: Report ready summaries and graphics for survey data.
+Version: 0.1
+Date: 2024-02-03
 Authors@R:
   c(person("Jakob", "Jünger", email = "jakob.juenger@uni-muenster.de", role = c("aut", "cre")),
     person("Henrieke", "Kotthoff", email = "henrieke.kotthoff@uni-muenster.de", role = "ctb"))
-Description: This package contains functions for creating summaries and graphics for survey data.
+Description: The package provides functions to create tables and plots to be included in Markdown reports. Boiled down to the basics, with labeling features and automatic output selection.
 License: MIT
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 LazyData: true
 Imports:
-  forcats,
-  dplyr,
   rlang,
   lifecycle,
   cli,
   glue,
-  withr,
-  magrittr,
+  dplyr,
   tidyr,
   tidyselect,
+  magrittr,
+  forcats,
   skimr,
+  withr,
   knitr,
   kableExtra,
   janitor,
-  scales,
-  viridis
+  scales
 Depends:
   R (>= 4.3)
 Suggests:
-  knitr,
-  kableExtra,
   rmarkdown, 
   testthat (>= 3.0.0)
 VignetteBuilder: knitr

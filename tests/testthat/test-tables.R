@@ -5,7 +5,7 @@ library(volker)
 
 # Load and recode data
 data <- volker::chatgpt
-data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(., -9)))
+data <- volker::prepare(data)
 
 # Frequency table
 test_that("Frequency table", {
@@ -19,7 +19,7 @@ test_that("Distribution table for age", {
 
 # Frequency table for multiple categorical variables
 test_that("Frequency table for multiple categorical variables", {
-  expect_snapshot(volker::tab_item_counts(data, starts_with("cg_adoption_")))
+  expect_snapshot(volker::tab_item_counts(data, starts_with("cg_adoption_"), missings = T))
 })
 
 # Distribution table for multiple metric items
