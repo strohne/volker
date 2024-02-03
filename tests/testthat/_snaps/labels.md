@@ -8,7 +8,7 @@
          <chr>      <chr>      <chr>     <chr>      <chr>      <chr>       <chr>      
        1 case       <NA>       case      case       <NA>       <NA>        ""         
        2 sd         <NA>       sd_alter  sd_alter   <NA>       <NA>        ""         
-       3 cg         <NA>       cg_activ~ ChatGPT-A~ <NA>       <NA>        ""         
+       3 cg         <NA>       cg_activ~ cg_activi~ <NA>       <NA>        ""         
        4 cg         <NA>       cg_nutze~ ChatGPT-N~ 1          nie         ""         
        5 cg         <NA>       cg_nutze~ ChatGPT-N~ 2          seltener    ""         
        6 cg         <NA>       cg_nutze~ ChatGPT-N~ 3          mehrmals p~ ""         

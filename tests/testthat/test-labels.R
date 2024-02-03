@@ -1,11 +1,12 @@
-# Tests for table appearance
+# Tests for labeling functions
+
 library(tidyverse)
 library(testthat)
 library(volker)
 
 # Load and recode data
 data <- volker::chatgpt
-data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(., -9)))
+data <- prepare(data)
 
 
 # Get labels

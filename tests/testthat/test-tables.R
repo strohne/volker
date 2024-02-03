@@ -1,4 +1,5 @@
-# Tests for table appearance
+# Test table appearance
+
 library(tidyverse)
 library(testthat)
 library(volker)
