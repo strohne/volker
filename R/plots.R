@@ -807,14 +807,18 @@ plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = N
   plot_data <- ggplot_build(pl)
   if (is.null(rows)) {
     labels <- plot_data$layout$panel_scales_x[[1]]$range$range
+    legend <- unique(plot_data$data[[1]]$group)
+
     #labels <- unique(plot_data$data[[1]]$y)
-    rows <- length(labels)
+    rows <- max(length(labels), length(legend) / 3)
   }
 
   if (is.null(maxlab)) {
     labels <- plot_data$layout$panel_scales_x[[1]]$range$range
+    #labels <- layer_scales(pl)$x$range$range
     #labels <- pl$data[[1]]
     maxlab <- max(stringr::str_length(labels), na.rm=T)
+
   }
 
   attr(pl, "vlkr_options") <- list(

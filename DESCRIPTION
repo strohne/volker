@@ -21,6 +21,7 @@ Imports:
   dplyr,
   tidyr,
   tidyselect,
+  ggplot2 (>= 2.2.1),
   stringr,
   magrittr,
   forcats,
