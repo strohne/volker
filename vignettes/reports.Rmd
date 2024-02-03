@@ -1,6 +1,7 @@
 ---
-title: "Reports"
-output: rmarkdown::html_vignette
+title: "How to create reports"
+output: 
+  volker::html_report
 vignette: >
   %\VignetteIndexEntry{Reports}
   %\VignetteEncoding{UTF-8}
@@ -10,8 +11,11 @@ editor_options:
 ---
 
 ```{r include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, include=T)
 
+# Markdown options
+knitr::opts_chunk$set(echo = TRUE, include=T)
+
+# Load packages
 library(tidyverse)
 library(volker)
 theme_set(theme_bw())
@@ -19,15 +23,13 @@ theme_set(theme_bw())
 # Recode -9 to NA
 data <- prepare(volker::chatgpt)
 
-# Add label to sd_alter
-data <- set_item_labels(data, tibble("sd_alter", "Alter"))
+# Add a label to sd_alter
+data <- data %>% 
+  set_item_labels(tibble(
+    "sd_alter", 
+    "Alter"
+  ))
 ```
-
-```{r}
-# Styling
-add_styles()
-```
-
 
 # Multiple variables
 ```{r}
@@ -37,6 +39,8 @@ report(data, c("sd_geschlecht", "cg_adoption_"))
 
 # Group comparisons
 ```{r}
-report(data, "cg_adoption_", "in_adoption")
+data %>% 
+  filter(sd_geschlecht != "divers") %>% 
+  report("cg_adoption_", "sd_geschlecht")
 ```
 
