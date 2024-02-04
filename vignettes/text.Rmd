@@ -1,4 +1,3 @@
-
 ---
 title: "Topic modeling"
 output: rmarkdown::html_vignette
@@ -19,12 +18,16 @@ theme_set(theme_bw())
 
 data <- volker::chatgpt
 
-
 ```
+
+
+The topic modeling pipeline is still experimental.
+You can catch a view on the planned outputs
+but don't expect valid results.
 
 
 ```{r results='asis'}
 
-tmp <- lda_report(data, cg_activities, k= 3, lambda=0)
+lda_report(data, cg_activities, k= 3, lambda=0)
 
 ```

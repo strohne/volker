@@ -61,7 +61,7 @@ plot_metrics_one(data, sd_alter)
 ```{r results='asis'}
 
 # Note that negative values are omitted,
-# you can change the behavior with the .negative parameter
+# you can change the behavior with the negative-parameter
 plot_metrics_items(data, starts_with("cg_adoption_"))
 
 ```

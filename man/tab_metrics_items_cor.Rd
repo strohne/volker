@@ -6,26 +6,26 @@
 \usage{
 tab_metrics_items_cor(
   data,
-  cols1,
-  cols2,
+  cols,
+  cols_cor,
   method = "p",
   significant = F,
-  digits = 2
+  labels = T
 )
 }
 \arguments{
 \item{data}{A tibble}
 
-\item{cols1}{The source items}
+\item{cols}{The source columns}
 
-\item{cols2}{The target items or NULL to calculate correlations within the source items}
+\item{cols_cor}{The target columns or NULL to calculate correlations within the source columns}
 
 \item{method}{The output metrics, p = Pearson's R, s = Spearman's rho}
 
 \item{significant}{Only show significant values}
 
-\item{digits}{The digits to print}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_labels}.}
 }
 \description{
-Output a correlation table
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }

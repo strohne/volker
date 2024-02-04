@@ -104,25 +104,21 @@ plot_metrics <- function(data, cols, col_group=NULL, ...) {
 #' @param data A tibble
 #' @param col The column holding values to count
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
-#' @param title Whether to show a plot title
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
 #' @export
-plot_counts_one <- function(data, col, numbers = NULL, title = T, .labels = T) {
+plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T) {
+
+  # Check columns
   check_is_dataframe(data)
+  check_has_column(data, {{ col }})
 
-  result <- data %>%
-    tab_counts_one({{ col }}, .labels = .labels, .formatted = F)
+  tab <- data %>%
+    tab_counts_one({{ col }}, percent = F, labels = labels)
 
-  # TODO: implement meta data property in tab_var_counts()
-  if (title == T) {
-    title <- colnames(result)[1]
-  } else if (title == F) {
-    title <- NULL
-  }
-
-  base_n <- sum(result$n[!(result[[1]] %in% c("Total", "Missing"))])
-
-  result <- result %>%
+  # Formatting
+  result <- tab %>%
     dplyr::mutate(p = p * 100) %>%
     dplyr::rename(Item = 1) %>%
     dplyr::filter(!(Item %in% c("Total", "Missing"))) %>%
@@ -139,6 +135,7 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, .labels = T) {
   pl <- result %>%
     ggplot(aes(Item, y = p / 100)) +
     geom_col(fill = VLKR_FILLCOLOR) +
+    # TODO: make limits configurable
     # scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
     scale_y_continuous(labels = scales::percent) +
     ylab("Share in percent") +
@@ -158,9 +155,20 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, .labels = T) {
       geom_text(aes(label = .values), position = position_stack(vjust = 0.5), size = 3, color = "white")
   }
 
-  if (.labels) {
-    pl <- pl + labs(title = title, caption = paste0("n=", base_n)) # TODO: report missing cases
+  # Get title
+  if (title == T) {
+    title <- colnames(tab)[1]
+  } else if (title == F) {
+    title <- NULL
   }
+  if (!is.null(title)) {
+    pl <- pl + ggtitle(label = title)
+  }
+
+  # Get base
+  # TODO: report missing cases
+  base_n <- sum(tab$n[!(tab[[1]] %in% c("Total", "Missing"))])
+  pl <- pl + labs(caption = paste0("n=", base_n))
 
   # Pass row number and label length to the knit_plot() function
   .to_vlkr_plot(pl)
@@ -173,19 +181,23 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, .labels = T) {
 #' @param data A tibble
 #' @param col The column holding factor values
 #' @param col_group The column holding groups to compare
-#' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
-#' @param prop The basis of percent calculation: total (the default) or rows.
-#'             To display column proportions, swap the first column with the grouping column.
 #' @param ordered Values can be nominal (0) or ordered ascending (1) descending (-1).
 #'                By default (NULL), the ordering is automatically detected.
 #'                An appropriate color scale should be choosen depending on the ordering.
 #'                For unordered values, the default scale is used.
 #'                For ordered values, shades of the VLKR_FILLGRADIENT option are used.
+#' @param category The value FALSE will force to plot all categories.
+#'                  A character value will focus a selected category.
+#'                  When NULL, in case of boolean values, only the TRUE category is plotted.
 #' @param missings Include missing values (default FALSE)
-#' @param .labels If TRUE (default) extracts item labels from the attributes, see get_labels()
-#' @param .category Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
+#' @param prop The basis of percent calculation: "total" (the default) or "rows".
+#'             To display column proportions, swap the first column with the grouping column.
+#' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
 #' @export
-plot_counts_one_grouped <- function(data, col, col_group, numbers = NULL, prop = "total", ordered = NULL, missings = F, title = T, .labels = T, .category = NULL) {
+plot_counts_one_grouped <- function(data, col, col_group, category = NULL, ordered = NULL, missings = F, prop = "total", numbers = NULL, title = T, labels = T) {
 
   # Check columns
   check_is_dataframe(data)
@@ -196,23 +208,18 @@ plot_counts_one_grouped <- function(data, col, col_group, numbers = NULL, prop =
     stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
   }
 
-  result <- data %>%
-    tab_group_counts({{ col }}, {{ col_group }}, values = "n", missings = missings, .labels = .labels, .formatted = F)
-
-  if (title == T) {
-    title <- colnames(result)[1]
-  }
-
-  base_n <- sum(result$Total[!(result[[1]] %in% c("Total", "Missing"))])
-  categories <- dplyr::select(result, -1, -matches("^Total|Missing")) %>% colnames()
+  # Calculate data
+  tab <- data %>%
+    tab_group_counts({{ col }}, {{ col_group }}, values = "n", missings = missings, percent = F, labels = labels)
 
   # Detect whether the categories are binary
-  if ((length(categories) == 2) && (is.null(.category)) && ("TRUE" %in% categories)) {
-    .category <- "TRUE"
+  categories <- dplyr::select(tab, -1, -matches("^Total|Missing")) %>% colnames()
+  if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
+    category <- "TRUE"
   }
   scale <- coalesce(ordered, get_scale(data, {{ col }}))
 
-  result <- result %>%
+  result <- tab %>%
     rename(Item = 1) %>%
     dplyr::filter(!(Item %in% c("Total", "Missing"))) %>%
     dplyr::select(-matches("^Total")) %>%
@@ -233,11 +240,13 @@ plot_counts_one_grouped <- function(data, col, col_group, numbers = NULL, prop =
       dplyr::mutate(p = (n / sum(n)) * 100)
   }
 
+  # Select numbers to print on the bars
+  # ...omit the last category in scales, omit small bars
   lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
   result <- result %>%
     dplyr::mutate(
       .values = dplyr::case_when(
-        (is.null(.category)) & (scale != 0) & (value == lastcategory) ~ "",
+        (is.null(category)) & (scale != 0) & (value == lastcategory) ~ "",
         p < VLKR_LOWPERCENT ~ "",
         all(numbers == "n") ~ as.character(n),
         all(numbers == "p") ~ paste0(round(p, 0), "%"),
@@ -245,13 +254,24 @@ plot_counts_one_grouped <- function(data, col, col_group, numbers = NULL, prop =
       )
     )
 
+  # Get title
+  if (title == T) {
+    title <- colnames(tab)[1]
+  } else if (title == F) {
+    title <- NULL
+  }
+
+  # Get base
+  # TODO: report missing cases
+  base_n <- sum(tab$Total[!(tab[[1]] %in% c("Total", "Missing"))])
+
   .plot_bars(
     result,
-    category = .category,
+    category = category,
     scale = scale,
     numbers = numbers,
-    title = ifelse(.labels, title, NULL),
-    caption = ifelse(.labels, paste0("n=", base_n), NULL) # TODO: report missing cases
+    base = paste0("n=", base_n),
+    title = title
   )
 }
 
@@ -261,38 +281,36 @@ plot_counts_one_grouped <- function(data, col, col_group, numbers = NULL, prop =
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
+#' @param category The value FALSE will force to plot all categories.
+#'                  A character value will focus a selected category.
+#'                  When NULL, in case of boolean values, only the TRUE category is plotted.
 #' @param ordered Values can be nominal (0) or ordered ascending (1) descending (-1).
 #'                By default (NULL), the ordering is automatically detected.
 #'                An appropriate color scale should be choosen depending on the ordering.
 #'                For unordered values, the default scale is used.
 #'                For ordered values, shaded of the VLKR_FILLGRADIENT option are used.
 #' @param missings Include missing values (default FALSE)
-#' @param .category Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
 #' @export
-plot_counts_items <- function(data, cols, numbers = NULL, ordered = NULL, missings=F, title = T, .labels = T, .category = NULL) {
+plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missings=F, numbers = NULL, title = T, labels = T) {
   # Check parameters
   check_is_dataframe(data)
 
-  result <- data %>%
-    tab_counts_items(cols, values = "n", .formatted = F, missings=missings)
-
-  if (title == T) {
-    title <- colnames(result)[1]
-  }
-
-  categories <- dplyr::select(result, -1, -matches("^Total|Missing")) %>% colnames()
-  base_n <- max(dplyr::select(result, "Total"))
+  tab <- data %>%
+    tab_counts_items(cols, values = "n", missings=missings, percent = F, labels=labels)
 
   # Detect whether the categories are binary
-  if ((length(categories) == 2) && (is.null(.category)) && ("TRUE" %in% categories)) {
-    .category <- "TRUE"
+  categories <- dplyr::select(tab, -1, -matches("^Total|Missing")) %>% colnames()
+  if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
+    category <- "TRUE"
   }
   scale <- dplyr::coalesce(ordered, get_scale(data, cols))
   lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
 
-  result <- result %>%
+  result <- tab %>%
     dplyr::rename(Item = 1) %>%
     dplyr::select(-matches("^Total$")) %>%
     tidyr::pivot_longer(
@@ -306,7 +324,7 @@ plot_counts_items <- function(data, cols, numbers = NULL, ordered = NULL, missin
     dplyr::ungroup() %>%
     dplyr::mutate(
       .values = dplyr::case_when(
-        (is.null(.category)) & (scale != 0) & (value == lastcategory) ~ "",
+        (is.null(category)) & (scale != 0) & (value == lastcategory) ~ "",
         p < VLKR_LOWPERCENT ~ "",
         all(numbers == "n") ~ as.character(n),
         all(numbers == "p") ~ paste0(round(p, 0), "%"),
@@ -314,26 +332,66 @@ plot_counts_items <- function(data, cols, numbers = NULL, ordered = NULL, missin
       )
     )
 
+  # Get title
+  if (title == T) {
+    title <- colnames(tab)[1]
+  } else if (title == F) {
+    title <- NULL
+  }
+
+  # Get base
+  # TODO: report missing cases
+  base_n <- max(dplyr::select(tab, "Total"))
+
   .plot_bars(
     result,
-    category = .category,
+    category = category,
     scale = scale,
     numbers = numbers,
-    title = ifelse(.labels, title, NULL),
-    caption = ifelse(.labels, paste0("n=", base_n, "; multiple responses possible"), NULL) # TODO: report missing cases
+    base = paste0("n=", base_n, "; multiple responses possible"),
+    title = title
   )
+}
+
+#' Plot frequencies of multiple items compared by groups
+#'
+#' TODO: implement -> focus one category and show n / p
+#'
+#' @param data A tibble
+#' @param cols The item columns that hold the values to summarize
+#' @param col_group The column holding groups to compare
+#' @keywords internal
+#' @export
+plot_counts_items_grouped <- function(data, cols, col_group) {
+  # Check parameters
+  check_is_dataframe(data)
+  stop("Not implemented yet")
 }
 
 #' Output a histogram for a single metric variable
 #'
 #' @param data A tibble
 #' @param col The columns holding metric values
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @param limits The scale limits. Set NULL to extract limits from the label. NOT IMPLEMENTED YET.
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
 #' @export
-plot_metrics_one <- function(data, col, title = T, .labels = T) {
+plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labels = T) {
+
   # Check parameters
   check_is_dataframe(data)
+  check_has_column(data, {{ col }})
 
+  # Remove negative values
+  # TODO: warn if any negative values were recoded
+  if (!negative) {
+    data <- dplyr::mutate(data, across({{ col }}, ~ if_else(. < 0, NA, .)))
+  }
+
+  # Drop missings
+  # TODO: Report missings
   data <- drop_na(data, {{ col }})
 
   # TODO: make configurable: density, boxplot or histogram
@@ -343,22 +401,24 @@ plot_metrics_one <- function(data, col, title = T, .labels = T) {
     geom_density(fill = VLKR_FILLCOLOR) +
     geom_vline(aes(xintercept=mean({{ col }})), color="black")
 
-
-  # TODO: report missings
-
-  if (.labels) {
-    if (title == T) {
-      title <- get_col_label(data, {{ col }})
-    } else if (title == F) {
-      title <- NULL
-    }
-
-    base_n <- data %>% nrow()
+  # Get title
+  if (title == T) {
+    title <- get_col_label(data, {{ col }})
+  } else if (title == F) {
+    title <- NULL
+  }
+  if (!is.null(title)) {
     pl <- pl +
-      labs(title = title, caption = paste0("n=", base_n)) +
+      ggtitle(label = title) +
       xlab(title)
   }
 
+  # Get base
+  # TODO: Report missings
+  base_n <- data %>% nrow()
+  pl <- pl + labs(caption = paste0("n=", base_n))
+
+  # Plot styling
   pl <- pl +
     theme(
       axis.title.x = element_blank(),
@@ -371,6 +431,7 @@ plot_metrics_one <- function(data, col, title = T, .labels = T) {
     )
 
   # Pass row number and label length to the knit_plot() function
+  # TODO: Don't set rows manually
   .to_vlkr_plot(pl, rows=4)
 }
 
@@ -379,27 +440,29 @@ plot_metrics_one <- function(data, col, title = T, .labels = T) {
 #' @param data A tibble containing item measures
 #' @param col The column holding metric values
 #' @param col_group The column holding groups to compare
-#' @param limits The scale limits. Set NULL to extract limits from the labels.
-#' @param numbers The values to print on the bars: "m" or NULL
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
-#' @param .negative If False (default) negative values are recoded as missing values
+#' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
 #' @export
-plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
+plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = F, title = T, labels = T) {
+
   # Check parameters
   check_is_dataframe(data)
+  check_has_column(data, {{ col }})
+  check_has_column(data, {{ col_group }})
 
+  # Remove negative values
   # TODO: warn if any negative values were recoded
-  # TODO: only for the metric column (col parameter)
-  if (!.negative) {
-    data <- dplyr::mutate(data, across(where(is.numeric), ~ if_else(. < 0, NA, .)))
+  if (!negative) {
+    data <- dplyr::mutate(data, across({{ col }}, ~ if_else(. < 0, NA, .)))
   }
 
   pl <- data %>%
-    #dplyr::rename(Item := {{ col }}) %>%
     ggplot(aes(y={{ col_group }}, {{ col }})) +
     geom_boxplot(fill="transparent", color="darkgray") +
     stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
-    #geom_point(color = VLKR_POINTCOLOR, size=4, shape=18)
 
 
   # Set the scale
@@ -409,7 +472,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, number
 
 
   scale <- c()
-  if (.labels) {
+  if (labels) {
     scale <- attr(pull(data, {{ col }}), "scale")
     if (is.null(scale)) {
       scale <- data %>%
@@ -456,25 +519,21 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, number
 #       )
 #   }
 
-  if (!is.null(.labels)) {
-
-    # Add title
-    # TODO: minus missing values, output range
-    if (title == T) {
-      title <- get_col_label(data, {{ col }})
-    }
-    else if (title == F) {
-      title <- NULL
-    }
-    if (!is.null(title)) {
-      pl <- pl + ggtitle(label = title)
-    }
-
-    # Add base
-    base_n <- nrow(data)
-    pl <- pl + labs(caption = paste0("n=", base_n))
+  # Add title
+  if (title == T) {
+    title <- get_col_label(data, {{ col }})
+  }
+  else if (title == F) {
+    title <- NULL
+  }
+  if (!is.null(title)) {
+    pl <- pl + ggtitle(label = title)
   }
 
+  # Add base
+  # TODO: Report missing values, output range
+  base_n <- nrow(data)
+  pl <- pl + labs(caption = paste0("n=", base_n))
 
   # Maximum label length
   maxlab  <- data %>%
@@ -491,35 +550,35 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, number
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param limits The scale limits. Set NULL to extract limits from the labels.
-#' @param numbers The values to print on the bars: "m" or NULL
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
-#' @param .negative If False (default) negative values are recoded as missing values
+#' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
 #' @export
-plot_metrics_items <- function(data, cols, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
+plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = T, labels = T) {
   # Check parameters
   check_is_dataframe(data)
+
+  # Remove negative values
+  # TODO: warn if any negative values were recoded
+  if (!negative) {
+    data <- dplyr::mutate(data, across({{ cols }}, ~ if_else(. < 0, NA, .)))
+  }
 
   # Pivot items
   result <- data %>%
     tidyr::drop_na({{ cols }}) %>%
-    remove_labels(tidyselect::all_of(cols)) %>%
+    remove_labels({{ cols }}) %>%
     tidyr::pivot_longer(
-      tidyselect::all_of(cols),
+      {{ cols }},
       names_to = "item",
       values_to = "value"
     )
 
-  # Remove negative values
-  # TODO: warn if any negative values were recoded
-  # TODO: only for the metric column (col parameter)
-  if (!.negative) {
-    result <- dplyr::mutate(result, value = if_else(value < 0, NA, value))
-  }
-
   # Replace item labels
-  if (.labels) {
-    result <- replace_item_values(result, data, cols)
+  if (labels) {
+    result <- replace_item_values(result, data, {{ cols }})
   }
 
   # Remove common item prefix and title
@@ -546,9 +605,9 @@ plot_metrics_items <- function(data, cols, limits = NULL, numbers = NULL, title 
 
   # Add scale labels
   scale <- c()
-  if (.labels) {
+  if (labels) {
     scale <- data %>%
-      get_labels(!!cols) %>%
+      get_labels({{ cols }}) %>%
       distinct(value_name, value_label) %>%
       prepare_scale()
   }
@@ -577,24 +636,21 @@ plot_metrics_items <- function(data, cols, limits = NULL, numbers = NULL, title 
     )
 
 
-  if (!is.null(.labels)) {
-
-    # Add title
-    # TODO: minus missing values, output range
-    if (title == T) {
-      title <- get_col_label(data, {{ col }})
-    }
-    else if (title == F) {
-      title <- NULL
-    }
-    if (!is.null(title)) {
-      pl <- pl + ggtitle(label = title)
-    }
-
-    # Add base
-    base_n <- nrow(data)
-    pl <- pl + labs(caption = paste0("n=", base_n))
+  # Add title
+  if (title == T) {
+    title <- get_col_label(data, {{ col }})
   }
+  else if (title == F) {
+    title <- NULL
+  }
+  if (!is.null(title)) {
+    pl <- pl + ggtitle(label = title)
+  }
+
+  # Add base
+  # TODO: report missings
+  base_n <- nrow(data)
+  pl <- pl + labs(caption = paste0("n=", base_n))
 
   # Maximum label length
   maxlab  <- result %>%
@@ -611,37 +667,37 @@ plot_metrics_items <- function(data, cols, limits = NULL, numbers = NULL, title 
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param cols_group The columns holding groups to compare
-#' @param limits The scale limits. Set NULL to extract limits from the labels.
-#' @param numbers The values to print on the bars: "m" or NULL
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
-#' @param .negative If False (default) negative values are recoded as missing values
+#' @param cols_group The column holding groups to compare
+#' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
 #' @return A plot
 #' @export
-plot_metrics_items_grouped <- function(data, cols, cols_groups, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
+plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, negative = F, title = T, labels = T) {
   # Check parameters
   check_is_dataframe(data)
+  check_has_column(data, {{ col_group }})
 
   # Get positions of group cols
-  cols_groups <- tidyselect::eval_select(expr = enquo(cols_groups), data = data)
-  cols <- enquo(cols)
+  col_group <- tidyselect::eval_select(expr = enquo(col_group), data = data)
 
   # TODO: warn if any negative values were recoded
-  # TODO: only selected columns
-  if (!.negative) {
-    data <- dplyr::mutate(data, across(where(is.numeric), ~ if_else(. < 0, NA, .)))
+  if (!negative) {
+    data <- dplyr::mutate(data, across({{ cols }}, ~ if_else(. < 0, NA, .)))
   }
 
   # Grouped means
   result <- map(
-    cols_groups,
+    col_group,
     function(col) {
       col <- names(data)[col]
 
       data %>%
         dplyr::filter(!is.na(!!sym(col))) %>%
         dplyr::group_by(!!sym(col)) %>%
-        dplyr::select(!!sym(col), !!cols) %>%
+        dplyr::select(!!sym(col), {{ cols }}) %>%
         skim_metrics() %>%
         dplyr::ungroup() %>%
         dplyr::select(item = skim_variable, group = !!sym(col), numeric.mean) %>%
@@ -653,12 +709,12 @@ plot_metrics_items_grouped <- function(data, cols, cols_groups, limits = NULL, n
     )
 
   if (is.null(limits)) {
-    limits <- get_limits(data, !!cols)
+    limits <- get_limits(data, {{ cols }})
   }
 
   # Replace item labels
-  if (.labels) {
-    result <- replace_item_values(result, data, cols)
+  if (labels) {
+    result <- replace_item_values(result, data, {{ cols }})
   }
 
   # Remove common item prefix
@@ -666,12 +722,6 @@ plot_metrics_items_grouped <- function(data, cols, cols_groups, limits = NULL, n
   if (prefix != "") {
     result <- dplyr::mutate(result, item = stringr::str_remove(item, prefix))
     result <- dplyr::mutate(result, item = ifelse(item == "", prefix, item))
-  }
-
-  if (title == T) {
-    title <- trim_label(prefix)
-  } else if (title == F) {
-    title <- NULL
   }
 
   # print(result)
@@ -686,7 +736,7 @@ plot_metrics_items_grouped <- function(data, cols, cols_groups, limits = NULL, n
   # Set the scale
   # TODO: get from attributes
   scale <- data %>%
-    get_labels(!!cols) %>%
+    get_labels({{ cols }}) %>%
     distinct(value_name, value_label) %>%
     prepare_scale()
 
@@ -715,14 +765,22 @@ plot_metrics_items_grouped <- function(data, cols, cols_groups, limits = NULL, n
       plot.caption.position = "plot"
     )
 
-  if (!is.null(.labels)) {
-    # TODO: remove missing values, get group sizes
-    base_n <- nrow(data)
+  # Add title
+  if (title == T) {
+    title <- trim_label(prefix)
+  } else if (title == F) {
+    title <- NULL
+  }
+  if (!is.null(title)) {
     pl <- pl + ggtitle(label = title)
-    pl <- pl + labs(caption = paste0("n=", base_n, "; with missings"))
   }
 
-  # Pass row number and label length to the knit_plot() function
+  # Add base
+  # TODO: Report missings
+  base_n <- nrow(data)
+  pl <- pl + labs(caption = paste0("n=", base_n))
+
+  # Convert to vlkr_plot
   .to_vlkr_plot(pl)
 }
 
@@ -733,13 +791,9 @@ plot_metrics_items_grouped <- function(data, cols, cols_groups, limits = NULL, n
 #' @param scale Direction of the scale: 0 = no direction for categories,
 #'              -1 = descending or 1 = ascending values.
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
-#' @param title The plot title or NULL
-#' @param caption The plot caption or NULL. The caption is used for notes.
-.plot_bars <- function(data, category = NULL, scale = NULL, numbers = NULL, title = NULL, caption = NULL) {
-  if (title == F) {
-    title <- NULL
-  }
-
+#' @param title The plot title as character or NULL
+#' @param base The plot base as character or NULL.
+.plot_bars <- function(data, category = NULL, scale = NULL, numbers = NULL, base = NULL, title = NULL) {
   if (!is.null(category)) {
     data <- filter(data, value == category)
   }
@@ -797,21 +851,24 @@ plot_metrics_items_grouped <- function(data, cols, cols_groups, limits = NULL, n
       )
   }
 
+  # Add numbers
   if (!is.null(numbers)) {
     pl <- pl +
       geom_text(aes(label = .values), position = position_stack(vjust = 0.5), size = 3, color = "white")
   }
 
+  # Add title
   if (!is.null(title)) {
     pl <- pl + ggtitle(label = title)
   }
 
 
-  if (!is.null(caption)) {
-    pl <- pl + labs(caption = caption)
+  # Add base
+  if (!is.null(base)) {
+    pl <- pl + labs(caption = base)
   }
 
-  # Pass row number and label length to the knit_plot() function
+  # Convert to vlkr_plot
   .to_vlkr_plot(pl)
 }
 

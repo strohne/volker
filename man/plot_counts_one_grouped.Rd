@@ -8,13 +8,13 @@ plot_counts_one_grouped(
   data,
   col,
   col_group,
-  numbers = NULL,
-  prop = "total",
+  category = NULL,
   ordered = NULL,
   missings = F,
+  prop = "total",
+  numbers = NULL,
   title = T,
-  .labels = T,
-  .category = NULL
+  labels = T
 )
 }
 \arguments{
@@ -24,10 +24,9 @@ plot_counts_one_grouped(
 
 \item{col_group}{The column holding groups to compare}
 
-\item{numbers}{The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.}
-
-\item{prop}{The basis of percent calculation: total (the default) or rows.
-To display column proportions, swap the first column with the grouping column.}
+\item{category}{The value FALSE will force to plot all categories.
+A character value will focus a selected category.
+When NULL, in case of boolean values, only the TRUE category is plotted.}
 
 \item{ordered}{Values can be nominal (0) or ordered ascending (1) descending (-1).
 By default (NULL), the ordering is automatically detected.
@@ -37,9 +36,15 @@ For ordered values, shades of the VLKR_FILLGRADIENT option are used.}
 
 \item{missings}{Include missing values (default FALSE)}
 
-\item{.labels}{If TRUE (default) extracts item labels from the attributes, see get_labels()}
+\item{prop}{The basis of percent calculation: "total" (the default) or "rows".
+To display column proportions, swap the first column with the grouping column.}
 
-\item{.category}{Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.}
+\item{numbers}{The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.}
+
+\item{title}{If TRUE (default) shows a plot title derived from the column labels.
+Disable the title with FALSE or provide a custom title as character value.}
+
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_labels}.}
 }
 \description{
 Note: only non-missing cases are used to calculate the percentage.

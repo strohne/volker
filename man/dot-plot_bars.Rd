@@ -9,8 +9,8 @@
   category = NULL,
   scale = NULL,
   numbers = NULL,
-  title = NULL,
-  caption = NULL
+  base = NULL,
+  title = NULL
 )
 }
 \arguments{
@@ -23,9 +23,9 @@
 
 \item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
 
-\item{title}{The plot title or NULL}
+\item{base}{The plot base as character or NULL.}
 
-\item{caption}{The plot caption or NULL. The caption is used for notes.}
+\item{title}{The plot title as character or NULL}
 }
 \description{
 Helper function: plot grouped bar chart

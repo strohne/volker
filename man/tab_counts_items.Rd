@@ -7,10 +7,10 @@
 tab_counts_items(
   data,
   cols,
-  values = c("n", "p"),
   missings = F,
-  .formatted = T,
-  .labels = T
+  values = c("n", "p"),
+  percent = T,
+  labels = T
 )
 }
 \arguments{
@@ -18,15 +18,13 @@ tab_counts_items(
 
 \item{cols}{Tidyselect item variables (e.g. starts_with...)}
 
-\item{values}{The values to output: n (frequency) or p (percentage)}
-
 \item{missings}{Include missing values (default FALSE)}
 
-\item{.formatted}{Set to FALSE to prevent calculating percents from proportions}
+\item{values}{The values to output: n (frequency) or p (percentage) or both (the default)}
 
-\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
+\item{percent}{Set to FALSE to prevent calculating percents from proportions}
 
-\item{.quiet}{Set to true to suppress printing the output}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_labels}.}
 }
 \description{
 TODO: Reorder boolean categories: first TRUE, then FALSE

@@ -7,11 +7,11 @@
 tab_metrics_items_grouped(
   data,
   cols,
-  cols_groups,
-  values = c("mean", "sd"),
+  col_group,
+  negative = F,
+  values = c("m", "sd"),
   digits = 1,
-  .negative = F,
-  .labels = T
+  labels = T
 )
 }
 \arguments{
@@ -19,15 +19,15 @@ tab_metrics_items_grouped(
 
 \item{cols}{The item columns that hold the values to summarize}
 
-\item{values}{The output metrics, mean or sd}
+\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
-\item{digits}{The digits to print}
+\item{values}{The output metrics, mean (m), the standard deviation (sd) or both (the default).}
 
-\item{.negative}{If True (default), negative values are recoded to missing values}
+\item{digits}{The number of digits to print.}
 
-\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_labels}.}
 
-\item{cols_group}{The columns holding groups to compare}
+\item{cols_group}{The column holding groups to compare}
 }
 \description{
 TODO: handle completely missing data in single groups

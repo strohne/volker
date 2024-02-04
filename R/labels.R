@@ -332,7 +332,7 @@ set_item_labels <- function(data, labels) {
 #' @param cols The tidyselect columns
 replace_item_values <- function(result, data, cols) {
   labels_items <- data %>%
-    get_labels(!!cols) %>%
+    get_labels({{ cols }}) %>%
     dplyr::distinct(item_name, item_label) %>%
     na.omit()
 

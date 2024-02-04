@@ -36,14 +36,14 @@ data <- set_col_labels(data, sd_alter, c("Alter"))
 
 ### 1. One variable: Frequency plot of Gender
 ```{r}
-plot_var_counts(data, sd_geschlecht)
+plot_counts_one(data, sd_geschlecht)
 ```
 
 ### 2. Multiple items: Frequency plot for adoption factors
 ```{r}
 
 # Use the numbers parameter to add counts to the bars
-plot_item_counts(data, starts_with("cg_adoption_"), numbers = "p")
+plot_counts_items(data, starts_with("cg_adoption_"), numbers = "p")
 
 ```
 
@@ -51,7 +51,7 @@ plot_item_counts(data, starts_with("cg_adoption_"), numbers = "p")
 
 ```{r}
 # TODO: use number=c("n","p")
-plot_group_counts(data, in_adoption, sd_geschlecht, prop = "rows")
+plot_counts_one_grouped(data, in_adoption, sd_geschlecht, prop = "rows")
 ```
 
 ## Metric distributions
@@ -59,7 +59,7 @@ plot_group_counts(data, in_adoption, sd_geschlecht, prop = "rows")
 ### 1. Distribution for one metric variable: Age
 ```{r}
 
-plot_var_metrics(data, sd_alter)
+plot_metrics_one(data, sd_alter)
 
 ```
 
@@ -68,19 +68,19 @@ plot_var_metrics(data, sd_alter)
 ```{r}
 
 # Note that negative values are omitted,
-# you can change the behavior with the .negative parameter
-plot_item_metrics(data, starts_with("cg_adoption_"))
+# you can change the behavior with the negative-parameter
+plot_metrics_items(data, starts_with("cg_adoption_"))
 
 ```
 
 ### 3. Distribution by a grouping variable
 ```{r}
-plot_group_metrics(data, sd_alter, sd_geschlecht)
+plot_metrics_one_grouped(data, sd_alter, sd_geschlecht)
 ```
 
 
 ```{r}
-plot_multi_means(data, starts_with("cg_adoption_"), sd_geschlecht)
+plot_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_geschlecht)
 ```
 
 ### 4. Index  distribution by a grouping variable
@@ -99,7 +99,7 @@ data %>%
   )) %>%
   
   select(starts_with("idx_"), in_adoption) %>% 
-  plot_multi_means(starts_with("idx_cg_adoption"), in_adoption)
+  plot_metrics_items_grouped(starts_with("idx_cg_adoption"), in_adoption)
   
 ```
 

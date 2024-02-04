@@ -7,12 +7,11 @@
 plot_metrics_items_grouped(
   data,
   cols,
-  cols_groups,
+  col_group,
   limits = NULL,
-  numbers = NULL,
+  negative = F,
   title = T,
-  .labels = T,
-  .negative = F
+  labels = T
 )
 }
 \arguments{
@@ -20,15 +19,16 @@ plot_metrics_items_grouped(
 
 \item{cols}{Tidyselect item variables (e.g. starts_with...)}
 
-\item{limits}{The scale limits. Set NULL to extract limits from the labels.}
+\item{limits}{The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.}
 
-\item{numbers}{The values to print on the bars: "m" or NULL}
+\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
-\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
+\item{title}{If TRUE (default) shows a plot title derived from the column labels.
+Disable the title with FALSE or provide a custom title as character value.}
 
-\item{.negative}{If False (default) negative values are recoded as missing values}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_labels}.}
 
-\item{cols_group}{The columns holding groups to compare}
+\item{cols_group}{The column holding groups to compare}
 }
 \value{
 A plot

@@ -8,9 +8,9 @@ tab_metrics_one_grouped(
   data,
   col,
   col_group,
-  .negative = F,
+  negative = F,
   digits = 1,
-  .labels = T
+  labels = T
 )
 }
 \arguments{
@@ -20,11 +20,11 @@ tab_metrics_one_grouped(
 
 \item{col_group}{The column holding groups to compare}
 
-\item{.negative}{If True (default), negative values are recoded to missing values}
+\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
-\item{digits}{The digits to print}
+\item{digits}{The number of digits to print}
 
-\item{.labels}{If TRUE (default) extracts item labels from the attributes, see get_labels()}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_labels}.}
 }
 \description{
 Output a five point summary for groups

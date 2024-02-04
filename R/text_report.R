@@ -41,7 +41,7 @@ lda_report <- function(data, col_text, k=NULL, lambda=0.6, seed=1852) {
   #   print()
 
   cat("**Number of documents (n) and characters (m) per top topic**  \n")
-  volker::tab_group_metrics(data, doc_length, tpc_topic) %>%
+  volker::tab_metrics_one_grouped(data, doc_length, tpc_topic) %>%
     print()
 
   # Top terms by relevance

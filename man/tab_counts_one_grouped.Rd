@@ -8,11 +8,11 @@ tab_counts_one_grouped(
   data,
   col,
   col_group,
-  values = c("n", "p"),
-  prop = "total",
   missings = F,
-  .formatted = T,
-  .labels = T
+  prop = "total",
+  values = c("n", "p"),
+  percent = T,
+  labels = T
 )
 }
 \arguments{
@@ -22,15 +22,15 @@ tab_counts_one_grouped(
 
 \item{col_group}{The column holding groups to compare}
 
-\item{values}{The values to output: n (frequency) or p (percentage).}
+\item{missings}{Include missing values in the output (default FALSE)}
 
-\item{prop}{The basis of percent calculation: total (the default), cols, or rows}
+\item{prop}{The basis of percent calculation: "total" (the default), "cols", or "rows".}
 
-\item{missings}{Include missing values (default FALSE)}
+\item{values}{The values to output: n (frequency) or p (percentage) or both (the default).}
 
-\item{.formatted}{Set to FALSE to prevent calculating percents from proportions}
+\item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
-\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_labels}.}
 }
 \description{
 Output frequencies cross tabulated with a grouping column

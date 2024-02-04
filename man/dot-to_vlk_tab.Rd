@@ -11,6 +11,9 @@
 
 \item{digits}{Set the plot digits. If NULL (default), no digits are set.}
 }
+\value{
+A tibble of class vlkr_tbl
+}
 \description{
 Additionally, removes the skim_df class if present
 }

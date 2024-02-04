@@ -9,11 +9,17 @@
 #' @param newcol Name of the index as a character value.
 #'              Set to NULL (default) to automatically build a name
 #'              from the common column prefix, prefixed with "idx_"
-#' @param .negative If TRUE, all negative values are recoded to NA
+#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @export
-add_idx <- function(data, cols, newcol = NULL, .negative = FALSE) {
+add_idx <- function(data, cols, newcol = NULL, negative = FALSE) {
   idx <- data %>%
     dplyr::select({{ cols }})
+
+  # Remove negative values
+  # TODO: warn if any negative values were recoded
+  if (!negative) {
+    idx <- dplyr::mutate(idx, across(where(is.numeric), ~ ifelse(. < 0, NA, .)))
+  }
 
   prefix <- get_prefix(colnames(idx), F, T)
   if (is.null(newcol)) {
@@ -32,10 +38,7 @@ add_idx <- function(data, cols, newcol = NULL, .negative = FALSE) {
   }
   newlabel <- paste0("Index: ", prefix)
 
-  # TODO: warn if any negative values were recoded
-  if (!.negative) {
-    idx <- dplyr::mutate(idx, across(where(is.numeric), ~ ifelse(. < 0, NA, .)))
-  }
+
 
   idx <- idx %>%
     psych::alpha(check.keys = T)
@@ -45,11 +48,11 @@ add_idx <- function(data, cols, newcol = NULL, .negative = FALSE) {
   attr(data[[newcol]], "comment") <- newlabel
 
   # Add limits
-  attr(data[[newcol]], "limits") <- get_limits(data, !!cols, .negative)
+  attr(data[[newcol]], "limits") <- get_limits(data, {{ cols }}, negative)
 
   # Add scale
   attr(data[[newcol]], "scale") <- data %>%
-    get_labels(!!cols) %>%
+    get_labels({{ cols }}) %>%
     distinct(value_name, value_label)
 
   data

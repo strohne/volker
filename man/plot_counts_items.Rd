@@ -7,12 +7,12 @@
 plot_counts_items(
   data,
   cols,
-  numbers = NULL,
+  category = NULL,
   ordered = NULL,
   missings = F,
+  numbers = NULL,
   title = T,
-  .labels = T,
-  .category = NULL
+  labels = T
 )
 }
 \arguments{
@@ -20,7 +20,9 @@ plot_counts_items(
 
 \item{cols}{Tidyselect item variables (e.g. starts_with...)}
 
-\item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
+\item{category}{The value FALSE will force to plot all categories.
+A character value will focus a selected category.
+When NULL, in case of boolean values, only the TRUE category is plotted.}
 
 \item{ordered}{Values can be nominal (0) or ordered ascending (1) descending (-1).
 By default (NULL), the ordering is automatically detected.
@@ -30,9 +32,12 @@ For ordered values, shaded of the VLKR_FILLGRADIENT option are used.}
 
 \item{missings}{Include missing values (default FALSE)}
 
-\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
+\item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
 
-\item{.category}{Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.}
+\item{title}{If TRUE (default) shows a plot title derived from the column labels.
+Disable the title with FALSE or provide a custom title as character value.}
+
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_labels}.}
 }
 \description{
 TODO: move missings to the end

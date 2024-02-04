@@ -4,32 +4,14 @@
 \alias{tab_counts_items_cor}
 \title{Correlate the values in multiple items}
 \usage{
-tab_counts_items_cor(
-  data,
-  cols1,
-  cols2,
-  values = c("n", "p"),
-  category = NULL,
-  digits = 1,
-  .labels = T
-)
+tab_counts_items_cor(data, cols, cols_cor)
 }
 \arguments{
 \item{data}{A tibble}
 
-\item{cols1}{The item columns}
+\item{cols}{The source columns}
 
-\item{cols2}{The item columns}
-
-\item{values}{The output values}
-
-\item{category}{The category within the items to focus}
-
-\item{digits}{The digits to print}
-
-\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
-
-\item{.negative}{If True (default), negative values are recoded to missing values}
+\item{cols_cor}{The target columns or NULL to calculate correlations within the source columns}
 }
 \description{
 TODO: implement -> calculate npmi or similar for one value

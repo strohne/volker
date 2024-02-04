@@ -102,12 +102,20 @@ tab_metrics <- function(data, cols, col_group=NULL, ...) {
 #'
 #' @param data A tibble
 #' @param col The column holding values to count
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
-#' @param .formatted Set to FALSE to prevent calculating percents from proportions
+#' @param missings Include missing values in the output (default TRUE)
+#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
 #' @export
-tab_counts_one <- function(data, col, .labels = T, .formatted = T) {
+tab_counts_one <- function(data, col, missings = T, percent = T, labels = T) {
   # Check parameters
   check_is_dataframe(data)
+
+  # Remove missings
+  # TODO: output a warning
+  if (!missings) {
+    data <- data %>%
+      tidyr::drop_na({{ col }})
+  }
 
   result <- data %>%
     dplyr::count({{ col }}) %>%
@@ -115,12 +123,12 @@ tab_counts_one <- function(data, col, .labels = T, .formatted = T) {
     dplyr::mutate(p = n / sum(n))
 
   # Get variable caption from the attributes
-  if (.labels) {
+  if (labels) {
     label <- get_col_label(data, {{ col }})
     result <- dplyr::rename(result, {{ label }} := {{ col }})
   }
 
-  if (.formatted) {
+  if (percent) {
     result <- dplyr::mutate(result, p = paste0(round(p * 100, 0), "%"))
   }
 
@@ -128,22 +136,24 @@ tab_counts_one <- function(data, col, .labels = T, .formatted = T) {
   result_total <- tibble(
     "Total",
     sum(!is.na(dplyr::select(data, {{ col }}))),
-    ifelse(.formatted, "100%", 1)
+    ifelse(percent, "100%", 1)
   )
   colnames(result_total) <- colnames(result)
+  result <- bind_rows(result, result_total)
 
   # Missings
-  result_missing <- tibble(
-    "Missing",
-    sum(is.na(dplyr::select(data, {{ col }}))),
-    ifelse(.formatted, "", NA)
-  )
-  colnames(result_missing) <- colnames(result)
+  if (missings) {
+    result_missing <- tibble(
+      "Missing",
+      sum(is.na(dplyr::select(data, {{ col }}))),
+      ifelse(percent, "", NA)
+    )
+    colnames(result_missing) <- colnames(result)
+    result <- bind_rows(result, result_missing)
 
-  # Build table
-  result <- bind_rows(result, result_total, result_missing)
+  }
 
-  .to_vlk_tab(result)
+  .to_vlk_tab(result, digits=0)
 }
 
 #' Output frequencies cross tabulated with a grouping column
@@ -151,13 +161,13 @@ tab_counts_one <- function(data, col, .labels = T, .formatted = T) {
 #' @param data A tibble
 #' @param col The column holding factor values
 #' @param col_group The column holding groups to compare
-#' @param values The values to output: n (frequency) or p (percentage).
-#' @param prop The basis of percent calculation: total (the default), cols, or rows
-#' @param missings Include missing values (default FALSE)
-#' @param .formatted Set to FALSE to prevent calculating percents from proportions
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @param missings Include missing values in the output (default FALSE)
+#' @param prop The basis of percent calculation: "total" (the default), "cols", or "rows".
+#' @param values The values to output: n (frequency) or p (percentage) or both (the default).
+#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
 #' @export
-tab_counts_one_grouped <- function(data, col, col_group, values = c("n", "p"), prop = "total", missings = F, .formatted = T, .labels = T) {
+tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "total", values = c("n", "p"), percent = T, labels = T) {
 
   # Check parameters
   check_is_dataframe(data)
@@ -165,6 +175,7 @@ tab_counts_one_grouped <- function(data, col, col_group, values = c("n", "p"), p
   check_has_column(data, {{ col_group }})
 
   # Remove missings
+  # TODO: output a warning
   if (!missings) {
     data <- data %>%
       tidyr::drop_na({{ col }}, {{ col_group }})
@@ -295,7 +306,7 @@ tab_counts_one_grouped <- function(data, col, col_group, values = c("n", "p"), p
     )
 
   # Round and add % sign
-  if (.formatted) {
+  if (percent) {
     result_p <- result_p %>%
       dplyr::mutate(across(where(is.numeric), ~ paste0(round(. * 100, 0), "%")))
   }
@@ -311,7 +322,7 @@ tab_counts_one_grouped <- function(data, col, col_group, values = c("n", "p"), p
   }
 
   # Get item label from the attributes
-  if (.labels) {
+  if (labels) {
     codes <- data %>%
       get_labels({{ col_group }}) %>%
       dplyr::distinct(item_name, item_label) %>%
@@ -324,7 +335,7 @@ tab_counts_one_grouped <- function(data, col, col_group, values = c("n", "p"), p
     }
   }
 
-  .to_vlk_tab(result, digits= 0)
+  .to_vlk_tab(result, digits=0)
 }
 
 #' Output frequencies for multiple variables
@@ -334,22 +345,21 @@ tab_counts_one_grouped <- function(data, col, col_group, values = c("n", "p"), p
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param values The values to output: n (frequency) or p (percentage)
 #' @param missings Include missing values (default FALSE)
-#' @param .formatted Set to FALSE to prevent calculating percents from proportions
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
-#' @param .quiet Set to true to suppress printing the output
+#' @param values The values to output: n (frequency) or p (percentage) or both (the default)
+#' @param percent Set to FALSE to prevent calculating percents from proportions
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
 #' @export
-tab_counts_items <- function(data, cols, values = c("n", "p"), missings=F, .formatted = T, .labels = T) {
+tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), percent = T, labels = T) {
   # Check parameters
   check_is_dataframe(data)
 
   # Remove missings
+  # TODO: Output a warning
   if (!missings) {
     data <- data %>%
       tidyr::drop_na({{ cols }})
   }
-
 
   # Calculate n and p
   result <- data %>%
@@ -390,7 +400,7 @@ tab_counts_items <- function(data, cols, values = c("n", "p"), missings=F, .form
     janitor::adorn_totals("col")
 
   # Add % sign
-  if (.formatted) {
+  if (percent) {
     result_p <- dplyr::mutate(result_p, across(where(is.numeric), ~ paste0(round(. * 100, 0), "%")))
   }
 
@@ -428,8 +438,8 @@ tab_counts_items <- function(data, cols, values = c("n", "p"), missings=F, .form
   }
 
   # Replace item labels
-  if (.labels) {
-    result <- replace_item_values(result, data, cols)
+  if (labels) {
+    result <- replace_item_values(result, data, {{ cols }})
   }
 
   # Remove common item prefix
@@ -440,9 +450,9 @@ tab_counts_items <- function(data, cols, values = c("n", "p"), missings=F, .form
   }
 
   # Replace category labels
-  if (.labels) {
+  if (labels) {
     labels_categories <- data %>%
-      get_labels(!!cols) %>%
+      get_labels({{ cols }}) %>%
       dplyr::distinct(value_name, value_label) %>%
       na.omit()
 
@@ -477,15 +487,10 @@ tab_counts_items <- function(data, cols, values = c("n", "p"), missings=F, .form
 #'
 #' @param data A tibble
 #' @param cols The item columns that hold the values to summarize
-#' @param cols_group The columns holding groups to compare
-#' @param values The output values, n or p or both
-#' @param category The category within the items to focus
-#' @param digits The digits to print
-#' @param .negative If True (default), negative values are recoded to missing values
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @param col_group The column holding groups to compare
 #' @keywords internal
 #' @export
-tab_counts_items_grouped <- function(data, cols, cols_groups, values = c("n", "p"), category = NULL, digits = 1, .labels = T) {
+tab_counts_items_grouped <- function(data, cols, col_group) {
   # Check parameters
   check_is_dataframe(data)
   stop("Not implemented yet")
@@ -496,16 +501,11 @@ tab_counts_items_grouped <- function(data, cols, cols_groups, values = c("n", "p
 #' TODO: implement -> calculate npmi or similar for one value
 #'
 #' @param data A tibble
-#' @param cols1 The item columns
-#' @param cols2 The item columns
-#' @param values The output values
-#' @param category The category within the items to focus
-#' @param digits The digits to print
-#' @param .negative If True (default), negative values are recoded to missing values
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @param cols The source columns
+#' @param cols_cor The target columns or NULL to calculate correlations within the source columns
 #' @keywords internal
 #' @export
-tab_counts_items_cor <- function(data, cols1, cols2, values = c("n", "p"), category = NULL, digits = 1, .labels = T) {
+tab_counts_items_cor <- function(data, cols, cols_cor) {
   # Check parameters
   check_is_dataframe(data)
   stop("Not implemented yet")
@@ -515,12 +515,22 @@ tab_counts_items_cor <- function(data, cols1, cols2, values = c("n", "p"), categ
 #'
 #' @param data A tibble
 #' @param col The columns holding metric values
-#' @param digits The digits to print
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @param digits The number of digits to print.
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
 #' @export
-tab_metrics_one <- function(data, col, digits = 1, .labels = T) {
+tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T) {
+
   # Check parameters
   check_is_dataframe(data)
+  check_has_column(data, {{col}})
+
+
+  # Remove negative values
+  # TODO: warn if any negative values were recoded
+  if (!negative) {
+    data <- dplyr::mutate(data, across({{ col }}, ~ if_else(. < 0, NA, .)))
+  }
 
   result <- data %>%
     skim_metrics({{ col }}) %>%
@@ -550,6 +560,8 @@ tab_metrics_one <- function(data, col, digits = 1, .labels = T) {
   }
 
   result <- result %>%
+    # TODO: can we leave digits calculation to .to_vlkr_tab?
+    #       So that the resulting data frame contains all digits?
     dplyr::mutate(across(c(missing, n), ~ as.character(round(., 0)))) %>%
     dplyr::mutate(across(c(min, q1, median, q3, max), ~ as.character(round(., digits)))) %>%
     dplyr::mutate(across(c(m, sd), ~ as.character(round(., digits)))) %>%
@@ -558,10 +570,9 @@ tab_metrics_one <- function(data, col, digits = 1, .labels = T) {
     dplyr::select(-item, {{ col }} := name, value)
 
   # Get item label from the attributes
-  if (.labels) {
+  if (labels) {
     label <- get_col_label(data, {{ col }})
-    result <- result %>%
-      dplyr::rename({{ label }} := {{ col }})
+    result <- dplyr::rename(result, {{ label }} := {{ col }})
   }
 
   .to_vlk_tab(result)
@@ -573,18 +584,18 @@ tab_metrics_one <- function(data, col, digits = 1, .labels = T) {
 #' @param data A tibble
 #' @param col The column holding metric values
 #' @param col_group The column holding groups to compare
-#' @param .negative If True (default), negative values are recoded to missing values
-#' @param digits The digits to print
-#' @param .labels If TRUE (default) extracts item labels from the attributes, see get_labels()
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param digits The number of digits to print
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
 #' @export
-tab_metrics_one_grouped <- function(data, col, col_group, .negative = F, digits = 1, .labels = T) {
+tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits = 1, labels = T) {
   # Check parameters
   check_is_dataframe(data)
 
+  # Remove negative values
   # TODO: warn if any negative values were recoded
-  # TODO: only for the metric column (col parameter)
-  if (!.negative) {
-    data <- dplyr::mutate(data, across(where(is.numeric), ~ if_else(. < 0, NA, .)))
+  if (!negative) {
+    data <- dplyr::mutate(data, across({{ col }}, ~ if_else(. < 0, NA, .)))
   }
 
   result_grouped <- data %>%
@@ -630,7 +641,7 @@ tab_metrics_one_grouped <- function(data, col, col_group, .negative = F, digits 
   }
 
   # Get item label from the attributes
-  if (.labels) {
+  if (labels) {
     codes <- data %>%
       get_labels({{ col_group }}) %>%
       dplyr::distinct(item_name, item_label) %>%
@@ -662,21 +673,20 @@ tab_metrics_one_grouped <- function(data, col, col_group, .negative = F, digits 
 #'
 #' @param data A tibble
 #' @param cols The columns holding metric values
-#' @param digits The digits to print
-#' @param .negative If True (default), negative values are recoded to missing values
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param digits The number of digits to print
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
 #' @export
-tab_metrics_items <- function(data, cols, digits = 1, .negative = F, .labels = T) {
+tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T) {
   # Check parameters
   check_is_dataframe(data)
 
-  cols <- enquo(cols)
-
   result <- data %>%
-    dplyr::select(!!cols)
+    dplyr::select({{ cols }})
 
+  # Remove negative values
   # TODO: warn if any negative values were recoded
-  if (!.negative) {
+  if (!negative) {
     result <- dplyr::mutate(result, across(where(is.numeric), ~ if_else(. < 0, NA, .)))
   }
 
@@ -710,11 +720,11 @@ tab_metrics_items <- function(data, cols, digits = 1, .negative = F, .labels = T
   }
 
   # Get item labels from the attributes
-  if (.labels) {
-    result <- replace_item_values(result, data, cols)
-    attr(result, "limits") <- get_limits(data, !!cols, .negative)
+  if (labels) {
+    result <- replace_item_values(result, data, {{ cols }})
+    attr(result, "limits") <- get_limits(data, {{ cols }}, negative)
 
-    attr(result, "scale") <- get_labels(data, !!cols) %>%
+    attr(result, "scale") <- get_labels(data, {{ cols }}) %>%
       distinct(value_name, value_label)
   }
 
@@ -737,59 +747,56 @@ tab_metrics_items <- function(data, cols, digits = 1, .negative = F, .labels = T
   .to_vlk_tab(result, digits= digits)
 }
 
-
-
 #' Output the means for groups in one or multiple columns
 #'
 #' TODO: handle completely missing data in single groups
 #'
 #' @param data A tibble
 #' @param cols The item columns that hold the values to summarize
-#' @param cols_group The columns holding groups to compare
-#' @param values The output metrics, mean or sd
-#' @param digits The digits to print
-#' @param .negative If True (default), negative values are recoded to missing values
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @param cols_group The column holding groups to compare
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param values The output metrics, mean (m), the standard deviation (sd) or both (the default).
+#' @param digits The number of digits to print.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
 #' @export
-tab_metrics_items_grouped <- function(data, cols, cols_groups, values = c("mean", "sd"), digits = 1, .negative = F, .labels = T) {
+tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, values = c("m", "sd"), digits = 1, labels = T) {
   # Check parameters
   check_is_dataframe(data)
 
   # Get positions of group cols
-  cols_groups <- tidyselect::eval_select(expr = enquo(cols_groups), data = data)
-  cols <- enquo(cols)
+  col_group <- tidyselect::eval_select(expr = enquo(col_group), data = data)
 
+  # Remove negative values
   # TODO: warn if any negative values were recoded
-  # TODO: only selected columns
-  if (!.negative) {
-    data <- dplyr::mutate(data, across(where(is.numeric), ~ if_else(. < 0, NA, .)))
+  if (!negative) {
+    data <- dplyr::mutate(data, across({{ cols }}, ~ if_else(. < 0, NA, .)))
   }
 
   # Total means
   value <- "numeric.mean"
   total_mean <- data %>%
-    dplyr::select(!!cols) %>%
+    dplyr::select({{ cols }}) %>%
     skim_metrics() %>%
     dplyr::select(skim_variable, Total = !!sym(value))
 
   # Total sd
   value <- "numeric.sd"
   total_sd <- data %>%
-    dplyr::select(!!cols) %>%
+    dplyr::select({{ cols }}) %>%
     skim_metrics() %>%
     dplyr::select(skim_variable, Total = !!sym(value))
 
   # Grouped means
   value <- "numeric.mean"
   grouped_mean <- map(
-    cols_groups,
+    col_group,
     function(col) {
       col <- names(data)[col]
 
       data %>%
         dplyr::filter(!is.na(!!sym(col))) %>%
         dplyr::group_by(!!sym(col)) %>%
-        dplyr::select(!!sym(col), !!cols) %>%
+        dplyr::select(!!sym(col), {{ cols }}) %>%
         skim_metrics() %>%
         dplyr::ungroup() %>%
         dplyr::select(skim_variable, !!sym(col), !!sym(value)) %>%
@@ -807,14 +814,14 @@ tab_metrics_items_grouped <- function(data, cols, cols_groups, values = c("mean"
   # Grouped sd
   value <- "numeric.sd"
   grouped_sd <- map(
-    cols_groups,
+    col_group,
     function(col) {
       col <- names(data)[col]
 
       data %>%
         dplyr::filter(!is.na(!!sym(col))) %>%
         dplyr::group_by(!!sym(col)) %>%
-        dplyr::select(!!sym(col), !!cols) %>%
+        dplyr::select(!!sym(col), {{ cols }}) %>%
         skim_metrics() %>%
         dplyr::ungroup() %>%
         dplyr::select(skim_variable, !!sym(col), !!sym(value)) %>%
@@ -832,14 +839,14 @@ tab_metrics_items_grouped <- function(data, cols, cols_groups, values = c("mean"
   # Significance of lm
   # TODO
   # grouped_p <- map(
-  #   cols_groups,
+  #   col_group,
   #   function(col) {
   #     col <- names(data)[col]
   #
   #     data %>%
   #       dplyr::filter(!is.na(!!sym(col))) %>%
   #       dplyr::group_by(!!sym(col)) %>%
-  #       dplyr::select(!!sym(col),!!cols) %>%
+  #       dplyr::select(!!sym(col),{{ cols }}) %>%
   #       skim_metrics() %>%
   #       dplyr::ungroup() %>%
   #       dplyr::select(skim_variable, !!sym(col), !!sym(value)) %>%
@@ -862,7 +869,9 @@ tab_metrics_items_grouped <- function(data, cols, cols_groups, values = c("mean"
 
 
   # Zip
-  if (("mean" %in% values) && ("sd" %in% values)) {
+  if (("m" %in% values) && ("sd" %in% values)) {
+    # TODO: What about the resulting data frame, should it really contain rounded values?
+    #       Maybe let zipping and rounding to the print function and return a list of data frames instead
     result_mean <- mutate(result_mean, across(where(is.numeric), ~ format(round(., digits), nsmall = digits)))
     result_sd <- mutate(result_sd, across(where(is.numeric), ~ format(round(., digits), nsmall = digits)))
     result <- zip_tables(result_mean, result_sd, brackets = T)
@@ -873,8 +882,8 @@ tab_metrics_items_grouped <- function(data, cols, cols_groups, values = c("mean"
   }
 
   # Add labels
-  if (.labels) {
-    result <- replace_item_values(result, data, cols)
+  if (labels) {
+    result <- replace_item_values(result, data, {{ cols }})
   }
 
   # Remove common item prefix
@@ -899,34 +908,37 @@ tab_metrics_items_grouped <- function(data, cols, cols_groups, values = c("mean"
 
 #' Output a correlation table
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' @param data A tibble
-#' @param cols1 The source items
-#' @param cols2 The target items or NULL to calculate correlations within the source items
+#' @param cols The source columns
+#' @param cols_cor The target columns or NULL to calculate correlations within the source columns
 #' @param method The output metrics, p = Pearson's R, s = Spearman's rho
 #' @param significant Only show significant values
-#' @param digits The digits to print
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
 #' @export
-tab_metrics_items_cor <- function(data, cols1, cols2, method = "p", significant = F, digits = 2) {
+tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = F, labels=T) {
   # Check parameters
   check_is_dataframe(data)
 
   # # Get positions of cols
-  # cols1 <- tidyselect::eval_select(
-  #   expr = enquo(cols1),
+  # cols <- tidyselect::eval_select(
+  #   expr = enquo(cols),
   #   data = data[unique(names(data))],
   #   allow_rename = FALSE,
   #   error_call = rlang::error_call
   # )
 
   # Same or different items?
-  # if (missing(cols2)) {
-  #   cols2 <- cols1
+  # if (missing(cols_cor)) {
+  #   cols_cor <- cols
   # }
 
   # else {
   #
-  #   cols2 <- tidyselect::eval_select(
-  #     expr = enquo(cols2),
+  #   cols_cor <- tidyselect::eval_select(
+  #     expr = enquo(cols_cor),
   #     data = data[unique(names(data))],
   #     allow_rename = FALSE,
   #     error_call = rlang::error_call
@@ -934,15 +946,15 @@ tab_metrics_items_cor <- function(data, cols1, cols2, method = "p", significant 
   # }
 
 
-  cols1 <- tidyselect::eval_select(expr = enquo(cols1), data = data)
+  cols <- tidyselect::eval_select(expr = enquo(cols), data = data)
 
-  if (missing(cols2)) {
-    cols2 <- cols1
+  if (missing(cols_cor)) {
+    cols_cor <- cols
   } else {
-    cols2 <- tidyselect::eval_select(expr = enquo(cols2), data = data)
+    cols_cor <- tidyselect::eval_select(expr = enquo(cols_cor), data = data)
   }
 
-  result <- expand.grid(x = cols1, y = cols2, stringsAsFactors = FALSE) %>%
+  result <- expand.grid(x = cols, y = cols_cor, stringsAsFactors = FALSE) %>%
     dplyr::mutate(x_name = names(x), y_name = names(y)) %>%
     dplyr::mutate(
       test = purrr::map2(
@@ -956,7 +968,7 @@ tab_metrics_items_cor <- function(data, cols1, cols2, method = "p", significant 
     dplyr::select(item = x_name, target = y_name, value, p, stars)
 
 
-  # Add labels
+  # TODO: Add labels
   # codes <- data %>%
   #   dplyr::select(!!cols) %>%
   #   get_labels() %>%
@@ -985,7 +997,7 @@ tab_metrics_items_cor <- function(data, cols1, cols2, method = "p", significant 
 
   # Create table
   result <- result %>%
-    mutate(value = paste0(round(unlist(value), digits), stars)) %>%
+    mutate(value = paste0(round(unlist(value), 2), stars)) %>%
     mutate(value = ifelse(significant & (p >= 0.1), "", value)) %>%
     select(item, target, value)
 
@@ -993,7 +1005,7 @@ tab_metrics_items_cor <- function(data, cols1, cols2, method = "p", significant 
     tidyr::pivot_wider(names_from = "target", values_from = "value") %>%
     rename(Item = item)
 
-  .to_vlk_tab(result, digits= digits)
+  .to_vlk_tab(result, digits= 2)
 }
 
 #' Add vlkr_tbl class
@@ -1002,7 +1014,7 @@ tab_metrics_items_cor <- function(data, cols1, cols2, method = "p", significant 
 #'
 #' @param data A tibble
 #' @param digits Set the plot digits. If NULL (default), no digits are set.
-#' @retur A tibble of class vlkr_tbl
+#' @return A tibble of class vlkr_tbl
 .to_vlk_tab <- function(data, digits=NULL) {
 
   if (!is.null(digits)) {

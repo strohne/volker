@@ -4,14 +4,21 @@
 \alias{plot_metrics_one}
 \title{Output a histogram for a single metric variable}
 \usage{
-plot_metrics_one(data, col, title = T, .labels = T)
+plot_metrics_one(data, col, limits = NULL, negative = F, title = T, labels = T)
 }
 \arguments{
 \item{data}{A tibble}
 
 \item{col}{The columns holding metric values}
 
-\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
+\item{limits}{The scale limits. Set NULL to extract limits from the label. NOT IMPLEMENTED YET.}
+
+\item{negative}{If FALSE (default), negative values are recoded as missing values.}
+
+\item{title}{If TRUE (default) shows a plot title derived from the column labels.
+Disable the title with FALSE or provide a custom title as character value.}
+
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_labels}.}
 }
 \description{
 Output a histogram for a single metric variable

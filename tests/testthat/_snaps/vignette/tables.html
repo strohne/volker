@@ -344,7 +344,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>Frequencies of categorical variables</h2>
 <div id="one-variable-frequency-table-of-gender" class="section level3">
 <h3>1. One variable: Frequency table of gender</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">tab_counts_var</span>(data, sd_geschlecht)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">tab_counts_one</span>(data, sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -419,7 +419,7 @@ Missing
 </div>
 <div id="multiple-items-frequency-table-of-adoption-factors" class="section level3">
 <h3>2. Multiple items: Frequency table of adoption factors</h3>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">tab_item_counts</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">tab_counts_items</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -729,7 +729,7 @@ Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.
 </div>
 <div id="two-variables-cross-table-of-innovator-type-by-gender" class="section level3">
 <h3>3. Two variables: Cross table of innovator type by gender</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">tab_group_counts</span>(data, in_adoption, sd_geschlecht)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">tab_counts_one_grouped</span>(data, in_adoption, sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -842,7 +842,7 @@ Total
 <h2>Distributions of metric variables</h2>
 <div id="distribution-table-for-one-metric-variable-age" class="section level3">
 <h3>Distribution table for one metric variable: Age</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">tab_var_metrics</span>(data, sd_alter)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">tab_metrics_one</span>(data, sd_alter)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -932,7 +932,7 @@ n
 </div>
 <div id="distribution-table-for-multiple-metric-items-adoption-factors" class="section level3">
 <h3>Distribution table for multiple metric items: Adoption factors</h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">tab_item_metrics</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">tab_metrics_items</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1359,7 +1359,7 @@ Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.
 </div>
 <div id="group-comparison-of-a-metric-variable-age-by-gender" class="section level3">
 <h3>Group comparison of a metric variable: Age by gender</h3>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">tab_group_metrics</span>(data, sd_alter, sd_geschlecht)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">tab_metrics_one_grouped</span>(data, sd_alter, sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1532,7 +1532,7 @@ Total
 <h2>Multiple metric variables</h2>
 <div id="compare-means-of-multiple-items-adoption-factors-by-gender" class="section level3">
 <h3>Compare means of multiple items: Adoption factors by gender</h3>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">tab_multi_means</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>), sd_geschlecht)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">tab_metrics_items_grouped</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>), sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1764,7 +1764,7 @@ Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.
 </div>
 <div id="correlation-of-items-adoption-factors" class="section level3">
 <h3>Correlation of items: Adoption factors</h3>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">tab_multi_corr</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_adv&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">tab_metrics_items_cor</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_adv&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1857,7 +1857,7 @@ Item
 </tbody>
 </table>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">tab_multi_corr</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_adv&quot;</span>), <span class="fu">starts_with</span>(<span class="st">&quot;cg_nutzen&quot;</span>))</span></code></pre></div>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">tab_metrics_items_cor</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_adv&quot;</span>), <span class="fu">starts_with</span>(<span class="st">&quot;cg_nutzen&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1933,7 +1933,7 @@ of all selected columns for each case.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Add a single index</span></span>
 <span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
 <span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="fu">tab_var_metrics</span>(idx_cg_adoption)</span></code></pre></div>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="fu">tab_metrics_one</span>(idx_cg_adoption)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2040,7 +2040,7 @@ alpha
 <span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co"># Compare the index values by group</span></span>
 <span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
 <span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="fu">tab_group_metrics</span>(idx_cg_adoption, in_adoption)</span></code></pre></div>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="fu">tab_metrics_one_grouped</span>(idx_cg_adoption, in_adoption)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2281,7 +2281,7 @@ Total
 <span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_advantage&quot;</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_fearofuse&quot;</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_social&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  <span class="fu">tab_item_metrics</span>(<span class="fu">starts_with</span>(<span class="st">&quot;idx_cg_adoption&quot;</span>))</span></code></pre></div>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  <span class="fu">tab_metrics_items</span>(<span class="fu">starts_with</span>(<span class="st">&quot;idx_cg_adoption&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2495,7 +2495,7 @@ item labels in the second.</p>
 <span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a></span>
 <span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
 <span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>  <span class="fu">set_item_labels</span>(newlabels) <span class="sc">%&gt;%</span></span>
-<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>  <span class="fu">tab_item_metrics</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_advantage_&quot;</span>))</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>  <span class="fu">tab_metrics_items</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_advantage_&quot;</span>))</span>
 <span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt; Warning: &#39;set_item_labels&#39; is deprecated.</span></span>
 <span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt; Use &#39;set_col_labels&#39; instead.</span></span>
 <span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co">#&gt; See help(&quot;Deprecated&quot;)</span></span></code></pre></div>
@@ -2668,7 +2668,7 @@ Macht mehr Spaß
 <p>You can remove all labels to get a plain dataset</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
 <span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="fu">remove_labels</span>(<span class="fu">everything</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="fu">tab_item_counts</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_advantage_&quot;</span>))</span></code></pre></div>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="fu">tab_counts_items</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_advantage_&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>

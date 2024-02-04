@@ -111,7 +111,7 @@ data %>%
 
 ```{r results='asis'}
 
-tab_group_metrics(data, sd_alter, sd_geschlecht)
+tab_metrics_one_grouped(data, sd_alter, sd_geschlecht)
 
 ```
 

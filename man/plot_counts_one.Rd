@@ -4,7 +4,7 @@
 \alias{plot_counts_one}
 \title{Plot the frequency of  values in one column.}
 \usage{
-plot_counts_one(data, col, numbers = NULL, title = T, .labels = T)
+plot_counts_one(data, col, numbers = NULL, title = T, labels = T)
 }
 \arguments{
 \item{data}{A tibble}
@@ -13,9 +13,10 @@ plot_counts_one(data, col, numbers = NULL, title = T, .labels = T)
 
 \item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
 
-\item{title}{Whether to show a plot title}
+\item{title}{If TRUE (default) shows a plot title derived from the column labels.
+Disable the title with FALSE or provide a custom title as character value.}
 
-\item{.labels}{If True (default) extracts item labels from the attributes, see get_labels()}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_labels}.}
 }
 \description{
 Note: only non-missing cases are used to calculate the percentage.
