@@ -4,7 +4,7 @@
 \alias{tab_counts}
 \title{Output a frequency table}
 \usage{
-tab_counts(data, cols, col_group, ...)
+tab_counts(data, cols, col_group = NULL, ...)
 }
 \arguments{
 \item{data}{A data frame}
@@ -14,9 +14,11 @@ e.g. a single column (without quotes)
 or multiple columns selected by methods such as starts_with()}
 
 \item{col_group}{Optional, a grouping column. The column name without quotes.}
+
+\item{...}{Other parameters passed to the appropriate table function}
 }
 \value{
-A table
+A tibble
 }
 \description{
 The type of frequency table depends on the number of selected columns:

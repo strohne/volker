@@ -12,9 +12,10 @@
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with()
 #' @param col_group Optional, a grouping column. The column name without quotes.
-#' @return A table
+#' @param ... Other parameters passed to the appropriate plot function
+#' @return A ggplot2 plot object
 #' @export
-plot_counts <- function(data, cols, col_group, ...) {
+plot_counts <- function(data, cols, col_group=NULL, ...) {
   # Check
   check_dataframe(data)
 
@@ -60,9 +61,10 @@ plot_counts <- function(data, cols, col_group, ...) {
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
 #' @param col_group Optional, a grouping column (without quotes).
-#' @return A table
+#' @param ... Other parameters passed to the appropriate plot function
+#' @return A ggplot2 plot object
 #' @export
-plot_metrics <- function(data, cols, col_group, ...) {
+plot_metrics <- function(data, cols, col_group=NULL, ...) {
   # Check
   check_dataframe(data)
 

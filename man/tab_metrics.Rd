@@ -4,7 +4,7 @@
 \alias{tab_metrics}
 \title{Output a table with distribution parameters}
 \usage{
-tab_metrics(data, cols, col_group, ...)
+tab_metrics(data, cols, col_group = NULL, ...)
 }
 \arguments{
 \item{data}{A data frame}
@@ -14,9 +14,11 @@ e.g. a single column (without quotes)
 or multiple columns selected by methods such as starts_with().}
 
 \item{col_group}{Optional, a grouping column (without quotes).}
+
+\item{...}{Other parameters passed to the appropriate table function}
 }
 \value{
-A table
+A tibble
 }
 \description{
 The table type depends on the number of selected columns:

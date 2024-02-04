@@ -4,7 +4,7 @@
 \alias{plot_counts}
 \title{Output a frequency plot}
 \usage{
-plot_counts(data, cols, col_group, ...)
+plot_counts(data, cols, col_group = NULL, ...)
 }
 \arguments{
 \item{data}{A data frame}
@@ -14,9 +14,11 @@ e.g. a single column (without quotes)
 or multiple columns selected by methods such as starts_with()}
 
 \item{col_group}{Optional, a grouping column. The column name without quotes.}
+
+\item{...}{Other parameters passed to the appropriate plot function}
 }
 \value{
-A table
+A ggplot2 plot object
 }
 \description{
 The type of frequency plot depends on the number of selected columns:

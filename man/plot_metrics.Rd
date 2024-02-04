@@ -4,7 +4,7 @@
 \alias{plot_metrics}
 \title{Output a plot with distribution parameters such as the mean values}
 \usage{
-plot_metrics(data, cols, col_group, ...)
+plot_metrics(data, cols, col_group = NULL, ...)
 }
 \arguments{
 \item{data}{A data frame}
@@ -14,9 +14,11 @@ e.g. a single column (without quotes)
 or multiple columns selected by methods such as starts_with().}
 
 \item{col_group}{Optional, a grouping column (without quotes).}
+
+\item{...}{Other parameters passed to the appropriate plot function}
 }
 \value{
-A table
+A ggplot2 plot object
 }
 \description{
 The table type depends on the number of selected columns:

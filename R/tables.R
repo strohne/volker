@@ -12,9 +12,10 @@
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with()
 #' @param col_group Optional, a grouping column. The column name without quotes.
-#' @return A table
+#' @param ... Other parameters passed to the appropriate table function
+#' @return A tibble
 #' @export
-tab_counts <- function(data, cols, col_group, ...) {
+tab_counts <- function(data, cols, col_group=NULL, ...) {
   # Check
   check_dataframe(data)
 
@@ -61,9 +62,10 @@ tab_counts <- function(data, cols, col_group, ...) {
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
 #' @param col_group Optional, a grouping column (without quotes).
-#' @return A table
+#' @param ... Other parameters passed to the appropriate table function
+#' @return A tibble
 #' @export
-tab_metrics <- function(data, cols, col_group, ...) {
+tab_metrics <- function(data, cols, col_group=NULL, ...) {
   # Check
   check_dataframe(data)
 
