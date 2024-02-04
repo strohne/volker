@@ -38,8 +38,6 @@ add_idx <- function(data, cols, newcol = NULL, negative = FALSE) {
   }
   newlabel <- paste0("Index: ", prefix)
 
-
-
   idx <- idx %>%
     psych::alpha(check.keys = T)
 

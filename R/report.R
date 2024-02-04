@@ -28,9 +28,23 @@
 report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p", missings = F, ordered = NULL, index=T, title = T, close=T) {
   chunks <- list()
 
+  # Quote col_group
+  if (!missing(col_group)) {
+    # Column without quotes
+    if (rlang::quo_is_symbol(rlang::enquo(col_group))) {
+      col_group <- rlang::enquo(col_group)
+    }
+    # Column as character
+    else {
+      lifecycle::deprecate_warn("1.0.0", "report(col_group = 'Must be a column without quotation marks')")
+      col_group <- rlang::sym(col_group)
+    }
+  }
+
+
+
   # Get item label from the attributes
-  labels <- data %>%
-    get_codebook()
+  labels <-  get_codebook(data)
 
   for (scope in scopes) {
     # Get column candidates
@@ -74,7 +88,7 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
 
 
     # A single categorical variable
-    if (is_var && is_scale == 0 && is.null(col_group)) {
+    if (is_var && is_scale == 0 && missing(col_group)) {
       chunks <- plot_counts(data, !!rlang::sym(scope), numbers = numbers, title = plot_title) %>%
         report_add(chunks, "Plot")
 
@@ -83,7 +97,7 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
     }
 
     # A single metric variable
-    else if (is_var && is_scale != 0 && is.null(col_group)) {
+    else if (is_var && is_scale != 0 && missing(col_group)) {
       chunks <- plot_metrics(data, !!rlang::sym(scope), title = plot_title) %>%
         report_add(chunks, "Plot")
 
@@ -92,25 +106,25 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
     }
 
     # A single categorical variable by group
-    else if (is_var && is_scale == 0 && !is.null(col_group)) {
-      chunks <- plot_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop = prop, numbers = numbers, ordered = ordered, missings = missings, title = plot_title) %>%
+    else if (is_var && is_scale == 0 && !missing(col_group)) {
+      chunks <- plot_counts(data, !!rlang::sym(scope), !!col_group, prop = prop, numbers = numbers, ordered = ordered, missings = missings, title = plot_title) %>%
         report_add(chunks, "Plot")
 
-      chunks <- tab_counts(data, !!rlang::sym(scope), !!rlang::sym(col_group), prop = prop, missings = missings) %>%
+      chunks <- tab_counts(data, !!rlang::sym(scope), !!col_group, prop = prop, missings = missings) %>%
         report_add(chunks, "Table")
     }
 
     # A single metric variable by group
-    else if (is_var && is_scale != 0 && !is.null(col_group)) {
-      chunks <- plot_metrics(data, !!rlang::sym(scope), !!rlang::sym(col_group), title = plot_title) %>%
+    else if (is_var && is_scale != 0 && !missing(col_group)) {
+      chunks <- plot_metrics(data, !!rlang::sym(scope), !!col_group, title = plot_title) %>%
         report_add(chunks, "Plot")
 
-      chunks <- tab_metrics(data, !!rlang::sym(scope), !!rlang::sym(col_group)) %>%
+      chunks <- tab_metrics(data, !!rlang::sym(scope), !!col_group) %>%
         report_add(chunks, "Table")
     }
 
     # Multiple items
-    else if (is_items && is.null(col_group)) {
+    else if (is_items && missing(col_group)) {
       chunks <- plot_counts(data, tidyselect::starts_with(scope), numbers = numbers, ordered = ordered, title = plot_title) %>%
         report_add(chunks, "Plot")
 
@@ -119,11 +133,11 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
     }
 
     # Multiple items by group
-    else if (is_items && !is.null(col_group)) {
-      chunks <- plot_metrics(data, tidyselect::starts_with(scope), !!rlang::sym(col_group), title = plot_title) %>%
+    else if (is_items && !missing(col_group)) {
+      chunks <- plot_metrics(data, tidyselect::starts_with(scope), !!col_group, title = plot_title) %>%
         report_add(chunks, "Plot")
 
-      chunks <- tab_metrics(data, tidyselect::starts_with(scope), !!rlang::sym(col_group)) %>%
+      chunks <- tab_metrics(data, tidyselect::starts_with(scope), !!col_group) %>%
         report_add(chunks, "Table")
     } else {
       warning("Could't find columns to autodetect the table type for the scope ", scope, ". Check your parameters.")
@@ -135,7 +149,7 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
       idx <- add_idx(data, tidyselect::starts_with(scope), newcol = ".idx")
       idx_name <- setdiff(colnames(idx), colnames(data))
 
-      if ((length(idx_name) > 0) && is.null(col_group)) {
+      if ((length(idx_name) > 0) && missing(col_group)) {
 
         chunks <- idx %>%
           plot_metrics(!!rlang::sym(idx_name), title = plot_title) %>%
@@ -147,11 +161,11 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
 
       } else if (length(idx_name) > 0) {
         chunks <- idx %>%
-          plot_metrics(!!rlang::sym(idx_name), !!rlang::sym(col_group), title = plot_title) %>%
+          plot_metrics(!!rlang::sym(idx_name), !!col_group, title = plot_title) %>%
           report_add(chunks, "Index: Plot")
 
         chunks <- idx %>%
-          tab_metrics(!!rlang::sym(idx_name), !!rlang::sym(col_group)) %>%
+          tab_metrics(!!rlang::sym(idx_name), !!col_group) %>%
           report_add(chunks, "Index: Table")
       }
     }

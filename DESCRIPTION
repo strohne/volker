@@ -1,6 +1,6 @@
 Package: volker
 Type: Package
-Title: Report summaries and graphics for survey data.
+Title: Report summaries and graphics for survey data
 Version: 0.0.0.9000
 Date: 2024-02-03
 Authors@R:
@@ -34,6 +34,7 @@ Imports:
 Depends:
   R (>= 4.3)
 Suggests:
+  tidyverse,
   tidytext,
   quanteda,
   ldatuning,

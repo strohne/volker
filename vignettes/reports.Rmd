@@ -42,5 +42,6 @@ report(data, c("sd_geschlecht", "cg_adoption_"))
 data %>% 
   filter(sd_geschlecht != "divers") %>% 
   report("cg_adoption_", "sd_geschlecht")
+
 ```
 

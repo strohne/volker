@@ -127,13 +127,13 @@
       |Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.                  | 2.0 (1.2)| 1.8 (1.0)| 2.0 (1.2)| 4.0 (NA)|
       |Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.         | 2.3 (1.2)| 2.4 (1.2)| 2.3 (1.3)| 3.0 (NA)|
 
----
+# Missing values make no trouble
 
     Code
       .
     Warning <lifecycle_warning_deprecated>
-      [1m[22m`tab_multi_means()` was deprecated in volker 1.0.0.
-      [36mℹ[39m Please use `tab_metrics_items_grouped()` instead.
+      `tab_multi_means()` was deprecated in volker 1.0.0.
+      i Please use `tab_metrics_items_grouped()` instead.
     Output
       
       

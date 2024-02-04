@@ -1,6 +1,5 @@
 # Test table appearance
 
-library(tidyverse)
 library(testthat)
 library(volker)
 
@@ -44,10 +43,12 @@ test_that("Compare means of multiple items", {
 })
 
 # ...with missings
-data %>%
-  bind_rows(tibble(sd_geschlecht = c("X", "X", "X"))) %>%
-  volker::tab_multi_means(starts_with("cg_adoption_"), sd_geschlecht) %>%
-  expect_snapshot()
+test_that("Missing values make no trouble", {
+  data %>%
+    dplyr::bind_rows(tibble(sd_geschlecht = c("X", "X", "X"))) %>%
+    volker::tab_multi_means(starts_with("cg_adoption_"), sd_geschlecht) %>%
+    expect_snapshot()
+})
 
 # Correlation of items
 test_that("Correlation of items", {
