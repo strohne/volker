@@ -8,7 +8,7 @@ knit_plot(pl)
 }
 \arguments{
 \item{pl}{A ggplot object with vlkr_options.
-The vlk_options are added by .plot_add_attributes()
+The vlk_options are added by .to_vlkr_plot()
 and provide information about the number of vertical items (rows)
 and the maximum}
 }

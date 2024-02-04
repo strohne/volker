@@ -1,3 +1,7 @@
+#
+# Functions to handle indexes
+#
+
 #' Calculate the mean value of multiple items
 #'
 #' @param data A dataframe

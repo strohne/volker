@@ -163,7 +163,7 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, .labels = T) {
   }
 
   # Pass row number and label length to the knit_plot() function
-  .plot_add_attributes(pl)
+  .to_vlkr_plot(pl)
 }
 
 #' Plot frequencies cross tabulated with a grouping column
@@ -371,7 +371,7 @@ plot_metrics_one <- function(data, col, title = T, .labels = T) {
     )
 
   # Pass row number and label length to the knit_plot() function
-  .plot_add_attributes(pl, rows=4)
+  .to_vlkr_plot(pl, rows=4)
 }
 
 #' Output averages for multiple variables
@@ -483,7 +483,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, number
     max(na.rm=T)
 
    # Pass row number and label length to the knit_plot() function
-  .plot_add_attributes(pl, maxlab=maxlab)
+  .to_vlkr_plot(pl, maxlab=maxlab)
 }
 
 #' Output averages for multiple variables
@@ -603,7 +603,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, numbers = NULL, title 
     max(na.rm = T)
 
   # Pass row number and label length to the knit_plot() function
-  .plot_add_attributes(pl, maxlab=maxlab)
+  .to_vlkr_plot(pl, maxlab=maxlab)
 }
 
 
@@ -723,7 +723,7 @@ plot_metrics_items_grouped <- function(data, cols, cols_groups, limits = NULL, n
   }
 
   # Pass row number and label length to the knit_plot() function
-  .plot_add_attributes(pl)
+  .to_vlkr_plot(pl)
 }
 
 #' Helper function: plot grouped bar chart
@@ -812,95 +812,17 @@ plot_metrics_items_grouped <- function(data, cols, cols_groups, limits = NULL, n
   }
 
   # Pass row number and label length to the knit_plot() function
-  .plot_add_attributes(pl)
+  .to_vlkr_plot(pl)
 }
 
-#' Helper function to plot means, e.g. for plot_item_metrics and plot_group_metrics
-#'
-#' @param result The result table of tab_item_metrics() or tab_group_metrics()
-#' @param limits The scale limits. Set NULL to extract limits from the labels.
-#' @param numbers The values to print on the bars: "m" or NULL
-#' @param title The plot title or NULL
-#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
-#' @return Plot
-.plot_means <- function(result, limits, numbers, title = NULL, .labels) {
-  if (title == F) {
-    title <- NULL
-  }
-
-  # TODO: minus missing values, output range
-  base_n <- max(result$n)
-
-  pl <- result %>%
-    dplyr::rename(Item = 1) %>%
-    ggplot(aes(Item, y = m)) +
-    geom_point(color = VLKR_POINTCOLOR, size=4, shape=18)
-
-  if (is.null(limits)) {
-    limits <- attr(result, "limits")
-  }
-
-  # Set the scale
-  scale <- prepare_scale(attr(result,"scale"))
-  if (length(scale) > 0) {
-    pl <- pl +
-      scale_y_continuous(labels = ~ label_scale(., scale) )
-  } else {
-    pl <- pl +
-      scale_y_continuous()
-  }
-
-  # Add scales, labels and theming
-  pl <- pl +
-    scale_x_discrete(labels = scales::label_wrap(40)) +
-    ylab("Mean values") +
-    coord_flip(ylim = limits) +
-    theme(
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank(),
-      axis.text.y = element_text(size = 11),
-      legend.title = element_blank(),
-      plot.caption = element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
-
-  if (!is.null(numbers)) {
-    pl <- pl +
-      geom_text(
-        # aes(label=paste0("⌀", round(m,1))),
-        aes(label = round(m, 1)),
-        #position = position_stack(vjust = 0.5),
-        hjust = -1,
-        vjust=0.5,
-        size = 3,
-        color = "black"
-      )
-  }
-
-  if (!is.null(.labels)) {
-    pl <- pl + ggtitle(label = title)
-    pl <- pl + labs(caption = paste0("n=", base_n))
-  }
-
-  if (!is.null(title)) {
-    pl <- pl + ggtitle(label = title)
-  }
-
-  # Pass row number and label length to the knit_plot() function
-  .plot_add_attributes(pl)
-}
-
-
-#' Add the volker classes and options
+#' Add the volker class and options
 #'
 #' @param pl A ggplot2 object
-#' @param rows The number of items on the vertical axis
-#' @param maxlab The character length of the longest label to be plotted
+#' @param rows The number of items on the vertical axis. Will be automatically determined when NULL.
+#' @param maxlab The character length of the longest label to be plotted. Will be automatically determined when NULL.
 #'               on the vertical axis
 #' @return The plot
-.plot_add_attributes <- function(pl, rows = NULL, maxlab=NULL) {
+.to_vlkr_plot <- function(pl, rows = NULL, maxlab=NULL) {
   class(pl) <- c("vlkr_plt", class(pl))
 
   plot_data <- ggplot_build(pl)
@@ -940,7 +862,7 @@ plot_metrics_items_grouped <- function(data, cols, cols_groups, limits = NULL, n
 #' - an offset of one bar above and one bar below
 #'
 #' @param pl A ggplot object with vlkr_options.
-#'           The vlk_options are added by .plot_add_attributes()
+#'           The vlk_options are added by .to_vlkr_plot()
 #'           and provide information about the number of vertical items (rows)
 #'           and the maximum
 #' @return Character string containing a html image tag, including the base64 encoded image

@@ -143,8 +143,7 @@ tab_counts_one <- function(data, col, .labels = T, .formatted = T) {
   # Build table
   result <- bind_rows(result, result_total, result_missing)
 
-  class(result) <- c("vlkr_tbl", class(result))
-  result
+  .to_vlk_tab(result)
 }
 
 #' Output frequencies cross tabulated with a grouping column
@@ -325,9 +324,7 @@ tab_counts_one_grouped <- function(data, col, col_group, values = c("n", "p"), p
     }
   }
 
-  attr(result, "digits") <- 0
-  class(result) <- c("vlkr_tbl", class(result))
-  result
+  .to_vlk_tab(result, digits= 0)
 }
 
 #' Output frequencies for multiple variables
@@ -470,10 +467,7 @@ tab_counts_items <- function(data, cols, values = c("n", "p"), missings=F, .form
     result <- rename(result, Item = item)
   }
 
-
-  attr(result, "digits") <- 0
-  class(result) <- c("vlkr_tbl", class(result))
-  result
+  .to_vlk_tab(result, digits= 0)
 }
 
 
@@ -570,8 +564,7 @@ tab_metrics_one <- function(data, col, digits = 1, .labels = T) {
       dplyr::rename({{ label }} := {{ col }})
   }
 
-  class(result) <- c("vlkr_tbl", class(result))
-  result
+  .to_vlk_tab(result)
 }
 
 
@@ -661,9 +654,7 @@ tab_metrics_one_grouped <- function(data, col, col_group, .negative = F, digits 
   # TODO: Add limits
   # attr(data[[newcol]],"limits")
 
-  attr(result, "digits") <- digits
-  class(result) <- c("vlkr_tbl", setdiff(class(result), "skim_df"))
-  result
+  .to_vlk_tab(result, digits= digits)
 }
 
 
@@ -743,9 +734,7 @@ tab_metrics_items <- function(data, cols, digits = 1, .negative = F, .labels = T
     result <- rename(result, Item = item)
   }
 
-  attr(result, "digits") <- digits
-  class(result) <- c("vlkr_tbl", class(result))
-  result
+  .to_vlk_tab(result, digits= digits)
 }
 
 
@@ -904,9 +893,7 @@ tab_metrics_items_grouped <- function(data, cols, cols_groups, values = c("mean"
   }
 
 
-  attr(result, "digits") <- digits
-  class(result) <- c("vlkr_tbl", class(result))
-  result
+  .to_vlk_tab(result, digits= digits)
 }
 
 
@@ -1006,11 +993,25 @@ tab_metrics_items_cor <- function(data, cols1, cols2, method = "p", significant 
     tidyr::pivot_wider(names_from = "target", values_from = "value") %>%
     rename(Item = item)
 
-  attr(result, "digits") <- digits
-  class(result) <- c("vlkr_tbl", class(result))
-  result
+  .to_vlk_tab(result, digits= digits)
 }
 
+#' Add vlkr_tbl class
+#'
+#' Additionally, removes the skim_df class if present
+#'
+#' @param data A tibble
+#' @param digits Set the plot digits. If NULL (default), no digits are set.
+#' @retur A tibble of class vlkr_tbl
+.to_vlk_tab <- function(data, digits=NULL) {
+
+  if (!is.null(digits)) {
+    attr(data, "digits") <- digits
+  }
+
+  class(data) <- c("vlkr_tbl", setdiff(class(data), "skim_df"))
+  data
+}
 
 #' Knit volker tables
 #'
