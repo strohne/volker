@@ -175,9 +175,8 @@ vignette](vignettes/introduction.Rmd).
 
 ## Installation
 
-As with all other packages you’ll have to install the package and load
-the library first. You can install the development version from GitHub
-using remotes:
+As with all other packages you’ll have to install the package first. You
+can install the development version from GitHub using remotes:
 
     if (!require(remotes)) { install.packages("remotes") }
     remotes::install_github("strohne/volker")
@@ -186,7 +185,7 @@ After installing the package, load it:
 
     library(volker)
 
-Then use it:
+Finally, use it:
 
     # Example data
     data <- volker::chatgpt

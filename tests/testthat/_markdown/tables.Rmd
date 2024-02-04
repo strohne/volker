@@ -31,52 +31,52 @@ data <- set_item_labels(data, tibble("sd_alter", "Alter"))
 
 ### 1. One variable: Frequency table of gender
 ```{r results='asis'}
-tab_counts_var(data, sd_geschlecht)
+tab_counts_one(data, sd_geschlecht)
 ```
 
 ### 2. Multiple items: Frequency table of adoption factors
 ```{r results='asis'}
-tab_item_counts(data, starts_with("cg_adoption_"))
+tab_counts_items(data, starts_with("cg_adoption_"))
 ```
 
 
 ### 3. Two variables: Cross table of innovator type by gender
 
 ```{r results='asis'}
-tab_group_counts(data, in_adoption, sd_geschlecht)
+tab_counts_one_grouped(data, in_adoption, sd_geschlecht)
 ```
 
 ## Distributions of metric variables
 
 ### Distribution table for one metric variable: Age
 ```{r results='asis'}
-tab_var_metrics(data, sd_alter)
+tab_metrics_one(data, sd_alter)
 ```
 
 ### Distribution table for multiple metric items: Adoption factors
 ```{r results='asis'}
-tab_item_metrics(data, starts_with("cg_adoption_"))
+tab_metrics_items(data, starts_with("cg_adoption_"))
 ```
 
 
 ### Group comparison of a metric variable: Age by gender
 
 ```{r results='asis'}
-tab_group_metrics(data, sd_alter, sd_geschlecht)
+tab_metrics_one_grouped(data, sd_alter, sd_geschlecht)
 ```
 
 ## Multiple metric variables
 
 ### Compare means of multiple items: Adoption factors by gender
 ```{r results='asis'}
-tab_multi_means(data, starts_with("cg_adoption_"), sd_geschlecht)
+tab_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_geschlecht)
 ```
 
 ### Correlation of items: Adoption factors
 ```{r results='asis'}
-tab_multi_corr(data, starts_with("cg_adoption_adv"))
+tab_metrics_items_cor(data, starts_with("cg_adoption_adv"))
 
-tab_multi_corr(data, starts_with("cg_adoption_adv"), starts_with("cg_nutzen"))
+tab_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("cg_nutzen"))
 ```
 
 # Scales
@@ -94,12 +94,12 @@ are printed by `tab_var_metrics()` or `tab_item_metrics()`.
 # Add a single index
 data %>%
   add_idx(starts_with("cg_adoption_")) %>%
-  tab_var_metrics(idx_cg_adoption)
+  tab_metrics_one(idx_cg_adoption)
 
 # Compare the index values by group
 data %>%
   add_idx(starts_with("cg_adoption_")) %>%
-  tab_group_metrics(idx_cg_adoption, in_adoption)
+  tab_metrics_one_grouped(idx_cg_adoption, in_adoption)
 ```
 
 
@@ -110,7 +110,7 @@ data %>%
   add_idx(starts_with("cg_adoption_advantage")) %>%
   add_idx(starts_with("cg_adoption_fearofuse")) %>%
   add_idx(starts_with("cg_adoption_social")) %>%
-  tab_item_metrics(starts_with("idx_cg_adoption"))
+  tab_metrics_items(starts_with("idx_cg_adoption"))
 ```
 
 
@@ -132,7 +132,7 @@ newlabels <- tribble(
 
 data %>%
   set_item_labels(newlabels) %>%
-  tab_item_metrics(starts_with("cg_adoption_advantage_"))
+  tab_metrics_items(starts_with("cg_adoption_advantage_"))
 ```
 
 
@@ -141,6 +141,6 @@ You can remove all labels to get a plain dataset
 ```{r results='asis'}
 data %>%
   remove_labels(everything()) %>%
-  tab_item_counts(starts_with("cg_adoption_advantage_"))
+  tab_counts_items(starts_with("cg_adoption_advantage_"))
 ```
 

@@ -10,37 +10,37 @@ data <- volker::prepare(data)
 
 # Frequency table
 test_that("Frequency table", {
-  expect_snapshot(volker::tab_var_counts(data, sd_geschlecht))
+  expect_snapshot(volker::tab_counts_one(data, sd_geschlecht))
 })
 
 # Distribution table for age
 test_that("Distribution table for age", {
-  expect_snapshot(volker::tab_var_metrics(data, sd_alter))
+  expect_snapshot(volker::tab_metrics_one(data, sd_alter))
 })
 
 # Frequency table for multiple categorical variables
 test_that("Frequency table for multiple categorical variables", {
-  expect_snapshot(volker::tab_item_counts(data, starts_with("cg_adoption_"), missings = T))
+  expect_snapshot(volker::tab_counts_items(data, starts_with("cg_adoption_"), missings = T))
 })
 
 # Distribution table for multiple metric items
 test_that("Distribution table for multiple metric items", {
-  expect_snapshot(volker::tab_item_metrics(data, starts_with("cg_adoption_")))
+  expect_snapshot(volker::tab_metrics_items(data, starts_with("cg_adoption_")))
 })
 
 # Cross table of categorical variables
 test_that("Cross table of categorical variables", {
-  expect_snapshot(volker::tab_group_counts(data, in_adoption, sd_geschlecht))
+  expect_snapshot(volker::tab_counts_one_grouped(data, in_adoption, sd_geschlecht))
 })
 
 # Group comparison of a metric variable
 test_that("Group comparison of a metric variable", {
-  expect_snapshot(volker::tab_group_metrics(data, sd_alter, sd_geschlecht))
+  expect_snapshot(volker::tab_metrics_one_grouped(data, sd_alter, sd_geschlecht))
 })
 
 # Compare means of multiple items
 test_that("Compare means of multiple items", {
-  expect_snapshot(volker::tab_multi_means(data, starts_with("cg_adoption_"), sd_geschlecht))
+  expect_snapshot(volker::tab_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_geschlecht))
 })
 
 # ...with missings
@@ -51,6 +51,6 @@ data %>%
 
 # Correlation of items
 test_that("Correlation of items", {
-  expect_snapshot(volker::tab_multi_corr(data, starts_with("cg_adoption_")))
+  expect_snapshot(volker::tab_metrics_items_cor(data, starts_with("cg_adoption_")))
 })
 

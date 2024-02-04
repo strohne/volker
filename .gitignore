@@ -8,3 +8,4 @@ inst/doc
 private
 tests/testthat/_markdown/*.html
 *_cache/
+tests/testthat/_snaps/vignette/*.new.html

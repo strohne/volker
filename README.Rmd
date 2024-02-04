@@ -125,7 +125,7 @@ For more example code, see the [introductionary vignette](vignettes/introduction
 
 
 ## Installation
-As with all other packages you'll have to install the package and load the library first.
+As with all other packages you'll have to install the package first.
 You can install the development version from GitHub using remotes:
 
 ```
@@ -139,7 +139,7 @@ library(volker)
 
 ```
 
-Then use it:
+Finally, use it:
 
 ```
 # Example data

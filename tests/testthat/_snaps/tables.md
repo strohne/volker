@@ -1,7 +1,7 @@
 # Frequency table
 
     Code
-      volker::tab_var_counts(data, sd_geschlecht)
+      volker::tab_counts_one(data, sd_geschlecht)
     Output
       
       
@@ -16,7 +16,7 @@
 # Distribution table for age
 
     Code
-      volker::tab_var_metrics(data, sd_alter)
+      volker::tab_metrics_one(data, sd_alter)
     Output
       
       
@@ -35,7 +35,7 @@
 # Frequency table for multiple categorical variables
 
     Code
-      volker::tab_item_counts(data, starts_with("cg_adoption_"), missings = T)
+      volker::tab_counts_items(data, starts_with("cg_adoption_"), missings = T)
     Output
       
       
@@ -57,7 +57,7 @@
 # Distribution table for multiple metric items
 
     Code
-      volker::tab_item_metrics(data, starts_with("cg_adoption_"))
+      volker::tab_metrics_items(data, starts_with("cg_adoption_"))
     Output
       
       
@@ -79,7 +79,7 @@
 # Cross table of categorical variables
 
     Code
-      volker::tab_group_counts(data, in_adoption, sd_geschlecht)
+      volker::tab_counts_one_grouped(data, in_adoption, sd_geschlecht)
     Output
       
       
@@ -93,7 +93,7 @@
 # Group comparison of a metric variable
 
     Code
-      volker::tab_group_metrics(data, sd_alter, sd_geschlecht)
+      volker::tab_metrics_one_grouped(data, sd_alter, sd_geschlecht)
     Output
       
       
@@ -107,7 +107,8 @@
 # Compare means of multiple items
 
     Code
-      volker::tab_multi_means(data, starts_with("cg_adoption_"), sd_geschlecht)
+      volker::tab_metrics_items_grouped(data, starts_with("cg_adoption_"),
+      sd_geschlecht)
     Output
       
       
@@ -130,6 +131,9 @@
 
     Code
       .
+    Warning <lifecycle_warning_deprecated>
+      [1m[22m`tab_multi_means()` was deprecated in volker 1.0.0.
+      [36mℹ[39m Please use `tab_metrics_items_grouped()` instead.
     Output
       
       
@@ -151,7 +155,7 @@
 # Correlation of items
 
     Code
-      volker::tab_multi_corr(data, starts_with("cg_adoption_"))
+      volker::tab_metrics_items_cor(data, starts_with("cg_adoption_"))
     Output
       
       

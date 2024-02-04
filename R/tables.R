@@ -5,7 +5,7 @@
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .formatted Set to FALSE to prevent calculating percents from proportions
 #' @export
-tab_var_counts <- function(data, col, .labels = T, .formatted = T) {
+tab_counts_one <- function(data, col, .labels = T, .formatted = T) {
   # Check parameters
   check_dataframe(data)
 
@@ -58,7 +58,7 @@ tab_var_counts <- function(data, col, .labels = T, .formatted = T) {
 #' @param .formatted Set to FALSE to prevent calculating percents from proportions
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-tab_group_counts <- function(data, col, col_group, values = c("n", "p"), prop = "total", missings = F, .formatted = T, .labels = T) {
+tab_counts_one_grouped <- function(data, col, col_group, values = c("n", "p"), prop = "total", missings = F, .formatted = T, .labels = T) {
 
   # Check parameters
   check_dataframe(data)
@@ -243,7 +243,7 @@ tab_group_counts <- function(data, col, col_group, values = c("n", "p"), prop = 
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .quiet Set to true to suppress printing the output
 #' @export
-tab_item_counts <- function(data, cols, values = c("n", "p"), missings=F, .formatted = T, .labels = T) {
+tab_counts_items <- function(data, cols, values = c("n", "p"), missings=F, .formatted = T, .labels = T) {
   # Check parameters
   check_dataframe(data)
 
@@ -377,6 +377,46 @@ tab_item_counts <- function(data, cols, values = c("n", "p"), missings=F, .forma
 }
 
 
+#' Compare the values in multiple items by a grouping column.
+#'
+#' TODO: implement -> focus one category and show n / p
+#'
+#' @param data A tibble
+#' @param cols The item columns that hold the values to summarize
+#' @param cols_group The columns holding groups to compare
+#' @param values The output values, n or p or both
+#' @param category The category within the items to focus
+#' @param digits The digits to print
+#' @param .negative If True (default), negative values are recoded to missing values
+#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @keywords internal
+#' @export
+tab_counts_items_grouped <- function(data, cols, cols_groups, values = c("n", "p"), category = NULL, digits = 1, .labels = T) {
+  # Check parameters
+  check_dataframe(data)
+  stop("Not implemented yet")
+}
+
+#' Correlate the values in multiple items
+#'
+#' TODO: implement -> calculate npmi or similar for one value
+#'
+#' @param data A tibble
+#' @param cols1 The item columns
+#' @param cols2 The item columns
+#' @param values The output values
+#' @param category The category within the items to focus
+#' @param digits The digits to print
+#' @param .negative If True (default), negative values are recoded to missing values
+#' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
+#' @keywords internal
+#' @export
+tab_counts_items_cor <- function(data, cols1, cols2, values = c("n", "p"), category = NULL, digits = 1, .labels = T) {
+  # Check parameters
+  check_dataframe(data)
+  stop("Not implemented yet")
+}
+
 #' Output a five point summary table for the values in multiple columns
 #'
 #' @param data A tibble
@@ -384,7 +424,7 @@ tab_item_counts <- function(data, cols, values = c("n", "p"), missings=F, .forma
 #' @param digits The digits to print
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-tab_var_metrics <- function(data, col, digits = 1, .labels = T) {
+tab_metrics_one <- function(data, col, digits = 1, .labels = T) {
   # Check parameters
   check_dataframe(data)
 
@@ -444,7 +484,7 @@ tab_var_metrics <- function(data, col, digits = 1, .labels = T) {
 #' @param digits The digits to print
 #' @param .labels If TRUE (default) extracts item labels from the attributes, see get_labels()
 #' @export
-tab_group_metrics <- function(data, col, col_group, .negative = F, digits = 1, .labels = T) {
+tab_metrics_one_grouped <- function(data, col, col_group, .negative = F, digits = 1, .labels = T) {
   # Check parameters
   check_dataframe(data)
 
@@ -535,7 +575,7 @@ tab_group_metrics <- function(data, col, col_group, .negative = F, digits = 1, .
 #' @param .negative If True (default), negative values are recoded to missing values
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-tab_item_metrics <- function(data, cols, digits = 1, .negative = F, .labels = T) {
+tab_metrics_items <- function(data, cols, digits = 1, .negative = F, .labels = T) {
   # Check parameters
   check_dataframe(data)
 
@@ -622,7 +662,7 @@ tab_item_metrics <- function(data, cols, digits = 1, .negative = F, .labels = T)
 #' @param .negative If True (default), negative values are recoded to missing values
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-tab_multi_means <- function(data, cols, cols_groups, values = c("mean", "sd"), digits = 1, .negative = F, .labels = T) {
+tab_metrics_items_grouped <- function(data, cols, cols_groups, values = c("mean", "sd"), digits = 1, .negative = F, .labels = T) {
   # Check parameters
   check_dataframe(data)
 
@@ -779,7 +819,7 @@ tab_multi_means <- function(data, cols, cols_groups, values = c("mean", "sd"), d
 #' @param significant Only show significant values
 #' @param digits The digits to print
 #' @export
-tab_multi_corr <- function(data, cols1, cols2, method = "p", significant = F, digits = 2) {
+tab_metrics_items_cor <- function(data, cols1, cols2, method = "p", significant = F, digits = 2) {
   # Check parameters
   check_dataframe(data)
 
@@ -932,14 +972,3 @@ print.vlkr_tbl <- function(obj) {
   }
 }
 
-#' Alias for tab_var_counts
-#'
-#' @rdname tab_var_counts
-#' @export
-tab_counts_var <- tab_var_counts
-
-
-#' Alias for tab_var_metrics
-#' @rdname tab_var_metrics
-#' @export
-tab_metrics_var <- tab_var_metrics

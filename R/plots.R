@@ -8,11 +8,11 @@
 #' @param title Whether to show a plot title
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-plot_var_counts <- function(data, col, numbers = NULL, title = T, .labels = T) {
+plot_counts_one <- function(data, col, numbers = NULL, title = T, .labels = T) {
   check_dataframe(data)
 
   result <- data %>%
-    tab_var_counts({{ col }}, .labels = .labels, .formatted = F)
+    tab_counts_one({{ col }}, .labels = .labels, .formatted = F)
 
   # TODO: implement meta data property in tab_var_counts()
   if (title == T) {
@@ -86,7 +86,7 @@ plot_var_counts <- function(data, col, numbers = NULL, title = T, .labels = T) {
 #' @param .labels If TRUE (default) extracts item labels from the attributes, see get_labels()
 #' @param .category Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
 #' @export
-plot_group_counts <- function(data, col, col_group, numbers = NULL, prop = "total", ordered = NULL, missings = F, title = T, .labels = T, .category = NULL) {
+plot_counts_one_grouped <- function(data, col, col_group, numbers = NULL, prop = "total", ordered = NULL, missings = F, title = T, .labels = T, .category = NULL) {
 
   # Check columns
   check_dataframe(data)
@@ -172,7 +172,7 @@ plot_group_counts <- function(data, col, col_group, numbers = NULL, prop = "tota
 #' @param .category Set a character value to focus only selected categories. In case of boolean values, automatically, only one category is plotted. Set to FALSE to plot all categories.
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-plot_item_counts <- function(data, cols, numbers = NULL, ordered = NULL, missings=F, title = T, .labels = T, .category = NULL) {
+plot_counts_items <- function(data, cols, numbers = NULL, ordered = NULL, missings=F, title = T, .labels = T, .category = NULL) {
   # Check parameters
   check_dataframe(data)
 
@@ -231,7 +231,7 @@ plot_item_counts <- function(data, cols, numbers = NULL, ordered = NULL, missing
 #' @param col The columns holding metric values
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
-plot_var_metrics <- function(data, col, title = T, .labels = T) {
+plot_metrics_one <- function(data, col, title = T, .labels = T) {
   # Check parameters
   check_dataframe(data)
 
@@ -285,7 +285,7 @@ plot_var_metrics <- function(data, col, title = T, .labels = T) {
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .negative If False (default) negative values are recoded as missing values
 #' @export
-plot_group_metrics <- function(data, col, col_group, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
+plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
   # Check parameters
   check_dataframe(data)
 
@@ -397,7 +397,7 @@ plot_group_metrics <- function(data, col, col_group, limits = NULL, numbers = NU
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @param .negative If False (default) negative values are recoded as missing values
 #' @export
-plot_item_metrics <- function(data, cols, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
+plot_metrics_items <- function(data, cols, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
   # Check parameters
   check_dataframe(data)
 
@@ -519,7 +519,7 @@ plot_item_metrics <- function(data, cols, limits = NULL, numbers = NULL, title =
 #' @param .negative If False (default) negative values are recoded as missing values
 #' @return A plot
 #' @export
-plot_multi_means <- function(data, cols, cols_groups, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
+plot_metrics_items_grouped <- function(data, cols, cols_groups, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
   # Check parameters
   check_dataframe(data)
 
