@@ -17,7 +17,7 @@
 #' @export
 tab_counts <- function(data, cols, col_group=NULL, ...) {
   # Check
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -67,7 +67,7 @@ tab_counts <- function(data, cols, col_group=NULL, ...) {
 #' @export
 tab_metrics <- function(data, cols, col_group=NULL, ...) {
   # Check
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -107,7 +107,7 @@ tab_metrics <- function(data, cols, col_group=NULL, ...) {
 #' @export
 tab_counts_one <- function(data, col, .labels = T, .formatted = T) {
   # Check parameters
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   result <- data %>%
     dplyr::count({{ col }}) %>%
@@ -161,9 +161,9 @@ tab_counts_one <- function(data, col, .labels = T, .formatted = T) {
 tab_counts_one_grouped <- function(data, col, col_group, values = c("n", "p"), prop = "total", missings = F, .formatted = T, .labels = T) {
 
   # Check parameters
-  check_dataframe(data)
-  has_column(data, {{ col }})
-  has_column(data, {{ col_group }})
+  check_is_dataframe(data)
+  check_has_column(data, {{ col }})
+  check_has_column(data, {{ col_group }})
 
   # Remove missings
   if (!missings) {
@@ -345,7 +345,7 @@ tab_counts_one_grouped <- function(data, col, col_group, values = c("n", "p"), p
 #' @export
 tab_counts_items <- function(data, cols, values = c("n", "p"), missings=F, .formatted = T, .labels = T) {
   # Check parameters
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   # Remove missings
   if (!missings) {
@@ -493,7 +493,7 @@ tab_counts_items <- function(data, cols, values = c("n", "p"), missings=F, .form
 #' @export
 tab_counts_items_grouped <- function(data, cols, cols_groups, values = c("n", "p"), category = NULL, digits = 1, .labels = T) {
   # Check parameters
-  check_dataframe(data)
+  check_is_dataframe(data)
   stop("Not implemented yet")
 }
 
@@ -513,7 +513,7 @@ tab_counts_items_grouped <- function(data, cols, cols_groups, values = c("n", "p
 #' @export
 tab_counts_items_cor <- function(data, cols1, cols2, values = c("n", "p"), category = NULL, digits = 1, .labels = T) {
   # Check parameters
-  check_dataframe(data)
+  check_is_dataframe(data)
   stop("Not implemented yet")
 }
 
@@ -526,7 +526,7 @@ tab_counts_items_cor <- function(data, cols1, cols2, values = c("n", "p"), categ
 #' @export
 tab_metrics_one <- function(data, col, digits = 1, .labels = T) {
   # Check parameters
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   result <- data %>%
     skim_metrics({{ col }}) %>%
@@ -586,7 +586,7 @@ tab_metrics_one <- function(data, col, digits = 1, .labels = T) {
 #' @export
 tab_metrics_one_grouped <- function(data, col, col_group, .negative = F, digits = 1, .labels = T) {
   # Check parameters
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   # TODO: warn if any negative values were recoded
   # TODO: only for the metric column (col parameter)
@@ -677,7 +677,7 @@ tab_metrics_one_grouped <- function(data, col, col_group, .negative = F, digits 
 #' @export
 tab_metrics_items <- function(data, cols, digits = 1, .negative = F, .labels = T) {
   # Check parameters
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   cols <- enquo(cols)
 
@@ -764,7 +764,7 @@ tab_metrics_items <- function(data, cols, digits = 1, .negative = F, .labels = T
 #' @export
 tab_metrics_items_grouped <- function(data, cols, cols_groups, values = c("mean", "sd"), digits = 1, .negative = F, .labels = T) {
   # Check parameters
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   # Get positions of group cols
   cols_groups <- tidyselect::eval_select(expr = enquo(cols_groups), data = data)
@@ -921,7 +921,7 @@ tab_metrics_items_grouped <- function(data, cols, cols_groups, values = c("mean"
 #' @export
 tab_metrics_items_cor <- function(data, cols1, cols2, method = "p", significant = F, digits = 2) {
   # Check parameters
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   # # Get positions of cols
   # cols1 <- tidyselect::eval_select(

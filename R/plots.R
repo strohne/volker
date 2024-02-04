@@ -17,7 +17,7 @@
 #' @export
 plot_counts <- function(data, cols, col_group=NULL, ...) {
   # Check
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -66,7 +66,7 @@ plot_counts <- function(data, cols, col_group=NULL, ...) {
 #' @export
 plot_metrics <- function(data, cols, col_group=NULL, ...) {
   # Check
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -108,7 +108,7 @@ plot_metrics <- function(data, cols, col_group=NULL, ...) {
 #' @param .labels If True (default) extracts item labels from the attributes, see get_labels()
 #' @export
 plot_counts_one <- function(data, col, numbers = NULL, title = T, .labels = T) {
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   result <- data %>%
     tab_counts_one({{ col }}, .labels = .labels, .formatted = F)
@@ -188,9 +188,9 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, .labels = T) {
 plot_counts_one_grouped <- function(data, col, col_group, numbers = NULL, prop = "total", ordered = NULL, missings = F, title = T, .labels = T, .category = NULL) {
 
   # Check columns
-  check_dataframe(data)
-  has_column(data, {{ col }})
-  has_column(data, {{ col_group }})
+  check_is_dataframe(data)
+  check_has_column(data, {{ col }})
+  check_has_column(data, {{ col_group }})
 
   if (prop == "cols") {
     stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
@@ -273,7 +273,7 @@ plot_counts_one_grouped <- function(data, col, col_group, numbers = NULL, prop =
 #' @export
 plot_counts_items <- function(data, cols, numbers = NULL, ordered = NULL, missings=F, title = T, .labels = T, .category = NULL) {
   # Check parameters
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   result <- data %>%
     tab_counts_items(cols, values = "n", .formatted = F, missings=missings)
@@ -332,7 +332,7 @@ plot_counts_items <- function(data, cols, numbers = NULL, ordered = NULL, missin
 #' @export
 plot_metrics_one <- function(data, col, title = T, .labels = T) {
   # Check parameters
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   data <- drop_na(data, {{ col }})
 
@@ -386,7 +386,7 @@ plot_metrics_one <- function(data, col, title = T, .labels = T) {
 #' @export
 plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
   # Check parameters
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   # TODO: warn if any negative values were recoded
   # TODO: only for the metric column (col parameter)
@@ -498,7 +498,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, number
 #' @export
 plot_metrics_items <- function(data, cols, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
   # Check parameters
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   # Pivot items
   result <- data %>%
@@ -620,7 +620,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, numbers = NULL, title 
 #' @export
 plot_metrics_items_grouped <- function(data, cols, cols_groups, limits = NULL, numbers = NULL, title = T, .labels = T, .negative = F) {
   # Check parameters
-  check_dataframe(data)
+  check_is_dataframe(data)
 
   # Get positions of group cols
   cols_groups <- tidyselect::eval_select(expr = enquo(cols_groups), data = data)
