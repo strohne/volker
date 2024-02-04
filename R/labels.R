@@ -12,8 +12,7 @@
 #'                       the attribute values.
 #'                       In case a column has a levels attribute, the levels
 #' @export
-
-get_labels <- function(data, cols) {
+get_codebook <- function(data, cols) {
   if (!missing(cols)) {
     data <- dplyr::select(data, {{ cols }})
   }
@@ -101,7 +100,7 @@ get_labels <- function(data, cols) {
 #' @return A character string
 get_title <- function(data, cols) {
   labels <- data %>%
-    get_labels({{ cols }}) %>%
+    get_codebook({{ cols }}) %>%
     tidyr::drop_na(item_label)
 
   if (nrow(labels) > 0) {
@@ -120,6 +119,7 @@ get_title <- function(data, cols) {
 #' @param data The labeled data frame
 #' @param cols A tidy variable selection
 #' @param negative Whether to include negative values
+#' @return A list or NULL
 #' @export
 get_limits <- function(data, cols, negative = F) {
 
@@ -131,7 +131,7 @@ get_limits <- function(data, cols, negative = F) {
 
   # Second, try to get limits from the column labels
   if (is.null(values)) {
-    values <- get_labels(data, {{ cols }}) %>%
+    values <- get_codebook(data, {{ cols }}) %>%
       dplyr::distinct(value_name) %>%
       pull(value_name)
     values <- suppressWarnings(as.numeric(values))
@@ -171,7 +171,7 @@ get_limits <- function(data, cols, negative = F) {
 #' @param cols The tidy selection
 #' @param extract Whether to extract numeric values from characters
 #' @return 0 = an undirected scale, -1 = descending values, 1 = ascending values
-get_scale <- function(data, cols, extract = T) {
+get_direction <- function(data, cols, extract = T) {
   data <- dplyr::select(data, {{ cols }})
 
   # Get all values
@@ -232,12 +232,14 @@ label_scale <- function(x, scale) {
 
 #' Get a column label
 #'
+#' TODO: REPLACE BY get_title()
+#'
 #' @param data Labeled data frame
 #' @param col The column name
 #' @return A character value
 get_col_label <- function(data, col) {
   labels <- data %>%
-    get_labels({{ col }}) %>%
+    get_codebook({{ col }}) %>%
     dplyr::distinct(item_name, item_label) %>%
     na.omit()
 
@@ -255,6 +257,8 @@ get_col_label <- function(data, col) {
 }
 
 #' Set column labels by their comment attribute
+#'
+#' TODO: RENAME TO set_title?
 #'
 #' @param data A data frame
 #' @param cols Tidyselect column names (e. g. a single column name without quotes)
@@ -332,7 +336,7 @@ set_item_labels <- function(data, labels) {
 #' @param cols The tidyselect columns
 replace_item_values <- function(result, data, cols) {
   labels_items <- data %>%
-    get_labels({{ cols }}) %>%
+    get_codebook({{ cols }}) %>%
     dplyr::distinct(item_name, item_label) %>%
     na.omit()
 
@@ -354,7 +358,7 @@ replace_item_values <- function(result, data, cols) {
 #' See https://github.com/Bioconductor/Biobase
 #'
 #' @param x Character vector
-#' @param ignore.case Whether case matters
+#' @param ignore.case Whether case matters (default)
 #' @param trim Whether non alphabetic characters should be trimmed
 #' @return The longest common prefix of the strings
 #' @export
@@ -367,6 +371,10 @@ get_prefix <- function(x, ignore.case = FALSE, trim = FALSE) {
 
   if (length(x) == 0) {
     return (NA)
+  }
+
+  if (length(x) == 1) {
+    return (x)
   }
 
   nc <- nchar(x, type = "char")

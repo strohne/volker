@@ -24,7 +24,7 @@ tab_counts_items(
 
 \item{percent}{Set to FALSE to prevent calculating percents from proportions}
 
-\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_labels}.}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.}
 }
 \description{
 TODO: Reorder boolean categories: first TRUE, then FALSE

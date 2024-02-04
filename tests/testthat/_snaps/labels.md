@@ -1,7 +1,7 @@
 # Labels
 
     Code
-      volker::get_labels(data)
+      volker::get_codebook(data)
     Output
       # A tibble: 94 x 9
          item_group item_class item_name item_label value_name value_label item_prefix

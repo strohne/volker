@@ -15,7 +15,7 @@ tab_metrics_one(data, col, negative = F, digits = 1, labels = T)
 
 \item{digits}{The number of digits to print.}
 
-\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_labels}.}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.}
 }
 \description{
 Output a five point summary table for the values in multiple columns

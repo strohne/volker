@@ -104,7 +104,7 @@ tab_metrics <- function(data, cols, col_group=NULL, ...) {
 #' @param col The column holding values to count
 #' @param missings Include missing values in the output (default TRUE)
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.
 #' @export
 tab_counts_one <- function(data, col, missings = T, percent = T, labels = T) {
   # Check parameters
@@ -165,7 +165,7 @@ tab_counts_one <- function(data, col, missings = T, percent = T, labels = T) {
 #' @param prop The basis of percent calculation: "total" (the default), "cols", or "rows".
 #' @param values The values to output: n (frequency) or p (percentage) or both (the default).
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.
 #' @export
 tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "total", values = c("n", "p"), percent = T, labels = T) {
 
@@ -324,7 +324,7 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
   # Get item label from the attributes
   if (labels) {
     codes <- data %>%
-      get_labels({{ col_group }}) %>%
+      get_codebook({{ col_group }}) %>%
       dplyr::distinct(item_name, item_label) %>%
       na.omit()
 
@@ -348,7 +348,7 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
 #' @param missings Include missing values (default FALSE)
 #' @param values The values to output: n (frequency) or p (percentage) or both (the default)
 #' @param percent Set to FALSE to prevent calculating percents from proportions
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.
 #' @export
 tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), percent = T, labels = T) {
   # Check parameters
@@ -452,7 +452,7 @@ tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), perce
   # Replace category labels
   if (labels) {
     labels_categories <- data %>%
-      get_labels({{ cols }}) %>%
+      get_codebook({{ cols }}) %>%
       dplyr::distinct(value_name, value_label) %>%
       na.omit()
 
@@ -517,7 +517,7 @@ tab_counts_items_cor <- function(data, cols, cols_cor) {
 #' @param col The columns holding metric values
 #' @param digits The number of digits to print.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.
 #' @export
 tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T) {
 
@@ -586,7 +586,7 @@ tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T) {
 #' @param col_group The column holding groups to compare
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param digits The number of digits to print
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.
 #' @export
 tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits = 1, labels = T) {
   # Check parameters
@@ -643,7 +643,7 @@ tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits =
   # Get item label from the attributes
   if (labels) {
     codes <- data %>%
-      get_labels({{ col_group }}) %>%
+      get_codebook({{ col_group }}) %>%
       dplyr::distinct(item_name, item_label) %>%
       na.omit()
 
@@ -656,7 +656,7 @@ tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits =
     scale <- attr(pull(data, {{ col }}), "scale")
     if (is.null(scale)) {
       scale <- data %>%
-        get_labels({{ col }}) %>%
+        get_codebook({{ col }}) %>%
         distinct(value_name, value_label)
     }
     attr(result, "scale")
@@ -675,7 +675,7 @@ tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits =
 #' @param cols The columns holding metric values
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param digits The number of digits to print
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.
 #' @export
 tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T) {
   # Check parameters
@@ -724,7 +724,7 @@ tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T) 
     result <- replace_item_values(result, data, {{ cols }})
     attr(result, "limits") <- get_limits(data, {{ cols }}, negative)
 
-    attr(result, "scale") <- get_labels(data, {{ cols }}) %>%
+    attr(result, "scale") <- get_codebook(data, {{ cols }}) %>%
       distinct(value_name, value_label)
   }
 
@@ -757,7 +757,7 @@ tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T) 
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param values The output metrics, mean (m), the standard deviation (sd) or both (the default).
 #' @param digits The number of digits to print.
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.
 #' @export
 tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, values = c("m", "sd"), digits = 1, labels = T) {
   # Check parameters
@@ -916,7 +916,7 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, value
 #' @param cols_cor The target columns or NULL to calculate correlations within the source columns
 #' @param method The output metrics, p = Pearson's R, s = Spearman's rho
 #' @param significant Only show significant values
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.
 #' @export
 tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = F, labels=T) {
   # Check parameters
@@ -971,7 +971,7 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
   # TODO: Add labels
   # codes <- data %>%
   #   dplyr::select(!!cols) %>%
-  #   get_labels() %>%
+  #   get_codebook() %>%
   #   dplyr::distinct(item, label)
   #
   # if (nrow(codes) > 0) {

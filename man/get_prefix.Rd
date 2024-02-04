@@ -9,7 +9,7 @@ get_prefix(x, ignore.case = FALSE, trim = FALSE)
 \arguments{
 \item{x}{Character vector}
 
-\item{ignore.case}{Whether case matters}
+\item{ignore.case}{Whether case matters (default)}
 
 \item{trim}{Whether non alphabetic characters should be trimmed}
 }

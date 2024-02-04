@@ -24,7 +24,7 @@ tab_metrics_items_cor(
 
 \item{significant}{Only show significant values}
 
-\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_labels}.}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

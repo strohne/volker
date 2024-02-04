@@ -17,9 +17,7 @@ set_col_label(data, cols, labels)
 \item{labels}{A character vector with the same length as the column selection, containing new labels}
 }
 \description{
-Set column labels by their comment attribute
-
-Alias for set_col_labels
+TODO: RENAME TO set_title?
 }
 \examples{
 ds <- volker::chatgpt

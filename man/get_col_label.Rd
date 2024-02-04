@@ -15,5 +15,5 @@ get_col_label(data, col)
 A character value
 }
 \description{
-Get a column label
+TODO: REPLACE BY get_title()
 }

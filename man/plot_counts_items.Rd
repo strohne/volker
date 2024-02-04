@@ -37,7 +37,7 @@ For ordered values, shaded of the VLKR_FILLGRADIENT option are used.}
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}
 
-\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_labels}.}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.}
 }
 \description{
 TODO: move missings to the end

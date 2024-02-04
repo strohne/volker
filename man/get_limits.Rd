@@ -13,6 +13,9 @@ get_limits(data, cols, negative = F)
 
 \item{negative}{Whether to include negative values}
 }
+\value{
+A list or NULL
+}
 \description{
 Get the numeric range from the labels
 }

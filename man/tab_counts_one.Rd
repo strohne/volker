@@ -4,16 +4,18 @@
 \alias{tab_counts_one}
 \title{Output a frequency table for the values in one column}
 \usage{
-tab_counts_one(data, col, missings = F, percent = T, labels = T)
+tab_counts_one(data, col, missings = T, percent = T, labels = T)
 }
 \arguments{
 \item{data}{A tibble}
 
 \item{col}{The column holding values to count}
 
+\item{missings}{Include missing values in the output (default TRUE)}
+
 \item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
-\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_labels}.}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.}
 }
 \description{
 Output a frequency table for the values in one column

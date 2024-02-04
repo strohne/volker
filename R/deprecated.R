@@ -254,3 +254,18 @@ add_styles <- function(...) {
   report_styles(...)
 }
 
+
+#' Alias for get_codebook
+#'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' `get_labels` has been deprecated. Use \link{get_codebook} instead.
+#'
+#' @keywords internal
+#' @export
+get_labels <- function(...)
+{
+  lifecycle::deprecate_warn("1.0.0", "get_labels()", "get_codebook()", always = TRUE)
+  get_codebook(...)
+}

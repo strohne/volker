@@ -30,7 +30,7 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
 
   # Get item label from the attributes
   labels <- data %>%
-    get_labels()
+    get_codebook()
 
   for (scope in scopes) {
     # Get column candidates
@@ -49,7 +49,7 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
 
     is_items <- nrow(items) > 1
     is_var <- !is_items && (scope %in% colnames(data))
-    is_scale <- get_scale(data, tidyselect::starts_with(scope), F)
+    is_scale <- get_direction(data, tidyselect::starts_with(scope), F)
 
 
     # Get title

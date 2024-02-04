@@ -106,7 +106,7 @@ plot_metrics <- function(data, cols, col_group=NULL, ...) {
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.
 #' @export
 plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T) {
 
@@ -195,7 +195,7 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T) {
 #' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.
 #' @export
 plot_counts_one_grouped <- function(data, col, col_group, category = NULL, ordered = NULL, missings = F, prop = "total", numbers = NULL, title = T, labels = T) {
 
@@ -217,7 +217,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
   if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
     category <- "TRUE"
   }
-  scale <- coalesce(ordered, get_scale(data, {{ col }}))
+  scale <- coalesce(ordered, get_direction(data, {{ col }}))
 
   result <- tab %>%
     rename(Item = 1) %>%
@@ -293,7 +293,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.
 #' @export
 plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missings=F, numbers = NULL, title = T, labels = T) {
   # Check parameters
@@ -307,7 +307,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
   if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
     category <- "TRUE"
   }
-  scale <- dplyr::coalesce(ordered, get_scale(data, cols))
+  scale <- dplyr::coalesce(ordered, get_direction(data, cols))
   lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
 
   result <- tab %>%
@@ -374,7 +374,7 @@ plot_counts_items_grouped <- function(data, cols, col_group) {
 #' @param col The columns holding metric values
 #' @param limits The scale limits. Set NULL to extract limits from the label. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @export
@@ -444,7 +444,7 @@ plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labe
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.
 #' @export
 plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = F, title = T, labels = T) {
 
@@ -476,7 +476,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
     scale <- attr(pull(data, {{ col }}), "scale")
     if (is.null(scale)) {
       scale <- data %>%
-        get_labels({{ col }}) %>%
+        get_codebook({{ col }}) %>%
         distinct(value_name, value_label)
     }
     scale <- prepare_scale(scale)
@@ -554,7 +554,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.
 #' @export
 plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = T, labels = T) {
   # Check parameters
@@ -607,7 +607,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
   scale <- c()
   if (labels) {
     scale <- data %>%
-      get_labels({{ cols }}) %>%
+      get_codebook({{ cols }}) %>%
       distinct(value_name, value_label) %>%
       prepare_scale()
   }
@@ -672,7 +672,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_labels}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.
 #' @return A plot
 #' @export
 plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, negative = F, title = T, labels = T) {
@@ -736,7 +736,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   # Set the scale
   # TODO: get from attributes
   scale <- data %>%
-    get_labels({{ cols }}) %>%
+    get_codebook({{ cols }}) %>%
     distinct(value_name, value_label) %>%
     prepare_scale()
 
