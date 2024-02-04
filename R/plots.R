@@ -1,3 +1,100 @@
+#' Output a frequency plot
+#'
+#' The type of frequency plot depends on the number of selected columns:
+#' - One column: see \link{plot_counts_one}
+#' - Multiple columns: see \link{plot_counts_items}
+#' - One column and one grouping column: see \link{plot_counts_one_grouped}
+#' - Multiple columns and one grouping column: see \link{plot_counts_items_grouped}
+#'
+#'
+#' @param data A data frame
+#' @param cols A tidy column selection,
+#'             e.g. a single column (without quotes)
+#'             or multiple columns selected by methods such as starts_with()
+#' @param col_group Optional, a grouping column. The column name without quotes.
+#' @return A table
+#' @export
+plot_counts <- function(data, cols, col_group, ...) {
+  # Check
+  check_dataframe(data)
+
+  # Find columns
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  col_group_eval <- tidyselect::eval_select(expr = enquo(col_group), data = data)
+  is_items <- length(cols_eval) > 1
+  is_grouped <- length(col_group_eval)== 1
+
+  # Single variables
+  if (!is_items && !is_grouped) {
+    plot_counts_one(data, {{ cols }}, ...)
+  }
+  else if (!is_items && is_grouped) {
+    plot_counts_one_grouped(data, {{ cols }}, {{ col_group }}, ...)
+  }
+
+  # Items
+  else if (is_items && !is_grouped) {
+    plot_counts_items(data, cols , ...)
+  }
+  else if (is_items && is_grouped) {
+    plot_counts_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
+  }
+
+  # Not found
+  else {
+    stop("Check your parameters: the column selection is not supported by volker functions.")
+  }
+
+}
+
+#' Output a plot with distribution parameters such as the mean values
+#'
+#' The table type depends on the number of selected columns:
+#' - One column: see \link{plot_metrics_one}
+#' - Multiple columns: see \link{plot_metrics_items}
+#' - One column and one grouping column: see \link{plot_metrics_one_grouped}
+#' - Multiple columns and one grouping column: see \link{plot_metrics_items_grouped}
+#'
+#' @param data A data frame
+#' @param cols A tidy column selection,
+#'             e.g. a single column (without quotes)
+#'             or multiple columns selected by methods such as starts_with().
+#' @param col_group Optional, a grouping column (without quotes).
+#' @return A table
+#' @export
+plot_metrics <- function(data, cols, col_group, ...) {
+  # Check
+  check_dataframe(data)
+
+  # Find columns
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  col_group_eval <- tidyselect::eval_select(expr = enquo(col_group), data = data)
+  is_items <- length(cols_eval) > 1
+  is_grouped <- length(col_group_eval)== 1
+
+  # Single variables
+  if (!is_items && !is_grouped) {
+    plot_metrics_one(data, {{ cols }}, ...)
+  }
+  else if (!is_items && is_grouped) {
+    plot_metrics_one_grouped(data, {{ cols }}, {{ col_group }}, ...)
+  }
+
+  # Items
+  else if (is_items && !is_grouped) {
+    plot_metrics_items(data, cols , ...)
+  }
+  else if (is_items && is_grouped) {
+    plot_metrics_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
+  }
+
+  # Not found
+  else {
+    stop("Check your parameters: the column selection is not supported by volker functions.")
+  }
+
+}
+
 #' Plot the frequency of  values in one column.
 #'
 #' Note: only non-missing cases are used to calculate the percentage.
@@ -177,7 +274,7 @@ plot_counts_items <- function(data, cols, numbers = NULL, ordered = NULL, missin
   check_dataframe(data)
 
   result <- data %>%
-    tab_item_counts(cols, values = "n", .formatted = F, missings=missings)
+    tab_counts_items(cols, values = "n", .formatted = F, missings=missings)
 
   if (title == T) {
     title <- colnames(result)[1]
