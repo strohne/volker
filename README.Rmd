@@ -48,10 +48,14 @@ See further [examples in the introduction vignette](vignettes/introduction.Rmd).
 The volkeR package is made for creating quick and easy overviews about datasets. 
 It handles standard cases with a handful of functions:
 
+**Charts**: `plot_metrics()` and `plot_counts()`  
+**Tables**: `tab_metrics()` and `tab_counts()`  
+
+Which one is best? That depends on your objective:
 
 - *Table or plot?*  
   A plot is quick to capture, data from a table is better for further calculations. 
-  Functions for tables start with `tab`, functions for plots with `plot`. If in doubt, create both at once with the `report()`-function.
+  Functions for tables start with `tab`, functions for plots with `plot`. If in doubt, create both at once with the `report`-functions.
   
 - *Categorical or metric variables?*   
   Categories can be counted, for metric variables distribution parameters such as the mean and standard deviation are calculated.
@@ -141,8 +145,7 @@ tab_metrics(
 )
 ```
 
-Replace `tab` by `plot` to get a graphic summary.  
-For more example code, see the [introductionary vignette](vignettes/introduction.Rmd). 
+For further options to customize the results, see the builtin function help.
 
 
 ## Installation
