@@ -16,7 +16,6 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE, include=T)
 
 # Load packages
-library(tidyverse)
 library(volker)
 theme_set(theme_bw())
 
@@ -25,26 +24,6 @@ data <- prepare(volker::chatgpt)
 
 ```
 
-Reports combine graphs, tables, indexes and additional output.´
-The volker package comes with a Markdown template that generates 
-interactive HTML documents in which you can switch between 
-the different parts of the report.
-
-Use the template by adding `volker::html_report` to the 
-output options of your Markdown document:
-
-
-```
----
-title: "How to create reports?"
-output: 
-  volker::html_report
----
-```
-
-Then, you can generate combined outputs using the report-functions.
-One advantage of the report-functions is that plots are automatically 
-scaled to fit the page.
 
 # A single categorical variable
 
@@ -78,17 +57,7 @@ data %>%
 
 ```
 
-# Mix in your own content
-
-If you want to add content before the outputs, 
-set the title parameter to `FALSE` and add your 
-own title.
-
-A good place for methodological details is a tabsheet 
-next to the "Plot" and the "Table" buttons. You can add a tab
-by setting the close-parameter to `FALSE` and adding a new header
-on the fifth level (5 x # followed by the tab name). Close your new tabsheet with
-`#### {-}` (4 x #). See the example Markdown behind this vignette.
+# Mixed content
 
 ### Adoption types
 
@@ -103,7 +72,4 @@ data %>%
 Basis: Only male and female respondents.
 
 #### {-}
-
-
-
 

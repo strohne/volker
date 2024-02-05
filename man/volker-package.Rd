@@ -4,7 +4,7 @@
 \name{volker-package}
 \alias{volker}
 \alias{volker-package}
-\title{volker: Report summaries and graphics for survey data.}
+\title{volker: Report summaries and graphics for survey data}
 \description{
 The package provides functions to create tables and plots to be included in Markdown reports. Boiled down to the basics, with labeling features and automatic output selection.
 }

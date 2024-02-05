@@ -210,7 +210,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 
   # Calculate data
   tab <- data %>%
-    tab_group_counts({{ col }}, {{ col_group }}, values = "n", missings = missings, percent = F, labels = labels)
+    tab_counts_one_grouped({{ col }}, {{ col_group }}, values = "n", missings = missings, percent = F, labels = labels)
 
   # Detect whether the categories are binary
   categories <- dplyr::select(tab, -1, -matches("^Total|Missing")) %>% colnames()
