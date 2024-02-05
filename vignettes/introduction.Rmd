@@ -47,24 +47,26 @@ data <- set_item_labels(
 
 ### Frequency table for one categorical variable: Gender
 ```{r}
-tab_var_counts(data, sd_geschlecht)
+tab_counts_one(data, sd_geschlecht)
 ```
 
 ### Distribution table for one metric variable: Age
 ```{r}
-tab_var_metrics(data, sd_alter)
+tab_metrics_one(data, sd_alter)
 ```
 
 ## 2. Multiple items
 
 ### Frequency table for multiple categorical variables: Adoption factors
 ```{r}
-tab_item_counts(data, starts_with("cg_adoption_"))
+tab_counts_items(data, starts_with("cg_adoption_"))
 ```
 
 ### Distribution table for multiple metric items: Adoption factors
 ```{r}
-tab_item_metrics(data, starts_with("cg_adoption_"))
+tab_metrics_items(data, starts_with("cg_adoption_"))
+plot_metrics_items(data, starts_with("cg_adoption_"))
+
 ```
 
 ## 3. Two variables (one being categorical)
@@ -72,7 +74,7 @@ tab_item_metrics(data, starts_with("cg_adoption_"))
 ### Cross table of categorical variables: Innovator type by gender
 
 ```{r}
-tab_group_counts(data, in_adoption, sd_geschlecht)
+tab_counts_one_grouped(data, in_adoption, sd_geschlecht)
 ```
 
 ### Group comparison of a metric variable: Age by gender
@@ -85,14 +87,14 @@ tab_metrics_one_grouped(data, sd_alter, sd_geschlecht)
 
 ### Compare means of multiple items: Adoption factors by gender
 ```{r}
-tab_multi_means(data, starts_with("cg_adoption_"), sd_geschlecht)
+tab_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_geschlecht)
 ```
 
 ### Correlation of items: Adoption factors
 ```{r}
-tab_multi_corr(data, starts_with("cg_adoption_adv"))
+tab_metrics_items_cor(data, starts_with("cg_adoption_adv"))
 
-tab_multi_corr(data, starts_with("cg_adoption_adv"), starts_with("cg_nutzen"))
+tab_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("cg_nutzen"))
 ```
 
 # Automatically generate reports
@@ -163,7 +165,7 @@ newlabels <- tribble(
 
 data %>%
   set_item_labels(newlabels) %>%
-  tab_item_metrics(starts_with("cg_adoption_advantage_"))
+  tab_metrics_items(starts_with("cg_adoption_advantage_"))
 ```
 
 # What's behind the scenes?

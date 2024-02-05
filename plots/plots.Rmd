@@ -2,7 +2,7 @@
 title: "Create example plots and tables"
 output: rmarkdown::html_vignette
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ```{r include=FALSE}
@@ -11,6 +11,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo=TRUE)
 
 library(tidyverse)
 library(volker)
+library(knitr)
 theme_set(theme_bw())
 
 data <- volker::chatgpt
@@ -41,7 +42,7 @@ data <- set_item_labels(data, tibble("sd_alter","Age"))
 ```{r results='asis'}
 
 data %>% 
-  tab_var_counts(sd_geschlecht)
+  tab_counts(sd_geschlecht)
 
 ```
 
@@ -49,7 +50,7 @@ data %>%
 ```{r results='asis'}
 
 data %>%
-  tab_var_metrics(sd_alter)
+  tab_metrics(sd_alter)
 
 ```
 
@@ -64,7 +65,7 @@ newlabels <- tribble(
   "cg_adoption_advantage_01", "General Benefits",
   "cg_adoption_advantage_02", "Financial Benefits",
   "cg_adoption_advantage_03", "Workplace Benefits",
-  "cg_adoption_advantage_04", "More Enjoyable"
+  "cg_adoption_advantage_04", "Joy Benefits"
 )
 
 data %>% 
@@ -76,7 +77,7 @@ data %>%
     cg_adoption_advantage_04 < 4
     
   ) %>% 
-  tab_item_counts(starts_with("cg_adoption_advantage_"))
+  tab_counts(starts_with("cg_adoption_advantage_"))
 
 ```
 
@@ -103,7 +104,7 @@ data %>%
     str_detect(in_adoption,"wenn ich nicht mehr anders kann") ~ "Only when necessary",
   )) %>% 
   volker::set_item_labels(tibble("in_adoption","Adopter type")) %>% 
-  tab_group_counts(in_adoption, sd_geschlecht)
+  tab_counts(in_adoption, sd_geschlecht)
 
 ```
 

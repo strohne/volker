@@ -1,8 +1,8 @@
 #' Automatically detect the table type and output table and plot
 #'
 #' For each column prefix:
-#' - If it matches a single column, use tab_var_counts and plot_var_counts
-#' - If it matches multiple columns, use tab_items_counts and plot_item_counts
+#' - If it matches a single column, use tab_counts_one and plot_counts_one
+#' - If it matches multiple columns, use tab_counts_items and plot_counts_items
 #'
 #' TODO: Check whether the matched items are present
 #'

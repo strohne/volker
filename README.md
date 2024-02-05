@@ -9,75 +9,63 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-*Work in progress: not everything has been implemented yet!*
+High-level functions for for summarising, charting and reporting survey
+data.
 
-This package contains functions for creating summaries and graphics for
-survey data. It summarises functions used in the the textbook [Einfache
-Datenauswertung mit R](https://doi.org/10.1007/978-3-658-34285-2)
-(Gehrau & Maubach et al., 2022), which provides an introduction to
-univariate and bivariate statistics and data representation using
-RStudio and R Markdown.
+## Getting started
+
+    # Install the package (see below), then load it
+    library(volker)
+
+    # Load example data from the package
+    data <- volker::chatgpt
+
+    # Create your first plot counting answers to an item battery
+    plot_counts(data, starts_with("cg_adoption_social"))
+
+    # Create your first table summarizing the item battery
+    tab_metrics(data, starts_with("cg_adoption_social"))
+
+See further [examples in the introduction
+vignette](vignettes/introduction.Rmd).
 
 ## Concept
 
-The VolkeR package is made for creating quick and easy overviews of data
-sets. It is especially useful for survey data. Before selecting the
-functions, consider:
+The volkeR package is made for creating quick and easy overviews about
+datasets. It handles standard cases with a handful of functions:
 
 - *Table or plot?*  
   A plot is quick to capture, data from a table is better for further
-  calculations. If in doubt, create both. Functions for tables start
-  with ‘tab’, functions for plots with ‘plot’.
+  calculations. If in doubt, create both at once with the
+  report()-function. Functions for tables start with ‘tab’, functions
+  for plots with ‘plot’.
 
 - *Categorical or metric variables?*  
   Categories can be counted, for metric variables distribution
-  parameters like mean and standard deviation are calculated. Functions
-  for categorical variables contain `counts` in their name, those for
-  metric `metrics`.
+  parameters such as the mean and standard deviation are calculated.
+  Functions for categorical variables contain `counts` in their name,
+  those for metric `metrics`.
+
+- *Individual or grouped?*  
+  Groups can be compared (e.g., the average age by gender) or
+  crosstabulated (e.g. combinations of education level and gender) by
+  providing a grouping column as third parameter of table and plot
+  functions.
 
 - *One variable or item batteries?*.  
   Item batteries are often used in surveys. Each item results in a
   single variable, but the variables are all measured with the same
-  scale. All items can be summarized in a table: either by using
-  `tab_item_counts()` to count the values for each item (e.g. 1=not at
-  all to 5=fully) or by using `tab_item_metrics()` to calculate
-  distribution parameters (e.g. mean of responses, each going from 1 to
-  5).
-
-- *Individual or grouped?*  
-  When metric variables are grouped, groups can be compared (e.g., the
-  average age by gender) using the `tab_group_metrics()` function. When
-  categorical variables are grouped, cross-tabulations are created
-  (e.g., combinations of education level and gender), which can be
-  generated with the `tab_group_counts()` function. To represent
-  relationships between many variables, you can either compare all means
-  of items between groups using `tab_multi_means()` or output
-  correlation matrices using `tab_multi_corr()`.
+  scale (e.g. 1 = not at all to 5 = fully applies). To summarize
+  multiple items send a column selection to the functions by using
+  tidyselect mechanisms such as `starts_with()`.
 
 - *Markdown or dataframe?*  
   All table functions return dataframes that can be stored in objects
   and processed further. The tables have their own print function, so
   the output of all functions can be used directly in Markdown documents
-  to display formatted tables. To do this, you need to set the
-  `results='asis'`parameter in the code chunk, as shown in the [examples
-  in vignette](vignettes/introduction.Rmd).
-
-## Special features
-
-- Simple tables, simple plots.
-- Tidyverse compatible.
-- Automatic labeling and scaling based on attributes. Appropriate
-  attributes, for example, are provided by the Sosci Survey API.
-  Alternatively, you can add custom labels.
-- Calculate metric indexes
-- Simplified hints for wrong parameters, e.g. if you forget to provide a
-  data frame (work in progress)
-- Switch between tables and plots in Markdown reports
-- Simple reporting interface: the report() function rules them all.
+  to display formatted tables.
 
 ## Examples
-
-*Frequencies and distributions (univariable)*
 
 <table>
 <tbody>
@@ -97,10 +85,16 @@ functions, consider:
 variable</strong>
 </td>
 <td valign="top">
-<code>tab_var_metrics()</code><br><img src="plots/english/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="100">
+
+    tab_metrics(data, sd_age)
+
+<img src="plots/english/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="100">
 </td>
 <td valign="top">
-<code>tab_var_counts()</code><br><img src="plots/english/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="200">
+
+    tab_counts(data, sd_gender)
+
+<img src="plots/english/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="200">
 </td>
 </tr>
 <tr>
@@ -109,62 +103,45 @@ variable</strong>
 items</strong>
 </td>
 <td valign="top">
-<code>tab_item_metrics()</code><br><img src="plots/english/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="400">
+
+    tab_metrics(data, starts_with("cg_adoption"))
+
+<img src="plots/english/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="400">
 </td>
 <td valign="top">
-<code>tab_item_counts()</code><br><img src="plots/english/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="400">
+
+    tab_counts(data, starts_with("cg_adoption"))
+
+<img src="plots/english/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="400">
+</td>
+</tr>
+<tr>
+<td>
+<strong style="display: block;transform: rotate(-90deg);">Group
+comparison </strong>
+</td>
+<td valign="top">
+
+    tab_metrics(data, sd_age, sd_gender)
+
+<img src="plots/english/tab_group_metrics.png" alt="Compare metric items by group" width="400">
+</td>
+<td valign="top">
+
+    tab_counts(data, in_adoption, sd_geschlecht)
+
+<img src="plots/english/tab_group_counts.png" alt="Cross tabulate two variables" width="400">
 </td>
 </tr>
 </tbody>
 </table>
 
-*Correlations and comparisons (multivariable)*
-
-<table>
-<tbody>
-<tr>
-<td>
-</td>
-<td>
-<strong>Metric & x</strong>
-</td>
-<td>
-<strong>Categorical & x</strong>
-</td>
-</tr>
-<tr>
-<td>
-<strong style="display: block;transform: rotate(-90deg);">Two
-variables</strong>
-</td>
-<td valign="top">
-<code>tab_group_metrics()</code><br><img src="plots/english/tab_group_metrics.png" alt="Compare metric items by group" width="400">
-</td>
-<td valign="top">
-<code>tab_group_counts()</code><br><img src="plots/english/tab_group_counts.png" alt="Cross tabulate two variables" width="400">
-</td>
-</tr>
-<tr>
-<td>
-<strong style="display: block;transform: rotate(-90deg);">Multiple
-items</strong>
-</td>
-<td valign="top">
-<code>tab_multi_corr()</code><br><img src="plots/english/tab_multi_corr.png" alt="Correlation matrix" width="160">
-</td>
-<td valign="top">
-<code>tab_multi_means()</code><br><img src="plots/english/tab_multi_means.png" alt="Item means by groups" width="400">
-</td>
-</tr>
-</tbody>
-</table>
-
-<br> <br>
+<br>
 
 All functions take a data frame as their first argument, followed by
-column selections, e.g.:
+column selections, and optionally a grouping column. Example:
 
-    tab_multi_means(
+    tab_metrics(
       data,
       starts_with("cg_adoption_advantage"),
       sd_gender
@@ -191,7 +168,20 @@ Finally, use it:
     data <- volker::chatgpt
 
     # Example table
-    tab_group_metrics(data, sd_alter, sd_geschlecht)
+    tab_metrics(data, sd_alter, sd_geschlecht)
+
+## Special features
+
+- Simple tables, simple plots.
+- Automatic labeling and scaling based on attributes. Appropriate
+  attributes, for example, are provided by the Sosci Survey API.
+  Alternatively, you can add custom labels.
+- Calculate metric indexes
+- Simplified hints for wrong parameters, e.g. if you forget to provide a
+  data frame (work in progress)
+- Simple reporting interface: the report() function rules them all.
+  Switch between tables and plots in Markdown reports
+- Tidyverse style.
 
 ## Troubleshooting
 
@@ -206,13 +196,21 @@ in you markdown document (the yml section at the top).
 |---------|--------------------------|------------------|
 | 1.0     | Descriptive tables       | work in progress |
 | 1.1     | Descriptive plots        | work in progress |
-| 1.2     | Regression tables        | work in progress |
-| 1.3     | Sosci Survey integration | work in progress |
+| 1.2     | Sosci Survey integration | work in progress |
+| 1.3     | Regression tables        | work in progress |
 | 1.4     | Topic modeling           | work in progress |
 
 ## Similar packages
 
+<https://github.com/joon-e/tidycomm>
+
 <https://github.com/kassambara/rstatix>
+
+The volker package is inspired by outputs used in the the textbook
+[Einfache Datenauswertung mit
+R](https://doi.org/10.1007/978-3-658-34285-2) (Gehrau & Maubach et al.,
+2022), which provides an introduction to univariate and bivariate
+statistics and data representation using RStudio and R Markdown.
 
 ## Authors and citation
 
