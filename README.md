@@ -36,9 +36,9 @@ datasets. It handles standard cases with a handful of functions.
 Basically you select one of the following functions and throw your data
 in:
 
-**Charts**: `plot_metrics()` and `plot_counts()`  
-**Tables**: `tab_metrics()` and `tab_counts()` **Reports**:
-`report_metrics()` and `report_counts()`
+- **Charts**: `plot_metrics()` and `plot_counts()`  
+- **Tables**: `tab_metrics()` and `tab_counts()`  
+- **Reports**: `report_metrics()` and `report_counts()`
 
 Which one is best? That depends on your objective:
 
@@ -186,7 +186,7 @@ Finally, use it:
 - Simple tables, simple plots, simple reports.  
 - Labeling and scaling based on attributes. Appropriate attributes, for
   example, are provided by the Sosci Survey API. Alternatively, you can
-  add custom labels. Use `codebook()` to see all labels present in a
+  add custom labels. Use `get_codebook()` to see all labels present in a
   dataset.  
 - Interactive reports: Use the `volker::html_report` template in your
   Markdown documents to switch between tables and plots when using the
@@ -201,17 +201,18 @@ Finally, use it:
 The kableExtra package produces an error in R 4.3 when knitting
 documents: `.onLoad in loadNamespace() für 'kableExtra' fehlgeschlagen`.
 As a work around, remove PDF and Word settings from the output options
-in you markdown document (the yml section at the top).
+in you markdown document (the yml section at the top). Alternatively,
+install the latest development version:
+
+    devtools::install_github("kupietz/kableExtra")
 
 ## Roadmap
 
-| Version | Features                 | Status           |
-|---------|--------------------------|------------------|
-| 1.0     | Descriptive tables       | work in progress |
-| 1.1     | Descriptive plots        | work in progress |
-| 1.2     | Sosci Survey integration | work in progress |
-| 1.3     | Regression tables        | work in progress |
-| 1.4     | Topic modeling           | work in progress |
+| Version | Features          | Status           |
+|---------|-------------------|------------------|
+| 1.0     | Descriptives      | work in progress |
+| 1.1     | Regression tables | work in progress |
+| 1.2     | Topic modeling    | work in progress |
 
 ## Similar packages
 
