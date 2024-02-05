@@ -147,6 +147,7 @@ column selections, and optionally a grouping column. Example:
       sd_gender
     )
 
+Replace `tab` by `plot` to get a graphic summary.  
 For more example code, see the [introductionary
 vignette](vignettes/introduction.Rmd).
 
