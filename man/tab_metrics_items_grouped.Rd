@@ -11,7 +11,8 @@ tab_metrics_items_grouped(
   negative = F,
   values = c("m", "sd"),
   digits = 1,
-  labels = T
+  labels = T,
+  ...
 )
 }
 \arguments{

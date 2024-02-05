@@ -10,7 +10,8 @@ plot_metrics_items(
   limits = NULL,
   negative = F,
   title = T,
-  labels = T
+  labels = T,
+  ...
 )
 }
 \arguments{

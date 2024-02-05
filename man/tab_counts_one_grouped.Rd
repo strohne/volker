@@ -12,7 +12,8 @@ tab_counts_one_grouped(
   prop = "total",
   values = c("n", "p"),
   percent = T,
-  labels = T
+  labels = T,
+  ...
 )
 }
 \arguments{

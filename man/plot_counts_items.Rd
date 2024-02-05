@@ -12,7 +12,8 @@ plot_counts_items(
   missings = F,
   numbers = NULL,
   title = T,
-  labels = T
+  labels = T,
+  ...
 )
 }
 \arguments{

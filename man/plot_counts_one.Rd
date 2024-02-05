@@ -4,7 +4,7 @@
 \alias{plot_counts_one}
 \title{Plot the frequency of  values in one column.}
 \usage{
-plot_counts_one(data, col, numbers = NULL, title = T, labels = T)
+plot_counts_one(data, col, numbers = NULL, title = T, labels = T, ...)
 }
 \arguments{
 \item{data}{A tibble}

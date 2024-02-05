@@ -11,7 +11,8 @@ plot_metrics_one_grouped(
   limits = NULL,
   negative = F,
   title = T,
-  labels = T
+  labels = T,
+  ...
 )
 }
 \arguments{

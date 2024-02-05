@@ -4,7 +4,7 @@
 \alias{plot_counts_items_grouped}
 \title{Plot frequencies of multiple items compared by groups}
 \usage{
-plot_counts_items_grouped(data, cols, col_group)
+plot_counts_items_grouped(data, cols, col_group, ...)
 }
 \arguments{
 \item{data}{A tibble}

@@ -10,7 +10,8 @@ tab_metrics_one_grouped(
   col_group,
   negative = F,
   digits = 1,
-  labels = T
+  labels = T,
+  ...
 )
 }
 \arguments{

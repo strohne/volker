@@ -4,7 +4,15 @@
 \alias{plot_metrics_one}
 \title{Output a histogram for a single metric variable}
 \usage{
-plot_metrics_one(data, col, limits = NULL, negative = F, title = T, labels = T)
+plot_metrics_one(
+  data,
+  col,
+  limits = NULL,
+  negative = F,
+  title = T,
+  labels = T,
+  ...
+)
 }
 \arguments{
 \item{data}{A tibble}

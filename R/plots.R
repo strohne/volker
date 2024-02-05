@@ -108,7 +108,7 @@ plot_metrics <- function(data, cols, col_group=NULL, ...) {
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @export
-plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T) {
+plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ...) {
 
   # Check columns
   check_is_dataframe(data)
@@ -197,7 +197,7 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T) {
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @export
-plot_counts_one_grouped <- function(data, col, col_group, category = NULL, ordered = NULL, missings = F, prop = "total", numbers = NULL, title = T, labels = T) {
+plot_counts_one_grouped <- function(data, col, col_group, category = NULL, ordered = NULL, missings = F, prop = "total", numbers = NULL, title = T, labels = T, ...) {
 
   # Check columns
   check_is_dataframe(data)
@@ -295,7 +295,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @export
-plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missings=F, numbers = NULL, title = T, labels = T) {
+plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missings=F, numbers = NULL, title = T, labels = T, ...) {
   # Check parameters
   check_is_dataframe(data)
 
@@ -362,7 +362,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
 #' @param col_group The column holding groups to compare
 #' @keywords internal
 #' @export
-plot_counts_items_grouped <- function(data, cols, col_group) {
+plot_counts_items_grouped <- function(data, cols, col_group, ...) {
   # Check parameters
   check_is_dataframe(data)
   stop("Not implemented yet")
@@ -378,7 +378,7 @@ plot_counts_items_grouped <- function(data, cols, col_group) {
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @export
-plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labels = T) {
+plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labels = T, ...) {
 
   # Check parameters
   check_is_dataframe(data)
@@ -446,7 +446,7 @@ plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labe
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @export
-plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = F, title = T, labels = T) {
+plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = F, title = T, labels = T, ...) {
 
   # Check parameters
   check_is_dataframe(data)
@@ -556,7 +556,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @export
-plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = T, labels = T) {
+plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = T, labels = T, ...) {
   # Check parameters
   check_is_dataframe(data)
 
@@ -675,7 +675,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @return A plot
 #' @export
-plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, negative = F, title = T, labels = T) {
+plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, negative = F, title = T, labels = T, ...) {
   # Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ col_group }})

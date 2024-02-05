@@ -4,7 +4,7 @@
 \alias{tab_counts_items_grouped}
 \title{Compare the values in multiple items by a grouping column.}
 \usage{
-tab_counts_items_grouped(data, cols, col_group)
+tab_counts_items_grouped(data, cols, col_group, ...)
 }
 \arguments{
 \item{data}{A tibble}

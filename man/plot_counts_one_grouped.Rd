@@ -14,7 +14,8 @@ plot_counts_one_grouped(
   prop = "total",
   numbers = NULL,
   title = T,
-  labels = T
+  labels = T,
+  ...
 )
 }
 \arguments{

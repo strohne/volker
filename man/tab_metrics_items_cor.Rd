@@ -10,7 +10,8 @@ tab_metrics_items_cor(
   cols_cor,
   method = "p",
   significant = F,
-  labels = T
+  labels = T,
+  ...
 )
 }
 \arguments{

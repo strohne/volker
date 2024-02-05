@@ -4,7 +4,7 @@
 \alias{tab_counts_one}
 \title{Output a frequency table for the values in one column}
 \usage{
-tab_counts_one(data, col, missings = T, percent = T, labels = T)
+tab_counts_one(data, col, missings = T, percent = T, labels = T, ...)
 }
 \arguments{
 \item{data}{A tibble}

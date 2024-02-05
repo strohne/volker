@@ -4,7 +4,7 @@
 \alias{tab_metrics_one}
 \title{Output a five point summary table for the values in multiple columns}
 \usage{
-tab_metrics_one(data, col, negative = F, digits = 1, labels = T)
+tab_metrics_one(data, col, negative = F, digits = 1, labels = T, ...)
 }
 \arguments{
 \item{data}{A tibble}

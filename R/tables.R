@@ -106,7 +106,7 @@ tab_metrics <- function(data, cols, col_group=NULL, ...) {
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @export
-tab_counts_one <- function(data, col, missings = T, percent = T, labels = T) {
+tab_counts_one <- function(data, col, missings = T, percent = T, labels = T, ...) {
   # Check parameters
   check_is_dataframe(data)
 
@@ -167,7 +167,7 @@ tab_counts_one <- function(data, col, missings = T, percent = T, labels = T) {
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @export
-tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "total", values = c("n", "p"), percent = T, labels = T) {
+tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "total", values = c("n", "p"), percent = T, labels = T, ...) {
 
   # Check parameters
   check_is_dataframe(data)
@@ -350,7 +350,7 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
 #' @param percent Set to FALSE to prevent calculating percents from proportions
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @export
-tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), percent = T, labels = T) {
+tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), percent = T, labels = T, ...) {
   # Check parameters
   check_is_dataframe(data)
 
@@ -490,7 +490,7 @@ tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), perce
 #' @param col_group The column holding groups to compare
 #' @keywords internal
 #' @export
-tab_counts_items_grouped <- function(data, cols, col_group) {
+tab_counts_items_grouped <- function(data, cols, col_group, ...) {
   # Check parameters
   check_is_dataframe(data)
   stop("Not implemented yet")
@@ -505,7 +505,7 @@ tab_counts_items_grouped <- function(data, cols, col_group) {
 #' @param cols_cor The target columns or NULL to calculate correlations within the source columns
 #' @keywords internal
 #' @export
-tab_counts_items_cor <- function(data, cols, cols_cor) {
+tab_counts_items_cor <- function(data, cols, cols_cor, ...) {
   # Check parameters
   check_is_dataframe(data)
   stop("Not implemented yet")
@@ -519,7 +519,7 @@ tab_counts_items_cor <- function(data, cols, cols_cor) {
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @export
-tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T) {
+tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T, ...) {
 
   # Check parameters
   check_is_dataframe(data)
@@ -588,7 +588,7 @@ tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T) {
 #' @param digits The number of digits to print
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @export
-tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits = 1, labels = T) {
+tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits = 1, labels = T, ...) {
   # Check parameters
   check_is_dataframe(data)
 
@@ -677,7 +677,7 @@ tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits =
 #' @param digits The number of digits to print
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @export
-tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T) {
+tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T, ...) {
   # Check parameters
   check_is_dataframe(data)
 
@@ -759,7 +759,7 @@ tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T) 
 #' @param digits The number of digits to print.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @export
-tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, values = c("m", "sd"), digits = 1, labels = T) {
+tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, values = c("m", "sd"), digits = 1, labels = T, ...) {
   # Check parameters
   check_is_dataframe(data)
 
@@ -918,7 +918,7 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, value
 #' @param significant Only show significant values
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @export
-tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = F, labels=T) {
+tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = F, labels=T, ...) {
   # Check parameters
   check_is_dataframe(data)
 

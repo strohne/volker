@@ -108,16 +108,16 @@ report_counts <- function(data, cols, col_group = NULL, ..., index=T, title = T,
 
 
   # Add Plot
-  chunks <- plot_counts(data, {{ cols}}, {{ col_group }}, ..., title = plot_title) %>%
+  chunks <- plot_counts(data, {{ cols }}, {{ col_group }}, ..., title = plot_title) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
-  chunks <- tab_counts(data, {{ cols}}, {{ col_group }}, ...) %>%
+  chunks <- tab_counts(data, {{ cols }}, {{ col_group }}, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
 
   # Add index
   if (index) {
-    idx <- .report_idx(data, {{ cols}}, {{ col_group }}, title = plot_title)
+    idx <- .report_idx(data, {{ cols }}, {{ col_group }}, title = plot_title)
     chunks <- append(chunks,idx)
   }
 

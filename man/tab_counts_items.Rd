@@ -10,7 +10,8 @@ tab_counts_items(
   missings = F,
   values = c("n", "p"),
   percent = T,
-  labels = T
+  labels = T,
+  ...
 )
 }
 \arguments{

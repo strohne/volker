@@ -4,7 +4,7 @@
 \alias{tab_counts_items_cor}
 \title{Correlate the values in multiple items}
 \usage{
-tab_counts_items_cor(data, cols, cols_cor)
+tab_counts_items_cor(data, cols, cols_cor, ...)
 }
 \arguments{
 \item{data}{A tibble}
