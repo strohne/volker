@@ -95,18 +95,18 @@ tab_metrics(data, starts_with("cg_adoption_"), sd_geschlecht)
 
 Reports combine plots and tables. Optionally, for item batteries, an index is calculated and reported.
 
-**TODO: the template is not included yet**  
 To see an example or develop own reports, use the volker report template in RStudio:
 
 - Create a new R Markdown document from the main menu  
 - In the popup select the "From Template" option  
 - Select the volker template.  
-- The template contains a working example. Click knit to see the result.
+- The template contains a working example. 
+  Just click knit to see the result.
 
 Have fun with developing own reports!
 
 The main entry point for reports are the report-functions.
-See the function help for further options.
+See the function help or the report vignette for further options.
 
 ```{r}
 
