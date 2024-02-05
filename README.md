@@ -9,7 +9,7 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-High-level functions for for summarising, charting and reporting survey
+High-level functions for summarising, charting and reporting survey
 data.
 
 ## Getting started
@@ -20,10 +20,10 @@ data.
     # Load example data from the package
     data <- volker::chatgpt
 
-    # Create your first plot counting answers to an item battery
+    # Create your first plot, counting answers to an item battery
     plot_counts(data, starts_with("cg_adoption_social"))
 
-    # Create your first table summarizing the item battery
+    # Create your first table, summarising the item battery
     tab_metrics(data, starts_with("cg_adoption_social"))
 
 See further [examples in the introduction
@@ -36,9 +36,9 @@ datasets. It handles standard cases with a handful of functions:
 
 - *Table or plot?*  
   A plot is quick to capture, data from a table is better for further
-  calculations. If in doubt, create both at once with the
-  report()-function. Functions for tables start with ‘tab’, functions
-  for plots with ‘plot’.
+  calculations. Functions for tables start with `tab`, functions for
+  plots with `plot`. If in doubt, create both at once with the
+  `report()`-function.
 
 - *Categorical or metric variables?*  
   Categories can be counted, for metric variables distribution
@@ -48,22 +48,22 @@ datasets. It handles standard cases with a handful of functions:
 
 - *Individual or grouped?*  
   Groups can be compared (e.g., the average age by gender) or
-  crosstabulated (e.g. combinations of education level and gender) by
+  cross-tabulated (e.g. combinations of education level and gender) by
   providing a grouping column as third parameter of table and plot
   functions.
 
 - *One variable or item batteries?*.  
   Item batteries are often used in surveys. Each item results in a
   single variable, but the variables are all measured with the same
-  scale (e.g. 1 = not at all to 5 = fully applies). To summarize
+  scale (e.g. 1 = not at all to 5 = fully applies). To summarise
   multiple items send a column selection to the functions by using
   tidyselect mechanisms such as `starts_with()`.
 
-- *Markdown or dataframe?*  
-  All table functions return dataframes that can be stored in objects
-  and processed further. The tables have their own print function, so
-  the output of all functions can be used directly in Markdown documents
-  to display formatted tables.
+- *Markdown or data frame?*  
+  All table functions return data frames that can be processed further.
+  The tables have their own print function, so the output of all
+  functions can be used directly in Markdown documents to display neatly
+  formatted tables and plots.
 
 ## Examples
 
@@ -106,13 +106,13 @@ items</strong>
 
     tab_metrics(data, starts_with("cg_adoption"))
 
-<img src="plots/english/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="400">
+<img src="plots/english/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="300">
 </td>
 <td valign="top">
 
     tab_counts(data, starts_with("cg_adoption"))
 
-<img src="plots/english/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="400">
+<img src="plots/english/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="300">
 </td>
 </tr>
 <tr>
@@ -124,13 +124,13 @@ comparison </strong>
 
     tab_metrics(data, sd_age, sd_gender)
 
-<img src="plots/english/tab_group_metrics.png" alt="Compare metric items by group" width="400">
+<img src="plots/english/tab_group_metrics.png" alt="Compare metric items by group" width="300">
 </td>
 <td valign="top">
 
     tab_counts(data, in_adoption, sd_geschlecht)
 
-<img src="plots/english/tab_group_counts.png" alt="Cross tabulate two variables" width="400">
+<img src="plots/english/tab_group_counts.png" alt="Cross tabulate two variables" width="300">
 </td>
 </tr>
 </tbody>
