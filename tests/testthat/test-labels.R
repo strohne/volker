@@ -11,7 +11,7 @@ data <- prepare(data)
 
 # Get labels
 test_that("Labels", {
-  expect_snapshot(volker::get_codebook(data))
+  expect_snapshot(volker::codebook(data))
 })
 
 # What happens when labels are empty?
@@ -19,7 +19,7 @@ test_that("Missing labels", {
   data %>%
     dplyr::select(starts_with("cg_adoption")) %>%
     volker::remove_labels() %>%
-    volker::get_codebook() %>%
+    volker::codebook() %>%
     expect_snapshot()
 })
 

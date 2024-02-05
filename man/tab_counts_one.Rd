@@ -15,7 +15,7 @@ tab_counts_one(data, col, missings = T, percent = T, labels = T)
 
 \item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
-\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 }
 \description{
 Output a frequency table for the values in one column

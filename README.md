@@ -37,7 +37,8 @@ Basically you select one of the following functions and throw your data
 in:
 
 **Charts**: `plot_metrics()` and `plot_counts()`  
-**Tables**: `tab_metrics()` and `tab_counts()`
+**Tables**: `tab_metrics()` and `tab_counts()` **Reports**:
+`report_metrics()` and `report_counts()`
 
 Which one is best? That depends on your objective:
 
@@ -56,8 +57,8 @@ Which one is best? That depends on your objective:
 - *Individual or grouped?*  
   Groups can be compared (e.g., the average age by gender) or
   cross-tabulated (e.g. combinations of education level and gender) by
-  providing a grouping column as third parameter of table and plot
-  functions.
+  providing a grouping column as third parameter of table, plot and
+  report functions.
 
 - *One variable or item batteries?*.  
   Item batteries are often used in surveys. Each item results in a
@@ -182,15 +183,17 @@ Finally, use it:
 
 ## Special features
 
-- Simple tables, simple plots.
-- Automatic labeling and scaling based on attributes. Appropriate
-  attributes, for example, are provided by the Sosci Survey API.
-  Alternatively, you can add custom labels.
-- Calculate metric indexes
+- Simple tables, simple plots, simple reports.  
+- Labeling and scaling based on attributes. Appropriate attributes, for
+  example, are provided by the Sosci Survey API. Alternatively, you can
+  add custom labels. Use `codebook()` to see all labels present in a
+  dataset.  
+- Interactive reports: Use the `volker::html_report` template in your
+  Markdown documents to switch between tables and plots when using the
+  report-functions.  
+- Calculate metric indexes using `add_idx()`.  
 - Simplified hints for wrong parameters, e.g. if you forget to provide a
-  data frame (work in progress)
-- Simple reporting interface: the report() function rules them all.
-  Switch between tables and plots in Markdown reports
+  data frame (work in progress).  
 - Tidyverse style.
 
 ## Troubleshooting

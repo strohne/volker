@@ -3,16 +3,16 @@
 #' @param data A tibble
 #' @param cols A tidy variable selections to filter specific columns
 #' @return A tibble with the columns:
+#'        - item_name: The column name.
 #'        - item_group: First part of the column name, up to an underscore.
 #'        - item_class: The last class value of an item (e.g. numeric, factor).
-#'        - item_name: The column name.
 #'        - item_label: The comment attribute of the column.
 #'        - value_name: In case a column has numeric attributes, the attribute names
 #'        - value_label: In case a column has numeric attributes or T/F-attributes,
 #'                       the attribute values.
-#'                       In case a column has a levels attribute, the levels
+#'                       In case a column has a levels attribute, the levels.
 #' @export
-get_codebook <- function(data, cols) {
+codebook <- function(data, cols) {
   if (!missing(cols)) {
     data <- dplyr::select(data, {{ cols }})
   }
@@ -34,7 +34,7 @@ get_codebook <- function(data, cols) {
     dplyr::mutate(item_label = ifelse(is.na(item_label), item_name, item_label)) %>%
     dplyr::mutate(item_group = stringr::str_remove(item_name, "_.*")) %>%
     dplyr::mutate(item_class = as.character(sapply(item_class, function(x) ifelse(length(x) > 1, x[[length(x)]], x)))) %>%
-    dplyr::select(item_group, item_class, item_name, item_label, value_label) %>%
+    dplyr::select(item_name, item_group, item_class, item_label, value_label) %>%
     tidyr::unnest_longer(value_label, keep_empty = T)
 
 
@@ -45,7 +45,7 @@ get_codebook <- function(data, cols) {
       # dplyr::filter(!(value_name %in% c("comment", "class","levels","tzone"))) %>%
       dplyr::filter(stringr::str_detect(value_name, "^-?[0-9TF]+$")) %>%
       dplyr::mutate(value_label = as.character(value_label)) %>%
-      dplyr::select(item_group, item_class, item_name, item_label, value_name, value_label)
+      dplyr::select(item_name, item_group, item_class, item_label, value_name, value_label)
 
     labels_levels <- labels %>%
       # dplyr::rename(value_name = value_label_id) %>%
@@ -58,7 +58,7 @@ get_codebook <- function(data, cols) {
     # Combine items without codes and items with codes
     labels <- labels %>%
       # dplyr::rename(value_name = value_label_id) %>%
-      dplyr::distinct(item_group, item_class, item_name, item_label) %>%
+      dplyr::distinct(item_name, item_group, item_class, item_label) %>%
       dplyr::anti_join(labels_codes, by = "item_name") %>%
       dplyr::bind_rows(labels_codes) %>%
       dplyr::anti_join(labels_levels, by = "item_name") %>%
@@ -68,27 +68,28 @@ get_codebook <- function(data, cols) {
   }
 
   # Detect groups
-  groups <- labels %>%
-    dplyr::distinct(item_name) %>%
-    dplyr::mutate(
-      item_prefix = get_prefix(item_name),
-      item_postfix = stringr::str_sub(item_name, stringr::str_length(item_prefix) + 1)
-    ) %>%
-    dplyr::arrange(item_postfix) %>%
-    dplyr::mutate(
-      item_next = dplyr::lead(item_postfix),
-      item_prev = dplyr::lag(item_postfix)
-    ) %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(
-      item_infix = ifelse(!is.na(item_next),get_prefix(c(item_postfix, item_next)), ""),
-      item_infix = ifelse(item_infix == "",get_prefix(c(item_postfix, item_prev)), item_infix),
-    ) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(item_postfix = stringr::str_sub(item_postfix, stringr::str_length(item_infix) + 1)) %>%
-    dplyr::select(item_name, item_prefix, item_infix, item_postfix)
-
-  labels <- left_join(labels, groups, by="item_name")
+  # TODO: revise group detection. Will be used for index calculation.
+  # groups <- labels %>%
+  #   dplyr::distinct(item_name) %>%
+  #   dplyr::mutate(
+  #     item_prefix = get_prefix(item_name),
+  #     item_postfix = stringr::str_sub(item_name, stringr::str_length(item_prefix) + 1)
+  #   ) %>%
+  #   dplyr::arrange(item_postfix) %>%
+  #   dplyr::mutate(
+  #     item_next = dplyr::lead(item_postfix),
+  #     item_prev = dplyr::lag(item_postfix)
+  #   ) %>%
+  #   dplyr::rowwise() %>%
+  #   dplyr::mutate(
+  #     item_infix = ifelse(!is.na(item_next),get_prefix(c(item_postfix, item_next)), ""),
+  #     item_infix = ifelse(item_infix == "",get_prefix(c(item_postfix, item_prev)), item_infix),
+  #   ) %>%
+  #   dplyr::ungroup() %>%
+  #   dplyr::mutate(item_postfix = stringr::str_sub(item_postfix, stringr::str_length(item_infix) + 1)) %>%
+  #   dplyr::select(item_name, item_prefix, item_infix, item_postfix)
+  #
+  # labels <- dplyr::left_join(labels, groups, by="item_name")
   labels
 }
 
@@ -100,7 +101,7 @@ get_codebook <- function(data, cols) {
 #' @return A character string
 get_title <- function(data, cols) {
   labels <- data %>%
-    get_codebook({{ cols }}) %>%
+    codebook({{ cols }}) %>%
     tidyr::drop_na(item_label)
 
   if (nrow(labels) > 0) {
@@ -131,7 +132,7 @@ get_limits <- function(data, cols, negative = F) {
 
   # Second, try to get limits from the column labels
   if (is.null(values)) {
-    values <- get_codebook(data, {{ cols }}) %>%
+    values <- codebook(data, {{ cols }}) %>%
       dplyr::distinct(value_name) %>%
       pull(value_name)
     values <- suppressWarnings(as.numeric(values))
@@ -239,7 +240,7 @@ label_scale <- function(x, scale) {
 #' @return A character value
 get_col_label <- function(data, col) {
   labels <- data %>%
-    get_codebook({{ col }}) %>%
+    codebook({{ col }}) %>%
     dplyr::distinct(item_name, item_label) %>%
     na.omit()
 
@@ -336,7 +337,7 @@ set_item_labels <- function(data, labels) {
 #' @param cols The tidyselect columns
 replace_item_values <- function(result, data, cols) {
   labels_items <- data %>%
-    get_codebook({{ cols }}) %>%
+    codebook({{ cols }}) %>%
     dplyr::distinct(item_name, item_label) %>%
     na.omit()
 

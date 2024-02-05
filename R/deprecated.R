@@ -255,19 +255,19 @@ add_styles <- function(...) {
 }
 
 
-#' Alias for get_codebook
+#' Alias for codebook
 #'
 #' @description
 #' `r lifecycle::badge("deprecated")`
 #'
-#' `get_labels` has been deprecated. Use \link{get_codebook} instead.
+#' `get_labels` has been deprecated. Use \link{codebook} instead.
 #'
 #' @keywords internal
 #' @export
 get_labels <- function(...)
 {
-  lifecycle::deprecate_warn("1.0.0", "get_labels()", "get_codebook()", always = TRUE)
-  get_codebook(...)
+  lifecycle::deprecate_warn("1.0.0", "get_labels()", "codebook()", always = TRUE)
+  codebook(...)
 }
 
 #' Automatically detect the table type and output table and plot
@@ -323,7 +323,7 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
 
 
   # Get item label from the attributes
-  labels <-  get_codebook(data)
+  labels <-  codebook(data)
 
   for (scope in scopes) {
     # Get column candidates

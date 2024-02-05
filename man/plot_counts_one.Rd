@@ -16,7 +16,7 @@ plot_counts_one(data, col, numbers = NULL, title = T, labels = T)
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}
 
-\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 }
 \description{
 Note: only non-missing cases are used to calculate the percentage.

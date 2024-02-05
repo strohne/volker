@@ -2,13 +2,13 @@
 % Please edit documentation in R/deprecated.R
 \name{get_labels}
 \alias{get_labels}
-\title{Alias for get_codebook}
+\title{Alias for codebook}
 \usage{
 get_labels(...)
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
-\code{get_labels} has been deprecated. Use \link{get_codebook} instead.
+\code{get_labels} has been deprecated. Use \link{codebook} instead.
 }
 \keyword{internal}

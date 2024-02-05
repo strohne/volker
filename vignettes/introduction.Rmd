@@ -47,25 +47,25 @@ data <- set_item_labels(
 
 ### Frequency table for one categorical variable: Gender
 ```{r}
-tab_counts_one(data, sd_geschlecht)
+tab_counts(data, sd_geschlecht)
 ```
 
 ### Distribution table for one metric variable: Age
 ```{r}
-tab_metrics_one(data, sd_alter)
+tab_metrics(data, sd_alter)
 ```
 
 ## 2. Multiple items
 
 ### Frequency table for multiple categorical variables: Adoption factors
 ```{r}
-tab_counts_items(data, starts_with("cg_adoption_"))
+tab_counts(data, starts_with("cg_adoption_"))
 ```
 
 ### Distribution table for multiple metric items: Adoption factors
-```{r}
-tab_metrics_items(data, starts_with("cg_adoption_"))
-plot_metrics_items(data, starts_with("cg_adoption_"))
+```{r fig.width=6, fig.height=8}
+tab_metrics(data, starts_with("cg_adoption_"))
+plot_metrics(data, starts_with("cg_adoption_"))
 
 ```
 
@@ -74,61 +74,46 @@ plot_metrics_items(data, starts_with("cg_adoption_"))
 ### Cross table of categorical variables: Innovator type by gender
 
 ```{r}
-tab_counts_one_grouped(data, in_adoption, sd_geschlecht)
+tab_counts(data, in_adoption, sd_geschlecht)
 ```
 
 ### Group comparison of a metric variable: Age by gender
 
 ```{r}
-tab_metrics_one_grouped(data, sd_alter, sd_geschlecht)
+tab_metrics(data, sd_alter, sd_geschlecht)
 ```
 
 ## 4. Multiple metric variables
 
 ### Compare means of multiple items: Adoption factors by gender
 ```{r}
-tab_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_geschlecht)
+tab_metrics(data, starts_with("cg_adoption_"), sd_geschlecht)
 ```
 
-### Correlation of items: Adoption factors
-```{r}
-tab_metrics_items_cor(data, starts_with("cg_adoption_adv"))
-
-tab_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("cg_nutzen"))
-```
 
 # Automatically generate reports
 
 Reports combine plots and tables. Optionally, for item batteries, an index is calculated and reported.
 
-**TODO: the template is not included yet**
+**TODO: the template is not included yet**  
 To see an example or develop own reports, use the volker report template in RStudio:
-- Create a new R Markdown document from the main menu
-- In the popup select the "From Template" option
-- Select the volker template.
+
+- Create a new R Markdown document from the main menu  
+- In the popup select the "From Template" option  
+- Select the volker template.  
 - The template contains a working example. Click knit to see the result.
+
 Have fun with developing own reports!
 
-The main entry point for reports is the report()-function.
-It takes your dataset as first parameter.
-Given a list of column prefixes in the second parameter,
-the appropriate table and plot types are guessed
-
-- If the prefix matches a single column, tab_counts_one() and plot_counts_one() will be used.
-  If the prefix matches multiple columns, tab_counts_items() and plot_counts_items() will be used.
-- If the data contains metric values, the corresponding metric functions are used.  
-
-In the third parameter, you can provide a grouping column to generate the corresponding grouped tables or plots.
+The main entry point for reports are the report-functions.
 See the function help for further options.
 
 ```{r}
-report(
-  data,
-  c(
-    "cg_adoption_advantage_",
-    "sd_geschlecht"
-  )
-)
+
+data %>% 
+  filter(sd_geschlecht != "divers") %>% 
+  report_metrics(starts_with("cg_adoption_"), sd_geschlecht)
+
 ```
 
 # Customizing outputs
@@ -147,14 +132,22 @@ Plot and table functions share a number of parameters that can be used to custom
 - ordered: Sometimes categories have an order, from low to high or from few to many. It helps visual inspections to plot ordered values with shaded colors instead of arbitrary colors. For frequency plots, you can inform the method about the desired order. By default the functions try to automatically detect a sensitive order.
 - limits: Do you know how to create misleading graphs? It happens when you truncate the minimum or maximum value in a scale. The scale limits are automatically guessed by the package functions (work in progress). Use the limits-parameter to manually fix any misleading graphs.
 
-# Set custom item labels
+# Custom labels: Where do they come from?
 
-Item labels are stored in the comment attribute of an item variable. 
-When printing item tables, the labels are used. You can set custom or 
-new labels by providing a tibble with item names in the first column
-and item labels in the second.
+Labels used in plots and tables are stored in the comment attribute of the variable. 
+You can inspect all labels using the `codebook()`-function:
 
 ```{r}
+codebook(data)
+```
+
+Set custom or new labels by providing a tibble with item names in the first column
+and item labels in the second to `set_item_labels()`:
+
+*Note: The function is experimental and will change in future releases.*
+
+```{r}
+
 newlabels <- tribble(
   ~item_name, ~item_label,
   "cg_adoption_advantage_01", "Allgemeine Vorteile",

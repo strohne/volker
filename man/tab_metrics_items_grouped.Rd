@@ -25,7 +25,7 @@ tab_metrics_items_grouped(
 
 \item{digits}{The number of digits to print.}
 
-\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
 \item{cols_group}{The column holding groups to compare}
 }

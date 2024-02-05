@@ -24,7 +24,7 @@ tab_metrics_one_grouped(
 
 \item{digits}{The number of digits to print}
 
-\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{get_codebook}.}
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 }
 \description{
 Output a five point summary for groups

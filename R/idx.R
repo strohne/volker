@@ -27,7 +27,7 @@ add_idx <- function(data, cols, newcol = NULL, negative = FALSE) {
   }
 
   # Create a label
-  newlabel <- get_codebook(idx) %>%
+  newlabel <- codebook(idx) %>%
     distinct(item_label) %>%
     na.omit() %>%
     pull(item_label) %>%
@@ -50,7 +50,7 @@ add_idx <- function(data, cols, newcol = NULL, negative = FALSE) {
 
   # Add scale
   attr(data[[newcol]], "scale") <- data %>%
-    get_codebook({{ cols }}) %>%
+    codebook({{ cols }}) %>%
     distinct(value_name, value_label)
 
   data
