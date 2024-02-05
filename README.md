@@ -32,7 +32,9 @@ vignette](vignettes/introduction.Rmd).
 ## Concept
 
 The volkeR package is made for creating quick and easy overviews about
-datasets. It handles standard cases with a handful of functions:
+datasets. It handles standard cases with a handful of functions.
+Basically you select one of the following functions and throw your data
+in:
 
 **Charts**: `plot_metrics()` and `plot_counts()`  
 **Tables**: `tab_metrics()` and `tab_counts()`
@@ -62,13 +64,16 @@ Which one is best? That depends on your objective:
   single variable, but the variables are all measured with the same
   scale (e.g. 1 = not at all to 5 = fully applies). To summarise
   multiple items send a column selection to the functions by using
-  tidyselect mechanisms such as `starts_with()`.
+  tidyselect mechanisms such as `starts_with()`. Indexes are
+  automatically calculated by the `report`-functions or can be
+  explicitly created using `add_idx()`.
 
 - *Markdown or data frame?*  
   All table functions return data frames that can be processed further.
   The tables have their own print function, so the output of all
   functions can be used directly in Markdown documents to display neatly
-  formatted tables and plots.
+  formatted tables and plots. The `report`-functions create tidy
+  interactive tabsheets to switch between plots, tables, and indexes.
 
 ## Examples
 
