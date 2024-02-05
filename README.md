@@ -29,6 +29,10 @@ data.
 See further [examples in the introduction
 vignette](vignettes/introduction.Rmd).
 
+Don’t miss the template feature: Within RStudio, create a new Markdown
+document, select “From template”, choose and finally knit the “Volker
+Report”! It’s a blueprint for your own tidy reports.
+
 ## Concept
 
 The volkeR package is made for creating quick and easy overviews about

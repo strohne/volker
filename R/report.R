@@ -1,5 +1,8 @@
 #' Create table and plot for metric variables
 #'
+#' Depending on your column selection, different types of plots and tables are generated.
+#' See \link{plot_metrics} and \link{tab_metrics}.
+#'
 #' For item batteries, an index is calculated and reported.
 #' When used in combination with the Markdown-template "html_report",
 #' the different parts of the report are grouped under a tabsheet selector.
@@ -66,6 +69,9 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index=T, title = T
 }
 
 #' Create table and plot for categorical variables
+#'
+#' Depending on your column selection, different types of plots and tables are generated.
+#' See \link{plot_counts} and \link{tab_counts}.
 #'
 #' For item batteries, an index is calculated and reported.
 #' When used in combination with the Markdown-template "html_report",
@@ -176,6 +182,7 @@ report_counts <- function(data, cols, col_group = NULL, ..., index=T, title = T,
 #' is applied in markdown reports.
 #'
 #' @param chunks A list of character strings
+#' @keywords internal
 #' @return A list of character strings with the vlkr_rprt class
 .to_vlkr_rprt <- function(chunks) {
   class(chunks) <- c("vlkr_rprt", setdiff(class(chunks),"vlkr_rprt"))
