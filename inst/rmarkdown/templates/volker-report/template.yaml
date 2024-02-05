@@ -1,0 +1,4 @@
+name: Volker Report
+description: >
+   Generate reports with table and plot switches
+create_dir: FALSE
