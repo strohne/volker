@@ -32,11 +32,11 @@ prepare <- function(data, remove.na = T) {
         tidyselect::where(
           ~ is.factor(.) & (remove.na %in% levels(.))
         ),
-        ~ na_if(., remove.na)
+        ~ dplyr::na_if(., remove.na)
       )
     )
 
-    data <- dplyr::mutate(data, across(where(is.numeric), ~ na_if(., -9)))
+    data <- dplyr::mutate(data, dplyr::across(dplyr::where(is.numeric), ~ dplyr::na_if(., -9)))
   }
 
   # Add whitespace for better breaks

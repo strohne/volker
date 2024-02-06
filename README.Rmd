@@ -137,6 +137,8 @@ All functions take a data frame as their first argument, followed by column sele
 - Multiple categorical variables: `tab_counts(data, starts_with("cg_adoption"))`  
 
 
+You'll find an overview about different [tables](vignettes/tables.Rmd), [plots](vignettes/plots.Rmd) and [reports](vignettes/reports.Rmd) in the package vignettes.
+
 For further options to customize the results, see the builtin function help (F1 key).
 
 After deciding whether to plot or tabulate, and whether to handle metric or counted data, 
@@ -166,6 +168,74 @@ the column selections determine which of the following methods are called under 
 | 19 | plot_metrics_items_grouped |             | plot   | metrics | multipe  | grouped    |
 | 20 | plot_metrics_items_cor     | not yet     | plot   | metrics | multipe  | correlated |
 
+## Where do all the labels go?
+One of the strongest package features is labeling. You know the pain.
+Labels are stored in the column attributes.
+Inspect current labels of columns and values by the `codebook()`-function:
+
+```
+codebook(data)
+```
+
+This results in a table with item names, item values, value names and value labels. 
+The same table format can be used to manually set labels with `labs_apply()`:
+
+```
+newlabels <- tribble(
+  ~item_name,                 ~item_label,
+  "cg_adoption_advantage_01", "Allgemeine Vorteile",
+  "cg_adoption_advantage_02", "Finanzielle Vorteile",
+  "cg_adoption_advantage_03", "Vorteile bei der Arbeit",
+  "cg_adoption_advantage_04", "Macht mehr Spaß"
+)
+
+data %>%
+  labs_apply(newlabels) %>%
+  tab_metrics(starts_with("cg_adoption_advantage_"))
+```
+
+Be aware that some data operations such as `mutate()` from the Tidyverse 
+loose labels on their way.
+In this case, store the labels (in the codebook attribute of the data frame)
+before the operation and resotre them afterwards:
+
+```
+data %>%
+  
+  labs_store() %>%
+  mutate(sd_age = 2024 - sd_age) %>% 
+  labs_restore() %>% 
+  
+  tab_metrics(sd_age)
+```
+
+
+## Sosci Survey integration
+The attributes to store labels follow a format used, for example,
+on [Sosci Survey](https://www.soscisurvey.de/). That's why you can directly throw in
+labeled data from the Sosci Survey API:
+
+```
+library(volker)
+
+# Get your API link from Sosci Survey with settings "Daten als CSV für R abrufen"
+eval(parse("https://www.soscisurvey.de/YOURPROJECT/?act=YOURKEY&rScript", encoding="UTF-8"))
+
+# Recode -9 values and prepare the codebook
+ds = volker::prepare(ds)
+
+# Generate reportings
+report_counts(ds, A002)
+```
+
+For best results, use sensible prefixes and captions for your Sosci questions.
+The labels come directly from your questionnaire.
+
+## Index calculation
+
+Indexes (=mean of multiple items) can be added using `add_idx()` manually
+and are automatically calculated in report functions. 
+Cronbach's alpha is added to all table outputs.
 
 ## Installation
 As with all other packages you'll have to install the package first.
