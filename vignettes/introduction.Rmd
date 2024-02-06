@@ -60,6 +60,12 @@ tab_metrics(data, sd_alter)
 ### Frequency table for multiple categorical variables: Adoption factors
 ```{r}
 tab_counts(data, starts_with("cg_adoption_"))
+
+tab_counts(
+  data, 
+  c(cg_adoption_advantage_01,cg_adoption_advantage_02)
+)
+
 ```
 
 ### Distribution table for multiple metric items: Adoption factors
