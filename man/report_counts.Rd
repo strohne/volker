@@ -41,6 +41,10 @@ in Markdown (e.g. ##### Method)}
 A list of class vlkr_rprt containing the parts of the report
 }
 \description{
+Depending on your column selection, different types of plots and tables are generated.
+See \link{plot_counts} and \link{tab_counts}.
+}
+\details{
 For item batteries, an index is calculated and reported.
 When used in combination with the Markdown-template "html_report",
 the different parts of the report are grouped under a tabsheet selector.

@@ -126,7 +126,7 @@ tab_counts_one <- function(data, col, missings = T, percent = T, labels = T, ...
   # Get variable caption from the attributes
   if (labels) {
     result <- labs_replace_values(result, {{ col }}, codebook(data, {{ col }}))
-    label <- get_col_label(data, {{ col }})
+    label <- get_title(data, {{ col }})
     result <- dplyr::rename(result, {{ label }} := {{ col }})
 
   }
@@ -576,7 +576,7 @@ tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T, ...) 
 
   # Get item label from the attributes
   if (labels) {
-    label <- get_col_label(data, {{ col }})
+    label <- get_title(data, {{ col }})
     result <- dplyr::rename(result, {{ label }} := {{ col }})
   }
 

@@ -38,6 +38,10 @@ Keep it open to add further custom tabs by adding headers on the fifth level
 in Markdown (e.g. ##### Method)}
 }
 \description{
+Depending on your column selection, different types of plots and tables are generated.
+See \link{plot_metrics} and \link{tab_metrics}.
+}
+\details{
 For item batteries, an index is calculated and reported.
 When used in combination with the Markdown-template "html_report",
 the different parts of the report are grouped under a tabsheet selector.

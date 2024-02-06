@@ -494,3 +494,31 @@ report_styles <- function() {
     knitr::asis_output() %>%
     knitr::knit_print()
 }
+
+
+#' Set column labels by their comment attribute
+#'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' `set_col_labels` has been deprecated. Use \link{labs_apply} instead.
+#'
+#' @param data A data frame
+#' @param cols Tidyselect column names (e. g. a single column name without quotes)
+#' @param labels A character vector with the same length as the column selection, containing new labels
+#' @examples
+#' ds <- volker::chatgpt
+#' ds <- set_col_labels(ds, sd_alter, "Age")
+#'
+#' @keywords internal
+#' @export
+set_col_labels <- function(data, cols, labels) {
+
+  lifecycle::deprecate_warn("1.0.0", "set_col_labels()", "labs_apply()", always = TRUE)
+
+  cols <- tidyselect::eval_select(expr = enquo(cols), data = data)
+    for (i in c(1:length(cols))) {
+    attr(data[[cols[i]]], "comment") <- labels[i]
+  }
+  data
+}

@@ -32,8 +32,8 @@ lda_report <- function(data, col_text, k=NULL, lambda=0.6, seed=1852) {
   }
 
   data <- data %>%
-    dplyr::mutate(doc_length = str_length({{col_text}})) %>%
-    volker::set_col_label(tpc_topic,"Topic")
+    dplyr::mutate(doc_length = stringr::str_length({{col_text}})) %>%
+    volker::labs_apply(tibble::tibble("tpc_topic","Topic"))
 
   # cat("**Topic prevalence**  \n")
   # data %>%

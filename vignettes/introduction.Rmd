@@ -35,7 +35,7 @@ data <- volker::chatgpt
 data <- volker::prepare(data)
 
 # Add label to sd_alter
-data <- set_item_labels(
+data <- labs_apply(
   data, 
   tibble("sd_alter", "Alter")
 )
@@ -148,7 +148,7 @@ codebook(data)
 ```
 
 Set custom or new labels by providing a tibble with item names in the first column
-and item labels in the second to `set_item_labels()`:
+and item labels in the second to `labs_apply()`:
 
 *Note: The function is experimental and will change in future releases.*
 
@@ -163,8 +163,16 @@ newlabels <- tribble(
 )
 
 data %>%
-  set_item_labels(newlabels) %>%
+  labs_apply(newlabels) %>%
   tab_metrics_items(starts_with("cg_adoption_advantage_"))
+
+
+data %>%
+  tab_counts_items(starts_with("cg_adoption_advantage_"))
+
+data %>%
+  tab_counts(cg_adoption_advantage_01) 
+
 ```
 
 # What's behind the scenes?

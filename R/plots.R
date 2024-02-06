@@ -403,7 +403,7 @@ plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labe
 
   # Get title
   if (title == T) {
-    title <- get_col_label(data, {{ col }})
+    title <- get_title(data, {{ col }})
   } else if (title == F) {
     title <- NULL
   }
@@ -521,7 +521,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 
   # Add title
   if (title == T) {
-    title <- get_col_label(data, {{ col }})
+    title <- get_title(data, {{ col }})
   }
   else if (title == F) {
     title <- NULL
@@ -638,7 +638,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 
   # Add title
   if (title == T) {
-    title <- get_col_label(data, {{ col }})
+    title <- get_title(data, {{ col }})
   }
   else if (title == F) {
     title <- NULL
