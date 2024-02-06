@@ -138,6 +138,7 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ..
     # TODO: make limits configurable
     # scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
     scale_y_continuous(labels = scales::percent) +
+    #scale_x_discrete(limits=rev) +
     ylab("Share in percent") +
     coord_flip() +
     theme(
@@ -563,7 +564,10 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
   # Remove negative values
   # TODO: warn if any negative values were recoded
   if (!negative) {
-    data <- dplyr::mutate(data, across({{ cols }}, ~ if_else(. < 0, NA, .)))
+    data <- data %>%
+      labs_store() %>%
+      dplyr::mutate(across({{ cols }}, ~ if_else(. < 0, NA, .))) %>%
+      labs_restore()
   }
 
   # Pivot items
@@ -593,6 +597,9 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
   # Rename first column
   if (title == T && (prefix != "")) {
     title <- sub("[ :,]+$", "", prefix)
+  }
+  else if (title == T) {
+    title <- "Item"
   }
 
 

@@ -35,14 +35,13 @@ data <- data %>%
     str_detect(in_adoption,"wenn ich nicht mehr anders kann") ~ "Only when necessary",
   )) %>%   
   mutate(
-    sd_geschlecht = recode(
+    sd_geschlecht = fct_recode(
       sd_geschlecht,
-      "männlich" = "male",
-      "weiblich" = "female",
-      "divers" = "diverse"
+      "male" = "männlich",
+      "female" = "weiblich",
+      "diverse" = "divers"
     )
   )
-
 
 ```
 
@@ -110,7 +109,7 @@ data %>%
   tab_metrics(starts_with("cg_adoption_advantage_"))
 
 data %>% 
-  plot_metrics_items(starts_with("cg_adoption_advantage_"))
+  plot_metrics(starts_with("cg_adoption_advantage_"))
 
 ggsave("plots/examples/plot_metrics_items.png", width=300,height=200, units="px", dpi=96, scale = 1.2)
 ```
