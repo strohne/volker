@@ -22,8 +22,6 @@ data <- volker::chatgpt
 # Recode -9 to NA
 data <- prepare(data)
 
-# Add label to sd_alter
-data <- labs_apply(data, tibble("sd_alter", "Alter"))
 ```
 
 ## Frequencies of categorical variables

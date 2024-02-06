@@ -7,8 +7,8 @@
          item_name           item_group item_class item_label   value_name value_label
          <chr>               <chr>      <chr>      <chr>        <chr>      <chr>      
        1 case                case       <NA>       case         <NA>       <NA>       
-       2 sd_alter            sd         <NA>       sd_alter     <NA>       <NA>       
-       3 cg_activities       cg         <NA>       cg_activiti~ <NA>       <NA>       
+       2 sd_alter            sd         <NA>       Alter        <NA>       <NA>       
+       3 cg_activities       cg         <NA>       ChatGPT-Akt~ <NA>       <NA>       
        4 cg_nutzen_privat    cg         <NA>       ChatGPT-Nut~ 1          nie        
        5 cg_nutzen_privat    cg         <NA>       ChatGPT-Nut~ 2          seltener   
        6 cg_nutzen_privat    cg         <NA>       ChatGPT-Nut~ 3          mehrmals p~

@@ -34,12 +34,6 @@ data <- volker::chatgpt
 # Particularly, negative -9 values are recoded to NA.
 data <- volker::prepare(data)
 
-# Add label to sd_alter
-data <- labs_apply(
-  data, 
-  tibble("sd_alter", "Alter")
-)
-
 ```
 
 ## 1. One variable

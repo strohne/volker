@@ -100,15 +100,9 @@ Which one is best? That depends on your objective:
 variable</strong>
 </td>
 <td valign="top">
-
-    tab_metrics(data, sd_age)
-
 <img src="plots/english/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="100">
 </td>
 <td valign="top">
-
-    tab_counts(data, sd_gender)
-
 <img src="plots/english/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="200">
 </td>
 </tr>
@@ -118,15 +112,9 @@ variable</strong>
 items</strong>
 </td>
 <td valign="top">
-
-    tab_metrics(data, starts_with("cg_adoption"))
-
 <img src="plots/english/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="300">
 </td>
 <td valign="top">
-
-    tab_counts(data, starts_with("cg_adoption"))
-
 <img src="plots/english/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="300">
 </td>
 </tr>
@@ -136,15 +124,9 @@ items</strong>
 comparison </strong>
 </td>
 <td valign="top">
-
-    tab_metrics(data, sd_age, sd_gender)
-
 <img src="plots/english/tab_group_metrics.png" alt="Compare metric items by group" width="300">
 </td>
 <td valign="top">
-
-    tab_counts(data, in_adoption, sd_geschlecht)
-
 <img src="plots/english/tab_group_counts.png" alt="Cross tabulate two variables" width="300">
 </td>
 </tr>
@@ -154,43 +136,47 @@ comparison </strong>
 <br>
 
 All functions take a data frame as their first argument, followed by
-column selections, and optionally a grouping column. Example:
+column selections, and optionally a grouping column. Examples:
 
-    tab_metrics(
-      data,
-      starts_with("cg_adoption_advantage"),
-      sd_gender
-    )
+- One metric variable: `tab_metrics(data, sd_age)`  
+- One categorical variable: `tab_counts(data, sd_gender)`  
+- Grouped metric variable: `tab_metrics(data, sd_age, sd_gender)`  
+- Grouped categorical variable:
+  `tab_counts(data, in_adoption, sd_geschlecht)`  
+- Multiple metric variables:
+  `tab_metrics(data, starts_with("cg_adoption"))`  
+- Multiple categorical variables:
+  `tab_counts(data, starts_with("cg_adoption"))`
 
 For further options to customize the results, see the builtin function
-help.
+help (F1 key).
 
 After deciding whether to plot or tabulate, and whether to handle metric
 or counted data, the column selections determine which of the following
-methods are called under the hood. Some are not implemented yet.
+methods are called under the hood. (Note: Some are not implemented yet.)
 
-| \#  | function                   | implemented | output | scale   | variables | grouped | correlated |
-|-----|----------------------------|-------------|--------|---------|-----------|---------|------------|
-| 1   | tab_counts_one             |             | table  | counts  | one       |         |            |
-| 2   | tab_counts_one_grouped     |             | table  | counts  | one       | yes     |            |
-| 3   | tab_counts_items           |             | table  | counts  | multiple  |         |            |
-| 4   | tab_counts_items_grouped   | not yet     | table  | counts  | multipe   | yes     |            |
-| 5   | tab_counts_items_cor       | not yet     | table  | counts  | multipe   |         | yes        |
-| 6   | tab_metrics_one            |             | table  | metrics | one       |         |            |
-| 7   | tab_metrics_one_grouped    |             | table  | metrics | one       | yes     |            |
-| 8   | tab_metrics_items          |             | table  | metrics | multiple  |         |            |
-| 9   | tab_metrics_items_grouped  |             | table  | metrics | multipe   | yes     |            |
-| 10  | tab_metrics_items_cor      |             | table  | metrics | multipe   |         | yes        |
-| 11  | plot_counts_one            |             | plot   | counts  | one       |         |            |
-| 12  | plot_counts_one_grouped    |             | plot   | counts  | one       | yes     |            |
-| 13  | plot_counts_items          |             | plot   | counts  | multiple  |         |            |
-| 14  | plot_counts_items_grouped  | not yet     | plot   | counts  | multipe   | yes     |            |
-| 15  | plot_counts_items_cor      | not yet     | plot   | counts  | multipe   |         | yes        |
-| 16  | plot_metrics_one           |             | plot   | metrics | one       |         |            |
-| 17  | plot_metrics_one_grouped   |             | plot   | metrics | one       | yes     |            |
-| 18  | plot_metrics_items         |             | plot   | metrics | multiple  |         |            |
-| 19  | plot_metrics_items_grouped |             | plot   | metrics | multipe   | yes     |            |
-| 20  | plot_metrics_items_cor     | not yet     | plot   | metrics | multipe   |         | yes        |
+| \#  | function                   | implemented | output | scale   | columns  | crossings  |
+|-----|----------------------------|-------------|--------|---------|----------|------------|
+| 1   | tab_counts_one             |             | table  | counts  | one      |            |
+| 2   | tab_counts_one_grouped     |             | table  | counts  | one      | grouped    |
+| 3   | tab_counts_items           |             | table  | counts  | multiple |            |
+| 4   | tab_counts_items_grouped   | not yet     | table  | counts  | multipe  | grouped    |
+| 5   | tab_counts_items_cor       | not yet     | table  | counts  | multipe  | correlated |
+| 6   | tab_metrics_one            |             | table  | metrics | one      |            |
+| 7   | tab_metrics_one_grouped    |             | table  | metrics | one      | grouped    |
+| 8   | tab_metrics_items          |             | table  | metrics | multiple |            |
+| 9   | tab_metrics_items_grouped  |             | table  | metrics | multipe  | grouped    |
+| 10  | tab_metrics_items_cor      |             | table  | metrics | multipe  | correlated |
+| 11  | plot_counts_one            |             | plot   | counts  | one      |            |
+| 12  | plot_counts_one_grouped    |             | plot   | counts  | one      | grouped    |
+| 13  | plot_counts_items          |             | plot   | counts  | multiple |            |
+| 14  | plot_counts_items_grouped  | not yet     | plot   | counts  | multipe  | grouped    |
+| 15  | plot_counts_items_cor      | not yet     | plot   | counts  | multipe  | correlated |
+| 16  | plot_metrics_one           |             | plot   | metrics | one      |            |
+| 17  | plot_metrics_one_grouped   |             | plot   | metrics | one      | grouped    |
+| 18  | plot_metrics_items         |             | plot   | metrics | multiple |            |
+| 19  | plot_metrics_items_grouped |             | plot   | metrics | multipe  | grouped    |
+| 20  | plot_metrics_items_cor     | not yet     | plot   | metrics | multipe  | correlated |
 
 ## Installation
 
@@ -263,8 +249,9 @@ statistics and data representation using RStudio and R Markdown.
 Jakob Jünger
 
 **Contributers**  
-Henrieke Kotthoff
+Henrieke Kotthoff  
+Chantal Gärtner
 
 **Citation**  
-Jünger, J. (2024). volker: Report summaries and graphics for survey
-data. R package version 1.0.
+Jünger, J. (2024). volker: High-level functions for summarising,
+charting and reporting survey data. R package version 1.0.

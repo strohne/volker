@@ -20,17 +20,17 @@
     Output
       
       
-      |sd_alter | value|
-      |:--------|-----:|
-      |min      |    18|
-      |q1       |    27|
-      |median   |    38|
-      |q3       |    52|
-      |max      |    68|
-      |m        |  39.7|
-      |sd       |  13.8|
-      |missing  |     0|
-      |n        |   101|
+      |Alter   | value|
+      |:-------|-----:|
+      |min     |    18|
+      |q1      |    27|
+      |median  |    38|
+      |q3      |    52|
+      |max     |    68|
+      |m       |  39.7|
+      |sd      |  13.8|
+      |missing |     0|
+      |n       |   101|
 
 # Frequency table for multiple categorical variables
 

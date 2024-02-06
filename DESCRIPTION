@@ -5,7 +5,8 @@ Version: 0.0.0.9000
 Date: 2024-02-03
 Authors@R:
   c(person("Jakob", "Jünger", email = "jakob.juenger@uni-muenster.de", role = c("aut", "cre")),
-    person("Henrieke", "Kotthoff", email = "henrieke.kotthoff@uni-muenster.de", role = "ctb"))
+    person("Henrieke", "Kotthoff", email = "henrieke.kotthoff@uni-muenster.de", role = "ctb"),
+    person("Chantal", "Gärtner", email = "chantal.gaertner@uni-muenster.de", role = "ctb"))
 Description: The package provides functions to create tables and plots to be included in Markdown reports. Boiled down to the basics, with labeling features and automatic output selection.
 License: MIT
 Encoding: UTF-8
