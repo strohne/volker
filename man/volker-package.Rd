@@ -6,6 +6,8 @@
 \alias{volker-package}
 \title{volker: Report summaries and graphics for survey data}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 The package provides functions to create tables and plots to be included in Markdown reports. Boiled down to the basics, with labeling features and automatic output selection.
 }
 \author{

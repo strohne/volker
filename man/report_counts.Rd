@@ -8,10 +8,11 @@ report_counts(
   data,
   cols,
   col_group = NULL,
-  ...,
   index = T,
+  numbers = "p",
   title = T,
-  close = T
+  close = T,
+  ...
 )
 }
 \arguments{
@@ -23,12 +24,13 @@ or multiple columns selected by methods such as starts_with().}
 
 \item{col_group}{Optional, a grouping column (without quotes).}
 
-\item{...}{Parameters passed to the plot and tab functions.}
-
 \item{index}{When the cols contain items on a metric scale
 (as determined by \link{get_direction}),
 an index will be calculated using the psych-package.
 Set to FALSE to suppress index generation.}
+
+\item{numbers}{The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
+Set to NULL to remove numbers.}
 
 \item{title}{A character providing the heading or TRUE (default) to output a heading.
 Classes for tabset pills will be added.}
@@ -36,6 +38,8 @@ Classes for tabset pills will be added.}
 \item{close}{Whether to close the last tab (default value TRUE) or to keep it open.
 Keep it open to add further custom tabs by adding headers on the fifth level
 in Markdown (e.g. ##### Method)}
+
+\item{...}{Parameters passed to the plot and tab functions.}
 }
 \value{
 A list of class vlkr_rprt containing the parts of the report
