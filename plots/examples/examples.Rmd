@@ -1,0 +1,167 @@
+---
+title: "Create example plots and tables"
+output: rmarkdown::html_vignette
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo=FALSE)
+
+library(tidyverse)
+library(volker)
+theme_set(theme_bw())
+
+data <- volker::chatgpt
+data <- prepare(data)
+
+# Translate labels
+data <- data %>% 
+  labs_apply(tibble("sd_geschlecht", "Gender")) %>% 
+  labs_apply(tibble("sd_alter","Age")) %>% 
+  labs_apply(tribble(
+    ~item_name, ~item_label,
+    "cg_adoption_advantage_01", "General Benefits",
+    "cg_adoption_advantage_02", "Financial Benefits",
+    "cg_adoption_advantage_03", "Workplace Benefits",
+    "cg_adoption_advantage_04", "Joy Benefits"
+  )) %>% 
+  volker::labs_apply(tibble("in_adoption","Adopter type")) %>%   
+  mutate(in_adoption = case_when(
+    str_detect(in_adoption,"Ich probiere ") ~ "I try quickly",
+    str_detect(in_adoption,"Ich warte eher ab") ~ "I tend to wait",
+    str_detect(in_adoption,"wenn ich nicht mehr anders kann") ~ "Only when necessary",
+  )) %>%   
+  mutate(
+    sd_geschlecht = recode(
+      sd_geschlecht,
+      "männlich" = "male",
+      "weiblich" = "female",
+      "divers" = "diverse"
+    )
+  )
+
+
+```
+
+## 1. One variable
+
+### Frequency table for one categorical variable: Gender
+```{r}
+
+data %>% 
+  tab_counts(sd_geschlecht)
+
+data %>% 
+  plot_counts(sd_geschlecht)
+
+ggsave("plots/examples/plot_counts_one.png", width=300,height=300, units="px", dpi=96)
+
+```
+
+### Distribution table for one metric variable: Age
+```{r}
+
+data %>%
+  tab_metrics(sd_alter)
+
+data %>%
+  plot_metrics(sd_alter)
+
+ggsave("plots/examples/plot_metrics_one.png", width=300,height=300, units="px", dpi=96)
+
+```
+
+## 2. Multiple items
+
+### Frequency table for multiple categorical variables: Adoption factors
+```{r}
+
+data %>% 
+  filter(
+    cg_adoption_advantage_01 < 4,
+    cg_adoption_advantage_02 < 4,
+    cg_adoption_advantage_03 < 4,
+    cg_adoption_advantage_04 < 4
+    
+  ) %>% 
+  tab_counts(starts_with("cg_adoption_advantage_"))
+
+data %>% 
+  # filter(
+  #   cg_adoption_advantage_01 < 4,
+  #   cg_adoption_advantage_02 < 4,
+  #   cg_adoption_advantage_03 < 4,
+  #   cg_adoption_advantage_04 < 4
+  #   
+  # ) %>% 
+  plot_counts(starts_with("cg_adoption_advantage_")) +
+  theme(legend.position = "none")
+
+ggsave("plots/examples/plot_counts_items.png", width=600,height=600, units="px", dpi=96, scale = 0.5)
+```
+
+### Distribution table for multiple metric items: Adoption factors
+```{r}
+
+data %>% 
+  tab_metrics(starts_with("cg_adoption_advantage_"))
+
+data %>% 
+  plot_metrics_items(starts_with("cg_adoption_advantage_"))
+
+ggsave("plots/examples/plot_metrics_items.png", width=300,height=300, units="px", dpi=96, scale = 1.5)
+```
+
+## 3. Two variables (one being categorical)
+
+### Cross table of categorical variables: Innovator type by gender
+
+```{r}
+
+data %>% 
+  tab_counts(in_adoption, sd_geschlecht)
+
+data %>% 
+  filter(sd_geschlecht != "diverse") %>% 
+  filter(in_adoption != "Only when necessary") %>% 
+  plot_counts(in_adoption, sd_geschlecht, prop="rows", numbers="p") +
+  theme(legend.position = "bottom")
+
+ggsave("plots/examples/plot_counts_one_grouped.png", width=300,height=300, units="px", dpi=96, scale = 1)
+```
+
+### Group comparison of a metric variable: Age by gender
+
+```{r results='asis'}
+
+tab_metrics(data, sd_alter, sd_geschlecht)
+
+data %>% 
+  filter(sd_geschlecht != "diverse") %>% 
+  plot_metrics(sd_alter, sd_geschlecht)
+
+ggsave("plots/examples/plot_metrics_one_grouped.png", width=300,height=300, units="px", dpi=96, scale = 1)
+```
+
+## 4. Multiple metric variables
+
+### Compare means of multiple items: Adoption factors by gender
+```{r results='asis'}
+
+data %>% 
+  tab_metrics(
+    starts_with("cg_adoption_advantage"), 
+    sd_geschlecht
+  )
+
+```
+
+### Correlation of items: Adoption factors by adoption factors
+```{r results='asis'}
+
+data %>% 
+  tab_metrics_items_cor(starts_with("cg_adoption_advantage"))
+
+```

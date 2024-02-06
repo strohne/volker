@@ -147,7 +147,6 @@ and item labels in the second to `labs_apply()`:
 *Note: The function is experimental and will change in future releases.*
 
 ```{r}
-
 newlabels <- tribble(
   ~item_name, ~item_label,
   "cg_adoption_advantage_01", "Allgemeine Vorteile",

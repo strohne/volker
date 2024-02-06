@@ -638,7 +638,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 
   # Add title
   if (title == T) {
-    title <- get_title(data, {{ col }})
+    title <- get_title(data, {{ cols }})
   }
   else if (title == F) {
     title <- NULL
