@@ -126,7 +126,7 @@ data %>%
 data %>% 
   filter(sd_geschlecht != "diverse") %>% 
   filter(in_adoption != "Only when necessary") %>% 
-  plot_counts(in_adoption, sd_geschlecht, prop="rows", numbers="p") +
+  plot_counts(in_adoption, sd_geschlecht, prop="rows") +
   theme(legend.position = "bottom")
 
 ggsave("plots/examples/plot_counts_one_grouped.png", width=300,height=300, units="px", dpi=96, scale = 1)

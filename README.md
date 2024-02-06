@@ -100,10 +100,10 @@ Which one is best? That depends on your objective:
 variable</strong>
 </td>
 <td valign="top">
-<img src="plots/english/tab_var_metrics.png" alt="Verteilungsübersicht einer metrischen Variable" title="Verteilungsübersicht" width="100">
+<img src="plots/examples/plot_metrics_one.png" alt="Density plot" width="300">
 </td>
 <td valign="top">
-<img src="plots/english/tab_var_counts.png" alt="Häufigkeitstabelle einer kategorialen Variable" title="Häufigkeitstabelle" width="200">
+<img src="plots/examples/plot_counts_one.png" alt="Bar chart" width="300">
 </td>
 </tr>
 <tr>
@@ -112,10 +112,10 @@ variable</strong>
 items</strong>
 </td>
 <td valign="top">
-<img src="plots/english/tab_item_metrics.png" alt="Verteilungsübersicht einer Itembatterie" title="Verteilungsübersicht Itembatterie" width="300">
+<img src="plots/examples/plot_metrics_items.png" alt="Item battery boxplots" width="300">
 </td>
 <td valign="top">
-<img src="plots/english/tab_item_counts.png" alt="Häufigkeitsübersicht einer Itembatterie" title="Häufigkeitstabelle Items" width="300">
+<img src="plots/examples/plot_counts_items.png" alt="Item battery bar chart" width="300">
 </td>
 </tr>
 <tr>
@@ -124,10 +124,10 @@ items</strong>
 comparison </strong>
 </td>
 <td valign="top">
-<img src="plots/english/tab_group_metrics.png" alt="Compare metric items by group" width="300">
+<img src="plots/examples/plot_metrics_one_grouped.png" alt="Group comparison" width="300">
 </td>
 <td valign="top">
-<img src="plots/english/tab_group_counts.png" alt="Cross tabulate two variables" width="300">
+<img src="plots/examples/plot_counts_one_grouped.png" alt="Stacked bar chart" width="300">
 </td>
 </tr>
 </tbody>
@@ -136,7 +136,8 @@ comparison </strong>
 <br>
 
 All functions take a data frame as their first argument, followed by
-column selections, and optionally a grouping column. Examples:
+column selections, and optionally a grouping column. Examples (hint:
+replace “tab\_” by “plot\_” to reproduce the examples above):
 
 - One metric variable: `tab_metrics(data, sd_age)`  
 - One categorical variable: `tab_counts(data, sd_gender)`  
@@ -150,10 +151,8 @@ column selections, and optionally a grouping column. Examples:
 
 You’ll find an overview about different [tables](vignettes/tables.Rmd),
 [plots](vignettes/plots.Rmd) and [reports](vignettes/reports.Rmd) in the
-package vignettes.
-
-For further options to customize the results, see the builtin function
-help (F1 key).
+package vignettes. For further options to customize the results, see the
+builtin function help (F1 key).
 
 After deciding whether to plot or tabulate, and whether to handle metric
 or counted data, the column selections determine which of the following
