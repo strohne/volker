@@ -569,7 +569,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
   # Pivot items
   result <- data %>%
     tidyr::drop_na({{ cols }}) %>%
-    remove_labels({{ cols }}) %>%
+    labs_clear({{ cols }}) %>%
     tidyr::pivot_longer(
       {{ cols }},
       names_to = "item",
@@ -578,7 +578,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 
   # Replace item labels
   if (labels) {
-    result <- replace_item_values(result, data, {{ cols }})
+    result <- labs_replace_names(result, item, codebook(data, {{ cols }}))
   }
 
   # Remove common item prefix and title
@@ -714,7 +714,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 
   # Replace item labels
   if (labels) {
-    result <- replace_item_values(result, data, {{ cols }})
+    result <- labs_replace_names(result, item, codebook(data, {{ cols }}))
   }
 
   # Remove common item prefix

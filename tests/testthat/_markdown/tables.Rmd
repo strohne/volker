@@ -141,7 +141,7 @@ You can remove all labels to get a plain dataset
 
 ```{r results='asis'}
 data %>%
-  remove_labels(everything()) %>%
+  labs_clear(everything()) %>%
   tab_counts_items(starts_with("cg_adoption_advantage_"))
 ```
 

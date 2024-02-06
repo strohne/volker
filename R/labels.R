@@ -121,7 +121,6 @@ get_title <- function(data, cols) {
 #' @param cols A tidy variable selection
 #' @param negative Whether to include negative values
 #' @return A list or NULL
-#' @export
 get_limits <- function(data, cols, negative = F) {
 
   # First, try to get limits from the column attributes
@@ -203,6 +202,147 @@ get_direction <- function(data, cols, extract = T) {
   categories_scale
 }
 
+#' Remove all comments from the selected columns
+#'
+#' @param data A tibble
+#' @param cols Tidyselect columns
+#' @param labels The attributes to remove. NULL to remove all attributes.
+#' @return A tibble with comments removed
+labs_clear <- function(data, cols, labels = NULL) {
+
+  remove_attr <-  function(x) {
+    if (is.null(labels)) {
+      attributes(x) <- NULL
+    } else {
+      attr(x, labels) <- NULL
+    }
+    x
+  }
+
+  if (missing(cols)) {
+    data <-  dplyr::mutate(data, across(all_of(everything()), ~remove_attr(.)))
+  } else {
+    data <-  dplyr::mutate(data, across(all_of({{ cols }}), ~remove_attr(.)))
+  }
+  data
+}
+
+
+#' Replace item names in a column by their labels
+#'
+#' @param data A tibble
+#' @param col The column holding item names
+#' @param codes The codebook to use: A tibble with the columns item_name and item_label.
+#'              Can be created by the \link{codebook} function, e.g. by calling
+#'              `codes <- codebook(data, myitemcolumn)`.
+#' @return Tibble with new labels
+labs_replace_names <- function(data, col, codes) {
+
+  codes <- codes %>%
+    dplyr::distinct(item_name, item_label) %>%
+    dplyr::rename(.name = item_name, .label = item_label) %>%
+    na.omit()
+
+
+  if (nrow(codes) > 0) {
+    data <- data %>%
+      dplyr::mutate(.name = {{ col }}) %>%
+      dplyr::left_join(codes, by = ".name") %>%
+      dplyr::mutate({{ col }} := dplyr::coalesce(.label, .name)) %>%
+      dplyr::select(-.name, -.label)
+  }
+
+  data
+}
+
+#' Replace item value names in a column by their labels
+#'
+#' @param data A tibble
+#' @param col The column holding item values
+#' @param codes The codebook to use: A tibble with the columns value_name and value_label.
+#'              Can be created by the \link{codebook} function, e.g. by calling
+#'              `codes <- codebook(data, myitemcolumn)`.
+#' @return Tibble with new labels
+labs_replace_values <- function(data, col, codes) {
+
+  codes <- codes %>%
+    dplyr::distinct(value_name, value_label) %>%
+    dplyr::rename(.name = value_name, .label = value_label) %>%
+    na.omit()
+
+
+  if (nrow(codes) > 0) {
+    data <- data %>%
+      dplyr::mutate(.name = {{ col }}) %>%
+      dplyr::left_join(codes, by = ".name") %>%
+      dplyr::mutate({{ col }} := dplyr::coalesce(.label, .name)) %>%
+      dplyr::select(-.name, -.label)
+  }
+
+  data
+}
+
+
+#' Get the common prefix of character values
+#'
+#' Helper function taken from the biobase package.
+#' Duplicated here instead of loading the package to avoid overhead.
+#' See https://github.com/Bioconductor/Biobase
+#'
+#' @param x Character vector
+#' @param ignore.case Whether case matters (default)
+#' @param trim Whether non alphabetic characters should be trimmed
+#' @return The longest common prefix of the strings
+get_prefix <- function(x, ignore.case = FALSE, trim = FALSE) {
+  x <- as.character(x)
+  if (ignore.case) {
+    x <- toupper(x)
+  }
+  x <- na.omit(x)
+
+  if (length(x) == 0) {
+    return (NA)
+  }
+
+  if (length(x) == 1) {
+    return (x)
+  }
+
+  nc <- nchar(x, type = "char")
+  for (i in 1:min(nc)) {
+    ss <- substr(x, 1, i)
+    if (any(ss != ss[1])) {
+      prefix <- substr(x[1], 1, i - 1)
+      if (trim) {
+        prefix <- trim_label(prefix)
+      }
+      return(prefix)
+    }
+  }
+
+  prefix <- trim_label(substr(x[1], 1, i))
+
+  if (trim) {
+    prefix <- trim_label(prefix)
+  }
+
+  prefix
+}
+
+#' Remove trailing zeros and trailing or leading
+#' whitespaces, colons,
+#' hyphens and underscores
+#'
+#' @param x A character value
+#' @return The trimmed character value
+trim_label <- function(x) {
+  x <- stringr::str_remove(x, "[: 0_-]*$")
+  x <- stringr::str_remove(x, "^[: _-]*")
+  x
+}
+
+
+
 #' Prepare the scale attribute values
 #'
 #' @param data A tibble with a scale attribute
@@ -281,32 +421,6 @@ set_col_labels <- function(data, cols, labels) {
 }
 
 
-#' Remove all comments from the selected columns
-#'
-#' @param data A tibble
-#' @param cols Tidyselect columns
-#' @param labels The attributes to remove. NULL to remove all attributes.
-#' @return A tibble with comments removed
-#' @export
-remove_labels <- function(data, cols, labels = NULL) {
-
-  remove_attr <-  function(x) {
-    if (is.null(labels)) {
-      attributes(x) <- NULL
-    } else {
-      attr(x, labels) <- NULL
-    }
-    x
-  }
-
-  if (missing(cols)) {
-    data <-  dplyr::mutate(data, across(everything(), ~remove_attr(.)))
-  } else {
-    data <-  dplyr::mutate(data, across({{ cols }}, ~remove_attr(.)))
-  }
-  data
-}
-
 #' Set variable labels by setting their comment attributes
 #'
 #' TODO: merge with set_col_label()
@@ -329,87 +443,6 @@ set_item_labels <- function(data, labels) {
   data
 }
 
-#' Replace values in the "item" column by labels found in the dataset
-#'
-#' @param result The table with a "item" column,
-#'               e.g. produced by tab_item_count()
-#' @param data The labeled dataset
-#' @param cols The tidyselect columns
-replace_item_values <- function(result, data, cols) {
-  labels_items <- data %>%
-    codebook({{ cols }}) %>%
-    dplyr::distinct(item_name, item_label) %>%
-    na.omit()
-
-  if (nrow(labels_items) > 0) {
-    result <- result %>%
-      dplyr::left_join(labels_items, by = c("item" = "item_name")) %>%
-      dplyr::mutate(item = dplyr::coalesce(item_label, item)) %>%
-      dplyr::select(-item_label)
-  }
-
-  result
-}
-
-
-#' Get the common prefix of character values
-#'
-#' Helper function taken from the biobase package.
-#' Duplicated here instead of loading the package to avoid overhead.
-#' See https://github.com/Bioconductor/Biobase
-#'
-#' @param x Character vector
-#' @param ignore.case Whether case matters (default)
-#' @param trim Whether non alphabetic characters should be trimmed
-#' @return The longest common prefix of the strings
-#' @export
-get_prefix <- function(x, ignore.case = FALSE, trim = FALSE) {
-  x <- as.character(x)
-  if (ignore.case) {
-    x <- toupper(x)
-  }
-  x <- na.omit(x)
-
-  if (length(x) == 0) {
-    return (NA)
-  }
-
-  if (length(x) == 1) {
-    return (x)
-  }
-
-  nc <- nchar(x, type = "char")
-  for (i in 1:min(nc)) {
-    ss <- substr(x, 1, i)
-    if (any(ss != ss[1])) {
-      prefix <- substr(x[1], 1, i - 1)
-      if (trim) {
-        prefix <- trim_label(prefix)
-      }
-      return(prefix)
-    }
-  }
-
-  prefix <- trim_label(substr(x[1], 1, i))
-
-  if (trim) {
-    prefix <- trim_label(prefix)
-  }
-
-  prefix
-}
-
-#' Remove trailing zeros and trailing or leading
-#' whitespaces, colons,
-#' hyphens and underscores
-#'
-#' @param x A character value
-#' @return The trimmed character value
-trim_label <- function(x) {
-  x <- stringr::str_remove(x, "[: 0_-]*$")
-  x <- stringr::str_remove(x, "^[: _-]*")
-  x
-}
 
 #' Alias for set_col_labels
 #'

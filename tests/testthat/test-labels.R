@@ -18,7 +18,7 @@ test_that("Labels", {
 test_that("Missing labels", {
   data %>%
     dplyr::select(starts_with("cg_adoption")) %>%
-    volker::remove_labels() %>%
+    volker::labs_clear() %>%
     volker::codebook() %>%
     expect_snapshot()
 })
