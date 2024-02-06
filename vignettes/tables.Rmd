@@ -24,7 +24,7 @@ data <- volker::chatgpt
 data <- prepare(data)
 
 # Add label to sd_alter
-data <- set_item_labels(data, tibble("sd_alter", "Alter"))
+data <- labs_apply(data, tibble("sd_alter", "Alter"))
 ```
 
 ## Frequencies of categorical variables
@@ -138,7 +138,7 @@ newlabels <- tribble(
 )
 
 data %>%
-  set_item_labels(newlabels) %>%
+  labs_apply(newlabels) %>%
   tab_metrics(starts_with("cg_adoption_advantage_"))
 ```
 
@@ -147,7 +147,7 @@ You can remove all labels to get a plain dataset
 
 ```{r results='asis'}
 data %>%
-  remove_labels(everything()) %>%
+  labs_clear(everything()) %>%
   tab_counts(starts_with("cg_adoption_advantage_"))
 ```
 

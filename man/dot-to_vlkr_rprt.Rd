@@ -16,3 +16,4 @@ A list of character strings with the vlkr_rprt class
 Adding the class makes sure the appropriate printing function
 is applied in markdown reports.
 }
+\keyword{internal}

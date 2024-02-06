@@ -11,13 +11,16 @@
 #' @return Data frame
 #' @export
 prepare <- function(data, remove.na = T) {
+
+  # Remove avector class
   for (i in c(1:ncol(data))) {
     class(data[[i]]) <- setdiff(class(data[[i]]), "avector")
   }
 
+  # Store codebook before mutate operations
+  data <- labs_store(data)
 
   # Recode missings
-
   if (remove.na != FALSE) {
     if (is.logical(remove.na)) {
       remove.na <- "[NA] nicht beantwortet"
@@ -53,5 +56,7 @@ prepare <- function(data, remove.na = T) {
     )
   )
 
+  # Restore codebook
+  data <- labs_restore(data)
   dplyr::as_tibble(data)
 }

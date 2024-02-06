@@ -23,7 +23,7 @@ data <- volker::chatgpt
 data <- prepare(data)
 
 # Add label to sd_alter
-data <- set_item_labels(data, tibble("sd_alter", "Alter"))
+data <- labs_apply(data, tibble("sd_alter", "Alter"))
 ```
 
 ## Frequencies of categorical variables
@@ -81,13 +81,13 @@ data %>%
   add_idx(starts_with("cg_adoption_advantage_")) %>%
   
   # Set new labels for the three index columns
-  set_col_label(starts_with("idx_cg_adoption"), c(
-    "ChatGPT-Erwartung: Social",
-    "ChatGPT-Erwartung: Fear of Use",
-    "ChatGPT-Erwartung: Advantage"
+  labs_apply(tribble(
+    ~item_name, ~item_label,
+    "idx_cg_adoption_social", "ChatGPT-Erwartung: Social",
+    "idx_cg_adoption_fearofuse", "ChatGPT-Erwartung: Fear of Use",
+    "idx_cg_adoption_advantage", "ChatGPT-Erwartung: Advantage"
   )) %>%
   
-  select(starts_with("idx_"), in_adoption) %>% 
   plot_metrics_items_grouped(starts_with("idx_cg_adoption"), in_adoption)
   
 ```

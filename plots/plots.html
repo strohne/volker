@@ -533,7 +533,7 @@ factors</h3>
 <span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>)</span>
 <span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a></span>
 <span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="fu">set_item_labels</span>(newlabels) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="fu">labs_apply</span>(newlabels) <span class="sc">%&gt;%</span> </span>
 <span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
 <span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>    cg_adoption_advantage_01 <span class="sc">&lt;</span> <span class="dv">4</span>,</span>
 <span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>    cg_adoption_advantage_02 <span class="sc">&lt;</span> <span class="dv">4</span>,</span>
@@ -639,7 +639,7 @@ More Enjoyable
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a></span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="fu">set_item_labels</span>(newlabels) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="fu">labs_apply</span>(newlabels) <span class="sc">%&gt;%</span> </span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="fu">tab_item_metrics</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_advantage_&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
@@ -820,7 +820,7 @@ More Enjoyable
 <span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    <span class="fu">str_detect</span>(in_adoption,<span class="st">&quot;Ich warte eher ab&quot;</span>) <span class="sc">~</span> <span class="st">&quot;I tend to wait&quot;</span>,</span>
 <span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    <span class="fu">str_detect</span>(in_adoption,<span class="st">&quot;wenn ich nicht mehr anders kann&quot;</span>) <span class="sc">~</span> <span class="st">&quot;Only when necessary&quot;</span>,</span>
 <span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  volker<span class="sc">::</span><span class="fu">set_item_labels</span>(<span class="fu">tibble</span>(<span class="st">&quot;in_adoption&quot;</span>,<span class="st">&quot;Adopter type&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  volker<span class="sc">::</span><span class="fu">labs_apply</span>(<span class="fu">tibble</span>(<span class="st">&quot;in_adoption&quot;</span>,<span class="st">&quot;Adopter type&quot;</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="fu">tab_group_counts</span>(in_adoption, sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
@@ -1092,7 +1092,7 @@ Total
 <h3>Compare means of multiple items: Adoption factors by gender</h3>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a></span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">set_item_labels</span>(newlabels) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">labs_apply</span>(newlabels) <span class="sc">%&gt;%</span> </span>
 <span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="fu">tab_multi_means</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_advantage&quot;</span>), sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
@@ -1190,7 +1190,7 @@ More Enjoyable
 <h3>Correlation of items: Adoption factors by adoption factors</h3>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a></span>
 <span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">set_item_labels</span>(newlabels) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">labs_apply</span>(newlabels) <span class="sc">%&gt;%</span> </span>
 <span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="fu">tab_multi_corr</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_advantage&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>

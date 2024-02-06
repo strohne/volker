@@ -15,3 +15,4 @@ A named list or NULL
 \description{
 Prepare the scale attribute values
 }
+\keyword{internal}

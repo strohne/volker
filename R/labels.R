@@ -93,6 +93,172 @@ codebook <- function(data, cols) {
   labels
 }
 
+#' Get the current codebook and store it in the codebook attribute.
+#'
+#' You can restore the labels after mutate operations by calling
+#' \link{labs_restore}.
+#'
+#' @param data A data frame
+#' @return A data frame
+#' @export
+labs_store <- function(data) {
+  codes <- codebook(data)
+  attr(data,"codebook") <- codes
+  data
+}
+
+#' Restore labels from the codebook store in the codebook attribute.
+#'
+#' You can store labels before mutate operations by calling
+#' \link{labs_store}.
+#'
+#' @param data A data frame
+#' @param values If TRUE (default), restores value labels in addition to item labels.
+#'              Item labels correspond to columns, value labels to values in the columns.
+#' @return A data frame
+#' @export
+labs_restore <- function(data, values=T) {
+
+  codes <- attr(data,"codebook")
+
+  if (is.data.frame(codes)) {
+    data <- labs_apply(data, codes, values)
+  } else  {
+    warning("No codebook found in the attributes.")
+  }
+  data
+}
+
+#' Set variable labels by setting their comment attributes
+#'
+#' @param data A tibble
+#' @param codes A tibble in \link{codebook} format.
+#'              To set column labels, use item_name and item_label columns.
+#' @param values If TRUE (default), sets value labels.
+#'               Value labels are retrieved from the columns
+#'               value_name and value_label in your codebook.
+#' @return A tibble with new labels
+#' @export
+labs_apply <- function(data, codes, values=T) {
+
+  # Fix column names
+  if (!"item_name" %in% colnames(codes)) {
+    colnames(codes)[1] <- "item_name"
+  }
+  if (!"item_label" %in% colnames(codes)) {
+    colnames(codes)[2] <- "item_label"
+  }
+
+  # Can only set value labels if present in the codebook
+  values <- values &&
+    ("value_name" %in% colnames(codes)) &&
+    ("value_label" %in% colnames(codes))
+
+  # Set comment attributes
+  for (no in c(1:nrow(codes))) {
+    item_name <- codes$item_name[no]
+    item_label <- codes$item_label[no]
+
+    if (item_name %in% colnames(data)) {
+      comment(data[[item_name]]) <- item_label
+
+      if (values) {
+        value_name <- codes$value_name[no]
+        value_label <- codes$value_label[no]
+
+        if (!is.null(value_name) && !is.na(value_name)) {
+          attr(data[[item_name]], value_name) <- value_label
+        }
+      }
+
+    }
+
+  }
+
+  data
+}
+
+
+#' Remove all comments from the selected columns
+#'
+#' @param data A tibble
+#' @param cols Tidyselect columns
+#' @param labels The attributes to remove. NULL to remove all attributes.
+#' @return A tibble with comments removed
+#' @export
+labs_clear <- function(data, cols, labels = NULL) {
+
+  remove_attr <-  function(x) {
+    if (is.null(labels)) {
+      attributes(x) <- NULL
+    } else {
+      attr(x, labels) <- NULL
+    }
+    x
+  }
+
+  if (missing(cols)) {
+    data <-  dplyr::mutate(data, across(all_of(everything()), ~remove_attr(.)))
+  } else {
+    data <-  dplyr::mutate(data, across(all_of({{ cols }}), ~remove_attr(.)))
+  }
+  data
+}
+
+
+#' Replace item names in a column by their labels
+#'
+#' @param data A tibble
+#' @param col The column holding item names
+#' @param codes The codebook to use: A tibble with the columns item_name and item_label.
+#'              Can be created by the \link{codebook} function, e.g. by calling
+#'              `codes <- codebook(data, myitemcolumn)`.
+#' @return Tibble with new labels
+labs_replace_names <- function(data, col, codes) {
+
+  codes <- codes %>%
+    dplyr::distinct(item_name, item_label) %>%
+    dplyr::rename(.name = item_name, .label = item_label) %>%
+    na.omit()
+
+
+  if (nrow(codes) > 0) {
+    data <- data %>%
+      dplyr::mutate(.name = {{ col }}) %>%
+      dplyr::left_join(codes, by = ".name") %>%
+      dplyr::mutate({{ col }} := dplyr::coalesce(.label, .name)) %>%
+      dplyr::select(-.name, -.label)
+  }
+
+  data
+}
+
+#' Replace item value names in a column by their labels
+#'
+#' @param data A tibble
+#' @param col The column holding item values
+#' @param codes The codebook to use: A tibble with the columns value_name and value_label.
+#'              Can be created by the \link{codebook} function, e.g. by calling
+#'              `codes <- codebook(data, myitemcolumn)`.
+#' @return Tibble with new labels
+labs_replace_values <- function(data, col, codes) {
+
+  codes <- codes %>%
+    dplyr::distinct(value_name, value_label) %>%
+    dplyr::rename(.name = value_name, .label = value_label) %>%
+    na.omit()
+
+
+  if (nrow(codes) > 0) {
+    data <- data %>%
+      dplyr::mutate(.name = {{ col }}) %>%
+      dplyr::left_join(codes, by = ".name") %>%
+      dplyr::mutate({{ col }} := dplyr::coalesce(.label, .name)) %>%
+      dplyr::select(-.name, -.label)
+  }
+
+  data
+}
 
 #' Get a common title for a column selection
 #'
@@ -121,7 +287,6 @@ get_title <- function(data, cols) {
 #' @param cols A tidy variable selection
 #' @param negative Whether to include negative values
 #' @return A list or NULL
-#' @export
 get_limits <- function(data, cols, negative = F) {
 
   # First, try to get limits from the column attributes
@@ -203,154 +368,6 @@ get_direction <- function(data, cols, extract = T) {
   categories_scale
 }
 
-#' Prepare the scale attribute values
-#'
-#' @param data A tibble with a scale attribute
-#' @return A named list or NULL
-prepare_scale <- function(scale) {
-  if (!is.null(scale)) {
-    scale <- scale %>%
-      dplyr::mutate(value_name = suppressWarnings(as.numeric(value_name))) %>%
-      dplyr::filter(value_name >= 0) %>%
-      na.omit()
-
-    scale <- setNames(
-      as.character(scale$value_label),
-      as.character(scale$value_name)
-    )
-  }
-  scale
-}
-
-label_scale <- function(x, scale) {
-  ifelse(
-    x %in% names(scale),
-    stringr::str_wrap(scale[as.character(x)], width = 10),
-    x
-  )
-}
-
-
-#' Get a column label
-#'
-#' TODO: REPLACE BY get_title()
-#'
-#' @param data Labeled data frame
-#' @param col The column name
-#' @return A character value
-get_col_label <- function(data, col) {
-  labels <- data %>%
-    codebook({{ col }}) %>%
-    dplyr::distinct(item_name, item_label) %>%
-    na.omit()
-
-
-  if ((nrow(labels) > 0)) {
-    # TODO: can we return a vector for multiple columns?
-    label <- labels$item_label[1]
-  } else {
-    label <- data %>%
-      select({{ col }}) %>%
-      colnames()
-  }
-
-  return(label)
-}
-
-#' Set column labels by their comment attribute
-#'
-#' TODO: RENAME TO set_title?
-#'
-#' @param data A data frame
-#' @param cols Tidyselect column names (e. g. a single column name without quotes)
-#' @param labels A character vector with the same length as the column selection, containing new labels
-#' @examples
-#' ds <- volker::chatgpt
-#' ds <- set_col_labels(ds, sd_alter, "Age")
-#'
-#' @export
-set_col_labels <- function(data, cols, labels) {
-
-  cols <- tidyselect::eval_select(expr = enquo(cols), data = data)
-
-  for (i in c(1:length(cols))) {
-    attr(data[[cols[i]]], "comment") <- labels[i]
-  }
-
-  data
-}
-
-
-#' Remove all comments from the selected columns
-#'
-#' @param data A tibble
-#' @param cols Tidyselect columns
-#' @param labels The attributes to remove. NULL to remove all attributes.
-#' @return A tibble with comments removed
-#' @export
-remove_labels <- function(data, cols, labels = NULL) {
-
-  remove_attr <-  function(x) {
-    if (is.null(labels)) {
-      attributes(x) <- NULL
-    } else {
-      attr(x, labels) <- NULL
-    }
-    x
-  }
-
-  if (missing(cols)) {
-    data <-  dplyr::mutate(data, across(everything(), ~remove_attr(.)))
-  } else {
-    data <-  dplyr::mutate(data, across({{ cols }}, ~remove_attr(.)))
-  }
-  data
-}
-
-#' Set variable labels by setting their comment attributes
-#'
-#' TODO: merge with set_col_label()
-#'
-#' @param data A tibble
-#' @param labels A tibble with variable names in the first column (item_name)
-#'               and their labels in the second column (item_label)
-#' @return A tibble with new variable labels
-#' @export
-set_item_labels <- function(data, labels) {
-
-  .Deprecated("set_col_labels")
-
-  for (no in c(1:nrow(labels))) {
-    item_name <- labels[[1]][no]
-    item_label <- labels[[2]][no]
-    comment(data[[item_name]]) <- item_label
-  }
-
-  data
-}
-
-#' Replace values in the "item" column by labels found in the dataset
-#'
-#' @param result The table with a "item" column,
-#'               e.g. produced by tab_item_count()
-#' @param data The labeled dataset
-#' @param cols The tidyselect columns
-replace_item_values <- function(result, data, cols) {
-  labels_items <- data %>%
-    codebook({{ cols }}) %>%
-    dplyr::distinct(item_name, item_label) %>%
-    na.omit()
-
-  if (nrow(labels_items) > 0) {
-    result <- result %>%
-      dplyr::left_join(labels_items, by = c("item" = "item_name")) %>%
-      dplyr::mutate(item = dplyr::coalesce(item_label, item)) %>%
-      dplyr::select(-item_label)
-  }
-
-  result
-}
-
 
 #' Get the common prefix of character values
 #'
@@ -362,7 +379,6 @@ replace_item_values <- function(result, data, cols) {
 #' @param ignore.case Whether case matters (default)
 #' @param trim Whether non alphabetic characters should be trimmed
 #' @return The longest common prefix of the strings
-#' @export
 get_prefix <- function(x, ignore.case = FALSE, trim = FALSE) {
   x <- as.character(x)
   if (ignore.case) {
@@ -411,8 +427,36 @@ trim_label <- function(x) {
   x
 }
 
-#' Alias for set_col_labels
+
+
+#' Prepare the scale attribute values
 #'
-#' @rdname set_col_labels
-#' @export
-set_col_label <- set_col_labels
+#' @keywords internal
+#' @param data A tibble with a scale attribute
+#' @return A named list or NULL
+prepare_scale <- function(scale) {
+  if (!is.null(scale)) {
+    scale <- scale %>%
+      dplyr::mutate(value_name = suppressWarnings(as.numeric(value_name))) %>%
+      dplyr::filter(value_name >= 0) %>%
+      na.omit()
+
+    scale <- setNames(
+      as.character(scale$value_label),
+      as.character(scale$value_name)
+    )
+  }
+  scale
+}
+
+#' Wrap labels in plot scales
+#'
+#' @keywords internal
+label_scale <- function(x, scale) {
+  ifelse(
+    x %in% names(scale),
+    stringr::str_wrap(scale[as.character(x)], width = 10),
+    x
+  )
+}
+
