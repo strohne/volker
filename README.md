@@ -30,8 +30,8 @@ See further [examples in the introduction
 vignette](vignettes/introduction.Rmd).
 
 Don’t miss the template feature: Within RStudio, create a new Markdown
-document, select “From template”, choose and finally knit the “Volker
-Report”! It’s a blueprint for your own tidy reports.
+document, select `From template`, choose and finally knit the **volkeR
+Report**! It’s a blueprint for your own tidy reports.
 
 ## Concept
 
@@ -164,6 +164,33 @@ column selections, and optionally a grouping column. Example:
 
 For further options to customize the results, see the builtin function
 help.
+
+After deciding whether to plot or tabulate, and whether to handle metric
+or counted data, the column selections determine which of the following
+methods are called under the hood. Some are not implemented yet.
+
+| \#  | function                   | implemented | output | scale   | variables | grouped | correlated |
+|-----|----------------------------|-------------|--------|---------|-----------|---------|------------|
+| 1   | tab_counts_one             |             | table  | counts  | one       |         |            |
+| 2   | tab_counts_one_grouped     |             | table  | counts  | one       | yes     |            |
+| 3   | tab_counts_items           |             | table  | counts  | multiple  |         |            |
+| 4   | tab_counts_items_grouped   | not yet     | table  | counts  | multipe   | yes     |            |
+| 5   | tab_counts_items_cor       | not yet     | table  | counts  | multipe   |         | yes        |
+| 6   | tab_metrics_one            |             | table  | metrics | one       |         |            |
+| 7   | tab_metrics_one_grouped    |             | table  | metrics | one       | yes     |            |
+| 8   | tab_metrics_items          |             | table  | metrics | multiple  |         |            |
+| 9   | tab_metrics_items_grouped  |             | table  | metrics | multipe   | yes     |            |
+| 10  | tab_metrics_items_cor      |             | table  | metrics | multipe   |         | yes        |
+| 11  | plot_counts_one            |             | plot   | counts  | one       |         |            |
+| 12  | plot_counts_one_grouped    |             | plot   | counts  | one       | yes     |            |
+| 13  | plot_counts_items          |             | plot   | counts  | multiple  |         |            |
+| 14  | plot_counts_items_grouped  | not yet     | plot   | counts  | multipe   | yes     |            |
+| 15  | plot_counts_items_cor      | not yet     | plot   | counts  | multipe   |         | yes        |
+| 16  | plot_metrics_one           |             | plot   | metrics | one       |         |            |
+| 17  | plot_metrics_one_grouped   |             | plot   | metrics | one       | yes     |            |
+| 18  | plot_metrics_items         |             | plot   | metrics | multiple  |         |            |
+| 19  | plot_metrics_items_grouped |             | plot   | metrics | multipe   | yes     |            |
+| 20  | plot_metrics_items_cor     | not yet     | plot   | metrics | multipe   |         | yes        |
 
 ## Installation
 
