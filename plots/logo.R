@@ -35,12 +35,12 @@ s <- sticker(
   s_y = 1.1,
   s_width = 0.95,
   s_height = 0.95,
-  h_fill="transparent",
+  h_fill="white",
   h_color="#006363",
-  filename = "logo.png"
+  filename = "plots/logo.png"
 )
 
 
 plot(s)
 
-# usethis::use_logo("plots/logo.png", geometry = "240x278", retina = TRUE)
+usethis::use_logo("plots/logo.png", geometry = "240x278", retina = TRUE)
