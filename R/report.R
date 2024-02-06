@@ -82,19 +82,21 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index=T, title = T
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
 #' @param col_group Optional, a grouping column (without quotes).
-#' @param ... Parameters passed to the plot and tab functions.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the psych-package.
 #'              Set to FALSE to suppress index generation.
+#' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
+#'                Set to NULL to remove numbers.
 #' @param title A character providing the heading or TRUE (default) to output a heading.
 #'               Classes for tabset pills will be added.
 #' @param close Whether to close the last tab (default value TRUE) or to keep it open.
 #'              Keep it open to add further custom tabs by adding headers on the fifth level
 #'              in Markdown (e.g. ##### Method)
+#' @param ... Parameters passed to the plot and tab functions.
 #' @return A list of class vlkr_rprt containing the parts of the report
 #' @export
-report_counts <- function(data, cols, col_group = NULL, ..., index=T, title = T, close=T) {
+report_counts <- function(data, cols, col_group = NULL, index=T, numbers="p", title = T, close=T, ...) {
   #, prop = "total", numbers = "p", missings = F, ordered = NULL, index=T,
   chunks <- list()
 
@@ -114,7 +116,7 @@ report_counts <- function(data, cols, col_group = NULL, ..., index=T, title = T,
 
 
   # Add Plot
-  chunks <- plot_counts(data, {{ cols }}, {{ col_group }}, ..., title = plot_title) %>%
+  chunks <- plot_counts(data, {{ cols }}, {{ col_group }}, ..., title = plot_title, numbers=numbers) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table

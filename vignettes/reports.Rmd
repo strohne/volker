@@ -59,7 +59,7 @@ report_counts(data, sd_geschlecht)
 ```{r}
 data %>% 
   filter(sd_geschlecht != "divers") %>% 
-  report_counts(in_adoption, sd_geschlecht, prop="rows", numbers="p")
+  report_counts(in_adoption, sd_geschlecht, prop="rows")
 ```
 
 # Automatic index calculation
