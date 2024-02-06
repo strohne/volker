@@ -19,3 +19,4 @@ A list or NULL
 \description{
 Get the numeric range from the labels
 }
+\keyword{internal}

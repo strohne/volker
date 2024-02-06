@@ -4,6 +4,8 @@
 
 #' Check whether the object is a dataframe
 #'
+#' @keywords internal
+#'
 #' @param obj The object to test
 #' @param msg Optional, a custom error message
 #' @param stopit Whether to stop execution with an error message
@@ -25,6 +27,8 @@ check_is_dataframe <- function(obj, msg=NULL, stopit=T) {
 }
 
 #' Check whether a column exist and stop if not
+#'
+#' @keywords internal
 #'
 #' @param data A data frame
 #' @param col A column name

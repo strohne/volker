@@ -58,6 +58,8 @@ add_idx <- function(data, cols, newcol = NULL, negative = FALSE) {
 
 #' Get number of items and Cronbach's alpha of a scale added by add_idx()
 #'
+#' @keywords internal
+#'
 #' @param data A data frame column
 #' @return A named list with with the keys "items" and "alpha"
 #' @export

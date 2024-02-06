@@ -15,3 +15,4 @@ A named list with with the keys "items" and "alpha"
 \description{
 Get number of items and Cronbach's alpha of a scale added by add_idx()
 }
+\keyword{internal}

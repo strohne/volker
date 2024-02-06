@@ -1,7 +1,6 @@
-#
-# Helper functions - Modeling ----
-#
-
+#' Helper function
+#'
+#' @keywords internal
 lda_find_k <- function(dfm, sample.size=2000, plot=T) {
   metrics <- dfm %>%
     quanteda::dfm_sample(min(quanteda::ndoc(.), sample.size)) %>%

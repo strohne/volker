@@ -23,3 +23,4 @@ A list containing a table and a plot
 \description{
 Generate an index table and plot
 }
+\keyword{internal}

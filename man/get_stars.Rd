@@ -15,3 +15,4 @@ A character vector with stars
 \description{
 Get significance stars from p values
 }
+\keyword{internal}

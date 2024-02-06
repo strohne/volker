@@ -15,3 +15,4 @@ The p value of the model
 \description{
 Get the p value of an lm model
 }
+\keyword{internal}

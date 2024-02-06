@@ -21,3 +21,4 @@ Helper function taken from the biobase package.
 Duplicated here instead of loading the package to avoid overhead.
 See https://github.com/Bioconductor/Biobase
 }
+\keyword{internal}

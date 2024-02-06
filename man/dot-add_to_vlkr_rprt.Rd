@@ -19,3 +19,4 @@ A list with volker tables or plots
 \description{
 Add an object to the report list
 }
+\keyword{internal}

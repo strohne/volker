@@ -16,3 +16,4 @@ A quanteda tokens object
 \description{
 Get cleaned tokens
 }
+\keyword{internal}

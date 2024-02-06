@@ -4,6 +4,8 @@
 #'
 #' TODO: implement newline parameter
 #'
+#' @keywords internal
+#'
 #' @param x The first data frame
 #' @param y The second data frame
 #' @param newline Whether to add a new line character between the values (default: TRUE).
@@ -31,6 +33,8 @@ zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
 
 #' Get the p value of an lm model
 #'
+#' @keywords internal
+#'
 #' @param fit The result of an lm() call
 #' @return The p value of the model
 lm_pvalue <- function(fit) {
@@ -39,6 +43,8 @@ lm_pvalue <- function(fit) {
 }
 
 #' Get significance stars from p values
+#'
+#' @keywords internal
 #'
 #' @param x A vector of p values
 #' @return A character vector with stars

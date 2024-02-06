@@ -16,6 +16,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE, include=T)
 
 # Load packages
+library(tidyverse)
 library(volker)
 theme_set(theme_bw())
 

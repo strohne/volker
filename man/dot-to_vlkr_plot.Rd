@@ -20,3 +20,4 @@ The plot
 \description{
 Add the volker class and options
 }
+\keyword{internal}

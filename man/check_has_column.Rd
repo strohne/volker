@@ -21,3 +21,4 @@ boolean Whether the column exists
 \description{
 Check whether a column exist and stop if not
 }
+\keyword{internal}

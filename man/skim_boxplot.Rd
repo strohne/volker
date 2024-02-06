@@ -11,3 +11,4 @@ Returns a five point summary, mean and sd, items count and alpha for scales adde
 Additionally, the whiskers defined by the minimum respective maximum value within 1.5 * iqr are calculated.
 Outliers are returned in a list column.
 }
+\keyword{internal}

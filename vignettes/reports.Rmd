@@ -1,5 +1,5 @@
 ---
-title: "How to create reports?"
+title: "How to create volker reports?"
 output: 
   volker::html_report
 vignette: >
@@ -30,8 +30,10 @@ The volker package comes with a Markdown template that generates
 interactive HTML documents in which you can switch between 
 the different parts of the report.
 
-Use the template by creating a new R Markdown document from the menu
-and select "From template". 
+How to use the template:
+- Create a new R Markdown document from the menu
+- Select "From template"
+
 Alternatively, manually add `volker::html_report` to the 
 output options of your Markdown document:
 

@@ -25,66 +25,74 @@ data <- prepare(data)
 
 ```
 
+```{css, echo=FALSE}
+table {margin-left:0 !important;}
+```
+
 ## Frequencies of categorical variables
 
 ### 1. One variable: Frequency table of gender
-```{r results='asis'}
-
+```{r}
 tab_counts(data, sd_geschlecht)
-
 ```
 
 ### 2. Two variables: Cross table of innovator type by gender
 
-```{r results='asis'}
-tab_counts(data, in_adoption, sd_geschlecht, missings = T)
+```{r}
+tab_counts(data, in_adoption, sd_geschlecht)
 ```
 
 
 ### 3. Multiple items: Frequency table of adoption factors
-```{r results='asis'}
-tab_counts(data, starts_with("cg_adoption_"), missings = F)
+```{r}
+tab_counts(data, starts_with("cg_adoption_"))
 ```
 
 
 ## Distributions of metric variables
 
 ### 1. Distribution table for one metric variable: Age
-```{r results='asis'}
+```{r}
 tab_metrics(data, sd_alter)
 ```
 
 ### 2. Group comparison of a metric variable: Age by gender
 
-```{r results='asis'}
+```{r}
 tab_metrics(data, sd_alter, sd_geschlecht)
 ```
 
 ### 3. Distribution table for multiple metric items: Adoption factors
-```{r results='asis'}
+```{r}
 tab_metrics(data, starts_with("cg_adoption_"))
 ```
 
 
 ### 4. Compare means of multiple items: Adoption factors by gender
-```{r results='asis'}
+```{r}
 tab_metrics(data, starts_with("cg_adoption_"), sd_geschlecht)
 ```
 
 ## Correlations
 
-*Still experimental*
-### Correlation of items: Adoption factors
-```{r results='asis'}
-tab_metrics_items_cor(data, starts_with("cg_adoption_adv"))
+*Still experimental*  
 
+### Correlation of items: Adoption factors  
+
+```{r}
+tab_metrics_items_cor(data, starts_with("cg_adoption_adv"))
+```
+
+### Correlation between different item groups: Adoption factors and usage
+
+```{r}
 tab_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("cg_nutzen"))
 ```
 
 
 # Scales
 
-You can calculate mean indizes from a bunch of items using `add_idx()`. 
+You can calculate mean indexes from a bunch of items using `add_idx()`. 
 A new column is created with the average value of all selected columns
 for each case. 
 
@@ -92,41 +100,39 @@ Reliability and number of items are calculated with `psych::alpha()`
 and stored as column attribute named "psych.alpha". The reliability values 
 are printed by `tab_metrics()`.
 
-
-```{r results='asis'}
-# Add a single index
+**Add a single index**
+```{r}
 data %>%
   add_idx(starts_with("cg_adoption_")) %>%
   tab_metrics(idx_cg_adoption)
+```
 
-# Compare the index values by group
+**Compare the index values by group**
+```{r}
 data %>%
   add_idx(starts_with("cg_adoption_")) %>%
   tab_metrics(idx_cg_adoption, in_adoption)
 ```
 
-
-```{r results='asis'}
-
-# Add multiple indizes and summarize them
+**Add multiple indizes and summarize them**
+```{r}
 data %>%
   add_idx(starts_with("cg_adoption_")) %>%
   add_idx(starts_with("cg_adoption_advantage")) %>%
   add_idx(starts_with("cg_adoption_fearofuse")) %>%
   add_idx(starts_with("cg_adoption_social")) %>%
   tab_metrics(starts_with("idx_cg_adoption"))
-
 ```
 
 
 # Set custom item labels
 
 Item labels are stored in the comment attribute of an item variable. 
-When printing item tables, the labels are used. You can set custom or 
-new labels by providing a tibble with item names in the first column
-and item labels in the second.
+You can set custom or new labels with `labs_apply()` by providing a tibble 
+with item names in the first column
+and item labels in the second column.
 
-```{r results='asis'}
+```{r}
 newlabels <- tribble(
   ~item_name, ~item_label,
   "cg_adoption_advantage_01", "Allgemeine Vorteile",
@@ -141,9 +147,9 @@ data %>%
 ```
 
 
-You can remove all labels to get a plain dataset
+You can remove all labels with `labs_clear()` to get a plain dataset.
 
-```{r results='asis'}
+```{r}
 data %>%
   labs_clear(everything()) %>%
   tab_counts(starts_with("cg_adoption_advantage_"))

@@ -15,3 +15,4 @@ A quanteda dfm
 \description{
 Get a pruned dfm from tokens
 }
+\keyword{internal}

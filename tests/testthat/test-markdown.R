@@ -16,6 +16,6 @@ test_that("Plots in markdown documents render without error", {
 })
 
 # Rendering reports
-test_that("Plots in markdown documents render without error", {
+test_that("Volker reports render without error", {
   expect_snapshot_file(rmarkdown::render("_markdown/reports.Rmd"))
 })

@@ -17,3 +17,4 @@ A character string
 \description{
 Get a common title for a column selection
 }
+\keyword{internal}

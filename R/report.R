@@ -144,6 +144,8 @@ report_counts <- function(data, cols, col_group = NULL, index=T, numbers="p", ti
 
 #' Generate an index table and plot
 #'
+#' @keywords internal
+#'
 #' @param data A data frame
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
@@ -183,8 +185,9 @@ report_counts <- function(data, cols, col_group = NULL, index=T, numbers="p", ti
 #' Adding the class makes sure the appropriate printing function
 #' is applied in markdown reports.
 #'
-#' @param chunks A list of character strings
 #' @keywords internal
+#'
+#' @param chunks A list of character strings
 #' @return A list of character strings with the vlkr_rprt class
 .to_vlkr_rprt <- function(chunks) {
   class(chunks) <- c("vlkr_rprt", setdiff(class(chunks),"vlkr_rprt"))
@@ -192,6 +195,8 @@ report_counts <- function(data, cols, col_group = NULL, index=T, numbers="p", ti
 }
 
 #' Add an object to the report list
+#'
+#' @keywords internal
 #'
 #' @param obj A new chunk (volker table, volker plot or character value)
 #' @param chunks The current report list
@@ -230,6 +235,8 @@ report_counts <- function(data, cols, col_group = NULL, index=T, numbers="p", ti
 
 #' Printing method for volker reports.
 #'
+#' @keywords internal
+#'
 #' @param obj The volker report
 #' @export
 print.vlkr_rprt <- function(obj) {
@@ -252,8 +259,8 @@ print.vlkr_rprt <- function(obj) {
 #'
 #' Based on the standard theme, tweaks the pill navigation
 #' to switch between tables and plots.
-#' To use the format, in the configuration of your Markdown, simply set
-#' `output: volker::html_report`.
+#' To use the format, in the header of your Markdown document,
+#' set `output: volker::html_report`.
 #'
 #' @param ... Additional arguments passed to html_document
 #' @return R Markdown output format

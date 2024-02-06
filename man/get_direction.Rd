@@ -22,3 +22,4 @@ If no numeric values can be found, returns 0.
 Otherwise, if any positive values form an ascending sequence, returns -1.
 In all other cases, returns 1.
 }
+\keyword{internal}

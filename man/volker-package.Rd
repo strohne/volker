@@ -16,6 +16,7 @@ The package provides functions to create tables and plots to be included in Mark
 Other contributors:
 \itemize{
   \item Henrieke Kotthoff \email{henrieke.kotthoff@uni-muenster.de} [contributor]
+  \item Chantal Gärtner \email{chantal.gaertner@uni-muenster.de} [contributor]
 }
 
 }

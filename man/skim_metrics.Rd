@@ -11,3 +11,4 @@ skim_metrics(data, ..., .data_name = NULL)
 A reduced skimmer for metric variables
 Returns a five point summary, mean and sd, items count and alpha for scales added by add_idx()
 }
+\keyword{internal}

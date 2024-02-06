@@ -1017,6 +1017,8 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
 #'
 #' Additionally, removes the skim_df class if present
 #'
+#' @keywords internal
+#'
 #' @param data A tibble
 #' @param digits Set the plot digits. If NULL (default), no digits are set.
 #' @return A tibble of class vlkr_tbl
@@ -1031,6 +1033,8 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
 }
 
 #' Knit volker tables
+#'
+#' @keywords internal
 #'
 #' @param df Data frame
 #' @return Formatted table
@@ -1076,6 +1080,8 @@ knit_table <- function(df, ...) {
 
 
 #' Printing method for volker tables.
+#'
+#' @keywords internal
 #'
 #' @param obj The volker table
 #' @export

@@ -198,15 +198,17 @@ labs_clear <- function(data, cols, labels = NULL) {
   }
 
   if (missing(cols)) {
-    data <-  dplyr::mutate(data, across(all_of(everything()), ~remove_attr(.)))
+    data <-  dplyr::mutate(data, across(everything(), ~remove_attr(.)))
   } else {
-    data <-  dplyr::mutate(data, across(all_of({{ cols }}), ~remove_attr(.)))
+    data <-  dplyr::mutate(data, across({{ cols }}, ~remove_attr(.)))
   }
   data
 }
 
 
 #' Replace item names in a column by their labels
+#'
+#' @keywords internal
 #'
 #' @param data A tibble
 #' @param col The column holding item names
@@ -235,6 +237,8 @@ labs_replace_names <- function(data, col, codes) {
 
 #' Replace item value names in a column by their labels
 #'
+#' @keywords internal
+#'
 #' @param data A tibble
 #' @param col The column holding item values
 #' @param codes The codebook to use: A tibble with the columns value_name and value_label.
@@ -262,6 +266,8 @@ labs_replace_values <- function(data, col, codes) {
 
 #' Get a common title for a column selection
 #'
+#' @keywords internal
+#'
 #' @param data A tibble
 #' @param cols A tidy column selection
 #' @return A character string
@@ -282,6 +288,8 @@ get_title <- function(data, cols) {
 }
 
 #' Get the numeric range from the labels
+#'
+#' @keywords internal
 #'
 #' @param data The labeled data frame
 #' @param cols A tidy variable selection
@@ -333,6 +341,8 @@ get_limits <- function(data, cols, negative = F) {
 #' Otherwise, if any positive values form an ascending sequence, returns -1.
 #' In all other cases, returns 1.
 #'
+#' @keywords internal
+#'
 #' @param data The dataframe
 #' @param cols The tidy selection
 #' @param extract Whether to extract numeric values from characters
@@ -374,6 +384,8 @@ get_direction <- function(data, cols, extract = T) {
 #' Helper function taken from the biobase package.
 #' Duplicated here instead of loading the package to avoid overhead.
 #' See https://github.com/Bioconductor/Biobase
+#'
+#' @keywords internal
 #'
 #' @param x Character vector
 #' @param ignore.case Whether case matters (default)
@@ -419,6 +431,8 @@ get_prefix <- function(x, ignore.case = FALSE, trim = FALSE) {
 #' whitespaces, colons,
 #' hyphens and underscores
 #'
+#' @keywords internal
+#'
 #' @param x A character value
 #' @return The trimmed character value
 trim_label <- function(x) {
@@ -430,6 +444,8 @@ trim_label <- function(x) {
 
 
 #' Prepare the scale attribute values
+#'
+#' @keywords internal
 #'
 #' @keywords internal
 #' @param data A tibble with a scale attribute

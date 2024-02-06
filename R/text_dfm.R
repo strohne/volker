@@ -4,6 +4,7 @@
 
 #' Get cleaned tokens
 #'
+#' @keywords internal
 #' @param msg A data frame with the column "doc" holding a document identifier
 #'            and "text" holding the text
 #' @return A quanteda tokens object
@@ -55,6 +56,8 @@ get_tokens <- function(msg) {
 }
 
 #' Get a pruned dfm from tokens
+#'
+#' @keywords internal
 #'
 #' @param msg_tokens A quanteda tokens object
 #' @return A quanteda dfm

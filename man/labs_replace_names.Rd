@@ -21,3 +21,4 @@ Tibble with new labels
 \description{
 Replace item names in a column by their labels
 }
+\keyword{internal}

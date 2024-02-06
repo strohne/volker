@@ -4,6 +4,8 @@
 
 #' Get term relevance per topic
 #'
+#' @keywords internal
+#'
 #' @param fit The topic model
 #' @param lambda The weighting factor between prevalence and distinctiveness
 #' @return A data frame with relevance metrics
@@ -41,7 +43,9 @@ lda_get_termrelevance <- function(fit, lambda=0.6) {
 }
 
 
-
+#' Add relevance
+#'
+#' @keywords internal
 lda_add_relevance <- function(data, fit, prefix="tpc_", lambda=0.6, seed=1852) {
 
   # Document relevance

@@ -15,6 +15,6 @@ R Markdown output format
 \description{
 Based on the standard theme, tweaks the pill navigation
 to switch between tables and plots.
-To use the format, in the configuration of your Markdown, simply set
-\code{output: volker::html_report}.
+To use the format, in the header of your Markdown document,
+set \code{output: volker::html_report}.
 }

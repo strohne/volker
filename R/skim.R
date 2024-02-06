@@ -1,6 +1,7 @@
 #' A reduced skimmer for metric variables
 #' Returns a five point summary, mean and sd, items count and alpha for scales added by add_idx()
 #'
+#' @keywords internal
 #' @export
 skim_metrics <- skimr::skim_with(
   numeric = skimr::sfl(
@@ -49,6 +50,7 @@ skim_custom_lower_whisker <- skimr::skim_with(numeric = skimr::sfl(iqr=~IQR(.,na
 #' Additionally, the whiskers defined by the minimum respective maximum value within 1.5 * iqr are calculated.
 #' Outliers are returned in a list column.
 #'
+#' @keywords internal
 #' @export
 skim_boxplot <- skimr::skim_with(
   numeric = skimr::sfl(

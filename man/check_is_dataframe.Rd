@@ -19,3 +19,4 @@ boolean Whether the object is a data.frame object
 \description{
 Check whether the object is a dataframe
 }
+\keyword{internal}

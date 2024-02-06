@@ -64,10 +64,10 @@ lda_report <- function(data, col_text, k=NULL, lambda=0.6, seed=1852) {
   invisible(data)
 }
 
-#
-# Helper functions - output
-#
 
+#' Helper function
+#'
+#' @keywords internal
 lda_plot_topterms <- function(fit, lambda = 0.6) {
 
   lda_get_termrelevance(fit, lambda) %>%
@@ -111,7 +111,9 @@ lda_plot_topterms <- function(fit, lambda = 0.6) {
 
 }
 
-
+#' Helper function
+#'
+#' @keywords internal
 lda_plot_docmds <- function(data, col_x, col_y, col_topic, col_highlight=NULL) {
 
   # See lda_add_topic
@@ -165,7 +167,9 @@ lda_plot_docmds <- function(data, col_x, col_y, col_topic, col_highlight=NULL) {
   pl
 }
 
-
+#' Helper function
+#'
+#' @keywords internal
 lda_print_topdocs <- function(data, col_topic, col_text, col_rank, n=3, trunc=1000) {
   result <- c()
 

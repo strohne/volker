@@ -19,3 +19,4 @@ Remove trailing zeros and trailing or leading
 whitespaces, colons,
 hyphens and underscores
 }
+\keyword{internal}

@@ -568,7 +568,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 
   # Pivot items
   result <- data %>%
-    tidyr::drop_na({{ cols }}) %>%
+    tidyr::drop_na(tidyselect::all_of({{ cols }})) %>%
     labs_clear({{ cols }}) %>%
     tidyr::pivot_longer(
       {{ cols }},
@@ -786,6 +786,8 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 
 #' Helper function: plot grouped bar chart
 #'
+#' @keywords internal
+#'
 #' @param data Dataframe with the columns Item, value, p, n
 #' @param category Category for filtering the dataframe
 #' @param scale Direction of the scale: 0 = no direction for categories,
@@ -874,6 +876,8 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 
 #' Add the volker class and options
 #'
+#' @keywords internal
+#'
 #' @param pl A ggplot2 object
 #' @param rows The number of items on the vertical axis. Will be automatically determined when NULL.
 #' @param maxlab The character length of the longest label to be plotted. Will be automatically determined when NULL.
@@ -917,6 +921,8 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 #' - a default page width of 700px (vignette) or 910px (report)
 #' - an optimal bar height of 40px for 910px wide plots. i.e. a ratio of 0.04
 #' - an offset of one bar above and one bar below
+#'
+#' @keywords internal
 #'
 #' @param pl A ggplot object with vlkr_options.
 #'           The vlk_options are added by .to_vlkr_plot()

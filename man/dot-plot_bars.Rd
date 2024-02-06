@@ -30,3 +30,4 @@
 \description{
 Helper function: plot grouped bar chart
 }
+\keyword{internal}
