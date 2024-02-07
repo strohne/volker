@@ -37,8 +37,10 @@ For ordered values, shades of the VLKR_FILLGRADIENT option are used.}
 
 \item{missings}{Include missing values (default FALSE)}
 
-\item{prop}{The basis of percent calculation: "total" (the default) or "rows".
-To display column proportions, swap the first column with the grouping column.}
+\item{prop}{The basis of percent calculation: "total" (the default), "rows" or "cols".
+Plotting row or column percentages results in stacked bars that add up to 100\%.
+Whether you set rows or cols determines which variable is in the legend (fill color)
+and which on the vertical scale.}
 
 \item{numbers}{The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.}
 

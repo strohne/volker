@@ -191,8 +191,10 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ..
 #'                  A character value will focus a selected category.
 #'                  When NULL, in case of boolean values, only the TRUE category is plotted.
 #' @param missings Include missing values (default FALSE)
-#' @param prop The basis of percent calculation: "total" (the default) or "rows".
-#'             To display column proportions, swap the first column with the grouping column.
+#' @param prop The basis of percent calculation: "total" (the default), "rows" or "cols".
+#'             Plotting row or column percentages results in stacked bars that add up to 100%.
+#'             Whether you set rows or cols determines which variable is in the legend (fill color)
+#'             and which on the vertical scale.
 #' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
@@ -205,8 +207,14 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
   check_has_column(data, {{ col }})
   check_has_column(data, {{ col_group }})
 
+  # Swap columns
   if (prop == "cols") {
-    stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
+    col <- enquo(col)
+    col_group <- enquo(col_group)
+    col_temp <- col
+    col <- col_group
+    col_group <- col_temp
+    #stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
   }
 
   # Calculate data
@@ -231,7 +239,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
     ) %>%
     dplyr::mutate(value = factor(value, levels = categories))
 
-  if (prop == "rows") {
+  if ((prop == "rows") || (prop == "cols")) {
     result <- result %>%
       dplyr::group_by(Item) %>%
       dplyr::mutate(p = (n / sum(n)) * 100) %>%
@@ -423,8 +431,8 @@ plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labe
   pl <- pl +
     theme(
       axis.title.x = element_blank(),
-      # axis.title.y=element_blank(),
-      # axis.text.y = element_text(size=11),
+      axis.title.y=element_blank(),
+      axis.text.y = element_blank(),
       # legend.title = element_blank(),
       plot.caption = element_text(hjust = 0),
       plot.title.position = "plot",
