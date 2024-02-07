@@ -301,21 +301,20 @@ devtools::install_github("kupietz/kableExtra")
 
 ## Similar packages
 
-https://github.com/joon-e/tidycomm
-
-https://github.com/kassambara/rstatix
-
-
 The volker package is inspired by outputs used in the the textbook [Einfache Datenauswertung mit R](https://doi.org/10.1007/978-3-658-34285-2) (Gehrau & Maubach et al., 2022), which provides an introduction to univariate and bivariate statistics and data representation using RStudio and R Markdown.
+
+Other packages with high-level reporting functions:  
+- https://github.com/joon-e/tidycomm  
+- https://github.com/kassambara/rstatix
 
 ## Authors and citation
 
 **Author**  
-Jakob Jünger  
+Jakob Jünger (University of Münster)  
 
 **Contributers**  
-Henrieke Kotthoff  
-Chantal Gärtner  
+Henrieke Kotthoff (University of Münster)  
+Chantal Gärtner (University of Münster) 
 
 **Citation**  
 Jünger, J. (2024). volker: High-level functions for tabulating, charting and reporting survey data. R package version 1.0.
