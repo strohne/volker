@@ -35,7 +35,7 @@ plot_counts <- function(data, cols, col_group=NULL, ...) {
 
   # Items
   else if (is_items && !is_grouped) {
-    plot_counts_items(data, cols , ...)
+    plot_counts_items(data, {{ cols }} , ...)
   }
   else if (is_items && is_grouped) {
     plot_counts_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
@@ -84,7 +84,7 @@ plot_metrics <- function(data, cols, col_group=NULL, ...) {
 
   # Items
   else if (is_items && !is_grouped) {
-    plot_metrics_items(data, cols , ...)
+    plot_metrics_items(data, {{ cols }} , ...)
   }
   else if (is_items && is_grouped) {
     plot_metrics_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
@@ -255,7 +255,9 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
   result <- result %>%
     dplyr::mutate(
       .values = dplyr::case_when(
-        (is.null(category)) & (scale != 0) & (value == lastcategory) ~ "",
+
+        (is.null(category)) && (scale != 0) && (value == lastcategory) ~ "",
+
         p < VLKR_LOWPERCENT ~ "",
         all(numbers == "n") ~ as.character(n),
         all(numbers == "p") ~ paste0(round(p, 0), "%"),
@@ -309,14 +311,14 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
   check_is_dataframe(data)
 
   tab <- data %>%
-    tab_counts_items(cols, values = "n", missings=missings, percent = F, labels=labels)
+    tab_counts_items({{ cols }}, values = "n", missings=missings, percent = F, labels=labels)
 
   # Detect whether the categories are binary
   categories <- dplyr::select(tab, -1, -matches("^Total|Missing")) %>% colnames()
   if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
     category <- "TRUE"
   }
-  scale <- dplyr::coalesce(ordered, get_direction(data, cols))
+  scale <- dplyr::coalesce(ordered, get_direction(data, {{ cols }}))
   lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
 
   result <- tab %>%
@@ -580,7 +582,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 
   # Pivot items
   result <- data %>%
-    tidyr::drop_na(tidyselect::all_of({{ cols }})) %>%
+    tidyr::drop_na({{ cols }}) %>%
     labs_clear({{ cols }}) %>%
     tidyr::pivot_longer(
       {{ cols }},

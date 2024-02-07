@@ -23,5 +23,21 @@ test_that("Missing labels", {
     expect_snapshot()
 })
 
+# Test store and clear labels
+test_that("Store and clear the codebook", {
+  data %>%
+    volker::labs_store() %>%
+    volker::labs_clear() %>%
+    codebook() %>%
+    expect_snapshot()
+})
 
-
+# Test store and restore labels
+test_that("Store, clear and restore the codebook", {
+  data %>%
+    volker::labs_store() %>%
+    volker::labs_clear() %>%
+    volker::labs_restore() %>%
+    codebook() %>%
+    expect_snapshot()
+})
