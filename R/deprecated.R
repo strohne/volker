@@ -522,3 +522,13 @@ set_col_labels <- function(data, cols, labels) {
   }
   data
 }
+
+#' Alias for set_col_labels
+#'
+#' #' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' `set_col_labels` has been deprecated. Use \link{labs_apply} instead.
+#' @keywords internal
+#' @export
+set_col_label <- set_col_labels
