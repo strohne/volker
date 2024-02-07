@@ -198,7 +198,7 @@ labs_clear <- function(data, cols, labels = NULL) {
   }
 
   if (missing(cols)) {
-    data <-  dplyr::mutate(data, dplyr::across(everything(), ~remove_attr(.)))
+    data <-  dplyr::mutate(data, dplyr::across(tidyselect::everything(), ~remove_attr(.)))
   } else {
     data <-  dplyr::mutate(data, dplyr::across({{ cols }}, ~remove_attr(.)))
   }
@@ -221,7 +221,7 @@ labs_replace_names <- function(data, col, codes) {
   codes <- codes %>%
     dplyr::distinct(item_name, item_label) %>%
     dplyr::rename(.name = item_name, .label = item_label) %>%
-    na.omit()
+    stats::na.omit()
 
 
   if (nrow(codes) > 0) {
@@ -250,7 +250,7 @@ labs_replace_values <- function(data, col, codes) {
   codes <- codes %>%
     dplyr::distinct(value_name, value_label) %>%
     dplyr::rename(.name = value_name, .label = value_label) %>%
-    na.omit()
+    stats::na.omit()
 
 
   if (nrow(codes) > 0) {
@@ -279,7 +279,7 @@ get_title <- function(data, cols) {
   if (nrow(labels) > 0) {
     labels <- labels$item_label
   } else {
-    labels <- select(data, {{ cols }}) %>% colnames()
+    labels <- dplyr::select(data, {{ cols }}) %>% colnames()
   }
 
   labels %>%
@@ -307,7 +307,7 @@ get_limits <- function(data, cols, negative = F) {
   if (is.null(values)) {
     values <- codebook(data, {{ cols }}) %>%
       dplyr::distinct(value_name) %>%
-      pull(value_name)
+      dplyr::pull(value_name)
     values <- suppressWarnings(as.numeric(values))
   }
 
@@ -396,7 +396,7 @@ get_prefix <- function(x, ignore.case = FALSE, trim = FALSE) {
   if (ignore.case) {
     x <- toupper(x)
   }
-  x <- na.omit(x)
+  x <- stats::na.omit(x)
 
   if (length(x) == 0) {
     return (NA)
@@ -455,9 +455,9 @@ prepare_scale <- function(scale) {
     scale <- scale %>%
       dplyr::mutate(value_name = suppressWarnings(as.numeric(value_name))) %>%
       dplyr::filter(value_name >= 0) %>%
-      na.omit()
+      stats::na.omit()
 
-    scale <- setNames(
+    scale <- stats::setNames(
       as.character(scale$value_label),
       as.character(scale$value_name)
     )

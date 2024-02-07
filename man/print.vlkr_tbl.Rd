@@ -4,10 +4,12 @@
 \alias{print.vlkr_tbl}
 \title{Printing method for volker tables.}
 \usage{
-\method{print}{vlkr_tbl}(obj)
+\method{print}{vlkr_tbl}(x, ...)
 }
 \arguments{
-\item{obj}{The volker table}
+\item{x}{The volker table}
+
+\item{...}{Further parameters passed to print()}
 }
 \description{
 Printing method for volker tables.

@@ -35,7 +35,8 @@
 # Frequency table for multiple categorical variables
 
     Code
-      volker::tab_counts_items(data, starts_with("cg_adoption_"), missings = T)
+      volker::tab_counts_items(data, tidyselect::starts_with("cg_adoption_"),
+      missings = T)
     Output
       
       
@@ -57,7 +58,7 @@
 # Distribution table for multiple metric items
 
     Code
-      volker::tab_metrics_items(data, starts_with("cg_adoption_"))
+      volker::tab_metrics_items(data, tidyselect::starts_with("cg_adoption_"))
     Output
       
       
@@ -107,7 +108,7 @@
 # Compare means of multiple items
 
     Code
-      volker::tab_metrics_items_grouped(data, starts_with("cg_adoption_"),
+      volker::tab_metrics_items_grouped(data, tidyselect::starts_with("cg_adoption_"),
       sd_geschlecht)
     Output
       
@@ -155,7 +156,7 @@
 # Correlation of items
 
     Code
-      volker::tab_metrics_items_cor(data, starts_with("cg_adoption_"))
+      volker::tab_metrics_items_cor(data, tidyselect::starts_with("cg_adoption_"))
     Output
       
       

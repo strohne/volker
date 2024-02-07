@@ -99,10 +99,10 @@ Which one is best? That depends on your objective:
 variable</strong>
 </td>
 <td valign="top">
-<img src="plots/examples/plot_metrics_one.png" alt="Density plot" width="300">
+<img src="man/figures/plot_metrics_one.png" alt="Density plot" width="300">
 </td>
 <td valign="top">
-<img src="plots/examples/plot_counts_one.png" alt="Bar chart" width="300">
+<img src="man/figures/plot_counts_one.png" alt="Bar chart" width="300">
 </td>
 </tr>
 <tr>
@@ -111,10 +111,10 @@ variable</strong>
 comparison </strong>
 </td>
 <td valign="top">
-<img src="plots/examples/plot_metrics_one_grouped.png" alt="Group comparison" width="300">
+<img src="man/figures/plot_metrics_one_grouped.png" alt="Group comparison" width="300">
 </td>
 <td valign="top">
-<img src="plots/examples/plot_counts_one_grouped.png" alt="Stacked bar chart" width="300">
+<img src="man/figures/plot_counts_one_grouped.png" alt="Stacked bar chart" width="300">
 </td>
 </tr>
 <tr>
@@ -123,10 +123,10 @@ comparison </strong>
 items</strong>
 </td>
 <td valign="top">
-<img src="plots/examples/plot_metrics_items.png" alt="Item battery boxplots" width="300">
+<img src="man/figures/plot_metrics_items.png" alt="Item battery boxplots" width="300">
 </td>
 <td valign="top">
-<img src="plots/examples/plot_counts_items.png" alt="Item battery bar chart" width="300">
+<img src="man/figures/plot_counts_items.png" alt="Item battery bar chart" width="300">
 </td>
 </tr>
 </tbody>

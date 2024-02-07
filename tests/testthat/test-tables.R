@@ -19,12 +19,12 @@ test_that("Distribution table for age", {
 
 # Frequency table for multiple categorical variables
 test_that("Frequency table for multiple categorical variables", {
-  expect_snapshot(volker::tab_counts_items(data, starts_with("cg_adoption_"), missings = T))
+  expect_snapshot(volker::tab_counts_items(data, tidyselect::starts_with("cg_adoption_"), missings = T))
 })
 
 # Distribution table for multiple metric items
 test_that("Distribution table for multiple metric items", {
-  expect_snapshot(volker::tab_metrics_items(data, starts_with("cg_adoption_")))
+  expect_snapshot(volker::tab_metrics_items(data, tidyselect::starts_with("cg_adoption_")))
 })
 
 # Cross table of categorical variables
@@ -39,19 +39,19 @@ test_that("Group comparison of a metric variable", {
 
 # Compare means of multiple items
 test_that("Compare means of multiple items", {
-  expect_snapshot(volker::tab_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_geschlecht))
+  expect_snapshot(volker::tab_metrics_items_grouped(data, tidyselect::starts_with("cg_adoption_"), sd_geschlecht))
 })
 
 # ...with missings
 test_that("Missing values make no trouble", {
   data %>%
-    dplyr::bind_rows(tibble(sd_geschlecht = c("X", "X", "X"))) %>%
-    volker::tab_multi_means(starts_with("cg_adoption_"), sd_geschlecht) %>%
+    dplyr::bind_rows(tibble::tibble(sd_geschlecht = c("X", "X", "X"))) %>%
+    volker::tab_multi_means(tidyselect::starts_with("cg_adoption_"), sd_geschlecht) %>%
     expect_snapshot()
 })
 
 # Correlation of items
 test_that("Correlation of items", {
-  expect_snapshot(volker::tab_metrics_items_cor(data, starts_with("cg_adoption_")))
+  expect_snapshot(volker::tab_metrics_items_cor(data, tidyselect::starts_with("cg_adoption_")))
 })
 

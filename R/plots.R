@@ -107,6 +107,7 @@ plot_metrics <- function(data, cols, col_group=NULL, ...) {
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @export
 plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ...) {
 
@@ -133,27 +134,31 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ..
 
   # TODO: Make dry, see plot_item_counts and tab_group_counts
   pl <- result %>%
-    ggplot(aes(Item, y = p / 100)) +
-    geom_col(fill = VLKR_FILLCOLOR) +
+    ggplot2::ggplot(ggplot2::aes(Item, y = p / 100)) +
+    ggplot2::geom_col(fill = VLKR_FILLCOLOR) +
     # TODO: make limits configurable
     # scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
-    scale_y_continuous(labels = scales::percent) +
+    ggplot2::scale_y_continuous(labels = scales::percent) +
     #scale_x_discrete(limits=rev) +
-    ylab("Share in percent") +
-    coord_flip() +
-    theme(
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank(),
-      axis.text.y = element_text(size = 11),
-      legend.title = element_blank(),
+    ggplot2::ylab("Share in percent") +
+    ggplot2::coord_flip() +
+    ggplot2::theme(
+      axis.title.x = ggplot2::element_blank(),
+      axis.title.y = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_text(size = 11),
+      legend.title = ggplot2::element_blank(),
       plot.title.position = "plot",
-      plot.caption = element_text(hjust = 0),
+      plot.caption = ggplot2::element_text(hjust = 0),
       plot.caption.position = "plot"
     )
 
   if (!is.null(numbers)) {
     pl <- pl +
-      geom_text(aes(label = .values), position = position_stack(vjust = 0.5), size = 3, color = "white")
+      ggplot2::geom_text(
+        ggplot2::aes(label = .values),
+        position = ggplot2::position_stack(vjust = 0.5),
+        size = 3, color = "white"
+      )
   }
 
   # Get title
@@ -163,13 +168,13 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ..
     title <- NULL
   }
   if (!is.null(title)) {
-    pl <- pl + ggtitle(label = title)
+    pl <- pl + ggplot2::ggtitle(label = title)
   }
 
   # Get base
   # TODO: report missing cases
   base_n <- sum(tab$n[!(tab[[1]] %in% c("Total", "Missing"))])
-  pl <- pl + labs(caption = paste0("n=", base_n))
+  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
   # Pass row number and label length to the knit_plot() function
   .to_vlkr_plot(pl)
@@ -199,6 +204,7 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ..
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @export
 plot_counts_one_grouped <- function(data, col, col_group, category = NULL, ordered = NULL, missings = F, prop = "total", numbers = NULL, title = T, labels = T, ...) {
 
@@ -209,8 +215,8 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 
   # Swap columns
   if (prop == "cols") {
-    col <- enquo(col)
-    col_group <- enquo(col_group)
+    col <- rlang::enquo(col)
+    col_group <- rlang::enquo(col_group)
     col_temp <- col
     col <- col_group
     col_group <- col_temp
@@ -219,19 +225,23 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 
   # Calculate data
   tab <- data %>%
-    tab_counts_one_grouped({{ col }}, {{ col_group }}, values = "n", missings = missings, percent = F, labels = labels)
+    tab_counts_one_grouped(
+      {{ col }}, {{ col_group }},
+      values = "n", missings = missings,
+      percent = F, labels = labels
+    )
 
   # Detect whether the categories are binary
-  categories <- dplyr::select(tab, -1, -matches("^Total|Missing")) %>% colnames()
+  categories <- dplyr::select(tab, -1, -tidyselect::matches("^Total|Missing")) %>% colnames()
   if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
     category <- "TRUE"
   }
-  scale <- coalesce(ordered, get_direction(data, {{ col }}))
+  scale <-dplyr:: coalesce(ordered, get_direction(data, {{ col }}))
 
   result <- tab %>%
-    rename(Item = 1) %>%
+    dplyr::rename(Item = 1) %>%
     dplyr::filter(!(Item %in% c("Total", "Missing"))) %>%
-    dplyr::select(-matches("^Total")) %>%
+    dplyr::select(-tidyselect::matches("^Total")) %>%
     tidyr::pivot_longer(
       -Item,
       names_to = "value",
@@ -305,6 +315,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @export
 plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missings=F, numbers = NULL, title = T, labels = T, ...) {
   # Check parameters
@@ -314,7 +325,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
     tab_counts_items({{ cols }}, values = "n", missings=missings, percent = F, labels=labels)
 
   # Detect whether the categories are binary
-  categories <- dplyr::select(tab, -1, -matches("^Total|Missing")) %>% colnames()
+  categories <- dplyr::select(tab, -1, -tidyselect::matches("^Total|Missing")) %>% colnames()
   if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
     category <- "TRUE"
   }
@@ -323,7 +334,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
 
   result <- tab %>%
     dplyr::rename(Item = 1) %>%
-    dplyr::select(-matches("^Total$")) %>%
+    dplyr::select(-tidyselect::matches("^Total$")) %>%
     tidyr::pivot_longer(
       -Item,
       names_to = "value",
@@ -371,6 +382,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
 #' @param data A tibble
 #' @param cols The item columns that hold the values to summarize
 #' @param col_group The column holding groups to compare
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @keywords internal
 #' @export
 plot_counts_items_grouped <- function(data, cols, col_group, ...) {
@@ -388,6 +400,7 @@ plot_counts_items_grouped <- function(data, cols, col_group, ...) {
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @export
 plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labels = T, ...) {
 
@@ -403,14 +416,14 @@ plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labe
 
   # Drop missings
   # TODO: Report missings
-  data <- drop_na(data, {{ col }})
+  data <- tidyr::drop_na(data, {{ col }})
 
   # TODO: make configurable: density, boxplot or histogram
   pl <- data %>%
-    ggplot(aes({{ col }})) +
+    ggplot2::ggplot(ggplot2::aes({{ col }})) +
     # geom_histogram(fill=VLKR_FILLCOLOR, bins=20)
-    geom_density(fill = VLKR_FILLCOLOR) +
-    geom_vline(aes(xintercept=mean({{ col }})), color="black")
+    ggplot2::geom_density(fill = VLKR_FILLCOLOR) +
+    ggplot2::geom_vline(ggplot2::aes(xintercept=mean({{ col }})), color="black")
 
   # Get title
   if (title == T) {
@@ -420,23 +433,23 @@ plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labe
   }
   if (!is.null(title)) {
     pl <- pl +
-      ggtitle(label = title) +
-      xlab(title)
+      ggplot2::ggtitle(label = title) +
+      ggplot2::xlab(title)
   }
 
   # Get base
   # TODO: Report missings
   base_n <- data %>% nrow()
-  pl <- pl + labs(caption = paste0("n=", base_n))
+  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
   # Plot styling
   pl <- pl +
-    theme(
-      axis.title.x = element_blank(),
-      axis.title.y=element_blank(),
-      axis.text.y = element_blank(),
+    ggplot2::theme(
+      axis.title.x = ggplot2::element_blank(),
+      axis.title.y=ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_blank(),
       # legend.title = element_blank(),
-      plot.caption = element_text(hjust = 0),
+      plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
       plot.caption.position = "plot"
     )
@@ -456,6 +469,7 @@ plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labe
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @export
 plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = F, title = T, labels = T, ...) {
 
@@ -467,13 +481,13 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   # Remove negative values
   # TODO: warn if any negative values were recoded
   if (!negative) {
-    data <- dplyr::mutate(data, dplyr::across({{ col }}, ~ dplyr::if_else(. < 0, NA, .)))
+    data <- dplyr::mutate(data, dplyr::across({{ col }}, ~ ifelse(. < 0, NA, .)))
   }
 
   pl <- data %>%
     ggplot(aes(y={{ col_group }}, {{ col }})) +
-    geom_boxplot(fill="transparent", color="darkgray") +
-    stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
+    ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
+    ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
 
 
   # Set the scale
@@ -484,34 +498,34 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 
   scale <- c()
   if (labels) {
-    scale <- attr(pull(data, {{ col }}), "scale")
+    scale <- attr(dplyr::pull(data, {{ col }}), "scale")
     if (is.null(scale)) {
       scale <- data %>%
         codebook({{ col }}) %>%
-        distinct(value_name, value_label)
+        dplyr::distinct(value_name, value_label)
     }
     scale <- prepare_scale(scale)
   }
   if (length(scale) > 0) {
     pl <- pl +
-      scale_x_continuous(labels = ~ label_scale(., scale) )
+      ggplot2::scale_x_continuous(labels = ~ label_scale(., scale) )
   } else {
     pl <- pl +
-      scale_x_continuous()
+      ggplot2::scale_x_continuous()
   }
 
   # Add scales, labels and theming
   pl <- pl +
-    scale_y_discrete(labels = scales::label_wrap(40)) +
+    ggplot2::scale_y_discrete(labels = scales::label_wrap(40)) +
 
     # TODO: set limits
     #coord_flip(ylim = limits) +
-    theme(
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank(),
-      axis.text.y = element_text(size = 11),
-      legend.title = element_blank(),
-      plot.caption = element_text(hjust = 0),
+    ggplot2::theme(
+      axis.title.x = ggplot2::element_blank(),
+      axis.title.y = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_text(size = 11),
+      legend.title = ggplot2::element_blank(),
+      plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
       plot.caption.position = "plot"
     )
@@ -538,13 +552,13 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
     title <- NULL
   }
   if (!is.null(title)) {
-    pl <- pl + ggtitle(label = title)
+    pl <- pl + ggplot2::ggtitle(label = title)
   }
 
   # Add base
   # TODO: Report missing values, output range
   base_n <- nrow(data)
-  pl <- pl + labs(caption = paste0("n=", base_n))
+  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
   # Maximum label length
   maxlab  <- data %>%
@@ -566,6 +580,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @export
 plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = T, labels = T, ...) {
   # Check parameters
@@ -576,7 +591,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
   if (!negative) {
     data <- data %>%
       labs_store() %>%
-      dplyr::mutate(dplyr::across({{ cols }}, ~ dplyr::if_else(. < 0, NA, .))) %>%
+      dplyr::mutate(dplyr::across({{ cols }}, ~ ifelse(. < 0, NA, .))) %>%
       labs_restore()
   }
 
@@ -615,9 +630,9 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 
   # Create plot
   pl <- result %>%
-    ggplot(aes(y=item, value)) +
-    geom_boxplot(fill="transparent", color="darkgray") +
-    stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
+    ggplot2::ggplot(ggplot2::aes(y=item, value)) +
+    ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
+    ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
 
 
   # Add scale labels
@@ -625,29 +640,30 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
   if (labels) {
     scale <- data %>%
       codebook({{ cols }}) %>%
-      distinct(value_name, value_label) %>%
+      dplyr::distinct(value_name, value_label) %>%
       prepare_scale()
   }
   if (length(scale) > 0) {
     pl <- pl +
-      scale_x_continuous(labels = ~ label_scale(., scale) )
+      ggplot2::scale_x_continuous(labels = ~ label_scale(., scale) )
   } else {
     pl <- pl +
-      scale_x_continuous()
+      ggplot2::scale_x_continuous()
   }
 
   # Add scales, labels and theming
   pl <- pl +
-    scale_y_discrete(labels = scales::label_wrap(40)) +
+    ggplot2::scale_y_discrete(labels = scales::label_wrap(40)) +
 
     # TODO: set limits
     #coord_flip(ylim = limits) +
-    theme(
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank(),
-      axis.text.y = element_text(size = 11),
-      legend.title = element_blank(),
-      plot.caption = element_text(hjust = 0),
+
+    ggplot2::theme(
+      axis.title.x = ggplot2::element_blank(),
+      axis.title.y = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_text(size = 11),
+      legend.title = ggplot2::element_blank(),
+      plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
       plot.caption.position = "plot"
     )
@@ -661,13 +677,13 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
     title <- NULL
   }
   if (!is.null(title)) {
-    pl <- pl + ggtitle(label = title)
+    pl <- pl + ggplot2::ggtitle(label = title)
   }
 
   # Add base
   # TODO: report missings
   base_n <- nrow(data)
-  pl <- pl + labs(caption = paste0("n=", base_n, "; multiple responses possible"))
+  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n, "; multiple responses possible"))
 
   # Maximum label length
   maxlab  <- result %>%
@@ -684,13 +700,14 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param cols_group The column holding groups to compare
+#' @param col_group The column holding groups to compare
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
-#' @return A plot
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
+#' @return A ggplot object
 #' @export
 plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, negative = F, title = T, labels = T, ...) {
   # Check parameters
@@ -698,7 +715,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   check_has_column(data, {{ col_group }})
 
   # Get positions of group cols
-  col_group <- tidyselect::eval_select(expr = enquo(col_group), data = data)
+  col_group <- tidyselect::eval_select(expr = rlang::enquo(col_group), data = data)
 
   # TODO: warn if any negative values were recoded
   if (!negative) {
@@ -745,39 +762,39 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   # class(result) <- setdiff(class(result),"skim_df")
 
   pl <- result %>%
-    ggplot(aes(item, y = numeric.mean, color = group, group=group)) +
-    geom_line() +
-    geom_point(size=3, shape=18)
+    ggplot2::ggplot(ggplot2::aes(item, y = numeric.mean, color = group, group=group)) +
+    ggplot2::geom_line() +
+    ggplot2::geom_point(size=3, shape=18)
     #geom_col(position = "dodge")
 
   # Set the scale
   # TODO: get from attributes
   scale <- data %>%
     codebook({{ cols }}) %>%
-    distinct(value_name, value_label) %>%
+    dplyr::distinct(value_name, value_label) %>%
     prepare_scale()
 
   if (length(scale) > 0) {
     pl <- pl +
-      scale_y_continuous(labels = ~ label_scale(., scale) )
+      ggplot2::scale_y_continuous(labels = ~ label_scale(., scale) )
   } else {
     pl <- pl +
-      scale_y_continuous()
+      ggplot2::scale_y_continuous()
   }
 
   # Add scales, labels and theming
   pl <- pl +
-    scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
-    scale_color_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +
+    ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
+    ggplot2::scale_color_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +
 
-    ylab("Mean values") +
-    coord_flip(ylim = limits) +
-    theme(
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank(),
-      axis.text.y = element_text(size = 11),
-      legend.title = element_blank(),
-      plot.caption = element_text(hjust = 0),
+    ggplot2::ylab("Mean values") +
+    ggplot2::coord_flip(ylim = limits) +
+    ggplot2::theme(
+      axis.title.x = ggplot2::element_blank(),
+      axis.title.y = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_text(size = 11),
+      legend.title = ggplot2::element_blank(),
+      plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
       plot.caption.position = "plot"
     )
@@ -789,13 +806,13 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
     title <- NULL
   }
   if (!is.null(title)) {
-    pl <- pl + ggtitle(label = title)
+    pl <- pl + ggplot2::ggtitle(label = title)
   }
 
   # Add base
   # TODO: Report missings
   base_n <- nrow(data)
-  pl <- pl + labs(caption = paste0("n=", base_n, "; multiple responses possible"))
+  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n, "; multiple responses possible"))
 
   # Convert to vlkr_plot
   .to_vlkr_plot(pl)
@@ -814,7 +831,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 #' @param base The plot base as character or NULL.
 .plot_bars <- function(data, category = NULL, scale = NULL, numbers = NULL, base = NULL, title = NULL) {
   if (!is.null(category)) {
-    data <- filter(data, value == category)
+    data <- dplyr::filter(data, value == category)
   }
 
   if (scale <= 0) {
@@ -823,23 +840,23 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   }
 
   pl <- data %>%
-    ggplot(aes(Item, y = p / 100, fill = value)) +
-    geom_col() +
+    ggplot2::ggplot(ggplot2::aes(Item, y = p / 100, fill = value)) +
+    ggplot2::geom_col() +
     # scale_fill_manual(values=c("transparent", "black")) +
     # scale_y_reverse(labels=c("100%","75%","50%","25%","0%")) +
 
     # Add 0.1 to avoid "Removed 1 rows containing missing values (`geom_col()`)."
     # scale_y_continuous(limits =c(0,100.1), labels=c("0%","25%","50%","75%","100%")) +
-    scale_y_continuous(labels = scales::percent) +
-    scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
+    ggplot2::scale_y_continuous(labels = scales::percent) +
+    ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
     ylab("Share in percent") +
     coord_flip() +
     theme(
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank(),
-      axis.text.y = element_text(size = 11),
-      legend.title = element_blank(),
-      plot.caption = element_text(hjust = 0),
+      axis.title.x = ggplot2::element_blank(),
+      axis.title.y = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_text(size = 11),
+      legend.title = ggplot2::element_blank(),
+      plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
       plot.caption.position = "plot"
     )
@@ -850,8 +867,11 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   # - Use the default color for other cases
   if (!is.null(category)) {
     pl <- pl +
-      scale_fill_manual(values = c(VLKR_FILLCOLOR), guide = guide_legend(reverse = TRUE)) +
-      theme(
+      ggplot2::scale_fill_manual(
+        values = c(VLKR_FILLCOLOR),
+        guide = ggplot2::guide_legend(reverse = TRUE)
+      ) +
+      ggplot2::theme(
         legend.position = ifelse(category == "TRUE" | category == TRUE, "none","bottom"),
         legend.justification = "left"
       )
@@ -862,29 +882,32 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 
 
     pl <- pl +
-      scale_fill_manual(values = colors, guide = guide_legend(reverse = TRUE))
+      ggplot2::scale_fill_manual(
+        values = colors,
+        guide = ggplot2::guide_legend(reverse = TRUE)
+      )
   } else {
     pl <- pl +
       ggplot2::scale_fill_discrete(
-        guide = guide_legend(reverse = TRUE)
+        guide = ggplot2::guide_legend(reverse = TRUE)
       )
   }
 
   # Add numbers
   if (!is.null(numbers)) {
     pl <- pl +
-      geom_text(aes(label = .values), position = position_stack(vjust = 0.5), size = 3, color = "white")
+      ggplot2::geom_text(aes(label = .values), position = ggplot2::position_stack(vjust = 0.5), size = 3, color = "white")
   }
 
   # Add title
   if (!is.null(title)) {
-    pl <- pl + ggtitle(label = title)
+    pl <- pl + ggplot2::ggtitle(label = title)
   }
 
 
   # Add base
   if (!is.null(base)) {
-    pl <- pl + labs(caption = base)
+    pl <- pl + ggplot2::labs(caption = base)
   }
 
   # Convert to vlkr_plot
@@ -903,7 +926,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 .to_vlkr_plot <- function(pl, rows = NULL, maxlab=NULL) {
   class(pl) <- c("vlkr_plt", class(pl))
 
-  plot_data <- ggplot_build(pl)
+  plot_data <- ggplot2::ggplot_build(pl)
   if (is.null(rows)) {
     labels <- plot_data$layout$panel_scales_x[[1]]$range$range
     legend <- unique(plot_data$data[[1]]$group)
@@ -975,7 +998,7 @@ knit_plot <- function(pl) {
   }
 
   pngfile <- tempfile(fileext = ".png", tmpdir = chunk_options$cache.path)
-  suppressMessages(ggsave(
+  suppressMessages(ggplot2::ggsave(
     pngfile,
     pl,
     # type = "cairo-png",

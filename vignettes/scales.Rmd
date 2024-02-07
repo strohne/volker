@@ -3,7 +3,7 @@
 title: "Scales, labels, and index calculation"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Table variations}
+  %\VignetteIndexEntry{Scales, labels, and index calculation}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 

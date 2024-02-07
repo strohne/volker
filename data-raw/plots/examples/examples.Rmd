@@ -62,7 +62,7 @@ data %>%
 data %>% 
   plot_counts(sd_geschlecht)
 
-ggsave("plots/examples/plot_counts_one.png", width=300,height=200, units="px", dpi=96)
+ggsave("man/figures/plot_counts_one.png", width=300,height=200, units="px", dpi=96)
 
 ```
 
@@ -75,7 +75,7 @@ data %>%
 data %>%
   plot_metrics(sd_alter)
 
-ggsave("plots/examples/plot_metrics_one.png", width=300,height=200, units="px", dpi=96)
+ggsave("man/figures/plot_metrics_one.png", width=300,height=200, units="px", dpi=96)
 
 ```
 
@@ -98,7 +98,7 @@ data %>%
   plot_counts(starts_with("cg_adoption_advantage_")) +
   theme(legend.position = "none")
 
-ggsave("plots/examples/plot_counts_items.png", width=600,height=400, units="px", dpi=96, scale = 0.5)
+ggsave("man/figures/plot_counts_items.png", width=600,height=400, units="px", dpi=96, scale = 0.5)
 ```
 
 ### Distribution table for multiple metric items: Adoption factors
@@ -110,7 +110,7 @@ data %>%
 data %>% 
   plot_metrics(starts_with("cg_adoption_advantage_"))
 
-ggsave("plots/examples/plot_metrics_items.png", width=600,height=400, units="px", dpi=96, scale = 0.5)
+ggsave("man/figures/plot_metrics_items.png", width=600,height=400, units="px", dpi=96, scale = 0.5)
 ```
 
 ## 3. Two variables (one being categorical)
@@ -128,7 +128,7 @@ data %>%
   plot_counts(in_adoption, sd_geschlecht, prop="rows") +
   theme(legend.position = "bottom")
 
-ggsave("plots/examples/plot_counts_one_grouped.png", width=300,height=200, units="px", dpi=96, scale = 1)
+ggsave("man/figures/plot_counts_one_grouped.png", width=300,height=200, units="px", dpi=96, scale = 1)
 ```
 
 ### Group comparison of a metric variable: Age by gender
@@ -141,7 +141,7 @@ data %>%
   filter(sd_geschlecht != "diverse") %>% 
   plot_metrics(sd_alter, sd_geschlecht)
 
-ggsave("plots/examples/plot_metrics_one_grouped.png", width=300,height=200, units="px", dpi=96, scale = 1)
+ggsave("man/figures/plot_metrics_one_grouped.png", width=300,height=200, units="px", dpi=96, scale = 1)
 ```
 
 ## 4. Multiple metric variables

@@ -39,6 +39,8 @@ For ordered values, shaded of the VLKR_FILLGRADIENT option are used.}
 Disable the title with FALSE or provide a custom title as character value.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
+
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }
 \description{
 TODO: move missings to the end

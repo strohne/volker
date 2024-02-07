@@ -17,6 +17,8 @@ plot_counts_one(data, col, numbers = NULL, title = T, labels = T, ...)
 Disable the title with FALSE or provide a custom title as character value.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
+
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }
 \description{
 Note: only non-missing cases are used to calculate the percentage.

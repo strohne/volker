@@ -237,18 +237,19 @@ report_counts <- function(data, cols, col_group = NULL, index=T, numbers="p", ti
 #'
 #' @keywords internal
 #'
-#' @param obj The volker report
+#' @param x The volker report
+#' @param ... Further parameters passed to print
 #' @export
-print.vlkr_rprt <- function(obj) {
+print.vlkr_rprt <- function(x, ...) {
   if (knitr::is_html_output()) {
-    obj %>%
+    x %>%
       unlist() %>%
       paste0(collapse = "\n") %>%
       knitr::asis_output() %>%
       knitr::knit_print()
   } else {
-    for (part in obj) {
-      print(part)
+    for (part in x) {
+      print(part, ...)
     }
   }
 }

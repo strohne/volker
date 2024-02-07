@@ -39,107 +39,6 @@ ul.task-list{list-style: none;}
 
 
 
-<style type="text/css">
-code {
-white-space: pre;
-}
-.sourceCode {
-overflow: visible;
-}
-</style>
-<style type="text/css" data-origin="pandoc">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-{ counter-reset: source-line 0; }
-pre.numberSource code > span
-{ position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-{ content: counter(source-line);
-position: relative; left: -1em; text-align: right; vertical-align: baseline;
-border: none; display: inline-block;
--webkit-touch-callout: none; -webkit-user-select: none;
--khtml-user-select: none; -moz-user-select: none;
--ms-user-select: none; user-select: none;
-padding: 0 4px; width: 4em;
-color: #aaaaaa;
-}
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
-div.sourceCode
-{ }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } 
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.at { color: #7d9029; } 
-code span.bn { color: #40a070; } 
-code span.bu { color: #008000; } 
-code span.cf { color: #007020; font-weight: bold; } 
-code span.ch { color: #4070a0; } 
-code span.cn { color: #880000; } 
-code span.co { color: #60a0b0; font-style: italic; } 
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.do { color: #ba2121; font-style: italic; } 
-code span.dt { color: #902000; } 
-code span.dv { color: #40a070; } 
-code span.er { color: #ff0000; font-weight: bold; } 
-code span.ex { } 
-code span.fl { color: #40a070; } 
-code span.fu { color: #06287e; } 
-code span.im { color: #008000; font-weight: bold; } 
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.kw { color: #007020; font-weight: bold; } 
-code span.op { color: #666666; } 
-code span.ot { color: #007020; } 
-code span.pp { color: #bc7a00; } 
-code span.sc { color: #4070a0; } 
-code span.ss { color: #bb6688; } 
-code span.st { color: #4070a0; } 
-code span.va { color: #19177c; } 
-code span.vs { color: #4070a0; } 
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
-</style>
-<script>
-// apply pandoc div.sourceCode style to pre.sourceCode instead
-(function() {
-  var sheets = document.styleSheets;
-  for (var i = 0; i < sheets.length; i++) {
-    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
-    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    var j = 0;
-    while (j < rules.length) {
-      var rule = rules[j];
-      // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
-        j++;
-        continue;
-      }
-      var style = rule.style.cssText;
-      // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') {
-        j++;
-        continue;
-      }
-      // replace div.sourceCode by a pre.sourceCode rule
-      sheets[i].deleteRule(j);
-      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
-    }
-  }
-})();
-</script>
 
 
 
@@ -344,7 +243,6 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>Frequencies of categorical variables</h2>
 <div id="one-variable-frequency-table-of-gender" class="section level3">
 <h3>1. One variable: Frequency table of gender</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">tab_counts_one</span>(data, sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -419,7 +317,6 @@ Missing
 </div>
 <div id="multiple-items-frequency-table-of-adoption-factors" class="section level3">
 <h3>2. Multiple items: Frequency table of adoption factors</h3>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">tab_counts_items</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -729,7 +626,6 @@ Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.
 </div>
 <div id="two-variables-cross-table-of-innovator-type-by-gender" class="section level3">
 <h3>3. Two variables: Cross table of innovator type by gender</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">tab_counts_one_grouped</span>(data, in_adoption, sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -842,7 +738,6 @@ Total
 <h2>Distributions of metric variables</h2>
 <div id="distribution-table-for-one-metric-variable-age" class="section level3">
 <h3>Distribution table for one metric variable: Age</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">tab_metrics_one</span>(data, sd_alter)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -932,7 +827,6 @@ n
 </div>
 <div id="distribution-table-for-multiple-metric-items-adoption-factors" class="section level3">
 <h3>Distribution table for multiple metric items: Adoption factors</h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">tab_metrics_items</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1359,7 +1253,6 @@ Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.
 </div>
 <div id="group-comparison-of-a-metric-variable-age-by-gender" class="section level3">
 <h3>Group comparison of a metric variable: Age by gender</h3>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">tab_metrics_one_grouped</span>(data, sd_alter, sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1532,7 +1425,6 @@ Total
 <h2>Multiple metric variables</h2>
 <div id="compare-means-of-multiple-items-adoption-factors-by-gender" class="section level3">
 <h3>Compare means of multiple items: Adoption factors by gender</h3>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">tab_metrics_items_grouped</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>), sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1764,7 +1656,6 @@ Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.
 </div>
 <div id="correlation-of-items-adoption-factors" class="section level3">
 <h3>Correlation of items: Adoption factors</h3>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">tab_metrics_items_cor</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_adv&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1856,7 +1747,6 @@ Item
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">tab_metrics_items_cor</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_adv&quot;</span>), <span class="fu">starts_with</span>(<span class="st">&quot;cg_nutzen&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1922,10 +1812,6 @@ beruflich
 </div>
 <div id="scales" class="section level1">
 <h1>Scales</h1>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Add a single index</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="fu">tab_metrics_one</span>(idx_cg_adoption)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2028,10 +1914,6 @@ alpha
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Compare the index values by group</span></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="fu">tab_metrics_one_grouped</span>(idx_cg_adoption, in_adoption)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2266,13 +2148,6 @@ Total
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Add multiple indizes and summarize them</span></span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_advantage&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_fearofuse&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_social&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  <span class="fu">tab_metrics_items</span>(<span class="fu">starts_with</span>(<span class="st">&quot;idx_cg_adoption&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2305,12 +2180,6 @@ missing
 </th>
 <th style="text-align:right;">
 n
-</th>
-<th style="text-align:right;">
-items
-</th>
-<th style="text-align:right;">
-alpha
 </th>
 </tr>
 </thead>
@@ -2346,12 +2215,6 @@ Index: cg_adoption
 <td style="text-align:right;">
 101
 </td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-0.81
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -2383,12 +2246,6 @@ _advantage
 </td>
 <td style="text-align:right;">
 101
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-0.79
 </td>
 </tr>
 <tr>
@@ -2422,12 +2279,6 @@ _fearofuse
 <td style="text-align:right;">
 101
 </td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-0.69
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -2460,12 +2311,6 @@ _social
 <td style="text-align:right;">
 101
 </td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-0.84
-</td>
 </tr>
 </tbody>
 </table>
@@ -2474,23 +2319,6 @@ _social
 <h1>Labels</h1>
 <div id="set-custom-item-labels" class="section level2">
 <h2>Set custom item labels</h2>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>newlabels <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="sc">~</span>item_name, <span class="sc">~</span>item_label,</span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_01&quot;</span>, <span class="st">&quot;Allgemeine Vorteile&quot;</span>,</span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_02&quot;</span>, <span class="st">&quot;Finanzielle Vorteile&quot;</span>,</span>
-<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_03&quot;</span>, <span class="st">&quot;Vorteile bei der Arbeit&quot;</span>,</span>
-<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_04&quot;</span>, <span class="st">&quot;Macht mehr Spaß&quot;</span></span>
-<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>)</span>
-<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a></span>
-<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
-<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>  <span class="fu">labs_apply</span>(newlabels) <span class="sc">%&gt;%</span></span>
-<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>  </span>
-<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>  <span class="fu">labs_store</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>  <span class="fu">labs_clear</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>  <span class="fu">labs_restore</span>(<span class="at">values=</span>T) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a>  </span>
-<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a>  <span class="fu">tab_counts_items</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_advantage_&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2615,9 +2443,6 @@ Macht mehr Spaß
 </div>
 <div id="remove-labels" class="section level2">
 <h2>Remove labels</h2>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="fu">labs_clear</span>(<span class="fu">everything</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="fu">tab_counts_items</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_advantage_&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>

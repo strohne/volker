@@ -12,8 +12,10 @@ editor_options:
 ```{r include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo = TRUE)
 
+# Load packages
 library(tidyverse)
 library(volker)
+
 theme_set(theme_bw())
 
 data <- volker::chatgpt

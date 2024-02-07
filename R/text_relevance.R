@@ -31,10 +31,10 @@ lda_get_termrelevance <- function(fit, lambda=0.6) {
     tidytext::tidy(matrix = "beta") %>%
     dplyr::group_by(term) %>%
     dplyr::mutate(
-      gini = DescTools::Gini(beta, unbiased=T),
+      gini = gini(beta),
       betasum = sum(beta)
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 
 
   lda_gini %>%
@@ -75,7 +75,7 @@ lda_add_relevance <- function(data, fit, prefix="tpc_", lambda=0.6, seed=1852) {
     tidytext::tidy(matrix = "gamma") %>%
     dplyr::group_by(document) %>%
     dplyr::mutate(
-      gini = DescTools::Gini(gamma, unbiased=T)
+      gini = gini(gamma)
       #gammasum = sum(gamma) -> always 1
     ) %>%
     dplyr::ungroup()  %>%
@@ -100,7 +100,7 @@ lda_add_relevance <- function(data, fit, prefix="tpc_", lambda=0.6, seed=1852) {
 
   # Join and return
   data %>%
-    dplyr::mutate(.document = as.character(row_number())) %>%
+    dplyr::mutate(.document = as.character(dplyr::row_number())) %>%
     dplyr::left_join(lda_docs, by =c(".document" = paste0(prefix, "document"))) %>%
     dplyr::select(-.document)
 }

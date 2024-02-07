@@ -12,6 +12,8 @@ tab_counts_items_cor(data, cols, cols_cor, ...)
 \item{cols}{The source columns}
 
 \item{cols_cor}{The target columns or NULL to calculate correlations within the source columns}
+
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }
 \description{
 TODO: implement -> calculate npmi or similar for one value
