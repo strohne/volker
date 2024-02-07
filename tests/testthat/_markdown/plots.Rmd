@@ -2,7 +2,7 @@
 title: "Test plot variations"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Plot variations}
+  %\VignetteIndexEntry{Test plot variations}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
