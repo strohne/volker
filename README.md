@@ -136,8 +136,7 @@ comparison </strong>
 <br>
 
 All functions take a data frame as their first argument, followed by
-column selections, and optionally a grouping column. Examples (hint:
-replace “tab\_” by “plot\_” to reproduce the examples above):
+column selections, and optionally a grouping column. Examples:
 
 - One metric variable: `tab_metrics(data, sd_age)`  
 - One categorical variable: `tab_counts(data, sd_gender)`  
@@ -149,6 +148,7 @@ replace “tab\_” by “plot\_” to reproduce the examples above):
 - Multiple categorical variables:
   `tab_counts(data, starts_with("cg_adoption"))`
 
+**Hint**: replace `tab_` by `plot_` to reproduce the examples above.
 You’ll find an overview about different [tables](vignettes/tables.Rmd),
 [plots](vignettes/plots.Rmd) and [reports](vignettes/reports.Rmd) in the
 package vignettes. For further options to customize the results, see the
@@ -220,9 +220,10 @@ them afterwards:
 
 ## Sosci Survey integration
 
-The attributes to store labels follow a format used, for example, on
-[Sosci Survey](https://www.soscisurvey.de/). That’s why you can directly
-throw in labeled data from the Sosci Survey API:
+The labeling mechanisms follow a technique used, for example, on [Sosci
+Survey](https://www.soscisurvey.de/). Sidenote for techies: Labels are
+stored in the column attributes. That’s why you can directly throw in
+labeled data from the Sosci Survey API:
 
     library(volker)
 
@@ -276,14 +277,14 @@ then, you’ll find them linked in the help index page.
 - Simple tables, simple plots, simple reports.  
 - Labeling and scaling based on attributes. Appropriate attributes, for
   example, are provided by the Sosci Survey API. Alternatively, you can
-  add custom labels. Use `get_codebook()` to see all labels present in a
+  add custom labels. Use `codebook()` to see all labels present in a
   dataset.  
 - Interactive reports: Use the `volker::html_report` template in your
   Markdown documents to switch between tables and plots when using the
   report-functions.  
-- Calculate metric indexes using `add_idx()`.  
+- Calculate metric indexes using `add_idx()` (*work in progress*).  
 - Simplified hints for wrong parameters, e.g. if you forget to provide a
-  data frame (work in progress).  
+  data frame (*work in progress*).
 - Tidyverse style.
 
 ## Troubleshooting

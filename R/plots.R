@@ -657,7 +657,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
   # Add base
   # TODO: report missings
   base_n <- nrow(data)
-  pl <- pl + labs(caption = paste0("n=", base_n))
+  pl <- pl + labs(caption = paste0("n=", base_n, "; multiple responses possible"))
 
   # Maximum label length
   maxlab  <- result %>%
@@ -785,7 +785,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   # Add base
   # TODO: Report missings
   base_n <- nrow(data)
-  pl <- pl + labs(caption = paste0("n=", base_n))
+  pl <- pl + labs(caption = paste0("n=", base_n, "; multiple responses possible"))
 
   # Convert to vlkr_plot
   .to_vlkr_plot(pl)

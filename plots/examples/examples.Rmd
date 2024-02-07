@@ -17,16 +17,22 @@ theme_set(theme_bw())
 data <- volker::chatgpt
 data <- prepare(data)
 
+data$cg_adoption_advantage_01
 # Translate labels
 data <- data %>% 
   labs_apply(tibble("sd_geschlecht", "Gender")) %>% 
   labs_apply(tibble("sd_alter","Age")) %>% 
+  labs_clear(starts_with("cg_adoption_advantage_")) %>% 
   labs_apply(tribble(
-    ~item_name, ~item_label,
-    "cg_adoption_advantage_01", "General Benefits",
-    "cg_adoption_advantage_02", "Financial Benefits",
-    "cg_adoption_advantage_03", "Workplace Benefits",
-    "cg_adoption_advantage_04", "Joy Benefits"
+    ~item_name, ~item_label, ~value_name, ~value_label,
+    "cg_adoption_advantage_01", "Benefits: General", "1", "not at all",
+    "cg_adoption_advantage_01", "Benefits: General", "5", "fully applies",
+    "cg_adoption_advantage_02", "Benefits: Financial", "1", "not at all",
+    "cg_adoption_advantage_02", "Benefits: Financial", "5", "fully applies",
+    "cg_adoption_advantage_03", "Benefits: Workplace", "1", "not at all",
+    "cg_adoption_advantage_02", "Benefits: Financial", "5", "fully applies",
+    "cg_adoption_advantage_04", "Benefits: Joy", "1", "not at all",
+    "cg_adoption_advantage_02", "Benefits: Financial", "5", "fully applies",
   )) %>% 
   volker::labs_apply(tibble("in_adoption","Adopter type")) %>%   
   mutate(in_adoption = case_when(
@@ -89,13 +95,6 @@ data %>%
   tab_counts(starts_with("cg_adoption_advantage_"))
 
 data %>% 
-  # filter(
-  #   cg_adoption_advantage_01 < 4,
-  #   cg_adoption_advantage_02 < 4,
-  #   cg_adoption_advantage_03 < 4,
-  #   cg_adoption_advantage_04 < 4
-  #   
-  # ) %>% 
   plot_counts(starts_with("cg_adoption_advantage_")) +
   theme(legend.position = "none")
 
