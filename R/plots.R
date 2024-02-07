@@ -388,7 +388,7 @@ plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labe
   # Remove negative values
   # TODO: warn if any negative values were recoded
   if (!negative) {
-    data <- dplyr::mutate(data, across({{ col }}, ~ if_else(. < 0, NA, .)))
+    data <- dplyr::mutate(data, dplyr::across({{ col }}, ~ dplyr::if_else(. < 0, NA, .)))
   }
 
   # Drop missings
@@ -457,7 +457,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   # Remove negative values
   # TODO: warn if any negative values were recoded
   if (!negative) {
-    data <- dplyr::mutate(data, across({{ col }}, ~ if_else(. < 0, NA, .)))
+    data <- dplyr::mutate(data, dplyr::across({{ col }}, ~ dplyr::if_else(. < 0, NA, .)))
   }
 
   pl <- data %>%
@@ -566,7 +566,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
   if (!negative) {
     data <- data %>%
       labs_store() %>%
-      dplyr::mutate(across({{ cols }}, ~ if_else(. < 0, NA, .))) %>%
+      dplyr::mutate(dplyr::across({{ cols }}, ~ dplyr::if_else(. < 0, NA, .))) %>%
       labs_restore()
   }
 
@@ -692,7 +692,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 
   # TODO: warn if any negative values were recoded
   if (!negative) {
-    data <- dplyr::mutate(data, across({{ cols }}, ~ if_else(. < 0, NA, .)))
+    data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. < 0, NA, .)))
   }
 
   # Grouped means

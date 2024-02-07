@@ -20,7 +20,7 @@ lda_get_termrelevance <- function(fit, lambda=0.6) {
   # Calculate relevance
   # See section 3 in https://nlp.stanford.edu/events/illvi2014/papers/sievert-illvi2014.pdf
   # relevance is p_kw for lambda = 1 and the probability shift for lambda = 0
-  # mutate(relevance = lambda * log(p_kw) + (1- lambda) * log (p_kw / p_w))
+  # dplyr::mutate(relevance = lambda * log(p_kw) + (1- lambda) * log (p_kw / p_w))
   # TODO: is col_sums(lda_phi) correct here?
   lda_rel  = lambda * log(lda_phi) + (1 - lambda) * log(lda_phi / slam::col_sums(lda_phi))
 

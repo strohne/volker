@@ -230,7 +230,7 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
   # Total
   total_n <- data %>%
     dplyr::count() %>%
-    mutate({{ col_group }} := "Total") %>%
+    dplyr::mutate({{ col_group }} := "Total") %>%
     dplyr::select({{ col_group }}, Total = n)
 
   # Join
@@ -272,7 +272,7 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
       dplyr::mutate(Total = 1)
 
     total_row_p <- total_row_n %>%
-      dplyr::mutate(across(tidyselect::where(is.numeric), ~ .x / total_n$Total))
+      dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), ~ .x / total_n$Total))
   } else {
     rows_p <- grouped %>%
       dplyr::mutate(p = n / sum(n))
@@ -281,7 +281,7 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
       dplyr::mutate(Total = Total / sum(Total))
 
     total_row_p <- total_row_n %>%
-      dplyr::mutate(across(tidyselect::where(is.numeric), ~ .x / total_n$Total))
+      dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), ~ .x / total_n$Total))
   }
 
   rows_p <- rows_p %>%
@@ -293,7 +293,7 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
     )
 
   total_p <- tibble("Total" = 1) %>%
-    mutate({{ col_group }} := "Total")
+    dplyr::mutate({{ col_group }} := "Total")
 
   # Join
   result_p <-
@@ -313,7 +313,7 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
   # Round and add % sign
   if (percent) {
     result_p <- result_p %>%
-      dplyr::mutate(across(where(is.numeric), ~ paste0(round(. * 100, 0), "%")))
+      dplyr::mutate(dplyr::across(where(is.numeric), ~ paste0(round(. * 100, 0), "%")))
   }
 
 
@@ -406,7 +406,7 @@ tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), perce
 
   # Add % sign
   if (percent) {
-    result_p <- dplyr::mutate(result_p, across(where(is.numeric), ~ paste0(round(. * 100, 0), "%")))
+    result_p <- dplyr::mutate(result_p, dplyr::across(where(is.numeric), ~ paste0(round(. * 100, 0), "%")))
   }
 
   # Add missings
@@ -421,7 +421,7 @@ tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), perce
       ) %>%
       dplyr::mutate(value = is.na(value)) %>%
       dplyr::count(item, value) %>%
-      mutate(value = factor(value,levels=c("TRUE","FALSE"))) %>%
+      dplyr::mutate(value = factor(value,levels=c("TRUE","FALSE"))) %>%
       tidyr::pivot_wider(
         names_from = value,
         values_from = n,
@@ -534,7 +534,7 @@ tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T, ...) 
   # Remove negative values
   # TODO: warn if any negative values were recoded
   if (!negative) {
-    data <- dplyr::mutate(data, across({{ col }}, ~ if_else(. < 0, NA, .)))
+    data <- dplyr::mutate(data, dplyr::across({{ col }}, ~ dplyr::if_else(. < 0, NA, .)))
   }
 
   result <- data %>%
@@ -560,16 +560,16 @@ tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T, ...) 
     result$alpha <- NULL
   } else {
     result <- result %>%
-      dplyr::mutate(across(c(items), ~ as.character(round(., 0)))) %>%
-      dplyr::mutate(across(c(alpha), ~ as.character(round(., 2))))
+      dplyr::mutate(dplyr::across(c(items), ~ as.character(round(., 0)))) %>%
+      dplyr::mutate(dplyr::across(c(alpha), ~ as.character(round(., 2))))
   }
 
   result <- result %>%
     # TODO: can we leave digits calculation to .to_vlkr_tab?
     #       So that the resulting data frame contains all digits?
-    dplyr::mutate(across(c(missing, n), ~ as.character(round(., 0)))) %>%
-    dplyr::mutate(across(c(min, q1, median, q3, max), ~ as.character(round(., digits)))) %>%
-    dplyr::mutate(across(c(m, sd), ~ as.character(round(., digits)))) %>%
+    dplyr::mutate(dplyr::across(c(missing, n), ~ as.character(round(., 0)))) %>%
+    dplyr::mutate(dplyr::across(c(min, q1, median, q3, max), ~ as.character(round(., digits)))) %>%
+    dplyr::mutate(dplyr::across(c(m, sd), ~ as.character(round(., digits)))) %>%
     # labs_clear(-item) %>%
     tidyr::pivot_longer(-item) %>%
     dplyr::select(-item, {{ col }} := name, value)
@@ -600,7 +600,7 @@ tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits =
   # Remove negative values
   # TODO: warn if any negative values were recoded
   if (!negative) {
-    data <- dplyr::mutate(data, across({{ col }}, ~ if_else(. < 0, NA, .)))
+    data <- dplyr::mutate(data, dplyr::across({{ col }}, ~ dplyr::if_else(. < 0, NA, .)))
   }
 
   result_grouped <- data %>%
@@ -641,8 +641,8 @@ tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits =
     result$alpha <- NULL
   } else {
     result <- result %>%
-      dplyr::mutate(across(c(items), ~ as.character(round(., 0)))) %>%
-      dplyr::mutate(across(c(alpha), ~ as.character(round(., 2))))
+      dplyr::mutate(dplyr::across(c(items), ~ as.character(round(., 0)))) %>%
+      dplyr::mutate(dplyr::across(c(alpha), ~ as.character(round(., 2))))
   }
 
   # Get item label from the attributes
@@ -692,7 +692,7 @@ tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T, 
   # Remove negative values
   # TODO: warn if any negative values were recoded
   if (!negative) {
-    result <- dplyr::mutate(result, across(where(is.numeric), ~ if_else(. < 0, NA, .)))
+    result <- dplyr::mutate(result, dplyr::across(where(is.numeric), ~ dplyr::if_else(. < 0, NA, .)))
   }
 
   result <- result %>%
@@ -720,8 +720,8 @@ tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T, 
     result$alpha <- NULL
   } else {
     result <- result %>%
-      dplyr::mutate(across(c(items), ~ as.character(round(., 0)))) %>%
-      dplyr::mutate(across(c(alpha), ~ as.character(round(., 2))))
+      dplyr::mutate(dplyr::across(c(items), ~ as.character(round(., 0)))) %>%
+      dplyr::mutate(dplyr::across(c(alpha), ~ as.character(round(., 2))))
   }
 
   # Get item labels from the attributes
@@ -774,7 +774,7 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, value
   # Remove negative values
   # TODO: warn if any negative values were recoded
   if (!negative) {
-    data <- dplyr::mutate(data, across({{ cols }}, ~ if_else(. < 0, NA, .)))
+    data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. < 0, NA, .)))
   }
 
   # Total means
@@ -877,8 +877,8 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, value
   if (("m" %in% values) && ("sd" %in% values)) {
     # TODO: What about the resulting data frame, should it really contain rounded values?
     #       Maybe let zipping and rounding to the print function and return a list of data frames instead
-    result_mean <- mutate(result_mean, across(where(is.numeric), ~ format(round(., digits), nsmall = digits)))
-    result_sd <- mutate(result_sd, across(where(is.numeric), ~ format(round(., digits), nsmall = digits)))
+    result_mean <- mutate(result_mean, dplyr::across(where(is.numeric), ~ format(round(., digits), nsmall = digits)))
+    result_sd <- mutate(result_sd, dplyr::across(where(is.numeric), ~ format(round(., digits), nsmall = digits)))
     result <- zip_tables(result_mean, result_sd, brackets = T)
   } else if ("sd" %in% values) {
     result <- result_sd
@@ -1002,8 +1002,8 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
 
   # Create table
   result <- result %>%
-    mutate(value = paste0(round(unlist(value), 2), stars)) %>%
-    mutate(value = ifelse(significant & (p >= 0.1), "", value)) %>%
+    dplyr::mutate(value = paste0(round(unlist(value), 2), stars)) %>%
+    dplyr::mutate(value = ifelse(significant & (p >= 0.1), "", value)) %>%
     select(item, target, value)
 
   result <- result %>%
@@ -1050,7 +1050,7 @@ knit_table <- function(df, ...) {
   if (knitr::is_html_output()) {
     # Replace \n by <br>
     df <- df %>%
-      dplyr::mutate(across(dplyr::where(is.character), ~ gsub("\n", "<br>", .))) %>%
+      dplyr::mutate(dplyr::across(dplyr::where(is.character), ~ gsub("\n", "<br>", .))) %>%
       knitr::kable(
         "html",
         escape = F,

@@ -198,9 +198,9 @@ labs_clear <- function(data, cols, labels = NULL) {
   }
 
   if (missing(cols)) {
-    data <-  dplyr::mutate(data, across(everything(), ~remove_attr(.)))
+    data <-  dplyr::mutate(data, dplyr::across(everything(), ~remove_attr(.)))
   } else {
-    data <-  dplyr::mutate(data, across({{ cols }}, ~remove_attr(.)))
+    data <-  dplyr::mutate(data, dplyr::across({{ cols }}, ~remove_attr(.)))
   }
   data
 }
@@ -352,7 +352,7 @@ get_direction <- function(data, cols, extract = T) {
 
   # Get all values
   categories <- data %>%
-    dplyr::mutate(across(tidyselect::everything(), as.character)) %>%
+    dplyr::mutate(dplyr::across(tidyselect::everything(), as.character)) %>%
     tidyr::pivot_longer(tidyselect::everything()) %>%
     dplyr::arrange(value) %>%
     dplyr::mutate(value = ifelse(extract, stringr::str_extract(value, "[0-9-]+"), value)) %>%
