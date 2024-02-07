@@ -2,6 +2,7 @@
 # Create hex-sticker ----
 #
 
+library(tidyverse)
 library(hexSticker)
 library(ggplot2)
 library(showtext)
@@ -44,3 +45,23 @@ s <- sticker(
 plot(s)
 
 usethis::use_logo("plots/logo.png", geometry = "240x278", retina = TRUE)
+
+# Button
+# GenerateSticker
+sticker(
+  bar_plot,
+  package = "volkeR",
+  p_size = 15,
+  #p_color = "#008b8b",
+  p_color = "black",
+  p_family="robo_mono",
+  p_y = 0.53,
+  s_x = 1,
+  s_y = 1.1,
+  s_width = 0.95,
+  s_height = 0.95,
+  h_size=2,
+  h_fill="white",
+  h_color="#006363",
+  filename = "plots/button.png"
+) %>% plot()
