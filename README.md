@@ -108,18 +108,6 @@ variable</strong>
 </tr>
 <tr>
 <td>
-<strong style="display: block;transform: rotate(-90deg);">Multiple
-items</strong>
-</td>
-<td valign="top">
-<img src="plots/examples/plot_metrics_items.png" alt="Item battery boxplots" width="300">
-</td>
-<td valign="top">
-<img src="plots/examples/plot_counts_items.png" alt="Item battery bar chart" width="300">
-</td>
-</tr>
-<tr>
-<td>
 <strong style="display: block;transform: rotate(-90deg);">Group
 comparison </strong>
 </td>
@@ -128,6 +116,18 @@ comparison </strong>
 </td>
 <td valign="top">
 <img src="plots/examples/plot_counts_one_grouped.png" alt="Stacked bar chart" width="300">
+</td>
+</tr>
+<tr>
+<td>
+<strong style="display: block;transform: rotate(-90deg);">Multiple
+items</strong>
+</td>
+<td valign="top">
+<img src="plots/examples/plot_metrics_items.png" alt="Item battery boxplots" width="300">
+</td>
+<td valign="top">
+<img src="plots/examples/plot_counts_items.png" alt="Item battery bar chart" width="300">
 </td>
 </tr>
 </tbody>

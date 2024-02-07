@@ -110,7 +110,7 @@ data %>%
 data %>% 
   plot_metrics(starts_with("cg_adoption_advantage_"))
 
-ggsave("plots/examples/plot_metrics_items.png", width=300,height=200, units="px", dpi=96, scale = 1.2)
+ggsave("plots/examples/plot_metrics_items.png", width=600,height=400, units="px", dpi=96, scale = 0.5)
 ```
 
 ## 3. Two variables (one being categorical)
