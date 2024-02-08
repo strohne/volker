@@ -1,8 +1,8 @@
 ---
-title: "Plot variations"
+title: "Test plot variations"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Plot variations}
+  %\VignetteIndexEntry{Test plot variations}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -10,14 +10,13 @@ editor_options:
 ---
 
 ```{r include=FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, warning = TRUE, fig.width = 7)
 
 library(tidyverse)
 library(volker)
 theme_set(theme_bw())
 
 data <- volker::chatgpt
-
 
 # Recode -9 to NA
 data <- prepare(data)
@@ -27,51 +26,43 @@ data <- prepare(data)
 ## Frequencies of categorical variables
 
 ### 1. One variable: Frequency plot of Gender
-```{r results='asis'}
-plot_counts_one(data, sd_geschlecht)
+```{r}
+plot_counts_one(data, sd_gender)
 ```
 
 ### 2. Multiple items: Frequency plot for adoption factors
-```{r results='asis'}
-# Use the .numbers parameter to add counts to the bars
+```{r}
 plot_counts_items(data, starts_with("cg_adoption_"), numbers = "p")
-
 ```
 
 ### 3. Two variables: Stacked frequency plot of innovator type by gender
 
-```{r results='asis'}
-# TODO: use number=c("n","p")
-plot_counts_one_grouped(data, in_adoption, sd_geschlecht, prop = "rows")
+```{r}
+plot_counts_one_grouped(data, adopter, sd_gender, prop = "rows")
+plot_counts_one_grouped(data, adopter, sd_gender, prop = "cols")
 ```
 
 ## Metric distributions
 
 ### 1. Distribution for one metric variable: Age
-```{r results='asis'}
-
-plot_metrics_one(data, sd_alter)
-
+```{r}
+plot_metrics_one(data, sd_age)
 ```
 
 
 ### 2. Distribution of multiple metric items: Adoption factors
-```{r results='asis'}
-
-# Note that negative values are omitted,
-# you can change the behavior with the negative-parameter
+```{r}
 plot_metrics_items(data, starts_with("cg_adoption_"))
-
 ```
 
 ### 3. Distribution by a grouping variable
-```{r results='asis'}
-plot_metrics_one_grouped(data, sd_alter, sd_geschlecht)
-plot_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_geschlecht)
+```{r}
+plot_metrics_one_grouped(data, sd_age, sd_gender)
+plot_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_gender)
 ```
 
 ### 4. Index  distribution by a grouping variable
-```{r results='asis'}
+```{r}
 
 data %>%
   add_idx(starts_with("cg_adoption_social_")) %>%
@@ -86,7 +77,7 @@ data %>%
     "idx_cg_adoption_advantage", "ChatGPT-Erwartung: Advantage"
   )) %>%
   
-  plot_metrics_items_grouped(starts_with("idx_cg_adoption"), in_adoption)
+  plot_metrics_items_grouped(starts_with("idx_cg_adoption"), adopter)
   
 ```
 

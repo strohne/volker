@@ -20,6 +20,8 @@ tab_metrics_items_grouped(
 
 \item{cols}{The item columns that hold the values to summarize}
 
+\item{col_group}{The column holding groups to compare}
+
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{values}{The output metrics, mean (m), the standard deviation (sd) or both (the default).}
@@ -28,7 +30,7 @@ tab_metrics_items_grouped(
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
-\item{cols_group}{The column holding groups to compare}
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.}
 }
 \description{
 TODO: handle completely missing data in single groups

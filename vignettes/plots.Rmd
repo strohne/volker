@@ -32,7 +32,7 @@ data <- prepare(data)
 
 ### 1. One variable: Frequency plot of Gender
 ```{r}
-plot_counts(data, sd_geschlecht)
+plot_counts(data, sd_gender)
 ```
 
 ### 2. Two variables: Stacked frequency plot of innovator type by gender
@@ -40,7 +40,7 @@ plot_counts(data, sd_geschlecht)
 ```{r}
 # The prop parameter grows bars to 100%
 # The numbers parameter adds percentages to the bars
-plot_counts(data, in_adoption, sd_geschlecht, prop = "rows", number="p")
+plot_counts(data, adopter, sd_gender, prop = "rows", number="p")
 ```
 
 
@@ -56,13 +56,13 @@ plot_counts(data, starts_with("cg_adoption_"), numbers = "p")
 
 ### 1. Distribution for one metric variable: Age
 ```{r}
-plot_metrics(data, sd_alter)
+plot_metrics(data, sd_age)
 ```
 
 
 ### 2. Distribution by a grouping variable
 ```{r}
-plot_metrics(data, sd_alter, sd_geschlecht)
+plot_metrics(data, sd_age, sd_gender)
 ```
 
 
@@ -77,8 +77,8 @@ plot_metrics(data, starts_with("cg_adoption_"))
 ```{r, fig.height=6}
 # Filter out one group, too few cases in the sample
 data %>% 
-  filter(sd_geschlecht != "divers") %>% 
-  plot_metrics(starts_with("cg_adoption_"), sd_geschlecht)
+  filter(sd_gender != "divers") %>% 
+  plot_metrics(starts_with("cg_adoption_"), sd_gender)
 ```
 
 ### 4. Index  distribution by a grouping variable
@@ -92,12 +92,12 @@ data %>%
   # Set new labels for the three index columns
   labs_apply(tribble(
     ~item_name,                  ~item_label,
-    "idx_cg_adoption_social",    "ChatGPT-Erwartung: Social",
-    "idx_cg_adoption_fearofuse", "ChatGPT-Erwartung: Fear of Use",
-    "idx_cg_adoption_advantage", "ChatGPT-Erwartung: Advantage"
+    "idx_cg_adoption_social",    "Erwartung: Soziales",
+    "idx_cg_adoption_fearofuse", "Erwartung: Ängste",
+    "idx_cg_adoption_advantage", "Erwartung: Vorteile"
   )) %>%
   
-  plot_metrics(starts_with("idx_cg_adoption"), in_adoption)
+  plot_metrics(starts_with("idx_cg_adoption"), adopter)
   
 ```
 

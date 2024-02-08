@@ -12,7 +12,7 @@
 
 
 
-<title>Table variations</title>
+<title>Test table variations</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -39,107 +39,6 @@ ul.task-list{list-style: none;}
 
 
 
-<style type="text/css">
-code {
-white-space: pre;
-}
-.sourceCode {
-overflow: visible;
-}
-</style>
-<style type="text/css" data-origin="pandoc">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-{ counter-reset: source-line 0; }
-pre.numberSource code > span
-{ position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-{ content: counter(source-line);
-position: relative; left: -1em; text-align: right; vertical-align: baseline;
-border: none; display: inline-block;
--webkit-touch-callout: none; -webkit-user-select: none;
--khtml-user-select: none; -moz-user-select: none;
--ms-user-select: none; user-select: none;
-padding: 0 4px; width: 4em;
-color: #aaaaaa;
-}
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
-div.sourceCode
-{ }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } 
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.at { color: #7d9029; } 
-code span.bn { color: #40a070; } 
-code span.bu { color: #008000; } 
-code span.cf { color: #007020; font-weight: bold; } 
-code span.ch { color: #4070a0; } 
-code span.cn { color: #880000; } 
-code span.co { color: #60a0b0; font-style: italic; } 
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.do { color: #ba2121; font-style: italic; } 
-code span.dt { color: #902000; } 
-code span.dv { color: #40a070; } 
-code span.er { color: #ff0000; font-weight: bold; } 
-code span.ex { } 
-code span.fl { color: #40a070; } 
-code span.fu { color: #06287e; } 
-code span.im { color: #008000; font-weight: bold; } 
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.kw { color: #007020; font-weight: bold; } 
-code span.op { color: #666666; } 
-code span.ot { color: #007020; } 
-code span.pp { color: #bc7a00; } 
-code span.sc { color: #4070a0; } 
-code span.ss { color: #bb6688; } 
-code span.st { color: #4070a0; } 
-code span.va { color: #19177c; } 
-code span.vs { color: #4070a0; } 
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
-</style>
-<script>
-// apply pandoc div.sourceCode style to pre.sourceCode instead
-(function() {
-  var sheets = document.styleSheets;
-  for (var i = 0; i < sheets.length; i++) {
-    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
-    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    var j = 0;
-    while (j < rules.length) {
-      var rule = rules[j];
-      // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
-        j++;
-        continue;
-      }
-      var style = rule.style.cssText;
-      // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') {
-        j++;
-        continue;
-      }
-      // replace div.sourceCode by a pre.sourceCode rule
-      sheets[i].deleteRule(j);
-      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
-    }
-  }
-})();
-</script>
 
 
 
@@ -336,7 +235,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">Table variations</h1>
+<h1 class="title toc-ignore">Test table variations</h1>
 
 
 
@@ -344,12 +243,11 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>Frequencies of categorical variables</h2>
 <div id="one-variable-frequency-table-of-gender" class="section level3">
 <h3>1. One variable: Frequency table of gender</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">tab_counts_one</span>(data, sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-Geschlecht
+Gender
 </th>
 <th style="text-align:right;">
 n
@@ -362,7 +260,7 @@ p
 <tbody>
 <tr>
 <td style="text-align:left;">
-weiblich
+female
 </td>
 <td style="text-align:right;">
 40
@@ -373,7 +271,7 @@ weiblich
 </tr>
 <tr>
 <td style="text-align:left;">
-männlich
+male
 </td>
 <td style="text-align:right;">
 60
@@ -384,7 +282,7 @@ männlich
 </tr>
 <tr>
 <td style="text-align:left;">
-divers
+diverse
 </td>
 <td style="text-align:right;">
 1
@@ -419,27 +317,26 @@ Missing
 </div>
 <div id="multiple-items-frequency-table-of-adoption-factors" class="section level3">
 <h3>2. Multiple items: Frequency table of adoption factors</h3>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">tab_counts_items</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-ChatGPT-Erwartung
+Expectations
 </th>
 <th style="text-align:right;">
-trifft gar nicht zu
+strongly disagree
 </th>
 <th style="text-align:right;">
-trifft eher nicht zu
+disagree
 </th>
 <th style="text-align:right;">
-teils teils
+neutral
 </th>
 <th style="text-align:right;">
-trifft eher zu
+agree
 </th>
 <th style="text-align:right;">
-trifft voll zu
+strongly agree
 </th>
 <th style="text-align:right;">
 Total
@@ -449,7 +346,7 @@ Total
 <tbody>
 <tr>
 <td style="text-align:left;">
-ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.
+ChatGPT has clear advantages compared to similar offerings.
 </td>
 <td style="text-align:right;">
 6% (6)
@@ -472,7 +369,7 @@ ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.
 </tr>
 <tr>
 <td style="text-align:left;">
-Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.
+Using ChatGPT brings financial benefits.
 </td>
 <td style="text-align:right;">
 22% (21)
@@ -495,7 +392,7 @@ Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.
 </tr>
 <tr>
 <td style="text-align:left;">
-Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.
+Using ChatGPT is advantageous in many tasks.
 </td>
 <td style="text-align:right;">
 6% (6)
@@ -518,8 +415,7 @@ Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.
 </tr>
 <tr>
 <td style="text-align:left;">
-Im Vergleich zu anderen Systemen macht die Nutzung von ChatGPT mehr
-Spaß.
+Compared to other systems, using ChatGPT is more fun.
 </td>
 <td style="text-align:right;">
 6% (6)
@@ -542,7 +438,7 @@ Spaß.
 </tr>
 <tr>
 <td style="text-align:left;">
-Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.
+Much can go wrong when using ChatGPT.
 </td>
 <td style="text-align:right;">
 6% (6)
@@ -565,7 +461,7 @@ Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.
 </tr>
 <tr>
 <td style="text-align:left;">
-Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.
+There are legal issues with using ChatGPT.
 </td>
 <td style="text-align:right;">
 10% (10)
@@ -588,7 +484,7 @@ Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.
 </tr>
 <tr>
 <td style="text-align:left;">
-Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.
+The security of user data is not guaranteed with ChatGPT.
 </td>
 <td style="text-align:right;">
 3% (3)
@@ -611,7 +507,7 @@ Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.
 </tr>
 <tr>
 <td style="text-align:left;">
-Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.
+Using ChatGPT could bring personal disadvantages.
 </td>
 <td style="text-align:right;">
 11% (11)
@@ -634,7 +530,7 @@ Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.
 </tr>
 <tr>
 <td style="text-align:left;">
-In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.
+In my environment, using ChatGPT is standard.
 </td>
 <td style="text-align:right;">
 20% (19)
@@ -657,7 +553,7 @@ In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.
 </tr>
 <tr>
 <td style="text-align:left;">
-Fast alle Personen in meinem Umfeld nutzen ChatGPT.
+Almost everyone in my environment uses ChatGPT.
 </td>
 <td style="text-align:right;">
 27% (26)
@@ -680,7 +576,7 @@ Fast alle Personen in meinem Umfeld nutzen ChatGPT.
 </tr>
 <tr>
 <td style="text-align:left;">
-Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.
+Not using ChatGPT is considered being an outsider.
 </td>
 <td style="text-align:right;">
 46% (45)
@@ -703,7 +599,7 @@ Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.
 </tr>
 <tr>
 <td style="text-align:left;">
-Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.
+Using ChatGPT brings me recognition from my environment.
 </td>
 <td style="text-align:right;">
 33% (32)
@@ -729,34 +625,33 @@ Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.
 </div>
 <div id="two-variables-cross-table-of-innovator-type-by-gender" class="section level3">
 <h3>3. Two variables: Cross table of innovator type by gender</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">tab_counts_one_grouped</span>(data, in_adoption, sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-Geschlecht
+Gender
 </th>
 <th style="text-align:right;">
 Total
 </th>
 <th style="text-align:right;">
-Ich probiere neue Angebote sofort aus.
+I try new offers immediately
 </th>
 <th style="text-align:right;">
-Ich probiere neue Angebote eher schnell aus.
+I try new offers rather quickly
 </th>
 <th style="text-align:right;">
-Ich warte eher ab, bis sich die Angebote durchgesetzt haben.
+I wait until offers establish themselves
 </th>
 <th style="text-align:right;">
-Ich nutze neue Angebote erst, wenn ich nicht mehr anders kann.
+I only use new offers when I have no other choice
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-weiblich
+female
 </td>
 <td style="text-align:right;">
 40%<br>(40)
@@ -776,7 +671,7 @@ weiblich
 </tr>
 <tr>
 <td style="text-align:left;">
-männlich
+male
 </td>
 <td style="text-align:right;">
 59%<br>(60)
@@ -796,7 +691,7 @@ männlich
 </tr>
 <tr>
 <td style="text-align:left;">
-divers
+diverse
 </td>
 <td style="text-align:right;">
 1%<br>(1)
@@ -842,12 +737,11 @@ Total
 <h2>Distributions of metric variables</h2>
 <div id="distribution-table-for-one-metric-variable-age" class="section level3">
 <h3>Distribution table for one metric variable: Age</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">tab_metrics_one</span>(data, sd_alter)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-Alter
+Age
 </th>
 <th style="text-align:right;">
 value
@@ -932,12 +826,11 @@ n
 </div>
 <div id="distribution-table-for-multiple-metric-items-adoption-factors" class="section level3">
 <h3>Distribution table for multiple metric items: Adoption factors</h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">tab_metrics_items</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-ChatGPT-Erwartung
+Expectations
 </th>
 <th style="text-align:right;">
 min
@@ -971,7 +864,7 @@ n
 <tbody>
 <tr>
 <td style="text-align:left;">
-ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.
+ChatGPT has clear advantages compared to similar offerings.
 </td>
 <td style="text-align:right;">
 1
@@ -1003,7 +896,7 @@ ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.
 </tr>
 <tr>
 <td style="text-align:left;">
-Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.
+Using ChatGPT brings financial benefits.
 </td>
 <td style="text-align:right;">
 1
@@ -1035,7 +928,7 @@ Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.
 </tr>
 <tr>
 <td style="text-align:left;">
-Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.
+Using ChatGPT is advantageous in many tasks.
 </td>
 <td style="text-align:right;">
 1
@@ -1067,8 +960,7 @@ Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.
 </tr>
 <tr>
 <td style="text-align:left;">
-Im Vergleich zu anderen Systemen macht die Nutzung von ChatGPT mehr
-Spaß.
+Compared to other systems, using ChatGPT is more fun.
 </td>
 <td style="text-align:right;">
 1
@@ -1100,7 +992,7 @@ Spaß.
 </tr>
 <tr>
 <td style="text-align:left;">
-Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.
+Much can go wrong when using ChatGPT.
 </td>
 <td style="text-align:right;">
 1
@@ -1132,7 +1024,7 @@ Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.
 </tr>
 <tr>
 <td style="text-align:left;">
-Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.
+There are legal issues with using ChatGPT.
 </td>
 <td style="text-align:right;">
 1
@@ -1164,7 +1056,7 @@ Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.
 </tr>
 <tr>
 <td style="text-align:left;">
-Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.
+The security of user data is not guaranteed with ChatGPT.
 </td>
 <td style="text-align:right;">
 1
@@ -1196,7 +1088,7 @@ Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.
 </tr>
 <tr>
 <td style="text-align:left;">
-Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.
+Using ChatGPT could bring personal disadvantages.
 </td>
 <td style="text-align:right;">
 1
@@ -1228,7 +1120,7 @@ Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.
 </tr>
 <tr>
 <td style="text-align:left;">
-In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.
+In my environment, using ChatGPT is standard.
 </td>
 <td style="text-align:right;">
 1
@@ -1260,7 +1152,7 @@ In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.
 </tr>
 <tr>
 <td style="text-align:left;">
-Fast alle Personen in meinem Umfeld nutzen ChatGPT.
+Almost everyone in my environment uses ChatGPT.
 </td>
 <td style="text-align:right;">
 1
@@ -1292,7 +1184,7 @@ Fast alle Personen in meinem Umfeld nutzen ChatGPT.
 </tr>
 <tr>
 <td style="text-align:left;">
-Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.
+Not using ChatGPT is considered being an outsider.
 </td>
 <td style="text-align:right;">
 1
@@ -1324,7 +1216,7 @@ Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.
 </tr>
 <tr>
 <td style="text-align:left;">
-Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.
+Using ChatGPT brings me recognition from my environment.
 </td>
 <td style="text-align:right;">
 1
@@ -1359,12 +1251,11 @@ Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.
 </div>
 <div id="group-comparison-of-a-metric-variable-age-by-gender" class="section level3">
 <h3>Group comparison of a metric variable: Age by gender</h3>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">tab_metrics_one_grouped</span>(data, sd_alter, sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-Geschlecht
+Gender
 </th>
 <th style="text-align:right;">
 min
@@ -1398,7 +1289,7 @@ n
 <tbody>
 <tr>
 <td style="text-align:left;">
-weiblich
+female
 </td>
 <td style="text-align:right;">
 18
@@ -1430,7 +1321,7 @@ weiblich
 </tr>
 <tr>
 <td style="text-align:left;">
-männlich
+male
 </td>
 <td style="text-align:right;">
 19
@@ -1462,7 +1353,7 @@ männlich
 </tr>
 <tr>
 <td style="text-align:left;">
-divers
+diverse
 </td>
 <td style="text-align:right;">
 33
@@ -1532,31 +1423,30 @@ Total
 <h2>Multiple metric variables</h2>
 <div id="compare-means-of-multiple-items-adoption-factors-by-gender" class="section level3">
 <h3>Compare means of multiple items: Adoption factors by gender</h3>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">tab_metrics_items_grouped</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>), sd_geschlecht)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-ChatGPT-Erwartung
+Expectations
 </th>
 <th style="text-align:right;">
 Total
 </th>
 <th style="text-align:right;">
-weiblich
+female
 </th>
 <th style="text-align:right;">
-männlich
+male
 </th>
 <th style="text-align:right;">
-divers
+diverse
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.
+ChatGPT has clear advantages compared to similar offerings.
 </td>
 <td style="text-align:right;">
 3.5<br>(1.0)
@@ -1573,7 +1463,7 @@ ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.
 </tr>
 <tr>
 <td style="text-align:left;">
-Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.
+Using ChatGPT brings financial benefits.
 </td>
 <td style="text-align:right;">
 2.7<br>(1.2)
@@ -1590,7 +1480,7 @@ Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.
 </tr>
 <tr>
 <td style="text-align:left;">
-Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.
+Using ChatGPT is advantageous in many tasks.
 </td>
 <td style="text-align:right;">
 3.6<br>(1.1)
@@ -1607,8 +1497,7 @@ Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.
 </tr>
 <tr>
 <td style="text-align:left;">
-Im Vergleich zu anderen Systemen macht die Nutzung von ChatGPT mehr
-Spaß.
+Compared to other systems, using ChatGPT is more fun.
 </td>
 <td style="text-align:right;">
 3.5<br>(1.0)
@@ -1625,7 +1514,7 @@ Spaß.
 </tr>
 <tr>
 <td style="text-align:left;">
-Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.
+Much can go wrong when using ChatGPT.
 </td>
 <td style="text-align:right;">
 3.1<br>(1.1)
@@ -1642,7 +1531,7 @@ Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.
 </tr>
 <tr>
 <td style="text-align:left;">
-Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.
+There are legal issues with using ChatGPT.
 </td>
 <td style="text-align:right;">
 3.1<br>(1.2)
@@ -1659,7 +1548,7 @@ Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.
 </tr>
 <tr>
 <td style="text-align:left;">
-Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.
+The security of user data is not guaranteed with ChatGPT.
 </td>
 <td style="text-align:right;">
 3.2<br>(1.0)
@@ -1676,7 +1565,7 @@ Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.
 </tr>
 <tr>
 <td style="text-align:left;">
-Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.
+Using ChatGPT could bring personal disadvantages.
 </td>
 <td style="text-align:right;">
 2.7<br>(1.1)
@@ -1693,7 +1582,7 @@ Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.
 </tr>
 <tr>
 <td style="text-align:left;">
-In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.
+In my environment, using ChatGPT is standard.
 </td>
 <td style="text-align:right;">
 2.5<br>(1.1)
@@ -1710,7 +1599,7 @@ In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.
 </tr>
 <tr>
 <td style="text-align:left;">
-Fast alle Personen in meinem Umfeld nutzen ChatGPT.
+Almost everyone in my environment uses ChatGPT.
 </td>
 <td style="text-align:right;">
 2.4<br>(1.2)
@@ -1727,7 +1616,7 @@ Fast alle Personen in meinem Umfeld nutzen ChatGPT.
 </tr>
 <tr>
 <td style="text-align:left;">
-Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.
+Not using ChatGPT is considered being an outsider.
 </td>
 <td style="text-align:right;">
 2.0<br>(1.2)
@@ -1744,7 +1633,7 @@ Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.
 </tr>
 <tr>
 <td style="text-align:left;">
-Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.
+Using ChatGPT brings me recognition from my environment.
 </td>
 <td style="text-align:right;">
 2.3<br>(1.2)
@@ -1764,7 +1653,6 @@ Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.
 </div>
 <div id="correlation-of-items-adoption-factors" class="section level3">
 <h3>Correlation of items: Adoption factors</h3>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">tab_metrics_items_cor</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_adv&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1856,8 +1744,6 @@ Item
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">tab_metrics_items_cor</span>(data, <span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_adv&quot;</span>), <span class="fu">starts_with</span>(<span class="st">&quot;cg_nutzen&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1865,10 +1751,10 @@ Item
 Item
 </th>
 <th style="text-align:right;">
-privat
+private
 </th>
 <th style="text-align:right;">
-beruflich
+work
 </th>
 </tr>
 </thead>
@@ -1923,17 +1809,6 @@ beruflich
 </div>
 <div id="scales" class="section level1">
 <h1>Scales</h1>
-<p>You can calculate mean indizes from a bunch of items using
-<code>add_idx()</code>. A new column is created with the average value
-of all selected columns for each case.</p>
-<p>Reliability and number of items are calculated with
-<code>psych::alpha()</code> and stored as column attribute named
-“psych.alpha”. The reliability values are printed by
-<code>tab_var_metrics()</code> or <code>tab_item_metrics()</code>.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Add a single index</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="fu">tab_metrics_one</span>(idx_cg_adoption)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2036,16 +1911,11 @@ alpha
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co"># Compare the index values by group</span></span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="fu">tab_metrics_one_grouped</span>(idx_cg_adoption, in_adoption)</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-Innovationstyp
+Innovator type
 </th>
 <th style="text-align:right;">
 min
@@ -2085,7 +1955,7 @@ alpha
 <tbody>
 <tr>
 <td style="text-align:left;">
-Ich probiere neue Angebote sofort aus.
+I try new offers immediately
 </td>
 <td style="text-align:right;">
 1.5
@@ -2123,7 +1993,7 @@ Ich probiere neue Angebote sofort aus.
 </tr>
 <tr>
 <td style="text-align:left;">
-Ich probiere neue Angebote eher schnell aus.
+I try new offers rather quickly
 </td>
 <td style="text-align:right;">
 1.8
@@ -2161,7 +2031,7 @@ Ich probiere neue Angebote eher schnell aus.
 </tr>
 <tr>
 <td style="text-align:left;">
-Ich warte eher ab, bis sich die Angebote durchgesetzt haben.
+I wait until offers establish themselves
 </td>
 <td style="text-align:right;">
 1.0
@@ -2199,7 +2069,7 @@ Ich warte eher ab, bis sich die Angebote durchgesetzt haben.
 </tr>
 <tr>
 <td style="text-align:left;">
-Ich nutze neue Angebote erst, wenn ich nicht mehr anders kann.
+I only use new offers when I have no other choice
 </td>
 <td style="text-align:right;">
 2.4
@@ -2275,13 +2145,6 @@ Total
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Add multiple indizes and summarize them</span></span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_advantage&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_fearofuse&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="fu">add_idx</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_social&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  <span class="fu">tab_metrics_items</span>(<span class="fu">starts_with</span>(<span class="st">&quot;idx_cg_adoption&quot;</span>))</span></code></pre></div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2314,12 +2177,6 @@ missing
 </th>
 <th style="text-align:right;">
 n
-</th>
-<th style="text-align:right;">
-items
-</th>
-<th style="text-align:right;">
-alpha
 </th>
 </tr>
 </thead>
@@ -2355,12 +2212,6 @@ Index: cg_adoption
 <td style="text-align:right;">
 101
 </td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-0.81
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -2392,12 +2243,6 @@ _advantage
 </td>
 <td style="text-align:right;">
 101
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-0.79
 </td>
 </tr>
 <tr>
@@ -2431,12 +2276,6 @@ _fearofuse
 <td style="text-align:right;">
 101
 </td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-0.69
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -2469,39 +2308,14 @@ _social
 <td style="text-align:right;">
 101
 </td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-0.84
-</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="set-custom-item-labels" class="section level1">
-<h1>Set custom item labels</h1>
-<p>Item labels are stored in the comment attribute of an item variable.
-When printing item tables, the labels are used. You can set custom or
-new labels by providing a tibble with item names in the first column and
-item labels in the second.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>newlabels <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="sc">~</span>item_name, <span class="sc">~</span>item_label,</span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_01&quot;</span>, <span class="st">&quot;Allgemeine Vorteile&quot;</span>,</span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_02&quot;</span>, <span class="st">&quot;Finanzielle Vorteile&quot;</span>,</span>
-<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_03&quot;</span>, <span class="st">&quot;Vorteile bei der Arbeit&quot;</span>,</span>
-<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>  <span class="st">&quot;cg_adoption_advantage_04&quot;</span>, <span class="st">&quot;Macht mehr Spaß&quot;</span></span>
-<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>)</span>
-<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a></span>
-<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
-<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>  <span class="fu">labs_apply</span>(newlabels) <span class="sc">%&gt;%</span></span>
-<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>  </span>
-<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>  <span class="fu">labs_store</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>  <span class="fu">labs_clear</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>  <span class="fu">labs_restore</span>(<span class="at">values=</span>T) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a>  </span>
-<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a>  <span class="fu">tab_counts_items</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_advantage_&quot;</span>))</span></code></pre></div>
+<div id="labels" class="section level1">
+<h1>Labels</h1>
+<div id="set-custom-item-labels" class="section level2">
+<h2>Set custom item labels</h2>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2509,19 +2323,19 @@ item labels in the second.</p>
 Item
 </th>
 <th style="text-align:right;">
-trifft gar nicht zu
+strongly disagree
 </th>
 <th style="text-align:right;">
-trifft eher nicht zu
+disagree
 </th>
 <th style="text-align:right;">
-teils teils
+neutral
 </th>
 <th style="text-align:right;">
-trifft eher zu
+agree
 </th>
 <th style="text-align:right;">
-trifft voll zu
+strongly agree
 </th>
 <th style="text-align:right;">
 Total
@@ -2623,10 +2437,9 @@ Macht mehr Spaß
 </tr>
 </tbody>
 </table>
-<p>You can remove all labels to get a plain dataset</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="fu">labs_clear</span>(<span class="fu">everything</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="fu">tab_counts_items</span>(<span class="fu">starts_with</span>(<span class="st">&quot;cg_adoption_advantage_&quot;</span>))</span></code></pre></div>
+</div>
+<div id="remove-labels" class="section level2">
+<h2>Remove labels</h2>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2748,6 +2561,7 @@ Total
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 
 

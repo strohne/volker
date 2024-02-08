@@ -13,8 +13,11 @@ labs_apply(data, codes, values = T)
 To set column labels, use item_name and item_label columns.}
 
 \item{values}{If TRUE (default), sets value labels.
+- For item values:
 Value labels are retrieved from the columns
-value_name and value_label in your codebook.}
+value_name and value_label in your codebook.
+- For factors: Factor levels and order are retrieved
+from the value_label column.}
 }
 \value{
 A tibble with new labels

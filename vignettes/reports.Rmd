@@ -53,22 +53,22 @@ scaled to fit the page.
 # A single categorical variable
 
 ```{r}
-report_counts(data, sd_geschlecht)
+report_counts(data, sd_gender)
 ```
 
 # A cross table
 
 ```{r}
 data %>% 
-  filter(sd_geschlecht != "divers") %>% 
-  report_counts(in_adoption, sd_geschlecht, prop="rows")
+  filter(sd_gender != "divers") %>% 
+  report_counts(adopter, sd_gender, prop="rows")
 ```
 
 # Automatic index calculation
 ```{r}
 
 data %>% 
-  filter(sd_geschlecht != "divers") %>% 
+  filter(sd_gender != "divers") %>% 
   report_counts(starts_with("cg_adoption_"))
 
 ```
@@ -77,8 +77,8 @@ data %>%
 # Group comparisons of an index
 ```{r}
 data %>% 
-  filter(sd_geschlecht != "divers") %>% 
-  report_metrics(starts_with("cg_adoption_"), sd_geschlecht)
+  filter(sd_gender != "divers") %>% 
+  report_metrics(starts_with("cg_adoption_"), sd_gender)
 
 ```
 
@@ -98,8 +98,8 @@ on the fifth level (5 x # followed by the tab name). Close your new tabsheet wit
 
 ```{r}
 data %>% 
-  filter(sd_geschlecht != "divers") %>% 
-  report_counts(in_adoption, sd_geschlecht, prop="rows", title=F, close=F)
+  filter(sd_gender != "divers") %>% 
+  report_counts(adopter, sd_gender, prop="rows", title=F, close=F)
 ```
 
 

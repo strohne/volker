@@ -41,12 +41,12 @@ data <- volker::prepare(data)
 
 ### Frequency table for one categorical variable: Gender
 ```{r}
-tab_counts(data, sd_geschlecht)
+tab_counts(data, sd_gender)
 ```
 
 ### Distribution table for one metric variable: Age
 ```{r}
-tab_metrics(data, sd_alter)
+tab_metrics(data, sd_age)
 ```
 
 ## 2. Multiple items
@@ -74,20 +74,20 @@ plot_metrics(data, starts_with("cg_adoption_"))
 ### Cross table of categorical variables: Innovator type by gender
 
 ```{r}
-tab_counts(data, in_adoption, sd_geschlecht)
+tab_counts(data, adopter, sd_gender)
 ```
 
 ### Group comparison of a metric variable: Age by gender
 
 ```{r}
-tab_metrics(data, sd_alter, sd_geschlecht)
+tab_metrics(data, sd_age, sd_gender)
 ```
 
 ## 4. Multiple metric variables
 
 ### Compare means of multiple items: Adoption factors by gender
 ```{r}
-tab_metrics(data, starts_with("cg_adoption_"), sd_geschlecht)
+tab_metrics(data, starts_with("cg_adoption_"), sd_gender)
 ```
 
 
@@ -111,8 +111,8 @@ See the function help or the report vignette for further options.
 ```{r}
 
 data %>% 
-  filter(sd_geschlecht != "divers") %>% 
-  report_metrics(starts_with("cg_adoption_"), sd_geschlecht)
+  filter(sd_gender != "divers") %>% 
+  report_metrics(starts_with("cg_adoption_"), sd_gender)
 
 ```
 

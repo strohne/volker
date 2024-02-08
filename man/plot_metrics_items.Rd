@@ -27,6 +27,8 @@ plot_metrics_items(
 Disable the title with FALSE or provide a custom title as character value.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
+
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.}
 }
 \description{
 Output averages for multiple variables

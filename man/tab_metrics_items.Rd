@@ -16,6 +16,8 @@ tab_metrics_items(data, cols, negative = F, digits = 1, labels = T, ...)
 \item{digits}{The number of digits to print}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
+
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.}
 }
 \description{
 Output a five point summary table for multiple items

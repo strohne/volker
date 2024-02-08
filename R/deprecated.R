@@ -508,7 +508,7 @@ report_styles <- function() {
 #' @param labels A character vector with the same length as the column selection, containing new labels
 #' @examples
 #' ds <- volker::chatgpt
-#' ds <- set_col_labels(ds, sd_alter, "Age")
+#' ds <- set_col_labels(ds, sd_age, "Age")
 #'
 #' @keywords internal
 #' @export

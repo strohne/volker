@@ -12,6 +12,8 @@ plot_counts_items_grouped(data, cols, col_group, ...)
 \item{cols}{The item columns that hold the values to summarize}
 
 \item{col_group}{The column holding groups to compare}
+
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }
 \description{
 TODO: implement -> focus one category and show n / p

@@ -32,6 +32,8 @@ tab_counts_one_grouped(
 \item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
+
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }
 \description{
 Output frequencies cross tabulated with a grouping column

@@ -20,6 +20,8 @@ plot_metrics_items_grouped(
 
 \item{cols}{Tidyselect item variables (e.g. starts_with...)}
 
+\item{col_group}{The column holding groups to compare}
+
 \item{limits}{The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
@@ -29,10 +31,10 @@ Disable the title with FALSE or provide a custom title as character value.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
-\item{cols_group}{The column holding groups to compare}
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.}
 }
 \value{
-A plot
+A ggplot object
 }
 \description{
 Output averages for multiple variables compared by a grouping variable

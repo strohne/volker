@@ -3,7 +3,7 @@
 title: "Scales, labels, and index calculation"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Table variations}
+  %\VignetteIndexEntry{Scales, labels, and index calculation}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -32,20 +32,20 @@ table {margin-left:0 !important;}
 
 **A single variable**
 ```{r}
-plot_counts(data, cg_nutzen_privat)
+plot_counts(data, use_private)
 ```
 
 
 **A list of variables**
 ```{r}
-#plot_counts(data, c(cg_nutzen_privat, cg_nutzen_beruflich))
-plot_counts_items(data, c(cg_nutzen_privat, cg_nutzen_beruflich))
+#plot_counts(data, c(use_private, use_work))
+plot_counts_items(data, c(use_private, use_work))
 ```
 
 
 **Variables matched by a pattern**
 ```{r}
-plot_counts(data, starts_with("cg_nutzen_"))
+plot_counts(data, starts_with("use_"))
 ```
 
 
@@ -70,7 +70,7 @@ data %>%
 ```{r}
 data %>%
   add_idx(starts_with("cg_adoption_")) %>%
-  tab_metrics(idx_cg_adoption, in_adoption)
+  tab_metrics(idx_cg_adoption, adopter)
 ```
 
 **Add multiple indizes and summarize them**

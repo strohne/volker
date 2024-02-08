@@ -4,10 +4,12 @@
 \alias{print.vlkr_rprt}
 \title{Printing method for volker reports.}
 \usage{
-\method{print}{vlkr_rprt}(obj)
+\method{print}{vlkr_rprt}(x, ...)
 }
 \arguments{
-\item{obj}{The volker report}
+\item{x}{The volker report}
+
+\item{...}{Further parameters passed to print}
 }
 \description{
 Printing method for volker reports.

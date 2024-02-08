@@ -12,6 +12,7 @@
 #'                       the attribute values.
 #'                       In case a column has a levels attribute, the levels.
 #' @export
+#' @importFrom rlang .data
 codebook <- function(data, cols) {
   if (!missing(cols)) {
     data <- dplyr::select(data, {{ cols }})
@@ -30,35 +31,42 @@ codebook <- function(data, cols) {
     item_label = item_comments,
     value_label = lapply(data, attributes)
   ) %>%
-    dplyr::mutate(item_label = as.character(sapply(item_label, function(x) ifelse(is.null(x), NA, x)))) %>%
-    dplyr::mutate(item_label = ifelse(is.na(item_label), item_name, item_label)) %>%
-    dplyr::mutate(item_group = stringr::str_remove(item_name, "_.*")) %>%
-    dplyr::mutate(item_class = as.character(sapply(item_class, function(x) ifelse(length(x) > 1, x[[length(x)]], x)))) %>%
-    dplyr::select(item_name, item_group, item_class, item_label, value_label) %>%
-    tidyr::unnest_longer(value_label, keep_empty = T)
+    dplyr::mutate(item_label = as.character(sapply(.data$item_label, function(x) ifelse(is.null(x), NA, x)))) %>%
+    dplyr::mutate(item_label = ifelse(is.na(.data$item_label), .data$item_name, .data$item_label)) %>%
+    dplyr::mutate(item_group = stringr::str_remove(.data$item_name, "_.*")) %>%
+    dplyr::mutate(item_class = as.character(sapply(.data$item_class, function(x) ifelse(length(x) > 1, x[[length(x)]], x)))) %>%
+    #dplyr::select(item_name, item_group, item_class, item_label, value_label) %>%
+    dplyr::select(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label", "value_label"))) %>%
+    tidyr::unnest_longer(tidyselect::all_of("value_label"), keep_empty = T)
 
 
   if ("value_label_id" %in% colnames(labels)) {
     # Get items with codes
     labels_codes <- labels %>%
-      dplyr::rename(value_name = value_label_id) %>%
+      dplyr::rename(value_name = tidyselect::all_of("value_label_id")) %>%
       # dplyr::filter(!(value_name %in% c("comment", "class","levels","tzone"))) %>%
-      dplyr::filter(stringr::str_detect(value_name, "^-?[0-9TF]+$")) %>%
-      dplyr::mutate(value_label = as.character(value_label)) %>%
-      dplyr::select(item_name, item_group, item_class, item_label, value_name, value_label)
+      dplyr::filter(stringr::str_detect(.data$value_name, "^-?[0-9TF]+$")) %>%
+      dplyr::mutate(value_label = as.character(.data$value_label)) %>%
+      dplyr::select(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label", "value_name", "value_label")))
+      #dplyr::select(item_name, item_group, item_class, item_label, value_name, value_label)
+
 
     labels_levels <- labels %>%
       # dplyr::rename(value_name = value_label_id) %>%
-      dplyr::filter(value_label_id == "levels") %>%
-      dplyr::select(item_group, item_class, item_name, item_label, value_label) %>%
-      tidyr::unnest_longer(value_label) %>%
-      dplyr::mutate(value_label = as.character(value_label))
+      dplyr::filter(.data$value_label_id == "levels") %>%
+      #dplyr::select(item_group, item_class, item_name, item_label, value_label) %>%
+      dplyr::select(tidyselect::all_of(c("item_group", "item_class", "item_name", "item_label", "value_label"))) |>
+      tidyr::unnest_longer(tidyselect::all_of("value_label")) %>%
+      dplyr::mutate(value_label = as.character(.data$value_label))
 
 
     # Combine items without codes and items with codes
     labels <- labels %>%
       # dplyr::rename(value_name = value_label_id) %>%
-      dplyr::distinct(item_name, item_group, item_class, item_label) %>%
+      #dplyr::distinct(item_name, item_group, item_class, item_label) %>%
+      dplyr::distinct(
+        dplyr::across(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label")))
+      ) %>%
       dplyr::anti_join(labels_codes, by = "item_name") %>%
       dplyr::bind_rows(labels_codes) %>%
       dplyr::anti_join(labels_levels, by = "item_name") %>%
@@ -135,8 +143,11 @@ labs_restore <- function(data, values=T) {
 #' @param codes A tibble in \link{codebook} format.
 #'              To set column labels, use item_name and item_label columns.
 #' @param values If TRUE (default), sets value labels.
-#'               Value labels are retrieved from the columns
-#'               value_name and value_label in your codebook.
+#'               - For item values:
+#'                 Value labels are retrieved from the columns
+#'                 value_name and value_label in your codebook.
+#'               - For factors: Factor levels and order are retrieved
+#'                 from the value_label column.
 #' @return A tibble with new labels
 #' @export
 labs_apply <- function(data, codes, values=T) {
@@ -160,16 +171,29 @@ labs_apply <- function(data, codes, values=T) {
     item_label <- codes$item_label[no]
 
     if (item_name %in% colnames(data)) {
-      comment(data[[item_name]]) <- item_label
 
+      # Column values
       if (values) {
+        # Factor order
+        # TODO: respect existing levels
+        if (!is.null(codes$item_class) && (!is.na(codes$item_class[no])) && (codes$item_class[no] == "factor")) {
+          value_levels <- unique(codes$value_label[codes$item_name == item_name])
+          #TODO: ADD warning if levels in the codebook are missing
+          data[[item_name]] <- factor(data[[item_name]], levels=value_levels)
+        }
+
+        # Item labeling
         value_name <- codes$value_name[no]
         value_label <- codes$value_label[no]
-
         if (!is.null(value_name) && !is.na(value_name)) {
-          attr(data[[item_name]], value_name) <- value_label
+          attr(data[[item_name]], as.character(value_name)) <- value_label
         }
+
       }
+
+      # Column title
+      # TODO: only once per group is sufficient
+      comment(data[[item_name]]) <- item_label
 
     }
 
@@ -198,7 +222,7 @@ labs_clear <- function(data, cols, labels = NULL) {
   }
 
   if (missing(cols)) {
-    data <-  dplyr::mutate(data, dplyr::across(everything(), ~remove_attr(.)))
+    data <-  dplyr::mutate(data, dplyr::across(tidyselect::everything(), ~remove_attr(.)))
   } else {
     data <-  dplyr::mutate(data, dplyr::across({{ cols }}, ~remove_attr(.)))
   }
@@ -216,12 +240,13 @@ labs_clear <- function(data, cols, labels = NULL) {
 #'              Can be created by the \link{codebook} function, e.g. by calling
 #'              `codes <- codebook(data, myitemcolumn)`.
 #' @return Tibble with new labels
+#' @importFrom rlang .data
 labs_replace_names <- function(data, col, codes) {
 
   codes <- codes %>%
     dplyr::distinct(item_name, item_label) %>%
     dplyr::rename(.name = item_name, .label = item_label) %>%
-    na.omit()
+    stats::na.omit()
 
 
   if (nrow(codes) > 0) {
@@ -250,7 +275,7 @@ labs_replace_values <- function(data, col, codes) {
   codes <- codes %>%
     dplyr::distinct(value_name, value_label) %>%
     dplyr::rename(.name = value_name, .label = value_label) %>%
-    na.omit()
+    stats::na.omit()
 
 
   if (nrow(codes) > 0) {
@@ -271,15 +296,16 @@ labs_replace_values <- function(data, col, codes) {
 #' @param data A tibble
 #' @param cols A tidy column selection
 #' @return A character string
+#' @importFrom rlang .data
 get_title <- function(data, cols) {
   labels <- data %>%
     codebook({{ cols }}) %>%
-    tidyr::drop_na(item_label)
+    tidyr::drop_na("item_label")
 
   if (nrow(labels) > 0) {
     labels <- labels$item_label
   } else {
-    labels <- select(data, {{ cols }}) %>% colnames()
+    labels <- dplyr::select(data, {{ cols }}) %>% colnames()
   }
 
   labels %>%
@@ -295,6 +321,7 @@ get_title <- function(data, cols) {
 #' @param cols A tidy variable selection
 #' @param negative Whether to include negative values
 #' @return A list or NULL
+#' @importFrom rlang .data
 get_limits <- function(data, cols, negative = F) {
 
   # First, try to get limits from the column attributes
@@ -306,8 +333,8 @@ get_limits <- function(data, cols, negative = F) {
   # Second, try to get limits from the column labels
   if (is.null(values)) {
     values <- codebook(data, {{ cols }}) %>%
-      dplyr::distinct(value_name) %>%
-      pull(value_name)
+      dplyr::distinct(.data$value_name) %>%
+      dplyr::pull(.data$value_name)
     values <- suppressWarnings(as.numeric(values))
   }
 
@@ -347,6 +374,7 @@ get_limits <- function(data, cols, negative = F) {
 #' @param cols The tidy selection
 #' @param extract Whether to extract numeric values from characters
 #' @return 0 = an undirected scale, -1 = descending values, 1 = ascending values
+#' @importFrom rlang .data
 get_direction <- function(data, cols, extract = T) {
   data <- dplyr::select(data, {{ cols }})
 
@@ -354,10 +382,10 @@ get_direction <- function(data, cols, extract = T) {
   categories <- data %>%
     dplyr::mutate(dplyr::across(tidyselect::everything(), as.character)) %>%
     tidyr::pivot_longer(tidyselect::everything()) %>%
-    dplyr::arrange(value) %>%
-    dplyr::mutate(value = ifelse(extract, stringr::str_extract(value, "[0-9-]+"), value)) %>%
-    dplyr::distinct(value) %>%
-    dplyr::pull(value)
+    dplyr::arrange(.data$value) %>%
+    dplyr::mutate(value = ifelse(extract, stringr::str_extract(.data$value, "[0-9-]+"), .data$value)) %>%
+    dplyr::distinct(.data$value) %>%
+    dplyr::pull(.data$value)
 
   # Detect whether the categories are a numeric sequence and choose direction
   scale_numeric <- data %>%
@@ -396,7 +424,7 @@ get_prefix <- function(x, ignore.case = FALSE, trim = FALSE) {
   if (ignore.case) {
     x <- toupper(x)
   }
-  x <- na.omit(x)
+  x <- stats::na.omit(x)
 
   if (length(x) == 0) {
     return (NA)
@@ -455,9 +483,9 @@ prepare_scale <- function(scale) {
     scale <- scale %>%
       dplyr::mutate(value_name = suppressWarnings(as.numeric(value_name))) %>%
       dplyr::filter(value_name >= 0) %>%
-      na.omit()
+      stats::na.omit()
 
-    scale <- setNames(
+    scale <- stats::setNames(
       as.character(scale$value_label),
       as.character(scale$value_name)
     )

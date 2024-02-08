@@ -105,7 +105,7 @@ lda_plot_topterms <- function(fit, lambda = 0.6) {
     ggplot2::theme_bw(base_size = 15) +
     ggplot2::theme(
       plot.title.position = "plot",
-      plot.caption = element_text(hjust = 0),
+      plot.caption = ggplot2::element_text(hjust = 0),
       plot.caption.position = "plot"
     )
 
@@ -123,7 +123,7 @@ lda_plot_docmds <- function(data, col_x, col_y, col_topic, col_highlight=NULL) {
   # lda_dist <- stats::dist(lda_theta)
   # fit_mds <- cmdscale(lda_dist, k=2, list=T)
   #
-  # mds_loadings <- tibble(
+  # mds_loadings <- tibble::tibble(
   #     x = fit_mds$points[,1],
   #     y = fit_mds$points[,2],
   #     topic = lda_docs
@@ -173,7 +173,7 @@ lda_plot_docmds <- function(data, col_x, col_y, col_topic, col_highlight=NULL) {
 lda_print_topdocs <- function(data, col_topic, col_text, col_rank, n=3, trunc=1000) {
   result <- c()
 
-  topics <- na.omit(unique(pull(data, {{col_topic}})))
+  topics <- stats::na.omit(unique(dplyr::pull(data, {{col_topic}})))
   topics <- topics[order(topics)]
 
   for (topic in topics) {

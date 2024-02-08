@@ -1,0 +1,95 @@
+item_name;item_group;item_class;item_label;value_name;value_label
+case;case;;case;;
+sd_age;sd;;Age;;
+cg_activities;cg;;ChatGPT-Aktivitäten: [01];;
+use_private;use;;ChatGPT-Nutzung: im privaten Kontext;1;nie
+use_private;use;;ChatGPT-Nutzung: im privaten Kontext;2;seltener
+use_private;use;;ChatGPT-Nutzung: im privaten Kontext;3;mehrmals pro Monat
+use_private;use;;ChatGPT-Nutzung: im privaten Kontext;4;mehrmals pro Woche
+use_private;use;;ChatGPT-Nutzung: im privaten Kontext;5;fast täglich
+use_work;use;;ChatGPT-Nutzung: im beruflichen Kontext;1;nie
+use_work;use;;ChatGPT-Nutzung: im beruflichen Kontext;2;seltener
+use_work;use;;ChatGPT-Nutzung: im beruflichen Kontext;3;mehrmals pro Monat
+use_work;use;;ChatGPT-Nutzung: im beruflichen Kontext;4;mehrmals pro Woche
+use_work;use;;ChatGPT-Nutzung: im beruflichen Kontext;5;fast täglich
+cg_adoption_advantage_01;cg;;ChatGPT-Erwartung: ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.;1;trifft gar nicht zu
+cg_adoption_advantage_01;cg;;ChatGPT-Erwartung: ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.;2;trifft eher nicht zu
+cg_adoption_advantage_01;cg;;ChatGPT-Erwartung: ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.;3;teils teils
+cg_adoption_advantage_01;cg;;ChatGPT-Erwartung: ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.;4;trifft eher zu
+cg_adoption_advantage_01;cg;;ChatGPT-Erwartung: ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.;5;trifft voll zu
+cg_adoption_advantage_01;cg;;ChatGPT-Erwartung: ChatGPT hat deutliche Vorteile im Vergleich zu ähnlichen Angeboten.;-1;k.A.
+cg_adoption_advantage_02;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.;1;trifft gar nicht zu
+cg_adoption_advantage_02;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.;2;trifft eher nicht zu
+cg_adoption_advantage_02;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.;3;teils teils
+cg_adoption_advantage_02;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.;4;trifft eher zu
+cg_adoption_advantage_02;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.;5;trifft voll zu
+cg_adoption_advantage_02;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT bringt finanzielle Vorteile mit sich.;-1;k.A.
+cg_adoption_advantage_03;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.;1;trifft gar nicht zu
+cg_adoption_advantage_03;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.;2;trifft eher nicht zu
+cg_adoption_advantage_03;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.;3;teils teils
+cg_adoption_advantage_03;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.;4;trifft eher zu
+cg_adoption_advantage_03;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.;5;trifft voll zu
+cg_adoption_advantage_03;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT ist bei vielen Arbeiten von Vorteil.;-1;k.A.
+cg_adoption_advantage_04;cg;;ChatGPT-Erwartung: Im Vergleich zu anderen Systemen macht die Nutzung von ChatGPT mehr Spaß.;1;trifft gar nicht zu
+cg_adoption_advantage_04;cg;;ChatGPT-Erwartung: Im Vergleich zu anderen Systemen macht die Nutzung von ChatGPT mehr Spaß.;2;trifft eher nicht zu
+cg_adoption_advantage_04;cg;;ChatGPT-Erwartung: Im Vergleich zu anderen Systemen macht die Nutzung von ChatGPT mehr Spaß.;3;teils teils
+cg_adoption_advantage_04;cg;;ChatGPT-Erwartung: Im Vergleich zu anderen Systemen macht die Nutzung von ChatGPT mehr Spaß.;4;trifft eher zu
+cg_adoption_advantage_04;cg;;ChatGPT-Erwartung: Im Vergleich zu anderen Systemen macht die Nutzung von ChatGPT mehr Spaß.;5;trifft voll zu
+cg_adoption_advantage_04;cg;;ChatGPT-Erwartung: Im Vergleich zu anderen Systemen macht die Nutzung von ChatGPT mehr Spaß.;-1;k.A.
+cg_adoption_fearofuse_01;cg;;ChatGPT-Erwartung: Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.;1;trifft gar nicht zu
+cg_adoption_fearofuse_01;cg;;ChatGPT-Erwartung: Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.;2;trifft eher nicht zu
+cg_adoption_fearofuse_01;cg;;ChatGPT-Erwartung: Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.;3;teils teils
+cg_adoption_fearofuse_01;cg;;ChatGPT-Erwartung: Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.;4;trifft eher zu
+cg_adoption_fearofuse_01;cg;;ChatGPT-Erwartung: Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.;5;trifft voll zu
+cg_adoption_fearofuse_01;cg;;ChatGPT-Erwartung: Bei der Nutzung von ChatGPT kann viel falsch gemacht werden.;-1;k.A.
+cg_adoption_fearofuse_02;cg;;ChatGPT-Erwartung: Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.;1;trifft gar nicht zu
+cg_adoption_fearofuse_02;cg;;ChatGPT-Erwartung: Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.;2;trifft eher nicht zu
+cg_adoption_fearofuse_02;cg;;ChatGPT-Erwartung: Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.;3;teils teils
+cg_adoption_fearofuse_02;cg;;ChatGPT-Erwartung: Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.;4;trifft eher zu
+cg_adoption_fearofuse_02;cg;;ChatGPT-Erwartung: Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.;5;trifft voll zu
+cg_adoption_fearofuse_02;cg;;ChatGPT-Erwartung: Es gibt rechtliche Probleme bei der Nutzung von ChatGPT.;-1;k.A.
+cg_adoption_fearofuse_03;cg;;ChatGPT-Erwartung: Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.;1;trifft gar nicht zu
+cg_adoption_fearofuse_03;cg;;ChatGPT-Erwartung: Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.;2;trifft eher nicht zu
+cg_adoption_fearofuse_03;cg;;ChatGPT-Erwartung: Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.;3;teils teils
+cg_adoption_fearofuse_03;cg;;ChatGPT-Erwartung: Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.;4;trifft eher zu
+cg_adoption_fearofuse_03;cg;;ChatGPT-Erwartung: Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.;5;trifft voll zu
+cg_adoption_fearofuse_03;cg;;ChatGPT-Erwartung: Die Sicherheit von Nutzungsdaten ist bei ChatGPT nicht gewährleistet.;-1;k.A.
+cg_adoption_fearofuse_04;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.;1;trifft gar nicht zu
+cg_adoption_fearofuse_04;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.;2;trifft eher nicht zu
+cg_adoption_fearofuse_04;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.;3;teils teils
+cg_adoption_fearofuse_04;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.;4;trifft eher zu
+cg_adoption_fearofuse_04;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.;5;trifft voll zu
+cg_adoption_fearofuse_04;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT könnte persönliche Nachteile mit sich bringen.;-1;k.A.
+cg_adoption_social_01;cg;;ChatGPT-Erwartung: In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.;1;trifft gar nicht zu
+cg_adoption_social_01;cg;;ChatGPT-Erwartung: In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.;2;trifft eher nicht zu
+cg_adoption_social_01;cg;;ChatGPT-Erwartung: In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.;3;teils teils
+cg_adoption_social_01;cg;;ChatGPT-Erwartung: In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.;4;trifft eher zu
+cg_adoption_social_01;cg;;ChatGPT-Erwartung: In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.;5;trifft voll zu
+cg_adoption_social_01;cg;;ChatGPT-Erwartung: In meinem Umfeld gehört die Nutzung von ChatGPT zum Standard.;-1;k.A.
+cg_adoption_social_02;cg;;ChatGPT-Erwartung: Fast alle Personen in meinem Umfeld nutzen ChatGPT.;1;trifft gar nicht zu
+cg_adoption_social_02;cg;;ChatGPT-Erwartung: Fast alle Personen in meinem Umfeld nutzen ChatGPT.;2;trifft eher nicht zu
+cg_adoption_social_02;cg;;ChatGPT-Erwartung: Fast alle Personen in meinem Umfeld nutzen ChatGPT.;3;teils teils
+cg_adoption_social_02;cg;;ChatGPT-Erwartung: Fast alle Personen in meinem Umfeld nutzen ChatGPT.;4;trifft eher zu
+cg_adoption_social_02;cg;;ChatGPT-Erwartung: Fast alle Personen in meinem Umfeld nutzen ChatGPT.;5;trifft voll zu
+cg_adoption_social_02;cg;;ChatGPT-Erwartung: Fast alle Personen in meinem Umfeld nutzen ChatGPT.;-1;k.A.
+cg_adoption_social_03;cg;;ChatGPT-Erwartung: Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.;1;trifft gar nicht zu
+cg_adoption_social_03;cg;;ChatGPT-Erwartung: Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.;2;trifft eher nicht zu
+cg_adoption_social_03;cg;;ChatGPT-Erwartung: Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.;3;teils teils
+cg_adoption_social_03;cg;;ChatGPT-Erwartung: Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.;4;trifft eher zu
+cg_adoption_social_03;cg;;ChatGPT-Erwartung: Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.;5;trifft voll zu
+cg_adoption_social_03;cg;;ChatGPT-Erwartung: Wer ChatGPT nicht nutzt, wird als Außenseiter angesehen.;-1;k.A.
+cg_adoption_social_04;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.;1;trifft gar nicht zu
+cg_adoption_social_04;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.;2;trifft eher nicht zu
+cg_adoption_social_04;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.;3;teils teils
+cg_adoption_social_04;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.;4;trifft eher zu
+cg_adoption_social_04;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.;5;trifft voll zu
+cg_adoption_social_04;cg;;ChatGPT-Erwartung: Die Nutzung von ChatGPT bringt mir Anerkennung aus meinem Umfeld.;-1;k.A.
+adopter;adopter;factor;Innovator type;;Ich probiere neue Angebote sofort aus.
+adopter;adopter;factor;Innovator type;;Ich probiere neue Angebote eher schnell aus.
+adopter;adopter;factor;Innovator type;;Ich warte eher ab, bis sich die Angebote durchgesetzt haben.
+adopter;adopter;factor;Innovator type;;Ich nutze neue Angebote erst, wenn ich nicht mehr anders kann.
+adopter;adopter;factor;Innovator type;;[NA] nicht beantwortet
+sd_gender;sd;factor;Geschlecht;;weiblich
+sd_gender;sd;factor;Geschlecht;;männlich
+sd_gender;sd;factor;Geschlecht;;divers
+sd_gender;sd;factor;Geschlecht;;[NA] nicht beantwortet

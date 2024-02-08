@@ -28,17 +28,17 @@ skim_metrics <- skimr::skim_with(
 }
 
 .whisker_lower <- function(x, k=1.5) {
-  i <- quantile(x, 0.25, na.rm=T) - k * IQR(x, na.rm=T)
+  i <- stats::quantile(x, 0.25, na.rm=T) - k * stats::IQR(x, na.rm=T)
   min(x[x >= i], na.rm=T)
 }
 
 .whisker_upper <- function(x, k=1.5) {
-  i <- quantile(x, 0.75, na.rm=T) + k * IQR(x, na.rm=T)
+  i <- stats::quantile(x, 0.75, na.rm=T) + k * stats::IQR(x, na.rm=T)
   max(x[x <= i], na.rm=T)
 }
 
 .outliers <- function(x, k=1.5) {
-  list(na.omit(x[(x < .whisker_lower(x)) | (x > .whisker_upper(x))]))
+  list(stats::na.omit(x[(x < .whisker_lower(x)) | (x > .whisker_upper(x))]))
 }
 
 # Define a custom skimmer function for lower whisker
