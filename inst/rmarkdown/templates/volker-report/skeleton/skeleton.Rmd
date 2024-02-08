@@ -48,7 +48,7 @@ data <- prepare(data)
 #
 
 data %>% 
-  filter(sd_geschlecht != "divers") %>% 
+  filter(sd_gender != "divers") %>% 
   report_counts(
     starts_with("cg_adoption_social"), 
     prop="rows", 

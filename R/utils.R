@@ -74,13 +74,6 @@ get_stars <- function(x) {
 #'
 #' @details The Gini coefficient is a measure of statistical dispersion representing the inequality of a distribution.
 #' The unbiased Gini coefficient is a corrected version that provides a less biased estimate, especially for small sample sizes.
-#'
-#' @examples
-#' library(volker)
-#'
-#' nums <- c(10, 20, 30, 40, 50)
-#' gini(nums)
-#'
 #' @author Made with the help of ChatGPT
 gini <- function(x) {
 
@@ -98,10 +91,10 @@ gini <- function(x) {
   w <- w[id]
 
   f.hat <- w / 2 + c(0, cumsum(w[-length(w)]))
-  wm <- weighted.mean(x, w)
+  wm <- stats::weighted.mean(x, w)
 
   # Calculate gini g
-  g <- 2 / wm * sum(w * (x - wm) * (f.hat - weighted.mean(f.hat, w)))
+  g <- 2 / wm * sum(w * (x - wm) * (f.hat - stats::weighted.mean(f.hat, w)))
 
   # Bias corrections
   g <- g * 1 / (1 - sum(w^2))

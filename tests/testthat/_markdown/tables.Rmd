@@ -27,7 +27,7 @@ data <- prepare(data)
 
 ### 1. One variable: Frequency table of gender
 ```{r}
-tab_counts_one(data, sd_geschlecht)
+tab_counts_one(data, sd_gender)
 ```
 
 ### 2. Multiple items: Frequency table of adoption factors
@@ -39,14 +39,14 @@ tab_counts_items(data, starts_with("cg_adoption_"))
 ### 3. Two variables: Cross table of innovator type by gender
 
 ```{r}
-tab_counts_one_grouped(data, in_adoption, sd_geschlecht)
+tab_counts_one_grouped(data, adopter, sd_gender)
 ```
 
 ## Distributions of metric variables
 
 ### Distribution table for one metric variable: Age
 ```{r}
-tab_metrics_one(data, sd_alter)
+tab_metrics_one(data, sd_age)
 ```
 
 ### Distribution table for multiple metric items: Adoption factors
@@ -58,20 +58,20 @@ tab_metrics_items(data, starts_with("cg_adoption_"))
 ### Group comparison of a metric variable: Age by gender
 
 ```{r}
-tab_metrics_one_grouped(data, sd_alter, sd_geschlecht)
+tab_metrics_one_grouped(data, sd_age, sd_gender)
 ```
 
 ## Multiple metric variables
 
 ### Compare means of multiple items: Adoption factors by gender
 ```{r}
-tab_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_geschlecht)
+tab_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_gender)
 ```
 
 ### Correlation of items: Adoption factors
 ```{r}
 tab_metrics_items_cor(data, starts_with("cg_adoption_adv"))
-tab_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("cg_nutzen"))
+tab_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 ```
 
 # Scales
@@ -85,7 +85,7 @@ data %>%
 # Compare the index values by group
 data %>%
   add_idx(starts_with("cg_adoption_")) %>%
-  tab_metrics_one_grouped(idx_cg_adoption, in_adoption)
+  tab_metrics_one_grouped(idx_cg_adoption, adopter)
 ```
 
 

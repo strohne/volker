@@ -19,13 +19,6 @@ This function computes the unbiased Gini coefficient for a given vector of data.
 The Gini coefficient is a measure of statistical dispersion representing the inequality of a distribution.
 The unbiased Gini coefficient is a corrected version that provides a less biased estimate, especially for small sample sizes.
 }
-\examples{
-library(volker)
-
-nums <- c(10, 20, 30, 40, 50)
-gini(nums)
-
-}
 \author{
 Made with the help of ChatGPT
 }

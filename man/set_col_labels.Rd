@@ -20,7 +20,7 @@ set_col_labels(data, cols, labels)
 }
 \examples{
 ds <- volker::chatgpt
-ds <- set_col_labels(ds, sd_alter, "Age")
+ds <- set_col_labels(ds, sd_age, "Age")
 
 }
 \keyword{internal}

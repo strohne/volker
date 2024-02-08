@@ -936,6 +936,7 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, value
 tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = F, labels=T, ...) {
   # Check parameters
   check_is_dataframe(data)
+  # TODO: Check that at least one column is selected
 
   # # Get positions of cols
   # cols <- tidyselect::eval_select(
@@ -1001,7 +1002,7 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
   prefix <- get_prefix(result$item)
   if (prefix != "") {
     result <- dplyr::mutate(result, item = stringr::str_remove(item, prefix))
-    result <- dplyr::mutate(result, item = ifelse(item == "", prefix, item))
+    result <- dplyr::mutate(result, item = dplyr::if_else(item == "", prefix, item))
   }
 
   prefix <- get_prefix(result$target)

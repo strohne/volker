@@ -11,6 +11,7 @@
 #'              from the common column prefix, prefixed with "idx_"
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @export
+#' @importFrom rlang .data
 add_idx <- function(data, cols, newcol = NULL, negative = FALSE) {
   idx <- data %>%
     dplyr::select({{ cols }})
@@ -28,9 +29,9 @@ add_idx <- function(data, cols, newcol = NULL, negative = FALSE) {
 
   # Create a label
   newlabel <- codebook(idx) %>%
-    dplyr::distinct(item_label) %>%
+    dplyr::distinct(.data$item_label) %>%
     stats::na.omit() %>%
-    dplyr::pull(item_label) %>%
+    dplyr::pull(.data$item_label) %>%
     get_prefix(F, T)
 
   if (is.na(newlabel)) {
@@ -51,7 +52,7 @@ add_idx <- function(data, cols, newcol = NULL, negative = FALSE) {
   # Add scale
   attr(data[[newcol]], "scale") <- data %>%
     codebook({{ cols }}) %>%
-    dplyr::distinct(value_name, value_label)
+    dplyr::distinct(.data$value_name, .data$value_label)
 
   data
 }

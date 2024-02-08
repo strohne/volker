@@ -4,18 +4,18 @@
       volker::codebook(data)
     Output
       # A tibble: 94 x 6
-         item_name           item_group item_class item_label   value_name value_label
-         <chr>               <chr>      <chr>      <chr>        <chr>      <chr>      
-       1 case                case       <NA>       case         <NA>       <NA>       
-       2 sd_alter            sd         <NA>       Alter        <NA>       <NA>       
-       3 cg_activities       cg         <NA>       ChatGPT-Akt~ <NA>       <NA>       
-       4 cg_nutzen_privat    cg         <NA>       ChatGPT-Nut~ 1          nie        
-       5 cg_nutzen_privat    cg         <NA>       ChatGPT-Nut~ 2          seltener   
-       6 cg_nutzen_privat    cg         <NA>       ChatGPT-Nut~ 3          mehrmals p~
-       7 cg_nutzen_privat    cg         <NA>       ChatGPT-Nut~ 4          mehrmals p~
-       8 cg_nutzen_privat    cg         <NA>       ChatGPT-Nut~ 5          fast tägli~
-       9 cg_nutzen_beruflich cg         <NA>       ChatGPT-Nut~ 1          nie        
-      10 cg_nutzen_beruflich cg         <NA>       ChatGPT-Nut~ 2          seltener   
+         item_name     item_group item_class item_label         value_name value_label
+         <chr>         <chr>      <chr>      <chr>              <chr>      <chr>      
+       1 case          case       <NA>       case               <NA>       <NA>       
+       2 sd_age        sd         <NA>       Age                <NA>       <NA>       
+       3 cg_activities cg         <NA>       Activities with C~ <NA>       <NA>       
+       4 use_private   use        <NA>       Usage: in private~ 1          never      
+       5 use_private   use        <NA>       Usage: in private~ 2          rarely     
+       6 use_private   use        <NA>       Usage: in private~ 3          several ti~
+       7 use_private   use        <NA>       Usage: in private~ 4          several ti~
+       8 use_private   use        <NA>       Usage: in private~ 5          almost dai~
+       9 use_work      use        <NA>       Usage: in profess~ 1          never      
+      10 use_work      use        <NA>       Usage: in profess~ 2          rarely     
       # i 84 more rows
 
 # Missing labels
@@ -48,8 +48,8 @@
          item_name             item_group item_class item_label value_label value_name
          <chr>                 <chr>      <chr>      <chr>      <lgl>       <lgl>     
        1 case                  case       <NA>       case       NA          NA        
-       2 cg_nutzen_privat      cg         <NA>       cg_nutzen~ NA          NA        
-       3 cg_nutzen_beruflich   cg         <NA>       cg_nutzen~ NA          NA        
+       2 use_private           use        <NA>       use_priva~ NA          NA        
+       3 use_work              use        <NA>       use_work   NA          NA        
        4 cg_adoption_advantag~ cg         <NA>       cg_adopti~ NA          NA        
        5 cg_adoption_advantag~ cg         <NA>       cg_adopti~ NA          NA        
        6 cg_adoption_advantag~ cg         <NA>       cg_adopti~ NA          NA        
@@ -62,9 +62,9 @@
       13 cg_adoption_social_02 cg         <NA>       cg_adopti~ NA          NA        
       14 cg_adoption_social_03 cg         <NA>       cg_adopti~ NA          NA        
       15 cg_adoption_social_04 cg         <NA>       cg_adopti~ NA          NA        
-      16 in_adoption           in         <NA>       in_adopti~ NA          NA        
-      17 sd_alter              sd         <NA>       sd_alter   NA          NA        
-      18 sd_geschlecht         sd         <NA>       sd_geschl~ NA          NA        
+      16 adopter               adopter    <NA>       adopter    NA          NA        
+      17 sd_age                sd         <NA>       sd_age     NA          NA        
+      18 sd_gender             sd         <NA>       sd_gender  NA          NA        
       19 cg_activities         cg         <NA>       cg_activi~ NA          NA        
 
 # Store, clear and restore the codebook
@@ -72,18 +72,18 @@
     Code
       .
     Output
-      # A tibble: 87 x 6
-         item_name        item_group item_class item_label      value_name value_label
-         <chr>            <chr>      <chr>      <chr>           <chr>      <chr>      
-       1 case             case       <NA>       case            <NA>       <NA>       
-       2 in_adoption      in         <NA>       Innovationstyp  <NA>       <NA>       
-       3 sd_alter         sd         <NA>       Alter           <NA>       <NA>       
-       4 sd_geschlecht    sd         <NA>       Geschlecht      <NA>       <NA>       
-       5 cg_activities    cg         <NA>       ChatGPT-Aktivi~ <NA>       <NA>       
-       6 cg_nutzen_privat cg         <NA>       ChatGPT-Nutzun~ 1          nie        
-       7 cg_nutzen_privat cg         <NA>       ChatGPT-Nutzun~ 2          seltener   
-       8 cg_nutzen_privat cg         <NA>       ChatGPT-Nutzun~ 3          mehrmals p~
-       9 cg_nutzen_privat cg         <NA>       ChatGPT-Nutzun~ 4          mehrmals p~
-      10 cg_nutzen_privat cg         <NA>       ChatGPT-Nutzun~ 5          fast tägli~
-      # i 77 more rows
+      # A tibble: 94 x 6
+         item_name     item_group item_class item_label         value_name value_label
+         <chr>         <chr>      <chr>      <chr>              <chr>      <chr>      
+       1 case          case       <NA>       case               <NA>       <NA>       
+       2 sd_age        sd         <NA>       Age                <NA>       <NA>       
+       3 cg_activities cg         <NA>       Activities with C~ <NA>       <NA>       
+       4 use_private   use        <NA>       Usage: in private~ 1          never      
+       5 use_private   use        <NA>       Usage: in private~ 2          rarely     
+       6 use_private   use        <NA>       Usage: in private~ 3          several ti~
+       7 use_private   use        <NA>       Usage: in private~ 4          several ti~
+       8 use_private   use        <NA>       Usage: in private~ 5          almost dai~
+       9 use_work      use        <NA>       Usage: in profess~ 1          never      
+      10 use_work      use        <NA>       Usage: in profess~ 2          rarely     
+      # i 84 more rows
 

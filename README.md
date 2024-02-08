@@ -141,7 +141,7 @@ column selections, and optionally a grouping column. Examples:
 - One categorical variable: `tab_counts(data, sd_gender)`  
 - Grouped metric variable: `tab_metrics(data, sd_age, sd_gender)`  
 - Grouped categorical variable:
-  `tab_counts(data, in_adoption, sd_gender)`  
+  `tab_counts(data, adopter, sd_gender)`  
 - Multiple metric variables:
   `tab_metrics(data, starts_with("cg_adoption"))`  
 - Multiple categorical variables:
@@ -263,7 +263,7 @@ Finally, use it:
     data <- volker::chatgpt
 
     # Example table
-    tab_metrics(data, sd_alter, sd_geschlecht)
+    tab_metrics(data, sd_age, sd_gender)
 
 **Hint:** To get the vignettes (= guides to the package, they help
 getting started), you need to build them in the install process. Only

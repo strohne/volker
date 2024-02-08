@@ -411,7 +411,10 @@ plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labe
   # Remove negative values
   # TODO: warn if any negative values were recoded
   if (!negative) {
-    data <- dplyr::mutate(data, dplyr::across({{ col }}, ~ dplyr::if_else(. < 0, NA, .)))
+    data <- data |>
+      labs_store() |>
+      dplyr::mutate( dplyr::across({{ col }}, ~ dplyr::if_else(. < 0, NA, .))) |>
+      labs_restore()
   }
 
   # Drop missings
@@ -481,7 +484,10 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   # Remove negative values
   # TODO: warn if any negative values were recoded
   if (!negative) {
-    data <- dplyr::mutate(data, dplyr::across({{ col }}, ~ ifelse(. < 0, NA, .)))
+    data <- data |>
+      labs_store() |>
+      dplyr::mutate(dplyr::across({{ col }}, ~ ifelse(. < 0, NA, .))) |>
+      labs_restore()
   }
 
   pl <- data %>%
@@ -551,6 +557,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   else if (title == F) {
     title <- NULL
   }
+
   if (!is.null(title)) {
     pl <- pl + ggplot2::ggtitle(label = title)
   }
@@ -709,6 +716,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @return A ggplot object
 #' @export
+#' @importFrom rlang .data
 plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, negative = F, title = T, labels = T, ...) {
   # Check parameters
   check_is_dataframe(data)
@@ -754,15 +762,20 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   # Remove common item prefix
   prefix <- get_prefix(result$item)
   if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(item, prefix))
-    result <- dplyr::mutate(result, item = ifelse(item == "", prefix, item))
+    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, prefix))
+    result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
   }
 
   # print(result)
   # class(result) <- setdiff(class(result),"skim_df")
 
   pl <- result %>%
-    ggplot2::ggplot(ggplot2::aes(item, y = numeric.mean, color = group, group=group)) +
+    ggplot2::ggplot(ggplot2::aes(
+      .data$item,
+      y = .data$numeric.mean,
+      color = .data$group,
+      group=.data$group)
+    ) +
     ggplot2::geom_line() +
     ggplot2::geom_point(size=3, shape=18)
     #geom_col(position = "dodge")
@@ -771,7 +784,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   # TODO: get from attributes
   scale <- data %>%
     codebook({{ cols }}) %>%
-    dplyr::distinct(value_name, value_label) %>%
+    dplyr::distinct(.data$value_name, .data$value_label) %>%
     prepare_scale()
 
   if (length(scale) > 0) {
@@ -831,16 +844,16 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 #' @param base The plot base as character or NULL.
 .plot_bars <- function(data, category = NULL, scale = NULL, numbers = NULL, base = NULL, title = NULL) {
   if (!is.null(category)) {
-    data <- dplyr::filter(data, value == category)
+    data <- dplyr::filter(data, .data$value == category)
   }
 
   if (scale <= 0) {
     data <- data %>%
-      dplyr::mutate(value = forcats::fct_rev(value))
+      dplyr::mutate(value = forcats::fct_rev(.data$value))
   }
 
   pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(Item, y = p / 100, fill = value)) +
+    ggplot2::ggplot(ggplot2::aes(.data$Item, y = .data$p / 100, fill = .data$value)) +
     ggplot2::geom_col() +
     # scale_fill_manual(values=c("transparent", "black")) +
     # scale_y_reverse(labels=c("100%","75%","50%","25%","0%")) +
@@ -849,9 +862,9 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
     # scale_y_continuous(limits =c(0,100.1), labels=c("0%","25%","50%","75%","100%")) +
     ggplot2::scale_y_continuous(labels = scales::percent) +
     ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
-    ylab("Share in percent") +
-    coord_flip() +
-    theme(
+    ggplot2::ylab("Share in percent") +
+    ggplot2::coord_flip() +
+    ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
       axis.text.y = ggplot2::element_text(size = 11),
@@ -896,7 +909,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   # Add numbers
   if (!is.null(numbers)) {
     pl <- pl +
-      ggplot2::geom_text(aes(label = .values), position = ggplot2::position_stack(vjust = 0.5), size = 3, color = "white")
+      ggplot2::geom_text(ggplot2::aes(label = .data$.values), position = ggplot2::position_stack(vjust = 0.5), size = 3, color = "white")
   }
 
   # Add title
