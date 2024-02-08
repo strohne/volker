@@ -35,31 +35,38 @@ codebook <- function(data, cols) {
     dplyr::mutate(item_label = ifelse(is.na(.data$item_label), .data$item_name, .data$item_label)) %>%
     dplyr::mutate(item_group = stringr::str_remove(.data$item_name, "_.*")) %>%
     dplyr::mutate(item_class = as.character(sapply(.data$item_class, function(x) ifelse(length(x) > 1, x[[length(x)]], x)))) %>%
-    dplyr::select(item_name, item_group, item_class, item_label, value_label) %>%
-    tidyr::unnest_longer(value_label, keep_empty = T)
+    #dplyr::select(item_name, item_group, item_class, item_label, value_label) %>%
+    dplyr::select(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label", "value_label"))) %>%
+    tidyr::unnest_longer(tidyselect::all_of("value_label"), keep_empty = T)
 
 
   if ("value_label_id" %in% colnames(labels)) {
     # Get items with codes
     labels_codes <- labels %>%
-      dplyr::rename(value_name = value_label_id) %>%
+      dplyr::rename(value_name = tidyselect::all_of("value_label_id")) %>%
       # dplyr::filter(!(value_name %in% c("comment", "class","levels","tzone"))) %>%
       dplyr::filter(stringr::str_detect(.data$value_name, "^-?[0-9TF]+$")) %>%
       dplyr::mutate(value_label = as.character(.data$value_label)) %>%
-      dplyr::select(item_name, item_group, item_class, item_label, value_name, value_label)
+      dplyr::select(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label", "value_name", "value_label")))
+      #dplyr::select(item_name, item_group, item_class, item_label, value_name, value_label)
+
 
     labels_levels <- labels %>%
       # dplyr::rename(value_name = value_label_id) %>%
-      dplyr::filter(value_label_id == "levels") %>%
-      dplyr::select(item_group, item_class, item_name, item_label, value_label) %>%
-      tidyr::unnest_longer(value_label) %>%
+      dplyr::filter(.data$value_label_id == "levels") %>%
+      #dplyr::select(item_group, item_class, item_name, item_label, value_label) %>%
+      dplyr::select(tidyselect::all_of(c("item_group", "item_class", "item_name", "item_label", "value_label"))) |>
+      tidyr::unnest_longer(tidyselect::all_of("value_label")) %>%
       dplyr::mutate(value_label = as.character(.data$value_label))
 
 
     # Combine items without codes and items with codes
     labels <- labels %>%
       # dplyr::rename(value_name = value_label_id) %>%
-      dplyr::distinct(item_name, item_group, item_class, item_label) %>%
+      #dplyr::distinct(item_name, item_group, item_class, item_label) %>%
+      dplyr::distinct(
+        dplyr::across(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label")))
+      ) %>%
       dplyr::anti_join(labels_codes, by = "item_name") %>%
       dplyr::bind_rows(labels_codes) %>%
       dplyr::anti_join(labels_levels, by = "item_name") %>%
