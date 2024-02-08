@@ -9,7 +9,7 @@ report_counts(
   cols,
   col_group = NULL,
   index = T,
-  numbers = "p",
+  numbers = NULL,
   title = T,
   close = T,
   ...

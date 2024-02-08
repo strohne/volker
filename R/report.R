@@ -96,7 +96,7 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index=T, title = T
 #' @param ... Parameters passed to the plot and tab functions.
 #' @return A list of class vlkr_rprt containing the parts of the report
 #' @export
-report_counts <- function(data, cols, col_group = NULL, index=T, numbers="p", title = T, close=T, ...) {
+report_counts <- function(data, cols, col_group = NULL, index=T, numbers=NULL, title = T, close=T, ...) {
   #, prop = "total", numbers = "p", missings = F, ordered = NULL, index=T,
   chunks <- list()
 
