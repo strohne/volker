@@ -79,7 +79,7 @@ lda_plot_topterms <- function(fit, lambda = 0.6) {
 
     # Calculate stacks
     dplyr::mutate(betadiff = betasum - beta) %>%
-    tidyr::pivot_longer(c(beta, betadiff), values_to="beta") %>%
+    tidyr::pivot_longer(tidyselect::all_of(c("beta", "betadiff")), values_to="beta") %>%
 
     # Order values
     dplyr::mutate(

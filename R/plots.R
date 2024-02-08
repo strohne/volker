@@ -109,6 +109,7 @@ plot_metrics <- function(data, cols, col_group=NULL, ...) {
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @export
+#' @importFrom rlang .data
 plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ...) {
 
   # Check columns
@@ -120,15 +121,15 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ..
 
   # Formatting
   result <- tab %>%
-    dplyr::mutate(p = p * 100) %>%
+    dplyr::mutate(p = .data$p * 100) %>%
     dplyr::rename(Item = 1) %>%
-    dplyr::filter(!(Item %in% c("Total", "Missing"))) %>%
+    dplyr::filter(!(.data$Item %in% c("Total", "Missing"))) %>%
     dplyr::mutate(
       .values = dplyr::case_when(
-        p < VLKR_LOWPERCENT ~ "",
-        all(numbers == "n") ~ as.character(n),
-        all(numbers == "p") ~ paste0(round(p, 0), "%"),
-        TRUE ~ paste0(n, "\n", round(p, 0), "%")
+        .data$p < VLKR_LOWPERCENT ~ "",
+        all(numbers == "n") ~ as.character(.data$n),
+        all(numbers == "p") ~ paste0(round(.data$p, 0), "%"),
+        TRUE ~ paste0(.data$n, "\n", round(.data$p, 0), "%")
       )
     )
 
@@ -206,6 +207,7 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ..
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @export
+#' @importFrom rlang .data
 plot_counts_one_grouped <- function(data, col, col_group, category = NULL, ordered = NULL, missings = F, prop = "total", numbers = NULL, title = T, labels = T, ...) {
 
   # Check columns
@@ -243,20 +245,20 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
     dplyr::filter(!(Item %in% c("Total", "Missing"))) %>%
     dplyr::select(-tidyselect::matches("^Total")) %>%
     tidyr::pivot_longer(
-      -Item,
+      -tidyselect::all_of("Item"),
       names_to = "value",
       values_to = "n",
     ) %>%
-    dplyr::mutate(value = factor(value, levels = categories))
+    dplyr::mutate(value = factor(.data$value, levels = categories))
 
   if ((prop == "rows") || (prop == "cols")) {
     result <- result %>%
       dplyr::group_by(Item) %>%
-      dplyr::mutate(p = (n / sum(n)) * 100) %>%
+      dplyr::mutate(p = (.data$n / sum(.data$n)) * 100) %>%
       dplyr::ungroup()
   } else {
     result <- result %>%
-      dplyr::mutate(p = (n / sum(n)) * 100)
+      dplyr::mutate(p = (.data$n / sum(.data$n)) * 100)
   }
 
   # Select numbers to print on the bars
@@ -266,12 +268,12 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
     dplyr::mutate(
       .values = dplyr::case_when(
 
-        (is.null(category)) && (scale != 0) && (value == lastcategory) ~ "",
+        (is.null(category)) && (scale != 0) && (lastcategory == .data$value) ~ "",
 
-        p < VLKR_LOWPERCENT ~ "",
-        all(numbers == "n") ~ as.character(n),
-        all(numbers == "p") ~ paste0(round(p, 0), "%"),
-        TRUE ~ paste0(n, "\n", round(p, 0), "%")
+        .data$p < VLKR_LOWPERCENT ~ "",
+        all(numbers == "n") ~ as.character(.data$n),
+        all(numbers == "p") ~ paste0(round(.data$p, 0), "%"),
+        TRUE ~ paste0(.data$n, "\n", round(.data$p, 0), "%")
       )
     )
 
@@ -317,6 +319,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @export
+#' @importFrom rlang .data
 plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missings=F, numbers = NULL, title = T, labels = T, ...) {
   # Check parameters
   check_is_dataframe(data)
@@ -336,17 +339,17 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
     dplyr::rename(Item = 1) %>%
     dplyr::select(-tidyselect::matches("^Total$")) %>%
     tidyr::pivot_longer(
-      -Item,
+      -tidyselect::all_of("Item"),
       names_to = "value",
       values_to = "n"
     ) %>%
-    dplyr::mutate(value = factor(value, levels = categories)) %>%
+    dplyr::mutate(value = factor(.data$value, levels = categories)) %>%
     dplyr::group_by(Item) %>%
-    dplyr::mutate(p = (n / sum(n)) * 100) %>%
+    dplyr::mutate(p = (.data$n / sum(.data$n)) * 100) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
       .values = dplyr::case_when(
-        (is.null(category)) & (scale != 0) & (value == lastcategory) ~ "",
+        (is.null(category)) & (scale != 0) & (.data$value == lastcategory) ~ "",
         p < VLKR_LOWPERCENT ~ "",
         all(numbers == "n") ~ as.character(n),
         all(numbers == "p") ~ paste0(round(p, 0), "%"),
@@ -385,6 +388,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @keywords internal
 #' @export
+#' @importFrom rlang .data
 plot_counts_items_grouped <- function(data, cols, col_group, ...) {
   # Check parameters
   check_is_dataframe(data)
@@ -402,6 +406,7 @@ plot_counts_items_grouped <- function(data, cols, col_group, ...) {
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @export
+#' @importFrom rlang .data
 plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labels = T, ...) {
 
   # Check parameters
@@ -413,7 +418,7 @@ plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labe
   if (!negative) {
     data <- data |>
       labs_store() |>
-      dplyr::mutate( dplyr::across({{ col }}, ~ dplyr::if_else(. < 0, NA, .))) |>
+      dplyr::mutate(dplyr::across({{ col }}, ~ dplyr::if_else(. < 0, NA, .))) |>
       labs_restore()
   }
 
@@ -474,6 +479,7 @@ plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labe
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @export
+#' @importFrom rlang .data
 plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = F, title = T, labels = T, ...) {
 
   # Check parameters
@@ -508,7 +514,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
     if (is.null(scale)) {
       scale <- data %>%
         codebook({{ col }}) %>%
-        dplyr::distinct(value_name, value_label)
+        dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label"))))
     }
     scale <- prepare_scale(scale)
   }
@@ -621,8 +627,8 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
   # TODO: remove common postfix
   prefix <- get_prefix(result$item)
   if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(item, stringr::fixed(prefix)))
-    result <- dplyr::mutate(result, item = ifelse(item == "", prefix, item))
+    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, stringr::fixed(prefix)))
+    result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
   }
 
 
@@ -647,7 +653,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
   if (labels) {
     scale <- data %>%
       codebook({{ cols }}) %>%
-      dplyr::distinct(value_name, value_label) %>%
+      dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) %>%
       prepare_scale()
   }
   if (length(scale) > 0) {
@@ -742,7 +748,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
         dplyr::select(!!sym(col), {{ cols }}) %>%
         skim_metrics() %>%
         dplyr::ungroup() %>%
-        dplyr::select(item = skim_variable, group = !!sym(col), numeric.mean) %>%
+        dplyr::select(item = "skim_variable", group = !!sym(col), "numeric.mean") %>%
         tidyr::drop_na()
     }
   ) %>%
@@ -784,7 +790,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   # TODO: get from attributes
   scale <- data %>%
     codebook({{ cols }}) %>%
-    dplyr::distinct(.data$value_name, .data$value_label) %>%
+    dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) %>%
     prepare_scale()
 
   if (length(scale) > 0) {
@@ -842,6 +848,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title The plot title as character or NULL
 #' @param base The plot base as character or NULL.
+#' @importFrom rlang .data
 .plot_bars <- function(data, category = NULL, scale = NULL, numbers = NULL, base = NULL, title = NULL) {
   if (!is.null(category)) {
     data <- dplyr::filter(data, .data$value == category)

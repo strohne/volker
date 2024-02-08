@@ -102,5 +102,5 @@ lda_add_relevance <- function(data, fit, prefix="tpc_", lambda=0.6, seed=1852) {
   data %>%
     dplyr::mutate(.document = as.character(dplyr::row_number())) %>%
     dplyr::left_join(lda_docs, by =c(".document" = paste0(prefix, "document"))) %>%
-    dplyr::select(-.document)
+    dplyr::select(-tidyselect::all_of(".document"))
 }

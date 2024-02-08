@@ -2,6 +2,8 @@
 #' Returns a five point summary, mean and sd, items count and alpha for scales added by add_idx()
 #'
 #' @keywords internal
+#' @importFrom skimr skim_with
+#' @importFrom skimr sfl
 #' @export
 skim_metrics <- skimr::skim_with(
   numeric = skimr::sfl(

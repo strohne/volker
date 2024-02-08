@@ -35,7 +35,6 @@ codebook <- function(data, cols) {
     dplyr::mutate(item_label = ifelse(is.na(.data$item_label), .data$item_name, .data$item_label)) %>%
     dplyr::mutate(item_group = stringr::str_remove(.data$item_name, "_.*")) %>%
     dplyr::mutate(item_class = as.character(sapply(.data$item_class, function(x) ifelse(length(x) > 1, x[[length(x)]], x)))) %>%
-    #dplyr::select(item_name, item_group, item_class, item_label, value_label) %>%
     dplyr::select(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label", "value_label"))) %>%
     tidyr::unnest_longer(tidyselect::all_of("value_label"), keep_empty = T)
 
@@ -48,13 +47,10 @@ codebook <- function(data, cols) {
       dplyr::filter(stringr::str_detect(.data$value_name, "^-?[0-9TF]+$")) %>%
       dplyr::mutate(value_label = as.character(.data$value_label)) %>%
       dplyr::select(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label", "value_name", "value_label")))
-      #dplyr::select(item_name, item_group, item_class, item_label, value_name, value_label)
-
 
     labels_levels <- labels %>%
       # dplyr::rename(value_name = value_label_id) %>%
       dplyr::filter(.data$value_label_id == "levels") %>%
-      #dplyr::select(item_group, item_class, item_name, item_label, value_label) %>%
       dplyr::select(tidyselect::all_of(c("item_group", "item_class", "item_name", "item_label", "value_label"))) |>
       tidyr::unnest_longer(tidyselect::all_of("value_label")) %>%
       dplyr::mutate(value_label = as.character(.data$value_label))
@@ -62,11 +58,7 @@ codebook <- function(data, cols) {
 
     # Combine items without codes and items with codes
     labels <- labels %>%
-      # dplyr::rename(value_name = value_label_id) %>%
-      #dplyr::distinct(item_name, item_group, item_class, item_label) %>%
-      dplyr::distinct(
-        dplyr::across(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label")))
-      ) %>%
+      dplyr::distinct(dplyr::across(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label")))) %>%
       dplyr::anti_join(labels_codes, by = "item_name") %>%
       dplyr::bind_rows(labels_codes) %>%
       dplyr::anti_join(labels_levels, by = "item_name") %>%
@@ -244,8 +236,8 @@ labs_clear <- function(data, cols, labels = NULL) {
 labs_replace_names <- function(data, col, codes) {
 
   codes <- codes %>%
-    dplyr::distinct(item_name, item_label) %>%
-    dplyr::rename(.name = item_name, .label = item_label) %>%
+    dplyr::distinct(dplyr::across(tidyselect::all_of(c("item_name", "item_label")))) %>%
+    dplyr::rename(.name = tidyselect::all_of("item_name"), .label = tidyselect::all_of("item_label")) %>%
     stats::na.omit()
 
 
@@ -253,8 +245,8 @@ labs_replace_names <- function(data, col, codes) {
     data <- data %>%
       dplyr::mutate(.name = {{ col }}) %>%
       dplyr::left_join(codes, by = ".name") %>%
-      dplyr::mutate({{ col }} := dplyr::coalesce(.label, .name)) %>%
-      dplyr::select(-.name, -.label)
+      dplyr::mutate({{ col }} := dplyr::coalesce(.data$.label, .data$.name)) %>%
+      dplyr::select(-tidyselect::all_of(c(".name", ".label")))
   }
 
   data
@@ -273,8 +265,8 @@ labs_replace_names <- function(data, col, codes) {
 labs_replace_values <- function(data, col, codes) {
 
   codes <- codes %>%
-    dplyr::distinct(value_name, value_label) %>%
-    dplyr::rename(.name = value_name, .label = value_label) %>%
+    dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) %>%
+    dplyr::rename(.name = tidyselect::all_of("value_name"), .label = tidyselect::all_of("value_label")) %>%
     stats::na.omit()
 
 
@@ -283,7 +275,7 @@ labs_replace_values <- function(data, col, codes) {
       dplyr::mutate(.name = {{ col }}) %>%
       dplyr::left_join(codes, by = ".name") %>%
       dplyr::mutate({{ col }} := dplyr::coalesce(.label, .name)) %>%
-      dplyr::select(-.name, -.label)
+      dplyr::select(-tidyselect::all_of(c(".name", ".label")))
   }
 
   data
@@ -333,7 +325,7 @@ get_limits <- function(data, cols, negative = F) {
   # Second, try to get limits from the column labels
   if (is.null(values)) {
     values <- codebook(data, {{ cols }}) %>%
-      dplyr::distinct(.data$value_name) %>%
+      dplyr::distinct(dplyr::across(tidyselect::all_of("value_name"))) %>%
       dplyr::pull(.data$value_name)
     values <- suppressWarnings(as.numeric(values))
   }
@@ -384,7 +376,7 @@ get_direction <- function(data, cols, extract = T) {
     tidyr::pivot_longer(tidyselect::everything()) %>%
     dplyr::arrange(.data$value) %>%
     dplyr::mutate(value = ifelse(extract, stringr::str_extract(.data$value, "[0-9-]+"), .data$value)) %>%
-    dplyr::distinct(.data$value) %>%
+    dplyr::distinct(dplyr::across(tidyselect::all_of("value"))) %>%
     dplyr::pull(.data$value)
 
   # Detect whether the categories are a numeric sequence and choose direction
@@ -478,10 +470,11 @@ trim_label <- function(x) {
 #' @keywords internal
 #' @param data A tibble with a scale attribute
 #' @return A named list or NULL
+#' @importFrom rlang .data
 prepare_scale <- function(scale) {
   if (!is.null(scale)) {
     scale <- scale %>%
-      dplyr::mutate(value_name = suppressWarnings(as.numeric(value_name))) %>%
+      dplyr::mutate(value_name = suppressWarnings(as.numeric(.data$value_name))) %>%
       dplyr::filter(value_name >= 0) %>%
       stats::na.omit()
 

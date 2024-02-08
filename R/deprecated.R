@@ -329,7 +329,7 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
     # Get column candidates
     items <- labels %>%
       dplyr::filter(stringr::str_starts(item_name, scope)) %>%
-      dplyr::distinct(item_group, item_name, item_class, item_label)
+      dplyr::distinct(dplyr::across(tidyselect::all_of(c("item_group", "item_name", "item_class", "item_label"))))
 
     # Only keep dominant item type
     if (nrow(items) > 1) {

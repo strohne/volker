@@ -29,7 +29,7 @@ add_idx <- function(data, cols, newcol = NULL, negative = FALSE) {
 
   # Create a label
   newlabel <- codebook(idx) %>%
-    dplyr::distinct(.data$item_label) %>%
+    dplyr::distinct(dplyr::across(tidyselect::all_of("item_label"))) %>%
     stats::na.omit() %>%
     dplyr::pull(.data$item_label) %>%
     get_prefix(F, T)
@@ -52,7 +52,7 @@ add_idx <- function(data, cols, newcol = NULL, negative = FALSE) {
   # Add scale
   attr(data[[newcol]], "scale") <- data %>%
     codebook({{ cols }}) %>%
-    dplyr::distinct(.data$value_name, .data$value_label)
+    dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label"))))
 
   data
 }
