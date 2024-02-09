@@ -46,6 +46,6 @@ rowSums(lda_phi)
 
 # TODO: Is the relevance calculation correct? Does it make sense?
 # See text_relevance.R
-lda_rel <- relevance(lda_phi, 0.6)
+lda_rel <- volker:::relevance(lda_phi, 0.6)
 
 ```
