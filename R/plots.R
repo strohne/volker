@@ -268,7 +268,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
     dplyr::mutate(
       .values = dplyr::case_when(
 
-        (is.null(category)) && (scale != 0) && (lastcategory == .data$value) ~ "",
+        (is.null(category)) & (scale != 0) & (lastcategory == .data$value) ~ "",
 
         .data$p < VLKR_LOWPERCENT ~ "",
         all(numbers == "n") ~ as.character(.data$n),
