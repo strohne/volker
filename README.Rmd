@@ -246,7 +246,7 @@ You can install the development version from GitHub using remotes
 
 ```
 if (!require(remotes)) { install.packages("remotes") }
-remotes::install_github("strohne/volker")
+remotes::install_github("strohne/volker", update="never")
 ```
 
 After installing the package, load it:

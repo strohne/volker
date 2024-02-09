@@ -140,8 +140,7 @@ column selections, and optionally a grouping column. Examples:
 - One metric variable: `tab_metrics(data, sd_age)`  
 - One categorical variable: `tab_counts(data, sd_gender)`  
 - Grouped metric variable: `tab_metrics(data, sd_age, sd_gender)`  
-- Grouped categorical variable:
-  `tab_counts(data, adopter, sd_gender)`  
+- Grouped categorical variable: `tab_counts(data, adopter, sd_gender)`  
 - Multiple metric variables:
   `tab_metrics(data, starts_with("cg_adoption"))`  
 - Multiple categorical variables:
@@ -251,7 +250,7 @@ can install the development version from GitHub using remotes (if asked,
 skip the updates):
 
     if (!require(remotes)) { install.packages("remotes") }
-    remotes::install_github("strohne/volker")
+    remotes::install_github("strohne/volker", update="never")
 
 After installing the package, load it:
 
