@@ -46,6 +46,7 @@ Suggests:
   topicmodels,
   modeltools,
   slam,
+  methods,
   rmarkdown, 
   testthat (>= 3.0.0)
 VignetteBuilder: knitr

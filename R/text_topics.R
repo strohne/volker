@@ -3,7 +3,7 @@
 #' @keywords internal
 lda_find_k <- function(dfm, sample.size=2000, plot=T) {
   metrics <- dfm %>%
-    quanteda::dfm_sample(min(quanteda::ndoc(.), sample.size)) %>%
+    quanteda::dfm_sample(min(quanteda::ndoc(dfm), sample.size)) %>%
     ldatuning::FindTopicsNumber(
       topics = c(c(2:9),seq(from = 10, to = 30, by = 5)),
       #metrics = c("Griffiths2004", "CaoJuan2009", "Arun2010", "Deveaud2014"),
@@ -54,7 +54,7 @@ lda_add_topic <- function(data, col_text, prefix="tpc_", k=NULL, lambda=0.6, see
   # Tokenize and convert to dfm
   ds_texts <- data %>%
     dplyr::mutate(doc = dplyr::row_number()) %>%
-    dplyr::select(doc, text={{col_text}}) %>%
+    dplyr::select("doc", text={{col_text}}) %>%
     tidyr::drop_na()
 
   ds_tokens <- get_tokens(ds_texts)
@@ -73,7 +73,7 @@ lda_add_topic <- function(data, col_text, prefix="tpc_", k=NULL, lambda=0.6, see
 
   # TODO: Not the best hack in case the LDA_VEM class is changed in future versions.
   #       Better set k_search as an attribute of the topic column.
-  slot(fit, "k_search", check=F) <- k_search
+  methods::slot(fit, "k_search", check=F) <- k_search
 
   # Calculate and add output values
   lda_add_relevance(data, fit, prefix, lambda, seed=seed)

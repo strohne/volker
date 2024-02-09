@@ -13,8 +13,6 @@ lda_get_termrelevance(fit, lambda = 0.6)
 }
 \value{
 A data frame with relevance metrics
-See http://vis.stanford.edu/files/2012-Termite-AVI.pdf and
-https://nlp.stanford.edu/events/illvi2014/papers/sievert-illvi2014.pdf
 }
 \description{
 Get term relevance per topic

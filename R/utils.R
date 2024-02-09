@@ -39,7 +39,7 @@ zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
 #' @return The p value of the model
 lm_pvalue <- function(fit) {
   fstat <- summary(fit)$fstatistic
-  pf(fstat[1], fstat[2], fstat[3], lower.tail = FALSE)
+  stats::pf(fstat[1], fstat[2], fstat[3], lower.tail = FALSE)
 }
 
 #' Get significance stars from p values

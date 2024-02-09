@@ -6,6 +6,7 @@
 #'
 #' @keywords internal
 #'
+#' @importFrom rlang .data
 #' @param fit The topic model
 #' @param lambda The weighting factor between prevalence and distinctiveness
 #' @return A data frame with relevance metrics
@@ -13,8 +14,8 @@ lda_get_termrelevance <- function(fit, lambda=0.6) {
 
   lda_phi <- modeltools::posterior(fit)$terms %>% as.matrix()
 
-  #' See http://vis.stanford.edu/files/2012-Termite-AVI.pdf and
-  #' https://nlp.stanford.edu/events/illvi2014/papers/sievert-illvi2014.pdf
+  #See http://vis.stanford.edu/files/2012-Termite-AVI.pdf and
+  #    https://nlp.stanford.edu/events/illvi2014/papers/sievert-illvi2014.pdf
   #lda_rel  = lambda * lda_phi + (1 - lambda) * (lda_phi / col_sums(lda_phi))
 
   # Calculate relevance
@@ -24,21 +25,22 @@ lda_get_termrelevance <- function(fit, lambda=0.6) {
   # TODO: is col_sums(lda_phi) correct here?
   lda_rel  = lambda * log(lda_phi) + (1 - lambda) * log(lda_phi / slam::col_sums(lda_phi))
 
+
   lda_rel <- lda_rel %>% t() %>% tibble::as_tibble(rownames ="term") %>%
     tidyr::pivot_longer(-1, names_to="topic", values_to="relevance")
 
   lda_gini <- fit %>%
     tidytext::tidy(matrix = "beta") %>%
-    dplyr::group_by(term) %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of("term"))) %>%
     dplyr::mutate(
-      gini = gini(beta),
-      betasum = sum(beta)
+      gini = gini(.data$beta),
+      betasum = sum(.data$beta)
     ) %>%
     dplyr::ungroup()
 
 
   lda_gini %>%
-    dplyr::mutate(dplyr::across(topic, as.character)) %>%
+    dplyr::mutate(dplyr::across(tidyselect::all_of("topic"), as.character)) %>%
     dplyr::left_join(lda_rel, by=c("topic", "term"))
 }
 
@@ -46,6 +48,7 @@ lda_get_termrelevance <- function(fit, lambda=0.6) {
 #' Add relevance
 #'
 #' @keywords internal
+#' @importFrom rlang .data
 lda_add_relevance <- function(data, fit, prefix="tpc_", lambda=0.6, seed=1852) {
 
   # Document relevance
@@ -53,9 +56,9 @@ lda_add_relevance <- function(data, fit, prefix="tpc_", lambda=0.6, seed=1852) {
   lda_rel  = (lambda * log(lda_theta)) + (1 - lambda) * log(lda_theta / slam::col_sums(lda_theta))
   lda_rel <- lda_rel %>% tibble::as_tibble(rownames ="document") %>%
     tidyr::pivot_longer(-1, names_to="topic", values_to="relevance")  %>%
-    dplyr::mutate(dplyr::across(c(document, topic), as.character))  %>%
-    dplyr::group_by(topic) %>%
-    dplyr::arrange(dplyr::desc(relevance)) %>%
+    dplyr::mutate(dplyr::across(tidyselect::all_of(c("document", "topic")), as.character))  %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of("topic"))) %>%
+    dplyr::arrange(dplyr::desc(.data$relevance)) %>%
     dplyr::mutate(rank = dplyr::row_number()) %>%
     dplyr::ungroup()
 
@@ -73,13 +76,13 @@ lda_add_relevance <- function(data, fit, prefix="tpc_", lambda=0.6, seed=1852) {
   # Gini
   lda_gini <- fit %>%
     tidytext::tidy(matrix = "gamma") %>%
-    dplyr::group_by(document) %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of("document"))) %>%
     dplyr::mutate(
-      gini = gini(gamma)
+      gini = gini(.data$gamma)
       #gammasum = sum(gamma) -> always 1
     ) %>%
     dplyr::ungroup()  %>%
-    dplyr::mutate(dplyr::across(c(document, topic), as.character))
+    dplyr::mutate(dplyr::across(tidyselect::all_of(c("document", "topic")), as.character))
 
   # Join
   lda_gini <- lda_gini %>%
@@ -87,8 +90,8 @@ lda_add_relevance <- function(data, fit, prefix="tpc_", lambda=0.6, seed=1852) {
     dplyr::left_join(lda_mds, by=c("document"))
 
   lda_docs <- lda_gini %>%
-    dplyr::group_by(document) %>%
-    dplyr::arrange(dplyr::desc(gamma)) %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of("document"))) %>%
+    dplyr::arrange(dplyr::desc(.data$gamma)) %>%
     dplyr::slice_head(n=1) %>%
     dplyr::ungroup()
 

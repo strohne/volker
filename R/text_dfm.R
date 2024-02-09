@@ -7,15 +7,16 @@
 #' @keywords internal
 #' @param msg A data frame with the column "doc" holding a document identifier
 #'            and "text" holding the text
+#' @importFrom rlang .data
 #' @return A quanteda tokens object
 get_tokens <- function(msg) {
   # Mentions, Tags, Entities, URLs, erstes Wort in Klammern entfernen
   msg <- msg %>%
-    dplyr::mutate(text = stringr::str_remove_all(text, "@[^ ]+")) %>%
-    dplyr::mutate(text = stringr::str_remove_all(text, "\\<[^\\>]+\\>")) %>%
-    dplyr::mutate(text= stringr::str_remove_all(text,'https?://[^\\s"<>]+')) %>%
-    dplyr::mutate(text = stringr::str_remove_all(text, "&[a-z]+;")) %>%
-    dplyr::mutate(text = stringr::str_remove_all(text, "^\\([^\\)]{0,3}\\)"))
+    dplyr::mutate(text = stringr::str_remove_all(.data$text, "@[^ ]+")) %>%
+    dplyr::mutate(text = stringr::str_remove_all(.data$text, "\\<[^\\>]+\\>")) %>%
+    dplyr::mutate(text= stringr::str_remove_all(.data$text,'https?://[^\\s"<>]+')) %>%
+    dplyr::mutate(text = stringr::str_remove_all(.data$text, "&[a-z]+;")) %>%
+    dplyr::mutate(text = stringr::str_remove_all(.data$text, "^\\([^\\)]{0,3}\\)"))
 
   # Tokenize
   msg_words <- tokenizers::tokenize_words(msg$text)

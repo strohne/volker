@@ -14,16 +14,17 @@
 #'             multi dimensional scaling of the results are based on simulations.
 #'             Fix the random number generator seed to a number for reproducible results.
 #' @return A data frame with topic columns
+#' @importFrom rlang .data
 #' @export
 lda_report <- function(data, col_text, k=NULL, lambda=0.6, seed=1852) {
 
   lifecycle::signal_stage("experimental", "lda_report()")
 
   # TODO: add colname to prefix
-  data <- lda_add_topic(data, {{col_text}}, prefix = "tpc_",k = k,lambda = lambda, seed = seed)
+  data <- lda_add_topic(data, {{col_text}}, prefix = "tpc_", k = k, lambda = lambda, seed = seed)
 
   # Extract lda object
-  fit <- attr(data$tpc_topic,"lda")
+  fit <- attr(data$tpc_topic, "lda")
 
   # LDA tuning result
   k <- fit@k_search
@@ -41,7 +42,8 @@ lda_report <- function(data, col_text, k=NULL, lambda=0.6, seed=1852) {
   #   print()
 
   cat("**Number of documents (n) and characters (m) per top topic**  \n")
-  volker::tab_metrics_one_grouped(data, doc_length, tpc_topic) %>%
+  # TODO: does tidyselect::all_of() work here?
+  volker::tab_metrics_one_grouped(data, "doc_length", "tpc_topic") %>%
     print()
 
   # Top terms by relevance
@@ -53,13 +55,25 @@ lda_report <- function(data, col_text, k=NULL, lambda=0.6, seed=1852) {
   set.seed(seed)
   data %>%
     #slice_sample(n=1000) %>%
-    dplyr::mutate(tpc_topdoc = tpc_rank <= 3) %>%
-    lda_plot_docmds(tpc_x, tpc_y, tpc_topic, tpc_topdoc) %>%
+    dplyr::mutate(tpc_topdoc = .data$tpc_rank <= 3) %>%
+    # TODO: does tidyselect::all_of() work here?
+    lda_plot_docmds(
+      .data$tpc_x,
+      .data$tpc_y,
+      .data$tpc_topic,
+      .data$tpc_topdoc
+    ) %>%
     print()
 
   cat("  \n")
   data %>%
-    lda_print_topdocs(tpc_topic, {{col_text}}, tpc_rank, 3)
+    # TODO: does tidyselect::all_of() work here?
+    lda_print_topdocs(
+      .data$tpc_topic,
+      {{col_text}},
+      .data$tpc_rank,
+      3
+    )
 
   invisible(data)
 }
@@ -67,34 +81,35 @@ lda_report <- function(data, col_text, k=NULL, lambda=0.6, seed=1852) {
 
 #' Helper function
 #'
+#' @importFrom rlang .data
 #' @keywords internal
 lda_plot_topterms <- function(fit, lambda = 0.6) {
 
   lda_get_termrelevance(fit, lambda) %>%
 
     # Get most relevant terms
-    dplyr::group_by(topic) %>%
-    dplyr::slice_max(relevance, n = 15)%>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of("topic"))) %>%
+    dplyr::slice_max(.data$relevance, n = 15)%>%
     dplyr::ungroup() %>%
 
     # Calculate stacks
-    dplyr::mutate(betadiff = betasum - beta) %>%
+    dplyr::mutate(betadiff = .data$betasum - .data$beta) %>%
     tidyr::pivot_longer(tidyselect::all_of(c("beta", "betadiff")), values_to="beta") %>%
 
     # Order values
     dplyr::mutate(
-      topic = factor(topic),
-      term = tidytext::reorder_within(term, relevance, topic),
-      name = factor(name, levels=c("betadiff","beta"))
+      topic = factor(.data$topic),
+      term = tidytext::reorder_within(.data$term, .data$relevance, .data$topic),
+      name = factor(.data$name, levels=c("betadiff","beta"))
     ) %>%
 
     # Plot
-    ggplot2::ggplot(ggplot2::aes(term, beta, fill = name)) +
+    ggplot2::ggplot(ggplot2::aes(.data$term, .data$beta, fill = .data$name)) +
     ggplot2::geom_col(alpha = 0.8, position  = "stack", show.legend = FALSE) +
 
     ggplot2::scale_fill_manual(values = c("gray", "blue")) +
     tidytext::scale_x_reordered() +
-    ggplot2::facet_wrap(facets = ggplot2::vars(topic), scales = "free") + #, ncol = 3
+    ggplot2::facet_wrap(facets = ggplot2::vars(.data$topic), scales = "free") + #, ncol = 3
     ggplot2::coord_flip() +
     ggplot2::ylab("beta & sum(beta)") +
     ggplot2::xlab("") +
@@ -129,9 +144,18 @@ lda_plot_docmds <- function(data, col_x, col_y, col_topic, col_highlight=NULL) {
   #     topic = lda_docs
   #   )
 
+  # # Column without quotes
+  # if (rlang::quo_is_symbol(rlang::enquo(col_topic))) {
+  #   col_topic <- rlang::enquo(col_topic)
+  # }
+  # # Column as character
+  # else {
+  #   col_topic <- rlang::sym(col_topic)
+  # }
+
   data <- data %>%
     tidyr::drop_na({{col_topic}}) %>%
-    dplyr::mutate({{col_topic}} := as.factor({{col_topic}}))
+    dplyr::mutate("{{ col_topic }}" := as.factor({{col_topic}}))
 
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(

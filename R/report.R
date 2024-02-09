@@ -239,6 +239,7 @@ report_counts <- function(data, cols, col_group = NULL, index=T, numbers=NULL, t
 #'
 #' @param x The volker report
 #' @param ... Further parameters passed to print
+#' @importFrom rlang .data
 #' @export
 print.vlkr_rprt <- function(x, ...) {
   if (knitr::is_html_output()) {

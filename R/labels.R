@@ -11,8 +11,8 @@
 #'        - value_label: In case a column has numeric attributes or T/F-attributes,
 #'                       the attribute values.
 #'                       In case a column has a levels attribute, the levels.
-#' @export
 #' @importFrom rlang .data
+#' @export
 codebook <- function(data, cols) {
   if (!missing(cols)) {
     data <- dplyr::select(data, {{ cols }})
@@ -235,6 +235,19 @@ labs_clear <- function(data, cols, labels = NULL) {
 #' @importFrom rlang .data
 labs_replace_names <- function(data, col, codes) {
 
+
+  # Column without quotes
+  # TODO: could we just use "{{ col }}" with quotes in mutate below?
+  # See example at https://rlang.r-lib.org/reference/topic-data-mask-ambiguity.html
+  if (rlang::quo_is_symbol(rlang::enquo(col))) {
+    col <- rlang::enquo(col)
+  }
+  # Column as character
+  else {
+    col <- rlang::sym(col)
+  }
+
+
   codes <- codes %>%
     dplyr::distinct(dplyr::across(tidyselect::all_of(c("item_name", "item_label")))) %>%
     dplyr::rename(.name = tidyselect::all_of("item_name"), .label = tidyselect::all_of("item_label")) %>%
@@ -243,9 +256,9 @@ labs_replace_names <- function(data, col, codes) {
 
   if (nrow(codes) > 0) {
     data <- data %>%
-      dplyr::mutate(.name = {{ col }}) %>%
+      dplyr::mutate(.name = !!col) %>%
       dplyr::left_join(codes, by = ".name") %>%
-      dplyr::mutate({{ col }} := dplyr::coalesce(.data$.label, .data$.name)) %>%
+      dplyr::mutate(!!col := dplyr::coalesce(.data$.label, .data$.name)) %>%
       dplyr::select(-tidyselect::all_of(c(".name", ".label")))
   }
 
@@ -264,6 +277,16 @@ labs_replace_names <- function(data, col, codes) {
 #' @return Tibble with new labels
 labs_replace_values <- function(data, col, codes) {
 
+  # Column without quotes
+  if (rlang::quo_is_symbol(rlang::enquo(col))) {
+    col <- rlang::enquo(col)
+  }
+  # Column as character
+  else {
+    col <- rlang::sym(col)
+  }
+
+
   codes <- codes %>%
     dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) %>%
     dplyr::rename(.name = tidyselect::all_of("value_name"), .label = tidyselect::all_of("value_label")) %>%
@@ -272,9 +295,9 @@ labs_replace_values <- function(data, col, codes) {
 
   if (nrow(codes) > 0) {
     data <- data %>%
-      dplyr::mutate(.name = {{ col }}) %>%
+      dplyr::mutate(.name = !!col ) %>%
       dplyr::left_join(codes, by = ".name") %>%
-      dplyr::mutate({{ col }} := dplyr::coalesce(.label, .name)) %>%
+      dplyr::mutate(!!col := dplyr::coalesce(.data$.label, .data$.name)) %>%
       dplyr::select(-tidyselect::all_of(c(".name", ".label")))
   }
 
@@ -475,7 +498,7 @@ prepare_scale <- function(scale) {
   if (!is.null(scale)) {
     scale <- scale %>%
       dplyr::mutate(value_name = suppressWarnings(as.numeric(.data$value_name))) %>%
-      dplyr::filter(value_name >= 0) %>%
+      dplyr::filter(.data$value_name >= 0) %>%
       stats::na.omit()
 
     scale <- stats::setNames(

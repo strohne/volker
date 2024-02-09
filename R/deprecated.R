@@ -320,21 +320,19 @@ report <- function(data, scopes, col_group = NULL, prop = "total", numbers = "p"
     }
   }
 
-
-
   # Get item label from the attributes
   labels <-  codebook(data)
 
   for (scope in scopes) {
     # Get column candidates
     items <- labels %>%
-      dplyr::filter(stringr::str_starts(item_name, scope)) %>%
+      dplyr::filter(stringr::str_starts(.data$item_name, scope)) %>%
       dplyr::distinct(dplyr::across(tidyselect::all_of(c("item_group", "item_name", "item_class", "item_label"))))
 
     # Only keep dominant item type
     if (nrow(items) > 1) {
       item_types <- items %>%
-        dplyr::count(item_class, sort = T) %>%
+        dplyr::count(dplyr::across(tidyselect::all_of("item_class")), sort = T) %>%
         dplyr::slice_head(n = 1)
 
       items <- dplyr::semi_join(items, item_types, by = c("item_class"))

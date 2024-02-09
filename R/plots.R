@@ -108,8 +108,8 @@ plot_metrics <- function(data, cols, col_group=NULL, ...) {
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
-#' @export
 #' @importFrom rlang .data
+#' @export
 plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ...) {
 
   # Check columns
@@ -135,7 +135,7 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ..
 
   # TODO: Make dry, see plot_item_counts and tab_group_counts
   pl <- result %>%
-    ggplot2::ggplot(ggplot2::aes(Item, y = p / 100)) +
+    ggplot2::ggplot(ggplot2::aes(.data$Item, y = .data$p / 100)) +
     ggplot2::geom_col(fill = VLKR_FILLCOLOR) +
     # TODO: make limits configurable
     # scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
@@ -156,7 +156,7 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ..
   if (!is.null(numbers)) {
     pl <- pl +
       ggplot2::geom_text(
-        ggplot2::aes(label = .values),
+        ggplot2::aes(label = .data$.values),
         position = ggplot2::position_stack(vjust = 0.5),
         size = 3, color = "white"
       )
@@ -242,7 +242,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 
   result <- tab %>%
     dplyr::rename(Item = 1) %>%
-    dplyr::filter(!(Item %in% c("Total", "Missing"))) %>%
+    dplyr::filter(!(.data$Item %in% c("Total", "Missing"))) %>%
     dplyr::select(-tidyselect::matches("^Total")) %>%
     tidyr::pivot_longer(
       -tidyselect::all_of("Item"),
@@ -253,7 +253,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 
   if ((prop == "rows") || (prop == "cols")) {
     result <- result %>%
-      dplyr::group_by(Item) %>%
+      dplyr::group_by(dplyr::across(tidyselect::all_of("Item"))) %>%
       dplyr::mutate(p = (.data$n / sum(.data$n)) * 100) %>%
       dplyr::ungroup()
   } else {
@@ -344,7 +344,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
       values_to = "n"
     ) %>%
     dplyr::mutate(value = factor(.data$value, levels = categories)) %>%
-    dplyr::group_by(Item) %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of("Item"))) %>%
     dplyr::mutate(p = (.data$n / sum(.data$n)) * 100) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
@@ -497,7 +497,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   }
 
   pl <- data %>%
-    ggplot(aes(y={{ col_group }}, {{ col }})) +
+    ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, {{ col }})) +
     ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
     ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
 
@@ -620,7 +620,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 
   # Replace item labels
   if (labels) {
-    result <- labs_replace_names(result, item, codebook(data, {{ cols }}))
+    result <- labs_replace_names(result, "item", codebook(data, {{ cols }}))
   }
 
   # Remove common item prefix and title
@@ -643,7 +643,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 
   # Create plot
   pl <- result %>%
-    ggplot2::ggplot(ggplot2::aes(y=item, value)) +
+    ggplot2::ggplot(ggplot2::aes(y=.data$item, .data$value)) +
     ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
     ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
 
@@ -700,7 +700,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 
   # Maximum label length
   maxlab  <- result %>%
-    dplyr::pull(item) %>%
+    dplyr::pull(.data$item) %>%
     stringr::str_length() %>%
     max(na.rm = T)
 
@@ -762,7 +762,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 
   # Replace item labels
   if (labels) {
-    result <- labs_replace_names(result, item, codebook(data, {{ cols }}))
+    result <- labs_replace_names(result, "item", codebook(data, {{ cols }}))
   }
 
   # Remove common item prefix
@@ -1004,8 +1004,8 @@ knit_plot <- function(pl) {
 
   # Calculate plot height
   if (!is.null(plot_options[["rows"]])) {
-    fig_width <- 910
-    px_perline <- 15
+    fig_width <- 910 # TODO: make configurable
+    px_perline <- 15 # TODO: make configurable
 
     # Buffer above and below the diagram
     px_offset <- 7 * px_perline

@@ -122,7 +122,7 @@ tab_counts_one <- function(data, col, missings = T, percent = T, labels = T, ...
   result <- data %>%
     dplyr::count({{ col }}) %>%
     tidyr::drop_na() %>%
-    dplyr::mutate({{ col }} := as.character({{ col }})) %>%
+    dplyr::mutate("{{ col }}" := as.character({{ col }})) %>%
     dplyr::mutate(p = .data$n / sum(.data$n))
 
   # Get variable caption from the attributes
@@ -196,18 +196,18 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
   grouped <- data %>%
     dplyr::count({{ col }}, {{ col_group }}) %>%
     dplyr::mutate(
-      {{ col_group }} := tidyr::replace_na(as.character({{ col_group }}), "Missing"),
-      {{ col }} := tidyr::replace_na(as.character({{ col }}), "Missing")
+      "{{ col_group }}" := tidyr::replace_na(as.character({{ col_group }}), "Missing"),
+      "{{ col }}" := tidyr::replace_na(as.character({{ col }}), "Missing")
     )
 
   #
   # 2. N
   #
   rows_n <- grouped %>%
-    dplyr::select({{ col_group }}, {{ col }}, n) %>%
+    dplyr::select({{ col_group }}, {{ col }}, "n") %>%
     tidyr::pivot_wider(
       names_from = {{ col }},
-      values_from = n,
+      values_from = "n",
       values_fill = list(n = 0)
     )
 
@@ -215,26 +215,26 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
   total_col_n <- data %>%
     dplyr::count({{ col_group }}) %>%
     dplyr::mutate(
-      {{ col_group }} := tidyr::replace_na(as.character({{ col_group }}), "Missing")
+      "{{ col_group }}" := tidyr::replace_na(as.character({{ col_group }}), "Missing")
     ) %>%
-    dplyr::select({{ col_group }}, Total = n)
+    dplyr::select({{ col_group }}, Total = "n")
 
   # Total row
   total_row_n <- grouped %>%
     dplyr::group_by({{ col }}) %>%
     dplyr::summarise(n = sum(.data$n)) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate({{ col_group }} := "Total") %>%
+    dplyr::mutate("{{ col_group }}" := "Total") %>%
     tidyr::pivot_wider(
       names_from = {{ col }},
-      values_from = n,
+      values_from = "n",
       values_fill = list(n = 0)
     )
 
   # Total
   total_n <- data %>%
     dplyr::count() %>%
-    dplyr::mutate({{ col_group }} := "Total") %>%
+    dplyr::mutate("{{ col_group }}" := "Total") %>%
     dplyr::select({{ col_group }}, Total = "n")
 
   # Join
@@ -245,7 +245,7 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
       by = as.character(rlang::get_expr(rlang::enquo(col_group)))
     ) %>%
     dplyr::bind_rows(
-      left_join(
+      dplyr::left_join(
         total_n,
         total_row_n,
         by = as.character(rlang::get_expr(rlang::enquo(col_group)))
@@ -292,12 +292,12 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
     dplyr::select({{ col }}, {{ col_group }}, "p") %>%
     tidyr::pivot_wider(
       names_from = {{ col }},
-      values_from = p,
+      values_from = "p",
       values_fill = list(p = 0)
     )
 
   total_p <- tibble::tibble("Total" = 1) %>%
-    dplyr::mutate({{ col_group }} := "Total")
+    dplyr::mutate("{{ col_group }}" := "Total")
 
   # Join
   result_p <-
@@ -307,7 +307,7 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
       by = as.character(rlang::get_expr(rlang::enquo(col_group)))
     ) %>%
     dplyr::bind_rows(
-      left_join(
+      dplyr::left_join(
         total_p,
         total_row_p,
         by = as.character(rlang::get_expr(rlang::enquo(col_group)))
@@ -381,8 +381,8 @@ tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), perce
       names_to = "item",
       values_to = "value"
     ) %>%
-    dplyr::count(item, value) %>%
-    dplyr::group_by(item) %>%
+    dplyr::count(dplyr::across(tidyselect::all_of(c("item", "value")))) %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
     dplyr::mutate(p = .data$n / sum(.data$n)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(value = as.factor(.data$value)) %>%
@@ -426,11 +426,11 @@ tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), perce
         values_to = "value"
       ) %>%
       dplyr::mutate(value = is.na(.data$value)) %>%
-      dplyr::count(item, value) %>%
+      dplyr::count(dplyr::across(tidyselect::all_of(c("item", "value")))) %>%
       dplyr::mutate(value = factor(.data$value,levels=c("TRUE","FALSE"))) %>%
       tidyr::pivot_wider(
         names_from = value,
-        values_from = n,
+        values_from = "n",
         values_fill = 0,
         names_expand=T
       ) %>%
@@ -450,7 +450,7 @@ tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), perce
 
   # Replace item labels
   if (labels) {
-    result <- labs_replace_names(result, item, codebook(data, {{ cols }}))
+    result <- labs_replace_names(result, "item", codebook(data, {{ cols }}))
   }
 
   # Remove common item prefix
@@ -518,8 +518,8 @@ tab_counts_items_grouped <- function(data, cols, col_group, ...) {
 #' @param cols_cor The target columns or NULL to calculate correlations within the source columns
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @keywords internal
-#' @export
 #' @importFrom rlang .data
+#' @export
 tab_counts_items_cor <- function(data, cols, cols_cor, ...) {
   # Check parameters
   check_is_dataframe(data)
@@ -552,18 +552,18 @@ tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T, ...) 
   result <- data %>%
     skim_metrics({{ col }}) %>%
     dplyr::select(
-      "item" = skim_variable,
-      min = numeric.min,
-      q1 = numeric.q1,
-      median = numeric.median,
-      q3 = numeric.q3,
-      max = numeric.max,
-      m = numeric.mean,
-      sd = numeric.sd,
-      missing,
-      n,
-      items = numeric.items,
-      alpha = numeric.alpha
+      "item" = "skim_variable",
+      min = "numeric.min",
+      q1 = "numeric.q1",
+      median = "numeric.median",
+      q3 = "numeric.q3",
+      max = "numeric.max",
+      m = "numeric.mean",
+      sd = "numeric.sd",
+      "missing",
+      "n",
+      items = "numeric.items",
+      alpha = "numeric.alpha"
     )
 
   # Remove items and alpha if not and index
@@ -572,19 +572,19 @@ tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T, ...) 
     result$alpha <- NULL
   } else {
     result <- result %>%
-      dplyr::mutate(dplyr::across(c(items), ~ as.character(round(., 0)))) %>%
-      dplyr::mutate(dplyr::across(c(alpha), ~ as.character(round(., 2))))
+      dplyr::mutate(dplyr::across(tidyselect::all_of("items"), ~ as.character(round(., 0)))) %>%
+      dplyr::mutate(dplyr::across(tidyselect::all_of("alpha"), ~ as.character(round(., 2))))
   }
 
   result <- result %>%
     # TODO: can we leave digits calculation to .to_vlkr_tab?
     #       So that the resulting data frame contains all digits?
-    dplyr::mutate(dplyr::across(c(missing, n), ~ as.character(round(., 0)))) %>%
-    dplyr::mutate(dplyr::across(c(min, q1, median, q3, max), ~ as.character(round(., digits)))) %>%
-    dplyr::mutate(dplyr::across(c(m, sd), ~ as.character(round(., digits)))) %>%
+    dplyr::mutate(dplyr::across(tidyselect::all_of(c("missing", "n")), ~ as.character(round(., 0)))) %>%
+    dplyr::mutate(dplyr::across(tidyselect::all_of(c("min", "q1", "median", "q3", "max")), ~ as.character(round(., digits)))) %>%
+    dplyr::mutate(dplyr::across(tidyselect::all_of(c("m", "sd")), ~ as.character(round(., digits)))) %>%
     # labs_clear(-item) %>%
     tidyr::pivot_longer(-tidyselect::all_of("item")) %>%
-    dplyr::select(-tidyselect::all_of("item"), {{ col }} := name, tidyselect::all_of("value"))
+    dplyr::select(-tidyselect::all_of("item"), {{ col }} := "name", "value")
 
   # Get item label from the attributes
   if (labels) {
@@ -655,8 +655,8 @@ tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits =
     result$alpha <- NULL
   } else {
     result <- result %>%
-      dplyr::mutate(dplyr::across(c(items), ~ as.character(round(., 0)))) %>%
-      dplyr::mutate(dplyr::across(c(alpha), ~ as.character(round(., 2))))
+      dplyr::mutate(dplyr::across(tidyselect::all_of("items"), ~ as.character(round(., 0)))) %>%
+      dplyr::mutate(dplyr::across(tidyselect::all_of("alpha"), ~ as.character(round(., 2))))
   }
 
   # Get item label from the attributes
@@ -716,18 +716,18 @@ tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T, 
 
   result <- result %>%
     dplyr::select(
-      "item" = skim_variable,
-      min = numeric.min,
-      q1 = numeric.q1,
-      median = numeric.median,
-      q3 = numeric.q3,
-      max = numeric.max,
-      m = numeric.mean,
-      sd = numeric.sd,
-      missing,
-      n,
-      items = numeric.items,
-      alpha = numeric.alpha
+      item = "skim_variable",
+      min = "numeric.min",
+      q1 = "numeric.q1",
+      median = "numeric.median",
+      q3 = "numeric.q3",
+      max = "numeric.max",
+      m = "numeric.mean",
+      sd = "numeric.sd",
+      "missing",
+      "n",
+      items = "numeric.items",
+      alpha = "numeric.alpha"
     )
 
   # Remove items and alpha if not and index
@@ -736,13 +736,13 @@ tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T, 
     result$alpha <- NULL
   } else {
     result <- result %>%
-      dplyr::mutate(dplyr::across(c(items), ~ as.character(round(., 0)))) %>%
-      dplyr::mutate(dplyr::across(c(alpha), ~ as.character(round(., 2))))
+      dplyr::mutate(dplyr::across(tidyselect::all_of("items"), ~ as.character(round(., 0)))) %>%
+      dplyr::mutate(dplyr::across(tidyselect::all_of("alpha"), ~ as.character(round(., 2))))
   }
 
   # Get item labels from the attributes
   if (labels) {
-    result <- labs_replace_names(result, item, codebook(data, {{ cols }}))
+    result <- labs_replace_names(result, "item", codebook(data, {{ cols }}))
     attr(result, "limits") <- get_limits(data, {{ cols }}, negative)
 
     attr(result, "scale") <- codebook(data, {{ cols }}) %>%
@@ -753,8 +753,8 @@ tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T, 
   # TODO: remove common postfix
   prefix <- get_prefix(result$item)
   if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(item, stringr::fixed(prefix)))
-    result <- dplyr::mutate(result, item = ifelse(item == "", prefix, item))
+    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, stringr::fixed(prefix)))
+    result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
   }
 
 
@@ -906,14 +906,14 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, value
 
   # Add labels
   if (labels) {
-    result <- labs_replace_names(result, item, codebook(data, {{ cols }}))
+    result <- labs_replace_names(result, "item", codebook(data, {{ cols }}))
   }
 
   # Remove common item prefix
   prefix <- get_prefix(result$item)
   if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(item, prefix))
-    result <- dplyr::mutate(result, item = ifelse(item == "", prefix, item))
+    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, prefix))
+    result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
   }
 
   # Rename first column
@@ -941,36 +941,12 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, value
 #' @param significant Only show significant values
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
-#' @export
 #' @importFrom rlang .data
+#' @export
 tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = F, labels=T, ...) {
-  # Check parameters
+
+  # Checks
   check_is_dataframe(data)
-  # TODO: Check that at least one column is selected
-
-  # # Get positions of cols
-  # cols <- tidyselect::eval_select(
-  #   expr = enquo(cols),
-  #   data = data[unique(names(data))],
-  #   allow_rename = FALSE,
-  #   error_call = rlang::error_call
-  # )
-
-  # Same or different items?
-  # if (missing(cols_cor)) {
-  #   cols_cor <- cols
-  # }
-
-  # else {
-  #
-  #   cols_cor <- tidyselect::eval_select(
-  #     expr = enquo(cols_cor),
-  #     data = data[unique(names(data))],
-  #     allow_rename = FALSE,
-  #     error_call = rlang::error_call
-  #   )
-  # }
-
 
   cols <- tidyselect::eval_select(expr = enquo(cols), data = data)
 
@@ -981,50 +957,36 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
   }
 
   result <- expand.grid(x = cols, y = cols_cor, stringsAsFactors = FALSE) %>%
-    dplyr::mutate(x_name = names(x), y_name = names(y)) %>%
+    dplyr::mutate(x_name = names(.data$x), y_name = names(.data$y)) %>%
     dplyr::mutate(
       test = purrr::map2(
-        .$x, .$y,
+        .data$x, .data$y,
         function(x, y) stats::cor.test(data[[x]], data[[y]], method = method)
       ),
-      p = map(test, function(x) x$p.value),
-      value = purrr::map(test, function(x) as.numeric(x$estimate)),
-      stars = get_stars(p)
+      p = map(.data$test, function(x) x$p.value),
+      value = purrr::map(.data$test, function(x) as.numeric(x$estimate)),
+      stars = get_stars(.data$p)
     ) %>%
     dplyr::select(item = "x_name", target = "y_name", "value", "p", "stars")
-
-
-  # TODO: Add labels
-  # codes <- data %>%
-  #   dplyr::select(!!cols) %>%
-  #   codebook() %>%
-  #   dplyr::distinct(dplyr::across(tidyselect::all_of(c("item", "label"))))
-  #
-  # if (nrow(codes) > 0) {
-  #   result <- result %>%
-  #     dplyr::left_join(codes, by=c("item")) %>%
-  #     dplyr::mutate(item = dplyr::coalesce(label, item)) %>%
-  #     dplyr::select(-label)
-  # }
 
 
   # Remove common item prefix
   prefix <- get_prefix(result$item)
   if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(item, prefix))
-    result <- dplyr::mutate(result, item = dplyr::if_else(item == "", prefix, item))
+    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, prefix))
+    result <- dplyr::mutate(result, item = dplyr::if_else(.data$item == "", prefix, .data$item))
   }
 
   prefix <- get_prefix(result$target)
   if (prefix != "") {
-    result <- dplyr::mutate(result, target = stringr::str_remove(target, prefix))
-    result <- dplyr::mutate(result, target = ifelse(target == "", prefix, target))
+    result <- dplyr::mutate(result, target = stringr::str_remove(.data$target, prefix))
+    result <- dplyr::mutate(result, target = ifelse(.data$target == "", prefix, .data$target))
   }
 
   # Create table
   result <- result %>%
-    dplyr::mutate(value = paste0(round(unlist(value), 2), stars)) %>%
-    dplyr::mutate(value = ifelse(significant & (p >= 0.1), "", value)) %>%
+    dplyr::mutate(value = paste0(round(unlist(.data$value), 2), .data$stars)) %>%
+    dplyr::mutate(value = ifelse(significant & (.data$p >= 0.1), "", .data$value)) %>%
     dplyr::select("item", "target", "value")
 
   result <- result %>%
@@ -1066,7 +1028,6 @@ knit_table <- function(df, ...) {
   if (is.null(digits)) {
     digits <- getOption("digits")
   }
-
 
   if (knitr::is_html_output()) {
     # Replace \n by <br>
