@@ -23,6 +23,19 @@ test_that("Missing labels", {
     expect_snapshot()
 })
 
+# Detect the scale
+test_that("Factors are unordered", {
+  data %>%
+    get_direction(adopter) |>
+    expect_equal(0)
+})
+
+test_that("Items are ordered", {
+  data %>%
+    get_direction(use_private) |>
+    expect_equal(1)
+})
+
 # Test store and clear labels
 test_that("Store and clear the codebook", {
   data %>%

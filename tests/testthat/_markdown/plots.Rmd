@@ -38,7 +38,11 @@ plot_counts_items(data, starts_with("cg_adoption_"), numbers = "p")
 ### 3. Two variables: Stacked frequency plot of innovator type by gender
 
 ```{r}
-plot_counts_one_grouped(data, adopter, sd_gender, prop = "rows")
+
+# Test whether last categories' percentage is omitted in ordered plots
+plot_counts_one_grouped(data, adopter, sd_gender, prop = "rows", numbers="p", ordered = -1)
+
+# Test whether the figure is flipped
 plot_counts_one_grouped(data, adopter, sd_gender, prop = "cols")
 ```
 
