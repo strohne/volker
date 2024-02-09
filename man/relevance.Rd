@@ -9,14 +9,13 @@ relevance(p, lambda = 0.6)
 \arguments{
 \item{p}{The matrix of topic-term-probabilities.
 Each row is a topic. Each column is a term.}
+
+\item{lambda}{Relevance is p for lambda = 1 and the probability shift for lambda = 0.}
 }
 \value{
 A matrix of the same shape as p with relevance scores
 }
 \description{
-Relevance is p for lambda = 1 and the probability shift for lambda = 0.
-}
-\details{
 See section 3 in https://nlp.stanford.edu/events/illvi2014/papers/sievert-illvi2014.pdf
 See http://vis.stanford.edu/files/2012-Termite-AVI.pdf and
 https://nlp.stanford.edu/events/illvi2014/papers/sievert-illvi2014.pdf
