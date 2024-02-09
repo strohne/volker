@@ -132,9 +132,6 @@
 
     Code
       .
-    Warning <lifecycle_warning_deprecated>
-      `tab_multi_means()` was deprecated in volker 1.0.0.
-      i Please use `tab_metrics_items_grouped()` instead.
     Output
       
       

@@ -46,7 +46,7 @@ test_that("Compare means of multiple items", {
 test_that("Missing values make no trouble", {
   data %>%
     dplyr::bind_rows(tibble::tibble(sd_gender = c("X", "X", "X"))) %>%
-    volker::tab_multi_means(tidyselect::starts_with("cg_adoption_"), sd_gender) %>%
+    volker::tab_metrics_items_grouped(tidyselect::starts_with("cg_adoption_"), sd_gender) %>%
     expect_snapshot()
 })
 
