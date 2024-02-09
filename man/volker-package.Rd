@@ -4,19 +4,27 @@
 \name{volker-package}
 \alias{volker}
 \alias{volker-package}
-\title{volker: Report summaries and graphics for survey data}
+\title{volker: High-level functions for tabulating, charting and reporting survey data.}
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-The package provides functions to create tables and plots to be included in Markdown reports. Boiled down to the basics, with labeling features and automatic output selection.
+Craft polished tables and plots in Markdown reports. Simply choose whether to treat your data as counts or metrics, and the package will automatically generate well-designed default tables and plots for you. Boiled down to the basics, with labeling features and simple interactive reports. All functions are Tidyverse compatible.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/strohne/volker}
+  \item Report bugs at \url{https://github.com/strohne/volker/issues}
+}
+
 }
 \author{
-\strong{Maintainer}: Jakob Jünger \email{jakob.juenger@uni-muenster.de}
+\strong{Maintainer}: Jakob Jünger \email{jakob.juenger@uni-muenster.de} (\href{https://orcid.org/0000-0003-1860-6695}{ORCID})
 
 Other contributors:
 \itemize{
   \item Henrieke Kotthoff \email{henrieke.kotthoff@uni-muenster.de} [contributor]
-  \item Chantal Gärtner \email{chantal.gaertner@uni-muenster.de} [contributor]
+  \item Chantal Gärtner \email{chantal.gaertner@uni-muenster.de} (\href{https://orcid.org/0000-0002-3653-6013}{ORCID}) [contributor]
 }
 
 }

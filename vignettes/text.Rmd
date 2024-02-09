@@ -39,7 +39,7 @@ topics <- data |>
 
 # Extract the phi / probability matrix
 lda_fit <- attr(topics$tpc_topic,"lda")
-lda_phi <- modeltools::posterior(fit)$terms %>% as.matrix()
+lda_phi <- modeltools::posterior(lda_fit)$terms %>% as.matrix()
 
 # Rows sum up to 1 because each topic generates a word, we just don't know which word
 rowSums(lda_phi)
