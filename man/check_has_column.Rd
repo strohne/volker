@@ -4,7 +4,7 @@
 \alias{check_has_column}
 \title{Check whether a column exist and stop if not}
 \usage{
-check_has_column(data, col, msg = NULL, stopit = T)
+check_has_column(data, col, msg = NULL)
 }
 \arguments{
 \item{data}{A data frame}
@@ -12,8 +12,6 @@ check_has_column(data, col, msg = NULL, stopit = T)
 \item{col}{A column name}
 
 \item{msg}{A custom error message if the check fails}
-
-\item{stopit}{If true, the execution stops when a column is missing}
 }
 \value{
 boolean Whether the column exists

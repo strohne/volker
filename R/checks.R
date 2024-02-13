@@ -33,14 +33,20 @@ check_is_dataframe <- function(obj, msg=NULL, stopit=T) {
 #' @param data A data frame
 #' @param col A column name
 #' @param msg A custom error message if the check fails
-#' @param stopit If true, the execution stops when a column is missing
 #' @return boolean Whether the column exists
-check_has_column <- function(data, col, msg=NULL, stopit = T) {
+check_has_column <- function(data, col, msg=NULL) {
   colname <- as.character(rlang::get_expr(rlang::enquo(col)))
-  check <- colname %in% colnames(data)
 
-  if (!check && stopit) {
-    msg <- dplyr::coalesce(msg, "The column ", colname, " does not exist, check your parameters.")
+  check <- colname != ""
+  if (!check ) {
+    msg <- dplyr::coalesce(msg, paste0("Did you miss to say which column to use?"))
+    stop(msg, call. = F)
+  }
+
+
+  check <- colname %in% colnames(data)
+  if (!check ) {
+    msg <- dplyr::coalesce(msg, paste0("The column ", colname, " does not exist, check your parameters."))
     stop(msg, call. = F)
   }
 
