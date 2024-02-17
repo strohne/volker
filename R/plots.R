@@ -112,18 +112,21 @@ plot_metrics <- function(data, cols, col_group=NULL, ...) {
 #' @export
 plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ...) {
 
+  # 1. Checks
   # Check columns
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
 
-  tab <- data %>%
-    tab_counts_one({{ col }}, percent = F, labels = labels)
+  # 2. Data
+  # Count data
+  result <- data %>%
+    dplyr::count({{ col }}) %>%
+    tidyr::drop_na() %>%
+    dplyr::mutate(p = (.data$n / sum(.data$n)) * 100)
 
-  # Formatting
-  result <- tab %>%
-    dplyr::mutate(p = .data$p * 100) %>%
-    dplyr::rename(Item = 1) %>%
-    dplyr::filter(!(.data$Item %in% c("Total", "Missing"))) %>%
+
+  # Numbers
+  result <- result %>%
     dplyr::mutate(
       .values = dplyr::case_when(
         .data$p < VLKR_LOWPERCENT ~ "",
@@ -133,14 +136,25 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ..
       )
     )
 
+  # Item labels
+  result <- result |>
+    dplyr::mutate( "{{ col }}" := as.factor({{ col }}))
+
+  if (labels) {
+    result <- labs_replace_values(result, {{ col }}, codebook(data, {{ col }}))
+  }
+
+  # 3. Plot
   # TODO: Make dry, see plot_item_counts and tab_group_counts
   pl <- result %>%
-    ggplot2::ggplot(ggplot2::aes(.data$Item, y = .data$p / 100)) +
+    ggplot2::ggplot(ggplot2::aes({{ col }}, y = .data$p / 100)) +
     ggplot2::geom_col(fill = VLKR_FILLCOLOR) +
+
     # TODO: make limits configurable
     # scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
+
     ggplot2::scale_y_continuous(labels = scales::percent) +
-    #scale_x_discrete(limits=rev) +
+    ggplot2::scale_x_discrete(limits=rev) +
     ggplot2::ylab("Share in percent") +
     ggplot2::coord_flip() +
     ggplot2::theme(
@@ -153,6 +167,7 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ..
       plot.caption.position = "plot"
     )
 
+  # Plot numbers
   if (!is.null(numbers)) {
     pl <- pl +
       ggplot2::geom_text(
@@ -162,9 +177,9 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ..
       )
   }
 
-  # Get title
+  # Title
   if (title == T) {
-    title <- colnames(tab)[1]
+    title <- get_title(data, {{ col }})
   } else if (title == F) {
     title <- NULL
   }
@@ -172,9 +187,9 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ..
     pl <- pl + ggplot2::ggtitle(label = title)
   }
 
-  # Get base
+  # Base
   # TODO: report missing cases
-  base_n <- sum(tab$n[!(tab[[1]] %in% c("Total", "Missing"))])
+  base_n <- nrow(data)
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
   # Pass row number and label length to the knit_plot() function
@@ -210,6 +225,7 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ..
 #' @importFrom rlang .data
 plot_counts_one_grouped <- function(data, col, col_group, category = NULL, ordered = NULL, missings = F, prop = "total", numbers = NULL, title = T, labels = T, ...) {
 
+  # 1. Checks
   # Check columns
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
@@ -225,35 +241,39 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
     #stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
   }
 
-  # Calculate data
-  tab <- data %>%
-    tab_counts_one_grouped(
-      {{ col }}, {{ col_group }},
-      values = "n", missings = missings,
-      percent = F, labels = labels
-    )
+  # 2. Calculate data
+  if (!missings) {
+    data <- data %>%
+      tidyr::drop_na({{ col }}, {{ col_group }})
+  }
+
+  #
+  # 1. Count
+  #
+  result <- data %>%
+    dplyr::count({{ col }}, {{ col_group }})
 
   # Detect whether the categories are binary
-  categories <- dplyr::select(tab, -1, -tidyselect::matches("^Total|Missing")) %>% colnames()
+  categories <- dplyr::pull(result, {{ col }}) |> unique() |> as.character()
   if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
     category <- "TRUE"
   }
   scale <-dplyr:: coalesce(ordered, get_direction(data, {{ col }}))
 
-  result <- tab %>%
-    dplyr::rename(Item = 1) %>%
-    dplyr::filter(!(.data$Item %in% c("Total", "Missing"))) %>%
-    dplyr::select(-tidyselect::matches("^Total")) %>%
-    tidyr::pivot_longer(
-      -tidyselect::all_of("Item"),
-      names_to = "value",
-      values_to = "n",
-    ) %>%
-    dplyr::mutate(value = factor(.data$value, levels = categories))
+  data <- data |>
+    dplyr::mutate(data, "{{ col_group }}" := as.factor({{ col_group }}))
+
+  if (labels) {
+    result <- labs_replace_values(result, {{ col_group }}, codebook(data, {{ col_group }}))
+  }
+
+  result <- result %>%
+    dplyr::mutate(item = as.factor({{ col_group }})) |>
+    dplyr::mutate(value = factor({{ col }}, levels = categories))
 
   if ((prop == "rows") || (prop == "cols")) {
     result <- result %>%
-      dplyr::group_by(dplyr::across(tidyselect::all_of("Item"))) %>%
+      dplyr::group_by({{ col_group }}) %>%
       dplyr::mutate(p = (.data$n / sum(.data$n)) * 100) %>%
       dplyr::ungroup()
   } else {
@@ -279,14 +299,14 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 
   # Get title
   if (title == T) {
-    title <- colnames(tab)[1]
+    title <- get_title(data, {{ col }})
   } else if (title == F) {
     title <- NULL
   }
 
   # Get base
   # TODO: report missing cases
-  base_n <- sum(tab$Total[!(tab[[1]] %in% c("Total", "Missing"))])
+  base_n <- nrow(data)
 
   .plot_bars(
     result,
@@ -324,29 +344,40 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
   # Check parameters
   check_is_dataframe(data)
 
-  tab <- data %>%
-    tab_counts_items({{ cols }}, values = "n", missings=missings, percent = F, labels=labels)
+  # Remove missings
+  # TODO: Output a warning
+  if (!missings) {
+    data <- data %>%
+      tidyr::drop_na({{ cols }})
+  }
+
+  # Calculate n and p
+  result <- data %>%
+    tidyr::drop_na({{ cols }}) %>%
+    labs_clear({{ cols }}) %>%
+    tidyr::pivot_longer(
+      {{ cols }},
+      names_to = "item",
+      values_to = "value"
+    ) %>%
+    dplyr::count(dplyr::across(tidyselect::all_of(c("item", "value")))) %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
+    dplyr::mutate(p = (.data$n / sum(.data$n)) * 100) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(value = as.factor(.data$value)) %>%
+    dplyr::arrange(.data$value)
 
   # Detect whether the categories are binary
-  categories <- dplyr::select(tab, -1, -tidyselect::matches("^Total|Missing")) %>% colnames()
+  categories <- result$value |> unique() |> as.character()
   if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
     category <- "TRUE"
   }
+
   scale <- dplyr::coalesce(ordered, get_direction(data, {{ cols }}))
   lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
 
-  result <- tab %>%
-    dplyr::rename(Item = 1) %>%
-    dplyr::select(-tidyselect::matches("^Total$")) %>%
-    tidyr::pivot_longer(
-      -tidyselect::all_of("Item"),
-      names_to = "value",
-      values_to = "n"
-    ) %>%
+  result <- result %>%
     dplyr::mutate(value = factor(.data$value, levels = categories)) %>%
-    dplyr::group_by(dplyr::across(tidyselect::all_of("Item"))) %>%
-    dplyr::mutate(p = (.data$n / sum(.data$n)) * 100) %>%
-    dplyr::ungroup() %>%
     dplyr::mutate(
       .values = dplyr::case_when(
         (is.null(category)) & (scale != 0) & (.data$value == lastcategory) ~ "",
@@ -357,16 +388,32 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
       )
     )
 
-  # Get title
+  # Item labels
+  if (labels) {
+    result <- labs_replace_names(result, "item", codebook(data, {{ cols }}))
+    result <- labs_replace_values(result, "value", codebook(data, {{ cols }}))
+  }
+
+  # Remove common item prefix
+  prefix <- get_prefix(result$item)
+  if (prefix != "") {
+    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, prefix))
+    result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
+  }
+
+  # Order item levels
+  result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
+
+  # Title
   if (title == T) {
-    title <- colnames(tab)[1]
+    title <- get_title(data, {{ cols }})
   } else if (title == F) {
     title <- NULL
   }
 
-  # Get base
+  # Base
   # TODO: report missing cases
-  base_n <- max(dplyr::select(tab, "Total"))
+  base_n <- nrow(data)
 
   .plot_bars(
     result,
@@ -528,7 +575,8 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 
   # Add scales, labels and theming
   pl <- pl +
-    ggplot2::scale_y_discrete(labels = scales::label_wrap(40)) +
+    ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits = rev) +
+
 
     # TODO: set limits
     #coord_flip(ylim = limits) +
@@ -601,6 +649,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 
   # Remove negative values
   # TODO: warn if any negative values were recoded
+  # TODO: Call prepare in every function and replace there, same for missings
   if (!negative) {
     data <- data %>%
       labs_store() %>%
@@ -631,15 +680,8 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
     result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
   }
 
-
-  # Rename first column
-  if (title == T && (prefix != "")) {
-    title <- sub("[ :,]+$", "", prefix)
-  }
-  else if (title == T) {
-    title <- "Item"
-  }
-
+  # Order item levels
+  result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
 
   # Create plot
   pl <- result %>%
@@ -666,7 +708,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 
   # Add scales, labels and theming
   pl <- pl +
-    ggplot2::scale_y_discrete(labels = scales::label_wrap(40)) +
+    ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits=rev) +
 
     # TODO: set limits
     #coord_flip(ylim = limits) +
@@ -860,15 +902,12 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   }
 
   pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(.data$Item, y = .data$p / 100, fill = .data$value)) +
+    ggplot2::ggplot(ggplot2::aes(.data$item, y = .data$p / 100, fill = .data$value)) +
     ggplot2::geom_col() +
-    # scale_fill_manual(values=c("transparent", "black")) +
-    # scale_y_reverse(labels=c("100%","75%","50%","25%","0%")) +
 
-    # Add 0.1 to avoid "Removed 1 rows containing missing values (`geom_col()`)."
-    # scale_y_continuous(limits =c(0,100.1), labels=c("0%","25%","50%","75%","100%")) +
     ggplot2::scale_y_continuous(labels = scales::percent) +
     ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
+
     ggplot2::ylab("Share in percent") +
     ggplot2::coord_flip() +
     ggplot2::theme(

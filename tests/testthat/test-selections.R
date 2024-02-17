@@ -39,6 +39,7 @@ test_that("Single column selections work", {
   )
 })
 
+
 # Multiple columns
 test_that("List column selections work", {
   expect_no_error(

@@ -8,7 +8,6 @@ library(volker)
 data <- volker::chatgpt
 data <- prepare(data)
 
-
 # Get labels
 test_that("Labels", {
   expect_snapshot(volker::codebook(data))
@@ -52,5 +51,18 @@ test_that("Store, clear and restore the codebook", {
     volker::labs_clear() %>%
     volker::labs_restore() %>%
     codebook() %>%
+    expect_snapshot()
+})
+
+# Replace item labels
+test_that("Item labels are replaced and keep their order", {
+
+  # TODO: even if the column was converted to character beforehand
+  data |>
+    dplyr::select(adopter) |>
+    #  dplyr::mutate(adopter = as.character(adopter)) |>
+    volker:::labs_replace_values(adopter, volker::codebook(data)) |>
+    dplyr::pull(adopter) |>
+    levels() |>
     expect_snapshot()
 })

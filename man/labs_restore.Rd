@@ -4,10 +4,12 @@
 \alias{labs_restore}
 \title{Restore labels from the codebook store in the codebook attribute.}
 \usage{
-labs_restore(data, values = T)
+labs_restore(data, cols = NULL, values = T)
 }
 \arguments{
 \item{data}{A data frame}
+
+\item{cols}{A tidyselect column selection}
 
 \item{values}{If TRUE (default), restores value labels in addition to item labels.
 Item labels correspond to columns, value labels to values in the columns.}

@@ -4,22 +4,33 @@
 \alias{prepare}
 \title{Prepare metadata and types of dataframe columns}
 \usage{
-prepare(data, remove.na = T)
+prepare(data, remove.na.levels = T, remove.na.numbers = T, add.whitespace = T)
 }
 \arguments{
 \item{data}{Data frame}
 
-\item{remove.na}{Whether residual values should be replaced by NA}
+\item{add.whitespace}{Add whitespace after slashes to better label breaks}
+
+\item{remove.levels}{Remove residual values from factor columns.
+Either a character vector with residual values or TRUE to use defaults in \link{VLKR_NA_LEVELS}}
+
+\item{remove.numbers}{Remove residual values from numeric columns.
+Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}}
 }
 \value{
-Data frame
+Data frame with vlkr_df class (the class is used to prevent double preparation)
 }
 \description{
+The tibble remebers whether it was already prepared and
+the operations are only performed once in the first call.
+}
+\details{
 Prepares Sosci data:
 \itemize{
 \item Remove the avector class from all columns
 (comes from Sosci and prevents combining vectors)
-\item Recode residual factor values to NA ("\link{NA} nicht beantwortet")
-\item Recode -9 values to NA
+\item Recode residual factor values to NA (e.g. "\link{NA} nicht beantwortet")
+\item Recode residual numeric values to NA (e.g. -9)
+\item Add whitespace after slashes to better label breaks
 }
 }

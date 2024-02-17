@@ -11,7 +11,7 @@ labs_clear(data, cols, labels = NULL)
 
 \item{cols}{Tidyselect columns}
 
-\item{labels}{The attributes to remove. NULL to remove all attributes.}
+\item{labels}{The attributes to remove. NULL to remove all attributes except levels and class}
 }
 \value{
 A tibble with comments removed

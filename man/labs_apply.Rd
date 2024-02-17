@@ -4,7 +4,7 @@
 \alias{labs_apply}
 \title{Set variable labels by setting their comment attributes}
 \usage{
-labs_apply(data, codes, values = T)
+labs_apply(data, codes, cols = NULL, values = T)
 }
 \arguments{
 \item{data}{A tibble}
@@ -12,12 +12,17 @@ labs_apply(data, codes, values = T)
 \item{codes}{A tibble in \link{codebook} format.
 To set column labels, use item_name and item_label columns.}
 
+\item{cols}{A tidy column selection. Set to NULL (default) to apply to all columns
+found in the codebook.
+Restricting the columns is helpful when you  want to set value labels.
+In this case, provide a tibble with value_name and value_label columns
+and specify the columns that should be modified.}
+
 \item{values}{If TRUE (default), sets value labels.
-- For item values:
-Value labels are retrieved from the columns
-value_name and value_label in your codebook.
 - For factors: Factor levels and order are retrieved
-from the value_label column.}
+from the value_label column.
+- For item values: they are retrieved from both the columns
+value_name and value_label in your codebook.}
 }
 \value{
 A tibble with new labels

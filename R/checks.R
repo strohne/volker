@@ -23,6 +23,14 @@ check_is_dataframe <- function(obj, msg=NULL, stopit=T) {
     stop(msg, call. = F)
   }
 
+  check <- (nrow(obj) * ncol(obj)) > 0
+
+  if (!check && stopit) {
+    msg <- dplyr::coalesce(msg, "Check your data: Are they empty?")
+    stop(msg, call. = F)
+  }
+
+
   check
 }
 

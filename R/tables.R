@@ -160,7 +160,7 @@ tab_counts_one <- function(data, col, missings = T, percent = T, labels = T, ...
 
   }
 
-  .to_vlk_tab(result, digits=0)
+  .to_vlkr_tab(result, digits=0)
 }
 
 #' Output frequencies cross tabulated with a grouping column
@@ -344,7 +344,7 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
     }
   }
 
-  .to_vlk_tab(result, digits=0)
+  .to_vlkr_tab(result, digits=0)
 }
 
 #' Output frequencies for multiple variables
@@ -416,7 +416,6 @@ tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), perce
   }
 
   # Add missings
-
   if (missings) {
     result_missing <-  data %>%
       labs_clear({{ cols }}) %>%
@@ -439,6 +438,7 @@ tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), perce
     result_n <- dplyr::left_join(result_n, result_missing, by="item")
     result_p <-dplyr::mutate(result_p, Missing="")
   }
+
   # Combine n and p if requested
   if (("n" %in% values) && ("p" %in% values)) {
     result <- zip_tables(result_p, result_n, brackets = T, newline = F)
@@ -488,7 +488,7 @@ tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), perce
     result <- dplyr::rename(result, Item = tidyselect::all_of("item"))
   }
 
-  .to_vlk_tab(result, digits= 0)
+  .to_vlkr_tab(result, digits= 0)
 }
 
 
@@ -592,7 +592,7 @@ tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T, ...) 
     result <- dplyr::rename(result, {{ label }} := {{ col }})
   }
 
-  .to_vlk_tab(result)
+  .to_vlkr_tab(result)
 }
 
 
@@ -684,7 +684,7 @@ tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits =
   # TODO: Add limits
   # attr(data[[newcol]],"limits")
 
-  .to_vlk_tab(result, digits= digits)
+  .to_vlkr_tab(result, digits= digits)
 }
 
 
@@ -765,7 +765,7 @@ tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T, 
     result <- dplyr::rename(result, Item = tidyselect::all_of("item"))
   }
 
-  .to_vlk_tab(result, digits= digits)
+  .to_vlkr_tab(result, digits= digits)
 }
 
 #' Output the means for groups in one or multiple columns
@@ -925,7 +925,7 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, value
   }
 
 
-  .to_vlk_tab(result, digits= digits)
+  .to_vlkr_tab(result, digits= digits)
 }
 
 
@@ -993,7 +993,7 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
     tidyr::pivot_wider(names_from = "target", values_from = "value") %>%
     dplyr::rename(Item = tidyselect::all_of("item"))
 
-  .to_vlk_tab(result, digits= 2)
+  .to_vlkr_tab(result, digits= 2)
 }
 
 #' Add vlkr_tbl class
@@ -1005,7 +1005,7 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
 #' @param data A tibble
 #' @param digits Set the plot digits. If NULL (default), no digits are set.
 #' @return A tibble of class vlkr_tbl
-.to_vlk_tab <- function(data, digits=NULL) {
+.to_vlkr_tab <- function(data, digits=NULL) {
 
   if (!is.null(digits)) {
     attr(data, "digits") <- digits

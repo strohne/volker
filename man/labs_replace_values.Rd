@@ -19,6 +19,6 @@ Can be created by the \link{codebook} function, e.g. by calling
 Tibble with new labels
 }
 \description{
-Replace item value names in a column by their labels
+TODO: Make dry with labs_replace_names
 }
 \keyword{internal}

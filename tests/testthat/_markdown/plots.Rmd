@@ -25,9 +25,11 @@ data <- prepare(data)
 
 ## Frequencies of categorical variables
 
-### 1. One variable: Frequency plot of Gender
+### 1. One variable: Frequency plot of adopter
 ```{r}
-plot_counts_one(data, sd_gender)
+data |> 
+#  mutate(adopter =fct_rev(adopter)) |> 
+  plot_counts_one(adopter)
 ```
 
 ### 2. Multiple items: Frequency plot for adoption factors
@@ -40,10 +42,20 @@ plot_counts_items(data, starts_with("cg_adoption_"), numbers = "p")
 ```{r}
 
 # Test whether last categories' percentage is omitted in ordered plots
-plot_counts_one_grouped(data, adopter, sd_gender, prop = "rows", numbers="p", ordered = -1)
+data |> 
+  plot_counts_one_grouped(adopter, sd_gender, prop = "rows", numbers="p", ordered = -1)
+
+# Test order of items
+plot_counts_one_grouped(data, sd_gender, adopter)
 
 # Test whether the figure is flipped
 plot_counts_one_grouped(data, adopter, sd_gender, prop = "cols")
+
+# Test whether factor is reversed
+data |> 
+  mutate(adopter=forcats::fct_rev(adopter)) |> 
+  plot_counts_one_grouped(adopter, sd_gender, prop = "cols")
+
 ```
 
 ## Metric distributions

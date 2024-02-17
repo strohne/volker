@@ -113,16 +113,17 @@ labs_store <- function(data) {
 #' \link{labs_store}.
 #'
 #' @param data A data frame
+#' @param cols A tidyselect column selection
 #' @param values If TRUE (default), restores value labels in addition to item labels.
 #'              Item labels correspond to columns, value labels to values in the columns.
 #' @return A data frame
 #' @export
-labs_restore <- function(data, values=T) {
+labs_restore <- function(data, cols=NULL, values=T) {
 
   codes <- attr(data,"codebook")
 
   if (is.data.frame(codes)) {
-    data <- labs_apply(data, codes, values)
+    data <- labs_apply(data, codes, {{ cols }}, values)
   } else  {
     warning("No codebook found in the attributes.")
   }
@@ -134,61 +135,109 @@ labs_restore <- function(data, values=T) {
 #' @param data A tibble
 #' @param codes A tibble in \link{codebook} format.
 #'              To set column labels, use item_name and item_label columns.
+#' @param cols A tidy column selection. Set to NULL (default) to apply to all columns
+#'             found in the codebook.
+#'             Restricting the columns is helpful when you  want to set value labels.
+#'             In this case, provide a tibble with value_name and value_label columns
+#'             and specify the columns that should be modified.
 #' @param values If TRUE (default), sets value labels.
-#'               - For item values:
-#'                 Value labels are retrieved from the columns
-#'                 value_name and value_label in your codebook.
 #'               - For factors: Factor levels and order are retrieved
 #'                 from the value_label column.
+#'               - For item values: they are retrieved from both the columns
+#'                 value_name and value_label in your codebook.
 #' @return A tibble with new labels
+#' @importFrom rlang .data
 #' @export
-labs_apply <- function(data, codes, values=T) {
+labs_apply <- function(data, codes, cols=NULL, values=T) {
+
+  # Check
+  if ((nrow(codes) ==0)) {
+    return (data)
+  }
 
   # Fix column names
-  if (!"item_name" %in% colnames(codes)) {
+  if (!"item_name" %in% colnames(codes) && (colnames(codes)[1] != "value_name")) {
     colnames(codes)[1] <- "item_name"
   }
-  if (!"item_label" %in% colnames(codes)) {
+  if (!"item_label" %in% colnames(codes) && (colnames(codes)[2] != "value_label")) {
     colnames(codes)[2] <- "item_label"
   }
 
-  # Can only set value labels if present in the codebook
+  # Can only set item or value labels if present in the codebook
+  items <- ("item_name" %in% colnames(codes)) &&
+    ("item_label" %in% colnames(codes))
+
   values <- values &&
     ("value_name" %in% colnames(codes)) &&
     ("value_label" %in% colnames(codes))
 
-  # Set comment attributes
-  for (no in c(1:nrow(codes))) {
-    item_name <- codes$item_name[no]
-    item_label <- codes$item_label[no]
-
-    if (item_name %in% colnames(data)) {
-
-      # Column values
-      if (values) {
-        # Factor order
-        # TODO: respect existing levels
-        if (!is.null(codes$item_class) && (!is.na(codes$item_class[no])) && (codes$item_class[no] == "factor")) {
-          value_levels <- unique(codes$value_label[codes$item_name == item_name])
-          #TODO: ADD warning if levels in the codebook are missing
-          data[[item_name]] <- factor(data[[item_name]], levels=value_levels)
-        }
-
-        # Item labeling
-        value_name <- codes$value_name[no]
-        value_label <- codes$value_label[no]
-        if (!is.null(value_name) && !is.na(value_name)) {
-          attr(data[[item_name]], as.character(value_name)) <- value_label
-        }
-
+  # Set column labels (= comment attributes)
+  if (items) {
+    lastitem <- ""
+    for (no in c(1:nrow(codes))) {
+      item_name <- codes$item_name[no]
+      if (item_name %in% colnames(data) & (item_name != lastitem)) {
+        comment(data[[item_name]]) <- codes$item_label[no]
       }
+      lastitem <- item_name
+    }
+  }
 
-      # Column title
-      # TODO: only once per group is sufficient
-      comment(data[[item_name]]) <- item_label
 
+  # Set value labels
+  if (values) {
+    if (!rlang::quo_is_symbol(rlang::enquo(cols)) || missing(cols) || is.null(cols)) {
+      cols <- data |>
+        colnames()
+    } else {
+      cols <- dplyr::select(data, {{ cols }}) |>
+        colnames()
     }
 
+    for (col in cols) {
+      value_rows <- codes
+
+      if ("item_name" %in% colnames(value_rows)) {
+        value_rows <- value_rows |>
+          dplyr::filter(.data$item_name == col)
+      }
+
+
+      value_rows <- value_rows |>
+        dplyr::select(tidyselect::any_of(c("value_name", "value_label","item_class"))) |>
+        dplyr::filter(
+          !is.null(.data$value_name), !is.null(.data$value_label),
+          !is.na(.data$value_name), !is.na(.data$value_label)
+        )
+
+      if (nrow(value_rows) > 0) {
+        value_factor <- ("item_class" %in% colnames(value_rows)) &&
+          any(value_rows$item_class == "factor", na.rm=T)
+
+        # Factor order
+        if (value_factor) {
+          value_levels <- unique(value_rows$value_label)
+          current_levels <- unique(data[[col]])
+
+          if (length(setdiff(current_levels, value_levels)) > 0) {
+            warning(paste0(
+              "Check your levels: Not all factor levels of ", col,
+              " are present in the codebook. The old levels were kept.")
+            )
+          } else {
+            data[[col]] <- factor(data[[col]], levels=value_levels)
+          }
+        }
+        # Item labeling
+        else {
+          for (vr in c(1:nrow(value_rows))) {
+            value_name <- value_rows$value_name[vr]
+            value_label <- value_rows$value_label[vr]
+            attr(data[[col]], as.character(value_name)) <- value_label
+          }
+        }
+      }
+    }
   }
 
   data
@@ -199,30 +248,36 @@ labs_apply <- function(data, codes, values=T) {
 #'
 #' @param data A tibble
 #' @param cols Tidyselect columns
-#' @param labels The attributes to remove. NULL to remove all attributes.
+#' @param labels The attributes to remove. NULL to remove all attributes except levels and class
 #' @return A tibble with comments removed
 #' @export
 labs_clear <- function(data, cols, labels = NULL) {
 
-  remove_attr <-  function(x) {
+
+  remove_attr <-  function(x, labels=NULL) {
     if (is.null(labels)) {
-      attributes(x) <- NULL
-    } else {
-      attr(x, labels) <- NULL
+      labels <- setdiff(names(attributes(x)), c("class", "levels"))
+    }
+
+    for (label in labels) {
+      attr(x, label) <- NULL
     }
     x
   }
 
   if (missing(cols)) {
-    data <-  dplyr::mutate(data, dplyr::across(tidyselect::everything(), ~remove_attr(.)))
+    data <-  dplyr::mutate(data, dplyr::across(tidyselect::everything(), ~remove_attr(., labels)))
   } else {
-    data <-  dplyr::mutate(data, dplyr::across({{ cols }}, ~remove_attr(.)))
+    data <-  dplyr::mutate(data, dplyr::across({{ cols }}, ~remove_attr(., labels)))
   }
   data
 }
 
 
+
 #' Replace item names in a column by their labels
+#'
+#' TODO: Make dry with labs_replace_values
 #'
 #' @keywords internal
 #'
@@ -267,6 +322,8 @@ labs_replace_names <- function(data, col, codes) {
 
 #' Replace item value names in a column by their labels
 #'
+#' TODO: Make dry with labs_replace_names
+#'
 #' @keywords internal
 #'
 #' @param data A tibble
@@ -286,18 +343,28 @@ labs_replace_values <- function(data, col, codes) {
     col <- rlang::sym(col)
   }
 
+  levels_before <- data |>
+    dplyr::select(!! col) |>
+    dplyr::pull(1) |>
+    as.character() |>
+    unique()
 
   codes <- codes %>%
+    dplyr::filter(as.character(.data$value_name) %in% levels_before) |>
     dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) %>%
     dplyr::rename(.name = tidyselect::all_of("value_name"), .label = tidyselect::all_of("value_label")) %>%
     stats::na.omit()
-
 
   if (nrow(codes) > 0) {
     data <- data %>%
       dplyr::mutate(.name = !!col ) %>%
       dplyr::left_join(codes, by = ".name") %>%
-      dplyr::mutate(!!col := dplyr::coalesce(.data$.label, .data$.name)) %>%
+      dplyr::mutate(!!col := dplyr::coalesce(.data$.label, .data$.name))
+
+    data <- data |>
+      dplyr::mutate(!!col := factor(!!col, levels=codes$.label))
+
+    data <- data %>%
       dplyr::select(-tidyselect::all_of(c(".name", ".label")))
   }
 
