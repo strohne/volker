@@ -1062,6 +1062,10 @@ knit_plot <- function(pl) {
     fig_height <- (rows * lines_perrow * px_perline) + px_offset
   }
 
+  # if (length(dev.list()) > 0) {
+  #   dev.off()
+  # }
+
   pngfile <- tempfile(fileext = ".png", tmpdir = chunk_options$cache.path)
   suppressMessages(ggplot2::ggsave(
     pngfile,
@@ -1072,9 +1076,40 @@ knit_plot <- function(pl) {
     height = fig_height,
     units = "px",
     dpi = fig_dpi,
-    scale = fig_scale
+    scale = fig_scale,
+    dev = "png"
   ))
+  #dev.off()
 
   base64_string <- base64enc::base64encode(pngfile)
   paste0('<img src="data:image/png;base64,', base64_string, '" width="100%">')
 }
+
+
+#' Printing method for volker plots
+#'
+#' @keywords internal
+#'
+#' @param x The volker plot
+#' @param ... Further parameters passed to print()
+#' @export
+print.vlkr_plt <- function(x, ...) {
+
+  if (knitr::is_html_output()) {
+
+    # TODO: leads to endless recursion
+    # x <- knit_plot(x)
+    # x <- knitr::asis_output(x)
+    # knitr::knit_print(x)
+
+    NextMethod()
+  } else {
+    NextMethod()
+  }
+}
+
+#' @rdname print.vlkr_plt
+#' @method plot vlkr_plt
+#' @keywords internal
+#' @export
+plot.vlkr_plt <- print.vlkr_plt

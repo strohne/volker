@@ -9,7 +9,8 @@
 \arguments{
 \item{pl}{A ggplot2 object}
 
-\item{rows}{The number of items on the vertical axis. Will be automatically determined when NULL.}
+\item{rows}{The number of items on the vertical axis. Will be automatically determined when NULL.
+For stacked bar charts, don't forget to set the group parameter, otherwise it won't work}
 
 \item{maxlab}{The character length of the longest label to be plotted. Will be automatically determined when NULL.
 on the vertical axis}

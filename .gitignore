@@ -8,6 +8,7 @@ volker_*.tar.gz
 /Meta/
 inst/doc
 private
+cache/
 *_cache/
 plots/examples/*.html
 tests/testthat/_markdown/*.html
