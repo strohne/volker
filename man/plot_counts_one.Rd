@@ -4,7 +4,15 @@
 \alias{plot_counts_one}
 \title{Plot the frequency of  values in one column.}
 \usage{
-plot_counts_one(data, col, numbers = NULL, title = T, labels = T, ...)
+plot_counts_one(
+  data,
+  col,
+  numbers = NULL,
+  title = T,
+  labels = T,
+  clean = T,
+  ...
+)
 }
 \arguments{
 \item{data}{A tibble}
@@ -17,6 +25,8 @@ plot_counts_one(data, col, numbers = NULL, title = T, labels = T, ...)
 Disable the title with FALSE or provide a custom title as character value.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
+
+\item{clean}{Prepare data by \link{data_clean}.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }

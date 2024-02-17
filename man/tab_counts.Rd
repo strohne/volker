@@ -4,7 +4,7 @@
 \alias{tab_counts}
 \title{Output a frequency table}
 \usage{
-tab_counts(data, cols, col_group = NULL, ...)
+tab_counts(data, cols, col_group = NULL, clean = T, ...)
 }
 \arguments{
 \item{data}{A data frame}

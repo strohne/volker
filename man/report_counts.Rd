@@ -12,6 +12,7 @@ report_counts(
   numbers = NULL,
   title = T,
   close = T,
+  clean = T,
   ...
 )
 }
@@ -38,6 +39,8 @@ Classes for tabset pills will be added.}
 \item{close}{Whether to close the last tab (default value TRUE) or to keep it open.
 Keep it open to add further custom tabs by adding headers on the fifth level
 in Markdown (e.g. ##### Method)}
+
+\item{clean}{Prepare data by \link{data_clean}.}
 
 \item{...}{Parameters passed to the plot and tab functions.}
 }

@@ -229,9 +229,6 @@ labeled data from the Sosci Survey API:
     # Get your API link from Sosci Survey with settings "Daten als CSV für R abrufen"
     eval(parse("https://www.soscisurvey.de/YOURPROJECT/?act=YOURKEY&rScript", encoding="UTF-8"))
 
-    # Recode -9 values and prepare the codebook
-    ds = volker::prepare(ds)
-
     # Generate reportings
     report_counts(ds, A002)
 

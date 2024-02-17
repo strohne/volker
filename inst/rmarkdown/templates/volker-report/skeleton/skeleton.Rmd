@@ -36,8 +36,6 @@ theme_set(theme_bw())
 # Load example data: replace by your own dataset
 data <- volker::chatgpt
 
-# The prepare function from the volker package recodes -9 to NA
-data <- prepare(data)
 
 ```
 

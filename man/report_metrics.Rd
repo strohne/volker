@@ -11,7 +11,8 @@ report_metrics(
   ...,
   index = T,
   title = T,
-  close = T
+  close = T,
+  clean = T
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ Classes for tabset pills will be added.}
 \item{close}{Whether to close the last tab (default value TRUE) or to keep it open.
 Keep it open to add further custom tabs by adding headers on the fifth level
 in Markdown (e.g. ##### Method)}
+
+\item{clean}{Prepare data by \link{data_clean}.}
 }
 \description{
 Depending on your column selection, different types of plots and tables are generated.

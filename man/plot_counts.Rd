@@ -4,7 +4,7 @@
 \alias{plot_counts}
 \title{Output a frequency plot}
 \usage{
-plot_counts(data, cols, col_group = NULL, ...)
+plot_counts(data, cols, col_group = NULL, clean = T, ...)
 }
 \arguments{
 \item{data}{A data frame}

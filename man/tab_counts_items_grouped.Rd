@@ -4,7 +4,7 @@
 \alias{tab_counts_items_grouped}
 \title{Compare the values in multiple items by a grouping column.}
 \usage{
-tab_counts_items_grouped(data, cols, col_group, ...)
+tab_counts_items_grouped(data, cols, col_group, clean = T, ...)
 }
 \arguments{
 \item{data}{A tibble}
@@ -12,6 +12,8 @@ tab_counts_items_grouped(data, cols, col_group, ...)
 \item{cols}{The item columns that hold the values to summarize}
 
 \item{col_group}{The column holding groups to compare}
+
+\item{clean}{Prepare data by \link{data_clean}.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }

@@ -530,3 +530,22 @@ set_col_labels <- function(data, cols, labels) {
 #' @keywords internal
 #' @export
 set_col_label <- set_col_labels
+
+#' Prepare data
+#'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' The function `prepare` has been deprecated, please remove the call from your script.
+#'
+#' Usually, you don't need to call \link{data_clean} explicitly,
+#' it is called within plot, tab and idx functions.
+#'
+#' @keywords internal
+#' @export
+prepare <- function(data, ...) {
+
+  lifecycle::deprecate_warn("1.0.0", "prepare()", "data_clean()", always = TRUE)
+
+  data_clean(data,...)
+}

@@ -13,6 +13,7 @@ tab_counts_one_grouped(
   values = c("n", "p"),
   percent = T,
   labels = T,
+  clean = T,
   ...
 )
 }
@@ -32,6 +33,8 @@ tab_counts_one_grouped(
 \item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
+
+\item{clean}{Prepare data by \link{data_clean}.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }

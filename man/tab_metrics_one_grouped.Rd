@@ -11,6 +11,7 @@ tab_metrics_one_grouped(
   negative = F,
   digits = 1,
   labels = T,
+  clean = T,
   ...
 )
 }
@@ -26,6 +27,8 @@ tab_metrics_one_grouped(
 \item{digits}{The number of digits to print}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
+
+\item{clean}{Prepare data by \link{data_clean}.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.}
 }

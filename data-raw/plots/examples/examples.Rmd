@@ -15,7 +15,6 @@ library(volker)
 theme_set(theme_bw())
 
 data <- volker::chatgpt
-data <- prepare(data)
 
 # Simplify labels for examples
 data <- data |> 

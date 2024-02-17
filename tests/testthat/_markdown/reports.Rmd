@@ -20,8 +20,7 @@ library(tidyverse)
 library(volker)
 theme_set(theme_bw())
 
-# Recode -9 to NA
-data <- prepare(volker::chatgpt)
+data <- volker::chatgpt
 
 ```
 

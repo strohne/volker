@@ -10,9 +10,19 @@
 #'              Set to NULL (default) to automatically build a name
 #'              from the common column prefix, prefixed with "idx_"
 #' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param clean Prepare data by \link{data_clean}.
 #' @export
 #' @importFrom rlang .data
-add_idx <- function(data, cols, newcol = NULL, negative = FALSE) {
+add_idx <- function(data, cols, newcol = NULL, negative = FALSE, clean=T) {
+
+  # 1. Checks
+  check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
   idx <- data %>%
     dplyr::select({{ cols }})
 

@@ -5,7 +5,7 @@ library(volker)
 
 # Load and recode data
 data <- volker::chatgpt
-data <- volker::prepare(data)
+#data <- volker::data_clean(data)
 
 # Frequency table
 test_that("Frequency table", {

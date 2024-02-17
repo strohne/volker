@@ -1,3 +1,19 @@
+#' Prepare dataframe for tabs, plots, and index operations
+#'
+#' The tibble remebers whether it was already cleaned and
+#' the cleaning plan is only performed once in the first call.
+#'
+#' @param data Data frame
+#' @param plan The cleaning plan. By now, only "sosci" is supported. See \link{data_clean_sosci}.
+#' @return Cleaned data frame with vlkr_df class
+#' @export
+data_clean <- function(data, plan="sosci", ...) {
+  if (plan == "sosci") {
+    data <- data_clean_sosci(data,...)
+  }
+  data
+}
+
 #' Prepare metadata and types of dataframe columns
 #'
 #' The tibble remebers whether it was already prepared and
@@ -18,7 +34,7 @@
 #' @param add.whitespace Add whitespace after slashes to better label breaks
 #' @return Data frame with vlkr_df class (the class is used to prevent double preparation)
 #' @export
-prepare <- function(data, remove.na.levels = T, remove.na.numbers = T, add.whitespace=T) {
+data_clean_sosci <- function(data, remove.na.levels = T, remove.na.numbers = T, add.whitespace=T) {
 
   # Prepare only once
   if ("vlkr_df" %in% class(data)) {

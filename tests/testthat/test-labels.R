@@ -6,7 +6,7 @@ library(volker)
 
 # Load and recode data
 data <- volker::chatgpt
-data <- prepare(data)
+data <- volker::data_clean(data)
 
 # Get labels
 test_that("Labels", {

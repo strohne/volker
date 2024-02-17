@@ -20,9 +20,6 @@ library(tidyverse)
 library(volker)
 theme_set(theme_bw())
 
-# Recode -9 to NA
-data <- prepare(volker::chatgpt)
-
 ```
 
 Reports combine graphs, tables, indexes and additional output.´
@@ -61,7 +58,7 @@ report_counts(data, sd_gender)
 ```{r}
 data %>% 
   filter(sd_gender != "divers") %>% 
-  report_counts(adopter, sd_gender, prop="rows")
+  report_counts(adopter, sd_gender, prop="rows", title="Innovator")
 ```
 
 # Automatic index calculation

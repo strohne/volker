@@ -29,11 +29,6 @@ theme_set(theme_bw())
 # Load example data from the package
 data <- volker::chatgpt
 
-# The prepare() function makes typical survey output,
-# for example from Sosci Survey, ready for analysis.
-# Particularly, negative -9 values are recoded to NA.
-data <- volker::prepare(data)
-
 ```
 
 ## 1. One variable

@@ -11,6 +11,7 @@ tab_counts_items(
   values = c("n", "p"),
   percent = T,
   labels = T,
+  clean = T,
   ...
 )
 }
@@ -26,6 +27,8 @@ tab_counts_items(
 \item{percent}{Set to FALSE to prevent calculating percents from proportions}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
+
+\item{clean}{Prepare data by \link{data_clean}.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }

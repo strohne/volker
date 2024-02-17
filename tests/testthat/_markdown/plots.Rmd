@@ -18,9 +18,6 @@ theme_set(theme_bw())
 
 data <- volker::chatgpt
 
-# Recode -9 to NA
-data <- prepare(data)
-
 ```
 
 ## Frequencies of categorical variables

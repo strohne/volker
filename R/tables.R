@@ -15,7 +15,7 @@
 #' @param ... Other parameters passed to the appropriate table function
 #' @return A tibble
 #' @export
-tab_counts <- function(data, cols, col_group=NULL, ...) {
+tab_counts <- function(data, cols, col_group=NULL, clean=T, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -65,7 +65,7 @@ tab_counts <- function(data, cols, col_group=NULL, ...) {
 #' @param ... Other parameters passed to the appropriate table function
 #' @return A tibble
 #' @export
-tab_metrics <- function(data, cols, col_group=NULL, ...) {
+tab_metrics <- function(data, cols, col_group=NULL, clean=T, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -105,12 +105,18 @@ tab_metrics <- function(data, cols, col_group=NULL, ...) {
 #' @param missings Include missing values in the output (default TRUE)
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @importFrom rlang .data
 #' @export
-tab_counts_one <- function(data, col, missings = T, percent = T, labels = T, ...) {
-  # Check parameters
+tab_counts_one <- function(data, col, missings = T, percent = T, labels = T, clean=T, ...) {
+  # 1. Checks
   check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   # Remove missings
   # TODO: output a warning
@@ -173,15 +179,21 @@ tab_counts_one <- function(data, col, missings = T, percent = T, labels = T, ...
 #' @param values The values to output: n (frequency) or p (percentage) or both (the default).
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @importFrom rlang .data
 #' @export
-tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "total", values = c("n", "p"), percent = T, labels = T, ...) {
+tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "total", values = c("n", "p"), percent = T, labels = T, clean=T, ...) {
 
-  # Check parameters
+  # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
   check_has_column(data, {{ col_group }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   # Remove missings
   # TODO: output a warning
@@ -358,12 +370,18 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
 #' @param values The values to output: n (frequency) or p (percentage) or both (the default)
 #' @param percent Set to FALSE to prevent calculating percents from proportions
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @export
 #' @importFrom rlang .data
-tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), percent = T, labels = T, ...) {
-  # Check parameters
+tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), percent = T, labels = T, clean=T, ...) {
+  # 1. Check parameters
   check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   # Remove missings
   # TODO: Output a warning
@@ -499,14 +517,23 @@ tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), perce
 #' @param data A tibble
 #' @param cols The item columns that hold the values to summarize
 #' @param col_group The column holding groups to compare
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @keywords internal
 #' @export
 #' @importFrom rlang .data
-tab_counts_items_grouped <- function(data, cols, col_group, ...) {
-  # Check parameters
-  check_is_dataframe(data)
+tab_counts_items_grouped <- function(data, cols, col_group, clean=T, ...) {
+
   stop("Not implemented yet")
+
+    # 1. Check parameters
+  check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
 }
 
 #' Correlate the values in multiple items
@@ -516,14 +543,23 @@ tab_counts_items_grouped <- function(data, cols, col_group, ...) {
 #' @param data A tibble
 #' @param cols The source columns
 #' @param cols_cor The target columns or NULL to calculate correlations within the source columns
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @keywords internal
 #' @importFrom rlang .data
 #' @export
-tab_counts_items_cor <- function(data, cols, cols_cor, ...) {
-  # Check parameters
-  check_is_dataframe(data)
+tab_counts_items_cor <- function(data, cols, cols_cor, clean=T, ...) {
+
   stop("Not implemented yet")
+
+  # 1.Check parameters
+  check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
 }
 
 #' Output a five point summary table for the values in multiple columns
@@ -533,15 +569,20 @@ tab_counts_items_cor <- function(data, cols, cols_cor, ...) {
 #' @param digits The number of digits to print.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
 #' @export
 #' @importFrom rlang .data
-tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T, ...) {
+tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T, clean=T, ...) {
 
-  # Check parameters
+  # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{col}})
 
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   # Remove negative values
   # TODO: warn if any negative values were recoded
@@ -604,12 +645,18 @@ tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T, ...) 
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param digits The number of digits to print
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
 #' @export
 #' @importFrom rlang .data
-tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits = 1, labels = T, ...) {
-  # Check parameters
+tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits = 1, labels = T, clean=T, ...) {
+  # 1. Check parameters
   check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   # Remove negative values
   # TODO: warn if any negative values were recoded
@@ -695,12 +742,18 @@ tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits =
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param digits The number of digits to print
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
 #' @export
 #' @importFrom rlang .data
-tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T, ...) {
-  # Check parameters
+tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T, clean=T, ...) {
+  # 1. Check parameters
   check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   result <- data %>%
     dplyr::select({{ cols }})
@@ -779,12 +832,18 @@ tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T, 
 #' @param values The output metrics, mean (m), the standard deviation (sd) or both (the default).
 #' @param digits The number of digits to print.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
 #' @export
 #' @importFrom rlang .data
-tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, values = c("m", "sd"), digits = 1, labels = T, ...) {
-  # Check parameters
+tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, values = c("m", "sd"), digits = 1, labels = T, clean=T, ...) {
+  # 1. Check parameters
   check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   # Get positions of group cols
   col_group <- tidyselect::eval_select(expr = enquo(col_group), data = data)
@@ -940,13 +999,19 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, value
 #' @param method The output metrics, p = Pearson's R, s = Spearman's rho
 #' @param significant Only show significant values
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
 #' @importFrom rlang .data
 #' @export
-tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = F, labels=T, ...) {
+tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = F, labels=T, clean=T, ...) {
 
-  # Checks
+  # 1. Checks
   check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   cols <- tidyselect::eval_select(expr = enquo(cols), data = data)
 

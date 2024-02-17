@@ -15,7 +15,7 @@
 #' @param ... Other parameters passed to the appropriate plot function
 #' @return A ggplot2 plot object
 #' @export
-plot_counts <- function(data, cols, col_group=NULL, ...) {
+plot_counts <- function(data, cols, col_group=NULL, clean=T, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -64,7 +64,7 @@ plot_counts <- function(data, cols, col_group=NULL, ...) {
 #' @param ... Other parameters passed to the appropriate plot function
 #' @return A ggplot2 plot object
 #' @export
-plot_metrics <- function(data, cols, col_group=NULL, ...) {
+plot_metrics <- function(data, cols, col_group=NULL, clean=T, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -107,17 +107,23 @@ plot_metrics <- function(data, cols, col_group=NULL, ...) {
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @importFrom rlang .data
 #' @export
-plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ...) {
+plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, clean = T, ...) {
 
   # 1. Checks
   # Check columns
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
 
-  # 2. Data
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Data
   # Count data
   result <- data %>%
     dplyr::count({{ col }}) %>%
@@ -220,16 +226,21 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, ..
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @export
 #' @importFrom rlang .data
-plot_counts_one_grouped <- function(data, col, col_group, category = NULL, ordered = NULL, missings = F, prop = "total", numbers = NULL, title = T, labels = T, ...) {
+plot_counts_one_grouped <- function(data, col, col_group, category = NULL, ordered = NULL, missings = F, prop = "total", numbers = NULL, title = T, labels = T, clean=T, ...) {
 
   # 1. Checks
-  # Check columns
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
   check_has_column(data, {{ col_group }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   # Swap columns
   if (prop == "cols") {
@@ -241,7 +252,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
     #stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
   }
 
-  # 2. Calculate data
+  # 3. Calculate data
   if (!missings) {
     data <- data %>%
       tidyr::drop_na({{ col }}, {{ col_group }})
@@ -337,12 +348,18 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @export
 #' @importFrom rlang .data
-plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missings=F, numbers = NULL, title = T, labels = T, ...) {
-  # Check parameters
+plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missings=F, numbers = NULL, title = T, labels = T, clean=T, ...) {
+  # 1. Check parameters
   check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   # Remove missings
   # TODO: Output a warning
@@ -351,7 +368,8 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
       tidyr::drop_na({{ cols }})
   }
 
-  # Calculate n and p
+  # 3. Calculate data
+  # n and p
   result <- data %>%
     tidyr::drop_na({{ cols }}) %>%
     labs_clear({{ cols }}) %>%
@@ -432,14 +450,22 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
 #' @param data A tibble
 #' @param cols The item columns that hold the values to summarize
 #' @param col_group The column holding groups to compare
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @keywords internal
 #' @export
 #' @importFrom rlang .data
-plot_counts_items_grouped <- function(data, cols, col_group, ...) {
-  # Check parameters
-  check_is_dataframe(data)
+plot_counts_items_grouped <- function(data, cols, col_group, clean=T, ...) {
   stop("Not implemented yet")
+
+  # 1. Check parameters
+  check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
 }
 
 #' Output a histogram for a single metric variable
@@ -451,14 +477,20 @@ plot_counts_items_grouped <- function(data, cols, col_group, ...) {
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labels = T, ...) {
+plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labels = T, clean=T, ...) {
 
-  # Check parameters
+  # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   # Remove negative values
   # TODO: warn if any negative values were recoded
@@ -524,15 +556,21 @@ plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labe
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = F, title = T, labels = T, ...) {
+plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = F, title = T, labels = T, clean=T, ...) {
 
-  # Check parameters
+  # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
   check_has_column(data, {{ col_group }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   # Remove negative values
   # TODO: warn if any negative values were recoded
@@ -641,11 +679,17 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @export
-plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = T, labels = T, ...) {
-  # Check parameters
+plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = T, labels = T, clean=T, ...) {
+  # 1. Check parameters
   check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   # Remove negative values
   # TODO: warn if any negative values were recoded
@@ -761,14 +805,20 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @return A ggplot object
 #' @export
 #' @importFrom rlang .data
-plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, negative = F, title = T, labels = T, ...) {
-  # Check parameters
+plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, negative = F, title = T, labels = T, clean=T, ...) {
+  # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ col_group }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   # Get positions of group cols
   col_group <- tidyselect::eval_select(expr = rlang::enquo(col_group), data = data)

@@ -5,7 +5,7 @@ library(volker)
 
 # Load and recode data
 data <- volker::chatgpt
-data <- volker::prepare(data)
+data <- volker::data_clean(data)
 
 # Single column
 test_that("Single column selections work", {

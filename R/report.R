@@ -22,8 +22,14 @@
 #' @param close Whether to close the last tab (default value TRUE) or to keep it open.
 #'              Keep it open to add further custom tabs by adding headers on the fifth level
 #'              in Markdown (e.g. ##### Method)
+#' @param clean Prepare data by \link{data_clean}.
 #' @export
-report_metrics <- function(data, cols, col_group = NULL, ..., index=T, title = T, close=T) {
+report_metrics <- function(data, cols, col_group = NULL, ..., index=T, title = T, close=T, clean=T) {
+
+  if (clean) {
+    data <- data_clean(data)
+  }
+
   chunks <- list()
 
   # Add title
@@ -42,11 +48,11 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index=T, title = T
 
 
   # Add Plot
-  chunks <- plot_metrics(data, {{ cols}}, {{ col_group }}, ..., title = plot_title) %>%
+  chunks <- plot_metrics(data, {{ cols}}, {{ col_group }}, clean=clean, ..., title = plot_title) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
-  chunks <- tab_metrics(data, {{ cols}}, {{ col_group }}, ...) %>%
+  chunks <- tab_metrics(data, {{ cols}}, {{ col_group }}, clean=clean, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
 
   # Add index
@@ -93,34 +99,39 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index=T, title = T
 #' @param close Whether to close the last tab (default value TRUE) or to keep it open.
 #'              Keep it open to add further custom tabs by adding headers on the fifth level
 #'              in Markdown (e.g. ##### Method)
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Parameters passed to the plot and tab functions.
 #' @return A list of class vlkr_rprt containing the parts of the report
 #' @export
-report_counts <- function(data, cols, col_group = NULL, index=T, numbers=NULL, title = T, close=T, ...) {
-  #, prop = "total", numbers = "p", missings = F, ordered = NULL, index=T,
+report_counts <- function(data, cols, col_group = NULL, index=T, numbers=NULL, title = T, close=T, clean=T, ...) {
+
+  if (clean) {
+    data <- data_clean(data)
+  }
+
   chunks <- list()
 
   # Add title
-  if (!is.character(title) && (title == TRUE)) {
-    title <- get_title(data, {{ cols }})
-  } else if (!is.character(title)) {
-    title <- ""
-  }
+  if (knitr::is_html_output()) {
+    if (!is.character(title) && (title == TRUE)) {
+      title <- get_title(data, {{ cols }})
+    } else if (!is.character(title)) {
+      title <- ""
+    }
 
-  if (is.character(title) && knitr::is_html_output()) {
     chunks <- .add_to_vlkr_rprt(paste0("\n#### ", title, " {.tabset .tabset-pills}  \n"), chunks)
     plot_title <- F
   } else {
-    plot_title <- T
+    plot_title <- title
   }
 
 
   # Add Plot
-  chunks <- plot_counts(data, {{ cols }}, {{ col_group }}, ..., title = plot_title, numbers=numbers) %>%
+  chunks <- plot_counts(data, {{ cols }}, {{ col_group }}, ..., title = plot_title, numbers=numbers, clean=clean) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
-  chunks <- tab_counts(data, {{ cols }}, {{ col_group }}, ...) %>%
+  chunks <- tab_counts(data, {{ cols }}, {{ col_group }}, clean=clean, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
 
   # Add index

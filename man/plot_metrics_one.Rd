@@ -11,6 +11,7 @@ plot_metrics_one(
   negative = F,
   title = T,
   labels = T,
+  clean = T,
   ...
 )
 }
@@ -27,6 +28,8 @@ plot_metrics_one(
 Disable the title with FALSE or provide a custom title as character value.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
+
+\item{clean}{Prepare data by \link{data_clean}.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.}
 }
