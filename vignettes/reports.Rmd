@@ -20,6 +20,8 @@ library(tidyverse)
 library(volker)
 theme_set(theme_bw())
 
+# Load example data
+data <- volker::chatgpt
 ```
 
 Reports combine graphs, tables, indexes and additional output.´

@@ -5,6 +5,7 @@
 #'
 #' @param data Data frame
 #' @param plan The cleaning plan. By now, only "sosci" is supported. See \link{data_clean_sosci}.
+#' @param ... Other parameters passed to the appropriate cleaning function
 #' @return Cleaned data frame with vlkr_df class
 #' @export
 data_clean <- function(data, plan="sosci", ...) {

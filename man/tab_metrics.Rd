@@ -15,6 +15,8 @@ or multiple columns selected by methods such as starts_with().}
 
 \item{col_group}{Optional, a grouping column (without quotes).}
 
+\item{clean}{Prepare data by \link{data_clean}.}
+
 \item{...}{Other parameters passed to the appropriate table function}
 }
 \value{

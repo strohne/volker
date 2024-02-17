@@ -12,6 +12,7 @@
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with()
 #' @param col_group Optional, a grouping column. The column name without quotes.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate plot function
 #' @return A ggplot2 plot object
 #' @export
@@ -61,6 +62,7 @@ plot_counts <- function(data, cols, col_group=NULL, clean=T, ...) {
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
 #' @param col_group Optional, a grouping column (without quotes).
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate plot function
 #' @return A ggplot2 plot object
 #' @export
