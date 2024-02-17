@@ -905,7 +905,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   }
 
   pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(.data$item, y = .data$p / 100, fill = .data$value)) +
+    ggplot2::ggplot(ggplot2::aes(.data$item, y = .data$p / 100, fill = .data$value, group = .data$value)) +
     ggplot2::geom_col() +
 
     ggplot2::scale_y_continuous(labels = scales::percent) +
@@ -982,6 +982,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 #'
 #' @param pl A ggplot2 object
 #' @param rows The number of items on the vertical axis. Will be automatically determined when NULL.
+#'             For stacked bar charts, don't forget to set the group parameter, otherwise it won't work
 #' @param maxlab The character length of the longest label to be plotted. Will be automatically determined when NULL.
 #'               on the vertical axis
 #' @return The plot
@@ -993,7 +994,6 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
     labels <- plot_data$layout$panel_scales_x[[1]]$range$range
     legend <- unique(plot_data$data[[1]]$group)
 
-    #labels <- unique(plot_data$data[[1]]$y)
     rows <- max(length(labels), length(legend) / 3)
   }
 
@@ -1050,7 +1050,10 @@ knit_plot <- function(pl) {
     px_perline <- 15 # TODO: make configurable
 
     # Buffer above and below the diagram
-    px_offset <- 7 * px_perline
+    px_offset <- 4 * px_perline
+    if (!is.null(pl$labels$title)) {
+      px_offset <- px_offset + 3 * px_perline
+    }
 
     rows <- plot_options[["rows"]]
     lines_wrap <- dplyr::coalesce(plot_options[["labwrap"]], 40)
