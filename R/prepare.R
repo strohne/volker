@@ -11,9 +11,9 @@
 #' - Add whitespace after slashes to better label breaks
 #'
 #' @param data Data frame
-#' @param remove.levels Remove residual values from factor columns.
+#' @param remove.na.levels Remove residual values from factor columns.
 #'                      Either a character vector with residual values or TRUE to use defaults in \link{VLKR_NA_LEVELS}
-#' @param remove.numbers Remove residual values from numeric columns.
+#' @param remove.na.numbers Remove residual values from numeric columns.
 #'                      Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}
 #' @param add.whitespace Add whitespace after slashes to better label breaks
 #' @return Data frame with vlkr_df class (the class is used to prevent double preparation)
@@ -51,7 +51,7 @@ prepare <- function(data, remove.na.levels = T, remove.na.numbers = T, add.white
   # Remove residual numbers such as -9
   if (remove.na.numbers != FALSE) {
     if (is.logical(remove.na.numbers)) {
-      remove.na.numbers <- VLKR_NA_NUMBERS
+      remove.na.numbers <- VLKR_NA_NUMERIC
     }
 
     data <- dplyr::mutate(

@@ -9,13 +9,13 @@ prepare(data, remove.na.levels = T, remove.na.numbers = T, add.whitespace = T)
 \arguments{
 \item{data}{Data frame}
 
-\item{add.whitespace}{Add whitespace after slashes to better label breaks}
-
-\item{remove.levels}{Remove residual values from factor columns.
+\item{remove.na.levels}{Remove residual values from factor columns.
 Either a character vector with residual values or TRUE to use defaults in \link{VLKR_NA_LEVELS}}
 
-\item{remove.numbers}{Remove residual values from numeric columns.
+\item{remove.na.numbers}{Remove residual values from numeric columns.
 Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}}
+
+\item{add.whitespace}{Add whitespace after slashes to better label breaks}
 }
 \value{
 Data frame with vlkr_df class (the class is used to prevent double preparation)
