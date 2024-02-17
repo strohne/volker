@@ -814,6 +814,9 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
     result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
   }
 
+  # Order item levels
+  result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
+
   # print(result)
   # class(result) <- setdiff(class(result),"skim_df")
 
