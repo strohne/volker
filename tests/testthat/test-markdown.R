@@ -5,12 +5,12 @@ library(testthat)
 library(volker)
 library(knitr)
 
+#Sys.setenv(NOT_CRAN='skip')
+
 # Rendering tables
 test_that("Tables in markdown documents render without error", {
   expect_snapshot_file(rmarkdown::render("_markdown/tables.Rmd"))
 })
-
-Sys.setenv(NOT_CRAN='skip')
 
 # Pixel accuracy is out of scope for our CRAN version by now.
 # Markdowns should run without errors, but we don't compare the images.
