@@ -1,6 +1,6 @@
 ---
 title: "Introduction"
-output: rmarkdown::html_vignette
+output: volker::html_report
 vignette: >
   %\VignetteIndexEntry{Introduction}
   %\VignetteEncoding{UTF-8}
@@ -32,53 +32,72 @@ data <- volker::chatgpt
 
 ```
 
-## 1. One variable
+## How to generate tables and plots?
 
+The plot and table type is determined by your column selection. Try it out!
 
-### Frequency table for one categorical variable: Gender
+### Categorical variables
+
 ```{r}
-tab_counts(data, sd_gender)
+# A single variable
+tab_counts(data, use_private)
 ```
 
-### Distribution table for one metric variable: Age
 ```{r}
+# A list of variables
+tab_counts(data, c(use_private, use_work))
+```
+
+```{r}
+# Variables matched by a pattern
+tab_counts(data, starts_with("use_"))
+```
+
+
+### Metric variables
+
+To select the approriate function, you need to decide whether your data 
+is categorical or metric.
+
+```{r}
+# One metric variable
 tab_metrics(data, sd_age)
 ```
 
-## 2. Multiple items
-
-### Frequency table for multiple categorical variables: Adoption factors
-```{r}
-tab_counts(data, starts_with("cg_adoption_"))
-
-```
-
-### Distribution table and plot for multiple metric items: Adoption factors
 ```{r fig.width=6, fig.height=8}
 
+# Multiple metric items
 tab_metrics(data, starts_with("cg_adoption_"))
 plot_metrics(data, starts_with("cg_adoption_"))
 
 ```
 
-## 3. Two variables (one being categorical)
+### Cross tabulation and group comparison
 
-### Cross table of categorical variables: Innovator type by gender
+Provide a grouping column in the third parameter to compare different groups.
 
 ```{r}
 tab_counts(data, adopter, sd_gender)
 ```
 
-### Group comparison of a metric variable: Age by gender
+In the corresponding plot function, you can use the prop parameter to grow bars to 100%.
+The numbers parameter prints the percentages onto the bars.
 
 ```{r}
+data |> 
+  filter(sd_gender != "diverse") |> 
+  plot_counts(adopter, sd_gender, prop="rows", numbers="p")
+```
+
+For metric variables, you can compare the mean values.
+
+```{r}
+# Compare the means of one variable
 tab_metrics(data, sd_age, sd_gender)
 ```
 
-## 4. Multiple metric variables
-
-### Compare means of multiple items: Adoption factors by gender
 ```{r}
+# Compare the means of multiple items
 tab_metrics(data, starts_with("cg_adoption_"), sd_gender)
 ```
 
@@ -97,16 +116,57 @@ To see an example or develop own reports, use the volker report template in RStu
 
 Have fun with developing own reports!
 
+Alternatively, manually add `volker::html_report` to the 
+output options of your Markdown document:
+
+```
+---
+title: "How to create reports?"
+output: 
+  volker::html_report
+---
+```
+
+Then, you can generate combined outputs using the report-functions.
+One advantage of the report-functions is that plots are automatically 
+scaled to fit the page.
+
 The main entry point for reports are the report-functions.
 See the function help or the report vignette for further options.
 
 ```{r}
 
 data %>% 
-  filter(sd_gender != "divers") %>% 
+  filter(sd_gender != "diverse") %>% 
   report_metrics(starts_with("cg_adoption_"), sd_gender)
 
 ```
+
+
+If you want to add content before the report outputs, 
+set the title parameter to `FALSE` and add your 
+own title.
+
+A good place for methodological details is a tabsheet 
+next to the "Plot" and the "Table" buttons. You can add a tab
+by setting the close-parameter to `FALSE` and adding a new header
+on the fifth level (5 x # followed by the tab name). Close your new tabsheet with
+`#### {-}` (4 x #). See the example Markdown behind this vignette.
+
+### Adoption types
+
+```{r}
+data %>% 
+  filter(sd_gender != "diverse") %>% 
+  report_counts(adopter, sd_gender, prop="rows", title=F, close=F)
+```
+
+
+##### Method
+Basis: Only male and female respondents.
+
+#### {-}
+
 
 # Customizing outputs
 
@@ -133,8 +193,8 @@ You can inspect all labels using the `codebook()`-function:
 codebook(data)
 ```
 
-Set custom or new labels by providing a tibble with item names in the first column
-and item labels in the second to `labs_apply()`:
+You can set custom or new labels with `labs_apply()` by providing a tibble 
+with item names in the first column and item labels in the second column.
 
 ```{r}
 newlabels <- tribble(
@@ -152,6 +212,58 @@ data %>%
 
 ```
 
+
+You can remove all labels with `labs_clear()` to get a plain dataset.
+
+```{r}
+data %>%
+  labs_clear(everything()) %>%
+  tab_counts(starts_with("cg_adoption_advantage_"))
+```
+
+With the labels parameter, you achieve a similar result.
+
+```{r}
+data %>%
+  tab_counts(starts_with("cg_adoption_advantage_"), labels=F)
+```
+
+
+# Scales
+
+You can calculate mean indexes from a bunch of items using `idx_add()`. 
+A new column is created with the average value of all selected columns
+for each case. 
+
+Reliability and number of items are calculated with `psych::alpha()`
+and stored as column attribute named "psych.alpha". The reliability values 
+are printed by `tab_metrics()`.
+
+**Add a single index**
+```{r}
+data %>%
+  idx_add(starts_with("cg_adoption_")) %>%
+  tab_metrics(idx_cg_adoption)
+```
+
+**Compare the index values by group**
+```{r}
+data %>%
+  idx_add(starts_with("cg_adoption_")) %>%
+  tab_metrics(idx_cg_adoption, adopter)
+```
+
+**Add multiple indizes and summarize them**
+```{r}
+data %>%
+  idx_add(starts_with("cg_adoption_")) %>%
+  idx_add(starts_with("cg_adoption_advantage")) %>%
+  idx_add(starts_with("cg_adoption_fearofuse")) %>%
+  idx_add(starts_with("cg_adoption_social")) %>%
+  tab_metrics(starts_with("idx_cg_adoption"))
+```
+
+
 # What's behind the scenes?
 
 The volker-package is based on standard methods for data handling and visualisation. 
@@ -159,14 +271,16 @@ You can produce all outputs with a handful of functions. The package just makes 
 code dry - don't repeat yourself - and wraps often used snippets into a simple interface.
 
 Basically, all table values are calculated two tidyverse functions:
-- count() is used to produce counts
-- skim() is used to produce metrics
 
-To shape the data frames, two essential functions come into play:
+- count() is used to produce counts  
+- skim() is used to produce metrics  
+
+To shape the data frames, two essential functions come into play:  
+
 - group_by() is used to calculate grouped outputs
-- pivot_longer() brings multiple items into a format where the item name becomes a grouping variable.
+- pivot_longer() brings multiple items into a format where the item name becomes a grouping variable.  
 
-Plots are generated by ggplot()
+Plots are generated by `ggplot()`.
 
 The package provides print- and knit-functions that pimp console and markdown output. 
-To make this work, the produced plots, tables and markdown snippets gain new classes (vlkr_plt, vlkr_tb, vlkr_rprt).
+To make this work, the cleanded data, produced plots, tables and markdown snippets gain new classes (`vlkr_df`, `vlkr_plt`, `vlkr_tbl`, `vlkr_rprt`).
