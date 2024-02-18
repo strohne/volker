@@ -19,7 +19,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jakob Jünger \email{jakob.juenger@uni-muenster.de} (\href{https://orcid.org/0000-0003-1860-6695}{ORCID})
+\strong{Maintainer}: Jakob Jünger \email{jakob.juenger@uni-muenster.de} (\href{https://orcid.org/0000-0003-1860-6695}{ORCID}) [copyright holder]
 
 Other contributors:
 \itemize{

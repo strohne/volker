@@ -1,11 +1,11 @@
 Package: volker
 Type: Package
-Title: High-level functions for tabulating, charting and reporting survey data
+Title: High-Level Functions for Tabulating, Charting and Reporting Survey Data
 Version: 0.0.0.9000
 Date: 2024-02-03
 Authors@R:
   c(
-    person("Jakob", "Jünger", email = "jakob.juenger@uni-muenster.de", role = c("aut", "cre"),
+    person("Jakob", "Jünger", email = "jakob.juenger@uni-muenster.de", role = c("aut", "cre", "cph"),
       comment = c(ORCID = "0000-0003-1860-6695")),
     person("Henrieke", "Kotthoff", email = "henrieke.kotthoff@uni-muenster.de", role = "ctb"),
     person("Chantal", "Gärtner", email = "chantal.gaertner@uni-muenster.de", role = "ctb", 
@@ -45,7 +45,7 @@ Imports:
   scales,
   psych
 Depends:
-  R (>= 4.3)
+  R (>= 4.2)
 Suggests:
   tidyverse,
   tidytext,
