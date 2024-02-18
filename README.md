@@ -243,12 +243,28 @@ Cronbach’s alpha is added to all table outputs.
 
 ## Installation
 
-As with all other packages you’ll have to install the package first. You
-can install the development version from GitHub using remotes (if asked,
-skip the updates):
+As with all other packages you’ll have to install the package first.
+
+    install.packages("strohne/volker")
+
+Alternatively, you can install the latest development version from
+GitHub using remotes (if asked, skip the updates):
 
     if (!require(remotes)) { install.packages("remotes") }
-    remotes::install_github("strohne/volker", update="never")
+    remotes::install_github("strohne/volker")
+
+The package includes vignettes, they help getting started. When
+installing a development version, you need to build them. Only then,
+you’ll find them linked in the help index page.
+
+    remotes::install_github("strohne/volker", build_vignettes = T)
+
+The beta version used in the statistics course in winter 2023/24 at the
+University of Münster can be installed using remotes from the beta
+branch (if asked, skip the updates):
+
+    if (!require(remotes)) { install.packages("remotes") }
+    remotes::install_github("strohne/volker", ref="beta", upgrade="never")
 
 After installing the package, load it:
 
@@ -261,12 +277,6 @@ Finally, use it:
 
     # Example table
     tab_metrics(data, sd_age, sd_gender)
-
-**Hint:** To get the vignettes (= guides to the package, they help
-getting started), you need to build them in the install process. Only
-then, you’ll find them linked in the help index page.
-
-    remotes::install_github("strohne/volker", build_vignettes = T)
 
 ## Special features
 
