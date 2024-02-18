@@ -8,7 +8,7 @@ library(knitr)
 
 # Rendering tables
 test_that("Tables in markdown documents render without error", {
-  expect_snapshot_file(rmarkdown::render("_markdown/tables.Rmd"))
+  expect_snapshot_file(rmarkdown::render("_markdown/tables.Rmd"), cran=F)
 })
 
 # Rendering plots (pixel accuracy is out of scope by now, just test errors)

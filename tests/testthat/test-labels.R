@@ -11,7 +11,7 @@ data <- volker::data_clean(data)
 
 # Get labels
 test_that("Labels", {
-  expect_snapshot(volker::codebook(data))
+  expect_snapshot(volker::codebook(data),cran=T)
 })
 
 # What happens when labels are empty?
@@ -20,7 +20,7 @@ test_that("Missing labels", {
     dplyr::select(starts_with("cg_adoption")) %>%
     volker::labs_clear() %>%
     volker::codebook() %>%
-    expect_snapshot()
+    expect_snapshot(cran=T)
 })
 
 # Detect the scale
@@ -42,7 +42,7 @@ test_that("Store and clear the codebook", {
     volker::labs_store() %>%
     volker::labs_clear() %>%
     codebook() %>%
-    expect_snapshot()
+    expect_snapshot(cran=T)
 })
 
 # Test store and restore labels
@@ -52,7 +52,7 @@ test_that("Store, clear and restore the codebook", {
     volker::labs_clear() %>%
     volker::labs_restore() %>%
     codebook() %>%
-    expect_snapshot()
+    expect_snapshot(cran=T)
 })
 
 # Replace item labels
@@ -65,5 +65,5 @@ test_that("Item labels are replaced and keep their order", {
     volker:::labs_replace_values(adopter, volker::codebook(data)) |>
     dplyr::pull(adopter) |>
     levels() |>
-    expect_snapshot()
+    expect_snapshot(cran=T)
 })
