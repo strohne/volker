@@ -7,6 +7,9 @@
 #' @param plan The cleaning plan. By now, only "sosci" is supported. See \link{data_clean_sosci}.
 #' @param ... Other parameters passed to the appropriate cleaning function
 #' @return Cleaned data frame with vlkr_df class
+#' @examples
+#' ds <- volker::chatgpt
+#' ds <- data_clean(ds)
 #' @export
 data_clean <- function(data, plan="sosci", ...) {
   if (plan == "sosci") {
@@ -34,6 +37,9 @@ data_clean <- function(data, plan="sosci", ...) {
 #'                      Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}
 #' @param add.whitespace Add whitespace after slashes to better label breaks
 #' @return Data frame with vlkr_df class (the class is used to prevent double preparation)
+#' @examples
+#' ds <- volker::chatgpt
+#' ds <- data_clean_sosci(ds)
 #' @export
 data_clean_sosci <- function(data, remove.na.levels = T, remove.na.numbers = T, add.whitespace=T) {
 

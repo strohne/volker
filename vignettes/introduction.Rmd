@@ -50,15 +50,11 @@ tab_metrics(data, sd_age)
 ```{r}
 tab_counts(data, starts_with("cg_adoption_"))
 
-tab_counts(
-  data, 
-  c(cg_adoption_advantage_01,cg_adoption_advantage_02)
-)
-
 ```
 
-### Distribution table for multiple metric items: Adoption factors
+### Distribution table and plot for multiple metric items: Adoption factors
 ```{r fig.width=6, fig.height=8}
+
 tab_metrics(data, starts_with("cg_adoption_"))
 plot_metrics(data, starts_with("cg_adoption_"))
 
@@ -139,8 +135,6 @@ codebook(data)
 Set custom or new labels by providing a tibble with item names in the first column
 and item labels in the second to `labs_apply()`:
 
-*Note: The function is experimental and will change in future releases.*
-
 ```{r}
 newlabels <- tribble(
   ~item_name, ~item_label,
@@ -154,12 +148,6 @@ data %>%
   labs_apply(newlabels) %>%
   tab_metrics_items(starts_with("cg_adoption_advantage_"))
 
-
-data %>%
-  tab_counts_items(starts_with("cg_adoption_advantage_"))
-
-data %>%
-  tab_counts(cg_adoption_advantage_01) 
 
 ```
 

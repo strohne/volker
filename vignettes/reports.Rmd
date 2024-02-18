@@ -63,17 +63,8 @@ data %>%
   report_counts(adopter, sd_gender, prop="rows", title="Innovator")
 ```
 
-# Automatic index calculation
-```{r}
 
-data %>% 
-  filter(sd_gender != "divers") %>% 
-  report_counts(starts_with("cg_adoption_"))
-
-```
-
-
-# Group comparisons of an index
+# Group comparisons of an automaticaly calculated index
 ```{r}
 data %>% 
   filter(sd_gender != "divers") %>% 

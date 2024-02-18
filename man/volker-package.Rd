@@ -4,7 +4,7 @@
 \name{volker-package}
 \alias{volker}
 \alias{volker-package}
-\title{volker: High-level functions for tabulating, charting and reporting survey data}
+\title{volker: High-Level Functions for Tabulating, Charting and Reporting Survey Data}
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 

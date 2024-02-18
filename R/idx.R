@@ -11,6 +11,9 @@
 #'              from the common column prefix, prefixed with "idx_"
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param clean Prepare data by \link{data_clean}.
+#' @examples
+#' ds <- volker::chatgpt
+#' volker::add_idx(ds, starts_with("cg_adoption))
 #' @export
 #' @importFrom rlang .data
 add_idx <- function(data, cols, newcol = NULL, negative = FALSE, clean=T) {
@@ -73,7 +76,6 @@ add_idx <- function(data, cols, newcol = NULL, negative = FALSE, clean=T) {
 #'
 #' @param data A data frame column
 #' @return A named list with with the keys "items" and "alpha"
-#' @export
 get_idx_alpha <- function(data) {
   idx <- attr(data, "psych.alpha")
   if (!is.null(idx)) {

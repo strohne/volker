@@ -11,6 +11,8 @@
 #'        - value_label: In case a column has numeric attributes or T/F-attributes,
 #'                       the attribute values.
 #'                       In case a column has a levels attribute, the levels.
+#' @examples
+#' volker::codebook(volker::chatgpt)
 #' @importFrom rlang .data
 #' @export
 codebook <- function(data, cols) {
@@ -100,6 +102,15 @@ codebook <- function(data, cols) {
 #'
 #' @param data A data frame
 #' @return A data frame
+#' @examples
+#' library(tidyverse)
+#' library(volker)
+#'
+#' volker::chatgpt |>
+#'   labs_store() |>
+#'   mutate(sd_age = 2024 - sd_age) |>
+#'   labs_restore() |>
+#'   tab_metrics(sd_age)
 #' @export
 labs_store <- function(data) {
   codes <- codebook(data)
@@ -117,6 +128,15 @@ labs_store <- function(data) {
 #' @param values If TRUE (default), restores value labels in addition to item labels.
 #'              Item labels correspond to columns, value labels to values in the columns.
 #' @return A data frame
+#' @examples
+#' library(tidyverse)
+#' library(volker)
+#'
+#' volker::chatgpt |>
+#'   labs_store() |>
+#'   mutate(sd_age = 2024 - sd_age) |>
+#'   labs_restore() |>
+#'   tab_metrics(sd_age)
 #' @export
 labs_restore <- function(data, cols=NULL, values=T) {
 
@@ -146,6 +166,21 @@ labs_restore <- function(data, cols=NULL, values=T) {
 #'               - For item values: they are retrieved from both the columns
 #'                 value_name and value_label in your codebook.
 #' @return A tibble with new labels
+#' @examples
+#' library(tidyverse)
+#' library(volker)
+#'
+#' newlabels <- tribble(
+#'   ~item_name,                 ~item_label,
+#'  "cg_adoption_advantage_01", "Allgemeine Vorteile",
+#'  "cg_adoption_advantage_02", "Finanzielle Vorteile",
+#'  "cg_adoption_advantage_03", "Vorteile bei der Arbeit",
+#'  "cg_adoption_advantage_04", "Macht mehr Spaß"
+#'  )
+#'
+#'  volker::chatgtp %>%
+#'    labs_apply(newlabels) %>%
+#'    tab_metrics(starts_with("cg_adoption_advantage_"))
 #' @importFrom rlang .data
 #' @export
 labs_apply <- function(data, codes, cols=NULL, values=T) {
@@ -250,6 +285,9 @@ labs_apply <- function(data, codes, cols=NULL, values=T) {
 #' @param cols Tidyselect columns
 #' @param labels The attributes to remove. NULL to remove all attributes except levels and class
 #' @return A tibble with comments removed
+#' @examples
+#' volker::chatgpt |>
+#'   labs_clear()
 #' @export
 labs_clear <- function(data, cols, labels = NULL) {
 

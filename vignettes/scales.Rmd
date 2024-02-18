@@ -29,20 +29,19 @@ table {margin-left:0 !important;}
 
 **A single variable**
 ```{r}
-plot_counts(data, use_private)
+tab_counts(data, use_private)
 ```
 
 
 **A list of variables**
 ```{r}
-#plot_counts(data, c(use_private, use_work))
-plot_counts_items(data, c(use_private, use_work))
+tab_counts(data, c(use_private, use_work))
 ```
 
 
 **Variables matched by a pattern**
 ```{r}
-plot_counts(data, starts_with("use_"))
+tab_counts(data, starts_with("use_"))
 ```
 
 
@@ -102,12 +101,18 @@ data %>%
   tab_metrics(starts_with("cg_adoption_advantage_"))
 ```
 
-
 You can remove all labels with `labs_clear()` to get a plain dataset.
 
 ```{r}
 data %>%
   labs_clear(everything()) %>%
   tab_counts(starts_with("cg_adoption_advantage_"))
+```
+
+With the labels parameter, you achieve a similar result.
+
+```{r}
+data %>%
+  tab_counts(starts_with("cg_adoption_advantage_"), labels=F)
 ```
 

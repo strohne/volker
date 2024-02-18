@@ -20,6 +20,7 @@ theme_set(theme_bw())
 
 data <- volker::chatgpt
 
+
 ```
 
 
@@ -44,7 +45,7 @@ lda_phi <- modeltools::posterior(lda_fit)$terms %>% as.matrix()
 # Rows sum up to 1 because each topic generates a word, we just don't know which word
 rowSums(lda_phi)
 
-# TODO: Is the relevance calculation correct? Does it make sense?
+# Is the relevance calculation correct? Does it make sense?
 # See text_relevance.R
 lda_rel <- volker:::relevance(lda_phi, 0.6)
 
