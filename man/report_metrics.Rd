@@ -40,6 +40,9 @@ in Markdown (e.g. ##### Method)}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 }
+\value{
+A volker report object
+}
 \description{
 Depending on your column selection, different types of plots and tables are generated.
 See \link{plot_metrics} and \link{tab_metrics}.
@@ -48,4 +51,11 @@ See \link{plot_metrics} and \link{tab_metrics}.
 For item batteries, an index is calculated and reported.
 When used in combination with the Markdown-template "html_report",
 the different parts of the report are grouped under a tabsheet selector.
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+report_metrics(data, sd_age)
+
 }

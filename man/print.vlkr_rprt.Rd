@@ -7,11 +7,22 @@
 \method{print}{vlkr_rprt}(x, ...)
 }
 \arguments{
-\item{x}{The volker report}
+\item{x}{The volker report object}
 
 \item{...}{Further parameters passed to print}
 }
+\value{
+No return value
+}
 \description{
 Printing method for volker reports.
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+rp <- report_metrics(data, sd_age)
+print(rp)
+
 }
 \keyword{internal}

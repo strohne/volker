@@ -54,6 +54,16 @@ Disable the title with FALSE or provide a custom title as character value.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }
+\value{
+A ggplot object
+}
 \description{
 Note: only non-missing cases are used to calculate the percentage.
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+plot_counts_one_grouped(data, adopter, sd_gender)
+
 }

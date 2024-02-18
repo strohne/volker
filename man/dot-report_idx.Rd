@@ -18,7 +18,7 @@ or multiple columns selected by methods such as starts_with().}
 \item{title}{Add a plot title (default = TRUE)}
 }
 \value{
-A list containing a table and a plot
+A list containing a table and a plot volker report chunk
 }
 \description{
 Generate an index table and plot

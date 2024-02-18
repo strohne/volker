@@ -25,3 +25,6 @@ In case a column has a levels attribute, the levels.
 \description{
 Get variable labels from their comment attributes
 }
+\examples{
+volker::codebook(volker::chatgpt)
+}

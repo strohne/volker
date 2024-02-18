@@ -17,6 +17,9 @@ plot_counts_items_grouped(data, cols, col_group, clean = T, ...)
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }
+\value{
+A ggplot object
+}
 \description{
 TODO: implement -> focus one category and show n / p
 }

@@ -20,7 +20,7 @@ or multiple columns selected by methods such as starts_with()}
 \item{...}{Other parameters passed to the appropriate table function}
 }
 \value{
-A tibble
+A volker tibble
 }
 \description{
 The type of frequency table depends on the number of selected columns:
@@ -30,4 +30,11 @@ The type of frequency table depends on the number of selected columns:
 \item One column and one grouping column: see \link{tab_counts_one_grouped}
 \item Multiple columns and one grouping column: see \link{tab_counts_items_grouped}
 }
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+tab_counts(data, sd_gender)
+
 }

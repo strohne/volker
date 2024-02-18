@@ -35,6 +35,16 @@ tab_metrics_items_grouped(
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.}
 }
+\value{
+A volker tibble
+}
 \description{
 TODO: handle completely missing data in single groups
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+tab_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_gender)
+
 }

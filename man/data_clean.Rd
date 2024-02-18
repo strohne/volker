@@ -20,3 +20,7 @@ Cleaned data frame with vlkr_df class
 The tibble remebers whether it was already cleaned and
 the cleaning plan is only performed once in the first call.
 }
+\examples{
+ds <- volker::chatgpt
+ds <- data_clean(ds)
+}

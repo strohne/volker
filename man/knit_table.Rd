@@ -10,7 +10,7 @@ knit_table(df, ...)
 \item{df}{Data frame}
 }
 \value{
-Formatted table
+Formatted  table produced by \link{kable}
 }
 \description{
 Knit volker tables

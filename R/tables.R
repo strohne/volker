@@ -14,7 +14,13 @@
 #' @param col_group Optional, a grouping column. The column name without quotes.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate table function
-#' @return A tibble
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' tab_counts(data, sd_gender)
+#'
 #' @export
 tab_counts <- function(data, cols, col_group=NULL, clean=T, ...) {
   # Check
@@ -65,7 +71,13 @@ tab_counts <- function(data, cols, col_group=NULL, clean=T, ...) {
 #' @param col_group Optional, a grouping column (without quotes).
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate table function
-#' @return A tibble
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' tab_metrics(data, sd_age)
+#'
 #' @export
 tab_metrics <- function(data, cols, col_group=NULL, clean=T, ...) {
   # Check
@@ -109,6 +121,13 @@ tab_metrics <- function(data, cols, col_group=NULL, clean=T, ...) {
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' tab_counts_one(data, sd_gender)
+#'
 #' @importFrom rlang .data
 #' @export
 tab_counts_one <- function(data, col, missings = T, percent = T, labels = T, clean=T, ...) {
@@ -183,6 +202,13 @@ tab_counts_one <- function(data, col, missings = T, percent = T, labels = T, cle
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' tab_counts(data, adopter, sd_gender)
+#'
 #' @importFrom rlang .data
 #' @export
 tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "total", values = c("n", "p"), percent = T, labels = T, clean=T, ...) {
@@ -374,6 +400,13 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' tab_counts_items(data, starts_with("cg_adoption_"))
+#'
 #' @export
 #' @importFrom rlang .data
 tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), percent = T, labels = T, clean=T, ...) {
@@ -516,13 +549,14 @@ tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), perce
 #'
 #' TODO: implement -> focus one category and show n / p
 #'
+#' @keywords internal
+#'
 #' @param data A tibble
 #' @param cols The item columns that hold the values to summarize
 #' @param col_group The column holding groups to compare
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
-#' @keywords internal
-#' @export
+#' @return A volker tibble
 #' @importFrom rlang .data
 tab_counts_items_grouped <- function(data, cols, col_group, clean=T, ...) {
 
@@ -542,14 +576,14 @@ tab_counts_items_grouped <- function(data, cols, col_group, clean=T, ...) {
 #'
 #' TODO: implement -> calculate npmi or similar for one value
 #'
+#' @keywords internal
+#'
 #' @param data A tibble
 #' @param cols The source columns
 #' @param cols_cor The target columns or NULL to calculate correlations within the source columns
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
-#' @keywords internal
 #' @importFrom rlang .data
-#' @export
 tab_counts_items_cor <- function(data, cols, cols_cor, clean=T, ...) {
 
   stop("Not implemented yet")
@@ -573,6 +607,13 @@ tab_counts_items_cor <- function(data, cols, cols_cor, clean=T, ...) {
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' tab_metrics_one(data, sd_age)
+#'
 #' @export
 #' @importFrom rlang .data
 tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T, clean=T, ...) {
@@ -585,6 +626,11 @@ tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T, clean
   if (clean) {
     data <- data_clean(data)
   }
+
+  # # Remove missings
+  # # TODO: output a warning
+  # data <- data %>%
+  #   tidyr::drop_na({{ col }})
 
   # Remove negative values
   # TODO: warn if any negative values were recoded
@@ -649,6 +695,13 @@ tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T, clean
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' tab_metrics_one_grouped(data, sd_age, sd_gender)
+#'
 #' @export
 #' @importFrom rlang .data
 tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits = 1, labels = T, clean=T, ...) {
@@ -659,6 +712,11 @@ tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits =
   if (clean) {
     data <- data_clean(data)
   }
+
+  # Remove missings
+  # TODO: output a warning
+  data <- data %>%
+    tidyr::drop_na({{ col_group }})
 
   # Remove negative values
   # TODO: warn if any negative values were recoded
@@ -746,6 +804,13 @@ tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits =
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' tab_metrics_items(data, starts_with("cg_adoption_"))
+#'
 #' @export
 #' @importFrom rlang .data
 tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T, clean=T, ...) {
@@ -756,6 +821,11 @@ tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T, 
   if (clean) {
     data <- data_clean(data)
   }
+
+  # Remove missings
+  # TODO: output a warning
+  # data <- data %>%
+  #   tidyr::drop_na({{ cols }})
 
   result <- data %>%
     dplyr::select({{ cols }})
@@ -836,6 +906,13 @@ tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T, 
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' tab_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_gender)
+#'
 #' @export
 #' @importFrom rlang .data
 tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, values = c("m", "sd"), digits = 1, labels = T, clean=T, ...) {
@@ -847,14 +924,19 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, value
     data <- data_clean(data)
   }
 
-  # Get positions of group cols
-  col_group <- tidyselect::eval_select(expr = enquo(col_group), data = data)
+  # Remove missings
+  # TODO: output a warning
+  data <- data %>%
+    tidyr::drop_na({{ cols }}, {{ col_group }})
 
   # Remove negative values
   # TODO: warn if any negative values were recoded
   if (!negative) {
     data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. < 0, NA, .)))
   }
+
+  # Get positions of group cols
+  col_group <- tidyselect::eval_select(expr = enquo(col_group), data = data)
 
   # Total means
   value <- "numeric.mean"
@@ -1003,6 +1085,13 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, value
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' tab_metrics_items_cor(data, starts_with("cg_adoption_adv"))
+#'
 #' @importFrom rlang .data
 #' @export
 tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = F, labels=T, clean=T, ...) {
@@ -1015,6 +1104,12 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
     data <- data_clean(data)
   }
 
+  # Remove missings
+  # TODO: output a warning
+  # data <- data %>%
+  #   tidyr::drop_na({{ cols }}, {{ cols_cor }})
+
+  # Prepare parameters
   cols <- tidyselect::eval_select(expr = enquo(cols), data = data)
 
   if (missing(cols_cor)) {
@@ -1022,6 +1117,7 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
   } else {
     cols_cor <- tidyselect::eval_select(expr = enquo(cols_cor), data = data)
   }
+
 
   result <- expand.grid(x = cols, y = cols_cor, stringsAsFactors = FALSE) %>%
     dplyr::mutate(x_name = names(.data$x), y_name = names(.data$y)) %>%
@@ -1071,7 +1167,7 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
 #'
 #' @param data A tibble
 #' @param digits Set the plot digits. If NULL (default), no digits are set.
-#' @return A tibble of class vlkr_tbl
+#' @return A volker tibble
 .to_vlkr_tab <- function(data, digits=NULL) {
 
   if (!is.null(digits)) {
@@ -1087,7 +1183,7 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
 #' @keywords internal
 #'
 #' @param df Data frame
-#' @return Formatted table
+#' @return Formatted  table produced by \link{kable}
 knit_table <- function(df, ...) {
   # TODO: Embed "digits" in the vlkr_options list
   digits <- attr(df, "digits", exact = T)
@@ -1134,6 +1230,14 @@ knit_table <- function(df, ...) {
 #'
 #' @param x The volker table
 #' @param ... Further parameters passed to print()
+#' @return No return value
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' tb <- tab_metrics(data, sd_age)
+#' print(tb)
+#'
 #' @export
 print.vlkr_tbl <- function(x, ...) {
   x <- knit_table(x)

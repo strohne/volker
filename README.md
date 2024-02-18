@@ -71,7 +71,7 @@ Which one is best? That depends on your objective:
   multiple items send a column selection to the functions by using
   tidyselect mechanisms such as `starts_with()`. Indexes are
   automatically calculated by the `report`-functions or can be
-  explicitly created using `add_idx()`.
+  explicitly created using `idx_add()`.
 
 - *Markdown or data frame?*  
   All table functions return data frames that can be processed further.
@@ -237,7 +237,7 @@ questions. The labels come directly from your questionnaire.
 
 ## Index calculation
 
-Indexes (=mean of multiple items) can be added using `add_idx()`
+Indexes (=mean of multiple items) can be added using `idx_add()`
 manually and are automatically calculated in report functions.
 Cronbach’s alpha is added to all table outputs.
 
@@ -288,7 +288,7 @@ Finally, use it:
 - Interactive reports: Use the `volker::html_report` template in your
   Markdown documents to switch between tables and plots when using the
   report-functions.  
-- Calculate metric indexes using `add_idx()` (*work in progress*).  
+- Calculate metric indexes using `idx_add()` (*work in progress*).  
 - Simplified hints for wrong parameters, e.g. if you forget to provide a
   data frame (*work in progress*).
 - Tidyverse style.
@@ -301,7 +301,7 @@ As a work around, remove PDF and Word settings from the output options
 in you markdown document (the yml section at the top). Alternatively,
 install the latest development version:
 
-    devtools::install_github("kupietz/kableExtra")
+    remotes::install_github("kupietz/kableExtra")
 
 ## Roadmap
 

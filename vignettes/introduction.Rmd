@@ -16,7 +16,8 @@ knitr::opts_chunk$set(
 )
 
 # Load the packages
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 library(volker)
 
 # Set the basic plot theme

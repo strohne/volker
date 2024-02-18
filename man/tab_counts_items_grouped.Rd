@@ -17,6 +17,9 @@ tab_counts_items_grouped(data, cols, col_group, clean = T, ...)
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }
+\value{
+A volker tibble
+}
 \description{
 TODO: implement -> focus one category and show n / p
 }

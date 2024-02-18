@@ -29,6 +29,16 @@ tab_counts_one(
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }
+\value{
+A volker tibble
+}
 \description{
 Output a frequency table for the values in one column
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+tab_counts_one(data, sd_gender)
+
 }

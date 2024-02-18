@@ -21,3 +21,13 @@ A data frame
 You can store labels before mutate operations by calling
 \link{labs_store}.
 }
+\examples{
+library(dplyr)
+library(volker)
+
+volker::chatgpt |>
+  labs_store() |>
+  mutate(sd_age = 2024 - sd_age) |>
+  labs_restore() |>
+  tab_metrics(sd_age)
+}

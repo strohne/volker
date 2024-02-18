@@ -23,6 +23,13 @@
 #'              Keep it open to add further custom tabs by adding headers on the fifth level
 #'              in Markdown (e.g. ##### Method)
 #' @param clean Prepare data by \link{data_clean}.
+#' @return A volker report object
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' report_metrics(data, sd_age)
+#'
 #' @export
 report_metrics <- function(data, cols, col_group = NULL, ..., index=T, title = T, close=T, clean=T) {
 
@@ -101,7 +108,13 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index=T, title = T
 #'              in Markdown (e.g. ##### Method)
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Parameters passed to the plot and tab functions.
-#' @return A list of class vlkr_rprt containing the parts of the report
+#' @return A volker report object
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' report_counts(data, sd_gender)
+#'
 #' @export
 report_counts <- function(data, cols, col_group = NULL, index=T, numbers=NULL, title = T, close=T, clean=T, ...) {
 
@@ -163,7 +176,7 @@ report_counts <- function(data, cols, col_group = NULL, index=T, numbers=NULL, t
 #'             or multiple columns selected by methods such as starts_with().
 #' @param col_group Optional, a grouping column (without quotes).
 #' @param title Add a plot title (default = TRUE)
-#' @return A list containing a table and a plot
+#' @return A list containing a table and a plot volker report chunk
 .report_idx <- function(data, cols, col_group, title=T) {
   chunks <- list()
 
@@ -173,7 +186,7 @@ report_counts <- function(data, cols, col_group = NULL, index=T, numbers=NULL, t
 
   if (is_items && (is_scale != 0)) {
 
-    idx <- add_idx(data, {{ cols }}, newcol = ".idx")
+    idx <- idx_add(data, {{ cols }}, newcol = ".idx")
     idx_name <- setdiff(colnames(idx), colnames(data))
 
     if (length(idx_name) > 0) {
@@ -199,7 +212,8 @@ report_counts <- function(data, cols, col_group = NULL, index=T, numbers=NULL, t
 #' @keywords internal
 #'
 #' @param chunks A list of character strings
-#' @return A list of character strings with the vlkr_rprt class
+#' @return A volker report object: List of character strings with the vlkr_rprt class
+#'         containing the parts of the report
 .to_vlkr_rprt <- function(chunks) {
   class(chunks) <- c("vlkr_rprt", setdiff(class(chunks),"vlkr_rprt"))
   chunks
@@ -212,7 +226,7 @@ report_counts <- function(data, cols, col_group = NULL, index=T, numbers=NULL, t
 #' @param obj A new chunk (volker table, volker plot or character value)
 #' @param chunks The current report list
 #' @param tab A tabsheet name or NULL
-#' @return A list with volker tables or plots
+#' @return A volker report object
 .add_to_vlkr_rprt <- function(obj, chunks, tab = NULL) {
 
   if (knitr::is_html_output()) {
@@ -248,9 +262,17 @@ report_counts <- function(data, cols, col_group = NULL, index=T, numbers=NULL, t
 #'
 #' @keywords internal
 #'
-#' @param x The volker report
+#' @param x The volker report object
 #' @param ... Further parameters passed to print
 #' @importFrom rlang .data
+#' @return No return value
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' rp <- report_metrics(data, sd_age)
+#' print(rp)
+#'
 #' @export
 print.vlkr_rprt <- function(x, ...) {
   if (knitr::is_html_output()) {
@@ -266,8 +288,6 @@ print.vlkr_rprt <- function(x, ...) {
   }
 }
 
-
-
 #' Volker style HTML document format
 #'
 #' Based on the standard theme, tweaks the pill navigation
@@ -277,6 +297,17 @@ print.vlkr_rprt <- function(x, ...) {
 #'
 #' @param ... Additional arguments passed to html_document
 #' @return R Markdown output format
+#' @examples
+#' \dontrun{
+#' Add `volker::html_report` to the output options of your Markdown document:
+#'
+#' ```
+#' ---
+#' title: "How to create reports?"
+#' output: volker::html_report
+#' ---
+#' ```
+#' }
 #' @export
 html_report <- function(...) {
   cssfile <-  paste0(system.file("extdata", package = "volker"),"/styles.css")

@@ -33,6 +33,7 @@ Imports:
   tidyr,
   tidyselect,
   ggplot2 (>= 2.2.1),
+  scales,
   base64enc,
   stringr,
   purrr,
@@ -41,23 +42,15 @@ Imports:
   skimr,
   knitr,
   kableExtra,
+  rmarkdown,
   janitor,
-  scales,
   psych
 Depends:
   R (>= 4.2)
 Suggests:
   tidyverse,
-  tidytext,
-  quanteda,
-  stopwords,
-  tokenizers,  
-  ldatuning,
-  topicmodels,
-  modeltools,
-  slam,
-  methods,
-  rmarkdown, 
+  remotes,
+  usethis,
   testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3

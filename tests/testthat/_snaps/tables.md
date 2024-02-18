@@ -115,17 +115,17 @@
       
       |Expectations                                                |     Total|    female|      male|  diverse|
       |:-----------------------------------------------------------|---------:|---------:|---------:|--------:|
-      |ChatGPT has clear advantages compared to similar offerings. | 3.5 (1.0)| 3.6 (1.0)| 3.3 (1.0)| 4.0 (NA)|
-      |Using ChatGPT brings financial benefits.                    | 2.7 (1.2)| 2.6 (1.3)| 2.7 (1.2)| 3.0 (NA)|
+      |ChatGPT has clear advantages compared to similar offerings. | 3.4 (1.0)| 3.6 (1.0)| 3.3 (1.0)| 4.0 (NA)|
+      |Using ChatGPT brings financial benefits.                    | 2.7 (1.2)| 2.6 (1.2)| 2.7 (1.2)| 3.0 (NA)|
       |Using ChatGPT is advantageous in many tasks.                | 3.6 (1.1)| 3.7 (1.0)| 3.5 (1.1)| 4.0 (NA)|
       |Compared to other systems, using ChatGPT is more fun.       | 3.5 (1.0)| 3.6 (1.0)| 3.5 (1.0)| 3.0 (NA)|
-      |Much can go wrong when using ChatGPT.                       | 3.1 (1.1)| 3.2 (1.0)| 3.1 (1.2)| 3.0 (NA)|
+      |Much can go wrong when using ChatGPT.                       | 3.1 (1.1)| 3.1 (1.0)| 3.1 (1.2)| 3.0 (NA)|
       |There are legal issues with using ChatGPT.                  | 3.1 (1.2)| 3.0 (1.0)| 3.1 (1.3)| 3.0 (NA)|
-      |The security of user data is not guaranteed with ChatGPT.   | 3.2 (1.0)| 3.1 (1.0)| 3.3 (1.1)| 3.0 (NA)|
+      |The security of user data is not guaranteed with ChatGPT.   | 3.2 (1.0)| 3.0 (1.0)| 3.3 (1.1)| 3.0 (NA)|
       |Using ChatGPT could bring personal disadvantages.           | 2.7 (1.1)| 2.5 (0.9)| 2.8 (1.2)| 4.0 (NA)|
-      |In my environment, using ChatGPT is standard.               | 2.5 (1.1)| 2.5 (0.9)| 2.5 (1.2)| 4.0 (NA)|
-      |Almost everyone in my environment uses ChatGPT.             | 2.4 (1.2)| 2.3 (1.0)| 2.4 (1.2)| 4.0 (NA)|
-      |Not using ChatGPT is considered being an outsider.          | 2.0 (1.2)| 1.8 (1.0)| 2.0 (1.2)| 4.0 (NA)|
+      |In my environment, using ChatGPT is standard.               | 2.5 (1.1)| 2.5 (0.9)| 2.5 (1.3)| 4.0 (NA)|
+      |Almost everyone in my environment uses ChatGPT.             | 2.4 (1.2)| 2.4 (1.0)| 2.3 (1.3)| 4.0 (NA)|
+      |Not using ChatGPT is considered being an outsider.          | 2.0 (1.2)| 1.8 (1.0)| 2.1 (1.3)| 4.0 (NA)|
       |Using ChatGPT brings me recognition from my environment.    | 2.3 (1.2)| 2.4 (1.2)| 2.3 (1.3)| 3.0 (NA)|
 
 # Missing values make no trouble
@@ -135,20 +135,20 @@
     Output
       
       
-      |cg_adoption  |     Total|        X|  diverse|    female|      male|
-      |:------------|---------:|--------:|--------:|---------:|---------:|
-      |advantage_01 | 3.5 (1.0)| NaN (NA)| 4.0 (NA)| 3.6 (1.0)| 3.3 (1.0)|
-      |advantage_02 | 2.7 (1.2)| NaN (NA)| 3.0 (NA)| 2.6 (1.3)| 2.7 (1.2)|
-      |advantage_03 | 3.6 (1.1)| NaN (NA)| 4.0 (NA)| 3.7 (1.0)| 3.5 (1.1)|
-      |advantage_04 | 3.5 (1.0)| NaN (NA)| 3.0 (NA)| 3.6 (1.0)| 3.5 (1.0)|
-      |fearofuse_01 | 3.1 (1.1)| NaN (NA)| 3.0 (NA)| 3.2 (1.0)| 3.1 (1.2)|
-      |fearofuse_02 | 3.1 (1.2)| NaN (NA)| 3.0 (NA)| 3.0 (1.0)| 3.1 (1.3)|
-      |fearofuse_03 | 3.2 (1.0)| NaN (NA)| 3.0 (NA)| 3.1 (1.0)| 3.3 (1.1)|
-      |fearofuse_04 | 2.7 (1.1)| NaN (NA)| 4.0 (NA)| 2.5 (0.9)| 2.8 (1.2)|
-      |social_01    | 2.5 (1.1)| NaN (NA)| 4.0 (NA)| 2.5 (0.9)| 2.5 (1.2)|
-      |social_02    | 2.4 (1.2)| NaN (NA)| 4.0 (NA)| 2.3 (1.0)| 2.4 (1.2)|
-      |social_03    | 2.0 (1.2)| NaN (NA)| 4.0 (NA)| 1.8 (1.0)| 2.0 (1.2)|
-      |social_04    | 2.3 (1.2)| NaN (NA)| 3.0 (NA)| 2.4 (1.2)| 2.3 (1.3)|
+      |cg_adoption  |     Total|  diverse|    female|      male|
+      |:------------|---------:|--------:|---------:|---------:|
+      |advantage_01 | 3.4 (1.0)| 4.0 (NA)| 3.6 (1.0)| 3.3 (1.0)|
+      |advantage_02 | 2.7 (1.2)| 3.0 (NA)| 2.6 (1.2)| 2.7 (1.2)|
+      |advantage_03 | 3.6 (1.1)| 4.0 (NA)| 3.7 (1.0)| 3.5 (1.1)|
+      |advantage_04 | 3.5 (1.0)| 3.0 (NA)| 3.6 (1.0)| 3.5 (1.0)|
+      |fearofuse_01 | 3.1 (1.1)| 3.0 (NA)| 3.1 (1.0)| 3.1 (1.2)|
+      |fearofuse_02 | 3.1 (1.2)| 3.0 (NA)| 3.0 (1.0)| 3.1 (1.3)|
+      |fearofuse_03 | 3.2 (1.0)| 3.0 (NA)| 3.0 (1.0)| 3.3 (1.1)|
+      |fearofuse_04 | 2.7 (1.1)| 4.0 (NA)| 2.5 (0.9)| 2.8 (1.2)|
+      |social_01    | 2.5 (1.1)| 4.0 (NA)| 2.5 (0.9)| 2.5 (1.3)|
+      |social_02    | 2.4 (1.2)| 4.0 (NA)| 2.4 (1.0)| 2.3 (1.3)|
+      |social_03    | 2.0 (1.2)| 4.0 (NA)| 1.8 (1.0)| 2.1 (1.3)|
+      |social_04    | 2.3 (1.2)| 3.0 (NA)| 2.4 (1.2)| 2.3 (1.3)|
 
 # Correlation of items
 

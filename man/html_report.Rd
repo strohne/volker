@@ -18,3 +18,15 @@ to switch between tables and plots.
 To use the format, in the header of your Markdown document,
 set \code{output: volker::html_report}.
 }
+\examples{
+\dontrun{
+Add `volker::html_report` to the output options of your Markdown document:
+
+```
+---
+title: "How to create reports?"
+output: volker::html_report
+---
+```
+}
+}

@@ -32,6 +32,16 @@ tab_metrics_items_cor(
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.}
 }
+\value{
+A volker tibble
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+tab_metrics_items_cor(data, starts_with("cg_adoption_adv"))
+
 }

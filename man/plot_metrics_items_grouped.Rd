@@ -42,3 +42,10 @@ A ggplot object
 \description{
 Output averages for multiple variables compared by a grouping variable
 }
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+plot_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_gender)
+
+}

@@ -32,7 +32,17 @@ tab_counts_items(
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }
+\value{
+A volker tibble
+}
 \description{
 TODO: Reorder boolean categories: first TRUE, then FALSE
 TODO: Support single columns
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+tab_counts_items(data, starts_with("cg_adoption_"))
+
 }

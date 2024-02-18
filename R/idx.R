@@ -13,10 +13,10 @@
 #' @param clean Prepare data by \link{data_clean}.
 #' @examples
 #' ds <- volker::chatgpt
-#' volker::add_idx(ds, starts_with("cg_adoption))
+#' volker::idx_add(ds, starts_with("cg_adoption"))
 #' @export
 #' @importFrom rlang .data
-add_idx <- function(data, cols, newcol = NULL, negative = FALSE, clean=T) {
+idx_add <- function(data, cols, newcol = NULL, negative = FALSE, clean=T) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -34,6 +34,11 @@ add_idx <- function(data, cols, newcol = NULL, negative = FALSE, clean=T) {
   if (!negative) {
     idx <- dplyr::mutate(idx, dplyr::across(tidyselect::where(is.numeric), ~ ifelse(. < 0, NA, .)))
   }
+
+  # Remove missings
+  # TODO: output a warning
+  # data <- data %>%
+  #   tidyr::drop_na({{ cols }})
 
   prefix <- get_prefix(colnames(idx), F, T)
   if (is.null(newcol)) {
@@ -70,13 +75,13 @@ add_idx <- function(data, cols, newcol = NULL, negative = FALSE, clean=T) {
   data
 }
 
-#' Get number of items and Cronbach's alpha of a scale added by add_idx()
+#' Get number of items and Cronbach's alpha of a scale added by idx_add()
 #'
 #' @keywords internal
 #'
 #' @param data A data frame column
 #' @return A named list with with the keys "items" and "alpha"
-get_idx_alpha <- function(data) {
+idx_alpha <- function(data) {
   idx <- attr(data, "psych.alpha")
   if (!is.null(idx)) {
     return(list("items" = idx$nvar, "alpha" = idx$total$std.alpha))

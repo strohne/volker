@@ -3,12 +3,22 @@
 \name{skim_metrics}
 \alias{skim_metrics}
 \title{A reduced skimmer for metric variables
-Returns a five point summary, mean and sd, items count and alpha for scales added by add_idx()}
+Returns a five point summary, mean and sd, items count and alpha for scales added by idx_add()}
 \usage{
 skim_metrics(data, ..., .data_name = NULL)
 }
+\value{
+A skimmer, see \link{skim_with}
+}
 \description{
 A reduced skimmer for metric variables
-Returns a five point summary, mean and sd, items count and alpha for scales added by add_idx()
+Returns a five point summary, mean and sd, items count and alpha for scales added by idx_add()
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+skim_metrics(data)
+
 }
 \keyword{internal}

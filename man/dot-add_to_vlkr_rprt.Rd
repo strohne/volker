@@ -14,7 +14,7 @@
 \item{tab}{A tabsheet name or NULL}
 }
 \value{
-A list with volker tables or plots
+A volker report object
 }
 \description{
 Add an object to the report list

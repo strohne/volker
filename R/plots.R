@@ -14,6 +14,12 @@
 #' @param col_group Optional, a grouping column. The column name without quotes.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate plot function
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_counts(data, sd_gender)
+#'
 #' @return A ggplot2 plot object
 #' @export
 plot_counts <- function(data, cols, col_group=NULL, clean=T, ...) {
@@ -64,7 +70,13 @@ plot_counts <- function(data, cols, col_group=NULL, clean=T, ...) {
 #' @param col_group Optional, a grouping column (without quotes).
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate plot function
-#' @return A ggplot2 plot object
+#' @return A ggplot object
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_metrics(data, sd_age)
+#'
 #' @export
 plot_metrics <- function(data, cols, col_group=NULL, clean=T, ...) {
   # Check
@@ -105,15 +117,23 @@ plot_metrics <- function(data, cols, col_group=NULL, clean=T, ...) {
 #'
 #' @param data A tibble
 #' @param col The column holding values to count
+#' @param missings Include missing values (default FALSE)
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
+#' @return A ggplot object
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_counts_one(data, sd_gender)
+#'
 #' @importFrom rlang .data
 #' @export
-plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, clean = T, ...) {
+plot_counts_one <- function(data, col, missings = F, numbers = NULL, title = T, labels = T, clean = T, ...) {
 
   # 1. Checks
   # Check columns
@@ -125,11 +145,15 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, cl
     data <- data_clean(data)
   }
 
+  if (!missings) {
+    data <- data %>%
+      tidyr::drop_na({{ col }})
+  }
+
   # 3. Data
   # Count data
   result <- data %>%
     dplyr::count({{ col }}) %>%
-    tidyr::drop_na() %>%
     dplyr::mutate(p = (.data$n / sum(.data$n)) * 100)
 
 
@@ -230,6 +254,13 @@ plot_counts_one <- function(data, col, numbers = NULL, title = T, labels = T, cl
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
+#' @return A ggplot object
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_counts_one_grouped(data, adopter, sd_gender)
+#'
 #' @export
 #' @importFrom rlang .data
 plot_counts_one_grouped <- function(data, col, col_group, category = NULL, ordered = NULL, missings = F, prop = "total", numbers = NULL, title = T, labels = T, clean=T, ...) {
@@ -254,15 +285,12 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
     #stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
   }
 
-  # 3. Calculate data
   if (!missings) {
     data <- data %>%
       tidyr::drop_na({{ col }}, {{ col_group }})
   }
 
-  #
-  # 1. Count
-  #
+  # 3. Calculate data
   result <- data %>%
     dplyr::count({{ col }}, {{ col_group }})
 
@@ -271,7 +299,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
   if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
     category <- "TRUE"
   }
-  scale <-dplyr:: coalesce(ordered, get_direction(data, {{ col }}))
+  scale <-dplyr::coalesce(ordered, get_direction(data, {{ col }}))
 
   data <- data |>
     dplyr::mutate(data, "{{ col_group }}" := as.factor({{ col_group }}))
@@ -352,6 +380,13 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
+#' @return A ggplot object
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_counts_items(data, starts_with("cg_adoption_"))
+#'
 #' @export
 #' @importFrom rlang .data
 plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missings=F, numbers = NULL, title = T, labels = T, clean=T, ...) {
@@ -373,7 +408,6 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
   # 3. Calculate data
   # n and p
   result <- data %>%
-    tidyr::drop_na({{ cols }}) %>%
     labs_clear({{ cols }}) %>%
     tidyr::pivot_longer(
       {{ cols }},
@@ -449,13 +483,14 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
 #'
 #' TODO: implement -> focus one category and show n / p
 #'
+#' @keywords internal
+#'
 #' @param data A tibble
 #' @param cols The item columns that hold the values to summarize
 #' @param col_group The column holding groups to compare
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
-#' @keywords internal
-#' @export
+#' @return A ggplot object
 #' @importFrom rlang .data
 plot_counts_items_grouped <- function(data, cols, col_group, clean=T, ...) {
   stop("Not implemented yet")
@@ -481,6 +516,13 @@ plot_counts_items_grouped <- function(data, cols, col_group, clean=T, ...) {
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
+#' @return A ggplot object
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_metrics_one(data, sd_age)
+#'
 #' @export
 #' @importFrom rlang .data
 plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labels = T, clean=T, ...) {
@@ -560,6 +602,13 @@ plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labe
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
+#' @return A ggplot object
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_metrics_one_grouped(data, sd_age, sd_gender)
+#'
 #' @export
 #' @importFrom rlang .data
 plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = F, title = T, labels = T, clean=T, ...) {
@@ -582,6 +631,10 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
       dplyr::mutate(dplyr::across({{ col }}, ~ ifelse(. < 0, NA, .))) |>
       labs_restore()
   }
+
+  # Drop missings
+  # TODO: Report missings
+  data <- tidyr::drop_na(data, {{ col }}, {{ col_group }})
 
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, {{ col }})) +
@@ -683,6 +736,13 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
+#' @return A ggplot object
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_metrics_items(data, starts_with("cg_adoption_"))
+#'
 #' @export
 plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = T, labels = T, clean=T, ...) {
   # 1. Check parameters
@@ -703,9 +763,12 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
       labs_restore()
   }
 
+  # Drop missings
+  # TODO: Report missings
+  data <- tidyr::drop_na(data, {{ cols }})
+
   # Pivot items
   result <- data %>%
-    tidyr::drop_na({{ cols }}) %>%
     labs_clear({{ cols }}) %>%
     tidyr::pivot_longer(
       {{ cols }},
@@ -810,6 +873,12 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @return A ggplot object
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_gender)
+#'
 #' @export
 #' @importFrom rlang .data
 plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, negative = F, title = T, labels = T, clean=T, ...) {
@@ -822,13 +891,19 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
     data <- data_clean(data)
   }
 
-  # Get positions of group cols
-  col_group <- tidyselect::eval_select(expr = rlang::enquo(col_group), data = data)
-
   # TODO: warn if any negative values were recoded
   if (!negative) {
     data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. < 0, NA, .)))
   }
+
+  # Drop missings
+  # TODO: Report missings
+  data <- tidyr::drop_na(data, {{ cols }}, {{ col_group }})
+
+
+  # 3. Calculate
+  # Get positions of group cols
+  col_group <- tidyselect::eval_select(expr = rlang::enquo(col_group), data = data)
 
   # Grouped means
   result <- map(
@@ -945,6 +1020,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title The plot title as character or NULL
 #' @param base The plot base as character or NULL.
+#' @return A ggplot object
 #' @importFrom rlang .data
 .plot_bars <- function(data, category = NULL, scale = NULL, numbers = NULL, base = NULL, title = NULL) {
   if (!is.null(category)) {
@@ -1032,12 +1108,12 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 #'
 #' @keywords internal
 #'
-#' @param pl A ggplot2 object
+#' @param pl A ggplot object
 #' @param rows The number of items on the vertical axis. Will be automatically determined when NULL.
 #'             For stacked bar charts, don't forget to set the group parameter, otherwise it won't work
 #' @param maxlab The character length of the longest label to be plotted. Will be automatically determined when NULL.
 #'               on the vertical axis
-#' @return The plot
+#' @return A ggplot object with vlkr_plt class
 .to_vlkr_plot <- function(pl, rows = NULL, maxlab=NULL) {
   class(pl) <- c("vlkr_plt", class(pl))
 
@@ -1144,6 +1220,14 @@ knit_plot <- function(pl) {
 #'
 #' @param x The volker plot
 #' @param ... Further parameters passed to print()
+#' @return No return value
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' pl <- plot_metrics(data, sd_age)
+#' print(pl)
+#'
 #' @export
 print.vlkr_plt <- function(x, ...) {
 

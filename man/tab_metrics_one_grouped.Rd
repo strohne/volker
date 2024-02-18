@@ -32,6 +32,16 @@ tab_metrics_one_grouped(
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.}
 }
+\value{
+A volker tibble
+}
 \description{
 Output a five point summary for groups
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+tab_metrics_one_grouped(data, sd_age, sd_gender)
+
 }

@@ -31,3 +31,10 @@ The type of frequency plot depends on the number of selected columns:
 \item Multiple columns and one grouping column: see \link{plot_counts_items_grouped}
 }
 }
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+plot_counts(data, sd_gender)
+
+}

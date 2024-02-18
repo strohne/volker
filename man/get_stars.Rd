@@ -10,7 +10,7 @@ get_stars(x)
 \item{x}{A vector of p values}
 }
 \value{
-A character vector with stars
+A character vector with significance stars
 }
 \description{
 Get significance stars from p values

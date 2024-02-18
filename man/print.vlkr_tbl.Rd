@@ -11,7 +11,18 @@
 
 \item{...}{Further parameters passed to print()}
 }
+\value{
+No return value
+}
 \description{
 Printing method for volker tables.
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+tb <- tab_metrics(data, sd_age)
+print(tb)
+
 }
 \keyword{internal}

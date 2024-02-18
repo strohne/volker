@@ -12,8 +12,10 @@ editor_options:
 ```{r include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = TRUE)
 
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 library(volker)
+
 theme_set(theme_bw())
 
 data <- volker::chatgpt
@@ -76,12 +78,12 @@ tab_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 ```{r}
 # Add a single index
 data %>%
-  add_idx(starts_with("cg_adoption_")) %>%
+  idx_add(starts_with("cg_adoption_")) %>%
   tab_metrics_one(idx_cg_adoption)
 
 # Compare the index values by group
 data %>%
-  add_idx(starts_with("cg_adoption_")) %>%
+  idx_add(starts_with("cg_adoption_")) %>%
   tab_metrics_one_grouped(idx_cg_adoption, adopter)
 ```
 
@@ -89,10 +91,10 @@ data %>%
 ```{r}
 # Add multiple indizes and summarize them
 data %>%
-  add_idx(starts_with("cg_adoption_")) %>%
-  add_idx(starts_with("cg_adoption_advantage")) %>%
-  add_idx(starts_with("cg_adoption_fearofuse")) %>%
-  add_idx(starts_with("cg_adoption_social")) %>%
+  idx_add(starts_with("cg_adoption_")) %>%
+  idx_add(starts_with("cg_adoption_advantage")) %>%
+  idx_add(starts_with("cg_adoption_fearofuse")) %>%
+  idx_add(starts_with("cg_adoption_social")) %>%
   tab_metrics_items(starts_with("idx_cg_adoption"))
 ```
 

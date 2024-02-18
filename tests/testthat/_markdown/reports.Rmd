@@ -16,8 +16,10 @@ editor_options:
 knitr::opts_chunk$set(echo = FALSE, warning = TRUE)
 
 # Load packages
-library(tidyverse)
+library(dplyr)
 library(volker)
+library(ggplot2)
+
 theme_set(theme_bw())
 
 data <- volker::chatgpt

@@ -7,6 +7,7 @@
 plot_counts_one(
   data,
   col,
+  missings = F,
   numbers = NULL,
   title = T,
   labels = T,
@@ -19,6 +20,8 @@ plot_counts_one(
 
 \item{col}{The column holding values to count}
 
+\item{missings}{Include missing values (default FALSE)}
+
 \item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
@@ -30,6 +33,16 @@ Disable the title with FALSE or provide a custom title as character value.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }
+\value{
+A ggplot object
+}
 \description{
 Note: only non-missing cases are used to calculate the percentage.
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+plot_counts_one(data, sd_gender)
+
 }

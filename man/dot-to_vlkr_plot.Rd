@@ -7,7 +7,7 @@
 .to_vlkr_plot(pl, rows = NULL, maxlab = NULL)
 }
 \arguments{
-\item{pl}{A ggplot2 object}
+\item{pl}{A ggplot object}
 
 \item{rows}{The number of items on the vertical axis. Will be automatically determined when NULL.
 For stacked bar charts, don't forget to set the group parameter, otherwise it won't work}
@@ -16,7 +16,7 @@ For stacked bar charts, don't forget to set the group parameter, otherwise it wo
 on the vertical axis}
 }
 \value{
-The plot
+A ggplot object with vlkr_plt class
 }
 \description{
 Add the volker class and options

@@ -27,6 +27,9 @@
 
 \item{title}{The plot title as character or NULL}
 }
+\value{
+A ggplot object
+}
 \description{
 Helper function: plot grouped bar chart
 }

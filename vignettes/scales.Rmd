@@ -13,7 +13,8 @@ editor_options:
 ```{r include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo = TRUE)
 
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 library(volker)
 theme_set(theme_bw())
 
@@ -47,7 +48,7 @@ tab_counts(data, starts_with("use_"))
 
 # Scales
 
-You can calculate mean indexes from a bunch of items using `add_idx()`. 
+You can calculate mean indexes from a bunch of items using `idx_add()`. 
 A new column is created with the average value of all selected columns
 for each case. 
 
@@ -58,24 +59,24 @@ are printed by `tab_metrics()`.
 **Add a single index**
 ```{r}
 data %>%
-  add_idx(starts_with("cg_adoption_")) %>%
+  idx_add(starts_with("cg_adoption_")) %>%
   tab_metrics(idx_cg_adoption)
 ```
 
 **Compare the index values by group**
 ```{r}
 data %>%
-  add_idx(starts_with("cg_adoption_")) %>%
+  idx_add(starts_with("cg_adoption_")) %>%
   tab_metrics(idx_cg_adoption, adopter)
 ```
 
 **Add multiple indizes and summarize them**
 ```{r}
 data %>%
-  add_idx(starts_with("cg_adoption_")) %>%
-  add_idx(starts_with("cg_adoption_advantage")) %>%
-  add_idx(starts_with("cg_adoption_fearofuse")) %>%
-  add_idx(starts_with("cg_adoption_social")) %>%
+  idx_add(starts_with("cg_adoption_")) %>%
+  idx_add(starts_with("cg_adoption_advantage")) %>%
+  idx_add(starts_with("cg_adoption_fearofuse")) %>%
+  idx_add(starts_with("cg_adoption_social")) %>%
   tab_metrics(starts_with("idx_cg_adoption"))
 ```
 

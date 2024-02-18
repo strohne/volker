@@ -10,7 +10,8 @@ editor_options:
 knitr::opts_knit$set(root.dir = "../..")
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo=FALSE, fig.width = 7)
 
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 library(volker)
 theme_set(theme_bw())
 

@@ -29,6 +29,16 @@ tab_metrics_items(
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.}
 }
+\value{
+A volker tibble
+}
 \description{
 Output a five point summary table for multiple items
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+tab_metrics_items(data, starts_with("cg_adoption_"))
+
 }

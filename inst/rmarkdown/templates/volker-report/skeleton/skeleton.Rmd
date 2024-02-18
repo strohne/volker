@@ -15,11 +15,16 @@ editor_options:
 #
 
 # Knit settings
-#knitr::opts_knit$set(root.dir="..")
+# Note: you may want to set the root dir
+# in case the file is in a subfolder of your project:
+# knitr::opts_knit$set(root.dir="..")
 knitr::opts_chunk$set(echo = FALSE)
 
 # Load packages
-library(tidyverse)
+# Note: you may want to load tidyverse instead of dplyr:
+# library(tidyverse)
+library(dplyr)
+library(ggplot2)
 library(volker)
 
 # Set plot theme

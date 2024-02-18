@@ -12,8 +12,12 @@ editor_options:
 ```{r include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = TRUE, fig.width = 7)
 
-library(tidyverse)
+library(dplyr)
+library(forcats)
+library(ggplot2)
 library(volker)
+
+
 theme_set(theme_bw())
 
 data <- volker::chatgpt
@@ -78,9 +82,9 @@ plot_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_gender)
 ```{r}
 
 data %>%
-  add_idx(starts_with("cg_adoption_social_")) %>%
-  add_idx(starts_with("cg_adoption_fearofuse_")) %>%
-  add_idx(starts_with("cg_adoption_advantage_")) %>%
+  idx_add(starts_with("cg_adoption_social_")) %>%
+  idx_add(starts_with("cg_adoption_fearofuse_")) %>%
+  idx_add(starts_with("cg_adoption_advantage_")) %>%
   
   # Set new labels for the three index columns
   labs_apply(tribble(

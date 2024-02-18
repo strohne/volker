@@ -1,6 +1,7 @@
-# Tests for labeling functions
+#
+# Test labeling functions
+#
 
-library(tidyverse)
 library(testthat)
 library(volker)
 
@@ -57,9 +58,9 @@ test_that("Store, clear and restore the codebook", {
 # Replace item labels
 test_that("Item labels are replaced and keep their order", {
 
-  # TODO: even if the column was converted to character beforehand
   data |>
     dplyr::select(adopter) |>
+    # TODO: Even if the column was converted to character beforehand
     #  dplyr::mutate(adopter = as.character(adopter)) |>
     volker:::labs_replace_values(adopter, volker::codebook(data)) |>
     dplyr::pull(adopter) |>

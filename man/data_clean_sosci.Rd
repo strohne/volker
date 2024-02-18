@@ -39,3 +39,7 @@ Prepares Sosci data:
 \item Add whitespace after slashes to better label breaks
 }
 }
+\examples{
+ds <- volker::chatgpt
+ds <- data_clean_sosci(ds)
+}

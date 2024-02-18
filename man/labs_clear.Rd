@@ -19,3 +19,8 @@ A tibble with comments removed
 \description{
 Remove all comments from the selected columns
 }
+\examples{
+library(volker)
+volker::chatgpt |>
+  labs_clear()
+}

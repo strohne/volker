@@ -45,7 +45,7 @@ in Markdown (e.g. ##### Method)}
 \item{...}{Parameters passed to the plot and tab functions.}
 }
 \value{
-A list of class vlkr_rprt containing the parts of the report
+A volker report object
 }
 \description{
 Depending on your column selection, different types of plots and tables are generated.
@@ -55,4 +55,11 @@ See \link{plot_counts} and \link{tab_counts}.
 For item batteries, an index is calculated and reported.
 When used in combination with the Markdown-template "html_report",
 the different parts of the report are grouped under a tabsheet selector.
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+report_counts(data, sd_gender)
+
 }

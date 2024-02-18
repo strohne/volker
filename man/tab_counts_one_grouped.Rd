@@ -38,6 +38,16 @@ tab_counts_one_grouped(
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }
+\value{
+A volker tibble
+}
 \description{
 Output frequencies cross tabulated with a grouping column
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+tab_counts(data, adopter, sd_gender)
+
 }

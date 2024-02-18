@@ -14,7 +14,18 @@
 
 \item{...}{Further parameters passed to print()}
 }
+\value{
+No return value
+}
 \description{
 Printing method for volker plots
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+pl <- plot_metrics(data, sd_age)
+print(pl)
+
 }
 \keyword{internal}

@@ -20,7 +20,7 @@ or multiple columns selected by methods such as starts_with().}
 \item{...}{Other parameters passed to the appropriate plot function}
 }
 \value{
-A ggplot2 plot object
+A ggplot object
 }
 \description{
 The table type depends on the number of selected columns:
@@ -30,4 +30,11 @@ The table type depends on the number of selected columns:
 \item One column and one grouping column: see \link{plot_metrics_one_grouped}
 \item Multiple columns and one grouping column: see \link{plot_metrics_items_grouped}
 }
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+plot_metrics(data, sd_age)
+
 }

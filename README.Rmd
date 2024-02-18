@@ -72,7 +72,7 @@ Groups can be compared (e.g., the average age by gender) or cross-tabulated (e.g
 
 - *One variable or item batteries?*.  
   Item batteries are often used in surveys. Each item results in a single variable, but the variables are all measured with the same scale (e.g. 1 = not at all to 5 = fully applies).
-  To summarise multiple items send a column selection to the functions by using tidyselect mechanisms such as `starts_with()`. Indexes are automatically calculated by the `report`-functions or can be explicitly created using `add_idx()`.
+  To summarise multiple items send a column selection to the functions by using tidyselect mechanisms such as `starts_with()`. Indexes are automatically calculated by the `report`-functions or can be explicitly created using `idx_add()`.
   
 - *Markdown or data frame?*  
   All table functions return data frames that can be processed further. The tables have their own print function, so the output of all functions can be used directly in Markdown documents to display neatly formatted tables and plots. The `report`-functions create tidy interactive tabsheets to switch between plots, tables, and indexes.
@@ -233,7 +233,7 @@ The labels come directly from your questionnaire.
 
 ## Index calculation
 
-Indexes (=mean of multiple items) can be added using `add_idx()` manually
+Indexes (=mean of multiple items) can be added using `idx_add()` manually
 and are automatically calculated in report functions. 
 Cronbach's alpha is added to all table outputs.
 
@@ -290,7 +290,7 @@ tab_metrics(data, sd_age, sd_gender)
 - Simple tables, simple plots, simple reports.  
 - Labeling and scaling based on attributes. Appropriate attributes, for example, are provided by the Sosci Survey API. Alternatively, you can add custom labels. Use `codebook()` to see all labels present in a dataset.  
 - Interactive reports: Use the `volker::html_report` template in your Markdown documents to switch between tables and plots when using the report-functions.  
-- Calculate metric indexes using `add_idx()` (*work in progress*).  
+- Calculate metric indexes using `idx_add()` (*work in progress*).  
 - Simplified hints for wrong parameters, e.g. if you forget to provide a data frame (*work in progress*).
 - Tidyverse style.  
 
@@ -299,7 +299,7 @@ tab_metrics(data, sd_age, sd_gender)
 The kableExtra package produces an error in R 4.3 when knitting documents: ` .onLoad in loadNamespace() für 'kableExtra' fehlgeschlagen`. As a work around, remove PDF and Word settings from the output options in you markdown document (the yml section at the top). Alternatively, install the latest development version:
 
 ```
-devtools::install_github("kupietz/kableExtra")
+remotes::install_github("kupietz/kableExtra")
 ```
 
 ## Roadmap

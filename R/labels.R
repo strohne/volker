@@ -103,7 +103,7 @@ codebook <- function(data, cols) {
 #' @param data A data frame
 #' @return A data frame
 #' @examples
-#' library(tidyverse)
+#' library(dplyr)
 #' library(volker)
 #'
 #' volker::chatgpt |>
@@ -129,7 +129,7 @@ labs_store <- function(data) {
 #'              Item labels correspond to columns, value labels to values in the columns.
 #' @return A data frame
 #' @examples
-#' library(tidyverse)
+#' library(dplyr)
 #' library(volker)
 #'
 #' volker::chatgpt |>
@@ -167,7 +167,7 @@ labs_restore <- function(data, cols=NULL, values=T) {
 #'                 value_name and value_label in your codebook.
 #' @return A tibble with new labels
 #' @examples
-#' library(tidyverse)
+#' library(tibble)
 #' library(volker)
 #'
 #' newlabels <- tribble(
@@ -178,7 +178,7 @@ labs_restore <- function(data, cols=NULL, values=T) {
 #'  "cg_adoption_advantage_04", "Macht mehr Spaß"
 #'  )
 #'
-#'  volker::chatgtp %>%
+#'  volker::chatgpt %>%
 #'    labs_apply(newlabels) %>%
 #'    tab_metrics(starts_with("cg_adoption_advantage_"))
 #' @importFrom rlang .data
@@ -286,6 +286,7 @@ labs_apply <- function(data, codes, cols=NULL, values=T) {
 #' @param labels The attributes to remove. NULL to remove all attributes except levels and class
 #' @return A tibble with comments removed
 #' @examples
+#' library(volker)
 #' volker::chatgpt |>
 #'   labs_clear()
 #' @export
@@ -595,7 +596,6 @@ trim_label <- function(x) {
 #'
 #' @keywords internal
 #'
-#' @keywords internal
 #' @param data A tibble with a scale attribute
 #' @return A named list or NULL
 #' @importFrom rlang .data

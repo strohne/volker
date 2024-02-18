@@ -30,3 +30,19 @@ A tibble with new labels
 \description{
 Set variable labels by setting their comment attributes
 }
+\examples{
+library(tibble)
+library(volker)
+
+newlabels <- tribble(
+  ~item_name,                 ~item_label,
+ "cg_adoption_advantage_01", "Allgemeine Vorteile",
+ "cg_adoption_advantage_02", "Finanzielle Vorteile",
+ "cg_adoption_advantage_03", "Vorteile bei der Arbeit",
+ "cg_adoption_advantage_04", "Macht mehr Spaß"
+ )
+
+ volker::chatgpt \%>\%
+   labs_apply(newlabels) \%>\%
+   tab_metrics(starts_with("cg_adoption_advantage_"))
+}

@@ -1,4 +1,6 @@
-# Test plots work
+#
+# Test column selections
+#
 
 library(testthat)
 library(volker)

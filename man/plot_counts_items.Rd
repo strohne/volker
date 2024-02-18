@@ -45,6 +45,16 @@ Disable the title with FALSE or provide a custom title as character value.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }
+\value{
+A ggplot object
+}
 \description{
 TODO: move missings to the end
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+plot_counts_items(data, starts_with("cg_adoption_"))
+
 }
