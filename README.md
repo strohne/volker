@@ -235,6 +235,10 @@ labeled data from the Sosci Survey API:
 For best results, use sensible prefixes and captions for your Sosci
 questions. The labels come directly from your questionnaire.
 
+*Please note:* The values `-9` and `[NA] nicht beantwortet` are
+automatically recoded to missing values within all plot, tab and report
+functions. Missing control is on the list for the next package version.
+
 ## Index calculation
 
 Indexes (=mean of multiple items) can be added using `idx_add()`
