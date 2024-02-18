@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Craft polished tables and plots in Markdown reports. Simply choose whether to treat your data as counts or metrics, and the package will automatically generate well-designed default tables and plots for you. Boiled down to the basics, with labeling features and simple interactive reports. All functions are Tidyverse compatible.
+Craft polished tables and plots in Markdown reports. Simply choose whether to treat your data as counts or metrics, and the package will automatically generate well-designed default tables and plots for you. Boiled down to the basics, with labeling features and simple interactive reports. All functions are 'tidyverse' compatible.
 }
 \seealso{
 Useful links:

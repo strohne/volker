@@ -158,7 +158,7 @@ The volker-package is based on standard methods for data handling and visualisat
 You can produce all outputs with a handful of functions. The package just makes your
 code dry - don't repeat yourself - and wraps often used snippets into a simple interface.
 
-Basically, all table values are calculated two Tidyverse functions:
+Basically, all table values are calculated two tidyverse functions:
 - count() is used to produce counts
 - skim() is used to produce metrics
 

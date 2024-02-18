@@ -4,7 +4,7 @@
 \alias{prepare_scale}
 \title{Prepare the scale attribute values}
 \usage{
-prepare_scale(scale)
+prepare_scale(data)
 }
 \arguments{
 \item{data}{A tibble with a scale attribute}

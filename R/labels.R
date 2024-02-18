@@ -599,19 +599,21 @@ trim_label <- function(x) {
 #' @param data A tibble with a scale attribute
 #' @return A named list or NULL
 #' @importFrom rlang .data
-prepare_scale <- function(scale) {
-  if (!is.null(scale)) {
-    scale <- scale %>%
+prepare_scale <- function(data) {
+  if (!is.null(data)) {
+    data <- data %>%
       dplyr::mutate(value_name = suppressWarnings(as.numeric(.data$value_name))) %>%
       dplyr::filter(.data$value_name >= 0) %>%
       stats::na.omit()
 
     scale <- stats::setNames(
-      as.character(scale$value_label),
-      as.character(scale$value_name)
+      as.character(data$value_label),
+      as.character(data$value_name)
     )
+
+    return(scale)
   }
-  scale
+  return(NULL)
 }
 
 #' Wrap labels in plot scales

@@ -28,7 +28,7 @@ or multiple columns selected by methods such as starts_with().}
 
 \item{index}{When the cols contain items on a metric scale
 (as determined by \link{get_direction}),
-an index will be calculated using the psych-package.
+an index will be calculated using the 'psych' package.
 Set to FALSE to suppress index generation.}
 
 \item{title}{A character providing the heading or TRUE (default) to output a heading.

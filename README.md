@@ -204,7 +204,7 @@ with `labs_apply()`:
       labs_apply(newlabels) %>%
       tab_metrics(starts_with("cg_adoption_advantage_"))
 
-Be aware that some data operations such as `mutate()` from the Tidyverse
+Be aware that some data operations such as `mutate()` from the tidyverse
 loose labels on their way. In this case, store the labels (in the
 codebook attribute of the data frame) before the operation and resotre
 them afterwards:

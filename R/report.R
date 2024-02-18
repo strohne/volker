@@ -15,7 +15,7 @@
 #' @param ... Parameters passed to the plot and tab functions.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
-#'              an index will be calculated using the psych-package.
+#'              an index will be calculated using the 'psych' package.
 #'              Set to FALSE to suppress index generation.
 #' @param title A character providing the heading or TRUE (default) to output a heading.
 #'               Classes for tabset pills will be added.
@@ -97,7 +97,7 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index=T, title = T
 #' @param col_group Optional, a grouping column (without quotes).
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
-#'              an index will be calculated using the psych-package.
+#'              an index will be calculated using the 'psych' package.
 #'              Set to FALSE to suppress index generation.
 #' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 #'                Set to NULL to remove numbers.
