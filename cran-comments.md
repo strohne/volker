@@ -1,9 +1,9 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
-* As requested: Fixed invalid file URIs by removing links from README.md 
-* In addition: Proof read docstrings a second time and fixed some typos
-* In addition: Revised plot height calculation
+* As requested: Fixed invalid file URIs by removing links from README.md  
+* In addition: Proof read docstrings a second time and fixed some typos  
+* In addition: Revised plot height calculation  
   
 ## R CMD check results
 
