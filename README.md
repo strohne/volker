@@ -216,22 +216,22 @@ them afterwards:
       
       tab_metrics(sd_age)
 
-## Sosci Survey integration
+## SoSci Survey integration
 
-The labeling mechanisms follow a technique used, for example, on [Sosci
+The labeling mechanisms follow a technique used, for example, on [SoSci
 Survey](https://www.soscisurvey.de/). Sidenote for techies: Labels are
 stored in the column attributes. That’s why you can directly throw in
-labeled data from the Sosci Survey API:
+labeled data from the SoSci Survey API:
 
     library(volker)
 
-    # Get your API link from Sosci Survey with settings "Daten als CSV für R abrufen"
+    # Get your API link from SoSci Survey with settings "Daten als CSV für R abrufen"
     eval(parse("https://www.soscisurvey.de/YOURPROJECT/?act=YOURKEY&rScript", encoding="UTF-8"))
 
     # Generate reportings
     report_counts(ds, A002)
 
-For best results, use sensible prefixes and captions for your Sosci
+For best results, use sensible prefixes and captions for your SoSci
 questions. The labels come directly from your questionnaire.
 
 *Please note:* The values `-9` and `[NA] nicht beantwortet` are
@@ -285,7 +285,7 @@ Finally, use it:
 
 - Simple tables, simple plots, simple reports.  
 - Labeling and scaling based on attributes. Appropriate attributes, for
-  example, are provided by the Sosci Survey API. Alternatively, you can
+  example, are provided by the SoSci Survey API. Alternatively, you can
   add custom labels. Use `codebook()` to see all labels present in a
   dataset.  
 - Interactive reports: Use the `volker::html_report` template in your

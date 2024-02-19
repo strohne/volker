@@ -2,7 +2,7 @@
 % Please edit documentation in R/clean.R
 \name{data_clean_sosci}
 \alias{data_clean_sosci}
-\title{Prepare metadata and types of dataframe columns}
+\title{Prepare data originating from SoSci Survey}
 \usage{
 data_clean_sosci(
   data,
@@ -20,20 +20,20 @@ Either a character vector with residual values or TRUE to use defaults in \link{
 \item{remove.na.numbers}{Remove residual values from numeric columns.
 Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}}
 
-\item{add.whitespace}{Add whitespace after slashes to better label breaks}
+\item{add.whitespace}{Add whitespace after slashes for improved label breaks}
 }
 \value{
 Data frame with vlkr_df class (the class is used to prevent double preparation)
 }
 \description{
-The tibble remebers whether it was already prepared and
+The tibble remembers whether it was already prepared and
 the operations are only performed once in the first call.
 }
 \details{
-Prepares Sosci data:
+Prepares SoSci Survey data:
 \itemize{
 \item Remove the avector class from all columns
-(comes from Sosci and prevents combining vectors)
+(comes from SoSci and prevents combining vectors)
 \item Recode residual factor values to NA (e.g. "\link{NA} nicht beantwortet")
 \item Recode residual numeric values to NA (e.g. -9)
 \item Add whitespace after slashes to better label breaks

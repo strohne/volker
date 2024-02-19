@@ -17,7 +17,7 @@ data_clean(data, plan = "sosci", ...)
 Cleaned data frame with vlkr_df class
 }
 \description{
-The tibble remebers whether it was already cleaned and
+The tibble remembers whether it was already cleaned and
 the cleaning plan is only performed once in the first call.
 }
 \examples{

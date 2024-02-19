@@ -1,6 +1,6 @@
 #' Prepare dataframe for tabs, plots, and index operations
 #'
-#' The tibble remebers whether it was already cleaned and
+#' The tibble remembers whether it was already cleaned and
 #' the cleaning plan is only performed once in the first call.
 #'
 #' @param data Data frame
@@ -18,14 +18,14 @@ data_clean <- function(data, plan="sosci", ...) {
   data
 }
 
-#' Prepare metadata and types of dataframe columns
+#' Prepare data originating from SoSci Survey
 #'
-#' The tibble remebers whether it was already prepared and
+#' The tibble remembers whether it was already prepared and
 #' the operations are only performed once in the first call.
 #'
-#' Prepares Sosci data:
+#' Prepares SoSci Survey data:
 #' - Remove the avector class from all columns
-#'   (comes from Sosci and prevents combining vectors)
+#'   (comes from SoSci and prevents combining vectors)
 #' - Recode residual factor values to NA (e.g. "[NA] nicht beantwortet")
 #' - Recode residual numeric values to NA (e.g. -9)
 #' - Add whitespace after slashes to better label breaks
@@ -35,7 +35,7 @@ data_clean <- function(data, plan="sosci", ...) {
 #'                      Either a character vector with residual values or TRUE to use defaults in \link{VLKR_NA_LEVELS}
 #' @param remove.na.numbers Remove residual values from numeric columns.
 #'                      Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}
-#' @param add.whitespace Add whitespace after slashes to better label breaks
+#' @param add.whitespace Add whitespace after slashes for improved label breaks
 #' @return Data frame with vlkr_df class (the class is used to prevent double preparation)
 #' @examples
 #' ds <- volker::chatgpt
