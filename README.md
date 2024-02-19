@@ -148,10 +148,9 @@ column selections, and optionally a grouping column. Examples:
   `tab_counts(data, starts_with("cg_adoption"))`
 
 **Hint**: replace `tab_` by `plot_` to reproduce the examples above.
-You’ll find an overview about different [tables](vignettes/tables.Rmd),
-[plots](vignettes/plots.Rmd) and [reports](vignettes/reports.Rmd) in the
-package vignettes. For further options to customize the results, see the
-builtin function help (F1 key).
+You’ll find different table, plot and report types in [the introduction
+vignette](vignettes/introduction.Rmd). For further options to customize
+the results, see the builtin function help (F1 key).
 
 After deciding whether to plot or tabulate, and whether to handle metric
 or counted data, the column selections determine which of the following
