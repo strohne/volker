@@ -1119,10 +1119,14 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 
   plot_data <- ggplot2::ggplot_build(pl)
   if (is.null(rows)) {
-    labels <- plot_data$layout$panel_scales_x[[1]]$range$range
+    if ("CoordFlip" %in% class(pl$coordinates)) {
+      labels <- plot_data$layout$panel_scales_x[[1]]$range$range
+    } else {
+      labels <- plot_data$layout$panel_scales_y[[1]]$range$range
+    }
     legend <- unique(plot_data$data[[1]]$group)
 
-    rows <- max(length(labels), length(legend) / 3)
+    rows <- max(length(labels), (length(legend) / 3) * 2)
   }
 
   if (is.null(maxlab)) {
@@ -1166,25 +1170,25 @@ knit_plot <- function(pl) {
 
   fig_width <- chunk_options$fig.width * 72
   fig_height <- chunk_options$fig.height * 72
-  fig_dpi <- 192 # 96
-  fig_scale <- fig_dpi / 96
+  fig_dpi <- VLKR_PLOT_DPI
+  fig_scale <- fig_dpi / VLKR_PLOT_SCALE
 
   # TODO: GET PAGE WIDTH FROM SOMEWHERE
   # page_width <- dplyr::coalesce(chunk_options$page.width, 1)
 
   # Calculate plot height
   if (!is.null(plot_options[["rows"]])) {
-    fig_width <- 910 # TODO: make configurable
-    px_perline <- 15 # TODO: make configurable
+    fig_width <- VLKR_PLOT_WIDTH # TODO: make configurable
+    px_perline <- VLKR_PLOT_PXPERLINE # TODO: make configurable
 
     # Buffer above and below the diagram
-    px_offset <- 4 * px_perline
+    px_offset <- VLKR_PLOT_OFFSETROWS * px_perline
     if (!is.null(pl$labels$title)) {
-      px_offset <- px_offset + 3 * px_perline
+      px_offset <- px_offset + VLKR_PLOT_TITLEROWS * px_perline
     }
 
     rows <- plot_options[["rows"]]
-    lines_wrap <- dplyr::coalesce(plot_options[["labwrap"]], 40)
+    lines_wrap <- dplyr::coalesce(plot_options[["labwrap"]], VLKR_PLOT_LABELWRAP)
     lines_perrow <- (dplyr::coalesce(plot_options[["maxlab"]], 1) %/% lines_wrap) + 2
 
     fig_height <- (rows * lines_perrow * px_perline) + px_offset
