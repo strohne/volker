@@ -12,6 +12,4 @@ vignettes/tables.html
 vignettes/plots.html
 vignettes/reports.html
 vignettes/scales.html
-test/testthat/_markdown/*.html
-_cache
 ^CRAN-SUBMISSION$
