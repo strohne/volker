@@ -11,6 +11,8 @@
 #'              from the common column prefix, prefixed with "idx_"
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param clean Prepare data by \link{data_clean}.
+#' @return The input tibble with an additional column that contains the index values.
+#'         The column contains the result of the alpha calculation in the attribute named "psych.alpha".
 #' @examples
 #' ds <- volker::chatgpt
 #' volker::idx_add(ds, starts_with("cg_adoption"))

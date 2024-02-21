@@ -20,13 +20,13 @@ set \code{output: volker::html_report}.
 }
 \examples{
 \dontrun{
-Add `volker::html_report` to the output options of your Markdown document:
-
-```
----
-title: "How to create reports?"
-output: volker::html_report
----
-```
+# Add `volker::html_report` to the output options of your Markdown document:
+#
+# ```
+# ---
+# title: "How to create reports?"
+# output: volker::html_report
+# ---
+# ```
 }
 }

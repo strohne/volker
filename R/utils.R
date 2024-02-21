@@ -11,13 +11,6 @@
 #' @param newline Whether to add a new line character between the values (default: TRUE).
 #' @param brackets Whether to set the secondary values in brackets (default: FALSE).
 #' @return A combined data frame
-#' @examples
-#' library(tibble)
-#'
-#' tab_n <- tibble(item=c("Female", "Male"), n=c(15,10))
-#' tab_p <- tibble( item=c("Female", "Male"), n=c("60%","30%"))
-#'
-#' volker:::zip_tables(tab_n, tab_p)
 zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
   newline <- newline && (knitr::is_html_output() || knitr::is_latex_output())
   sep <- ifelse(newline, "\n", " ")
