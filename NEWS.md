@@ -1,3 +1,7 @@
+# volker 1.0.2
+
+* Fixed documentation and coding style issues
+
 # volker 1.0.1
 
 * Revised plot height calculation  
