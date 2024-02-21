@@ -19,6 +19,10 @@ from the common column prefix, prefixed with "idx_"}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 }
+\value{
+The input tibble with an additional column that contains the index values.
+The column contains the result of the alpha calculation in the attribute named "psych.alpha".
+}
 \description{
 Calculate the mean value of multiple items
 }

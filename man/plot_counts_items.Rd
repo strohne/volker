@@ -58,3 +58,4 @@ data <- volker::chatgpt
 plot_counts_items(data, starts_with("cg_adoption_"))
 
 }
+\keyword{internal}

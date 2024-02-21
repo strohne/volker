@@ -11,7 +11,7 @@
 #' ds <- volker::chatgpt
 #' ds <- data_clean(ds)
 #' @export
-data_clean <- function(data, plan="sosci", ...) {
+data_clean <- function(data, plan = "sosci", ...) {
   if (plan == "sosci") {
     data <- data_clean_sosci(data,...)
   }
@@ -30,6 +30,8 @@ data_clean <- function(data, plan="sosci", ...) {
 #' - Recode residual numeric values to NA (e.g. -9)
 #' - Add whitespace after slashes to better label breaks
 #'
+#' @keywords internal
+#'
 #' @param data Data frame
 #' @param remove.na.levels Remove residual values from factor columns.
 #'                      Either a character vector with residual values or TRUE to use defaults in \link{VLKR_NA_LEVELS}
@@ -41,7 +43,7 @@ data_clean <- function(data, plan="sosci", ...) {
 #' ds <- volker::chatgpt
 #' ds <- data_clean_sosci(ds)
 #' @export
-data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = TRUE, add.whitespace= TRUE) {
+data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = TRUE, add.whitespace = TRUE) {
 
   # Prepare only once
   if ("vlkr_df" %in% class(data)) {
@@ -118,7 +120,7 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
 #'
 #' @param data A tibble
 #' @return A tibble of class vlkr_df
-.to_vlkr_df <- function(data, digits=NULL) {
+.to_vlkr_df <- function(data, digits = NULL) {
   data <- dplyr::as_tibble(data)
   class(data) <- c("vlkr_df", setdiff(class(data), "vlkr_df"))
   data

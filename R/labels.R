@@ -138,7 +138,7 @@ labs_store <- function(data) {
 #'   labs_restore() |>
 #'   tab_metrics(sd_age)
 #' @export
-labs_restore <- function(data, cols=NULL, values= TRUE) {
+labs_restore <- function(data, cols = NULL, values = TRUE) {
 
   codes <- attr(data,"codebook")
 
@@ -183,7 +183,7 @@ labs_restore <- function(data, cols=NULL, values= TRUE) {
 #'    tab_metrics(starts_with("cg_adoption_advantage_"))
 #' @importFrom rlang .data
 #' @export
-labs_apply <- function(data, codes, cols=NULL, values= TRUE) {
+labs_apply <- function(data, codes, cols = NULL, values = TRUE) {
 
   # Check
   if ((nrow(codes) ==0)) {
@@ -293,7 +293,7 @@ labs_apply <- function(data, codes, cols=NULL, values= TRUE) {
 labs_clear <- function(data, cols, labels = NULL) {
 
 
-  remove_attr <-  function(x, labels=NULL) {
+  remove_attr <-  function(x, labels = NULL) {
     if (is.null(labels)) {
       labels <- setdiff(names(attributes(x)), c("class", "levels"))
     }

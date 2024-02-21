@@ -67,3 +67,4 @@ data <- volker::chatgpt
 plot_counts_one_grouped(data, adopter, sd_gender)
 
 }
+\keyword{internal}

@@ -43,3 +43,4 @@ Prepares SoSci Survey data:
 ds <- volker::chatgpt
 ds <- data_clean_sosci(ds)
 }
+\keyword{internal}

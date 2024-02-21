@@ -46,3 +46,4 @@ data <- volker::chatgpt
 plot_counts_one(data, sd_gender)
 
 }
+\keyword{internal}

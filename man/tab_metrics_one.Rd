@@ -42,3 +42,4 @@ data <- volker::chatgpt
 tab_metrics_one(data, sd_age)
 
 }
+\keyword{internal}

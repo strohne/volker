@@ -1,10 +1,14 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
-* In the examples for html_report, commented out the dontrun section content
+* In the examples for html_report(), commented out the failing dontrun section content
 * Replaced all occurences of T/F  by TRUE/FALSE  
-* Added the missing return value documentation for idx_add  
+* Added the missing return value documentation for idx_add()
 * Removed the zip_tables()-function from the exports and removed its example containing :::
+* Additionally, reorganized the help index page (removed functions to be called by parent functions as they are linked in the documentation, resulting in a more concise documentation)
+
+Thank you for your unvaluable work. I'm sorry for the oversights. 
+Although reading lots of CRAN related materials, obviously, I still missed some important points.
 
 ## Resubmission
 This is a resubmission. In this version I have:

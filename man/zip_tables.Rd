@@ -23,12 +23,4 @@ A combined data frame
 \description{
 TODO: implement newline parameter
 }
-\examples{
-library(tibble)
-
-tab_n <- tibble(item=c("Female", "Male"), n=c(15,10))
-tab_p <- tibble( item=c("Female", "Male"), n=c("60\%","30\%"))
-
-volker:::zip_tables(tab_n, tab_p)
-}
 \keyword{internal}

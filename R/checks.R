@@ -10,7 +10,7 @@
 #' @param msg Optional, a custom error message
 #' @param stopit Whether to stop execution with an error message
 #' @return boolean Whether the object is a data.frame object
-check_is_dataframe <- function(obj, msg=NULL, stopit= TRUE) {
+check_is_dataframe <- function(obj, msg = NULL, stopit = TRUE) {
   check <-tryCatch(
     {
       is.data.frame(obj)
@@ -42,7 +42,7 @@ check_is_dataframe <- function(obj, msg=NULL, stopit= TRUE) {
 #' @param col A column name
 #' @param msg A custom error message if the check fails
 #' @return boolean Whether the column exists
-check_has_column <- function(data, col, msg=NULL) {
+check_has_column <- function(data, col, msg = NULL) {
   colname <- as.character(rlang::get_expr(rlang::enquo(col)))
 
   check <- colname != ""

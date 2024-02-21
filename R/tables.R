@@ -22,7 +22,7 @@
 #' tab_counts(data, sd_gender)
 #'
 #' @export
-tab_counts <- function(data, cols, col_group=NULL, clean= TRUE, ...) {
+tab_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -79,7 +79,7 @@ tab_counts <- function(data, cols, col_group=NULL, clean= TRUE, ...) {
 #' tab_metrics(data, sd_age)
 #'
 #' @export
-tab_metrics <- function(data, cols, col_group=NULL, clean= TRUE, ...) {
+tab_metrics <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -114,6 +114,8 @@ tab_metrics <- function(data, cols, col_group=NULL, clean= TRUE, ...) {
 
 #' Output a frequency table for the values in one column
 #'
+#' @keywords internal
+#'
 #' @param data A tibble
 #' @param col The column holding values to count
 #' @param missings Include missing values in the output (default TRUE)
@@ -130,7 +132,7 @@ tab_metrics <- function(data, cols, col_group=NULL, clean= TRUE, ...) {
 #'
 #' @importFrom rlang .data
 #' @export
-tab_counts_one <- function(data, col, missings = TRUE, percent = TRUE, labels = TRUE, clean= TRUE, ...) {
+tab_counts_one <- function(data, col, missings = TRUE, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
 
@@ -192,6 +194,8 @@ tab_counts_one <- function(data, col, missings = TRUE, percent = TRUE, labels = 
 
 #' Output frequencies cross tabulated with a grouping column
 #'
+#' @keywords internal
+#'
 #' @param data A tibble
 #' @param col The column holding factor values
 #' @param col_group The column holding groups to compare
@@ -211,7 +215,7 @@ tab_counts_one <- function(data, col, missings = TRUE, percent = TRUE, labels = 
 #'
 #' @importFrom rlang .data
 #' @export
-tab_counts_one_grouped <- function(data, col, col_group, missings = FALSE, prop = "total", values = c("n", "p"), percent = TRUE, labels = TRUE, clean= TRUE, ...) {
+tab_counts_one_grouped <- function(data, col, col_group, missings = FALSE, prop = "total", values = c("n", "p"), percent = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -392,6 +396,8 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = FALSE, prop 
 #' TODO: Reorder boolean categories: first TRUE, then FALSE
 #' TODO: Support single columns
 #'
+#' @keywords internal
+#'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
 #' @param missings Include missing values (default FALSE)
@@ -409,7 +415,7 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = FALSE, prop 
 #'
 #' @export
 #' @importFrom rlang .data
-tab_counts_items <- function(data, cols, missings= FALSE, values = c("n", "p"), percent = TRUE, labels = TRUE, clean= TRUE, ...) {
+tab_counts_items <- function(data, cols, missings = FALSE, values = c("n", "p"), percent = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -558,7 +564,7 @@ tab_counts_items <- function(data, cols, missings= FALSE, values = c("n", "p"), 
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @return A volker tibble
 #' @importFrom rlang .data
-tab_counts_items_grouped <- function(data, cols, col_group, clean= TRUE, ...) {
+tab_counts_items_grouped <- function(data, cols, col_group, clean = TRUE, ...) {
 
   stop("Not implemented yet")
 
@@ -584,7 +590,7 @@ tab_counts_items_grouped <- function(data, cols, col_group, clean= TRUE, ...) {
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @importFrom rlang .data
-tab_counts_items_cor <- function(data, cols, cols_cor, clean= TRUE, ...) {
+tab_counts_items_cor <- function(data, cols, cols_cor, clean = TRUE, ...) {
 
   stop("Not implemented yet")
 
@@ -599,6 +605,8 @@ tab_counts_items_cor <- function(data, cols, cols_cor, clean= TRUE, ...) {
 }
 
 #' Output a five point summary table for the values in multiple columns
+#'
+#' @keywords internal
 #'
 #' @param data A tibble
 #' @param col The columns holding metric values
@@ -616,7 +624,7 @@ tab_counts_items_cor <- function(data, cols, cols_cor, clean= TRUE, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_one <- function(data, col, negative= FALSE, digits = 1, labels = TRUE, clean= TRUE, ...) {
+tab_metrics_one <- function(data, col, negative = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -687,6 +695,8 @@ tab_metrics_one <- function(data, col, negative= FALSE, digits = 1, labels = TRU
 
 #' Output a five point summary for groups
 #'
+#' @keywords internal
+#'
 #' @param data A tibble
 #' @param col The column holding metric values
 #' @param col_group The column holding groups to compare
@@ -704,7 +714,7 @@ tab_metrics_one <- function(data, col, negative= FALSE, digits = 1, labels = TRU
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, digits = 1, labels = TRUE, clean= TRUE, ...) {
+tab_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -797,6 +807,8 @@ tab_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, digi
 
 #' Output a five point summary table for multiple items
 #'
+#' @keywords internal
+#'
 #' @param data A tibble
 #' @param cols The columns holding metric values
 #' @param negative If FALSE (default), negative values are recoded as missing values.
@@ -813,7 +825,7 @@ tab_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, digi
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_items <- function(data, cols, negative = FALSE, digits = 1, labels = TRUE, clean= TRUE, ...) {
+tab_metrics_items <- function(data, cols, negative = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -897,6 +909,8 @@ tab_metrics_items <- function(data, cols, negative = FALSE, digits = 1, labels =
 #'
 #' TODO: handle completely missing data in single groups
 #'
+#' @keywords internal
+#'
 #' @param data A tibble
 #' @param cols The item columns that hold the values to summarize
 #' @param col_group The column holding groups to compare
@@ -915,7 +929,7 @@ tab_metrics_items <- function(data, cols, negative = FALSE, digits = 1, labels =
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_items_grouped <- function(data, cols, col_group, negative = FALSE, values = c("m", "sd"), digits = 1, labels = TRUE, clean= TRUE, ...) {
+tab_metrics_items_grouped <- function(data, cols, col_group, negative = FALSE, values = c("m", "sd"), digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -1077,6 +1091,8 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = FALSE, v
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
+#' @keywords internal
+#'
 #' @param data A tibble
 #' @param cols The source columns
 #' @param cols_cor The target columns or NULL to calculate correlations within the source columns
@@ -1094,7 +1110,7 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = FALSE, v
 #'
 #' @importFrom rlang .data
 #' @export
-tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = FALSE, labels= TRUE, clean= TRUE, ...) {
+tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -1168,7 +1184,7 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
 #' @param data A tibble
 #' @param digits Set the plot digits. If NULL (default), no digits are set.
 #' @return A volker tibble
-.to_vlkr_tab <- function(data, digits=NULL) {
+.to_vlkr_tab <- function(data, digits = NULL) {
 
   if (!is.null(digits)) {
     attr(data, "digits") <- digits

@@ -14,15 +14,15 @@
 #' @param col_group Optional, a grouping column. The column name without quotes.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate plot function
+#' @return A ggplot2 plot object
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
 #'
 #' plot_counts(data, sd_gender)
 #'
-#' @return A ggplot2 plot object
 #' @export
-plot_counts <- function(data, cols, col_group=NULL, clean= TRUE, ...) {
+plot_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -78,7 +78,7 @@ plot_counts <- function(data, cols, col_group=NULL, clean= TRUE, ...) {
 #' plot_metrics(data, sd_age)
 #'
 #' @export
-plot_metrics <- function(data, cols, col_group=NULL, clean= TRUE, ...) {
+plot_metrics <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -114,6 +114,8 @@ plot_metrics <- function(data, cols, col_group=NULL, clean= TRUE, ...) {
 #' Plot the frequency of  values in one column.
 #'
 #' Note: only non-missing cases are used to calculate the percentage.
+#'
+#' @keywords internal
 #'
 #' @param data A tibble
 #' @param col The column holding values to count
@@ -232,6 +234,8 @@ plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title =
 #'
 #' Note: only non-missing cases are used to calculate the percentage.
 #'
+#' @keywords internal
+#'
 #' @param data A tibble
 #' @param col The column holding factor values
 #' @param col_group The column holding groups to compare
@@ -263,7 +267,7 @@ plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title =
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_one_grouped <- function(data, col, col_group, category = NULL, ordered = NULL, missings = FALSE, prop = "total", numbers = NULL, title = TRUE, labels = TRUE, clean= TRUE, ...) {
+plot_counts_one_grouped <- function(data, col, col_group, category = NULL, ordered = NULL, missings = FALSE, prop = "total", numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -363,6 +367,8 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 #'
 #' TODO: move missings to the end
 #'
+#' @keywords internal
+#'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
 #' @param category The value FALSE will force to plot all categories.
@@ -389,7 +395,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missings= FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean= TRUE, ...) {
+plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -492,7 +498,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object
 #' @importFrom rlang .data
-plot_counts_items_grouped <- function(data, cols, col_group, clean= TRUE, ...) {
+plot_counts_items_grouped <- function(data, cols, col_group, clean = TRUE, ...) {
   stop("Not implemented yet")
 
   # 1. Check parameters
@@ -506,6 +512,8 @@ plot_counts_items_grouped <- function(data, cols, col_group, clean= TRUE, ...) {
 }
 
 #' Output a histogram for a single metric variable
+#'
+#' @keywords internal
 #'
 #' @param data A tibble
 #' @param col The columns holding metric values
@@ -525,7 +533,7 @@ plot_counts_items_grouped <- function(data, cols, col_group, clean= TRUE, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one <- function(data, col, limits=NULL, negative= FALSE, title = TRUE, labels = TRUE, clean= TRUE, ...) {
+plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -592,6 +600,8 @@ plot_metrics_one <- function(data, col, limits=NULL, negative= FALSE, title = TR
 
 #' Output averages for multiple variables
 #'
+#' @keywords internal
+#'
 #' @param data A tibble containing item measures
 #' @param col The column holding metric values
 #' @param col_group The column holding groups to compare
@@ -611,7 +621,7 @@ plot_metrics_one <- function(data, col, limits=NULL, negative= FALSE, title = TR
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean= TRUE, ...) {
+plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -726,6 +736,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 
 #' Output averages for multiple variables
 #'
+#' @keywords internal
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
@@ -744,7 +755,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 #' plot_metrics_items(data, starts_with("cg_adoption_"))
 #'
 #' @export
-plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean= TRUE, ...) {
+plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -862,6 +873,8 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, titl
 
 #' Output averages for multiple variables compared by a grouping variable
 #'
+#' @keywords internal
+#'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
 #' @param col_group The column holding groups to compare
@@ -881,7 +894,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, titl
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean= TRUE, ...) {
+plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ col_group }})
@@ -1114,7 +1127,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 #' @param maxlab The character length of the longest label to be plotted. Will be automatically determined when NULL.
 #'               on the vertical axis
 #' @return A ggplot object with vlkr_plt class
-.to_vlkr_plot <- function(pl, rows = NULL, maxlab=NULL) {
+.to_vlkr_plot <- function(pl, rows = NULL, maxlab = NULL) {
   class(pl) <- c("vlkr_plt", class(pl))
 
   plot_data <- ggplot2::ggplot_build(pl)

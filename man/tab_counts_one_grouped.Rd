@@ -51,3 +51,4 @@ data <- volker::chatgpt
 tab_counts(data, adopter, sd_gender)
 
 }
+\keyword{internal}

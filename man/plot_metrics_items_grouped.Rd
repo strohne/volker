@@ -49,3 +49,4 @@ data <- volker::chatgpt
 plot_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_gender)
 
 }
+\keyword{internal}

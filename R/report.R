@@ -31,7 +31,7 @@
 #' report_metrics(data, sd_age)
 #'
 #' @export
-report_metrics <- function(data, cols, col_group = NULL, ..., index= TRUE, title = TRUE, close= TRUE, clean= TRUE) {
+report_metrics <- function(data, cols, col_group = NULL, ..., index = TRUE, title = TRUE, close = TRUE, clean = TRUE) {
 
   if (clean) {
     data <- data_clean(data)
@@ -116,7 +116,7 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index= TRUE, title
 #' report_counts(data, sd_gender)
 #'
 #' @export
-report_counts <- function(data, cols, col_group = NULL, index= TRUE, numbers=NULL, title = TRUE, close= TRUE, clean= TRUE, ...) {
+report_counts <- function(data, cols, col_group = NULL, index = TRUE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
 
   if (clean) {
     data <- data_clean(data)
@@ -177,7 +177,7 @@ report_counts <- function(data, cols, col_group = NULL, index= TRUE, numbers=NUL
 #' @param col_group Optional, a grouping column (without quotes).
 #' @param title Add a plot title (default = TRUE)
 #' @return A list containing a table and a plot volker report chunk
-.report_idx <- function(data, cols, col_group, title= TRUE) {
+.report_idx <- function(data, cols, col_group, title = TRUE) {
   chunks <- list()
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)

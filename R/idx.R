@@ -18,7 +18,7 @@
 #' volker::idx_add(ds, starts_with("cg_adoption"))
 #' @export
 #' @importFrom rlang .data
-idx_add <- function(data, cols, newcol = NULL, negative = FALSE, clean= TRUE) {
+idx_add <- function(data, cols, newcol = NULL, negative = FALSE, clean = TRUE) {
 
   # 1. Checks
   check_is_dataframe(data)

@@ -45,3 +45,4 @@ data <- volker::chatgpt
 tab_metrics_one_grouped(data, sd_age, sd_gender)
 
 }
+\keyword{internal}

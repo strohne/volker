@@ -42,3 +42,4 @@ data <- volker::chatgpt
 tab_metrics_items(data, starts_with("cg_adoption_"))
 
 }
+\keyword{internal}
