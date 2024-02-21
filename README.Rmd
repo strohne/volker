@@ -257,7 +257,7 @@ The package includes vignettes, they help getting started.
 When installing a development version, you need to build them.
 Only then, you'll find them linked in the help index page.
 ```
-remotes::install_github("strohne/volker", build_vignettes = T)
+remotes::install_github("strohne/volker", build_vignettes = TRUE)
 ```
 
 The beta version used in the statistics course in winter 2023/24 at the University of Münster

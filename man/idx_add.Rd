@@ -4,7 +4,7 @@
 \alias{idx_add}
 \title{Calculate the mean value of multiple items}
 \usage{
-idx_add(data, cols, newcol = NULL, negative = FALSE, clean = T)
+idx_add(data, cols, newcol = NULL, negative = FALSE, clean = TRUE)
 }
 \arguments{
 \item{data}{A dataframe}

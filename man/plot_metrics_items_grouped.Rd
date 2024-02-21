@@ -9,10 +9,10 @@ plot_metrics_items_grouped(
   cols,
   col_group,
   limits = NULL,
-  negative = F,
-  title = T,
-  labels = T,
-  clean = T,
+  negative = FALSE,
+  title = TRUE,
+  labels = TRUE,
+  clean = TRUE,
   ...
 )
 }

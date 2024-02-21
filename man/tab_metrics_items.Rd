@@ -7,10 +7,10 @@
 tab_metrics_items(
   data,
   cols,
-  negative = F,
+  negative = FALSE,
   digits = 1,
-  labels = T,
-  clean = T,
+  labels = TRUE,
+  clean = TRUE,
   ...
 )
 }

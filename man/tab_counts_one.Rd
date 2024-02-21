@@ -7,10 +7,10 @@
 tab_counts_one(
   data,
   col,
-  missings = T,
-  percent = T,
-  labels = T,
-  clean = T,
+  missings = TRUE,
+  percent = TRUE,
+  labels = TRUE,
+  clean = TRUE,
   ...
 )
 }

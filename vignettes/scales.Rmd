@@ -114,6 +114,6 @@ With the labels parameter, you achieve a similar result.
 
 ```{r}
 data %>%
-  tab_counts(starts_with("cg_adoption_advantage_"), labels=F)
+  tab_counts(starts_with("cg_adoption_advantage_"), labels= FALSE)
 ```
 

@@ -4,7 +4,7 @@
 \alias{plot_metrics}
 \title{Output a plot with distribution parameters such as the mean values}
 \usage{
-plot_metrics(data, cols, col_group = NULL, clean = T, ...)
+plot_metrics(data, cols, col_group = NULL, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A data frame}

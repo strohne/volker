@@ -9,11 +9,11 @@ plot_counts_items(
   cols,
   category = NULL,
   ordered = NULL,
-  missings = F,
+  missings = FALSE,
   numbers = NULL,
-  title = T,
-  labels = T,
-  clean = T,
+  title = TRUE,
+  labels = TRUE,
+  clean = TRUE,
   ...
 )
 }

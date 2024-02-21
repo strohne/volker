@@ -10,7 +10,7 @@
 #' @param msg Optional, a custom error message
 #' @param stopit Whether to stop execution with an error message
 #' @return boolean Whether the object is a data.frame object
-check_is_dataframe <- function(obj, msg=NULL, stopit=T) {
+check_is_dataframe <- function(obj, msg=NULL, stopit= TRUE) {
   check <-tryCatch(
     {
       is.data.frame(obj)
@@ -20,14 +20,14 @@ check_is_dataframe <- function(obj, msg=NULL, stopit=T) {
 
   if (!check && stopit) {
     msg <- dplyr::coalesce(msg, "Check your params: Did you provide a data frame?")
-    stop(msg, call. = F)
+    stop(msg, call. = FALSE)
   }
 
   check <- (nrow(obj) * ncol(obj)) > 0
 
   if (!check && stopit) {
     msg <- dplyr::coalesce(msg, "Check your data: Are they empty?")
-    stop(msg, call. = F)
+    stop(msg, call. = FALSE)
   }
 
 
@@ -48,14 +48,14 @@ check_has_column <- function(data, col, msg=NULL) {
   check <- colname != ""
   if (!check ) {
     msg <- dplyr::coalesce(msg, paste0("Did you miss to say which column to use?"))
-    stop(msg, call. = F)
+    stop(msg, call. = FALSE)
   }
 
 
   check <- colname %in% colnames(data)
   if (!check ) {
     msg <- dplyr::coalesce(msg, paste0("The column ", colname, " does not exist, check your parameters."))
-    stop(msg, call. = F)
+    stop(msg, call. = FALSE)
   }
 
   check

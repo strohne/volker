@@ -16,7 +16,7 @@
 #' volker::idx_add(ds, starts_with("cg_adoption"))
 #' @export
 #' @importFrom rlang .data
-idx_add <- function(data, cols, newcol = NULL, negative = FALSE, clean=T) {
+idx_add <- function(data, cols, newcol = NULL, negative = FALSE, clean= TRUE) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -40,7 +40,7 @@ idx_add <- function(data, cols, newcol = NULL, negative = FALSE, clean=T) {
   # data <- data %>%
   #   tidyr::drop_na({{ cols }})
 
-  prefix <- get_prefix(colnames(idx), F, T)
+  prefix <- get_prefix(colnames(idx), FALSE, TRUE)
   if (is.null(newcol)) {
     newcol <- paste0("idx_", prefix)
   }
@@ -50,7 +50,7 @@ idx_add <- function(data, cols, newcol = NULL, negative = FALSE, clean=T) {
     dplyr::distinct(dplyr::across(tidyselect::all_of("item_label"))) %>%
     stats::na.omit() %>%
     dplyr::pull(.data$item_label) %>%
-    get_prefix(F, T)
+    get_prefix(FALSE, TRUE)
 
   if (is.na(newlabel)) {
     newlabel <- prefix
@@ -58,7 +58,7 @@ idx_add <- function(data, cols, newcol = NULL, negative = FALSE, clean=T) {
   newlabel <- paste0("Index: ", prefix)
 
   idx <- idx %>%
-    psych::alpha(check.keys = T)
+    psych::alpha(check.keys = TRUE)
 
   data[[newcol]] <- idx$scores
   attr(data[[newcol]], "psych.alpha") <- idx

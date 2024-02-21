@@ -22,7 +22,7 @@
 #' tab_counts(data, sd_gender)
 #'
 #' @export
-tab_counts <- function(data, cols, col_group=NULL, clean=T, ...) {
+tab_counts <- function(data, cols, col_group=NULL, clean= TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -79,7 +79,7 @@ tab_counts <- function(data, cols, col_group=NULL, clean=T, ...) {
 #' tab_metrics(data, sd_age)
 #'
 #' @export
-tab_metrics <- function(data, cols, col_group=NULL, clean=T, ...) {
+tab_metrics <- function(data, cols, col_group=NULL, clean= TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -130,7 +130,7 @@ tab_metrics <- function(data, cols, col_group=NULL, clean=T, ...) {
 #'
 #' @importFrom rlang .data
 #' @export
-tab_counts_one <- function(data, col, missings = T, percent = T, labels = T, clean=T, ...) {
+tab_counts_one <- function(data, col, missings = TRUE, percent = TRUE, labels = TRUE, clean= TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
 
@@ -211,7 +211,7 @@ tab_counts_one <- function(data, col, missings = T, percent = T, labels = T, cle
 #'
 #' @importFrom rlang .data
 #' @export
-tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "total", values = c("n", "p"), percent = T, labels = T, clean=T, ...) {
+tab_counts_one_grouped <- function(data, col, col_group, missings = FALSE, prop = "total", values = c("n", "p"), percent = TRUE, labels = TRUE, clean= TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -363,7 +363,7 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
 
   # Zip
   if (("n" %in% values) && ("p" %in% values)) {
-    result <- zip_tables(result_p, result_n, brackets = T)
+    result <- zip_tables(result_p, result_n, brackets = TRUE)
   } else if ("p" %in% values) {
     result <- result_p
   } else {
@@ -409,7 +409,7 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = F, prop = "t
 #'
 #' @export
 #' @importFrom rlang .data
-tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), percent = T, labels = T, clean=T, ...) {
+tab_counts_items <- function(data, cols, missings= FALSE, values = c("n", "p"), percent = TRUE, labels = TRUE, clean= TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -484,7 +484,7 @@ tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), perce
         names_from = value,
         values_from = "n",
         values_fill = 0,
-        names_expand=T
+        names_expand=TRUE
       ) %>%
       dplyr::select("item", Missing = "TRUE")
 
@@ -494,7 +494,7 @@ tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), perce
 
   # Combine n and p if requested
   if (("n" %in% values) && ("p" %in% values)) {
-    result <- zip_tables(result_p, result_n, brackets = T, newline = F)
+    result <- zip_tables(result_p, result_n, brackets = TRUE, newline = FALSE)
   } else if ("p" %in% values) {
     result <- result_p
   } else {
@@ -558,7 +558,7 @@ tab_counts_items <- function(data, cols, missings=F, values = c("n", "p"), perce
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @return A volker tibble
 #' @importFrom rlang .data
-tab_counts_items_grouped <- function(data, cols, col_group, clean=T, ...) {
+tab_counts_items_grouped <- function(data, cols, col_group, clean= TRUE, ...) {
 
   stop("Not implemented yet")
 
@@ -584,7 +584,7 @@ tab_counts_items_grouped <- function(data, cols, col_group, clean=T, ...) {
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @importFrom rlang .data
-tab_counts_items_cor <- function(data, cols, cols_cor, clean=T, ...) {
+tab_counts_items_cor <- function(data, cols, cols_cor, clean= TRUE, ...) {
 
   stop("Not implemented yet")
 
@@ -616,7 +616,7 @@ tab_counts_items_cor <- function(data, cols, cols_cor, clean=T, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T, clean=T, ...) {
+tab_metrics_one <- function(data, col, negative= FALSE, digits = 1, labels = TRUE, clean= TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -704,7 +704,7 @@ tab_metrics_one <- function(data, col, negative=F, digits = 1, labels = T, clean
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits = 1, labels = T, clean=T, ...) {
+tab_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, digits = 1, labels = TRUE, clean= TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -813,7 +813,7 @@ tab_metrics_one_grouped <- function(data, col, col_group, negative = F, digits =
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T, clean=T, ...) {
+tab_metrics_items <- function(data, cols, negative = FALSE, digits = 1, labels = TRUE, clean= TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -915,7 +915,7 @@ tab_metrics_items <- function(data, cols, negative = F, digits = 1, labels = T, 
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, values = c("m", "sd"), digits = 1, labels = T, clean=T, ...) {
+tab_metrics_items_grouped <- function(data, cols, col_group, negative = FALSE, values = c("m", "sd"), digits = 1, labels = TRUE, clean= TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -1040,7 +1040,7 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, value
     #       Maybe let zipping and rounding to the print function and return a list of data frames instead
     result_mean <- dplyr::mutate(result_mean, dplyr::across(tidyselect::where(is.numeric), ~ format(round(., digits), nsmall = digits)))
     result_sd <- dplyr::mutate(result_sd, dplyr::across(tidyselect::where(is.numeric), ~ format(round(., digits), nsmall = digits)))
-    result <- zip_tables(result_mean, result_sd, brackets = T)
+    result <- zip_tables(result_mean, result_sd, brackets = TRUE)
   } else if ("sd" %in% values) {
     result <- result_sd
   } else {
@@ -1094,7 +1094,7 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = F, value
 #'
 #' @importFrom rlang .data
 #' @export
-tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = F, labels=T, clean=T, ...) {
+tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = FALSE, labels= TRUE, clean= TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -1186,7 +1186,7 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
 #' @return Formatted  table produced by \link{kable}
 knit_table <- function(df, ...) {
   # TODO: Embed "digits" in the vlkr_options list
-  digits <- attr(df, "digits", exact = T)
+  digits <- attr(df, "digits", exact = TRUE)
 
   if (is.null(digits)) {
     digits <- getOption("digits")
@@ -1198,7 +1198,7 @@ knit_table <- function(df, ...) {
       dplyr::mutate(dplyr::across(dplyr::where(is.character), ~ gsub("\n", "<br>", .))) %>%
       knitr::kable(
         "html",
-        escape = F,
+        escape = FALSE,
         align = c("l", rep("r", ncol(df) - 1)),
         digits = digits,
         ...
@@ -1209,8 +1209,8 @@ knit_table <- function(df, ...) {
       dplyr::mutate_all(kableExtra::linebreak) %>%
       knitr::kable(
         "latex",
-        booktabs = T,
-        escape = F,
+        booktabs = TRUE,
+        escape = FALSE,
         align = c("l", rep("r", ncol(df) - 1)),
         digits = digits,
         ...

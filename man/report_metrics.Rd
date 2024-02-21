@@ -9,10 +9,10 @@ report_metrics(
   cols,
   col_group = NULL,
   ...,
-  index = T,
-  title = T,
-  close = T,
-  clean = T
+  index = TRUE,
+  title = TRUE,
+  close = TRUE,
+  clean = TRUE
 )
 }
 \arguments{

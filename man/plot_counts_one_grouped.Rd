@@ -10,12 +10,12 @@ plot_counts_one_grouped(
   col_group,
   category = NULL,
   ordered = NULL,
-  missings = F,
+  missings = FALSE,
   prop = "total",
   numbers = NULL,
-  title = T,
-  labels = T,
-  clean = T,
+  title = TRUE,
+  labels = TRUE,
+  clean = TRUE,
   ...
 )
 }

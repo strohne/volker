@@ -31,7 +31,7 @@
 #' report_metrics(data, sd_age)
 #'
 #' @export
-report_metrics <- function(data, cols, col_group = NULL, ..., index=T, title = T, close=T, clean=T) {
+report_metrics <- function(data, cols, col_group = NULL, ..., index= TRUE, title = TRUE, close= TRUE, clean= TRUE) {
 
   if (clean) {
     data <- data_clean(data)
@@ -48,9 +48,9 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index=T, title = T
 
   if (is.character(title) && knitr::is_html_output()) {
     chunks <- .add_to_vlkr_rprt(paste0("\n#### ", title, " {.tabset .tabset-pills}  \n"), chunks)
-    plot_title <- F
+    plot_title <- FALSE
   } else {
-    plot_title <- T
+    plot_title <- TRUE
   }
 
 
@@ -116,7 +116,7 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index=T, title = T
 #' report_counts(data, sd_gender)
 #'
 #' @export
-report_counts <- function(data, cols, col_group = NULL, index=T, numbers=NULL, title = T, close=T, clean=T, ...) {
+report_counts <- function(data, cols, col_group = NULL, index= TRUE, numbers=NULL, title = TRUE, close= TRUE, clean= TRUE, ...) {
 
   if (clean) {
     data <- data_clean(data)
@@ -133,7 +133,7 @@ report_counts <- function(data, cols, col_group = NULL, index=T, numbers=NULL, t
     }
 
     chunks <- .add_to_vlkr_rprt(paste0("\n#### ", title, " {.tabset .tabset-pills}  \n"), chunks)
-    plot_title <- F
+    plot_title <- FALSE
   } else {
     plot_title <- title
   }
@@ -177,12 +177,12 @@ report_counts <- function(data, cols, col_group = NULL, index=T, numbers=NULL, t
 #' @param col_group Optional, a grouping column (without quotes).
 #' @param title Add a plot title (default = TRUE)
 #' @return A list containing a table and a plot volker report chunk
-.report_idx <- function(data, cols, col_group, title=T) {
+.report_idx <- function(data, cols, col_group, title= TRUE) {
   chunks <- list()
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   is_items <- length(cols_eval) > 1
-  is_scale <- get_direction(data, {{ cols }}, F)
+  is_scale <- get_direction(data, {{ cols }}, FALSE)
 
   if (is_items && (is_scale != 0)) {
 

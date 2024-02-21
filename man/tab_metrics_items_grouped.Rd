@@ -8,11 +8,11 @@ tab_metrics_items_grouped(
   data,
   cols,
   col_group,
-  negative = F,
+  negative = FALSE,
   values = c("m", "sd"),
   digits = 1,
-  labels = T,
-  clean = T,
+  labels = TRUE,
+  clean = TRUE,
   ...
 )
 }

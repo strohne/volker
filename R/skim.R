@@ -15,13 +15,13 @@
 #' @export
 skim_metrics <- skimr::skim_with(
   numeric = skimr::sfl(
-    min = ~ base::ifelse(any(!is.na(.)), base::min(., na.rm = T), NA),
+    min = ~ base::ifelse(any(!is.na(.)), base::min(., na.rm = TRUE), NA),
     q1 = ~ stats::quantile(., probs = 0.25, na.rm = TRUE, names = FALSE),
-    median = ~ stats::median(., na.rm = T),
+    median = ~ stats::median(., na.rm = TRUE),
     q3 = ~ stats::quantile(., probs = 0.75, na.rm = TRUE, names = FALSE),
-    max = ~ base::ifelse(any(!is.na(.)), base::max(., na.rm = T), NA),
-    mean = ~ base::mean(., na.rm = T),
-    sd = ~ stats::sd(., na.rm = T),
+    max = ~ base::ifelse(any(!is.na(.)), base::max(., na.rm = TRUE), NA),
+    mean = ~ base::mean(., na.rm = TRUE),
+    sd = ~ stats::sd(., na.rm = TRUE),
     items = ~ idx_alpha(.)$items,
     alpha = ~ idx_alpha(.)$alpha
   ),
@@ -50,8 +50,8 @@ skim_metrics <- skimr::skim_with(
 #' @param x A numeric vector
 #' @return The lower whisker value
 .whisker_lower <- function(x, k=1.5) {
-  i <- stats::quantile(x, 0.25, na.rm=T) - k * stats::IQR(x, na.rm=T)
-  min(x[x >= i], na.rm=T)
+  i <- stats::quantile(x, 0.25, na.rm= TRUE) - k * stats::IQR(x, na.rm= TRUE)
+  min(x[x >= i], na.rm= TRUE)
 }
 
 #' Calculate upper whisker in a boxplot
@@ -61,8 +61,8 @@ skim_metrics <- skimr::skim_with(
 #' @param x A numeric vector
 #' @return The upper whisker value
 .whisker_upper <- function(x, k=1.5) {
-  i <- stats::quantile(x, 0.75, na.rm=T) + k * stats::IQR(x, na.rm=T)
-  max(x[x <= i], na.rm=T)
+  i <- stats::quantile(x, 0.75, na.rm= TRUE) + k * stats::IQR(x, na.rm= TRUE)
+  max(x[x <= i], na.rm= TRUE)
 }
 
 #' Calculate outliers
@@ -84,14 +84,14 @@ skim_metrics <- skimr::skim_with(
 #' @keywords internal
 skim_boxplot <- skimr::skim_with(
   numeric = skimr::sfl(
-    min = ~ base::ifelse(any(!is.na(.)), base::min(., na.rm = T), NA),
+    min = ~ base::ifelse(any(!is.na(.)), base::min(., na.rm = TRUE), NA),
     q1 = ~ stats::quantile(., probs = 0.25, na.rm = TRUE, names = FALSE),
-    median = ~ stats::median(., na.rm = T),
+    median = ~ stats::median(., na.rm = TRUE),
     q3 = ~ stats::quantile(., probs = 0.75, na.rm = TRUE, names = FALSE),
-    max = ~ base::ifelse(any(!is.na(.)), base::max(., na.rm = T), NA),
-    mean = ~ base::mean(., na.rm = T),
-    sd = ~ stats::sd(., na.rm = T),
-    iqr = ~ IQR(., na.rm = T),
+    max = ~ base::ifelse(any(!is.na(.)), base::max(., na.rm = TRUE), NA),
+    mean = ~ base::mean(., na.rm = TRUE),
+    sd = ~ stats::sd(., na.rm = TRUE),
+    iqr = ~ IQR(., na.rm = TRUE),
     whisker.lo = ~ .whisker_lower(.),
     whisker.hi = ~ .whisker_upper(.),
     outliers = ~.outliers(.),

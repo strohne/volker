@@ -22,7 +22,7 @@
 #'
 #' @return A ggplot2 plot object
 #' @export
-plot_counts <- function(data, cols, col_group=NULL, clean=T, ...) {
+plot_counts <- function(data, cols, col_group=NULL, clean= TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -78,7 +78,7 @@ plot_counts <- function(data, cols, col_group=NULL, clean=T, ...) {
 #' plot_metrics(data, sd_age)
 #'
 #' @export
-plot_metrics <- function(data, cols, col_group=NULL, clean=T, ...) {
+plot_metrics <- function(data, cols, col_group=NULL, clean= TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -133,7 +133,7 @@ plot_metrics <- function(data, cols, col_group=NULL, clean=T, ...) {
 #'
 #' @importFrom rlang .data
 #' @export
-plot_counts_one <- function(data, col, missings = F, numbers = NULL, title = T, labels = T, clean = T, ...) {
+plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   # Check columns
@@ -210,9 +210,9 @@ plot_counts_one <- function(data, col, missings = F, numbers = NULL, title = T, 
   }
 
   # Title
-  if (title == T) {
+  if (title == TRUE) {
     title <- get_title(data, {{ col }})
-  } else if (title == F) {
+  } else if (title == FALSE) {
     title <- NULL
   }
   if (!is.null(title)) {
@@ -263,7 +263,7 @@ plot_counts_one <- function(data, col, missings = F, numbers = NULL, title = T, 
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_one_grouped <- function(data, col, col_group, category = NULL, ordered = NULL, missings = F, prop = "total", numbers = NULL, title = T, labels = T, clean=T, ...) {
+plot_counts_one_grouped <- function(data, col, col_group, category = NULL, ordered = NULL, missings = FALSE, prop = "total", numbers = NULL, title = TRUE, labels = TRUE, clean= TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -339,9 +339,9 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
     )
 
   # Get title
-  if (title == T) {
+  if (title == TRUE) {
     title <- get_title(data, {{ col }})
-  } else if (title == F) {
+  } else if (title == FALSE) {
     title <- NULL
   }
 
@@ -389,7 +389,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missings=F, numbers = NULL, title = T, labels = T, clean=T, ...) {
+plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missings= FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean= TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -459,9 +459,9 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
   result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
 
   # Title
-  if (title == T) {
+  if (title == TRUE) {
     title <- get_title(data, {{ cols }})
-  } else if (title == F) {
+  } else if (title == FALSE) {
     title <- NULL
   }
 
@@ -492,7 +492,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object
 #' @importFrom rlang .data
-plot_counts_items_grouped <- function(data, cols, col_group, clean=T, ...) {
+plot_counts_items_grouped <- function(data, cols, col_group, clean= TRUE, ...) {
   stop("Not implemented yet")
 
   # 1. Check parameters
@@ -525,7 +525,7 @@ plot_counts_items_grouped <- function(data, cols, col_group, clean=T, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labels = T, clean=T, ...) {
+plot_metrics_one <- function(data, col, limits=NULL, negative= FALSE, title = TRUE, labels = TRUE, clean= TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -557,9 +557,9 @@ plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labe
     ggplot2::geom_vline(ggplot2::aes(xintercept=mean({{ col }})), color="black")
 
   # Get title
-  if (title == T) {
+  if (title == TRUE) {
     title <- get_title(data, {{ col }})
-  } else if (title == F) {
+  } else if (title == FALSE) {
     title <- NULL
   }
   if (!is.null(title)) {
@@ -611,7 +611,7 @@ plot_metrics_one <- function(data, col, limits=NULL, negative=F, title = T, labe
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = F, title = T, labels = T, clean=T, ...) {
+plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean= TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -698,10 +698,10 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 #   }
 
   # Add title
-  if (title == T) {
+  if (title == TRUE) {
     title <- get_title(data, {{ col }})
   }
-  else if (title == F) {
+  else if (title == FALSE) {
     title <- NULL
   }
 
@@ -718,7 +718,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   maxlab  <- data %>%
     dplyr::pull({{col_group}}) %>%
     stringr::str_length() %>%
-    max(na.rm=T)
+    max(na.rm= TRUE)
 
    # Pass row number and label length to the knit_plot() function
   .to_vlkr_plot(pl, maxlab=maxlab)
@@ -744,7 +744,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 #' plot_metrics_items(data, starts_with("cg_adoption_"))
 #'
 #' @export
-plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = T, labels = T, clean=T, ...) {
+plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean= TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -834,10 +834,10 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 
 
   # Add title
-  if (title == T) {
+  if (title == TRUE) {
     title <- get_title(data, {{ cols }})
   }
-  else if (title == F) {
+  else if (title == FALSE) {
     title <- NULL
   }
   if (!is.null(title)) {
@@ -853,7 +853,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
   maxlab  <- result %>%
     dplyr::pull(.data$item) %>%
     stringr::str_length() %>%
-    max(na.rm = T)
+    max(na.rm = TRUE)
 
   # Pass row number and label length to the knit_plot() function
   .to_vlkr_plot(pl, maxlab=maxlab)
@@ -881,7 +881,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = F, title = 
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, negative = F, title = T, labels = T, clean=T, ...) {
+plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean= TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ col_group }})
@@ -991,9 +991,9 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
     )
 
   # Add title
-  if (title == T) {
+  if (title == TRUE) {
     title <- trim_label(prefix)
-  } else if (title == F) {
+  } else if (title == FALSE) {
     title <- NULL
   }
   if (!is.null(title)) {
@@ -1133,7 +1133,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
     labels <- plot_data$layout$panel_scales_x[[1]]$range$range
     #labels <- layer_scales(pl)$x$range$range
     #labels <- pl$data[[1]]
-    maxlab <- max(stringr::str_length(labels), na.rm=T)
+    maxlab <- max(stringr::str_length(labels), na.rm= TRUE)
 
   }
 

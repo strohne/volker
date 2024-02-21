@@ -7,11 +7,11 @@
 tab_counts_items(
   data,
   cols,
-  missings = F,
+  missings = FALSE,
   values = c("n", "p"),
-  percent = T,
-  labels = T,
-  clean = T,
+  percent = TRUE,
+  labels = TRUE,
+  clean = TRUE,
   ...
 )
 }

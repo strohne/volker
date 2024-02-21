@@ -9,10 +9,10 @@ plot_metrics_one_grouped(
   col,
   col_group,
   limits = NULL,
-  negative = F,
-  title = T,
-  labels = T,
-  clean = T,
+  negative = FALSE,
+  title = TRUE,
+  labels = TRUE,
+  clean = TRUE,
   ...
 )
 }

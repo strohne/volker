@@ -6,9 +6,9 @@
 \usage{
 data_clean_sosci(
   data,
-  remove.na.levels = T,
-  remove.na.numbers = T,
-  add.whitespace = T
+  remove.na.levels = TRUE,
+  remove.na.numbers = TRUE,
+  add.whitespace = TRUE
 )
 }
 \arguments{

@@ -4,7 +4,7 @@
 \alias{labs_restore}
 \title{Restore labels from the codebook store in the codebook attribute.}
 \usage{
-labs_restore(data, cols = NULL, values = T)
+labs_restore(data, cols = NULL, values = TRUE)
 }
 \arguments{
 \item{data}{A data frame}

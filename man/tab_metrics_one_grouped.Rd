@@ -8,10 +8,10 @@ tab_metrics_one_grouped(
   data,
   col,
   col_group,
-  negative = F,
+  negative = FALSE,
   digits = 1,
-  labels = T,
-  clean = T,
+  labels = TRUE,
+  clean = TRUE,
   ...
 )
 }

@@ -4,7 +4,7 @@
 \alias{get_direction}
 \title{Detect whether a scale is a numeric sequence}
 \usage{
-get_direction(data, cols, extract = T)
+get_direction(data, cols, extract = TRUE)
 }
 \arguments{
 \item{data}{The dataframe}

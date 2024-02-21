@@ -8,10 +8,10 @@ plot_metrics_one(
   data,
   col,
   limits = NULL,
-  negative = F,
-  title = T,
-  labels = T,
-  clean = T,
+  negative = FALSE,
+  title = TRUE,
+  labels = TRUE,
+  clean = TRUE,
   ...
 )
 }

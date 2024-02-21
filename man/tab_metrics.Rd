@@ -4,7 +4,7 @@
 \alias{tab_metrics}
 \title{Output a table with distribution parameters}
 \usage{
-tab_metrics(data, cols, col_group = NULL, clean = T, ...)
+tab_metrics(data, cols, col_group = NULL, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A data frame}

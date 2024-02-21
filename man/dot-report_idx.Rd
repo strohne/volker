@@ -4,7 +4,7 @@
 \alias{.report_idx}
 \title{Generate an index table and plot}
 \usage{
-.report_idx(data, cols, col_group, title = T)
+.report_idx(data, cols, col_group, title = TRUE)
 }
 \arguments{
 \item{data}{A data frame}

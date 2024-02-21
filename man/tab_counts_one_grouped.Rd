@@ -8,12 +8,12 @@ tab_counts_one_grouped(
   data,
   col,
   col_group,
-  missings = F,
+  missings = FALSE,
   prop = "total",
   values = c("n", "p"),
-  percent = T,
-  labels = T,
-  clean = T,
+  percent = TRUE,
+  labels = TRUE,
+  clean = TRUE,
   ...
 )
 }

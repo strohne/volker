@@ -4,7 +4,7 @@
 \alias{check_is_dataframe}
 \title{Check whether the object is a dataframe}
 \usage{
-check_is_dataframe(obj, msg = NULL, stopit = T)
+check_is_dataframe(obj, msg = NULL, stopit = TRUE)
 }
 \arguments{
 \item{obj}{The object to test}

@@ -9,9 +9,9 @@ tab_metrics_items_cor(
   cols,
   cols_cor,
   method = "p",
-  significant = F,
-  labels = T,
-  clean = T,
+  significant = FALSE,
+  labels = TRUE,
+  clean = TRUE,
   ...
 )
 }

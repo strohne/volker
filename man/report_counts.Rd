@@ -8,11 +8,11 @@ report_counts(
   data,
   cols,
   col_group = NULL,
-  index = T,
+  index = TRUE,
   numbers = NULL,
-  title = T,
-  close = T,
-  clean = T,
+  title = TRUE,
+  close = TRUE,
+  clean = TRUE,
   ...
 )
 }

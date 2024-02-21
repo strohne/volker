@@ -13,7 +13,7 @@ editor_options:
 ```{r include=FALSE}
 
 # Markdown options
-knitr::opts_chunk$set(echo = TRUE, include=T)
+knitr::opts_chunk$set(echo = TRUE, include= TRUE)
 
 # Load packages
 library(tidyverse)
@@ -90,7 +90,7 @@ on the fifth level (5 x # followed by the tab name). Close your new tabsheet wit
 ```{r}
 data %>% 
   filter(sd_gender != "divers") %>% 
-  report_counts(adopter, sd_gender, prop="rows", title=F, close=F)
+  report_counts(adopter, sd_gender, prop="rows", title= FALSE, close= FALSE)
 ```
 
 

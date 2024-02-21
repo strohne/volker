@@ -36,7 +36,7 @@
 
     Code
       volker::tab_counts_items(data, tidyselect::starts_with("cg_adoption_"),
-      missings = T)
+      missings = TRUE)
     Output
       
       

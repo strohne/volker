@@ -41,7 +41,7 @@ data_clean <- function(data, plan="sosci", ...) {
 #' ds <- volker::chatgpt
 #' ds <- data_clean_sosci(ds)
 #' @export
-data_clean_sosci <- function(data, remove.na.levels = T, remove.na.numbers = T, add.whitespace=T) {
+data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = TRUE, add.whitespace= TRUE) {
 
   # Prepare only once
   if ("vlkr_df" %in% class(data)) {

@@ -21,10 +21,10 @@ codebook <- function(data, cols) {
   }
 
   # Replace empty classes with NA
-  item_classes <- sapply(data, attr, "class", simplify = F)
+  item_classes <- sapply(data, attr, "class", simplify = FALSE)
   item_classes <- ifelse(sapply(item_classes, is.null), NA, item_classes)
 
-  item_comments <- sapply(data, attr, "comment", simplify = F)
+  item_comments <- sapply(data, attr, "comment", simplify = FALSE)
   item_comments <- ifelse(sapply(item_comments, is.null), NA, item_comments)
 
   labels <- dplyr::tibble(
@@ -38,7 +38,7 @@ codebook <- function(data, cols) {
     dplyr::mutate(item_group = stringr::str_remove(.data$item_name, "_.*")) %>%
     dplyr::mutate(item_class = as.character(sapply(.data$item_class, function(x) ifelse(length(x) > 1, x[[length(x)]], x)))) %>%
     dplyr::select(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label", "value_label"))) %>%
-    tidyr::unnest_longer(tidyselect::all_of("value_label"), keep_empty = T)
+    tidyr::unnest_longer(tidyselect::all_of("value_label"), keep_empty = TRUE)
 
 
   if ("value_label_id" %in% colnames(labels)) {
@@ -138,7 +138,7 @@ labs_store <- function(data) {
 #'   labs_restore() |>
 #'   tab_metrics(sd_age)
 #' @export
-labs_restore <- function(data, cols=NULL, values=T) {
+labs_restore <- function(data, cols=NULL, values= TRUE) {
 
   codes <- attr(data,"codebook")
 
@@ -183,7 +183,7 @@ labs_restore <- function(data, cols=NULL, values=T) {
 #'    tab_metrics(starts_with("cg_adoption_advantage_"))
 #' @importFrom rlang .data
 #' @export
-labs_apply <- function(data, codes, cols=NULL, values=T) {
+labs_apply <- function(data, codes, cols=NULL, values= TRUE) {
 
   # Check
   if ((nrow(codes) ==0)) {
@@ -247,7 +247,7 @@ labs_apply <- function(data, codes, cols=NULL, values=T) {
 
       if (nrow(value_rows) > 0) {
         value_factor <- ("item_class" %in% colnames(value_rows)) &&
-          any(value_rows$item_class == "factor", na.rm=T)
+          any(value_rows$item_class == "factor", na.rm= TRUE)
 
         # Factor order
         if (value_factor) {
@@ -443,7 +443,7 @@ get_title <- function(data, cols) {
 #' @param negative Whether to include negative values
 #' @return A list or NULL
 #' @importFrom rlang .data
-get_limits <- function(data, cols, negative = F) {
+get_limits <- function(data, cols, negative = FALSE) {
 
   # First, try to get limits from the column attributes
   values <- data %>%
@@ -476,7 +476,7 @@ get_limits <- function(data, cols, negative = F) {
   }
 
   if (any(!is.na(values))) {
-    return(range(values, na.rm = T))
+    return(range(values, na.rm = TRUE))
   }
 
   return(NULL)
@@ -496,7 +496,7 @@ get_limits <- function(data, cols, negative = F) {
 #' @param extract Whether to extract numeric values from characters
 #' @return 0 = an undirected scale, -1 = descending values, 1 = ascending values
 #' @importFrom rlang .data
-get_direction <- function(data, cols, extract = T) {
+get_direction <- function(data, cols, extract = TRUE) {
   data <- dplyr::select(data, {{ cols }})
 
   # Get all values

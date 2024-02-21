@@ -4,7 +4,7 @@
 \alias{labs_apply}
 \title{Set variable labels by setting their comment attributes}
 \usage{
-labs_apply(data, codes, cols = NULL, values = T)
+labs_apply(data, codes, cols = NULL, values = TRUE)
 }
 \arguments{
 \item{data}{A tibble}
