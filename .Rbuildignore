@@ -8,4 +8,10 @@ vignettes/tables.Rmd
 vignettes/plots.Rmd
 vignettes/reports.Rmd
 vignettes/scales.Rmd
+vignettes/tables.html
+vignettes/plots.html
+vignettes/reports.html
+vignettes/scales.html
+test/testthat/_markdown/*.html
+_cache
 ^CRAN-SUBMISSION$
