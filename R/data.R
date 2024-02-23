@@ -2,7 +2,7 @@
 #'
 #' A small random subset of data from a survey about ChatGPT
 #' adoption. The survey was conducted in April 2023 within
-#' the population of Germany Internet users.
+#' the population of German Internet users.
 #'
 #' Call codebook(volker::chatgpt) to see the items and and answer options.
 #'
