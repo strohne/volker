@@ -1,0 +1,56 @@
+---
+title: "Introduction"
+output: volker::html_report
+vignette: >
+  %\VignetteIndexEntry{Introduction}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(
+  echo = F,
+  knitr.table.format = "html"
+)
+
+library(tidyverse)
+library(volker)
+```
+
+```{r}
+
+ds <- volker::chatgpt
+
+
+tab_metrics_one_grouped(ds, sd_age, adopter)
+plot_metrics_one_grouped(ds, sd_age, adopter, stats=T)
+
+fit <- lm(sd_age ~ adopter, data=ds)
+summary(fit)
+confint(fit)
+
+# library(broom)
+# tidy(fit)
+# glance(fit)
+
+stats_metrics_one_grouped(ds, sd_age, adopter)
+
+ests <- stats_metrics_one_grouped(ds, sd_age, adopter)
+int <- ests$estimate[[1]]
+ests <- ests |> 
+  mutate(m = case_when(
+      term == "(Intercept)" ~ estimate,
+      TRUE ~  int + estimate
+    )
+  )
+
+# TODO: use confint
+ggplot(ests , aes(x = m, y=term)) +
+  geom_point() +
+  geom_errorbar(aes(xmin = m -1.96 * std.error, xmax = m + 1.96 * std.error  ))
+
+
+```
+

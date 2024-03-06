@@ -607,6 +607,7 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
 #' @param col_group The column holding groups to compare
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param stats Whether to plot for significane tests
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -621,7 +622,7 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = FALSE, stats = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -646,11 +647,17 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   # TODO: Report missings
   data <- tidyr::drop_na(data, {{ col }}, {{ col_group }})
 
+  if (stats) {
+    ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, {{ col }})) +
+      ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
+      ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
+  } else {
+
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, {{ col }})) +
     ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
     ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
-
+  }
 
   # Set the scale
   # if (is.null(limits)) {
