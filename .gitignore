@@ -15,3 +15,4 @@ tests/testthat/_markdown/*.html
 tests/testthat/_snaps/vignette/*.new.html
 inst/rmarkdown/templates/**/*.html
 !vignettes/introduction_cache/
+!tests/testthat/_markdown/reports_cache/
