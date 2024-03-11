@@ -45,7 +45,8 @@ Imports:
     rmarkdown,
     janitor,
     psych,
-    broom
+    broom, 
+    ggpubr
 Depends:
   R (>= 4.2)
 Suggests:
