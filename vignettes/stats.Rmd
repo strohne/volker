@@ -39,7 +39,11 @@ plot_metrics_one_grouped(ds, sd_age, adopter, stats=T)
 plot_metrics_one_grouped(ds, sd_age, adopter)
 
 fit <- lm(sd_age ~ adopter, data=ds)
+library(broom)
+y <-glance(fit)
 summary(fit)
+
+x <- tidy(fit)
 confint(fit)
 
 # library(broom)
@@ -67,12 +71,12 @@ ggplot(ds, aes(x = sd_age, y=adopter)) +
   stat_summary(geom = "point", fun = mean)+ 
   stat_summary(geom = "errorbar", fun.data = mean_ci)
 
-# n for condition "i only use new offers when no other choice" 
+# n for condition "i only use new offers when no other choice"
 # equals 1; NaNs are coerced 
 
-data <- iris %>% select(Species, Sepal.Length)
+# own confidence interval calculation 
 
-my_sum <- ds %>%
+sum <- ds %>%
   group_by(adopter) %>%
   summarise( 
     n=n(),
@@ -82,7 +86,7 @@ my_sum <- ds %>%
   mutate(se=sd/sqrt(n))  %>%
   mutate(ic=se * qt((1-0.05)/2 + .5, n-1))
   
- my_sum %>%  
+ sum %>%  
   ggplot(aes(y=adopter, x=mean)) +
    geom_point() +
    geom_errorbar(aes(xmin=mean-ic, xmax=mean+ic))
@@ -122,7 +126,7 @@ temp <- function(data, col, col_group, limits = NULL, negative = FALSE, stats = 
   if (stats) {
     
   pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, {{ col }})) +
+    ggplot2::ggplot(ggplot2::aes(y={{ col }}, {{ col_group}})) +
     ggplot2::stat_summary(geom = "point", fun = mean, colour = VLKR_POINTCOLOR) + 
     ggplot2::stat_summary(geom = "errorbar", fun.data = ggpubr::mean_ci)
   } else {
@@ -130,7 +134,7 @@ temp <- function(data, col, col_group, limits = NULL, negative = FALSE, stats = 
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, {{ col }})) +
     ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
-    ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
+    ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18) 
   }
   
   .to_vlkr_plot(pl)
@@ -196,6 +200,9 @@ temp2 <- function(data, col, col_group, limits = NULL, negative = FALSE, stats =
   
   .to_vlkr_plot(pl)
 }
+
+temp2(ds, sd_age, adopter, stats = T)
+
 ```
 
 
@@ -230,16 +237,10 @@ temp3 <- function(data, col, col_group, limits = NULL, negative = FALSE, stats =
 
   if (stats) {
     
-  pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(y={{ col }}, {{ col_group }})) +
-    ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
-    ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18) + 
-    
-    if (length(levels(data$`{{ col_group }}`)) > 2) {
-      ggpubr::stat_compare_means(method = "anova", label.y = 40)
-    } else {
-      ggpubr::stat_compare_means(method = "t.test", label.y = 40)
-    }
+    pl <- data %>%
+    ggplot2::ggplot(ggplot2::aes(y={{ col }}, {{ col_group}})) +
+  ggplot2::stat_summary(geom = "point", fun = mean, colour = VLKR_POINTCOLOR) + 
+    ggplot2::stat_summary(geom = "errorbar", fun.data = ggpubr::mean_ci) + ggpubr::stat_compare_means()
   
   } else {
 
@@ -252,10 +253,11 @@ temp3 <- function(data, col, col_group, limits = NULL, negative = FALSE, stats =
   .to_vlkr_plot(pl)
 }
 
-ds <- ds %>% 
-  filter(sd_gender != 3)
+# ds <- ds %>% 
+#  filter(adopter != "I only use new offers when I have no other choice", 
+#        sd_gender != "diverse") 
 
-temp3(ds, use_work, sd_gender,stats = T)
+temp3(ds, sd_age,adopter,stats = T)
 
 ```
 
