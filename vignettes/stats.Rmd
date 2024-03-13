@@ -91,6 +91,16 @@ sum <- ds %>%
    geom_point() +
    geom_errorbar(aes(xmin=mean-ic, xmax=mean+ic))
  
+ tab_counts_one_grouped(ds, adopter, sd_age)
+ 
+ 
+ categorical_n <- ds %>%  
+   group_by(adopter) %>%  
+   count() %>%  
+   select(n)
+ 
+ tab_counts(ds,adopter)
+ 
 ```
 
 
@@ -137,7 +147,90 @@ temp <- function(data, col, col_group, limits = NULL, negative = FALSE, stats = 
     ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18) 
   }
   
-  .to_vlkr_plot(pl)
+  # Set the scale
+  # if (is.null(limits)) {
+  #   limits <- get_limits(data, {{ col }})
+  # }
+
+  scale <- c()
+  if (labels) {
+    scale <- attr(dplyr::pull(data, {{ col }}), "scale")
+    if (is.null(scale)) {
+      scale <- data %>%
+        codebook({{ col }}) %>%
+        dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label"))))
+    }
+    scale <- prepare_scale(scale)
+  }
+  if (length(scale) > 0) {
+    pl <- pl +
+      ggplot2::scale_y_continuous(labels = ~ label_scale(., scale) )
+  } else {
+    pl <- pl +
+      ggplot2::scale_y_continuous()
+  }
+
+  # Add scales, labels and theming
+  pl <- pl +
+    ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
+
+
+    # TODO: set limits
+    #coord_flip(ylim = limits) +
+    ggplot2::theme(
+      axis.title.x = ggplot2::element_blank(),
+      axis.title.y = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_text(size = 11),
+      legend.title = ggplot2::element_blank(),
+      plot.caption = ggplot2::element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position = "plot"
+    )
+
+#
+#   if (!is.null(numbers)) {
+#     pl <- pl +
+#       geom_text(
+#         # aes(label=paste0("⌀", round(m,1))),
+#         aes(label = round(m, 1)),
+#         #position = position_stack(vjust = 0.5),
+#         hjust = -1,
+#         vjust=0.5,
+#         size = 3,
+#         color = "black"
+#       )
+#   }
+
+  # Add title
+  if (title == TRUE) {
+    title <- get_title(data, {{ col }})
+  }
+  else if (title == FALSE) {
+    title <- NULL
+  }
+
+  if (!is.null(title)) {
+    pl <- pl + ggplot2::ggtitle(label = title)
+  }
+
+  # Add base
+  # TODO: Report missing values, output range
+  base_n <- nrow(data)
+  
+  categorical_n <- 
+    dplyr::group_by(data, {{ col_group }}) %>% 
+    dplyr::count() 
+  
+  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n, ", ", paste(categorical_n[[1]], "=", categorical_n$n, collapse = ", ")))
+
+  # Maximum label length
+  maxlab  <- data %>%
+    dplyr::pull({{col_group}}) %>%
+    stringr::str_length() %>%
+    max(na.rm= TRUE)
+
+   # Pass row number and label length to the knit_plot() function
+  .to_vlkr_plot(pl, maxlab=maxlab)
 }
 
 temp(ds, sd_age, adopter, stats = T)
