@@ -48,12 +48,13 @@ stats_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, di
   result <- broom::tidy(fit)
 
   # Add macro statistics
+  # TODO: .
 
-  result_macro <- broom::glance(fit)
+  # result_macro <- broom::glance(fit)
 
   # Rename result labels
+  # TODO: .
 
   .to_vlkr_tab(result,digits= digits)
 
-  .to_vlkr_tab(result_macro, digits= digits)
 }

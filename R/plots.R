@@ -634,36 +634,50 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
     data <- data_clean(data)
   }
 
-  # Remove negative values
-  # TODO: warn if any negative values were recoded
+  # Remove negative values and warn if recoded
+
   if (!negative) {
+    neg_values <- data %>%
+      dplyr::summarise(neg = sum({{ col }} < 0))
+
+    if (neg_values$neg > 0) {
+      message("Negative values were recoded to NA.")
+    }
+
     data <- data |>
       labs_store() |>
       dplyr::mutate(dplyr::across({{ col }}, ~ ifelse(. < 0, NA, .))) |>
       labs_restore()
   }
 
-  # Drop missings
-  # TODO: Report missings
+  # Drop missings and print message
+
+  missings <- data %>%
+    dplyr::summarise(n = sum(is.na({{ col }})))
+
+  message(paste0("A total of ", missings$n, " missing values have been removed."))
+
   data <- tidyr::drop_na(data, {{ col }}, {{ col_group }})
 
   if (stats) {
-    ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, {{ col }})) +
-      ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
-      ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
+
+    pl <- data %>%
+      ggplot2::ggplot(ggplot2::aes(y={{ col }}, {{ col_group}})) +
+      ggplot2::stat_summary(geom = "point", fun = mean, colour = VLKR_POINTCOLOR) +
+      ggplot2::stat_summary(geom = "errorbar", fun.data = ggpubr::mean_ci) +
+      coord_flip()
   } else {
 
-  pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, {{ col }})) +
-    ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
-    ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
+    pl <- data %>%
+      ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, {{ col }})) +
+      ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
+      ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
   }
 
   # Set the scale
   # if (is.null(limits)) {
   #   limits <- get_limits(data, {{ col }})
   # }
-
 
   scale <- c()
   if (labels) {
@@ -677,15 +691,15 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   }
   if (length(scale) > 0) {
     pl <- pl +
-      ggplot2::scale_x_continuous(labels = ~ label_scale(., scale) )
+      ggplot2::scale_y_continuous(labels = ~ label_scale(., scale) )
   } else {
     pl <- pl +
-      ggplot2::scale_x_continuous()
+      ggplot2::scale_y_continuous()
   }
 
   # Add scales, labels and theming
   pl <- pl +
-    ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits = rev) +
+    ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
 
 
     # TODO: set limits
@@ -700,19 +714,19 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
       plot.caption.position = "plot"
     )
 
-#
-#   if (!is.null(numbers)) {
-#     pl <- pl +
-#       geom_text(
-#         # aes(label=paste0("⌀", round(m,1))),
-#         aes(label = round(m, 1)),
-#         #position = position_stack(vjust = 0.5),
-#         hjust = -1,
-#         vjust=0.5,
-#         size = 3,
-#         color = "black"
-#       )
-#   }
+  #
+  #   if (!is.null(numbers)) {
+  #     pl <- pl +
+  #       geom_text(
+  #         # aes(label=paste0("⌀", round(m,1))),
+  #         aes(label = round(m, 1)),
+  #         #position = position_stack(vjust = 0.5),
+  #         hjust = -1,
+  #         vjust=0.5,
+  #         size = 3,
+  #         color = "black"
+  #       )
+  #   }
 
   # Add title
   if (title == TRUE) {
@@ -729,7 +743,18 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   # Add base
   # TODO: Report missing values, output range
   base_n <- nrow(data)
-  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
+
+  categorical_n <-
+    dplyr::group_by(data, {{ col_group }}) %>%
+    dplyr::count()
+
+  pl <- pl +
+    ggplot2::labs(caption =
+                paste0("n=", base_n, ", ",
+                paste0(categorical_n[[1]], "=",
+                      categorical_n$n, collapse = ", "),
+                      ", Missings = ", missings$n)
+  )
 
   # Maximum label length
   maxlab  <- data %>%
@@ -737,7 +762,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
     stringr::str_length() %>%
     max(na.rm= TRUE)
 
-   # Pass row number and label length to the knit_plot() function
+  # Pass row number and label length to the knit_plot() function
   .to_vlkr_plot(pl, maxlab=maxlab)
 }
 

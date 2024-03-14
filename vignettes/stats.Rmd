@@ -20,6 +20,7 @@ library(volker)
 ```
 
 ```{r}
+
 # Load data 
 ds <- volker::chatgpt
 
@@ -31,76 +32,17 @@ tab_metrics_one_grouped(ds, sd_age, adopter)
 # TODO: Fix labels and add another table that shows overall model stats (e.g.R^2)
 stats_metrics_one_grouped(ds, sd_age, adopter)
 
-# Plot metrics with stats 
-# TODO: implement stats parameter, so if true errorbars are shown 
 
-plot_metrics_one_grouped(ds, sd_age, adopter, stats=T)
+# Plot metrics without stats 
+# TODO: fix scale 
 
 plot_metrics_one_grouped(ds, sd_age, adopter)
 
-fit <- lm(sd_age ~ adopter, data=ds)
-library(broom)
-y <-glance(fit)
-summary(fit)
+# Plot metrics with stats 
 
-x <- tidy(fit)
-confint(fit)
+plot_metrics_one_grouped(ds, sd_age, adopter, stats=T)
+plot_metrics_one_grouped(ds, cg_adoption_social_03, adopter, stats=T, clean =F)
 
-# library(broom)
-# tidy(fit)
-# glance(fit)
-
-ests <- stats_metrics_one_grouped(ds, sd_age, adopter)
-int <- ests$estimate[[1]]
-ests <- ests |> 
-  mutate(m = case_when(
-      term == "(Intercept)" ~ estimate,
-      TRUE ~  int + estimate
-    )
-  )
-# TODO: use confint 
-# das heißt vorher confint berechnen und dann reinbringen, 
-# dann das ganze in Funktion uebertragen 
-ggplot(ests , aes(x = m, y=term)) +
-  geom_point() +
-  geom_errorbar(aes(xmin = m -1.96 * std.error, xmax = m + 1.96 * std.error))
-
-library(ggpubr)
-# using stat_summary 
-ggplot(ds, aes(x = sd_age, y=adopter)) +
-  stat_summary(geom = "point", fun = mean)+ 
-  stat_summary(geom = "errorbar", fun.data = mean_ci)
-
-# n for condition "i only use new offers when no other choice"
-# equals 1; NaNs are coerced 
-
-# own confidence interval calculation 
-
-sum <- ds %>%
-  group_by(adopter) %>%
-  summarise( 
-    n=n(),
-    mean=mean(sd_age),
-    sd=sd(sd_age)
-  ) %>%
-  mutate(se=sd/sqrt(n))  %>%
-  mutate(ic=se * qt((1-0.05)/2 + .5, n-1))
-  
- sum %>%  
-  ggplot(aes(y=adopter, x=mean)) +
-   geom_point() +
-   geom_errorbar(aes(xmin=mean-ic, xmax=mean+ic))
- 
- tab_counts_one_grouped(ds, adopter, sd_age)
- 
- 
- categorical_n <- ds %>%  
-   group_by(adopter) %>%  
-   count() %>%  
-   select(n)
- 
- tab_counts(ds,adopter)
- 
 ```
 
 
@@ -119,18 +61,30 @@ temp <- function(data, col, col_group, limits = NULL, negative = FALSE, stats = 
   if (clean) {
     data <- data_clean(data)
   }
-
+  
   # Remove negative values
   # TODO: warn if any negative values were recoded
   if (!negative) {
-    data <- data |>
-      labs_store() |>
-      dplyr::mutate(dplyr::across({{ col }}, ~ ifelse(. < 0, NA, .))) |>
-      labs_restore()
+  neg_values <- data %>%  
+    dplyr::summarise(neg = sum({{ col }} < 0))
+  
+  if (neg_values$neg > 0) {
+    message("Negative values were recoded to NA.")
   }
+  
+  data <- data |>
+    labs_store() |>
+    dplyr::mutate(dplyr::across({{ col }}, ~ ifelse(. < 0, NA, .))) |>
+    labs_restore()
+}
 
-  # Drop missings
-  # TODO: Report missings
+  # Drop missings and print message 
+  
+  missings <- data %>%  
+    dplyr::summarise(n = sum(is.na({{ col }})))
+  
+  message(paste0("A total of ", missings$n, " missing values have been removed."))
+  
   data <- tidyr::drop_na(data, {{ col }}, {{ col_group }})
 
   if (stats) {
@@ -221,8 +175,12 @@ temp <- function(data, col, col_group, limits = NULL, negative = FALSE, stats = 
     dplyr::group_by(data, {{ col_group }}) %>% 
     dplyr::count() 
   
-  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n, ", ", paste(categorical_n[[1]], "=", categorical_n$n, collapse = ", ")))
-
+  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n, ", ",
+                          paste(categorical_n[[1]], "=", 
+                          categorical_n$n, collapse = ", "),
+                          ", Missings = ", missings$n)
+  )
+  
   # Maximum label length
   maxlab  <- data %>%
     dplyr::pull({{col_group}}) %>%
@@ -233,7 +191,7 @@ temp <- function(data, col, col_group, limits = NULL, negative = FALSE, stats = 
   .to_vlkr_plot(pl, maxlab=maxlab)
 }
 
-temp(ds, sd_age, adopter, stats = T)
+temp(ds, cg_adoption_social_03, adopter, stats = T, clean = F)
 
 ```
 
@@ -264,7 +222,9 @@ temp2 <- function(data, col, col_group, limits = NULL, negative = FALSE, stats =
 
   # Drop missings
   # TODO: Report missings
-  data <- tidyr::drop_na(data, {{ col }}, {{ col_group }})
+  
+  data <- tidyr::drop_na(data, {{ col }}, {{ col_group }}, warn = T)
+  
 
   if (stats) {
     
