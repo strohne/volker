@@ -41,7 +41,7 @@ plot_metrics_one_grouped(ds, sd_age, adopter)
 # Plot metrics with stats 
 
 plot_metrics_one_grouped(ds, sd_age, adopter, stats=T)
-plot_metrics_one_grouped(ds, cg_adoption_social_03, adopter, stats=T, clean =F)
+plot_metrics_one_grouped(ds, cg_adoption_social_03, adopter, stats=T)
 
 ```
 

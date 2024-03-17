@@ -635,13 +635,13 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   }
 
   # Remove negative values and warn if recoded
-
+  # @HK: changed from summarise to the following approach. Why?
+  #      What if the "neg" column is the {{ col }}?
   if (!negative) {
-    neg_values <- data %>%
-      dplyr::summarise(neg = sum({{ col }} < 0))
+    neg_values <- sum(dplyr::select(data, {{col}}) < 0, na.rm=TRUE)
 
-    if (neg_values$neg > 0) {
-      message("Negative values were recoded to NA.")
+    if (neg_values > 0) {
+      message(paste0(neg_values, " negative values were recoded to NA."))
     }
 
     data <- data |>
@@ -651,21 +651,44 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   }
 
   # Drop missings and print message
-
+  # TODO @HK: count cases, not values. Make sure to consider col and col_group.
+  #           See the approach for neg_values above
   missings <- data %>%
     dplyr::summarise(n = sum(is.na({{ col }})))
 
-  message(paste0("A total of ", missings$n, " missing values have been removed."))
+  # @HK: I added a condition to not print the message for no missings.
+  #      And aligned the sentence to the negative values sentence above.
+  if (missings$n > 0) {
+    message(paste0(missings$n, " missing values have been removed."))
+  }
 
   data <- tidyr::drop_na(data, {{ col }}, {{ col_group }})
 
+  # Count cases
+  # @HK: I count cases here, create a new label and replace the existing labels
+  # TODO @HK: Unfortunately, adding a line break with \n does not work yet, guess due to the label_wrap() below.
+  # TODO @HK: Other plot methods have a numbers parameter. Implement the numbers parameter and only
+  #           add n if numbers is TRUE.
+  categories_n <- data |>
+    dplyr::rename(value_name = {{ col_group }}) |>
+    dplyr::count(value_name) |>
+    mutate(value_label = paste0(value_name, " \n(n = ", n, ")"))
+
+  data <- data |>
+    labs_replace_values(
+      {{ col_group }},
+      categories_n
+    )
+
   if (stats) {
 
+    # @HK: You can't flip only one of the charts (of the two stats conditions).
+    #      I removed flipping and added the orientation parameter.
     pl <- data %>%
-      ggplot2::ggplot(ggplot2::aes(y={{ col }}, {{ col_group}})) +
-      ggplot2::stat_summary(geom = "point", fun = mean, colour = VLKR_POINTCOLOR) +
-      ggplot2::stat_summary(geom = "errorbar", fun.data = ggpubr::mean_ci) +
-      coord_flip()
+      ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, x= {{ col}})) +
+      ggplot2::stat_summary(geom = "point", fun = mean, orientation ="y", size=4, colour = VLKR_POINTCOLOR) +
+      ggplot2::stat_summary(geom = "errorbar", fun.data = ggpubr::mean_ci, orientation ="y", colour = VLKR_POINTCOLOR)
+
   } else {
 
     pl <- data %>%
@@ -689,17 +712,20 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
     }
     scale <- prepare_scale(scale)
   }
+
+  # @HK: Swapping x and y did only work for the stat condition.
+  #      Please don't swap, use orientation parameter, see comment above.
   if (length(scale) > 0) {
     pl <- pl +
-      ggplot2::scale_y_continuous(labels = ~ label_scale(., scale) )
+      ggplot2::scale_x_continuous(labels = ~ label_scale(., scale) )
   } else {
     pl <- pl +
-      ggplot2::scale_y_continuous()
+      ggplot2::scale_x_continuous()
   }
 
   # Add scales, labels and theming
   pl <- pl +
-    ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
+    ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits = rev) +
 
 
     # TODO: set limits
@@ -744,16 +770,24 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   # TODO: Report missing values, output range
   base_n <- nrow(data)
 
-  categorical_n <-
-    dplyr::group_by(data, {{ col_group }}) %>%
-    dplyr::count()
+  # @HK: I vote for not printing group sizes in the caption, pollutes the bottom line.
+  #      See the above approach for adding group sizes to the labels.
+  # @HK: Fyi, grouping and counting can be performed in one step:
+  #      categorical_n <- dplyr::count(data, {{ col_group }})
+  #
+  # categorical_n <-
+  #   dplyr::group_by(data, {{ col_group }}) %>%
+  #   dplyr::count()
 
+  # @HK: Please look at the coding style
+  #      (break after opening and before closing brackets, indent by two spaces)
   pl <- pl +
-    ggplot2::labs(caption =
-                paste0("n=", base_n, ", ",
-                paste0(categorical_n[[1]], "=",
-                      categorical_n$n, collapse = ", "),
-                      ", Missings = ", missings$n)
+    ggplot2::labs(
+      caption = paste0(
+        "n=", base_n, "; ",
+        #paste0(categorical_n[[1]], "=", categorical_n$n, collapse = ", "), "; ",
+        missings$n, " missings"
+    )
   )
 
   # Maximum label length
