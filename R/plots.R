@@ -655,7 +655,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   # TODO @HK: count cases, not values. Make sure to consider col and col_group.
   #           See the approach for neg_values above
 
-  missings <- sum(is.na(select(data, {{ col }}, {{ col_group }})))
+  missings <- sum(is.na(dplyr::select(data, {{ col }}, {{ col_group }})))
 
   # @HK: I added a condition to not print the message for no missings.
   #      And aligned the sentence to the negative values sentence above.
@@ -677,7 +677,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
       dplyr::rename(value_name = {{ col_group }}) |>
       dplyr::count(value_name) |>
       #mutate(value_label = paste0(value_name, " \n(n = ", n, ")"))
-      mutate(value_label = paste0(str_wrap(value_name, width = 40), "\n", "(n = ", n, ")"))
+      mutate(value_label = paste0(stringr::str_wrap(value_name, width = 40), "\n", "(n = ", n, ")"))
 
 
     data <- data |>
