@@ -607,6 +607,7 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
 #' @param col_group The column holding groups to compare
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param numbers whether to print the group size 'n' on labels
 #' @param stats Whether to plot for significance tests
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
@@ -622,7 +623,7 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = FALSE, stats = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = FALSE, numbers = NULL, stats = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -653,13 +654,13 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   # Drop missings and print message
   # TODO @HK: count cases, not values. Make sure to consider col and col_group.
   #           See the approach for neg_values above
-  missings <- data %>%
-    dplyr::summarise(n = sum(is.na({{ col }})))
+
+  missings <- sum(is.na(select(data, {{ col }}, {{ col_group }})))
 
   # @HK: I added a condition to not print the message for no missings.
   #      And aligned the sentence to the negative values sentence above.
-  if (missings$n > 0) {
-    message(paste0(missings$n, " missing values have been removed."))
+  if (missings > 0) {
+    message(paste0(missings, " missing values have been removed."))
   }
 
   data <- tidyr::drop_na(data, {{ col }}, {{ col_group }})
@@ -668,17 +669,23 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   # @HK: I count cases here, create a new label and replace the existing labels
   # TODO @HK: Unfortunately, adding a line break with \n does not work yet, guess due to the label_wrap() below.
   # TODO @HK: Other plot methods have a numbers parameter. Implement the numbers parameter and only
-  #           add n if numbers is TRUE.
-  categories_n <- data |>
-    dplyr::rename(value_name = {{ col_group }}) |>
-    dplyr::count(value_name) |>
-    mutate(value_label = paste0(value_name, " \n(n = ", n, ")"))
+  #           add n if numbers is
 
-  data <- data |>
-    labs_replace_values(
-      {{ col_group }},
-      categories_n
-    )
+  if (!is.null(numbers)) {
+
+    categories_n <- data |>
+      dplyr::rename(value_name = {{ col_group }}) |>
+      dplyr::count(value_name) |>
+      #mutate(value_label = paste0(value_name, " \n(n = ", n, ")"))
+      mutate(value_label = paste0(str_wrap(value_name, width = 40), "\n", "(n = ", n, ")"))
+
+
+    data <- data |>
+      labs_replace_values(
+        {{ col_group }},
+        categories_n
+      )
+  }
 
   if (stats) {
 
@@ -725,8 +732,8 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 
   # Add scales, labels and theming
   pl <- pl +
-    ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits = rev) +
 
+    #ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits = rev) +
 
     # TODO: set limits
     #coord_flip(ylim = limits) +
@@ -739,6 +746,11 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
       plot.title.position = "plot",
       plot.caption.position = "plot"
     )
+
+  if (is.null(numbers)) {
+    pl <- pl +
+      ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits = rev)
+  }
 
   #
   #   if (!is.null(numbers)) {
@@ -786,9 +798,9 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
       caption = paste0(
         "n=", base_n, "; ",
         #paste0(categorical_n[[1]], "=", categorical_n$n, collapse = ", "), "; ",
-        missings$n, " missings"
+        missings, " missings"
+      )
     )
-  )
 
   # Maximum label length
   maxlab  <- data %>%
