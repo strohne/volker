@@ -1211,7 +1211,8 @@ knit_plot <- function(pl) {
   #   dev.off()
   # }
 
-  pngfile <- tempfile(fileext = ".png", tmpdir = chunk_options$cache.path)
+  #pngfile <- tempfile(fileext = ".png", tmpdir = chunk_options$cache.path)
+  pngfile <- tempfile(fileext = ".png")
   suppressMessages(ggplot2::ggsave(
     pngfile,
     pl,
