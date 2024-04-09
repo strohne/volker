@@ -1,4 +1,4 @@
-#' Output a five point summary for groups
+#' Output a regression table
 #'
 #' @keywords internal
 #'
@@ -43,7 +43,7 @@ stats_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, di
   lm <- data |>
     dplyr::select(av = {{ col }}, uv ={{ col_group }})
 
-  fit <- stats::lm(av ~ uv, data= lm)
+  fit <- stats::lm(av ~ uv, data = lm)
 
   result <- broom::tidy(fit)
 

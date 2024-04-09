@@ -607,7 +607,7 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
 #' @param col_group The column holding groups to compare
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param numbers whether to print the group size 'n' on labels
+#' @param numbers numbers to print on labels, 'n' for group size
 #' @param stats Whether to plot for significance tests
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.

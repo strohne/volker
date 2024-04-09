@@ -10,6 +10,8 @@ plot_metrics_one_grouped(
   col_group,
   limits = NULL,
   negative = FALSE,
+  numbers = NULL,
+  stats = FALSE,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -26,6 +28,10 @@ plot_metrics_one_grouped(
 \item{limits}{The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
+
+\item{numbers}{numbers to print on labels, 'n' for group size}
+
+\item{stats}{Whether to plot for significance tests}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

@@ -24,491 +24,120 @@ library(volker)
 # Load data 
 ds <- volker::chatgpt
 
+tab_metrics_items_cor(starts_with("cg_adoption_adv"), data= ds)
+
 # Metrics for innovator type items 
 
 tab_metrics_one_grouped(ds, sd_age, adopter)
 
-# Stats table 
+# Stats table (regression)
 # TODO: Fix labels and add another table that shows overall model stats (e.g.R^2)
-stats_metrics_one_grouped(ds, sd_age, adopter)
-
+volker::stats_metrics_one_grouped(ds, sd_age, adopter)
 
 # Plot metrics without stats 
-# TODO: fix scale 
+volker::plot_metrics_one_grouped(ds, sd_age, adopter)
 
-plot_metrics_one_grouped(ds, sd_age, adopter, )
-
-# Plot metrics with stats 
-
-plot_metrics_one_grouped(ds, sd_age, adopter, stats=T)
-plot_metrics_one_grouped(ds, cg_adoption_social_03, adopter, stats=T)
+# Plot metrics with stats and numbers
+plot_metrics_one_grouped(ds, sd_age, adopter, stats=T, numbers = T)
 
 ```
 
 
 ```{r}
+# Playground perform chi^2 test 
 
-# function using ggpubr for confidence intervals 
+grouped <- ds %>%
+    dplyr::count(sd_gender, adopter)
 
-temp <- function(data, col, col_group, limits = NULL, negative = FALSE, stats = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+chisq.test(ds$sd_gender, ds$adopter)
 
-  # 1. Check parameters
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ col_group }})
+tab_counts_items(ds, starts_with("cg_adoption_"))
 
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
+
+temp <- tibble(ds$sd_gender, ds$adopter)
+temp <- temp %>% 
+  group_by(ds$sd_gender) %>% 
+  count()
+
+table(ds$sd_gender, ds$adopter)
+
+# contingency table 
+
+x <- ds %>%
+  group_by(sd_gender, adopter)%>%
+  summarise(n=n())#%>%
+  spread(adopter, n)
+
+z <- ds %>%  
+  count(sd_gender, adopter)
   
-  # Remove negative values
-  # TODO: warn if any negative values were recoded
-  if (!negative) {
-  neg_values <- data %>%  
-    dplyr::summarise(neg = sum({{ col }} < 0))
-  
-  if (neg_values$neg > 0) {
-    message("Negative values were recoded to NA.")
-  }
-  
-  data <- data |>
-    labs_store() |>
-    dplyr::mutate(dplyr::across({{ col }}, ~ ifelse(. < 0, NA, .))) |>
-    labs_restore()
-}
+xtab <- xtabs(n ~ adopter + sd_gender, z)
 
-  # Drop missings and print message 
-  
-  missings <- data %>%  
-    dplyr::summarise(n = sum(is.na({{ col }})))
-  
-  message(paste0("A total of ", missings$n, " missing values have been removed."))
-  
-  data <- tidyr::drop_na(data, {{ col }}, {{ col_group }})
+stats::chisq.test(xtab)
 
-  if (stats) {
-    
-  pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(y={{ col }}, {{ col_group}})) +
-    ggplot2::stat_summary(geom = "point", fun = mean, colour = VLKR_POINTCOLOR) + 
-    ggplot2::stat_summary(geom = "errorbar", fun.data = ggpubr::mean_ci)
-  } else {
+y <- stats::chisq.test(ds$sd_gender, ds$adopter)
 
-  pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, {{ col }})) +
-    ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
-    ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18) 
-  }
-  
-  # Set the scale
-  # if (is.null(limits)) {
-  #   limits <- get_limits(data, {{ col }})
-  # }
+M <- as.table(rbind(c(762, 327, 468), c(484, 239, 477)))
+dimnames(M) <- list(gender = c("F", "M"),
+                    party = c("Democrat","Independent", "Republican"))
 
-  scale <- c()
-  if (labels) {
-    scale <- attr(dplyr::pull(data, {{ col }}), "scale")
-    if (is.null(scale)) {
-      scale <- data %>%
-        codebook({{ col }}) %>%
-        dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label"))))
-    }
-    scale <- prepare_scale(scale)
-  }
-  if (length(scale) > 0) {
-    pl <- pl +
-      ggplot2::scale_y_continuous(labels = ~ label_scale(., scale) )
-  } else {
-    pl <- pl +
-      ggplot2::scale_y_continuous()
-  }
-
-  # Add scales, labels and theming
-  pl <- pl +
-    ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
-
-
-    # TODO: set limits
-    #coord_flip(ylim = limits) +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = 11),
-      legend.title = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
-#
-#   if (!is.null(numbers)) {
-#     pl <- pl +
-#       geom_text(
-#         # aes(label=paste0("⌀", round(m,1))),
-#         aes(label = round(m, 1)),
-#         #position = position_stack(vjust = 0.5),
-#         hjust = -1,
-#         vjust=0.5,
-#         size = 3,
-#         color = "black"
-#       )
-#   }
-
-  # Add title
-  if (title == TRUE) {
-    title <- get_title(data, {{ col }})
-  }
-  else if (title == FALSE) {
-    title <- NULL
-  }
-
-  if (!is.null(title)) {
-    pl <- pl + ggplot2::ggtitle(label = title)
-  }
-
-  # Add base
-  # TODO: Report missing values, output range
-  base_n <- nrow(data)
-  
-  categorical_n <- 
-    dplyr::group_by(data, {{ col_group }}) %>% 
-    dplyr::count() 
-  
-  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n, ", ",
-                          paste(categorical_n[[1]], "=", 
-                          categorical_n$n, collapse = ", "),
-                          ", Missings = ", missings$n)
-  )
-  
-  # Maximum label length
-  maxlab  <- data %>%
-    dplyr::pull({{col_group}}) %>%
-    stringr::str_length() %>%
-    max(na.rm= TRUE)
-
-   # Pass row number and label length to the knit_plot() function
-  .to_vlkr_plot(pl, maxlab=maxlab)
-}
-
-temp(ds, cg_adoption_social_03, adopter, stats = T, clean = F)
-
+library(gmodels)
+CrossTable(ds$sd_gender, ds$adopter)
 ```
 
 
 ```{r}
-# function using own calculation 
-
-temp2 <- function(data, col, col_group, limits = NULL, negative = FALSE, stats = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-
+stats_counts_one_grouped <- function(data, col, col_group, missings = FALSE, prop = "total", values = c("n", "p"), percent = TRUE, labels = TRUE, clean = TRUE, ...) {
+  
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
   check_has_column(data, {{ col_group }})
-
+  
   # 2. Clean
   if (clean) {
     data <- data_clean(data)
   }
-
-  # Remove negative values
-  # TODO: warn if any negative values were recoded
-  if (!negative) {
-    data <- data |>
-      labs_store() |>
-      dplyr::mutate(dplyr::across({{ col }}, ~ ifelse(. < 0, NA, .))) |>
-      labs_restore()
-  }
-
-  # Drop missings
-  # TODO: Report missings
   
-  data <- tidyr::drop_na(data, {{ col }}, {{ col_group }}, warn = T)
-  
-
-  if (stats) {
-    
-  data <- data %>%  
-    group_by({{ col_group }}) %>%
-  summarise( 
-    n=n(),
-    mean=mean({{ col }}),
-    sd=sd({{ col }})
-  ) %>%
-  mutate(se=sd/sqrt(n))  %>%
-  mutate(ic=se * qt((1-0.05)/2 + .5, n-1))
-    
-  pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, x=mean)) +
-    ggplot2::geom_point(colour=VLKR_POINTCOLOR) +
-    ggplot2::geom_errorbar(aes(xmin=mean-ic, xmax=mean+ic))
-  
-  } else {
-
-  pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, {{ col }})) +
-    ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
-    ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
+  # Remove missings
+  # TODO: output a warning
+  if (!missings) {
+    data <- data %>%
+      tidyr::drop_na({{ col }}, {{ col_group }})
   }
   
-  .to_vlkr_plot(pl)
-}
-
-temp2(ds, sd_age, adopter, stats = T)
-
-```
-
-
-```{r}
-# function using ggpubr with stats_compare_means 
-
-temp3 <- function(data, col, col_group, limits = NULL, negative = FALSE, stats = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-
-  # 1. Check parameters
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ col_group }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # Remove negative values
-  # TODO: warn if any negative values were recoded
-  if (!negative) {
-    data <- data |>
-      labs_store() |>
-      dplyr::mutate(dplyr::across({{ col }}, ~ ifelse(. < 0, NA, .))) |>
-      labs_restore()
-  }
-
-  # Drop missings
-  # TODO: Report missings
-  data <- tidyr::drop_na(data, {{ col }}, {{ col_group }})
-
-  if (stats) {
-    
-    pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(y={{ col }}, {{ col_group}})) +
-  ggplot2::stat_summary(geom = "point", fun = mean, colour = VLKR_POINTCOLOR) + 
-    ggplot2::stat_summary(geom = "errorbar", fun.data = ggpubr::mean_ci) + ggpubr::stat_compare_means()
-  
-  } else {
-
-  pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, {{ col }})) +
-    ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
-    ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
-  }
-  
-  .to_vlkr_plot(pl)
-}
-
-# ds <- ds %>% 
-#  filter(adopter != "I only use new offers when I have no other choice", 
-#        sd_gender != "diverse")
-```
-
-
-```{r}
-# 
-
-temp <- function(data, col, col_group, limits = NULL, negative = FALSE, numbers = NULL, stats = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-
-  # 1. Check parameters
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ col_group }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # Remove negative values and warn if recoded
-  # @HK: changed from summarise to the following approach. Why?
-  #      What if the "neg" column is the {{ col }}?
-  if (!negative) {
-    neg_values <- sum(dplyr::select(data, {{col}}) < 0, na.rm=TRUE)
-
-    if (neg_values > 0) {
-      message(paste0(neg_values, " negative values were recoded to NA."))
-    }
-
-    data <- data |>
-      labs_store() |>
-      dplyr::mutate(dplyr::across({{ col }}, ~ ifelse(. < 0, NA, .))) |>
-      labs_restore()
-  }
-
-  # Drop missings and print message
-  # TODO @HK: count cases, not values. Make sure to consider col and col_group.
-  #           See the approach for neg_values above
-
-  missings <- sum(is.na(select(data, {{ col }}, {{ col_group }})))
-
-  # @HK: I added a condition to not print the message for no missings.
-  #      And aligned the sentence to the negative values sentence above.
-  if (missings > 0) {
-    message(paste0(missings, " missing values have been removed."))
-  }
-
-  data <- tidyr::drop_na(data, {{ col }}, {{ col_group }})
-
-  # Count cases
-  # @HK: I count cases here, create a new label and replace the existing labels
-  # TODO @HK: Unfortunately, adding a line break with \n does not work yet, guess due to the label_wrap() below.
-  # TODO @HK: Other plot methods have a numbers parameter. Implement the numbers parameter and only
-  #           add n if numbers is 
-  
-  if (!is.null(numbers)) {
-    
-  categories_n <- data |>
-    dplyr::rename(value_name = {{ col_group }}) |>
-    dplyr::count(value_name) |>
-    #mutate(value_label = paste0(value_name, " \n(n = ", n, ")"))
-    mutate(value_label = paste0(str_wrap(value_name, width = 40), "\n", "(n = ", n, ")"))
-  
-
-  data <- data |>
-    labs_replace_values(
-      {{ col_group }},
-      categories_n
-    )
-  }
-
-  if (stats) {
-
-    # @HK: You can't flip only one of the charts (of the two stats conditions).
-    #      I removed flipping and added the orientation parameter.
-    pl <- data %>%
-      ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, x= {{ col}})) +
-      ggplot2::stat_summary(geom = "point", fun = mean, orientation ="y", size=4, colour = VLKR_POINTCOLOR) +
-      ggplot2::stat_summary(geom = "errorbar", fun.data = ggpubr::mean_ci, orientation ="y", colour = VLKR_POINTCOLOR)
-
-  } else {
-
-    pl <- data %>%
-      ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, {{ col }})) +
-      ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
-      ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
-  }
-
-  # Set the scale
-  # if (is.null(limits)) {
-  #   limits <- get_limits(data, {{ col }})
-  # }
-
-  scale <- c()
-  if (labels) {
-    scale <- attr(dplyr::pull(data, {{ col }}), "scale")
-    if (is.null(scale)) {
-      scale <- data %>%
-        codebook({{ col }}) %>%
-        dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label"))))
-    }
-    scale <- prepare_scale(scale)
-  }
-
-  # @HK: Swapping x and y did only work for the stat condition.
-  #      Please don't swap, use orientation parameter, see comment above.
-  if (length(scale) > 0) {
-    pl <- pl +
-      ggplot2::scale_x_continuous(labels = ~ label_scale(., scale) )
-  } else {
-    pl <- pl +
-      ggplot2::scale_x_continuous()
-  }
-
-  # Add scales, labels and theming
-  pl <- pl +
-    
-    #ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits = rev) +
-
-    # TODO: set limits
-    #coord_flip(ylim = limits) +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = 11),
-      legend.title = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-  
-  if (is.null(numbers)) { 
-    pl <- pl +
-    ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits = rev)
-  } 
-
   #
-  #   if (!is.null(numbers)) {
-  #     pl <- pl +
-  #       geom_text(
-  #         # aes(label=paste0("⌀", round(m,1))),
-  #         aes(label = round(m, 1)),
-  #         #position = position_stack(vjust = 0.5),
-  #         hjust = -1,
-  #         vjust=0.5,
-  #         size = 3,
-  #         color = "black"
-  #       )
-  #   }
-
-  # Add title
-  if (title == TRUE) {
-    title <- get_title(data, {{ col }})
-  }
-  else if (title == FALSE) {
-    title <- NULL
-  }
-
-  if (!is.null(title)) {
-    pl <- pl + ggplot2::ggtitle(label = title)
-  }
-
-  # Add base
-  # TODO: Report missing values, output range
-  base_n <- nrow(data)
-
-  # @HK: I vote for not printing group sizes in the caption, pollutes the bottom line.
-  #      See the above approach for adding group sizes to the labels.
-  # @HK: Fyi, grouping and counting can be performed in one step:
-  #      categorical_n <- dplyr::count(data, {{ col_group }})
+  # 1. Count
   #
-  # categorical_n <-
-  #   dplyr::group_by(data, {{ col_group }}) %>%
-  #   dplyr::count()
+  result <- data %>%
+    dplyr::count({{ col }}, {{ col_group }}) %>%
+    dplyr::mutate(
+      "{{ col_group }}" := tidyr::replace_na(as.character({{ col_group }}), "Missing"),
+      "{{ col }}" := tidyr::replace_na(as.character({{ col }}), "Missing")
+    ) %>%  
+    tidyr::spread({{ col_group }}, n) 
+  
+  
+  .to_vlkr_tab(result, digits=0)
 
-  # @HK: Please look at the coding style
-  #      (break after opening and before closing brackets, indent by two spaces)
-  pl <- pl +
-    ggplot2::labs(
-      caption = paste0(
-        "n=", base_n, "; ",
-        #paste0(categorical_n[[1]], "=", categorical_n$n, collapse = ", "), "; ",
-        missings, " missings"
-    )
-  )
-
-  # Maximum label length
-  maxlab  <- data %>%
-    dplyr::pull({{col_group}}) %>%
-    stringr::str_length() %>%
-    max(na.rm= TRUE)
-
-  # Pass row number and label length to the knit_plot() function
-  .to_vlkr_plot(pl, maxlab=maxlab)
 }
 
+stats_counts_one_grouped(ds, adopter, sd_gender)
 ```
 
 
 ```{r}
-temp4(ds, sd_age,adopter,stats = T, numbers = T)
-temp4(ds, cg_adoption_social_03, adopter, numbers = 4 , stats=T)
-plot_counts_items(ds, starts_with("cg_adoption_"), numbers = "n")
-```
 
+DF <- as.data.frame(UCBAdmissions)
+## Now 'DF' is a data frame with a grid of the factors and the counts
+## in variable 'Freq'.
+DF
+## Nice for taking margins ...
+hi <- xtabs(Freq ~ Gender + Admit, DF)
+chisq.test(hi)
+
+## And for testing independence ...
+summary(xtabs(Freq ~ ., DF))
+
+
+```

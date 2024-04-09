@@ -2,7 +2,7 @@
 % Please edit documentation in R/stats.R
 \name{stats_metrics_one_grouped}
 \alias{stats_metrics_one_grouped}
-\title{Output a five point summary for groups}
+\title{Output a regression table}
 \usage{
 stats_metrics_one_grouped(
   data,
@@ -36,7 +36,7 @@ stats_metrics_one_grouped(
 A volker tibble
 }
 \description{
-Output a five point summary for groups
+Output a regression table
 }
 \examples{
 library(volker)
