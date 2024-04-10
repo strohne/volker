@@ -24,15 +24,14 @@ library(volker)
 # Load data 
 ds <- volker::chatgpt
 
-tab_metrics_items_cor(starts_with("cg_adoption_adv"), data= ds)
+fit <- stats::lm(sd_age ~ adopter, data = ds)
 
 # Metrics for innovator type items 
-
 tab_metrics_one_grouped(ds, sd_age, adopter)
 
 # Stats table (regression)
 # TODO: Fix labels and add another table that shows overall model stats (e.g.R^2)
-volker::stats_metrics_one_grouped(ds, sd_age, adopter)
+stat_metrics_one_grouped(ds, sd_age, adopter)
 
 # Plot metrics without stats 
 volker::plot_metrics_one_grouped(ds, sd_age, adopter)
@@ -44,29 +43,41 @@ plot_metrics_one_grouped(ds, sd_age, adopter, stats=T, numbers = T)
 
 
 ```{r}
-# Playground perform chi^2 test 
+# Playground 
+# perform chi^2 test 
 
-grouped <- ds %>%
-    dplyr::count(sd_gender, adopter)
+c <- chisq.test(ds$sd_gender, ds$adopter)
 
-chisq.test(ds$sd_gender, ds$adopter)
-
-tab_counts_items(ds, starts_with("cg_adoption_"))
-
+z <- cramers_v(c, adjust = F)
 
 temp <- tibble(ds$sd_gender, ds$adopter)
-temp <- temp %>% 
-  group_by(ds$sd_gender) %>% 
+temp <- ds %>% 
+  group_by(sd_gender) %>% 
   count()
-
-table(ds$sd_gender, ds$adopter)
 
 # contingency table 
 
-x <- ds %>%
-  group_by(sd_gender, adopter)%>%
-  summarise(n=n())#%>%
-  spread(adopter, n)
+table(ds$sd_gender, ds$adopter)
+
+temp <- ds %>%
+  count(adopter, sd_gender) %>% 
+  spread(sd_gender, n, fill = 0) 
+
+temp <- ds %>%
+  count(adopter, sd_gender) %>% 
+  spread(sd_gender, n) 
+
+temp <- ds %>%
+  count(adopter, sd_gender) %>% 
+  spread(sd_gender, n, fill = 0) %>%  
+  as.data.frame() %>%
+  select(-1) %>% 
+  chisq.test()
+
+chisq.test(temp)
+
+?xtabs()
+as_tibble()
 
 z <- ds %>%  
   count(sd_gender, adopter)
@@ -75,19 +86,16 @@ xtab <- xtabs(n ~ adopter + sd_gender, z)
 
 stats::chisq.test(xtab)
 
-y <- stats::chisq.test(ds$sd_gender, ds$adopter)
-
-M <- as.table(rbind(c(762, 327, 468), c(484, 239, 477)))
-dimnames(M) <- list(gender = c("F", "M"),
-                    party = c("Democrat","Independent", "Republican"))
-
-library(gmodels)
-CrossTable(ds$sd_gender, ds$adopter)
 ```
 
 
 ```{r}
-stats_counts_one_grouped <- function(data, col, col_group, missings = FALSE, prop = "total", values = c("n", "p"), percent = TRUE, labels = TRUE, clean = TRUE, ...) {
+
+# Function using own calculation 
+# @Jakob: Adjustierung für kleine samples? Konfidenzintervall hinzufügen? Alternative: Package effectsize verwenden (s.u.)
+# @Jakob: Übergeben an .to_vlkr_tab... i need help with that 
+
+stat_counts_one_grouped <- function(data, col, col_group, missings = FALSE, clean = TRUE, ...) {
   
   # 1. Check parameters
   check_is_dataframe(data)
@@ -106,38 +114,89 @@ stats_counts_one_grouped <- function(data, col, col_group, missings = FALSE, pro
       tidyr::drop_na({{ col }}, {{ col_group }})
   }
   
-  #
-  # 1. Count
-  #
-  result <- data %>%
-    dplyr::count({{ col }}, {{ col_group }}) %>%
-    dplyr::mutate(
-      "{{ col_group }}" := tidyr::replace_na(as.character({{ col_group }}), "Missing"),
-      "{{ col }}" := tidyr::replace_na(as.character({{ col }}), "Missing")
-    ) %>%  
-    tidyr::spread({{ col_group }}, n) 
+  # Chi-squared test
+  contingency <- data %>%
+    count({{ col }}, {{ col_group }}) %>%
+    spread({{ col_group }}, n, fill = 0) %>%
+    
+    # note: transformation due to incompatibility with chisq.test
+    as.data.frame() %>%
+    select(-1) %>%
+    as.matrix()
   
+  test <- stats::chisq.test(contingency)
   
-  .to_vlkr_tab(result, digits=0)
-
+  # Calculate Cramer's V
+  n <- sum(contingency)
+  phi <- sqrt(test$statistic / n)
+  
+  levels_col <- data %>%
+    dplyr::distinct({{ col }}) %>%
+    nrow()
+  
+  levels_col_group <- data %>%
+    dplyr::distinct({{ col_group }}) %>%
+    nrow()
+  
+  cramer_v <- phi / sqrt(min(levels_col, levels_col_group) - 1)
+  
+  # print
+  
+  print(test)
+  cat("\n")
+  cat("Cramer's V:", cramer_v, "\n")
+  
 }
 
-stats_counts_one_grouped(ds, adopter, sd_gender)
+stat_counts_one_grouped(ds, adopter, sd_gender)
+
 ```
 
 
 ```{r}
 
-DF <- as.data.frame(UCBAdmissions)
-## Now 'DF' is a data frame with a grid of the factors and the counts
-## in variable 'Freq'.
-DF
-## Nice for taking margins ...
-hi <- xtabs(Freq ~ Gender + Admit, DF)
-chisq.test(hi)
+temp <- function(data, col, col_group, missings = FALSE, clean = TRUE, ...) {
+  
+  # 1. Check parameters
+  check_is_dataframe(data)
+  check_has_column(data, {{ col }})
+  check_has_column(data, {{ col_group }})
+  
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+  
+  # Remove missings
+  # TODO: output a warning
+  if (!missings) {
+    data <- data %>%
+      tidyr::drop_na({{ col }}, {{ col_group }})
+  }
+  
+  # Chi-squared test
+  data <- data %>%
+    dplyr::count({{ col }}, {{ col_group }}) %>%
+    tidyr::spread({{ col_group }}, n, fill = 0) %>%
+    
+    # Note: transformation due to incompatibility with chisq.test
+    as.data.frame() %>%
+    select(-1) %>%
+    as.matrix()
+  
+  test <- stats::chisq.test(data)
+  
+  # Calculate Cramer's V
+  cramer_v <- effectsize::cramers_v(test, adjust = F, )
+  
+  # Print results
+  print(test)
+  cat("\n")
+  cat("Cramer's V:", cramer_v$Cramers_v, "\n")
+  
+}
 
-## And for testing independence ...
-summary(xtabs(Freq ~ ., DF))
+temp(ds, adopter, sd_gender)
 
 
 ```

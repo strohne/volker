@@ -19,7 +19,7 @@
 #'
 #' @export
 #' @importFrom rlang .data
-stats_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
+stat_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
