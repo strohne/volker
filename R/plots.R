@@ -636,8 +636,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   }
 
   # Remove negative values and warn if recoded
-  # @HK: changed from summarise to the following approach. Why?
-  #      What if the "neg" column is the {{ col }}?
+
   if (!negative) {
     neg_values <- sum(dplyr::select(data, {{col}}) < 0, na.rm=TRUE)
 
@@ -652,13 +651,9 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   }
 
   # Drop missings and print message
-  # TODO @HK: count cases, not values. Make sure to consider col and col_group.
-  #           See the approach for neg_values above
 
   missings <- sum(is.na(dplyr::select(data, {{ col }}, {{ col_group }})))
 
-  # @HK: I added a condition to not print the message for no missings.
-  #      And aligned the sentence to the negative values sentence above.
   if (missings > 0) {
     message(paste0(missings, " missing values have been removed."))
   }
@@ -668,8 +663,10 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   # Count cases
   # @HK: I count cases here, create a new label and replace the existing labels
   # TODO @HK: Unfortunately, adding a line break with \n does not work yet, guess due to the label_wrap() below.
+  # Response: I found a workaround - what do you think?
   # TODO @HK: Other plot methods have a numbers parameter. Implement the numbers parameter and only
   #           add n if numbers is
+  # Response: Done
 
   if (!is.null(numbers)) {
 
@@ -689,8 +686,6 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 
   if (stats) {
 
-    # @HK: You can't flip only one of the charts (of the two stats conditions).
-    #      I removed flipping and added the orientation parameter.
     pl <- data %>%
       ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, x= {{ col}})) +
       ggplot2::stat_summary(geom = "point", fun = mean, orientation ="y", size=4, colour = VLKR_POINTCOLOR) +
@@ -720,8 +715,6 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
     scale <- prepare_scale(scale)
   }
 
-  # @HK: Swapping x and y did only work for the stat condition.
-  #      Please don't swap, use orientation parameter, see comment above.
   if (length(scale) > 0) {
     pl <- pl +
       ggplot2::scale_x_continuous(labels = ~ label_scale(., scale) )
@@ -791,8 +784,6 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   #   dplyr::group_by(data, {{ col_group }}) %>%
   #   dplyr::count()
 
-  # @HK: Please look at the coding style
-  #      (break after opening and before closing brackets, indent by two spaces)
   pl <- pl +
     ggplot2::labs(
       caption = paste0(

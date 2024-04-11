@@ -24,7 +24,12 @@ library(volker)
 # Load data 
 ds <- volker::chatgpt
 
+# Playground lm 
+
 fit <- stats::lm(sd_age ~ adopter, data = ds)
+
+leveneTest(fit)
+shapiro.test(ds$sd_age,ds$adopter)
 
 # Metrics for innovator type items 
 tab_metrics_one_grouped(ds, sd_age, adopter)
@@ -37,18 +42,22 @@ stat_metrics_one_grouped(ds, sd_age, adopter)
 volker::plot_metrics_one_grouped(ds, sd_age, adopter)
 
 # Plot metrics with stats and numbers
-plot_metrics_one_grouped(ds, sd_age, adopter, stats=T, numbers = T)
+plot_metrics_one_grouped(ds, sd_age, adopter, stats = T, numbers = T)
 
 ```
 
 
 ```{r}
+
 # Playground 
 # perform chi^2 test 
 
 c <- chisq.test(ds$sd_gender, ds$adopter)
 
+
 z <- cramers_v(c, adjust = F)
+
+tab_metrics_items_cor(ds, starts_with("cg_adoption_adv"))
 
 temp <- tibble(ds$sd_gender, ds$adopter)
 temp <- ds %>% 
@@ -76,15 +85,34 @@ temp <- ds %>%
 
 chisq.test(temp)
 
-?xtabs()
-as_tibble()
-
 z <- ds %>%  
   count(sd_gender, adopter)
-  
-xtab <- xtabs(n ~ adopter + sd_gender, z)
 
-stats::chisq.test(xtab)
+# Playground 
+# plot scatterplot or heatmap 
+
+tab_metrics_items_cor(ds, starts_with("cg_adoption_adv"))
+
+# Scatter
+
+ds %>% 
+  ggplot(aes(x = cg_adoption_advantage_04, y = cg_adoption_advantage_02)) +
+  geom_point() +
+  labs(title = "Scatterplot", x = "X-axis", y = "Y-axis")
+
+# Heatmap
+
+cor <- ds %>% 
+  select(cg_adoption_advantage_04,cg_adoption_advantage_02) %>% 
+  stats::cor() %>% 
+  reshape2::melt()
+
+ cor %>% 
+ggplot(aes(x=Var1, y=Var2, fill=value)) + 
+  geom_tile()
+  
+
+
 
 ```
 
@@ -95,7 +123,7 @@ stats::chisq.test(xtab)
 # @Jakob: Adjustierung für kleine samples? Konfidenzintervall hinzufügen? Alternative: Package effectsize verwenden (s.u.)
 # @Jakob: Übergeben an .to_vlkr_tab... i need help with that 
 
-stat_counts_one_grouped <- function(data, col, col_group, missings = FALSE, clean = TRUE, ...) {
+stat_counts_one_grouped <- function(data, col, col_group, clean = TRUE, ...) {
   
   # 1. Check parameters
   check_is_dataframe(data)
@@ -108,11 +136,14 @@ stat_counts_one_grouped <- function(data, col, col_group, missings = FALSE, clea
   }
   
   # Remove missings
-  # TODO: output a warning
-  if (!missings) {
-    data <- data %>%
-      tidyr::drop_na({{ col }}, {{ col_group }})
+  
+  missings <- sum(is.na(dplyr::select(data, {{ col }}, {{ col_group }})))
+
+  if (missings > 0) {
+    message(paste0(missings, " missing values have been removed."))
   }
+
+  data <- tidyr::drop_na(data, {{ col }}, {{ col_group }})
   
   # Chi-squared test
   contingency <- data %>%
@@ -138,23 +169,21 @@ stat_counts_one_grouped <- function(data, col, col_group, missings = FALSE, clea
     dplyr::distinct({{ col_group }}) %>%
     nrow()
   
-  cramer_v <- phi / sqrt(min(levels_col, levels_col_group) - 1)
+  cramer_v <- round(phi / sqrt(min(levels_col, levels_col_group) - 1),2)
   
   # print
-  
   print(test)
   cat("\n")
   cat("Cramer's V:", cramer_v, "\n")
   
 }
 
-stat_counts_one_grouped(ds, adopter, sd_gender)
+stat_counts_one_grouped(ds, cg_adoption_advantage_01, sd_gender, missings= T)
 
 ```
 
 
 ```{r}
-
 temp <- function(data, col, col_group, missings = FALSE, clean = TRUE, ...) {
   
   # 1. Check parameters
@@ -187,7 +216,7 @@ temp <- function(data, col, col_group, missings = FALSE, clean = TRUE, ...) {
   test <- stats::chisq.test(data)
   
   # Calculate Cramer's V
-  cramer_v <- effectsize::cramers_v(test, adjust = F, )
+  cramer_v <- effectsize::cramers_v(test, adjust = F)
   
   # Print results
   print(test)
@@ -195,8 +224,75 @@ temp <- function(data, col, col_group, missings = FALSE, clean = TRUE, ...) {
   cat("Cramer's V:", cramer_v$Cramers_v, "\n")
   
 }
+```
 
-temp(ds, adopter, sd_gender)
+
+```{r}
+
+tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = FALSE, labels = TRUE, clean = TRUE, ...) {
+
+  # 1. Checks
+  check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # Remove missings
+  # TODO: output a warning
+  # data <- data %>%
+  #   tidyr::drop_na({{ cols }}, {{ cols_cor }})
+
+  # Prepare parameters
+  cols <- tidyselect::eval_select(expr = enquo(cols), data = data)
+
+  if (missing(cols_cor)) {
+    cols_cor <- cols
+  } else {
+    cols_cor <- tidyselect::eval_select(expr = enquo(cols_cor), data = data)
+  }
+
+
+  result <- expand.grid(x = cols, y = cols_cor, stringsAsFactors = FALSE) %>%
+    dplyr::mutate(x_name = names(.data$x), y_name = names(.data$y)) %>%
+    dplyr::mutate(
+      test = purrr::map2(
+        .data$x, .data$y,
+        function(x, y) stats::cor.test(data[[x]], data[[y]], method = method)
+      ),
+      p = map(.data$test, function(x) x$p.value),
+      value = purrr::map(.data$test, function(x) as.numeric(x$estimate)),
+      stars = get_stars(.data$p)
+    ) %>%
+    dplyr::select(item = "x_name", target = "y_name", "value", "p", "stars")
+
+
+  # Remove common item prefix
+  prefix <- get_prefix(result$item)
+  if (prefix != "") {
+    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, prefix))
+    result <- dplyr::mutate(result, item = dplyr::if_else(.data$item == "", prefix, .data$item))
+  }
+
+  prefix <- get_prefix(result$target)
+  if (prefix != "") {
+    result <- dplyr::mutate(result, target = stringr::str_remove(.data$target, prefix))
+    result <- dplyr::mutate(result, target = ifelse(.data$target == "", prefix, .data$target))
+  }
+
+  # Create table
+  result <- result %>%
+    dplyr::mutate(value = paste0(round(unlist(.data$value), 2), .data$stars)) %>%
+    dplyr::mutate(value = ifelse(significant & (.data$p >= 0.1), "", .data$value)) %>%
+    dplyr::select("item", "target", "value")
+
+  result <- result %>%
+    tidyr::pivot_wider(names_from = "target", values_from = "value") %>%
+    dplyr::rename(Item = tidyselect::all_of("item"))
+
+  .to_vlkr_tab(result, digits= 2)
+}
 
 
 ```
