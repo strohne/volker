@@ -46,7 +46,8 @@ Imports:
     janitor,
     psych,
     broom, 
-    ggpubr
+    ggpubr,
+    tidycat
 Depends:
   R (>= 4.2)
 Suggests:
