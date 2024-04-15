@@ -4,7 +4,7 @@
 \alias{.to_vlkr_tab}
 \title{Add vlkr_tbl class}
 \usage{
-.to_vlkr_tab(data, digits = NULL)
+.to_vlkr_tab(data, digits = NULL, caption = NULL)
 }
 \arguments{
 \item{data}{A tibble}

@@ -9,7 +9,8 @@ report_metrics(
   cols,
   col_group = NULL,
   ...,
-  index = TRUE,
+  index = FALSE,
+  stats = FALSE,
   title = TRUE,
   close = TRUE,
   clean = TRUE
@@ -30,6 +31,8 @@ or multiple columns selected by methods such as starts_with().}
 (as determined by \link{get_direction}),
 an index will be calculated using the 'psych' package.
 Set to FALSE to suppress index generation.}
+
+\item{stats}{Output effect sizes}
 
 \item{title}{A character providing the heading or TRUE (default) to output a heading.
 Classes for tabset pills will be added.}

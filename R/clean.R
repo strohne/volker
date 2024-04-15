@@ -113,6 +113,21 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
   .to_vlkr_df(data)
 }
 
+#' Remove missings and output a message
+#'
+#' @param data Data frame
+#' @param cols A tidy column selection
+#' @return Data frame
+data_rm_missings <- function(data, cols) {
+
+  missings <- sum(is.na(dplyr::select(data, {{ cols }})))
+
+  if (missings > 0) {
+    message(paste0(missings, " missing values have been removed."))
+  }
+
+  tidyr::drop_na(data, {{ cols }})
+}
 
 #' Add vlkr_df class - that means, the data frame has been prepared
 #'

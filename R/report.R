@@ -17,6 +17,7 @@
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the 'psych' package.
 #'              Set to FALSE to suppress index generation.
+#' @param stats Output effect sizes
 #' @param title A character providing the heading or TRUE (default) to output a heading.
 #'               Classes for tabset pills will be added.
 #' @param close Whether to close the last tab (default value TRUE) or to keep it open.
@@ -31,7 +32,7 @@
 #' report_metrics(data, sd_age)
 #'
 #' @export
-report_metrics <- function(data, cols, col_group = NULL, ..., index = TRUE, title = TRUE, close = TRUE, clean = TRUE) {
+report_metrics <- function(data, cols, col_group = NULL, ..., index = FALSE, stats=FALSE, title = TRUE, close = TRUE, clean = TRUE) {
 
   if (clean) {
     data <- data_clean(data)
@@ -61,6 +62,10 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index = TRUE, titl
   # Add table
   chunks <- tab_metrics(data, {{ cols}}, {{ col_group }}, clean=clean, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
+
+  # Add effect sizes
+  chunks <- stat_metrics(data, {{ cols }}, {{ col_group }}, clean=clean, ...) %>%
+    .add_to_vlkr_rprt(chunks, "Statistics")
 
   # Add index
   if (index) {
@@ -116,7 +121,7 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index = TRUE, titl
 #' report_counts(data, sd_gender)
 #'
 #' @export
-report_counts <- function(data, cols, col_group = NULL, index = TRUE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
+report_counts <- function(data, cols, col_group = NULL, index = FALSE, stats=FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
 
   if (clean) {
     data <- data_clean(data)
@@ -146,6 +151,10 @@ report_counts <- function(data, cols, col_group = NULL, index = TRUE, numbers = 
   # Add table
   chunks <- tab_counts(data, {{ cols }}, {{ col_group }}, clean=clean, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
+
+  # Add effect sizes
+  chunks <- stat_counts(data, {{ cols }}, {{ col_group }}, clean=clean, ...) %>%
+    .add_to_vlkr_rprt(chunks, "Statistics")
 
   # Add index
   if (index) {
@@ -204,6 +213,60 @@ report_counts <- function(data, cols, col_group = NULL, index = TRUE, numbers = 
   chunks
 }
 
+#' Add vlkr_list class
+#'
+#' Used to collect multiple tables in a list,
+#' e.g. from regression outputs
+#'
+#' @keywords internal
+#'
+#' @param data A list
+#' @return A volker list
+.to_vlkr_list <- function(data) {
+  class(data) <- c("vlkr_list", setdiff(class(data), "vlkr_list"))
+  data
+}
+
+#' Printing method for volker lists
+#'
+#' @keywords internal
+#'
+#' @param x The volker list
+#' @param ... Further parameters passed to print
+#' @return No return value
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' rp <- report_metrics(data, sd_age, stats=TRUE)
+#' print(rp)
+#'
+#' @export
+print.vlkr_list <- function(x, ...) {
+  if (knitr::is_html_output()) {
+    x %>%
+      unlist() %>%
+      paste0(collapse = "\n") %>%
+      knitr::asis_output() %>%
+      knitr::knit_print()
+  } else {
+    for (part in x) {
+      print(part, ...)
+    }
+  }
+}
+
+#' Knit volker chunks
+#'
+#' @keywords internal
+#'
+#' @param data A volker chunks object
+#' @return Formatted  table produced by \link{kable}
+knit_chunks <- function(data, ...) {
+  # TODO: knit
+  data
+}
+
 #' Add the vlkr_rprt class to an object
 #'
 #' Adding the class makes sure the appropriate printing function
@@ -236,18 +299,34 @@ report_counts <- function(data, cols, col_group = NULL, index = TRUE, numbers = 
       chunks <- .add_to_vlkr_rprt(tab, chunks)
     }
 
-    # Objects
-    if (inherits(obj, "vlkr_tbl")) {
-      newchunk <- knit_table(obj)
-    } else if (inherits(obj, "vlkr_plt")) {
-      newchunk <- knit_plot(obj)
-    } else if (is.character(obj)) {
-      newchunk <- obj
-    } else {
-      warning("Could not determine the volker report chunk type")
+    # Nested objects
+    if (inherits(obj, "vlkr_list")) {
+      for (childobj in obj) {
+
+        caption <- attr(childobj, "caption", exact=TRUE)
+        if (!is.null(caption)) {
+          caption <- paste0("\n###### ", caption, "  \n")
+          chunks <- .add_to_vlkr_rprt(caption, chunks)
+        }
+
+        chunks <- .add_to_vlkr_rprt(childobj, chunks)
+      }
     }
 
-    chunks <- append(chunks, newchunk)
+    # Objects
+    else {
+      if (inherits(obj, "vlkr_tbl")) {
+        newchunk <- knit_table(obj)
+      } else if (inherits(obj, "vlkr_plt")) {
+        newchunk <- knit_plot(obj)
+      } else if (is.character(obj)) {
+        newchunk <- obj
+      } else {
+        warning("Could not determine the volker report chunk type")
+      }
+
+      chunks <- append(chunks, newchunk)
+    }
   } else {
     if (!is.null(tab)) {
       attr(obj,"comment") <- tab
@@ -264,7 +343,6 @@ report_counts <- function(data, cols, col_group = NULL, index = TRUE, numbers = 
 #'
 #' @param x The volker report object
 #' @param ... Further parameters passed to print
-#' @importFrom rlang .data
 #' @return No return value
 #' @examples
 #' library(volker)

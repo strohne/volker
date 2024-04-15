@@ -1184,10 +1184,14 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
 #' @param data A tibble
 #' @param digits Set the plot digits. If NULL (default), no digits are set.
 #' @return A volker tibble
-.to_vlkr_tab <- function(data, digits = NULL) {
+.to_vlkr_tab <- function(data, digits = NULL, caption=NULL) {
 
   if (!is.null(digits)) {
     attr(data, "digits") <- digits
+  }
+
+  if (!is.null(caption)) {
+    attr(data, "caption") <- caption
   }
 
   class(data) <- c("vlkr_tbl", setdiff(class(data), "skim_df"))
@@ -1205,6 +1209,17 @@ knit_table <- function(df, ...) {
   digits <- attr(df, "digits", exact = TRUE)
 
   if (is.null(digits)) {
+    digits <- getOption("digits")
+  }
+
+  # Round
+  if (".digits" %in% colnames(df)) {
+    df <- df |>
+      dplyr::rowwise() |>
+      dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), \(x) round(x, .digits))) |>
+      dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), \(x) as.character(x)))
+
+    df$.digits <- NULL
     digits <- getOption("digits")
   }
 
@@ -1256,12 +1271,17 @@ knit_table <- function(df, ...) {
 #'
 #' @export
 print.vlkr_tbl <- function(x, ...) {
+
   x <- knit_table(x)
 
   if (knitr::is_html_output()) {
     x <- knitr::asis_output(x)
     knitr::knit_print(x)
   } else {
+    caption <- attr(x, "caption", exact=TRUE)
+    if (!is.null(caption)) {
+      cat("\n",caption)
+    }
     print(x, ...)
   }
 }
