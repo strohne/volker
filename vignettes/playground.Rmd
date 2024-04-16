@@ -20,7 +20,6 @@ library(volker)
 ```
 
 ```{r}
-
 # Load data 
 ds <- volker::chatgpt
 
@@ -43,6 +42,15 @@ volker::plot_metrics_one_grouped(ds, sd_age, adopter)
 
 # Plot metrics with stats and numbers
 plot_metrics_one_grouped(ds, sd_age, adopter, stats = T, numbers = T)
+```
+
+
+```{r}
+
+volker::tab_counts_items(ds, starts_with("adopt"))
+
+# confidence interval for mean 
+t.test(ds$sd_age)$conf.int
 
 ```
 

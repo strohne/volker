@@ -25,7 +25,6 @@ library(volker)
 ds <- volker::chatgpt
 ```
 
-
 ```{r}
 
 report_counts(ds, adopter, sd_gender, stats = T)
