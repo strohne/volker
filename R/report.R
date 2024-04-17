@@ -64,8 +64,10 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index = FALSE, sta
     .add_to_vlkr_rprt(chunks, "Table")
 
   # Add effect sizes
-  chunks <- stat_metrics(data, {{ cols }}, {{ col_group }}, clean=clean, ...) %>%
-    .add_to_vlkr_rprt(chunks, "Statistics")
+  if (stats) {
+    chunks <- stat_metrics(data, {{ cols }}, {{ col_group }}, clean=clean, ...) %>%
+      .add_to_vlkr_rprt(chunks, "Statistics")
+  }
 
   # Add index
   if (index) {
@@ -153,8 +155,10 @@ report_counts <- function(data, cols, col_group = NULL, index = FALSE, stats=FAL
     .add_to_vlkr_rprt(chunks, "Table")
 
   # Add effect sizes
-  chunks <- stat_counts(data, {{ cols }}, {{ col_group }}, clean=clean, ...) %>%
-    .add_to_vlkr_rprt(chunks, "Statistics")
+  if (stats) {
+    chunks <- stat_counts(data, {{ cols }}, {{ col_group }}, clean=clean, ...) %>%
+      .add_to_vlkr_rprt(chunks, "Statistics")
+  }
 
   # Add index
   if (index) {
@@ -328,7 +332,7 @@ knit_chunks <- function(data, ...) {
       chunks <- append(chunks, newchunk)
     }
   } else {
-    if (!is.null(tab)) {
+    if (!is.null(tab) && !is.null(obj)) {
       attr(obj,"comment") <- tab
     }
     chunks <- append(chunks, list(obj))
