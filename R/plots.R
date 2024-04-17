@@ -182,7 +182,7 @@ plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title =
   # TODO: Make dry, see plot_item_counts and tab_group_counts
   pl <- result %>%
     ggplot2::ggplot(ggplot2::aes({{ col }}, y = .data$p / 100)) +
-    ggplot2::geom_col(fill = VLKR_FILLCOLOR) +
+    ggplot2::geom_col() +
 
     # TODO: make limits configurable
     # scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
@@ -194,7 +194,7 @@ plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title =
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = 11),
+      axis.text.y = ggplot2::element_text(), #size = 11
       legend.title = ggplot2::element_blank(),
       plot.title.position = "plot",
       plot.caption = ggplot2::element_text(hjust = 0),
@@ -207,7 +207,7 @@ plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title =
       ggplot2::geom_text(
         ggplot2::aes(label = .data$.values),
         position = ggplot2::position_stack(vjust = 0.5),
-        size = 3, color = "white"
+        color = "white" #size = 3
       )
   }
 
@@ -561,7 +561,7 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes({{ col }})) +
     # geom_histogram(fill=VLKR_FILLCOLOR, bins=20)
-    ggplot2::geom_density(fill = VLKR_FILLCOLOR) +
+    ggplot2::geom_density() +
     ggplot2::geom_vline(ggplot2::aes(xintercept=mean({{ col }})), color="black")
 
   # Get title
@@ -686,7 +686,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = 11),
+      axis.text.y = ggplot2::element_text(), #size = 11
       legend.title = ggplot2::element_blank(),
       plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
@@ -836,7 +836,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, titl
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = 11),
+      axis.text.y = ggplot2::element_text(), #size = 11
       legend.title = ggplot2::element_blank(),
       plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
@@ -996,7 +996,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = 11),
+      axis.text.y = ggplot2::element_text(), #size = 11
       legend.title = ggplot2::element_blank(),
       plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
@@ -1057,7 +1057,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = 11),
+      axis.text.y = ggplot2::element_text(), #size = 11
       legend.title = ggplot2::element_blank(),
       plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
@@ -1071,7 +1071,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   if (!is.null(category)) {
     pl <- pl +
       ggplot2::scale_fill_manual(
-        values = c(VLKR_FILLCOLOR),
+        #values = c(VLKR_FILLCOLOR),
         guide = ggplot2::guide_legend(reverse = TRUE)
       ) +
       ggplot2::theme(
@@ -1099,7 +1099,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   # Add numbers
   if (!is.null(numbers)) {
     pl <- pl +
-      ggplot2::geom_text(ggplot2::aes(label = .data$.values), position = ggplot2::position_stack(vjust = 0.5), size = 3, color = "white")
+      ggplot2::geom_text(ggplot2::aes(label = .data$.values), position = ggplot2::position_stack(vjust = 0.5), color = "white") #size = 3
   }
 
   # Add title
@@ -1267,3 +1267,35 @@ print.vlkr_plt <- function(x, ...) {
 #' @keywords internal
 #' @export
 plot.vlkr_plt <- print.vlkr_plt
+
+
+#' Define a default theme for volker plots
+#'
+#' @importFrom ggplot2 '%+replace%'
+#' @param base_size Base font size
+#' @param base_color Base font color
+#' @param base_fill A list of fill color sets. Each set can contain different numbers of colors.
+#' @return A theme function
+#' @examples
+#' library(volker)
+#' library(ggplot2)
+#' data <- volker::chatgpt
+#'
+#' theme_set(theme_vlkr(base_size=15, base_fill = list("red"))
+#' plot_counts(data, sd_gender)
+#' @export
+theme_vlkr <- function(base_size=11, base_color="black", base_fill = list(VLKR_FILLCOLOR, VLKR_FILLDISCRETE)) {
+
+  ggplot2::update_geom_defaults("text", list(size = (base_size-2) / ggplot2::.pt, color=base_color))
+  ggplot2::update_geom_defaults("col",   list(fill = base_fill[[1]]))
+  ggplot2::update_geom_defaults("density",   list(fill = base_fill[[1]]))
+
+  options(ggplot2.discrete.fill= base_fill)
+
+  ggplot2::theme_bw(base_size) %+replace%
+
+    ggplot2::theme(
+      axis.text.y = ggplot2::element_text(size=base_size, color=base_color),
+      legend.text = ggplot2::element_text(size=base_size-2)
+    )
+}

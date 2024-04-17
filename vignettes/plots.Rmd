@@ -30,6 +30,7 @@ data <- volker::chatgpt
 
 ### 1. One variable: Frequency plot of Gender
 ```{r}
+theme_set(theme_vlkr())
 plot_counts(data, sd_gender)
 ```
 
@@ -38,6 +39,7 @@ plot_counts(data, sd_gender)
 ```{r}
 # The prop parameter grows bars to 100%
 # The numbers parameter adds percentages to the bars
+
 plot_counts(data, adopter, sd_gender, prop = "rows", number="p")
 ```
 
