@@ -19,7 +19,11 @@ VLKR_NA_NUMERIC <- c(-9)
 # Plot settings
 VLKR_POINTCOLOR <- "darkcyan"  #"#611F53FF"
 VLKR_FILLCOLOR <- "darkcyan"  #"#611F53FF"
-VLKR_FILLDISCRETE <- c("#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00","#ffff33","#a65628","#f781bf")
+VLKR_FILLDISCRETE <- c(
+  "#e41a1c", "#377eb8", "#4daf4a", "#984ea3",
+  "#ff7f00","#ffff33","#a65628","#f781bf",
+  "#cab2d6", "#a6cee3","#fdbf6f","#b2df8a"
+)
 VLKR_FILLGRADIENT <- c("#e5f7ff", "#96dfde", "#008b8b", "#006363", "black")
 VLKR_LOWPERCENT <- 5
 
