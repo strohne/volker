@@ -147,12 +147,10 @@ plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title =
     data <- data_clean(data)
   }
 
-  if (!missings) {
-    data <- data %>%
-      tidyr::drop_na({{ col }})
-  }
+  # 3. Remove missings
+  data <- data_rm_missings(data, {{ col }})
 
-  # 3. Data
+  # 4. Data
   # Count data
   result <- data %>%
     dplyr::count({{ col }}) %>%
@@ -289,12 +287,10 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
     #stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
   }
 
-  if (!missings) {
-    data <- data %>%
-      tidyr::drop_na({{ col }}, {{ col_group }})
-  }
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
 
-  # 3. Calculate data
+  # 4. Calculate data
   result <- data %>%
     dplyr::count({{ col }}, {{ col_group }})
 
@@ -404,14 +400,11 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
     data <- data_clean(data)
   }
 
-  # Remove missings
-  # TODO: Output a warning
-  if (!missings) {
-    data <- data %>%
-      tidyr::drop_na({{ cols }})
-  }
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}))
 
-  # 3. Calculate data
+
+  # 4. Calculate data
   # n and p
   result <- data %>%
     labs_clear({{ cols }}) %>%
@@ -507,6 +500,9 @@ plot_counts_items_grouped <- function(data, cols, col_group, clean = TRUE, ...) 
   # 2. Clean
   if (clean) {
     data <- data_clean(data)
+
+  # 3. Remove missings
+    data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
   }
 
 }
@@ -553,9 +549,10 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
       labs_restore()
   }
 
-  # Drop missings
-  # TODO: Report missings
-  data <- tidyr::drop_na(data, {{ col }})
+  # 3. Remove missings
+  data <- data_rm_missings(data, {{ col }})
+
+
 
   # TODO: make configurable: density, boxplot or histogram
   pl <- data %>%
@@ -635,38 +632,15 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
     data <- data_clean(data)
   }
 
-  # Remove negative values and warn if recoded
-
+  # Recode negative values to NA
   if (!negative) {
-    neg_values <- sum(dplyr::select(data, {{col}}) < 0, na.rm=TRUE)
-
-    if (neg_values > 0) {
-      message(paste0(neg_values, " negative values were recoded to NA."))
-    }
-
-    data <- data |>
-      labs_store() |>
-      dplyr::mutate(dplyr::across({{ col }}, ~ ifelse(. < 0, NA, .))) |>
-      labs_restore()
+    data <- data_rc_negatives(data, {{ col }})
   }
 
-  # Drop missings and print message
-
-  missings <- sum(is.na(dplyr::select(data, {{ col }}, {{ col_group }})))
-
-  if (missings > 0) {
-    message(paste0(missings, " missing values have been removed."))
-  }
-
-  data <- tidyr::drop_na(data, {{ col }}, {{ col_group }})
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
 
   # Count cases
-  # @HK: I count cases here, create a new label and replace the existing labels
-  # TODO @HK: Unfortunately, adding a line break with \n does not work yet, guess due to the label_wrap() below.
-  # Response: I found a workaround - what do you think?
-  # TODO @HK: Other plot methods have a numbers parameter. Implement the numbers parameter and only
-  #           add n if numbers is
-  # Response: Done
 
   if (!is.null(numbers)) {
 
@@ -795,7 +769,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 
   # Maximum label length
   maxlab  <- data %>%
-    dplyr::pull({{col_group}}) %>%
+    dplyr::pull({{ col_group }}) %>%
     stringr::str_length() %>%
     max(na.rm= TRUE)
 
@@ -829,23 +803,17 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, titl
   check_is_dataframe(data)
 
   # 2. Clean
-  if (clean) {
+   if (clean) {
     data <- data_clean(data)
   }
 
-  # Remove negative values
-  # TODO: warn if any negative values were recoded
-  # TODO: Call prepare in every function and replace there, same for missings
+  # Recode negative values to NA
   if (!negative) {
-    data <- data %>%
-      labs_store() %>%
-      dplyr::mutate(dplyr::across({{ cols }}, ~ ifelse(. < 0, NA, .))) %>%
-      labs_restore()
+    data <- data_rc_negatives(data, c({{ cols }}))
   }
 
-  # Drop missings
-  # TODO: Report missings
-  data <- tidyr::drop_na(data, {{ cols }})
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}))
 
   # Pivot items
   result <- data %>%
@@ -973,17 +941,16 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
     data <- data_clean(data)
   }
 
-  # TODO: warn if any negative values were recoded
+  # Recode negative values to NA
   if (!negative) {
-    data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. < 0, NA, .)))
+    data <- data_rc_negatives(data, c({{ cols }}))
   }
 
-  # Drop missings
-  # TODO: Report missings
-  data <- tidyr::drop_na(data, {{ cols }}, {{ col_group }})
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
 
 
-  # 3. Calculate
+  # 4. Calculate
   # Get positions of group cols
   col_group <- tidyselect::eval_select(expr = rlang::enquo(col_group), data = data)
 

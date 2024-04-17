@@ -264,16 +264,14 @@ stat_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, dig
     data <- data_clean(data)
   }
 
-  # Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
-
-  data <- tidyr::drop_na(data, {{ col }}, {{ col_group }})
-
   # Remove negative values
   # TODO: warn if any negative values were recoded
   if (!negative) {
     data <- dplyr::mutate(data, dplyr::across({{ col }}, ~ dplyr::if_else(. < 0, NA, .)))
   }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
 
   lm_data <- data |>
     dplyr::select(av = {{ col }}, uv = {{ col_group }})

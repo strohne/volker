@@ -129,6 +129,28 @@ data_rm_missings <- function(data, cols) {
   tidyr::drop_na(data, {{ cols }})
 }
 
+
+#' Recode negatives and output a warning
+#'
+#' @param data Data frame
+#' @param cols A tidy column selection
+#' @return Data frame
+
+data_rc_negatives <- function(data, cols) {
+
+    neg_values <- sum(dplyr::select(data, {{ cols }}) < 0, na.rm=TRUE)
+
+    if (neg_values > 0) {
+      message(paste0(neg_values, " negative values were recoded to NA."))
+    }
+
+     data |>
+      labs_store() |>
+      dplyr::mutate(dplyr::across({{ cols }}, ~ ifelse(. < 0, NA, .))) |>
+      labs_restore()
+}
+
+
 #' Add vlkr_df class - that means, the data frame has been prepared
 #'
 #' @keywords internal

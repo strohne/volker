@@ -141,12 +141,8 @@ tab_counts_one <- function(data, col, missings = TRUE, percent = TRUE, labels = 
     data <- data_clean(data)
   }
 
-  # Remove missings
-  # TODO: output a warning
-  if (!missings) {
-    data <- data %>%
-      tidyr::drop_na({{ col }})
-  }
+  # 3. Remove missings
+  data <- data_rm_missings(data, {{ col }})
 
   result <- data %>%
     dplyr::count({{ col }}) %>%
@@ -227,12 +223,8 @@ tab_counts_one_grouped <- function(data, col, col_group, missings = FALSE, prop 
     data <- data_clean(data)
   }
 
-  # Remove missings
-  # TODO: output a warning
-  if (!missings) {
-    data <- data %>%
-      tidyr::drop_na({{ col }}, {{ col_group }})
-  }
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
 
   #
   # 1. Count
@@ -422,13 +414,6 @@ tab_counts_items <- function(data, cols, missings = FALSE, values = c("n", "p"),
   # 2. Clean
   if (clean) {
     data <- data_clean(data)
-  }
-
-  # Remove missings
-  # TODO: Output a warning
-  if (!missings) {
-    data <- data %>%
-      tidyr::drop_na({{ cols }})
   }
 
   # Calculate n and p
@@ -635,16 +620,13 @@ tab_metrics_one <- function(data, col, negative = FALSE, digits = 1, labels = TR
     data <- data_clean(data)
   }
 
-  # # Remove missings
-  # # TODO: output a warning
-  # data <- data %>%
-  #   tidyr::drop_na({{ col }})
-
-  # Remove negative values
-  # TODO: warn if any negative values were recoded
+  # Recode negative values to NA
   if (!negative) {
-    data <- dplyr::mutate(data, dplyr::across({{ col }}, ~ dplyr::if_else(. < 0, NA, .)))
+    data <- data_rc_negatives(data, {{ col }})
   }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, {{ col }})
 
   result <- data %>%
     skim_metrics({{ col }}) %>%
@@ -723,10 +705,8 @@ tab_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, digi
     data <- data_clean(data)
   }
 
-  # Remove missings
-  # TODO: output a warning
-  data <- data %>%
-    tidyr::drop_na({{ col_group }})
+  # 3. Remove missings
+  data <- data_rm_missings(data, {{ col }})
 
   # Remove negative values
   # TODO: warn if any negative values were recoded
@@ -938,10 +918,8 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = FALSE, v
     data <- data_clean(data)
   }
 
-  # Remove missings
-  # TODO: output a warning
-  data <- data %>%
-    tidyr::drop_na({{ cols }}, {{ col_group }})
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
 
   # Remove negative values
   # TODO: warn if any negative values were recoded

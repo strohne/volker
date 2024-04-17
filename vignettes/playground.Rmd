@@ -52,6 +52,31 @@ volker::tab_counts_items(ds, starts_with("adopt"))
 # confidence interval for mean 
 t.test(ds$sd_age)$conf.int
 
+# 3. Remove missings
+  data <- data_rm_missings(data, {{ col }})
+  data, adopter, sd_gender
+  
+tab_counts_one_grouped(ds, cg_adoption_advantage_01, cg_adoption_fearofuse_03)
+plot_counts_one_grouped(ds, cg_adoption_advantage_01, cg_adoption_fearofuse_03)
+
+tab_counts_items(data, starts_with("cg_adoption_"))
+
+plot_counts_items(data, starts_with("cg_adoption_"))
+
+
+plot_metrics_one_grouped(ds, cg_adoption_advantage_01, sd_gender)
+
+
+df <- data.frame(
+  ID = 1:5,
+  Value1 = c(10, -5, 8, -3, 12),
+  Value2 = c(-7, 6, 9, -2, 15), 
+  Value3 = c("hallo", "ne", "garnicht", "gehtso", "no")
+)
+
+tab_metrics(df, Value1
+            )
+
 ```
 
 
