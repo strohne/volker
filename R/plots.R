@@ -288,7 +288,9 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
   }
 
   # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
+  if (!missings) {
+    data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
+  }
 
   # 4. Calculate data
   result <- data %>%
@@ -401,8 +403,9 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
   }
 
   # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}))
-
+  if(!missings) {
+    data <- data_rm_missings(data, c({{ cols }}))
+  }
 
   # 4. Calculate data
   # n and p
@@ -512,7 +515,7 @@ plot_counts_items_grouped <- function(data, cols, col_group, clean = TRUE, ...) 
 #' @keywords internal
 #'
 #' @param data A tibble
-#' @param col The columns holding metric values
+#' @param col The column holding metric values
 #' @param limits The scale limits. Set NULL to extract limits from the label. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -540,19 +543,13 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
     data <- data_clean(data)
   }
 
-  # Remove negative values
-  # TODO: warn if any negative values were recoded
+  # 3. Recode negative values to NA
   if (!negative) {
-    data <- data |>
-      labs_store() |>
-      dplyr::mutate(dplyr::across({{ col }}, ~ dplyr::if_else(. < 0, NA, .))) |>
-      labs_restore()
+    data <- data_rc_negatives(data, {{ col }})
   }
 
-  # 3. Remove missings
+  # 4. Remove missings
   data <- data_rm_missings(data, {{ col }})
-
-
 
   # TODO: make configurable: density, boxplot or histogram
   pl <- data %>%
@@ -749,11 +746,6 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   # TODO: Report missing values, output range
   base_n <- nrow(data)
 
-  # @HK: I vote for not printing group sizes in the caption, pollutes the bottom line.
-  #      See the above approach for adding group sizes to the labels.
-  # @HK: Fyi, grouping and counting can be performed in one step:
-  #      categorical_n <- dplyr::count(data, {{ col_group }})
-  #
   # categorical_n <-
   #   dplyr::group_by(data, {{ col_group }}) %>%
   #   dplyr::count()

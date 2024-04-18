@@ -137,7 +137,7 @@ stat_metrics <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #' @importFrom rlang .data
 stat_counts_one <- function(data, col, col_group, clean = TRUE, ...) {
 
-  stop("Not implemented yet")
+  #stop("Not implemented yet")
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -148,18 +148,43 @@ stat_counts_one <- function(data, col, col_group, clean = TRUE, ...) {
     data <- data_clean(data)
   }
 
-  # 3. Remove missings
-  data <- data_rm_missings(data, {{ col }})
+  # 4. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{col_group}}))
 
 
   # 4. Prepare data
   # TODO: calculate CI for shares
+  # @Jakob: quick and dirty - param for confindence level?
 
+  # Count
+  result <- data %>%
+    dplyr::count({{ col }}) %>%
+    tidyr::drop_na() %>%
+    dplyr::mutate("{{ col }}" := as.character({{ col }})) %>%
+    dplyr::mutate(p = .data$n / sum(.data$n))
+
+  # Calculate params
+  total_obs <- sum(result$n)
+
+  num_groups <- nrow(result)
+
+  z <- qnorm(1 - (1 - 0.95) / 2)
+
+  # Confidence Intervals
+  result <- result %>%
+    dplyr::mutate(
+      std_error = sqrt(p * (1 - p) / total_obs),
+      ci_lower = p - z * std_error,
+      ci_upper = p + z * std_error
+    )
+
+  # Calculate gini coefficent
+  # TODO: cumsum and calculation
 
   # 6. Prepare output
-  results <- tibble()
+  #results <- tibble()
 
-  .to_vlkr_tab(results)
+  .to_vlkr_tab(result)
 }
 
 
@@ -229,7 +254,7 @@ stat_counts_one_grouped <- function(data, col, col_group, clean = TRUE, ...) {
 }
 
 
-#' Output a regression table with estimates and makro statistics
+#' Output a regression table with estimates and macro statistics
 #'
 #' #TODO: Do we need the digits parameter?
 #' #TODO: Add CI for effect sizes
@@ -264,14 +289,15 @@ stat_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, dig
     data <- data_clean(data)
   }
 
-  # Remove negative values
-  # TODO: warn if any negative values were recoded
+  # Recode negative values
   if (!negative) {
-    data <- dplyr::mutate(data, dplyr::across({{ col }}, ~ dplyr::if_else(. < 0, NA, .)))
+    data <- data_rc_negatives(data, {{ col }})
   }
 
   # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
+  if (!missings) {
+    data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
+  }
 
   lm_data <- data |>
     dplyr::select(av = {{ col }}, uv = {{ col_group }})

@@ -142,7 +142,9 @@ tab_counts_one <- function(data, col, missings = TRUE, percent = TRUE, labels = 
   }
 
   # 3. Remove missings
-  data <- data_rm_missings(data, {{ col }})
+  if (!missings) {
+    data <- data_rm_missings(data, {{ col }})
+  }
 
   result <- data %>%
     dplyr::count({{ col }}) %>%
