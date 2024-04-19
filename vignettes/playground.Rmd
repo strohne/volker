@@ -68,11 +68,25 @@ stat_metrics_one_grouped(ds, cg_adoption_advantage_01, sd_gender, missings = F)
 
 tab_counts_one(ds, sd_gender)
 
+ds <- volker::chatgpt
+
+
 result <- ds %>%
     dplyr::count(sd_gender) %>%
     tidyr::drop_na() %>%
     dplyr::mutate("sd_gender" := as.character(sd_gender)) %>% 
-    dplyr::mutate(p = n / sum(n))
+    dplyr::mutate(p = n / sum(n)) # %>% 
+
+    # calculate gini
+    # TODO: Correct for frequencies?
+
+result <- result %>%  
+    dplyr::arrange(n) %>% 
+    dplyr::mutate(cumulative_frequencies = cumsum(n),
+           cumulative_percentage = cumulative_frequencies / sum(n)) %>%
+    summarize(gini = (length(n) + 1 - 
+                      2 * sum(cumulative_percentage * n / sum(n))) / 
+                      length(n)) 
 
 
 # Anzahl der Beobachtungen
@@ -89,6 +103,9 @@ result <- result %>%
     ci_lower = p - z_value * std_error,
     ci_upper = p + z_value * std_error
   ) 
+
+
+Gini()
 
 ```
 
