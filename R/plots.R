@@ -180,7 +180,7 @@ plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title =
   # TODO: Make dry, see plot_item_counts and tab_group_counts
   pl <- result %>%
     ggplot2::ggplot(ggplot2::aes({{ col }}, y = .data$p / 100)) +
-    ggplot2::geom_col(fill = VLKR_FILLCOLOR) +
+    ggplot2::geom_col() +
 
     # TODO: make limits configurable
     # scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
@@ -192,7 +192,7 @@ plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title =
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = 11),
+      axis.text.y = ggplot2::element_text(), #size = 11
       legend.title = ggplot2::element_blank(),
       plot.title.position = "plot",
       plot.caption = ggplot2::element_text(hjust = 0),
@@ -205,7 +205,7 @@ plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title =
       ggplot2::geom_text(
         ggplot2::aes(label = .data$.values),
         position = ggplot2::position_stack(vjust = 0.5),
-        size = 3, color = "white"
+        color = "white" #size = 3
       )
   }
 
@@ -240,7 +240,7 @@ plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title =
 #' @param ordered Values can be nominal (0) or ordered ascending (1) descending (-1).
 #'                By default (NULL), the ordering is automatically detected.
 #'                An appropriate color scale should be choosen depending on the ordering.
-#'                For unordered values, the default scale is used.
+#'                For unordered values, colors from VLKR_FILLDISCRETE are used.
 #'                For ordered values, shades of the VLKR_FILLGRADIENT option are used.
 #' @param category The value FALSE will force to plot all categories.
 #'                  A character value will focus a selected category.
@@ -375,8 +375,8 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 #' @param ordered Values can be nominal (0) or ordered ascending (1) descending (-1).
 #'                By default (NULL), the ordering is automatically detected.
 #'                An appropriate color scale should be choosen depending on the ordering.
-#'                For unordered values, the default scale is used.
-#'                For ordered values, shaded of the VLKR_FILLGRADIENT option are used.
+#'                For unordered values, colors from VLKR_FILLDISCRETE are used.
+#'                For ordered values, shades of the VLKR_FILLGRADIENT option are used.
 #' @param missings Include missing values (default FALSE)
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
@@ -555,7 +555,7 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes({{ col }})) +
     # geom_histogram(fill=VLKR_FILLCOLOR, bins=20)
-    ggplot2::geom_density(fill = VLKR_FILLCOLOR) +
+    ggplot2::geom_density() +
     ggplot2::geom_vline(ggplot2::aes(xintercept=mean({{ col }})), color="black")
 
   # Get title
@@ -602,7 +602,7 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param numbers numbers to print on labels, 'n' for group size
-#' @param stats Whether to plot for significance tests
+#' @param bars Add a boxplot (box), standard error (se) or 95%-confidence-interval (ci).
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -617,7 +617,7 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = FALSE, numbers = NULL, stats = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = FALSE, numbers = NULL, bars = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -637,16 +637,16 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
   # 3. Remove missings
   data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
 
-  # Count cases
-
+  # 4. Add n to labels
   if (!is.null(numbers)) {
 
     categories_n <- data |>
       dplyr::rename(value_name = {{ col_group }}) |>
       dplyr::count(value_name) |>
-      #mutate(value_label = paste0(value_name, " \n(n = ", n, ")"))
-      mutate(value_label = paste0(stringr::str_wrap(value_name, width = 40), "\n", "(n = ", n, ")"))
-
+      mutate(value_label = paste0(
+        stringr::str_wrap(value_name, width = 40), "\n",
+        "(n = ", n, ")")
+      )
 
     data <- data |>
       labs_replace_values(
@@ -655,20 +655,6 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
       )
   }
 
-  if (stats) {
-
-    pl <- data %>%
-      ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, x= {{ col}})) +
-      ggplot2::stat_summary(geom = "point", fun = mean, orientation ="y", size=4, colour = VLKR_POINTCOLOR) +
-      ggplot2::stat_summary(geom = "errorbar", fun.data = ggpubr::mean_ci, orientation ="y", colour = VLKR_POINTCOLOR)
-
-  } else {
-
-    pl <- data %>%
-      ggplot2::ggplot(ggplot2::aes(y={{ col_group }}, {{ col }})) +
-      ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
-      ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
-  }
 
   # Set the scale
   # if (is.null(limits)) {
@@ -686,49 +672,6 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
     scale <- prepare_scale(scale)
   }
 
-  if (length(scale) > 0) {
-    pl <- pl +
-      ggplot2::scale_x_continuous(labels = ~ label_scale(., scale) )
-  } else {
-    pl <- pl +
-      ggplot2::scale_x_continuous()
-  }
-
-  # Add scales, labels and theming
-  pl <- pl +
-
-    #ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits = rev) +
-
-    # TODO: set limits
-    #coord_flip(ylim = limits) +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = 11),
-      legend.title = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
-  if (is.null(numbers)) {
-    pl <- pl +
-      ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits = rev)
-  }
-
-  #
-  #   if (!is.null(numbers)) {
-  #     pl <- pl +
-  #       geom_text(
-  #         # aes(label=paste0("⌀", round(m,1))),
-  #         aes(label = round(m, 1)),
-  #         #position = position_stack(vjust = 0.5),
-  #         hjust = -1,
-  #         vjust=0.5,
-  #         size = 3,
-  #         color = "black"
-  #       )
-  #   }
 
   # Add title
   if (title == TRUE) {
@@ -738,35 +681,20 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
     title <- NULL
   }
 
-  if (!is.null(title)) {
-    pl <- pl + ggplot2::ggtitle(label = title)
-  }
+  # Rename
+  data <- data %>%
+    dplyr::mutate(item = as.factor({{ col_group }})) |>
+    dplyr::mutate(value = ({{ col }}))
 
-  # Add base
-  # TODO: Report missing values, output range
-  base_n <- nrow(data)
+  # Plot
+  .plot_lines(
+    data,
+    scale = scale,
+    bars = bars,
+    base = paste0("n=", nrow(data)),
+    title = title
+  )
 
-  # categorical_n <-
-  #   dplyr::group_by(data, {{ col_group }}) %>%
-  #   dplyr::count()
-
-  pl <- pl +
-    ggplot2::labs(
-      caption = paste0(
-        "n=", base_n, "; ",
-        #paste0(categorical_n[[1]], "=", categorical_n$n, collapse = ", "), "; ",
-        missings, " missings"
-      )
-    )
-
-  # Maximum label length
-  maxlab  <- data %>%
-    dplyr::pull({{ col_group }}) %>%
-    stringr::str_length() %>%
-    max(na.rm= TRUE)
-
-  # Pass row number and label length to the knit_plot() function
-  .to_vlkr_plot(pl, maxlab=maxlab)
 }
 
 #' Output averages for multiple variables
@@ -832,13 +760,6 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, titl
   # Order item levels
   result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
 
-  # Create plot
-  pl <- result %>%
-    ggplot2::ggplot(ggplot2::aes(y=.data$item, .data$value)) +
-    ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
-    ggplot2::stat_summary(fun = mean, geom="point",colour=VLKR_POINTCOLOR, size=4, shape=18)
-
-
   # Add scale labels
   scale <- c()
   if (labels) {
@@ -847,31 +768,6 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, titl
       dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) %>%
       prepare_scale()
   }
-  if (length(scale) > 0) {
-    pl <- pl +
-      ggplot2::scale_x_continuous(labels = ~ label_scale(., scale) )
-  } else {
-    pl <- pl +
-      ggplot2::scale_x_continuous()
-  }
-
-  # Add scales, labels and theming
-  pl <- pl +
-    ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits=rev) +
-
-    # TODO: set limits
-    #coord_flip(ylim = limits) +
-
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = 11),
-      legend.title = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
 
   # Add title
   if (title == TRUE) {
@@ -880,23 +776,18 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, titl
   else if (title == FALSE) {
     title <- NULL
   }
-  if (!is.null(title)) {
-    pl <- pl + ggplot2::ggtitle(label = title)
-  }
+
 
   # Add base
   # TODO: report missings
   base_n <- nrow(data)
-  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n, "; multiple responses possible"))
 
-  # Maximum label length
-  maxlab  <- result %>%
-    dplyr::pull(.data$item) %>%
-    stringr::str_length() %>%
-    max(na.rm = TRUE)
-
-  # Pass row number and label length to the knit_plot() function
-  .to_vlkr_plot(pl, maxlab=maxlab)
+  .plot_lines(
+    result,
+    scale = scale,
+    base = paste0("n=", base_n, "; multiple responses possible"),
+    title = title
+  )
 }
 
 
@@ -997,7 +888,6 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
     ) +
     ggplot2::geom_line() +
     ggplot2::geom_point(size=3, shape=18)
-    #geom_col(position = "dodge")
 
   # Set the scale
   # TODO: get from attributes
@@ -1017,14 +907,19 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   # Add scales, labels and theming
   pl <- pl +
     ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
-    ggplot2::scale_color_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +
+    ggplot2::scale_color_manual(
+      values = vlkr_colors_discrete(length(unique(result$group))),
+      labels = function(x) stringr::str_wrap(x, width = 40)
+      #guide = ggplot2::guide_legend(reverse = TRUE)
+    ) +
+    #ggplot2::scale_color_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +
 
     ggplot2::ylab("Mean values") +
     ggplot2::coord_flip(ylim = limits) +
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = 11),
+      axis.text.y = ggplot2::element_text(), #size = 11
       legend.title = ggplot2::element_blank(),
       plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
@@ -1054,7 +949,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 #'
 #' @keywords internal
 #'
-#' @param data Dataframe with the columns Item, value, p, n
+#' @param data Dataframe with the columns item, value, p, n
 #' @param category Category for filtering the dataframe
 #' @param scale Direction of the scale: 0 = no direction for categories,
 #'              -1 = descending or 1 = ascending values.
@@ -1064,6 +959,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 #' @return A ggplot object
 #' @importFrom rlang .data
 .plot_bars <- function(data, category = NULL, scale = NULL, numbers = NULL, base = NULL, title = NULL) {
+
   if (!is.null(category)) {
     data <- dplyr::filter(data, .data$value == category)
   }
@@ -1085,7 +981,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = 11),
+      axis.text.y = ggplot2::element_text(),
       legend.title = ggplot2::element_blank(),
       plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
@@ -1094,12 +990,11 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 
   # Select scales:
   # - Simplify binary plots
-  # - Generate a color scale for ordinal scales from VLKR_FILLGRADIENT
-  # - Use the default color for other cases
+  # - Generate a color scale for ordinal scales by vlkr_colors_sequential()
+  # - Use vlkr_colors_discrete() for other cases
   if (!is.null(category)) {
     pl <- pl +
       ggplot2::scale_fill_manual(
-        values = c(VLKR_FILLCOLOR),
         guide = ggplot2::guide_legend(reverse = TRUE)
       ) +
       ggplot2::theme(
@@ -1107,19 +1002,15 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
         legend.justification = "left"
       )
   } else if ((scale > 0) || (scale < 0)) {
-    colors <- scales::gradient_n_pal(VLKR_FILLGRADIENT)(
-      seq(0,1,length.out=length(levels(data$value)))
-    )
-
-
     pl <- pl +
       ggplot2::scale_fill_manual(
-        values = colors,
+        values = vlkr_colors_sequential(length(levels(data$value))),
         guide = ggplot2::guide_legend(reverse = TRUE)
       )
   } else {
     pl <- pl +
-      ggplot2::scale_fill_discrete(
+      ggplot2::scale_fill_manual(
+        values = vlkr_colors_discrete(length(levels(data$value))),
         guide = ggplot2::guide_legend(reverse = TRUE)
       )
   }
@@ -1127,7 +1018,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   # Add numbers
   if (!is.null(numbers)) {
     pl <- pl +
-      ggplot2::geom_text(ggplot2::aes(label = .data$.values), position = ggplot2::position_stack(vjust = 0.5), size = 3, color = "white")
+      ggplot2::geom_text(ggplot2::aes(label = .data$.values), position = ggplot2::position_stack(vjust = 0.5), color = "white") #size = 3
   }
 
   # Add title
@@ -1143,6 +1034,123 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 
   # Convert to vlkr_plot
   .to_vlkr_plot(pl)
+}
+
+
+#' Helper function: plot grouped line chart
+#'
+#' @keywords internal
+#'
+#' @param data Dataframe with the columns item, value
+#' @param scale ???
+#' @param title The plot title as character or NULL
+#' @param base The plot base as character or NULL.
+#' @return A ggplot object
+#' @importFrom rlang .data
+.plot_lines <- function(data, scale = NULL, bars=NULL, base = NULL, title = NULL) {
+
+  pl <- data %>%
+    ggplot2::ggplot(ggplot2::aes(y=item, x=value, group=1)) +
+    #ggplot2::geom_point(size=3, shape=18)
+    #ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
+    ggplot2::stat_summary(fun = mean, geom="line") +
+    ggplot2::stat_summary(fun = mean, geom="point", size=4, shape=18)
+
+
+  # Error bars or box plot
+  if (is.null(bars)) {
+    # Do nothing
+  }
+  else if (bars == "box") {
+    pl <- pl + ggplot2::geom_boxplot(
+      aes(group=item),
+      fill="transparent", color="darkgray"
+    )
+  }
+  else if (bars == "ci") {
+    pl <- pl + ggplot2::stat_summary(
+      geom = "errorbar",
+      fun.data = ggpubr::mean_ci,
+      orientation ="y",
+      colour = VLKR_POINTCOLOR
+    )
+  }
+  else if (bars == "se") {
+    pl <- pl + ggplot2::stat_summary(
+      geom = "errorbar",
+      fun.data = ggpubr::mean_se_,
+      orientation ="y",
+      colour = VLKR_POINTCOLOR
+    )
+  }
+  else if (bars == "sd") {
+    pl <- pl + ggplot2::stat_summary(
+      geom = "errorbar",
+      fun.data = ggpubr::mean_sd,
+      orientation ="y",
+      colour = VLKR_POINTCOLOR
+    )
+  }
+
+  if (length(scale) > 0) {
+    pl <- pl +
+      ggplot2::scale_x_continuous(labels = ~ label_scale(., scale) )
+  } else {
+    pl <- pl +
+      ggplot2::scale_x_continuous()
+  }
+
+  # Add scales, labels and theming
+  pl <- pl +
+    ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits = rev) +
+
+
+    # TODO: set limits
+    #coord_flip(ylim = limits) +
+    ggplot2::theme(
+      axis.title.x = ggplot2::element_blank(),
+      axis.title.y = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_text(),
+      legend.title = ggplot2::element_blank(),
+      plot.caption = ggplot2::element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position = "plot"
+    )
+
+  #
+  #   if (!is.null(numbers)) {
+  #     pl <- pl +
+  #       geom_text(
+  #         # aes(label=paste0("⌀", round(m,1))),
+  #         aes(label = round(m, 1)),
+  #         #position = position_stack(vjust = 0.5),
+  #         hjust = -1,
+  #         vjust=0.5,
+  #         size = 3,
+  #         color = "black"
+  #       )
+  #   }
+
+  # Add title
+  if (!is.null(title)) {
+    pl <- pl + ggplot2::ggtitle(label = title)
+  }
+
+
+  # Add base
+  if (!is.null(base)) {
+    pl <- pl + ggplot2::labs(caption = base)
+  }
+
+  # Maximum label length
+  maxlab  <- data %>%
+    dplyr::pull(item) %>%
+    stringr::str_length() %>%
+    max(na.rm= TRUE)
+
+  # Convert to vlkr_plot
+  # Pass row number and label length to the knit_plot() function
+  .to_vlkr_plot(pl, maxlab=maxlab)
 }
 
 #' Add the volker class and options
@@ -1239,7 +1247,8 @@ knit_plot <- function(pl) {
   #   dev.off()
   # }
 
-  pngfile <- tempfile(fileext = ".png", tmpdir = chunk_options$cache.path)
+  #pngfile <- tempfile(fileext = ".png", tmpdir = chunk_options$cache.path)
+  pngfile <- tempfile(fileext = ".png")
   suppressMessages(ggplot2::ggsave(
     pngfile,
     pl,
@@ -1294,3 +1303,91 @@ print.vlkr_plt <- function(x, ...) {
 #' @keywords internal
 #' @export
 plot.vlkr_plt <- print.vlkr_plt
+
+
+#' Define a default theme for volker plots
+#'
+#' @importFrom ggplot2 '%+replace%'
+#' @param base_size Base font size
+#' @param base_color Base font color
+#' @param base_fill A list of fill color sets. Each set can contain different numbers of colors.
+#' @return A theme function
+#' @examples
+#' library(volker)
+#' library(ggplot2)
+#' data <- volker::chatgpt
+#'
+#' theme_set(theme_vlkr(base_size=15, base_fill = list("red"))
+#' plot_counts(data, sd_gender)
+#' @export
+theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDISCRETE) {
+
+  ggplot2::update_geom_defaults("text", list(size = (base_size-2) / ggplot2::.pt, color=base_color))
+  ggplot2::update_geom_defaults("col",   list(fill = base_fill[[1]]))
+  ggplot2::update_geom_defaults("density",   list(fill = base_fill[[1]]))
+  ggplot2::update_geom_defaults("point",   list(color = base_fill[[1]]))
+  ggplot2::update_geom_defaults("line",   list(color = base_fill[[1]]))
+
+  options(ggplot2.discrete.fill=base_fill)
+
+  ggplot2::theme_bw(base_size) %+replace%
+
+    ggplot2::theme(
+      axis.ticks.y = element_blank(),
+      axis.text.y = ggplot2::element_text(
+        size=base_size,
+        color=base_color,
+        hjust=1,
+        margin = margin(r = 0.8 * base_size/4)
+      ),
+      legend.text = ggplot2::element_text(size=base_size-2)
+    )
+}
+
+#' Get colors for discrete scales
+#'
+#' If the option ggplot2.discrete.fill is set,
+#' gets color values from the first list item that
+#' has enough colors and reverses them to start filling
+#' from the left in grouped bar charts.
+#'
+#' Falls back to scale_fill_hue().
+#'
+#' @keywords internal
+#'
+#' @param n Number of colors
+#' @return A vector of colors
+vlkr_colors_discrete <- function(n) {
+  colors <- getOption("ggplot2.discrete.fill")
+  if (is.null(colors)) {
+    colors <- VLKR_FILLDISCRETE
+  }
+
+  colors <- colors[sapply(colors, length) >= n]
+  if (length(colors) == 0) {
+    colors <- ggplot2::scale_fill_hue()$palette(n)
+  } else {
+    colors <- rev(colors[[1]][1:n])
+  }
+
+
+  colors
+}
+
+#' Get colors for sequential scales
+#'
+#' Creates a gradient scale based on VLKR_FILLGRADIENT
+#'
+#' @keywords internal
+#'
+#' @param n Number of colors
+#' @return A vector of colors
+vlkr_colors_sequential <- function(n) {
+  colors <- scales::gradient_n_pal(VLKR_FILLGRADIENT)(
+    seq(0,1,length.out=n)
+  )
+  colors
+}
+
+
+
