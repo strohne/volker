@@ -983,7 +983,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   if (!is.null(category)) {
     pl <- pl +
       ggplot2::scale_fill_manual(
-        guide = ggplot2::guide_legend(reverse = TRUE)
+        values = vlkr_colors_discrete(1)
       ) +
       ggplot2::theme(
         legend.position = ifelse(category == "TRUE" | category == TRUE, "none","bottom"),
