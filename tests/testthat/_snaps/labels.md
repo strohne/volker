@@ -82,8 +82,8 @@
 # Item labels are replaced and keep their order
 
     Code
-      levels(dplyr::pull(volker:::labs_replace_values(dplyr::select(data, adopter),
-      adopter, volker::codebook(data)), adopter))
+      levels(dplyr::pull(volker:::labs_replace(dplyr::select(data, adopter), adopter,
+      volker::codebook(data)), adopter))
     Output
       [1] "I try new offers immediately"                     
       [2] "I try new offers rather quickly"                  

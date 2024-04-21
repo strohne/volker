@@ -62,7 +62,7 @@ test_that("Item labels are replaced and keep their order", {
     dplyr::select(adopter) |>
     # TODO: Even if the column was converted to character beforehand
     #  dplyr::mutate(adopter = as.character(adopter)) |>
-    volker:::labs_replace_values(adopter, volker::codebook(data)) |>
+    volker:::labs_replace(adopter, volker::codebook(data)) |>
     dplyr::pull(adopter) |>
     levels() |>
     expect_snapshot(cran= TRUE)

@@ -181,7 +181,7 @@ plot_counts_one <- function(data, col, category = NULL, limits=NULL, missings = 
     dplyr::mutate( "{{ col }}" := as.factor({{ col }}))
 
   if (labels) {
-    result <- labs_replace_values(result, {{ col }}, codebook(data, {{ col }}))
+    result <- labs_replace(result, {{ col }}, codebook(data, {{ col }}))
   }
 
   # Detect the scale (whether the categories are binary and direction)
@@ -332,13 +332,9 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, limit
 
 
   # 4. Set labels
-  data <- data |>
-    dplyr::mutate(data, "{{ col_group }}" := as.factor({{ col_group }}))
+  # data <- data |>
+  #   dplyr::mutate(data, "{{ col_group }}" := as.factor({{ col_group }}))
 
-  if (labels) {
-    result <- labs_replace_values(result, {{ col_group }}, codebook(data, {{ col_group }}))
-    result <- labs_replace_values(result, {{ col }}, codebook(data, {{ col }}))
-  }
 
   result <- result %>%
     dplyr::mutate(item = as.factor({{ col_group }})) |>
@@ -357,13 +353,24 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, limit
 
   # Detect the scale (whether the categories are binary and direction)
   # TODO: make dry
+  scale <-dplyr::coalesce(ordered, get_direction(data, {{ col }}))
+
   categories <- dplyr::pull(result, {{ col }}) |> unique() |> as.character()
+
   if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
     category <- "TRUE"
   }
-  scale <-dplyr::coalesce(ordered, get_direction(data, {{ col }}))
+
+
+  if (labels) {
+    result <- labs_replace(result, "value", codebook(data, {{ col }}))
+    result <- labs_replace(result, "item", codebook(data, {{ col_group }}))
+  }
+
+
   lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
 
+  #return(result)
   # Select numbers to print on the bars
   # ...omit the last category in scales, omit small bars
   result <- result %>%
@@ -487,8 +494,8 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, limit
 
   # Item labels
   if (labels) {
-    result <- labs_replace_names(result, "item", codebook(data, {{ cols }}))
-    result <- labs_replace_values(result, "value", codebook(data, {{ cols }}))
+    result <- labs_replace(result, "item", codebook(data, {{ cols }}), "item_name", "item_label")
+    result <- labs_replace(result, "value", codebook(data, {{ cols }}))
   }
 
   # Remove common item prefix
@@ -778,7 +785,11 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, titl
 
   # Replace item labels
   if (labels) {
-    result <- labs_replace_names(result, "item", codebook(data, {{ cols }}))
+    result <- labs_replace(
+      result, "item",
+      codebook(data, {{ cols }}),
+      "item_name", "item_label"
+    )
   }
 
   # Remove common item prefix and title
@@ -892,7 +903,11 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 
   # Replace item labels
   if (labels) {
-    result <- labs_replace_names(result, "item", codebook(data, {{ cols }}))
+    result <- labs_replace(
+      result, "item",
+      codebook(data, {{ cols }}),
+      "item_name", "item_label"
+      )
   }
 
   # Remove common item prefix

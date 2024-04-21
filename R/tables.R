@@ -156,7 +156,7 @@ tab_counts_one <- function(data, col, missings = TRUE, percent = TRUE, labels = 
 
   # Get variable caption from the attributes
   if (labels) {
-    result <- labs_replace_values(result, {{ col }}, codebook(data, {{ col }}))
+    result <- labs_replace(result, {{ col }}, codebook(data, {{ col }}))
     label <- get_title(data, {{ col }})
     result <- dplyr::rename(result, {{ label }} := {{ col }})
 
@@ -509,7 +509,11 @@ tab_counts_items <- function(data, cols, missings = FALSE, values = c("n", "p"),
 
   # Replace item labels
   if (labels) {
-    result <- labs_replace_names(result, "item", codebook(data, {{ cols }}))
+    result <- labs_replace(
+      result, "item",
+      codebook(data, {{ cols }}),
+      "item_name", "item_label"
+    )
   }
 
   # Remove common item prefix
@@ -877,7 +881,11 @@ tab_metrics_items <- function(data, cols, negative = FALSE, digits = 1, labels =
 
   # Get item labels from the attributes
   if (labels) {
-    result <- labs_replace_names(result, "item", codebook(data, {{ cols }}))
+    result <- labs_replace(
+      result, "item",
+      codebook(data, {{ cols }}),
+      "item_name", "item_label"
+    )
     attr(result, "limits") <- get_limits(data, {{ cols }}, negative)
 
     attr(result, "scale") <- codebook(data, {{ cols }}) %>%
@@ -1058,7 +1066,11 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = FALSE, v
 
   # Add labels
   if (labels) {
-    result <- labs_replace_names(result, "item", codebook(data, {{ cols }}))
+    result <- labs_replace(
+      result, "item",
+      codebook(data, {{ cols }}),
+      "item_name","item_label"
+    )
   }
 
   # Remove common item prefix
