@@ -310,11 +310,13 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 
   if (labels) {
     result <- labs_replace_values(result, {{ col_group }}, codebook(data, {{ col_group }}))
+    result <- labs_replace_values(result, {{ col }}, codebook(data, {{ col }}))
   }
 
   result <- result %>%
     dplyr::mutate(item = as.factor({{ col_group }})) |>
-    dplyr::mutate(value = factor({{ col }}, levels = categories))
+    dplyr::mutate(value = factor({{ col }}))
+    #dplyr::mutate(value = factor({{ col }}, levels = categories))
 
   if ((prop == "rows") || (prop == "cols")) {
     result <- result %>%

@@ -350,7 +350,7 @@ labs_replace_names <- function(data, col, codes) {
 
   if (nrow(codes) > 0) {
     data <- data %>%
-      dplyr::mutate(.name = !!col) %>%
+      dplyr::mutate(.name = as.character(!!col)) %>%
       dplyr::left_join(codes, by = ".name") %>%
       dplyr::mutate(!!col := dplyr::coalesce(.data$.label, .data$.name)) %>%
       dplyr::select(-tidyselect::all_of(c(".name", ".label")))
@@ -396,7 +396,7 @@ labs_replace_values <- function(data, col, codes) {
 
   if (nrow(codes) > 0) {
     data <- data %>%
-      dplyr::mutate(.name = !!col ) %>%
+      dplyr::mutate(.name = as.character(!!col)) %>%
       dplyr::left_join(codes, by = ".name") %>%
       dplyr::mutate(!!col := dplyr::coalesce(.data$.label, .data$.name))
 
