@@ -29,15 +29,20 @@ data <- volker::chatgpt
 ### 1a. One variable: Frequency plot of adopter
 ```{r}
 data |> 
-#  mutate(adopter =fct_rev(adopter)) |> 
   plot_counts_one(adopter)
 ```
 
-### 1b. One variable: Frequency plot of binary adopter
+### 1b. One variable: Frequency plot of binary data
 ```{r}
 data |> 
-  mutate(adopter = (adopter == "I try new offers immediately")) |> 
+  mutate(adopter = adopter == "I try new offers immediately") |> 
   plot_counts_one(adopter)
+```
+
+### cb. One variable: Frequency plot of a focus category
+```{r}
+data |> 
+  plot_counts_one(adopter, category="I try new offers immediately")
 ```
 
 

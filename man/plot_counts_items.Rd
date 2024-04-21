@@ -9,6 +9,7 @@ plot_counts_items(
   cols,
   category = NULL,
   ordered = NULL,
+  limits = NULL,
   missings = FALSE,
   numbers = NULL,
   title = TRUE,
@@ -31,6 +32,9 @@ By default (NULL), the ordering is automatically detected.
 An appropriate color scale should be choosen depending on the ordering.
 For unordered values, colors from VLKR_FILLDISCRETE are used.
 For ordered values, shades of the VLKR_FILLGRADIENT option are used.}
+
+\item{limits}{The scale limits, autoscaled by default.
+Set to \code{c(0,100)} to make a 100 \% plot.}
 
 \item{missings}{Include missing values (default FALSE)}
 

@@ -8,6 +8,7 @@
   data,
   category = NULL,
   scale = NULL,
+  limits = NULL,
   numbers = NULL,
   base = NULL,
   title = NULL
