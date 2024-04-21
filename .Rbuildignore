@@ -5,11 +5,11 @@
 ^\.github$
 ^cran-comments\.md$
 vignettes/tables.Rmd
-vignettes/plots.Rmd
-vignettes/reports.Rmd
-vignettes/scales.Rmd
 vignettes/tables.html
+vignettes/plots.Rmd
 vignettes/plots.html
+vignettes/reports.Rmd
 vignettes/reports.html
+vignettes/scales.Rmd
 vignettes/scales.html
 ^CRAN-SUBMISSION$

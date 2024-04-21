@@ -455,11 +455,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
   }
 
   # Remove common item prefix
-  prefix <- get_prefix(result$item)
-  if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, prefix))
-    result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
-  }
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item))
 
   # Order item levels
   result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
@@ -587,7 +583,6 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
       axis.title.x = ggplot2::element_blank(),
       axis.title.y=ggplot2::element_blank(),
       axis.text.y = ggplot2::element_blank(),
-      # legend.title = element_blank(),
       plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
       plot.caption.position = "plot"
@@ -750,11 +745,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, titl
 
   # Remove common item prefix and title
   # TODO: remove common postfix
-  prefix <- get_prefix(result$item)
-  if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, stringr::fixed(prefix)))
-    result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
-  }
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item))
 
   # Order item levels
   result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
@@ -867,11 +858,8 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   }
 
   # Remove common item prefix
-  prefix <- get_prefix(result$item)
-  if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, prefix))
-    result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
-  }
+  prefix <- get_prefix(result$item, trim=TRUE)
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
 
   # Order item levels
   result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
@@ -1050,7 +1038,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 .plot_lines <- function(data, scale = NULL, base = NULL, title = NULL) {
 
   pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(y=item, x=value, group=1)) +
+    ggplot2::ggplot(ggplot2::aes(y=.data$item, x=.data$value, group=1)) +
     #ggplot2::geom_point(size=3, shape=18)
     #ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
     ggplot2::stat_summary(fun = mean, geom="line") +
@@ -1109,7 +1097,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 
   # Maximum label length
   maxlab  <- data %>%
-    dplyr::pull(item) %>%
+    dplyr::pull(.data$item) %>%
     stringr::str_length() %>%
     max(na.rm= TRUE)
 
@@ -1282,7 +1270,7 @@ plot.vlkr_plt <- print.vlkr_plt
 #' library(ggplot2)
 #' data <- volker::chatgpt
 #'
-#' theme_set(theme_vlkr(base_size=15, base_fill = list("red"))
+#' theme_set(theme_vlkr(base_size=15, base_fill = list("red")))
 #' plot_counts(data, sd_gender)
 #' @export
 theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDISCRETE) {
@@ -1298,12 +1286,12 @@ theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDI
   ggplot2::theme_bw(base_size) %+replace%
 
     ggplot2::theme(
-      axis.ticks.y = element_blank(),
+      axis.ticks.y = ggplot2::element_blank(),
       axis.text.y = ggplot2::element_text(
         size=base_size,
         color=base_color,
         hjust=1,
-        margin = margin(r = 0.8 * base_size/4)
+        margin = ggplot2::margin(r = 0.8 * base_size/4)
       ),
       legend.text = ggplot2::element_text(size=base_size-2)
     )

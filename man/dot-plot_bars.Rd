@@ -14,7 +14,7 @@
 )
 }
 \arguments{
-\item{data}{Dataframe with the columns Item, value, p, n}
+\item{data}{Dataframe with the columns item, value, p, n}
 
 \item{category}{Category for filtering the dataframe}
 

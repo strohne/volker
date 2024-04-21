@@ -429,9 +429,14 @@ get_title <- function(data, cols) {
     labels <- dplyr::select(data, {{ cols }}) %>% colnames()
   }
 
-  labels %>%
-    get_prefix() %>%
-    trim_label()
+  prefix <- get_prefix(labels)
+  prefix <- trim_label(prefix)
+
+  if (prefix == "") {
+    prefix <- labels[[1]]
+  }
+
+  prefix
 }
 
 #' Get the numeric range from the labels
@@ -539,8 +544,16 @@ get_direction <- function(data, cols, extract = TRUE) {
 #' @param x Character vector
 #' @param ignore.case Whether case matters (default)
 #' @param trim Whether non alphabetic characters should be trimmed
+#' @param delimiters A list of prefix delimiters.
+#'                   If any of the delimiters is present in the extracted prefix,
+#'                   the part after is removed from the prefix.
+#'                   Consider the following two items as an example:
+#'                   \code{c("Usage: in private context", "Usage: in work context")}.
+#'                   The common prefix would be \preformatted{"Usage: in "}, but it makes
+#'                   more sense to break it after the colon.
 #' @return The longest common prefix of the strings
-get_prefix <- function(x, ignore.case = FALSE, trim = FALSE) {
+get_prefix <- function(x, ignore.case = FALSE, trim = FALSE, delimiters= c(":","\n")) {
+
   x <- as.character(x)
   if (ignore.case) {
     x <- toupper(x)
@@ -555,19 +568,25 @@ get_prefix <- function(x, ignore.case = FALSE, trim = FALSE) {
     return (x)
   }
 
+  prefix <- ""
   nc <- nchar(x, type = "char")
   for (i in 1:min(nc)) {
     ss <- substr(x, 1, i)
     if (any(ss != ss[1])) {
       prefix <- substr(x[1], 1, i - 1)
-      if (trim) {
-        prefix <- trim_label(prefix)
-      }
-      return(prefix)
+      break
     }
   }
 
-  prefix <- trim_label(substr(x[1], 1, i))
+  #prefix <- trim_label(substr(x[1], 1, i))
+
+  # Break at delimiters
+  for (delimiter in delimiters) {
+    pos <- regexpr(delimiter, prefix, fixed = TRUE)
+    if (pos[1] > 0) {
+      prefix <- substr(prefix, 1, pos[1] - 1)
+    }
+  }
 
   if (trim) {
     prefix <- trim_label(prefix)
@@ -585,11 +604,34 @@ get_prefix <- function(x, ignore.case = FALSE, trim = FALSE) {
 #' @param x A character value
 #' @return The trimmed character value
 trim_label <- function(x) {
-  x <- stringr::str_remove(x, "[: 0_-]*$")
-  x <- stringr::str_remove(x, "^[: _-]*")
+  x <- stringr::str_remove(x, "[: ,0_-]*$")
+  x <- stringr::str_remove(x, "^[: ,_-]*")
   x
 }
 
+#' Remove a prefix from a character vector
+#'
+#' If the resulting character would be empty,
+#' the prefix is returned. At the end, all items
+#' in the vector are trimmed using \link{trim_label}.
+#'
+#' @keywords internal
+#'
+#' @param x A character vector
+#' @param prefix The prefix. Set to TRUE to first extract the prefix.
+#' @return The trimmed character vector
+trim_prefix <- function(x, prefix=TRUE) {
+  if (prefix == TRUE) {
+    prefix <- get_prefix(x, trim=T)
+  }
+
+  if (prefix != "") {
+    x <- stringr::str_remove(x,stringr::fixed(prefix))
+    x = ifelse(x == "", prefix, x)
+  }
+
+  trim_label(x)
+}
 
 
 #' Prepare the scale attribute values

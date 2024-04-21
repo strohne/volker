@@ -4,7 +4,7 @@
 \alias{get_prefix}
 \title{Get the common prefix of character values}
 \usage{
-get_prefix(x, ignore.case = FALSE, trim = FALSE)
+get_prefix(x, ignore.case = FALSE, trim = FALSE, delimiters = c(":", "\\n"))
 }
 \arguments{
 \item{x}{Character vector}
@@ -12,6 +12,14 @@ get_prefix(x, ignore.case = FALSE, trim = FALSE)
 \item{ignore.case}{Whether case matters (default)}
 
 \item{trim}{Whether non alphabetic characters should be trimmed}
+
+\item{delimiters}{A list of prefix delimiters.
+If any of the delimiters is present in the extracted prefix,
+the part after is removed from the prefix.
+Consider the following two items as an example:
+\code{c("Usage: in private context", "Usage: in work context")}.
+The common prefix would be \preformatted{"Usage: in "}, but it makes
+more sense to break it after the colon.}
 }
 \value{
 The longest common prefix of the strings

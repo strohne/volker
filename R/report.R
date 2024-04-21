@@ -31,7 +31,7 @@
 #' report_metrics(data, sd_age)
 #'
 #' @export
-report_metrics <- function(data, cols, col_group = NULL, ..., index = TRUE, title = TRUE, close = TRUE, clean = TRUE) {
+report_metrics <- function(data, cols, col_group = NULL, ..., index = FALSE, title = TRUE, close = TRUE, clean = TRUE) {
 
   if (clean) {
     data <- data_clean(data)
@@ -116,7 +116,7 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index = TRUE, titl
 #' report_counts(data, sd_gender)
 #'
 #' @export
-report_counts <- function(data, cols, col_group = NULL, index = TRUE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
+report_counts <- function(data, cols, col_group = NULL, index = FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
 
   if (clean) {
     data <- data_clean(data)

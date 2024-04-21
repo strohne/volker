@@ -513,11 +513,9 @@ tab_counts_items <- function(data, cols, missings = FALSE, values = c("n", "p"),
   }
 
   # Remove common item prefix
-  prefix <- get_prefix(result$item)
-  if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, prefix))
-    result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
-  }
+  # TODO: make dry
+  prefix <- get_prefix(result$item, trim=T)
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
 
   # Replace category labels
   if (labels) {
@@ -542,7 +540,7 @@ tab_counts_items <- function(data, cols, missings = FALSE, values = c("n", "p"),
 
   # Rename first column
   if (prefix != "") {
-    colnames(result)[1] <- sub("[ :,]+$", "", prefix)
+    colnames(result)[1] <- prefix
   } else {
     result <- dplyr::rename(result, Item = tidyselect::all_of("item"))
   }
@@ -888,16 +886,13 @@ tab_metrics_items <- function(data, cols, negative = FALSE, digits = 1, labels =
 
   # Remove common item prefix and title
   # TODO: remove common postfix
-  prefix <- get_prefix(result$item)
-  if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, stringr::fixed(prefix)))
-    result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
-  }
+  prefix <- get_prefix(result$item, trim=TRUE)
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
 
 
   # Rename first column
   if (prefix != "") {
-    colnames(result)[1] <- sub("[ :,]+$", "", prefix)
+    colnames(result)[1] <- prefix
   } else {
     result <- dplyr::rename(result, Item = tidyselect::all_of("item"))
   }
@@ -1067,16 +1062,12 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = FALSE, v
   }
 
   # Remove common item prefix
-  prefix <- get_prefix(result$item)
-  if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, prefix))
-    result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
-  }
+  prefix <- get_prefix(result$item, trim=TRUE)
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
 
   # Rename first column
   if (prefix != "") {
-    # colnames(result)[1] <-  sub("[ :,]+$", "",  prefix)
-    colnames(result)[1] <- trim_label(prefix)
+    colnames(result)[1] <- prefix
   } else {
     result <- dplyr::rename(result, Item = tidyselect::all_of("item"))
   }
@@ -1150,17 +1141,8 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
 
 
   # Remove common item prefix
-  prefix <- get_prefix(result$item)
-  if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, prefix))
-    result <- dplyr::mutate(result, item = dplyr::if_else(.data$item == "", prefix, .data$item))
-  }
-
-  prefix <- get_prefix(result$target)
-  if (prefix != "") {
-    result <- dplyr::mutate(result, target = stringr::str_remove(.data$target, prefix))
-    result <- dplyr::mutate(result, target = ifelse(.data$target == "", prefix, .data$target))
-  }
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item))
+  result <- dplyr::mutate(result, target = trim_prefix(.data$target))
 
   # Create table
   result <- result %>%
