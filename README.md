@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# volkeR-Package <img src="man/figures/logo.png" align="right" height="139" alt="" />
+# volkeR-Package <img src="man/figures/logo.png" align="right" height="139" alt="volkeR package logo" />
 
 <!-- badges: start -->
 
@@ -10,6 +10,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 [![R-CMD-check](https://github.com/strohne/volker/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/strohne/volker/actions/workflows/R-CMD-check.yaml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/volker)](https://CRAN.R-project.org/package=volker)
+
 <!-- badges: end -->
 
 High-level functions for tabulating, charting and reporting survey data.
@@ -248,34 +249,38 @@ Cronbach’s alpha is added to all table outputs.
 
 ## Installation
 
-As with all other packages you’ll have to install the package first.
+**1. As with all other packages you’ll have to install the package
+first.**
 
     install.packages("strohne/volker")
 
-Alternatively, you can install the latest development version from
-GitHub using remotes (if asked, skip the updates):
+You can try alternative versions:
 
-    if (!require(remotes)) { install.packages("remotes") }
-    remotes::install_github("strohne/volker")
+- If you want, install the main version from GitHub using remotes, which
+  may include features not yet published on CRAN (if asked, skip the
+  updates):
 
-The package includes vignettes, they help getting started. When
-installing a development version, you need to build them. Only then,
-you’ll find them linked in the help index page.
+      if (!require(remotes)) { install.packages("remotes") }
+      remotes::install_github("strohne/volker", build_vignettes = TRUE)
 
-    remotes::install_github("strohne/volker", build_vignettes = TRUE)
+- In case you are adventurous, try the latest experimental development
+  version which lives in the devel branch (if asked, skip the updates):
 
-The beta version used in the statistics course in winter 2023/24 at the
-University of Münster can be installed using remotes from the beta
-branch (if asked, skip the updates):
+      if (!require(remotes)) { install.packages("remotes") }
+      remotes::install_github("strohne/volker", ref="devel", upgrade="never", build_vignettes = TRUE)
 
-    if (!require(remotes)) { install.packages("remotes") }
-    remotes::install_github("strohne/volker", ref="beta", upgrade="never")
+- The beta version used in the statistics course in winter 2023/24 at
+  the University of Münster can be installed using remotes from the beta
+  branch (if asked, skip the updates):
 
-After installing the package, load it:
+      if (!require(remotes)) { install.packages("remotes") }
+      remotes::install_github("strohne/volker", ref="beta", upgrade="never")
+
+**2. After installing the package, load it:**
 
     library(volker)
 
-Finally, use it:
+**3. Finally, use it:**
 
     # Example data
     data <- volker::chatgpt
