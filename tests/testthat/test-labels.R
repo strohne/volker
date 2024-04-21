@@ -67,3 +67,25 @@ test_that("Item labels are replaced and keep their order", {
     levels() |>
     expect_snapshot(cran= TRUE)
 })
+
+# Get prefix from labels
+test_that("A common prefix is removed from labels", {
+
+  data |>
+    dplyr::select(starts_with("use")) |>
+    codebook() |>
+    dplyr::pull(item_label) |>
+    get_prefix() |>
+    expect_snapshot(cran= TRUE)
+})
+
+# Remove prefix from labels
+test_that("A common prefix is removed from labels", {
+
+  data |>
+    dplyr::select(starts_with("use")) |>
+    codebook() |>
+    dplyr::pull(item_label) |>
+    trim_prefix() |>
+    expect_snapshot(cran= TRUE)
+})

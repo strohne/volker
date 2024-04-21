@@ -4,11 +4,7 @@
 \alias{theme_vlkr}
 \title{Define a default theme for volker plots}
 \usage{
-theme_vlkr(
-  base_size = 11,
-  base_color = "black",
-  base_fill = list(VLKR_FILLCOLOR, VLKR_FILLDISCRETE)
-)
+theme_vlkr(base_size = 11, base_color = "black", base_fill = VLKR_FILLDISCRETE)
 }
 \arguments{
 \item{base_size}{Base font size}
@@ -28,6 +24,6 @@ library(volker)
 library(ggplot2)
 data <- volker::chatgpt
 
-theme_set(theme_vlkr(base_size=15, base_fill = list("red"))
+theme_set(theme_vlkr(base_size=15, base_fill = list("red")))
 plot_counts(data, sd_gender)
 }

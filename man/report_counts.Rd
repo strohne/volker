@@ -8,7 +8,7 @@ report_counts(
   data,
   cols,
   col_group = NULL,
-  index = TRUE,
+  index = FALSE,
   numbers = NULL,
   title = TRUE,
   close = TRUE,

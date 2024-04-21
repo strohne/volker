@@ -9,7 +9,7 @@ report_metrics(
   cols,
   col_group = NULL,
   ...,
-  index = TRUE,
+  index = FALSE,
   title = TRUE,
   close = TRUE,
   clean = TRUE

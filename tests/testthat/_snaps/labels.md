@@ -91,3 +91,23 @@
       [4] "I only use new offers when I have no other choice"
       [5] "[no answer]"                                      
 
+# A common prefix is removed from labels
+
+    Code
+      get_prefix(dplyr::pull(codebook(dplyr::select(data, starts_with("use"))),
+      item_label))
+    Output
+      [1] "Usage"
+
+---
+
+    Code
+      trim_prefix(dplyr::pull(codebook(dplyr::select(data, starts_with("use"))),
+      item_label))
+    Output
+       [1] "in private context"      "in private context"     
+       [3] "in private context"      "in private context"     
+       [5] "in private context"      "in professional context"
+       [7] "in professional context" "in professional context"
+       [9] "in professional context" "in professional context"
+
