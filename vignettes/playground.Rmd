@@ -14,9 +14,39 @@ knitr::opts_chunk$set(
   echo = F,
   knitr.table.format = "html"
 )
+```
 
+
+```{r include=FALSE}
 library(tidyverse)
 library(volker)
+```
+
+
+```{r include=FALSE}
+
+# Checking all plots 
+
+theme_set(theme_vlkr(base_fill = c("grey"))) 
+
+tab_counts_one(ds, sd_gender)
+# Counts 
+plot_counts_one(ds, sd_gender, numbers = T) 
+plot_counts_items(ds, starts_with("cg_adoption_"), numbers = T)
+plot_counts_one_grouped(ds, adopter, sd_gender)
+plot_counts_items_grouped(ds, ...) # not implemented 
+
+# Metrics
+plot_metrics_one(ds, sd_age, numbers =T) # add mean? 
+plot_metrics_one_grouped(ds, sd_age, sd_gender, bars = "box")
+plot_metrics_items(ds, starts_with("cg_adoption"))
+plot_metrics_items_grouped(ds, starts_with("cg_adoption_"), sd_gender) # not working 
+
+t.test(ds$sd_age)
+
+[1] 131.1 261.6
+
+
 ```
 
 ```{r}
@@ -59,6 +89,7 @@ df <- data.frame(
   Value3 = c("hallo", "ne", "garnicht", "gehtso", "no", NA)
 )
 
+stat_metrics_one_grouped(df, Value1,  Value3, missings = F)
 tab_metrics(df, Value)
 
 plot_counts_one_grouped(df, Value3, Value2, missing = T)
@@ -192,115 +223,3 @@ report_metrics(ds, sd_age, adopter, stats = T)
 
 
 ```{r}
-temp <- function(data, col, col_group, missings = FALSE, clean = TRUE, ...) {
-  
-  # 1. Check parameters
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ col_group }})
-  
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-  
-  # Remove missings
-  # TODO: output a warning
-  if (!missings) {
-    data <- data %>%
-      tidyr::drop_na({{ col }}, {{ col_group }})
-  }
-  
-  # Chi-squared test
-  data <- data %>%
-    dplyr::count({{ col }}, {{ col_group }}) %>%
-    tidyr::spread({{ col_group }}, n, fill = 0) %>%
-    
-    # Note: transformation due to incompatibility with chisq.test
-    as.data.frame() %>%
-    select(-1) %>%
-    as.matrix()
-  
-  test <- stats::chisq.test(data)
-  
-  # Calculate Cramer's V
-  cramer_v <- effectsize::cramers_v(test, adjust = F)
-  
-  # Print results
-  print(test)
-  cat("\n")
-  cat("Cramer's V:", cramer_v$Cramers_v, "\n")
-  
-}
-```
-
-
-```{r}
-
-tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = FALSE, labels = TRUE, clean = TRUE, ...) {
-
-  # 1. Checks
-  check_is_dataframe(data)
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # Remove missings
-  # TODO: output a warning
-  # data <- data %>%
-  #   tidyr::drop_na({{ cols }}, {{ cols_cor }})
-
-  # Prepare parameters
-  cols <- tidyselect::eval_select(expr = enquo(cols), data = data)
-
-  if (missing(cols_cor)) {
-    cols_cor <- cols
-  } else {
-    cols_cor <- tidyselect::eval_select(expr = enquo(cols_cor), data = data)
-  }
-
-
-  result <- expand.grid(x = cols, y = cols_cor, stringsAsFactors = FALSE) %>%
-    dplyr::mutate(x_name = names(.data$x), y_name = names(.data$y)) %>%
-    dplyr::mutate(
-      test = purrr::map2(
-        .data$x, .data$y,
-        function(x, y) stats::cor.test(data[[x]], data[[y]], method = method)
-      ),
-      p = map(.data$test, function(x) x$p.value),
-      value = purrr::map(.data$test, function(x) as.numeric(x$estimate)),
-      stars = get_stars(.data$p)
-    ) %>%
-    dplyr::select(item = "x_name", target = "y_name", "value", "p", "stars")
-
-
-  # Remove common item prefix
-  prefix <- get_prefix(result$item)
-  if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, prefix))
-    result <- dplyr::mutate(result, item = dplyr::if_else(.data$item == "", prefix, .data$item))
-  }
-
-  prefix <- get_prefix(result$target)
-  if (prefix != "") {
-    result <- dplyr::mutate(result, target = stringr::str_remove(.data$target, prefix))
-    result <- dplyr::mutate(result, target = ifelse(.data$target == "", prefix, .data$target))
-  }
-
-  # Create table
-  result <- result %>%
-    dplyr::mutate(value = paste0(round(unlist(.data$value), 2), .data$stars)) %>%
-    dplyr::mutate(value = ifelse(significant & (.data$p >= 0.1), "", .data$value)) %>%
-    dplyr::select("item", "target", "value")
-
-  result <- result %>%
-    tidyr::pivot_wider(names_from = "target", values_from = "value") %>%
-    dplyr::rename(Item = tidyselect::all_of("item"))
-
-  .to_vlkr_tab(result, digits= 2)
-}
-
-
-```
