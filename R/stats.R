@@ -149,7 +149,7 @@ stat_counts_one <- function(data, col, col_group, clean = TRUE, ...) {
   }
 
   # 4. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{col_group}}))
+  data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
 
 
   # 4. Prepare data
@@ -492,4 +492,120 @@ stat_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, dig
   )
 
   .to_vlkr_list(result)
+}
+
+
+#' Output test statistics and effect size (Cohen's d) for paired samples
+#'
+#'
+#' @keywords internal
+#'
+#' @param data A tibble
+#' @param cols The column holding metric values
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' stat_metrics_items(data, starts_with("cg_adoption))
+#'
+#'
+#' @importFrom rlang .data
+stat_metrics_items <- function(data, cols, clean = T, ...) {
+
+  # 1. Check parameters
+  check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}))
+
+  # 4. Calculate means and confidence intervals for items
+
+  # 5. TODO: Anova (multiple items), t-test two items
+
+  # Print
+
+}
+
+
+#' Output confindence intervals of group means, F-Statistics and effectsize (Eta^2)
+#'
+#'
+#' @keywords internal
+#'
+#' @param data A tibble
+#' @param cols The item columns that hold the values to summarize
+#' @param col_group The column holding groups to compare and test
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' stat_metrics_items_grouped(data, starts_with("cg_adoption), sd_gender)
+#'
+#'
+#' @importFrom rlang .data
+stat_metrics_items_grouped <- function(data, cols, col_group, clean = T, ...) {
+
+  # 1. Check parameters
+  check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}), {{ col_group}})
+
+
+
+
+}
+
+
+
+#' Output correlation coefficents for items
+#'
+#'
+#' @keywords internal
+#'
+#' @param data A tibble
+#' @param cols The item columns that hold the values to summarize
+#' @param col_group The column holding groups to compare and test
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' stat_metrics_items_grouped(data, starts_with("cg_adoption), sd_gender)
+#'
+#'
+#' @importFrom rlang .data
+
+stat_metrics_items_cor <- function(data, cols, clean = T, ... ) {
+
+  # 1. Check parameters
+  check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}))
+
+
 }

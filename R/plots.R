@@ -204,7 +204,8 @@ plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title =
     pl <- pl +
       ggplot2::geom_text(
         ggplot2::aes(label = .data$.values),
-        position = ggplot2::position_stack(vjust = 0.5),
+        vjust = "inward",
+        position = ggplot2::position_stack(vjust = 0.9),
         color = "white" #size = 3
       )
   }
