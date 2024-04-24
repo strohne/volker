@@ -24,7 +24,6 @@ library(volker)
 
 
 ```{r include=FALSE}
-
 # Checking all plots 
 
 theme_set(theme_vlkr(base_fill = c("grey"))) 
@@ -45,8 +44,12 @@ plot_metrics_items_grouped(ds, starts_with("cg_adoption_"), sd_gender) # not wor
 t.test(ds$sd_age)
 
 [1] 131.1 261.6
+```
 
 
+```{r include=FALSE}
+
+stat_counts_one(ds, sd_age)
 ```
 
 ```{r}

@@ -126,6 +126,8 @@ stat_metrics <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #' @param data A tibble
 #' @param col The column holding factor values
 #' @param clean Prepare data by \link{data_clean}.
+#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_counts}.
 #' @return A volker tibble
 #' @examples
@@ -135,7 +137,7 @@ stat_metrics <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #' stat_counts_one(ds, adopter)
 #'
 #' @importFrom rlang .data
-stat_counts_one <- function(data, col, col_group, clean = TRUE, ...) {
+stat_counts_one <- function(data, col, col_group, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   #stop("Not implemented yet")
 
@@ -163,6 +165,7 @@ stat_counts_one <- function(data, col, col_group, clean = TRUE, ...) {
     dplyr::mutate("{{ col }}" := as.character({{ col }})) %>%
     dplyr::mutate(p = .data$n / sum(.data$n))
 
+
   # Calculate params
   total_obs <- sum(result$n)
 
@@ -172,11 +175,23 @@ stat_counts_one <- function(data, col, col_group, clean = TRUE, ...) {
 
   # Confidence Intervals
   result <- result %>%
-    dplyr::mutate(
-      std_error = sqrt(p * (1 - p) / total_obs),
-      conf_low = p - z * std_error,
-      conf_high = p + z * std_error
-    )
+  dplyr::mutate(
+    std_error = round(sqrt(p * (1 - p) / total_obs), 2),
+    conf_low = round(p - z * std_error, 2),
+    conf_high = round(p + z * std_error, 2)
+  )
+
+  # Get variable caption from the attributes
+  if (labels) {
+    result <- labs_replace_values(result, {{ col }}, codebook(data, {{ col }}))
+    label <- get_title(data, {{ col }})
+    result <- dplyr::rename(result, {{ label }} := {{ col }})
+
+  }
+
+  if (percent) {
+    result <- dplyr::mutate(result, p = paste0(round(.data$p * 100, 0), "%"))
+  }
 
   # Calculate gini coefficent
   # TODO: cumsum and calculation
@@ -262,6 +277,8 @@ stat_counts_one_grouped <- function(data, col, col_group, clean = TRUE, ...) {
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
 #' @param clean Prepare data by \link{data_clean}.
+#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return  A volker tibble
 #' @examples
@@ -272,7 +289,7 @@ stat_counts_one_grouped <- function(data, col, col_group, clean = TRUE, ...) {
 #'
 #' @importFrom rlang .data
 #'
-stat_counts_items <- function(data, cols, clean = TRUE, ...) {
+stat_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -303,8 +320,26 @@ stat_counts_items <- function(data, cols, clean = TRUE, ...) {
 
   # TODO: Calculate Confindence Intervals
 
+  total_obs <- sum(result$n)
 
-  print(result)
+  num_groups <- nrow(result)
+
+  z <- qnorm(1 - (1 - 0.95) / 2)
+
+  # Confidence Intervals
+  result <- result %>%
+    dplyr::mutate(
+      std_error = round(sqrt(p * (1 - p) / total_obs), 2),
+      conf_low = round(p - z * std_error, 2),
+      conf_high = round(p + z * std_error, 2)
+    )
+
+
+  if (percent) {
+    result <- dplyr::mutate(result, p = paste0(round(.data$p * 100, 0), "%"))
+  }
+
+  .to_vlkr_tab(result)
 
 }
 
@@ -338,7 +373,7 @@ stat_counts_items_grouped <- function(data, cols, col_group, clean = T, ...) {
   }
 
   # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}))
+  data <- data_rm_missings(data, c({{ cols }}, {{ col_group }}))
 
 }
 
@@ -374,6 +409,7 @@ stat_counts_items_cor <- function(data, cols, cols_cor, clean = T, ...) {
 #' @param data A tibble
 #' @param col The column holding metric values
 #' @param clean Prepare data by \link{data_clean}.
+#' @param level confidence level
 #' @param ... Placeholder
 #' @return A volker tibble
 #' @examples
@@ -384,7 +420,7 @@ stat_counts_items_cor <- function(data, cols, cols_cor, clean = T, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-stat_metrics_one <- function(data, col, clean = T, ... ) {
+stat_metrics_one <- function(data, col, clean = T, level = 0.95, ... ) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -402,9 +438,17 @@ stat_metrics_one <- function(data, col, clean = T, ... ) {
   data <- data |>
     dplyr::select(av = {{ col }})
 
-  result <- t.test(av)
+  fit <- lm(av ~ 1, data)
 
-  print(result)
+  result <- broom::tidy(fit, conf.int = TRUE)
+
+  result <- result |>
+    dplyr::select(mean = estimate, conf.low, conf.high, std.error)
+
+  # Alternative choosing level param
+  # result <- confint(fit, level=level)
+
+  .to_vlkr_tab(result)
 
 }
 
