@@ -134,7 +134,7 @@ stat_metrics <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_counts_one(ds, adopter)
+#' stat_counts_one(data, adopter)
 #'
 #' @importFrom rlang .data
 stat_counts_one <- function(data, col, col_group, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
@@ -318,7 +318,7 @@ stat_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
     dplyr::mutate(value = as.factor(.data$value)) %>%
     dplyr::arrange(.data$value)
 
-  # TODO: Calculate Confindence Intervals
+  # Calculate Confidence Intervals
 
   total_obs <- sum(result$n)
 
@@ -333,7 +333,6 @@ stat_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
       conf_low = round(p - z * std_error, 2),
       conf_high = round(p + z * std_error, 2)
     )
-
 
   if (percent) {
     result <- dplyr::mutate(result, p = paste0(round(.data$p * 100, 0), "%"))
@@ -358,7 +357,7 @@ stat_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_counts_items_grouped(ds, starts_with("cg_adoption_"))
+#' stat_counts_items_grouped(data, starts_with("cg_adoption_"))
 #'
 #' @importFrom rlang .data
 #'
@@ -374,6 +373,9 @@ stat_counts_items_grouped <- function(data, cols, col_group, clean = T, ...) {
 
   # 3. Remove missings
   data <- data_rm_missings(data, c({{ cols }}, {{ col_group }}))
+
+  # 4. Calculate confindence intervals
+
 
 }
 
@@ -409,7 +411,6 @@ stat_counts_items_cor <- function(data, cols, cols_cor, clean = T, ...) {
 #' @param data A tibble
 #' @param col The column holding metric values
 #' @param clean Prepare data by \link{data_clean}.
-#' @param level confidence level
 #' @param ... Placeholder
 #' @return A volker tibble
 #' @examples
@@ -420,7 +421,7 @@ stat_counts_items_cor <- function(data, cols, cols_cor, clean = T, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-stat_metrics_one <- function(data, col, clean = T, level = 0.95, ... ) {
+stat_metrics_one <- function(data, col, clean = T, ... ) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -433,7 +434,10 @@ stat_metrics_one <- function(data, col, clean = T, level = 0.95, ... ) {
   # 3. Remove missings
   data <- data_rm_missings(data, {{ col }})
 
-  # 4. Calculate mean and confidence interval
+  # 4. Get label
+  label <- get_title(data, {{ col }})
+
+  # 5. Calculate mean and confidence interval
 
   data <- data |>
     dplyr::select(av = {{ col }})
@@ -451,8 +455,6 @@ stat_metrics_one <- function(data, col, clean = T, level = 0.95, ... ) {
   .to_vlkr_tab(result)
 
 }
-
-
 
 
 
@@ -568,13 +570,19 @@ stat_metrics_items <- function(data, cols, clean = T, ...) {
   }
 
   # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}))
+  #data <- data_rm_missings(data, c({{ cols }}))
 
   # 4. Calculate means and confidence intervals for items
 
-  # 5. TODO: Anova (multiple items), t-test two items
+  result <- data %>%
+    dplyr::select({{ cols }})
+
+
+  # 5. TODO: Anova (multiple items), t-test (two items)
 
   # Print
+
+  .to_vlkr_tab(result)
 
 }
 

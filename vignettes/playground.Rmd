@@ -41,15 +41,48 @@ plot_metrics_one_grouped(ds, sd_age, sd_gender, bars = "box")
 plot_metrics_items(ds, starts_with("cg_adoption"))
 plot_metrics_items_grouped(ds, starts_with("cg_adoption_"), sd_gender) # not working 
 
-t.test(ds$sd_age)
+t.test(ds$sd_gender)
 
 [1] 131.1 261.6
 ```
 
 
 ```{r include=FALSE}
+x <- stat_counts_one(ds, sd_gender, percent =T)
 
-stat_counts_one(ds, sd_age)
+x <- tab_counts_one(ds, sd_gender, percent =F)
+
+stat_counts_items(ds, starts_with("cg_adoption_"))
+stat_metrics_one(ds, sd_age)
+
+For mean: l.model <- lm(mpg ~ 1, mtcars) 
+
+# Proportionen für jede Kategorie
+prop_table <- prop.table(table(ds$sd_gender))
+
+# Referenzkategorie auswählen (z.B. die erste Kategorie)
+reference_category <- names(prop_table)[1]
+
+# Funktion zum Berechnen von Konfidenzintervallen für jede Kategorie
+calculate_ci <- function(category_prop, total_obs, alpha) {
+  se <- sqrt(category_prop * (1 - category_prop) / total_obs)
+  z <- qnorm(1 - alpha / 2)
+  margin_error <- z * se
+  ci_lower <- category_prop - margin_error
+  ci_upper <- category_prop + margin_error
+  return(c(ci_lower, ci_upper))
+}
+
+# Konfidenzintervalle für jede Kategorie
+conf_intervals <- sapply(prop_table, calculate_ci, total_obs = length(ds$sd_gender), alpha = 0.05)
+
+
+```
+
+
+```{r include=FALSE}
+
+stat_counts_items(ds, starts_with("cg_adoption_"))
 ```
 
 ```{r}
