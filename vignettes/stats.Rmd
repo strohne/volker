@@ -31,6 +31,4 @@ report_counts(ds, adopter, sd_gender, stats = T)
 
 report_metrics(ds, sd_age, adopter, stats = T)
 
-stat_metrics_one(ds, sd_age)
-
 ```

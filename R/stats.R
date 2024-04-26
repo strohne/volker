@@ -189,6 +189,7 @@ stat_counts_one <- function(data, col, col_group, percent = TRUE, labels = TRUE,
 
   }
 
+  # Formatting proportions in percent
   if (percent) {
     result <- dplyr::mutate(result, p = paste0(round(.data$p * 100, 0), "%"))
   }
@@ -285,7 +286,7 @@ stat_counts_one_grouped <- function(data, col, col_group, clean = TRUE, ...) {
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_counts_items(ds, starts_with("cg_adoption_"))
+#' stat_counts_items(data, starts_with("cg_adoption_"))
 #'
 #' @importFrom rlang .data
 #'
@@ -318,14 +319,38 @@ stat_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
     dplyr::mutate(value = as.factor(.data$value)) %>%
     dplyr::arrange(.data$value)
 
+
+  # # Absolute frequency
+  # value <- "n"
+  # result_n <- result %>%
+  #   dplyr::select("item", "value", !!sym(value)) %>%
+  #   tidyr::pivot_wider(
+  #     names_from = value,
+  #     values_from = !!sym(value),
+  #     values_fill = stats::setNames(list(0), value)
+  #   ) # %>%
+  #   #janitor::adorn_totals("col")
+
+  # Relative frequency
+  # value <- "p"
+  # result_p <- result %>%
+  #   dplyr::select("item", "value", !!sym(value)) %>%
+  #   tidyr::pivot_wider(
+  #     names_from = value,
+  #     values_from = !!sym(value),
+  #     values_fill = stats::setNames(list(0), value)
+  #   )
+
+  # Confidence intervals
+
   # Calculate Confidence Intervals
 
   total_obs <- sum(result$n)
-
+  #
   num_groups <- nrow(result)
-
+  #
   z <- qnorm(1 - (1 - 0.95) / 2)
-
+  #
   # Confidence Intervals
   result <- result %>%
     dplyr::mutate(
@@ -337,6 +362,12 @@ stat_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
   if (percent) {
     result <- dplyr::mutate(result, p = paste0(round(.data$p * 100, 0), "%"))
   }
+
+  result <- result %>%
+    dplyr::select("item", "value", "p") %>%
+    tidyr::pivot_wider(
+      names_from = value,
+      values_from = p)
 
   .to_vlkr_tab(result)
 
@@ -618,9 +649,6 @@ stat_metrics_items_grouped <- function(data, cols, col_group, clean = T, ...) {
 
   # 3. Remove missings
   data <- data_rm_missings(data, c({{ cols }}), {{ col_group}})
-
-
-
 
 }
 
