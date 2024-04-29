@@ -68,6 +68,8 @@ plot_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
 #' @param col_group Optional, a grouping column (without quotes).
+#' @param cols_cor Optional, a tidy column selection of metric variables
+#'                  to compute correlations (without quotes).
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate plot function
 #' @return A ggplot object
@@ -78,30 +80,36 @@ plot_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #' plot_metrics(data, sd_age)
 #'
 #' @export
-plot_metrics <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
+plot_metrics <- function(data, cols, col_group = NULL, cols_cor = NULL, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   col_group_eval <- tidyselect::eval_select(expr = enquo(col_group), data = data)
+  cols_cor_eval <- tidyselect::eval_select(expr = enquo(cols_cor), data = data)
   is_items <- length(cols_eval) > 1
   is_grouped <- length(col_group_eval)== 1
+  is_cor <-length(cols_cor_eval) > 0
 
   # Single variables
-  if (!is_items && !is_grouped) {
+  if (!is_items && !is_grouped && !is_cor) {
     plot_metrics_one(data, {{ cols }}, ...)
   }
-  else if (!is_items && is_grouped) {
+  else if (!is_items && is_grouped&& !is_cor) {
     plot_metrics_one_grouped(data, {{ cols }}, {{ col_group }}, ...)
   }
 
   # Items
-  else if (is_items && !is_grouped) {
+  else if (is_items && !is_grouped && !is_cor) {
     plot_metrics_items(data, {{ cols }} , ...)
   }
-  else if (is_items && is_grouped) {
+  else if (is_items && is_grouped && !is_cor) {
     plot_metrics_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
+  }
+
+  else if (is_cor) {
+    plot_metrics_items_cor(data, {{ cols }}, {{ cols_cor }},  ...)
   }
 
   # Not found
@@ -981,6 +989,152 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   # TODO: Report missings
   base_n <- nrow(data)
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n, "; multiple responses possible"))
+
+  # Convert to vlkr_plot
+  .to_vlkr_plot(pl)
+}
+
+#' Output averages for multiple variables compared by a grouping variable
+#'
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures
+#' @param cols Tidyselect item variables (e.g. starts_with...)
+#' @param col_group The column holding groups to compare
+#' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
+#' @param logplot Whether to plot log scales.
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
+#' @return A ggplot object
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_gender)
+#'
+#' @export
+#' @importFrom rlang .data
+plot_metrics_items_cor <- function(data, cols, cols_cor, limits = NULL, logplot=FALSE, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Check parameters
+  check_is_dataframe(data)
+  check_has_column(data, {{ cols_cor }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # TODO: warn if any negative values were recoded
+  if (!negative) {
+    data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. < 0, NA, .)))
+    data <- dplyr::mutate(data, dplyr::across({{ cols_cor }}, ~ dplyr::if_else(. < 0, NA, .)))
+  }
+
+  # Remove 0 values in log plots
+  if (logplot) {
+    data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. == 0, NA, .)))
+    data <- dplyr::mutate(data, dplyr::across({{ cols_cor }}, ~ dplyr::if_else(. == 0, NA, .)))
+  }
+
+  # Drop missings
+  # TODO: Report missings
+  data <- tidyr::drop_na(data, {{ cols }}, {{ cols_cor }})
+
+
+  # 3. Calculate
+  # Get number and positions of cols
+  cols_cor_eval <- tidyselect::eval_select(expr = rlang::enquo(cols_cor), data = data)
+  cols_eval <- tidyselect::eval_select(expr = rlang::enquo(cols), data = data)
+
+  # Get first cols
+  col1 <- colnames(data)[cols_eval[1]]
+  col2 <- colnames(data)[cols_cor_eval[1]]
+
+  # if (is.null(limits)) {
+  #   limits <- get_limits(data, {{ cols }})
+  # }
+
+  # Replace item labels
+  # if (labels) {
+  #   result <- labs_replace(
+  #     result, "item",
+  #     codebook(data, {{ cols }}),
+  #     "item_name", "item_label"
+  #   )
+  # }
+
+  # Remove common item prefix
+  #prefix <- get_prefix(data$item, trim=TRUE)
+  prefix <- ""
+  # result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
+
+  # Order item levels
+  # result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
+
+  pl <- data %>%
+    ggplot2::ggplot(ggplot2::aes(
+      x=.data[[col1]],
+      y=.data[[col2]],)
+    ) +
+    ggplot2::geom_point(size=3, alpha=VLKR_SCATTER_ALPHA)
+
+  if (logplot == TRUE) {
+    pl <- pl +
+      ggplot2::scale_x_log10() +
+      ggplot2::scale_y_log10()
+  }
+
+  # # Set the scale
+  # # TODO: get from attributes
+  # scale <- data %>%
+  #   codebook({{ cols }}) %>%
+  #   dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) %>%
+  #   prepare_scale()
+  #
+  # if (length(scale) > 0) {
+  #   pl <- pl +
+  #     ggplot2::scale_y_continuous(labels = ~ label_scale(., scale) )
+  # } else {
+  #   pl <- pl +
+  #     ggplot2::scale_y_continuous()
+  # }
+  #
+  # # Add scales, labels and theming
+  pl <- pl +
+  #   ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
+  #   ggplot2::scale_color_manual(
+  #     values = vlkr_colors_discrete(length(unique(result$group))),
+  #     labels = function(x) stringr::str_wrap(x, width = 40)
+  #     #guide = ggplot2::guide_legend(reverse = TRUE)
+  #   ) +
+  #   #ggplot2::scale_color_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +
+  #
+  #   ggplot2::ylab("Mean values") +
+  #   ggplot2::coord_flip(ylim = limits) +
+    ggplot2::theme(
+      plot.caption = ggplot2::element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position = "plot"
+    )
+
+  # Add title
+  if (title == TRUE) {
+    title <- trim_label(prefix)
+  } else if (title == FALSE) {
+    title <- NULL
+  }
+  if (!is.null(title)) {
+    pl <- pl + ggplot2::ggtitle(label = title)
+  }
+
+  # Add base
+  # TODO: Report missings
+  base_n <- nrow(data)
+  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
   # Convert to vlkr_plot
   .to_vlkr_plot(pl)

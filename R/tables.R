@@ -69,6 +69,8 @@ tab_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
 #' @param col_group Optional, a grouping column (without quotes).
+#' @param cols_cor Optional, a tidy column selection of metric variables
+#'                  to compute correlations (without quotes).
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate table function
 #' @return A volker tibble
@@ -79,31 +81,38 @@ tab_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #' tab_metrics(data, sd_age)
 #'
 #' @export
-tab_metrics <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
+tab_metrics <- function(data, cols, col_group = NULL, cols_cor = NULL, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   col_group_eval <- tidyselect::eval_select(expr = enquo(col_group), data = data)
+  cols_cor_eval <- tidyselect::eval_select(expr = enquo(cols_cor), data = data)
   is_items <- length(cols_eval) > 1
   is_grouped <- length(col_group_eval)== 1
+  is_cor <-length(cols_cor_eval) > 0
 
   # Single variables
-  if (!is_items && !is_grouped) {
+  if (!is_items && !is_grouped && !is_cor) {
     tab_metrics_one(data, {{ cols }}, ...)
   }
-  else if (!is_items && is_grouped) {
+  else if (!is_items && is_grouped && !is_cor) {
     tab_metrics_one_grouped(data, {{ cols }}, {{ col_group }}, ...)
   }
 
   # Items
-  else if (is_items && !is_grouped) {
+  else if (is_items && !is_grouped && !is_cor) {
     tab_metrics_items(data, {{ cols }} , ...)
   }
-  else if (is_items && is_grouped) {
+  else if (is_items && is_grouped && !is_cor) {
     tab_metrics_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
   }
+
+  else if (is_cor) {
+    tab_metrics_items_cor(data, {{ cols }}, {{ cols_cor }},  ...)
+  }
+
 
   # Not found
   else {
@@ -1100,7 +1109,7 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = FALSE, v
 #' @param cols The source columns
 #' @param cols_cor The target columns or NULL to calculate correlations within the source columns
 #' @param method The output metrics, p = Pearson's R, s = Spearman's rho
-#' @param significant Only show significant values
+#' @param stats Add significance stars and only show significant values
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
@@ -1113,7 +1122,7 @@ tab_metrics_items_grouped <- function(data, cols, col_group, negative = FALSE, v
 #'
 #' @importFrom rlang .data
 #' @export
-tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significant = FALSE, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", stats = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -1158,9 +1167,15 @@ tab_metrics_items_cor <- function(data, cols, cols_cor, method = "p", significan
 
   # Create table
   result <- result %>%
-    dplyr::mutate(value = paste0(round(unlist(.data$value), 2), .data$stars)) %>%
-    dplyr::mutate(value = ifelse(significant & (.data$p >= 0.1), "", .data$value)) %>%
-    dplyr::select("item", "target", "value")
+    dplyr::mutate(value = round(unlist(.data$value), 2))
+
+  if (stats == TRUE) {
+    result <- result %>%
+      dplyr::mutate(value = paste0(unlist(.data$value), .data$stars)) %>%
+      dplyr::mutate(value = ifelse(.data$p >= 0.1, "", .data$value))
+  }
+
+  result <- dplyr::select(result, "item", "target", "value")
 
   result <- result %>%
     tidyr::pivot_wider(names_from = "target", values_from = "value") %>%
