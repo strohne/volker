@@ -62,8 +62,30 @@ test_that("Item labels are replaced and keep their order", {
     dplyr::select(adopter) |>
     # TODO: Even if the column was converted to character beforehand
     #  dplyr::mutate(adopter = as.character(adopter)) |>
-    volker:::labs_replace_values(adopter, volker::codebook(data)) |>
+    volker:::labs_replace(adopter, volker::codebook(data)) |>
     dplyr::pull(adopter) |>
     levels() |>
+    expect_snapshot(cran= TRUE)
+})
+
+# Get prefix from labels
+test_that("A common prefix is removed from labels", {
+
+  data |>
+    dplyr::select(starts_with("use")) |>
+    codebook() |>
+    dplyr::pull(item_label) |>
+    get_prefix() |>
+    expect_snapshot(cran= TRUE)
+})
+
+# Remove prefix from labels
+test_that("A common prefix is removed from labels", {
+
+  data |>
+    dplyr::select(starts_with("use")) |>
+    codebook() |>
+    dplyr::pull(item_label) |>
+    trim_prefix() |>
     expect_snapshot(cran= TRUE)
 })

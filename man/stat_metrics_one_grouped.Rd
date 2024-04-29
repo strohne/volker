@@ -2,7 +2,7 @@
 % Please edit documentation in R/stats.R
 \name{stat_metrics_one_grouped}
 \alias{stat_metrics_one_grouped}
-\title{Output a regression table with estimates and makro statistics}
+\title{Output a regression table with estimates and macro statistics}
 \usage{
 stat_metrics_one_grouped(
   data,

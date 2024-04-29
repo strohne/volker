@@ -42,21 +42,29 @@ check_is_dataframe <- function(obj, msg = NULL, stopit = TRUE) {
 #' @param col A column name
 #' @param msg A custom error message if the check fails
 #' @return boolean Whether the column exists
-check_has_column <- function(data, col, msg = NULL) {
-  colname <- as.character(rlang::get_expr(rlang::enquo(col)))
+check_has_column <- function(data, cols, msg = NULL) {
 
-  check <- colname != ""
-  if (!check ) {
+  colexpr <- as.character(rlang::get_expr(rlang::enquo(cols)))
+  if (!all(colexpr != "")) {
     msg <- dplyr::coalesce(msg, paste0("Did you miss to say which column to use?"))
     stop(msg, call. = FALSE)
   }
 
+  coleval <- tryCatch(
+    {
+      tidyselect::eval_select(expr = rlang::enquo(cols), data = data)
+    },
+    error = function(e) {
+      msg <- dplyr::coalesce(msg, paste0("The column selection is not valid, check your parameters."))
+      stop(msg, call. = FALSE)
 
-  check <- colname %in% colnames(data)
-  if (!check ) {
-    msg <- dplyr::coalesce(msg, paste0("The column ", colname, " does not exist, check your parameters."))
+    }
+  )
+
+  if (length(coleval) == 0) {
+    msg <- dplyr::coalesce(msg, paste0("The column selection does not exist, check your parameters."))
     stop(msg, call. = FALSE)
   }
 
-  check
+  TRUE
 }

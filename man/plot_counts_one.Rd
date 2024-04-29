@@ -7,6 +7,8 @@
 plot_counts_one(
   data,
   col,
+  category = NULL,
+  limits = NULL,
   missings = FALSE,
   numbers = NULL,
   title = TRUE,
@@ -19,6 +21,14 @@ plot_counts_one(
 \item{data}{A tibble}
 
 \item{col}{The column holding values to count}
+
+\item{category}{The value FALSE will force to plot all categories.
+A character value will focus a selected category.
+When NULL, in case of boolean values, only the TRUE category is plotted.}
+
+\item{limits}{The scale limits, autoscaled by default.
+Set to \code{c(0,100)} to make a 100 \% plot.
+If the data is binary or focused on a single category, by default a 100\% plot is created.}
 
 \item{missings}{Include missing values (default FALSE)}
 

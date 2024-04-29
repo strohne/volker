@@ -4,7 +4,7 @@
 \alias{plot_metrics}
 \title{Output a plot with distribution parameters such as the mean values}
 \usage{
-plot_metrics(data, cols, col_group = NULL, clean = TRUE, ...)
+plot_metrics(data, cols, col_group = NULL, cols_cor = NULL, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A data frame}
@@ -14,6 +14,9 @@ e.g. a single column (without quotes)
 or multiple columns selected by methods such as starts_with().}
 
 \item{col_group}{Optional, a grouping column (without quotes).}
+
+\item{cols_cor}{Optional, a tidy column selection of metric variables
+to compute correlations (without quotes).}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 

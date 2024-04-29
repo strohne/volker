@@ -68,6 +68,8 @@ plot_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
 #' @param col_group Optional, a grouping column (without quotes).
+#' @param cols_cor Optional, a tidy column selection of metric variables
+#'                  to compute correlations (without quotes).
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate plot function
 #' @return A ggplot object
@@ -78,30 +80,36 @@ plot_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #' plot_metrics(data, sd_age)
 #'
 #' @export
-plot_metrics <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
+plot_metrics <- function(data, cols, col_group = NULL, cols_cor = NULL, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   col_group_eval <- tidyselect::eval_select(expr = enquo(col_group), data = data)
+  cols_cor_eval <- tidyselect::eval_select(expr = enquo(cols_cor), data = data)
   is_items <- length(cols_eval) > 1
   is_grouped <- length(col_group_eval)== 1
+  is_cor <-length(cols_cor_eval) > 0
 
   # Single variables
-  if (!is_items && !is_grouped) {
+  if (!is_items && !is_grouped && !is_cor) {
     plot_metrics_one(data, {{ cols }}, ...)
   }
-  else if (!is_items && is_grouped) {
+  else if (!is_items && is_grouped&& !is_cor) {
     plot_metrics_one_grouped(data, {{ cols }}, {{ col_group }}, ...)
   }
 
   # Items
-  else if (is_items && !is_grouped) {
+  else if (is_items && !is_grouped && !is_cor) {
     plot_metrics_items(data, {{ cols }} , ...)
   }
-  else if (is_items && is_grouped) {
+  else if (is_items && is_grouped && !is_cor) {
     plot_metrics_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
+  }
+
+  else if (is_cor) {
+    plot_metrics_items_cor(data, {{ cols }}, {{ cols_cor }},  ...)
   }
 
   # Not found
@@ -119,6 +127,12 @@ plot_metrics <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #'
 #' @param data A tibble
 #' @param col The column holding values to count
+#' @param category The value FALSE will force to plot all categories.
+#'                  A character value will focus a selected category.
+#'                  When NULL, in case of boolean values, only the TRUE category is plotted.
+#' @param limits The scale limits, autoscaled by default.
+#'               Set to \code{c(0,100)} to make a 100 % plot.
+#'               If the data is binary or focused on a single category, by default a 100% plot is created.
 #' @param missings Include missing values (default FALSE)
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
@@ -135,7 +149,7 @@ plot_metrics <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #'
 #' @importFrom rlang .data
 #' @export
-plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_one <- function(data, col, category = NULL, limits=NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   # Check columns
@@ -173,41 +187,55 @@ plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title =
     dplyr::mutate( "{{ col }}" := as.factor({{ col }}))
 
   if (labels) {
-    result <- labs_replace_values(result, {{ col }}, codebook(data, {{ col }}))
+    result <- labs_replace(result, {{ col }}, codebook(data, {{ col }}))
   }
+
+  # Detect the scale (whether the categories are binary and direction)
+  # TODO: make dry
+  if (!is.null(category)) {
+    result <- dplyr::filter(result, as.character({{ col }}) == as.character(category))
+  }
+  categories <- dplyr::pull(result, {{ col }}) |> unique() |> as.character()
+  if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
+    result <- dplyr::filter(result, as.character({{ col }}) == "TRUE")
+  }
+
+  result <- dplyr::rename(result, item = {{ col }})
+  result <- dplyr::mutate(result, value = "TRUE")
+  category = "TRUE"
 
   # 3. Plot
   # TODO: Make dry, see plot_item_counts and tab_group_counts
-  pl <- result %>%
-    ggplot2::ggplot(ggplot2::aes({{ col }}, y = .data$p / 100)) +
-    ggplot2::geom_col() +
-
-    # TODO: make limits configurable
-    # scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
-
-    ggplot2::scale_y_continuous(labels = scales::percent) +
-    ggplot2::scale_x_discrete(limits=rev) +
-    ggplot2::ylab("Share in percent") +
-    ggplot2::coord_flip() +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(), #size = 11
-      legend.title = ggplot2::element_blank(),
-      plot.title.position = "plot",
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.caption.position = "plot"
-    )
-
-  # Plot numbers
-  if (!is.null(numbers)) {
-    pl <- pl +
-      ggplot2::geom_text(
-        ggplot2::aes(label = .data$.values),
-        position = ggplot2::position_stack(vjust = 0.5),
-        color = "white" #size = 3
-      )
-  }
+  # pl <- result %>%
+  #   ggplot2::ggplot(ggplot2::aes({{ col }}, y = .data$p / 100)) +
+  #   ggplot2::geom_col() +
+  #
+  #   # TODO: make limits configurable
+  #   # scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
+  #
+  #   ggplot2::scale_y_continuous(labels = scales::percent) +
+  #   ggplot2::scale_x_discrete(limits=rev) +
+  #   ggplot2::ylab("Share in percent") +
+  #   ggplot2::coord_flip() +
+  #   ggplot2::theme(
+  #     axis.title.x = ggplot2::element_blank(),
+  #     axis.title.y = ggplot2::element_blank(),
+  #     axis.text.y = ggplot2::element_text(), #size = 11
+  #     legend.title = ggplot2::element_blank(),
+  #     plot.title.position = "plot",
+  #     plot.caption = ggplot2::element_text(hjust = 0),
+  #     plot.caption.position = "plot"
+  #   )
+  #
+  # # Plot numbers
+  # if (!is.null(numbers)) {
+  #   pl <- pl +
+  #     ggplot2::geom_text(
+  #       ggplot2::aes(label = .data$.values),
+  #       position = ggplot2::position_stack(vjust = 0.5),
+  #       color = "white" #size = 3
+  #     )
+  # }
 
   # Title
   if (title == TRUE) {
@@ -215,17 +243,27 @@ plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title =
   } else if (title == FALSE) {
     title <- NULL
   }
-  if (!is.null(title)) {
-    pl <- pl + ggplot2::ggtitle(label = title)
-  }
+  # if (!is.null(title)) {
+  #   pl <- pl + ggplot2::ggtitle(label = title)
+  # }
 
   # Base
   # TODO: report missing cases
   base_n <- nrow(data)
-  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
+  #pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
   # Pass row number and label length to the knit_plot() function
-  .to_vlkr_plot(pl)
+  #.to_vlkr_plot(pl)
+
+  .plot_bars(
+    result,
+    category = category,
+    scale = 0,
+    limits=limits,
+    numbers = numbers,
+    base = paste0("n=", base_n),
+    title = title
+  )
 }
 
 #' Plot frequencies cross tabulated with a grouping column
@@ -245,6 +283,8 @@ plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title =
 #' @param category The value FALSE will force to plot all categories.
 #'                  A character value will focus a selected category.
 #'                  When NULL, in case of boolean values, only the TRUE category is plotted.
+#' @param limits The scale limits, autoscaled by default.
+#'               Set to \code{c(0,100)} to make a 100 % plot.
 #' @param missings Include missing values (default FALSE)
 #' @param prop The basis of percent calculation: "total" (the default), "rows" or "cols".
 #'             Plotting row or column percentages results in stacked bars that add up to 100%.
@@ -265,7 +305,7 @@ plot_counts_one <- function(data, col, missings = FALSE, numbers = NULL, title =
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_one_grouped <- function(data, col, col_group, category = NULL, ordered = NULL, missings = FALSE, prop = "total", numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_one_grouped <- function(data, col, col_group, category = NULL, limits=NULL, ordered = NULL, missings = FALSE, prop = "total", numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -296,23 +336,16 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
   result <- data %>%
     dplyr::count({{ col }}, {{ col_group }})
 
-  # Detect whether the categories are binary
-  categories <- dplyr::pull(result, {{ col }}) |> unique() |> as.character()
-  if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
-    category <- "TRUE"
-  }
-  scale <-dplyr::coalesce(ordered, get_direction(data, {{ col }}))
 
-  data <- data |>
-    dplyr::mutate(data, "{{ col_group }}" := as.factor({{ col_group }}))
+  # 4. Set labels
+  # data <- data |>
+  #   dplyr::mutate(data, "{{ col_group }}" := as.factor({{ col_group }}))
 
-  if (labels) {
-    result <- labs_replace_values(result, {{ col_group }}, codebook(data, {{ col_group }}))
-  }
 
   result <- result %>%
     dplyr::mutate(item = as.factor({{ col_group }})) |>
-    dplyr::mutate(value = factor({{ col }}, levels = categories))
+    dplyr::mutate(value = factor({{ col }}))
+    #dplyr::mutate(value = factor({{ col }}, levels = categories))
 
   if ((prop == "rows") || (prop == "cols")) {
     result <- result %>%
@@ -324,15 +357,32 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
       dplyr::mutate(p = (.data$n / sum(.data$n)) * 100)
   }
 
+  # Detect the scale (whether the categories are binary and direction)
+  # TODO: make dry
+  scale <-dplyr::coalesce(ordered, get_direction(data, {{ col }}))
+
+  categories <- dplyr::pull(result, {{ col }}) |> unique() |> as.character()
+
+  if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
+    category <- "TRUE"
+  }
+
+
+  if (labels) {
+    result <- labs_replace(result, "value", codebook(data, {{ col }}))
+    result <- labs_replace(result, "item", codebook(data, {{ col_group }}))
+  }
+
+
+  lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
+
+  #return(result)
   # Select numbers to print on the bars
   # ...omit the last category in scales, omit small bars
-  lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
   result <- result %>%
     dplyr::mutate(
       .values = dplyr::case_when(
-
         (is.null(category)) & (scale != 0) & (lastcategory == .data$value) ~ "",
-
         .data$p < VLKR_LOWPERCENT ~ "",
         all(numbers == "n") ~ as.character(.data$n),
         all(numbers == "p") ~ paste0(round(.data$p, 0), "%"),
@@ -377,6 +427,8 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 #'                An appropriate color scale should be choosen depending on the ordering.
 #'                For unordered values, colors from VLKR_FILLDISCRETE are used.
 #'                For ordered values, shades of the VLKR_FILLGRADIENT option are used.
+#' @param limits The scale limits, autoscaled by default.
+#'               Set to \code{c(0,100)} to make a 100 % plot.
 #' @param missings Include missing values (default FALSE)
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
@@ -393,7 +445,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, order
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, limits = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -446,16 +498,12 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
 
   # Item labels
   if (labels) {
-    result <- labs_replace_names(result, "item", codebook(data, {{ cols }}))
-    result <- labs_replace_values(result, "value", codebook(data, {{ cols }}))
+    result <- labs_replace(result, "item", codebook(data, {{ cols }}), "item_name", "item_label")
+    result <- labs_replace(result, "value", codebook(data, {{ cols }}))
   }
 
   # Remove common item prefix
-  prefix <- get_prefix(result$item)
-  if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, prefix))
-    result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
-  }
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item))
 
   # Order item levels
   result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
@@ -475,6 +523,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, missi
     result,
     category = category,
     scale = scale,
+    limits=limits,
     numbers = numbers,
     base = paste0("n=", base_n, "; multiple responses possible"),
     title = title
@@ -581,7 +630,6 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
       axis.title.x = ggplot2::element_blank(),
       axis.title.y=ggplot2::element_blank(),
       axis.text.y = ggplot2::element_blank(),
-      # legend.title = element_blank(),
       plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
       plot.caption.position = "plot"
@@ -746,16 +794,16 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, titl
 
   # Replace item labels
   if (labels) {
-    result <- labs_replace_names(result, "item", codebook(data, {{ cols }}))
+    result <- labs_replace(
+      result, "item",
+      codebook(data, {{ cols }}),
+      "item_name", "item_label"
+    )
   }
 
   # Remove common item prefix and title
   # TODO: remove common postfix
-  prefix <- get_prefix(result$item)
-  if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, stringr::fixed(prefix)))
-    result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
-  }
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item))
 
   # Order item levels
   result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
@@ -863,15 +911,16 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 
   # Replace item labels
   if (labels) {
-    result <- labs_replace_names(result, "item", codebook(data, {{ cols }}))
+    result <- labs_replace(
+      result, "item",
+      codebook(data, {{ cols }}),
+      "item_name", "item_label"
+      )
   }
 
   # Remove common item prefix
-  prefix <- get_prefix(result$item)
-  if (prefix != "") {
-    result <- dplyr::mutate(result, item = stringr::str_remove(.data$item, prefix))
-    result <- dplyr::mutate(result, item = ifelse(.data$item == "", prefix, .data$item))
-  }
+  prefix <- get_prefix(result$item, trim=TRUE)
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
 
   # Order item levels
   result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
@@ -945,6 +994,152 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   .to_vlkr_plot(pl)
 }
 
+#' Output averages for multiple variables compared by a grouping variable
+#'
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures
+#' @param cols Tidyselect item variables (e.g. starts_with...)
+#' @param col_group The column holding groups to compare
+#' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
+#' @param logplot Whether to plot log scales.
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
+#' @return A ggplot object
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_gender)
+#'
+#' @export
+#' @importFrom rlang .data
+plot_metrics_items_cor <- function(data, cols, cols_cor, limits = NULL, logplot=FALSE, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Check parameters
+  check_is_dataframe(data)
+  check_has_column(data, {{ cols_cor }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # TODO: warn if any negative values were recoded
+  if (!negative) {
+    data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. < 0, NA, .)))
+    data <- dplyr::mutate(data, dplyr::across({{ cols_cor }}, ~ dplyr::if_else(. < 0, NA, .)))
+  }
+
+  # Remove 0 values in log plots
+  if (logplot) {
+    data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. == 0, NA, .)))
+    data <- dplyr::mutate(data, dplyr::across({{ cols_cor }}, ~ dplyr::if_else(. == 0, NA, .)))
+  }
+
+  # Drop missings
+  # TODO: Report missings
+  data <- tidyr::drop_na(data, {{ cols }}, {{ cols_cor }})
+
+
+  # 3. Calculate
+  # Get number and positions of cols
+  cols_cor_eval <- tidyselect::eval_select(expr = rlang::enquo(cols_cor), data = data)
+  cols_eval <- tidyselect::eval_select(expr = rlang::enquo(cols), data = data)
+
+  # Get first cols
+  col1 <- colnames(data)[cols_eval[1]]
+  col2 <- colnames(data)[cols_cor_eval[1]]
+
+  # if (is.null(limits)) {
+  #   limits <- get_limits(data, {{ cols }})
+  # }
+
+  # Replace item labels
+  # if (labels) {
+  #   result <- labs_replace(
+  #     result, "item",
+  #     codebook(data, {{ cols }}),
+  #     "item_name", "item_label"
+  #   )
+  # }
+
+  # Remove common item prefix
+  #prefix <- get_prefix(data$item, trim=TRUE)
+  prefix <- ""
+  # result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
+
+  # Order item levels
+  # result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
+
+  pl <- data %>%
+    ggplot2::ggplot(ggplot2::aes(
+      x=.data[[col1]],
+      y=.data[[col2]],)
+    ) +
+    ggplot2::geom_point(size=3, alpha=VLKR_SCATTER_ALPHA)
+
+  if (logplot == TRUE) {
+    pl <- pl +
+      ggplot2::scale_x_log10() +
+      ggplot2::scale_y_log10()
+  }
+
+  # # Set the scale
+  # # TODO: get from attributes
+  # scale <- data %>%
+  #   codebook({{ cols }}) %>%
+  #   dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) %>%
+  #   prepare_scale()
+  #
+  # if (length(scale) > 0) {
+  #   pl <- pl +
+  #     ggplot2::scale_y_continuous(labels = ~ label_scale(., scale) )
+  # } else {
+  #   pl <- pl +
+  #     ggplot2::scale_y_continuous()
+  # }
+  #
+  # # Add scales, labels and theming
+  pl <- pl +
+  #   ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
+  #   ggplot2::scale_color_manual(
+  #     values = vlkr_colors_discrete(length(unique(result$group))),
+  #     labels = function(x) stringr::str_wrap(x, width = 40)
+  #     #guide = ggplot2::guide_legend(reverse = TRUE)
+  #   ) +
+  #   #ggplot2::scale_color_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +
+  #
+  #   ggplot2::ylab("Mean values") +
+  #   ggplot2::coord_flip(ylim = limits) +
+    ggplot2::theme(
+      plot.caption = ggplot2::element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position = "plot"
+    )
+
+  # Add title
+  if (title == TRUE) {
+    title <- trim_label(prefix)
+  } else if (title == FALSE) {
+    title <- NULL
+  }
+  if (!is.null(title)) {
+    pl <- pl + ggplot2::ggtitle(label = title)
+  }
+
+  # Add base
+  # TODO: Report missings
+  base_n <- nrow(data)
+  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
+
+  # Convert to vlkr_plot
+  .to_vlkr_plot(pl)
+}
+
 #' Helper function: plot grouped bar chart
 #'
 #' @keywords internal
@@ -958,10 +1153,14 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 #' @param base The plot base as character or NULL.
 #' @return A ggplot object
 #' @importFrom rlang .data
-.plot_bars <- function(data, category = NULL, scale = NULL, numbers = NULL, base = NULL, title = NULL) {
+.plot_bars <- function(data, category = NULL, scale = NULL, limits=NULL, numbers = NULL, base = NULL, title = NULL) {
 
   if (!is.null(category)) {
     data <- dplyr::filter(data, .data$value == category)
+  }
+
+  if (all(data$item == "TRUE") && is.null(limits)) {
+    limits <- c(0, 1)
   }
 
   if (scale <= 0) {
@@ -969,11 +1168,12 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
       dplyr::mutate(value = forcats::fct_rev(.data$value))
   }
 
+
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(.data$item, y = .data$p / 100, fill = .data$value, group = .data$value)) +
     ggplot2::geom_col() +
 
-    ggplot2::scale_y_continuous(labels = scales::percent) +
+    ggplot2::scale_y_continuous(labels = scales::percent, limits=limits) +
     ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
 
     ggplot2::ylab("Share in percent") +
@@ -988,6 +1188,11 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
       plot.caption.position = "plot"
     )
 
+  if (all(data$item == "TRUE")) {
+    pl <- pl +
+      ggplot2::theme(axis.text.y = ggplot2::element_blank())
+  }
+
   # Select scales:
   # - Simplify binary plots
   # - Generate a color scale for ordinal scales by vlkr_colors_sequential()
@@ -995,7 +1200,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   if (!is.null(category)) {
     pl <- pl +
       ggplot2::scale_fill_manual(
-        guide = ggplot2::guide_legend(reverse = TRUE)
+        values = vlkr_colors_discrete(1)
       ) +
       ggplot2::theme(
         legend.position = ifelse(category == "TRUE" | category == TRUE, "none","bottom"),
@@ -1050,7 +1255,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 .plot_lines <- function(data, scale = NULL, bars=NULL, base = NULL, title = NULL) {
 
   pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(y=item, x=value, group=1)) +
+    ggplot2::ggplot(ggplot2::aes(y=.data$item, x=.data$value, group=1)) +
     #ggplot2::geom_point(size=3, shape=18)
     #ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
     ggplot2::stat_summary(fun = mean, geom="line") +
@@ -1144,7 +1349,7 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 
   # Maximum label length
   maxlab  <- data %>%
-    dplyr::pull(item) %>%
+    dplyr::pull(.data$item) %>%
     stringr::str_length() %>%
     max(na.rm= TRUE)
 
@@ -1317,7 +1522,7 @@ plot.vlkr_plt <- print.vlkr_plt
 #' library(ggplot2)
 #' data <- volker::chatgpt
 #'
-#' theme_set(theme_vlkr(base_size=15, base_fill = list("red"))
+#' theme_set(theme_vlkr(base_size=15, base_fill = list("red")))
 #' plot_counts(data, sd_gender)
 #' @export
 theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDISCRETE) {
@@ -1333,12 +1538,12 @@ theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDI
   ggplot2::theme_bw(base_size) %+replace%
 
     ggplot2::theme(
-      axis.ticks.y = element_blank(),
+      axis.ticks.y = ggplot2::element_blank(),
       axis.text.y = ggplot2::element_text(
         size=base_size,
         color=base_color,
         hjust=1,
-        margin = margin(r = 0.8 * base_size/4)
+        margin = ggplot2::margin(r = 0.8 * base_size/4)
       ),
       legend.text = ggplot2::element_text(size=base_size-2)
     )

@@ -12,6 +12,8 @@
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
 #' @param col_group Optional, a grouping column (without quotes).
+#' @param cols_cor Optional, a tidy column selection of metric variables
+#'                  to compute correlations (without quotes).
 #' @param ... Parameters passed to the plot and tab functions.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
@@ -32,7 +34,8 @@
 #' report_metrics(data, sd_age)
 #'
 #' @export
-report_metrics <- function(data, cols, col_group = NULL, ..., index = FALSE, stats=FALSE, title = TRUE, close = TRUE, clean = TRUE) {
+
+report_metrics <- function(data, cols, col_group = NULL, cols_cor = NULL, ..., index = FALSE, stats= FALSE, title = TRUE, close = TRUE, clean = TRUE) {
 
   if (clean) {
     data <- data_clean(data)
@@ -56,11 +59,11 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index = FALSE, sta
 
 
   # Add Plot
-  chunks <- plot_metrics(data, {{ cols}}, {{ col_group }}, clean=clean, ..., title = plot_title) %>%
+  chunks <- plot_metrics(data, {{ cols}}, {{ col_group }}, {{ cols_cor }}, clean=clean, ..., title = plot_title) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
-  chunks <- tab_metrics(data, {{ cols}}, {{ col_group }}, clean=clean, ...) %>%
+  chunks <- tab_metrics(data, {{ cols}}, {{ col_group }}, {{ cols_cor }}, clean=clean, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
 
   # Add effect sizes

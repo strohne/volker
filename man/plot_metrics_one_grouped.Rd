@@ -11,7 +11,7 @@ plot_metrics_one_grouped(
   limits = NULL,
   negative = FALSE,
   numbers = NULL,
-  stats = FALSE,
+  bars = NULL,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -31,7 +31,7 @@ plot_metrics_one_grouped(
 
 \item{numbers}{numbers to print on labels, 'n' for group size}
 
-\item{stats}{Whether to plot for significance tests}
+\item{bars}{Add a boxplot (box), standard error (se) or 95\%-confidence-interval (ci).}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

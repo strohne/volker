@@ -81,3 +81,9 @@ data %>%
   plot_metrics(starts_with("cg_adoption_"), sd_gender)
 ```
 
+## Correlations
+```{r}
+data |> 
+  plot_metrics(use_private, cols_cor = use_work)
+```
+

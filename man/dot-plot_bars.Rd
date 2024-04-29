@@ -8,13 +8,14 @@
   data,
   category = NULL,
   scale = NULL,
+  limits = NULL,
   numbers = NULL,
   base = NULL,
   title = NULL
 )
 }
 \arguments{
-\item{data}{Dataframe with the columns Item, value, p, n}
+\item{data}{Dataframe with the columns item, value, p, n}
 
 \item{category}{Category for filtering the dataframe}
 

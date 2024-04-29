@@ -9,7 +9,7 @@ tab_metrics_items_cor(
   cols,
   cols_cor,
   method = "p",
-  significant = FALSE,
+  stats = FALSE,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -24,7 +24,7 @@ tab_metrics_items_cor(
 
 \item{method}{The output metrics, p = Pearson's R, s = Spearman's rho}
 
-\item{significant}{Only show significant values}
+\item{stats}{Add significance stars and only show significant values}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

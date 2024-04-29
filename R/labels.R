@@ -312,23 +312,20 @@ labs_clear <- function(data, cols, labels = NULL) {
   data
 }
 
-
-
-#' Replace item names in a column by their labels
-#'
-#' TODO: Make dry with labs_replace_values
+#' Replace item value names in a column by their labels
 #'
 #' @keywords internal
 #'
 #' @param data A tibble
-#' @param col The column holding item names
-#' @param codes The codebook to use: A tibble with the columns item_name and item_label.
+#' @param col The column holding item values
+#' @param codes The codebook to use: A tibble with the columns
+#'              value_name and value_label.
 #'              Can be created by the \link{codebook} function, e.g. by calling
 #'              `codes <- codebook(data, myitemcolumn)`.
+#' @param col_from The tidyselect column with source values, defaults to value_name
+#' @param col_to The tidyselect column with target values, defaults to value_label
 #' @return Tibble with new labels
-#' @importFrom rlang .data
-labs_replace_names <- function(data, col, codes) {
-
+labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_label") {
 
   # Column without quotes
   # TODO: could we just use "{{ col }}" with quotes in mutate below?
@@ -341,47 +338,22 @@ labs_replace_names <- function(data, col, codes) {
     col <- rlang::sym(col)
   }
 
-
-  codes <- codes %>%
-    dplyr::distinct(dplyr::across(tidyselect::all_of(c("item_name", "item_label")))) %>%
-    dplyr::rename(.name = tidyselect::all_of("item_name"), .label = tidyselect::all_of("item_label")) %>%
-    stats::na.omit()
-
-
-  if (nrow(codes) > 0) {
-    data <- data %>%
-      dplyr::mutate(.name = !!col) %>%
-      dplyr::left_join(codes, by = ".name") %>%
-      dplyr::mutate(!!col := dplyr::coalesce(.data$.label, .data$.name)) %>%
-      dplyr::select(-tidyselect::all_of(c(".name", ".label")))
+  # Get codebook columns
+  if (rlang::quo_is_symbol(rlang::enquo(col_from))) {
+    col_from <- rlang::enquo(col_from)
+  } else {
+    col_from <- rlang::sym(col_from)
+  }
+  if (rlang::quo_is_symbol(rlang::enquo(col_to))) {
+    col_to <- rlang::enquo(col_to)
+  } else {
+    col_to <- rlang::sym(col_to)
   }
 
-  data
-}
+  codes <- dplyr::rename(codes,.from = !!col_from)
+  codes <- dplyr::rename(codes,.to = !!col_to)
 
-#' Replace item value names in a column by their labels
-#'
-#' TODO: Make dry with labs_replace_names
-#'
-#' @keywords internal
-#'
-#' @param data A tibble
-#' @param col The column holding item values
-#' @param codes The codebook to use: A tibble with the columns value_name and value_label.
-#'              Can be created by the \link{codebook} function, e.g. by calling
-#'              `codes <- codebook(data, myitemcolumn)`.
-#' @return Tibble with new labels
-labs_replace_values <- function(data, col, codes) {
-
-  # Column without quotes
-  if (rlang::quo_is_symbol(rlang::enquo(col))) {
-    col <- rlang::enquo(col)
-  }
-  # Column as character
-  else {
-    col <- rlang::sym(col)
-  }
-
+  # Store levels
   levels_before <- data |>
     dplyr::select(!! col) |>
     dplyr::pull(1) |>
@@ -389,22 +361,17 @@ labs_replace_values <- function(data, col, codes) {
     unique()
 
   codes <- codes %>%
-    dplyr::filter(as.character(.data$value_name) %in% levels_before) |>
-    dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) %>%
-    dplyr::rename(.name = tidyselect::all_of("value_name"), .label = tidyselect::all_of("value_label")) %>%
+    dplyr::filter(as.character(.data$.from) %in% levels_before) |>
+    dplyr::distinct(dplyr::across(tidyselect::all_of(c(".from", ".to")))) %>%
     stats::na.omit()
 
   if (nrow(codes) > 0) {
     data <- data %>%
-      dplyr::mutate(.name = !!col ) %>%
-      dplyr::left_join(codes, by = ".name") %>%
-      dplyr::mutate(!!col := dplyr::coalesce(.data$.label, .data$.name))
-
-    data <- data |>
-      dplyr::mutate(!!col := factor(!!col, levels=codes$.label))
-
-    data <- data %>%
-      dplyr::select(-tidyselect::all_of(c(".name", ".label")))
+      dplyr::mutate(.from = as.character(!!col)) %>%
+      dplyr::left_join(codes, by = ".from") %>%
+      dplyr::mutate(!!col := dplyr::coalesce(.data$.to, .data$.from)) |>
+      dplyr::mutate(!!col := factor(!!col, levels=codes$.to)) |>
+      dplyr::select(-tidyselect::all_of(c(".from", ".to")))
   }
 
   data
@@ -429,9 +396,14 @@ get_title <- function(data, cols) {
     labels <- dplyr::select(data, {{ cols }}) %>% colnames()
   }
 
-  labels %>%
-    get_prefix() %>%
-    trim_label()
+  prefix <- get_prefix(labels)
+  prefix <- trim_label(prefix)
+
+  if (prefix == "") {
+    prefix <- labels[[1]]
+  }
+
+  prefix
 }
 
 #' Get the numeric range from the labels
@@ -539,8 +511,16 @@ get_direction <- function(data, cols, extract = TRUE) {
 #' @param x Character vector
 #' @param ignore.case Whether case matters (default)
 #' @param trim Whether non alphabetic characters should be trimmed
+#' @param delimiters A list of prefix delimiters.
+#'                   If any of the delimiters is present in the extracted prefix,
+#'                   the part after is removed from the prefix.
+#'                   Consider the following two items as an example:
+#'                   \code{c("Usage: in private context", "Usage: in work context")}.
+#'                   The common prefix would be \preformatted{"Usage: in "}, but it makes
+#'                   more sense to break it after the colon.
 #' @return The longest common prefix of the strings
-get_prefix <- function(x, ignore.case = FALSE, trim = FALSE) {
+get_prefix <- function(x, ignore.case = FALSE, trim = FALSE, delimiters= c(":","\n")) {
+
   x <- as.character(x)
   if (ignore.case) {
     x <- toupper(x)
@@ -555,19 +535,25 @@ get_prefix <- function(x, ignore.case = FALSE, trim = FALSE) {
     return (x)
   }
 
+  prefix <- ""
   nc <- nchar(x, type = "char")
   for (i in 1:min(nc)) {
     ss <- substr(x, 1, i)
     if (any(ss != ss[1])) {
       prefix <- substr(x[1], 1, i - 1)
-      if (trim) {
-        prefix <- trim_label(prefix)
-      }
-      return(prefix)
+      break
     }
   }
 
-  prefix <- trim_label(substr(x[1], 1, i))
+  #prefix <- trim_label(substr(x[1], 1, i))
+
+  # Break at delimiters
+  for (delimiter in delimiters) {
+    pos <- regexpr(delimiter, prefix, fixed = TRUE)
+    if (pos[1] > 0) {
+      prefix <- substr(prefix, 1, pos[1] - 1)
+    }
+  }
 
   if (trim) {
     prefix <- trim_label(prefix)
@@ -585,11 +571,34 @@ get_prefix <- function(x, ignore.case = FALSE, trim = FALSE) {
 #' @param x A character value
 #' @return The trimmed character value
 trim_label <- function(x) {
-  x <- stringr::str_remove(x, "[: 0_-]*$")
-  x <- stringr::str_remove(x, "^[: _-]*")
+  x <- stringr::str_remove(x, "[: ,0_-]*$")
+  x <- stringr::str_remove(x, "^[: ,_-]*")
   x
 }
 
+#' Remove a prefix from a character vector
+#'
+#' If the resulting character would be empty,
+#' the prefix is returned. At the end, all items
+#' in the vector are trimmed using \link{trim_label}.
+#'
+#' @keywords internal
+#'
+#' @param x A character vector
+#' @param prefix The prefix. Set to TRUE to first extract the prefix.
+#' @return The trimmed character vector
+trim_prefix <- function(x, prefix=TRUE) {
+  if (prefix == TRUE) {
+    prefix <- get_prefix(x, trim=T)
+  }
+
+  if (prefix != "") {
+    x <- stringr::str_remove(x,stringr::fixed(prefix))
+    x = ifelse(x == "", prefix, x)
+  }
+
+  trim_label(x)
+}
 
 
 #' Prepare the scale attribute values

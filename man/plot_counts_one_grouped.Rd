@@ -9,6 +9,7 @@ plot_counts_one_grouped(
   col,
   col_group,
   category = NULL,
+  limits = NULL,
   ordered = NULL,
   missings = FALSE,
   prop = "total",
@@ -30,10 +31,13 @@ plot_counts_one_grouped(
 A character value will focus a selected category.
 When NULL, in case of boolean values, only the TRUE category is plotted.}
 
+\item{limits}{The scale limits, autoscaled by default.
+Set to \code{c(0,100)} to make a 100 \% plot.}
+
 \item{ordered}{Values can be nominal (0) or ordered ascending (1) descending (-1).
 By default (NULL), the ordering is automatically detected.
 An appropriate color scale should be choosen depending on the ordering.
-For unordered values, the default scale is used.
+For unordered values, colors from VLKR_FILLDISCRETE are used.
 For ordered values, shades of the VLKR_FILLGRADIENT option are used.}
 
 \item{missings}{Include missing values (default FALSE)}
