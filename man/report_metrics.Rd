@@ -8,6 +8,7 @@ report_metrics(
   data,
   cols,
   col_group = NULL,
+  cols_cor = NULL,
   ...,
   index = FALSE,
   title = TRUE,
@@ -23,6 +24,9 @@ e.g. a single column (without quotes)
 or multiple columns selected by methods such as starts_with().}
 
 \item{col_group}{Optional, a grouping column (without quotes).}
+
+\item{cols_cor}{Optional, a tidy column selection of metric variables
+to compute correlations (without quotes).}
 
 \item{...}{Parameters passed to the plot and tab functions.}
 
