@@ -7,7 +7,7 @@
 #' By default the value `[NA] nicht beantwortet` is removed from tables and plots
 #'
 #' @keywords internal
-VLKR_NA_LEVELS <- c("[NA] nicht beantwortet")
+VLKR_NA_LEVELS <- c("[NA] nicht beantwortet", "[NA] keine Angabe")
 
 #' Numbers to remove from vectors
 #'
