@@ -71,6 +71,7 @@ tab_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #' @param col_group Optional, a grouping column (without quotes).
 #' @param cols_cor Optional, a tidy column selection of metric variables
 #'                  to compute correlations (without quotes).
+#' @param cor Alternative to setting the cols_cor parameter: set to TRUE to use the cols selection for correlations.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate table function
 #' @return A volker tibble
@@ -81,11 +82,14 @@ tab_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #' tab_metrics(data, sd_age)
 #'
 #' @export
-tab_metrics <- function(data, cols, col_group = NULL, cols_cor = NULL, clean = TRUE, ...) {
+tab_metrics <- function(data, cols, col_group = NULL, cols_cor = NULL, cor = FALSE, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
   # Find columns
+  if (cor == TRUE) {
+    cols_cor <- cols
+  }
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   col_group_eval <- tidyselect::eval_select(expr = enquo(col_group), data = data)
   cols_cor_eval <- tidyselect::eval_select(expr = enquo(cols_cor), data = data)
