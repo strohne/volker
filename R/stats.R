@@ -126,16 +126,18 @@ stat_metrics <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #' @param data A tibble
 #' @param col The column holding factor values
 #' @param clean Prepare data by \link{data_clean}.
+#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_counts}.
 #' @return A volker tibble
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_counts_one(ds, adopter)
+#' stat_counts_one(data, adopter)
 #'
 #' @importFrom rlang .data
-stat_counts_one <- function(data, col, col_group, clean = TRUE, ...) {
+stat_counts_one <- function(data, col, col_group, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   #stop("Not implemented yet")
 
@@ -149,7 +151,7 @@ stat_counts_one <- function(data, col, col_group, clean = TRUE, ...) {
   }
 
   # 4. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{col_group}}))
+  data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
 
 
   # 4. Prepare data
@@ -163,6 +165,7 @@ stat_counts_one <- function(data, col, col_group, clean = TRUE, ...) {
     dplyr::mutate("{{ col }}" := as.character({{ col }})) %>%
     dplyr::mutate(p = .data$n / sum(.data$n))
 
+
   # Calculate params
   total_obs <- sum(result$n)
 
@@ -172,11 +175,24 @@ stat_counts_one <- function(data, col, col_group, clean = TRUE, ...) {
 
   # Confidence Intervals
   result <- result %>%
-    dplyr::mutate(
-      std_error = sqrt(p * (1 - p) / total_obs),
-      ci_lower = p - z * std_error,
-      ci_upper = p + z * std_error
-    )
+  dplyr::mutate(
+    std_error = round(sqrt(p * (1 - p) / total_obs), 2),
+    conf_low = round(p - z * std_error, 2),
+    conf_high = round(p + z * std_error, 2)
+  )
+
+  # Get variable caption from the attributes
+  if (labels) {
+    result <- labs_replace_values(result, {{ col }}, codebook(data, {{ col }}))
+    label <- get_title(data, {{ col }})
+    result <- dplyr::rename(result, {{ label }} := {{ col }})
+
+  }
+
+  # Formatting proportions in percent
+  if (percent) {
+    result <- dplyr::mutate(result, p = paste0(round(.data$p * 100, 0), "%"))
+  }
 
   # Calculate gini coefficent
   # TODO: cumsum and calculation
@@ -254,6 +270,225 @@ stat_counts_one_grouped <- function(data, col, col_group, clean = TRUE, ...) {
 }
 
 
+
+#' Output confidence intervals and effect size for multiple variables
+#'
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures
+#' @param cols Tidyselect item variables (e.g. starts_with...)
+#' @param clean Prepare data by \link{data_clean}.
+#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
+#' @return  A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' stat_counts_items(data, starts_with("cg_adoption_"))
+#'
+#' @importFrom rlang .data
+#'
+stat_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
+
+  # 1. Check parameters
+  check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}))
+
+  # 4. Prepare data
+  result <- data %>%
+    tidyr::drop_na({{ cols }}) %>%
+    labs_clear({{ cols }}) %>%
+    tidyr::pivot_longer(
+      {{ cols }},
+      names_to = "item",
+      values_to = "value"
+    ) %>%
+    dplyr::count(dplyr::across(tidyselect::all_of(c("item", "value")))) %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
+    dplyr::mutate(p = .data$n / sum(.data$n)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(value = as.factor(.data$value)) %>%
+    dplyr::arrange(.data$value)
+
+
+  # # Absolute frequency
+  # value <- "n"
+  # result_n <- result %>%
+  #   dplyr::select("item", "value", !!sym(value)) %>%
+  #   tidyr::pivot_wider(
+  #     names_from = value,
+  #     values_from = !!sym(value),
+  #     values_fill = stats::setNames(list(0), value)
+  #   ) # %>%
+  #   #janitor::adorn_totals("col")
+
+  # Relative frequency
+  # value <- "p"
+  # result_p <- result %>%
+  #   dplyr::select("item", "value", !!sym(value)) %>%
+  #   tidyr::pivot_wider(
+  #     names_from = value,
+  #     values_from = !!sym(value),
+  #     values_fill = stats::setNames(list(0), value)
+  #   )
+
+  # Confidence intervals
+
+  # Calculate Confidence Intervals
+
+  total_obs <- sum(result$n)
+  #
+  num_groups <- nrow(result)
+  #
+  z <- qnorm(1 - (1 - 0.95) / 2)
+  #
+  # Confidence Intervals
+  result <- result %>%
+    dplyr::mutate(
+      std_error = round(sqrt(p * (1 - p) / total_obs), 2),
+      conf_low = round(p - z * std_error, 2),
+      conf_high = round(p + z * std_error, 2)
+    )
+
+  if (percent) {
+    result <- dplyr::mutate(result, p = paste0(round(.data$p * 100, 0), "%"))
+  }
+
+  result <- result %>%
+    dplyr::select("item", "value", "p") %>%
+    tidyr::pivot_wider(
+      names_from = value,
+      values_from = p)
+
+  .to_vlkr_tab(result)
+
+}
+
+
+#' Output confidence intervals and effect size for multiple variables by a grouping variable
+#'
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures and grouping variable
+#' @param cols Tidyselect item variables (e.g. starts_with...)
+#' @param col_group The column holding groups to compare
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' stat_counts_items_grouped(data, starts_with("cg_adoption_"))
+#'
+#' @importFrom rlang .data
+#'
+stat_counts_items_grouped <- function(data, cols, col_group, clean = T, ...) {
+
+  # 1. Check parameters
+  check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}, {{ col_group }}))
+
+  # 4. Calculate confindence intervals
+
+
+}
+
+
+#' Correlate the values in multiple items (Pearson's R)
+#'
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures
+#' @param cols Tidyselect item variables (e.g. starts_with...)
+#' @param cols_cor The target columns or NULL to calculate correlations within the source columns
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' stat_counts_items_grouped(ds, starts_with("cg_adoption_"))
+#'
+#' @importFrom rlang .data
+#'
+stat_counts_items_cor <- function(data, cols, cols_cor, clean = T, ...) {
+
+}
+
+
+#' Output confidence interval of mean for one metric variable
+#'
+#'
+#' @keywords internal
+#'
+#' @param data A tibble
+#' @param col The column holding metric values
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' stat_metrics_one(data, sd_age)
+#'
+#' @export
+#' @importFrom rlang .data
+stat_metrics_one <- function(data, col, clean = T, ... ) {
+
+  # 1. Check parameters
+  check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, {{ col }})
+
+  # 4. Get label
+  label <- get_title(data, {{ col }})
+
+  # 5. Calculate mean and confidence interval
+
+  data <- data |>
+    dplyr::select(av = {{ col }})
+
+  fit <- lm(av ~ 1, data)
+
+  result <- broom::tidy(fit, conf.int = TRUE)
+
+  result <- result |>
+    dplyr::select(mean = estimate, conf.low, conf.high, std.error)
+
+  # Alternative choosing level param
+  # result <- confint(fit, level=level)
+
+  .to_vlkr_tab(result)
+
+}
+
+
+
 #' Output a regression table with estimates and macro statistics
 #'
 #' #TODO: Do we need the digits parameter?
@@ -295,6 +530,8 @@ stat_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, dig
   }
 
   # 3. Remove missings
+  # @JJ: optional param? if missings = FALSE, calculation fails
+
   if (!missings) {
     data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
   }
@@ -332,4 +569,123 @@ stat_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, dig
   )
 
   .to_vlkr_list(result)
+}
+
+
+#' Output test statistics and effect size (Cohen's d) for paired samples
+#'
+#'
+#' @keywords internal
+#'
+#' @param data A tibble
+#' @param cols The column holding metric values
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' stat_metrics_items(data, starts_with("cg_adoption))
+#'
+#'
+#' @importFrom rlang .data
+stat_metrics_items <- function(data, cols, clean = T, ...) {
+
+  # 1. Check parameters
+  check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  #data <- data_rm_missings(data, c({{ cols }}))
+
+  # 4. Calculate means and confidence intervals for items
+
+  result <- data %>%
+    dplyr::select({{ cols }})
+
+
+  # 5. TODO: Anova (multiple items), t-test (two items)
+
+  # Print
+
+  .to_vlkr_tab(result)
+
+}
+
+
+#' Output confindence intervals of group means, F-Statistics and effectsize (Eta^2)
+#'
+#'
+#' @keywords internal
+#'
+#' @param data A tibble
+#' @param cols The item columns that hold the values to summarize
+#' @param col_group The column holding groups to compare and test
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' stat_metrics_items_grouped(data, starts_with("cg_adoption), sd_gender)
+#'
+#'
+#' @importFrom rlang .data
+stat_metrics_items_grouped <- function(data, cols, col_group, clean = T, ...) {
+
+  # 1. Check parameters
+  check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}), {{ col_group}})
+
+}
+
+
+
+#' Output correlation coefficents for items
+#'
+#'
+#' @keywords internal
+#'
+#' @param data A tibble
+#' @param cols The item columns that hold the values to summarize
+#' @param col_group The column holding groups to compare and test
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' stat_metrics_items_grouped(data, starts_with("cg_adoption), sd_gender)
+#'
+#'
+#' @importFrom rlang .data
+
+stat_metrics_items_cor <- function(data, cols, clean = T, ... ) {
+
+  # 1. Check parameters
+  check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}))
+
+
 }

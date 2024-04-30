@@ -204,39 +204,6 @@ plot_counts_one <- function(data, col, category = NULL, limits=NULL, missings = 
   result <- dplyr::mutate(result, value = "TRUE")
   category = "TRUE"
 
-  # 3. Plot
-  # TODO: Make dry, see plot_item_counts and tab_group_counts
-  # pl <- result %>%
-  #   ggplot2::ggplot(ggplot2::aes({{ col }}, y = .data$p / 100)) +
-  #   ggplot2::geom_col() +
-  #
-  #   # TODO: make limits configurable
-  #   # scale_y_continuous(limits =c(0,100), labels=c("0%","25%","50%","75%","100%")) +
-  #
-  #   ggplot2::scale_y_continuous(labels = scales::percent) +
-  #   ggplot2::scale_x_discrete(limits=rev) +
-  #   ggplot2::ylab("Share in percent") +
-  #   ggplot2::coord_flip() +
-  #   ggplot2::theme(
-  #     axis.title.x = ggplot2::element_blank(),
-  #     axis.title.y = ggplot2::element_blank(),
-  #     axis.text.y = ggplot2::element_text(), #size = 11
-  #     legend.title = ggplot2::element_blank(),
-  #     plot.title.position = "plot",
-  #     plot.caption = ggplot2::element_text(hjust = 0),
-  #     plot.caption.position = "plot"
-  #   )
-  #
-  # # Plot numbers
-  # if (!is.null(numbers)) {
-  #   pl <- pl +
-  #     ggplot2::geom_text(
-  #       ggplot2::aes(label = .data$.values),
-  #       position = ggplot2::position_stack(vjust = 0.5),
-  #       color = "white" #size = 3
-  #     )
-  # }
-
   # Title
   if (title == TRUE) {
     title <- get_title(data, {{ col }})
