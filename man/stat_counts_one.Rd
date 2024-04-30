@@ -4,12 +4,26 @@
 \alias{stat_counts_one}
 \title{Output confidence intervals for category shares}
 \usage{
-stat_counts_one(data, col, col_group, clean = TRUE, ...)
+stat_counts_one(
+  data,
+  col,
+  digits = 2,
+  percent = TRUE,
+  labels = TRUE,
+  clean = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{A tibble}
 
 \item{col}{The column holding factor values}
+
+\item{digits}{The number of digits to print}
+
+\item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
+
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
@@ -25,7 +39,7 @@ Output confidence intervals for category shares
 library(volker)
 data <- volker::chatgpt
 
-stat_counts_one(ds, adopter)
+stat_counts_one(data, adopter)
 
 }
 \keyword{internal}

@@ -7,7 +7,7 @@
 plot_counts_one_grouped(
   data,
   col,
-  col_group,
+  cross,
   category = NULL,
   limits = NULL,
   ordered = NULL,
@@ -25,7 +25,7 @@ plot_counts_one_grouped(
 
 \item{col}{The column holding factor values}
 
-\item{col_group}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare}
 
 \item{category}{The value FALSE will force to plot all categories.
 A character value will focus a selected category.

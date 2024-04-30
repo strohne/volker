@@ -7,8 +7,8 @@
 report_metrics(
   data,
   cols,
-  col_group = NULL,
-  cols_cor = NULL,
+  cross = NULL,
+  cor = FALSE,
   ...,
   index = FALSE,
   stats = FALSE,
@@ -24,10 +24,11 @@ report_metrics(
 e.g. a single column (without quotes)
 or multiple columns selected by methods such as starts_with().}
 
-\item{col_group}{Optional, a grouping column (without quotes).}
+\item{cross}{Optional, a grouping or correlation column (without quotes).}
 
-\item{cols_cor}{Optional, a tidy column selection of metric variables
-to compute correlations (without quotes).}
+\item{cor}{When crossing variables, the cross column parameter can contain categorical or metric values.
+By default, the cross column selection is treated as categorical data.
+Set cor to TRUE, to treat is as metric and calculate correlations.}
 
 \item{...}{Parameters passed to the plot and tab functions.}
 

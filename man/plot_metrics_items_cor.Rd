@@ -2,12 +2,12 @@
 % Please edit documentation in R/plots.R
 \name{plot_metrics_items_cor}
 \alias{plot_metrics_items_cor}
-\title{Output averages for multiple variables compared by a grouping variable}
+\title{Scatter plot of correlations between multiple items}
 \usage{
 plot_metrics_items_cor(
   data,
   cols,
-  cols_cor,
+  cross,
   limits = NULL,
   logplot = FALSE,
   negative = FALSE,
@@ -21,6 +21,8 @@ plot_metrics_items_cor(
 \item{data}{A tibble containing item measures}
 
 \item{cols}{Tidyselect item variables (e.g. starts_with...)}
+
+\item{cross}{Tidyselect item variables to correlate (e.g. starts_with...)}
 
 \item{limits}{The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.}
 
@@ -36,20 +38,18 @@ Disable the title with FALSE or provide a custom title as character value.}
 \item{clean}{Prepare data by \link{data_clean}.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.}
-
-\item{col_group}{The column holding groups to compare}
 }
 \value{
 A ggplot object
 }
 \description{
-Output averages for multiple variables compared by a grouping variable
+Scatter plot of correlations between multiple items
 }
 \examples{
 library(volker)
 data <- volker::chatgpt
 
-plot_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_gender)
+plot_metrics_items_cor(data, starts_with("cg_adoption_"), sd_gender)
 
 }
 \keyword{internal}

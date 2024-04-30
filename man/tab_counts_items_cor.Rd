@@ -4,14 +4,14 @@
 \alias{tab_counts_items_cor}
 \title{Correlate the values in multiple items}
 \usage{
-tab_counts_items_cor(data, cols, cols_cor, clean = TRUE, ...)
+tab_counts_items_cor(data, cols, cross, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A tibble}
 
 \item{cols}{The source columns}
 
-\item{cols_cor}{The target columns or NULL to calculate correlations within the source columns}
+\item{cross}{The target columns or NULL to calculate correlations within the source columns}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 

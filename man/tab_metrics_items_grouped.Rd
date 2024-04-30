@@ -7,7 +7,7 @@
 tab_metrics_items_grouped(
   data,
   cols,
-  col_group,
+  cross,
   negative = FALSE,
   values = c("m", "sd"),
   digits = 1,
@@ -21,7 +21,7 @@ tab_metrics_items_grouped(
 
 \item{cols}{The item columns that hold the values to summarize}
 
-\item{col_group}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 

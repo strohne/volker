@@ -4,7 +4,7 @@
 \alias{.report_idx}
 \title{Generate an index table and plot}
 \usage{
-.report_idx(data, cols, col_group, title = TRUE)
+.report_idx(data, cols, cross, title = TRUE)
 }
 \arguments{
 \item{data}{A data frame}
@@ -13,7 +13,7 @@
 e.g. a single column (without quotes)
 or multiple columns selected by methods such as starts_with().}
 
-\item{col_group}{Optional, a grouping column (without quotes).}
+\item{cross}{Optional, a grouping column (without quotes).}
 
 \item{title}{Add a plot title (default = TRUE)}
 }

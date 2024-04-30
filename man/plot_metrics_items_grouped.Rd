@@ -7,7 +7,7 @@
 plot_metrics_items_grouped(
   data,
   cols,
-  col_group,
+  cross,
   limits = NULL,
   negative = FALSE,
   title = TRUE,
@@ -21,7 +21,7 @@ plot_metrics_items_grouped(
 
 \item{cols}{Tidyselect item variables (e.g. starts_with...)}
 
-\item{col_group}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare}
 
 \item{limits}{The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.}
 

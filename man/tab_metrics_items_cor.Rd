@@ -7,7 +7,7 @@
 tab_metrics_items_cor(
   data,
   cols,
-  cols_cor,
+  cross,
   method = "p",
   stats = FALSE,
   labels = TRUE,
@@ -20,7 +20,7 @@ tab_metrics_items_cor(
 
 \item{cols}{The source columns}
 
-\item{cols_cor}{The target columns or NULL to calculate correlations within the source columns}
+\item{cross}{The target columns or NULL to calculate correlations within the source columns}
 
 \item{method}{The output metrics, p = Pearson's R, s = Spearman's rho}
 

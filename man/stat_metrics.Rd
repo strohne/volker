@@ -4,7 +4,7 @@
 \alias{stat_metrics}
 \title{Output effect sizes and regression model parameters}
 \usage{
-stat_metrics(data, cols, col_group = NULL, clean = TRUE, ...)
+stat_metrics(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A data frame}
@@ -13,7 +13,11 @@ stat_metrics(data, cols, col_group = NULL, clean = TRUE, ...)
 e.g. a single column (without quotes)
 or multiple columns selected by methods such as starts_with().}
 
-\item{col_group}{Optional, a grouping column (without quotes).}
+\item{cross}{Optional, a grouping column (without quotes).}
+
+\item{cor}{When crossing variables, the cross column parameter can contain categorical or metric values.
+By default, the cross column selection is treated as categorical data.
+Set cor to TRUE, to treat is as metric and calculate correlations.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 

@@ -7,6 +7,7 @@
 tab_counts_one(
   data,
   col,
+  ci = FALSE,
   missings = TRUE,
   percent = TRUE,
   labels = TRUE,
@@ -18,6 +19,8 @@ tab_counts_one(
 \item{data}{A tibble}
 
 \item{col}{The column holding values to count}
+
+\item{ci}{Whether to compute confidence intervals}
 
 \item{missings}{Include missing values in the output (default TRUE)}
 
@@ -33,7 +36,7 @@ tab_counts_one(
 A volker tibble
 }
 \description{
-Output a frequency table for the values in one column
+TODO: option to choose from prop.test or binom.test
 }
 \examples{
 library(volker)

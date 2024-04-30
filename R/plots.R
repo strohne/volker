@@ -11,7 +11,10 @@
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with()
-#' @param col_group Optional, a grouping column. The column name without quotes.
+#' @param cross Optional, a grouping column. The column name without quotes.
+#' @param cor When crossing variables, the cross column parameter can contain categorical or metric values.
+#'            By default, the cross column selection is treated as categorical data.
+#'            Set cor to TRUE, to treat is as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate plot function
 #' @return A ggplot2 plot object
@@ -22,35 +25,36 @@
 #' plot_counts(data, sd_gender)
 #'
 #' @export
-plot_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
+plot_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
-  col_group_eval <- tidyselect::eval_select(expr = enquo(col_group), data = data)
+  col_group_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   is_items <- length(cols_eval) > 1
   is_grouped <- length(col_group_eval)== 1
+  is_cor <- cor
 
   # Single variables
   if (!is_items && !is_grouped) {
     plot_counts_one(data, {{ cols }}, ...)
   }
-  else if (!is_items && is_grouped) {
-    plot_counts_one_grouped(data, {{ cols }}, {{ col_group }}, ...)
+  else if (!is_items && is_grouped && !is_cor) {
+    plot_counts_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
 
   # Items
   else if (is_items && !is_grouped) {
     plot_counts_items(data, {{ cols }} , ...)
   }
-  else if (is_items && is_grouped) {
-    plot_counts_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
+  else if (is_items && is_grouped && !is_cor) {
+    plot_counts_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
 
   # Not found
   else {
-    stop("Check your parameters: the column selection is not supported by volker functions.")
+    stop("Check your parameters: the column selection is not yet supported by volker functions.")
   }
 
 }
@@ -67,10 +71,10 @@ plot_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
-#' @param col_group Optional, a grouping column (without quotes).
-#' @param cols_cor Optional, a tidy column selection of metric variables
-#'                  to compute correlations (without quotes).
-#' @param cor Alternative to setting the cols_cor parameter: set to TRUE to use the cols selection for correlations.
+#' @param cross Optional, a grouping column (without quotes).
+#' @param cor When crossing variables, the cross column parameter can contain categorical or metric values.
+#'            By default, the cross column selection is treated as categorical data.
+#'            Set cor to TRUE, to treat is as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate plot function
 #' @return A ggplot object
@@ -81,28 +85,27 @@ plot_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #' plot_metrics(data, sd_age)
 #'
 #' @export
-plot_metrics <- function(data, cols, col_group = NULL, cols_cor = NULL, cor = FALSE, clean = TRUE, ...) {
+plot_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
   # Find columns
-  if (cor == TRUE) {
-    cols_cor <- {{ cols }}
-  }
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
-  col_group_eval <- tidyselect::eval_select(expr = enquo(col_group), data = data)
-  cols_cor_eval <- tidyselect::eval_select(expr = enquo(cols_cor), data = data)
+  cols_cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
   is_items <- length(cols_eval) > 1
-  is_grouped <- length(col_group_eval)== 1
-  is_cor <-length(cols_cor_eval) > 0
+  is_grouped <- length(cols_cross_eval)== 1
+  is_cor <-cor
 
   # Single variables
   if (!is_items && !is_grouped && !is_cor) {
     plot_metrics_one(data, {{ cols }}, ...)
   }
-  else if (!is_items && is_grouped&& !is_cor) {
-    plot_metrics_one_grouped(data, {{ cols }}, {{ col_group }}, ...)
+  else if (!is_items && is_grouped && !is_cor) {
+    plot_metrics_one_grouped(data, {{ cols }}, {{ cross }}, ...)
+  }
+  else if (!is_items && is_grouped && is_cor) {
+    plot_metrics_one_cor(data, {{ cols }}, {{ cross }}, ...)
   }
 
   # Items
@@ -110,16 +113,12 @@ plot_metrics <- function(data, cols, col_group = NULL, cols_cor = NULL, cor = FA
     plot_metrics_items(data, {{ cols }} , ...)
   }
   else if (is_items && is_grouped && !is_cor) {
-    plot_metrics_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
-  }
-
-  else if (is_cor) {
-    plot_metrics_items_cor(data, {{ cols }}, {{ cols_cor }},  ...)
+    plot_metrics_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
 
   # Not found
   else {
-    stop("Check your parameters: the column selection is not supported by volker functions.")
+    stop("Check your parameters: the column selection is not yet supported by volker functions.")
   }
 
 }
@@ -135,6 +134,7 @@ plot_metrics <- function(data, cols, col_group = NULL, cols_cor = NULL, cor = FA
 #' @param category The value FALSE will force to plot all categories.
 #'                  A character value will focus a selected category.
 #'                  When NULL, in case of boolean values, only the TRUE category is plotted.
+#' @param ci Whether to plot error bars for 95%-confidence-intervals.
 #' @param limits The scale limits, autoscaled by default.
 #'               Set to \code{c(0,100)} to make a 100 % plot.
 #'               If the data is binary or focused on a single category, by default a 100% plot is created.
@@ -154,7 +154,7 @@ plot_metrics <- function(data, cols, col_group = NULL, cols_cor = NULL, cor = FA
 #'
 #' @importFrom rlang .data
 #' @export
-plot_counts_one <- function(data, col, category = NULL, limits=NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits=NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   # Check columns
@@ -175,6 +175,18 @@ plot_counts_one <- function(data, col, category = NULL, limits=NULL, missings = 
     dplyr::count({{ col }}) %>%
     dplyr::mutate(p = (.data$n / sum(.data$n)) * 100)
 
+  # 5. Confidence intervals
+  if (ci) {
+    n_total <- sum(result$n)
+    result <- result |>
+      dplyr::rowwise() |>
+      dplyr::mutate(.test = list(stats::prop.test(.data$n, n_total))) |>
+      dplyr::mutate(
+        ci.low = .test$conf.int[1],
+        ci.high = .test$conf.int[2]
+      ) |>
+      dplyr::select(-tidyselect::all_of(c(".test")))
+  }
 
   # Numbers
   result <- result %>%
@@ -230,6 +242,7 @@ plot_counts_one <- function(data, col, category = NULL, limits=NULL, missings = 
   .plot_bars(
     result,
     category = category,
+    ci = ci,
     scale = 0,
     limits=limits,
     numbers = numbers,
@@ -246,7 +259,7 @@ plot_counts_one <- function(data, col, category = NULL, limits=NULL, missings = 
 #'
 #' @param data A tibble
 #' @param col The column holding factor values
-#' @param col_group The column holding groups to compare
+#' @param cross The column holding groups to compare
 #' @param ordered Values can be nominal (0) or ordered ascending (1) descending (-1).
 #'                By default (NULL), the ordering is automatically detected.
 #'                An appropriate color scale should be choosen depending on the ordering.
@@ -277,12 +290,12 @@ plot_counts_one <- function(data, col, category = NULL, limits=NULL, missings = 
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_one_grouped <- function(data, col, col_group, category = NULL, limits=NULL, ordered = NULL, missings = FALSE, prop = "total", numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits=NULL, ordered = NULL, missings = FALSE, prop = "total", numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
-  check_has_column(data, {{ col_group }})
+  check_has_column(data, {{ cross }})
 
   # 2. Clean
   if (clean) {
@@ -292,21 +305,21 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, limit
   # Swap columns
   if (prop == "cols") {
     col <- rlang::enquo(col)
-    col_group <- rlang::enquo(col_group)
+    cross <- rlang::enquo(cross)
     col_temp <- col
-    col <- col_group
-    col_group <- col_temp
+    col <- cross
+    cross <- col_temp
     #stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
   }
 
   # 3. Remove missings
   if (!missings) {
-    data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
+    data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
   }
 
   # 4. Calculate data
   result <- data %>%
-    dplyr::count({{ col }}, {{ col_group }})
+    dplyr::count({{ col }}, {{ cross }})
 
 
   # 4. Set labels
@@ -315,13 +328,13 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, limit
 
 
   result <- result %>%
-    dplyr::mutate(item = as.factor({{ col_group }})) |>
+    dplyr::mutate(item = as.factor({{ cross }})) |>
     dplyr::mutate(value = factor({{ col }}))
     #dplyr::mutate(value = factor({{ col }}, levels = categories))
 
   if ((prop == "rows") || (prop == "cols")) {
     result <- result %>%
-      dplyr::group_by({{ col_group }}) %>%
+      dplyr::group_by({{ cross }}) %>%
       dplyr::mutate(p = (.data$n / sum(.data$n)) * 100) %>%
       dplyr::ungroup()
   } else {
@@ -342,7 +355,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, limit
 
   if (labels) {
     result <- labs_replace(result, "value", codebook(data, {{ col }}))
-    result <- labs_replace(result, "item", codebook(data, {{ col_group }}))
+    result <- labs_replace(result, "item", codebook(data, {{ cross }}))
   }
 
 
@@ -383,6 +396,40 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, limit
   )
 }
 
+#' Plot correlation of categories with one metric column
+#'
+#' @keywords internal
+#'
+#' @param data A tibble
+#' @param col The column holding factor values
+#' @param cross The metric column
+#' @param limits The scale limits, autoscaled by default.
+#'               Set to \code{c(0,100)} to make a 100 % plot.
+#' @param ordered Values can be nominal (0) or ordered ascending (1) descending (-1).
+#'                By default (NULL), the ordering is automatically detected.
+#'                An appropriate color scale should be choosen depending on the ordering.
+#'                For unordered values, colors from VLKR_FILLDISCRETE are used.
+#'                For ordered values, shades of the VLKR_FILLGRADIENT option are used.
+#' @param missings Include missing values (default FALSE)
+#' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
+#' @return A ggplot object
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_counts_one_cor(data, adopter, sd_gender)
+#'
+#' @export
+#' @importFrom rlang .data
+plot_counts_one_cor <- function(data, col, cross, limits=NULL, ordered = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  stop("Not implemented yet")
+}
+
 #' Output frequencies for multiple variables
 #'
 #' TODO: move missings to the end
@@ -394,6 +441,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, limit
 #' @param category The value FALSE will force to plot all categories.
 #'                  A character value will focus a selected category.
 #'                  When NULL, in case of boolean values, only the TRUE category is plotted.
+#' @param ci Whether to plot error bars for 95%-confidence-intervals.
 #' @param ordered Values can be nominal (0) or ordered ascending (1) descending (-1).
 #'                By default (NULL), the ordering is automatically detected.
 #'                An appropriate color scale should be choosen depending on the ordering.
@@ -417,7 +465,7 @@ plot_counts_one_grouped <- function(data, col, col_group, category = NULL, limit
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, limits = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_items <- function(data, cols, category = NULL, ci = FALSE, ordered = NULL, limits = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -453,6 +501,20 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, limit
     category <- "TRUE"
   }
 
+  # Confidence intervals
+  if (ci) {
+    result <- result |>
+      dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
+      dplyr::mutate(.test = purrr::map(.data$n, function(x) stats::prop.test(x, sum(.data$n)))) |>
+      dplyr::mutate(
+        ci.low =purrr::map_dbl(.test, function(x) x$conf.int[1]),
+        ci.high =purrr::map_dbl(.test, function(x) x$conf.int[2]),
+      ) |>
+      dplyr::select(-tidyselect::all_of(c(".test"))) |>
+      dplyr::ungroup()
+  }
+
+  # Numbers on the plot
   scale <- dplyr::coalesce(ordered, get_direction(data, {{ cols }}))
   lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
 
@@ -494,6 +556,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, limit
   .plot_bars(
     result,
     category = category,
+    ci = ci,
     scale = scale,
     limits=limits,
     numbers = numbers,
@@ -510,25 +573,28 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, limit
 #'
 #' @param data A tibble
 #' @param cols The item columns that hold the values to summarize
-#' @param col_group The column holding groups to compare
+#' @param cross The column holding groups to compare
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object
 #' @importFrom rlang .data
-plot_counts_items_grouped <- function(data, cols, col_group, clean = TRUE, ...) {
+plot_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
   stop("Not implemented yet")
+}
 
-  # 1. Check parameters
-  check_is_dataframe(data)
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-
-  # 3. Remove missings
-    data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
-  }
-
+#' Correlate categorical items with a metric column
+#'
+#' @keywords internal
+#'
+#' @param data A tibble
+#' @param cols The item columns that hold the values to summarize
+#' @param cross The column holding metric values to correlate
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
+#' @return A ggplot object
+#' @importFrom rlang .data
+plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
+  stop("Not implemented yet")
 }
 
 #' Output a histogram for a single metric variable
@@ -566,18 +632,55 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
 
   # 3. Recode negative values to NA
   if (!negative) {
-    data <- data_rc_negatives(data, {{ col }})
+    data <- data_rm_negatives(data, {{ col }})
   }
 
   # 4. Remove missings
   data <- data_rm_missings(data, {{ col }})
 
+
+  # Extract the maximum density value
+  max_density <- data %>%
+    ggplot2::ggplot(ggplot2::aes({{ col }})) +
+    ggplot2::geom_density() +
+    #ggplot2::stat_density(aes(y = after_stat(density)), geom = "point", color = "transparent") +
+    ggplot2::theme_void()
+
+  max_density <- ggplot2::ggplot_build(max_density)$data[[1]]$y %>% max()
+
   # TODO: make configurable: density, boxplot or histogram
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes({{ col }})) +
-    # geom_histogram(fill=VLKR_FILLCOLOR, bins=20)
     ggplot2::geom_density() +
-    ggplot2::geom_vline(ggplot2::aes(xintercept=mean({{ col }})), color="black")
+
+    ggplot2::stat_summary(
+      fun.data = ggplot2::mean_cl_normal,
+      aes(x= {{ col }}, y=max_density / 2),
+      width= max_density / 20,
+      orientation ="y",
+      geom = "errorbar",
+      color = "black"
+    ) +
+
+    ggplot2::geom_point(
+      aes(x= mean({{ col }}), y = max_density / 2),
+      size=4,
+      shape=18,
+      color = "black"
+    )
+
+
+    # ggplot2::stat_summary(
+    #   fun.data = mean,
+    #   aes(x= {{ col }}, y = max_density / 2),
+    #   orientation ="x",
+    #   geom = "point",
+    #   size=4,
+    #   shape=18,
+    #   color = "maroon"
+    # )
+
+    #ggplot2::geom_vline(ggplot2::aes(xintercept=mean({{ col }})), color="black")
 
   # Get title
   if (title == TRUE) {
@@ -618,7 +721,9 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
 #'
 #' @param data A tibble containing item measures
 #' @param col The column holding metric values
-#' @param col_group The column holding groups to compare
+#' @param cross The column holding groups to compare
+#' @param ci Whether to add error bars with 95%-confidence-intervals
+#' @param box Whether to add boxplots
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param numbers numbers to print on labels, 'n' for group size
@@ -637,12 +742,12 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negative = FALSE, numbers = NULL, bars = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, limits = NULL, negative = FALSE, numbers = NULL, bars = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
-  check_has_column(data, {{ col_group }})
+  check_has_column(data, {{ cross }})
 
   # 2. Clean
   if (clean) {
@@ -651,17 +756,17 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 
   # Recode negative values to NA
   if (!negative) {
-    data <- data_rc_negatives(data, {{ col }})
+    data <- data_rm_negatives(data, {{ col }})
   }
 
   # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
 
   # 4. Add n to labels
   if (!is.null(numbers)) {
 
     categories_n <- data |>
-      dplyr::rename(value_name = {{ col_group }}) |>
+      dplyr::rename(value_name = {{ cross }}) |>
       dplyr::count(value_name) |>
       mutate(value_label = paste0(
         stringr::str_wrap(value_name, width = 40), "\n",
@@ -670,7 +775,7 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 
     data <- data |>
       labs_replace_values(
-        {{ col_group }},
+        {{ cross }},
         categories_n
       )
   }
@@ -703,18 +808,165 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 
   # Rename
   data <- data %>%
-    dplyr::mutate(item = as.factor({{ col_group }})) |>
+    dplyr::mutate(item = as.factor({{ cross }})) |>
     dplyr::mutate(value = ({{ col }}))
 
   # Plot
   .plot_lines(
     data,
     scale = scale,
-    bars = bars,
+    ci = ci,
+    box = box,
     base = paste0("n=", nrow(data)),
     title = title
   )
 
+}
+
+#' Correlate two items
+#'
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures
+#' @param col The first column holding metric values
+#' @param cross The second column holding metric values
+#' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
+#' @param logplot Whether to plot log scales.
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
+#' @return A ggplot object
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_metrics_one_cor(data, starts_with("cg_adoption_"), sd_gender)
+#'
+#' @export
+#' @importFrom rlang .data
+plot_metrics_one_cor <- function(data, col, cross, limits = NULL, logplot = FALSE, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+
+  # 1. Check parameters
+  check_is_dataframe(data)
+  check_has_column(data, {{ col }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove negatives
+  if (!negative) {
+    data <- data_rm_negatives(data, {{ col }})
+    data <- data_rm_negatives(data, {{ cross }})
+  }
+
+  # 4. Remove missings
+  data <- data_rm_missings(data, {{ col }})
+  data <- data_rm_missings(data, {{ cross }})
+
+  # 5. Remove 0 values in log plots
+  if (logplot) {
+    data <- data_rm_zeros(data, {{ col }})
+    data <- data_rm_zeros(data, {{ cross }})
+  }
+
+  # 6. Get column positions
+  cols_eval <- tidyselect::eval_select(expr = rlang::enquo(col), data = data)
+  cross_eval <- tidyselect::eval_select(expr = rlang::enquo(cross), data = data)
+
+
+  # Get first cols
+  col1 <- colnames(data)[cols_eval[1]]
+  col2 <- colnames(data)[cross_eval[1]]
+
+  # if (is.null(limits)) {
+  #   limits <- get_limits(data, {{ cols }})
+  # }
+
+  # Replace item labels
+  # if (labels) {
+  #   result <- labs_replace(
+  #     result, "item",
+  #     codebook(data, {{ cols }}),
+  #     "item_name", "item_label"
+  #   )
+  # }
+
+  # Remove common item prefix
+  #prefix <- get_prefix(data$item, trim=TRUE)
+  prefix <- ""
+  # result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
+
+  # Order item levels
+  # result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
+
+  pl <- data %>%
+    ggplot2::ggplot(ggplot2::aes(
+      x=.data[[col1]],
+      y=.data[[col2]],)
+    ) +
+    ggplot2::geom_point(size=3, alpha=VLKR_SCATTER_ALPHA)
+
+  if (logplot == TRUE) {
+    pl <- pl +
+      ggplot2::scale_x_log10() +
+      ggplot2::scale_y_log10()
+  }
+
+  # # Set the scale
+  # # TODO: get from attributes
+  # scale <- data %>%
+  #   codebook({{ cols }}) %>%
+  #   dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) %>%
+  #   prepare_scale()
+  #
+  # if (length(scale) > 0) {
+  #   pl <- pl +
+  #     ggplot2::scale_y_continuous(labels = ~ label_scale(., scale) )
+  # } else {
+  #   pl <- pl +
+  #     ggplot2::scale_y_continuous()
+  # }
+  #
+  # # Add scales, labels and theming
+  pl <- pl +
+    #   ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
+    #   ggplot2::scale_color_manual(
+    #     values = vlkr_colors_discrete(length(unique(result$group))),
+    #     labels = function(x) stringr::str_wrap(x, width = 40)
+    #     #guide = ggplot2::guide_legend(reverse = TRUE)
+    #   ) +
+    #   #ggplot2::scale_color_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +
+    #
+    #   ggplot2::ylab("Mean values") +
+    #   ggplot2::coord_flip(ylim = limits) +
+    ggplot2::theme(
+      plot.caption = ggplot2::element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position = "plot"
+    )
+
+  # Add title
+  if (title == TRUE) {
+    title <- trim_label(prefix)
+  } else if (title == FALSE) {
+    title <- NULL
+  }
+  if (!is.null(title)) {
+    pl <- pl + ggplot2::ggtitle(label = title)
+  }
+
+  # Add base
+  base_n <- nrow(data)
+  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
+
+  # Convert to vlkr_plot
+  .to_vlkr_plot(pl)
 }
 
 #' Output averages for multiple variables
@@ -723,6 +975,8 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
+#' @param ci Whether to plot the confidence interval of the mean
+#' @param box Whether to add boxplots
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
@@ -738,9 +992,10 @@ plot_metrics_one_grouped <- function(data, col, col_group, limits = NULL, negati
 #' plot_metrics_items(data, starts_with("cg_adoption_"))
 #'
 #' @export
-plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
+  check_has_column(data, {{ cols }})
 
   # 2. Clean
    if (clean) {
@@ -749,7 +1004,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, titl
 
   # Recode negative values to NA
   if (!negative) {
-    data <- data_rc_negatives(data, c({{ cols }}))
+    data <- data_rm_negatives(data, c({{ cols }}))
   }
 
   # 3. Remove missings
@@ -804,6 +1059,8 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, titl
 
   .plot_lines(
     result,
+    ci = ci,
+    box = box,
     scale = scale,
     base = paste0("n=", base_n, "; multiple responses possible"),
     title = title
@@ -817,7 +1074,7 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, titl
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param col_group The column holding groups to compare
+#' @param cross The column holding groups to compare
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
@@ -834,10 +1091,10 @@ plot_metrics_items <- function(data, cols, limits = NULL, negative = FALSE, titl
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
-  check_has_column(data, {{ col_group }})
+  check_has_column(data, {{ cross }})
 
   # 2. Clean
   if (clean) {
@@ -846,20 +1103,20 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 
   # Recode negative values to NA
   if (!negative) {
-    data <- data_rc_negatives(data, c({{ cols }}))
+    data <- data_rm_negatives(data, c({{ cols }}))
   }
 
   # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
 
 
   # 4. Calculate
   # Get positions of group cols
-  col_group <- tidyselect::eval_select(expr = rlang::enquo(col_group), data = data)
+  cross <- tidyselect::eval_select(expr = rlang::enquo(cross), data = data)
 
   # Grouped means
   result <- map(
-    col_group,
+    cross,
     function(col) {
       col <- names(data)[col]
 
@@ -966,13 +1223,13 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
   .to_vlkr_plot(pl)
 }
 
-#' Output averages for multiple variables compared by a grouping variable
+#' Scatter plot of correlations between multiple items
 #'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param col_group The column holding groups to compare
+#' @param cross Tidyselect item variables to correlate (e.g. starts_with...)
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
 #' @param logplot Whether to plot log scales.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
@@ -986,14 +1243,14 @@ plot_metrics_items_grouped <- function(data, cols, col_group, limits = NULL, neg
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' plot_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_gender)
+#' plot_metrics_items_cor(data, starts_with("cg_adoption_"), sd_gender)
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_items_cor <- function(data, cols, cols_cor, limits = NULL, logplot=FALSE, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot=FALSE, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
-  check_has_column(data, {{ cols_cor }})
+  check_has_column(data, {{ cross }})
 
   # 2. Clean
   if (clean) {
@@ -1003,23 +1260,23 @@ plot_metrics_items_cor <- function(data, cols, cols_cor, limits = NULL, logplot=
   # TODO: warn if any negative values were recoded
   if (!negative) {
     data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. < 0, NA, .)))
-    data <- dplyr::mutate(data, dplyr::across({{ cols_cor }}, ~ dplyr::if_else(. < 0, NA, .)))
+    data <- dplyr::mutate(data, dplyr::across({{ cross }}, ~ dplyr::if_else(. < 0, NA, .)))
   }
 
   # Remove 0 values in log plots
   if (logplot) {
     data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. == 0, NA, .)))
-    data <- dplyr::mutate(data, dplyr::across({{ cols_cor }}, ~ dplyr::if_else(. == 0, NA, .)))
+    data <- dplyr::mutate(data, dplyr::across({{ cross }}, ~ dplyr::if_else(. == 0, NA, .)))
   }
 
   # Drop missings
   # TODO: Report missings
-  data <- tidyr::drop_na(data, {{ cols }}, {{ cols_cor }})
+  data <- tidyr::drop_na(data, {{ cols }}, {{ cross }})
 
 
   # 3. Calculate
   # Get number and positions of cols
-  cols_cor_eval <- tidyselect::eval_select(expr = rlang::enquo(cols_cor), data = data)
+  cols_cor_eval <- tidyselect::eval_select(expr = rlang::enquo(cross), data = data)
   cols_eval <- tidyselect::eval_select(expr = rlang::enquo(cols), data = data)
 
   # Get first cols
@@ -1114,10 +1371,13 @@ plot_metrics_items_cor <- function(data, cols, cols_cor, limits = NULL, logplot=
 
 #' Helper function: plot grouped bar chart
 #'
+#' TODO: ci with stacked bar charts (where category is different from NULL)
+#'
 #' @keywords internal
 #'
 #' @param data Dataframe with the columns item, value, p, n
 #' @param category Category for filtering the dataframe
+#' @param ci Whether to plot error bars for 95%-confidence-intervals. Provide the columns ci.low and ci.high in data.
 #' @param scale Direction of the scale: 0 = no direction for categories,
 #'              -1 = descending or 1 = ascending values.
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
@@ -1125,7 +1385,7 @@ plot_metrics_items_cor <- function(data, cols, cols_cor, limits = NULL, logplot=
 #' @param base The plot base as character or NULL.
 #' @return A ggplot object
 #' @importFrom rlang .data
-.plot_bars <- function(data, category = NULL, scale = NULL, limits=NULL, numbers = NULL, base = NULL, title = NULL) {
+.plot_bars <- function(data, category = NULL, ci = FALSE, scale = NULL, limits=NULL, numbers = NULL, base = NULL, title = NULL) {
 
   if (!is.null(category)) {
     data <- dplyr::filter(data, .data$value == category)
@@ -1140,11 +1400,27 @@ plot_metrics_items_cor <- function(data, cols, cols_cor, limits = NULL, logplot=
       dplyr::mutate(value = forcats::fct_rev(.data$value))
   }
 
+  # ci offset
+  # data <- data |>
+  #   dplyr::group_by(.data$item) |>
+  #   dplyr::arrange(dplyr::desc(.data$value)) |>
+  #   mutate(p_cum = cumsum((.data$p - dplyr::first(.data$p)) / 100)) |>
+  #   dplyr::ungroup()
 
   pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(.data$item, y = .data$p / 100, fill = .data$value, group = .data$value)) +
-    ggplot2::geom_col() +
+    ggplot2::ggplot(ggplot2::aes(x = .data$item, y = .data$p / 100, fill = .data$value, group = .data$value)) +
+    ggplot2::geom_col()
 
+  if (ci && !is.null(category)) {
+    pl <- pl +
+      ggplot2::geom_errorbar(
+        #aes(ymin = .data$p_cum + .data$ci.low, ymax = .data$p_cum + .data$ci.high),
+        aes(ymin = .data$ci.low, ymax = .data$ci.high),
+        width = 0.1, color = "black"
+        )
+  }
+
+  pl <- pl +
     ggplot2::scale_y_continuous(labels = scales::percent, limits=limits) +
     ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
 
@@ -1219,55 +1495,82 @@ plot_metrics_items_cor <- function(data, cols, cols_cor, limits = NULL, logplot=
 #' @keywords internal
 #'
 #' @param data Dataframe with the columns item, value
+#' @param ci Whether to plot confidence intervals of the means
 #' @param scale ???
+#' @param box Whether to add boxplots
 #' @param title The plot title as character or NULL
 #' @param base The plot base as character or NULL.
 #' @return A ggplot object
 #' @importFrom rlang .data
-.plot_lines <- function(data, scale = NULL, bars=NULL, base = NULL, title = NULL) {
+.plot_lines <- function(data, ci = FALSE, scale = NULL, box=FALSE, base = NULL, title = NULL) {
 
   pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(y=.data$item, x=.data$value, group=1)) +
+    ggplot2::ggplot(ggplot2::aes(y=.data$item, x=.data$value, group=1))
     #ggplot2::geom_point(size=3, shape=18)
     #ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
-    ggplot2::stat_summary(fun = mean, geom="line") +
-    ggplot2::stat_summary(fun = mean, geom="point", size=4, shape=18)
 
 
-  # Error bars or box plot
-  if (is.null(bars)) {
-    # Do nothing
-  }
-  else if (bars == "box") {
+  if (box) {
     pl <- pl + ggplot2::geom_boxplot(
       aes(group=item),
       fill="transparent", color="darkgray"
     )
   }
-  else if (bars == "ci") {
-    pl <- pl + ggplot2::stat_summary(
+
+  if (ci) {
+    pl <- pl +
+      ggplot2::stat_summary(
       geom = "errorbar",
       fun.data = ggpubr::mean_ci,
       orientation ="y",
+      width=0.2,
+      linewidth=1,
       colour = VLKR_POINTCOLOR
     )
   }
-  else if (bars == "se") {
-    pl <- pl + ggplot2::stat_summary(
-      geom = "errorbar",
-      fun.data = ggpubr::mean_se_,
-      orientation ="y",
-      colour = VLKR_POINTCOLOR
-    )
+
+  if (!box && !ci) {
+    pl <- pl +
+      ggplot2::stat_summary(fun = mean, geom="line")
   }
-  else if (bars == "sd") {
-    pl <- pl + ggplot2::stat_summary(
-      geom = "errorbar",
-      fun.data = ggpubr::mean_sd,
-      orientation ="y",
-      colour = VLKR_POINTCOLOR
-    )
-  }
+
+  pl <- pl + ggplot2::stat_summary(fun = mean, geom="point", size=4, shape=18)
+
+
+  # Error bars or box plot
+  # if (is.null(bars)) {
+  #   # Do nothing
+  # }
+  # else if (bars == "box") {
+  #   pl <- pl + ggplot2::geom_boxplot(
+  #     aes(group=item),
+  #     fill="transparent", color="darkgray"
+  #   )
+  # }
+  # else if (bars == "ci") {
+  #   pl <- pl + ggplot2::stat_summary(
+  #     geom = "errorbar",
+  #     fun.data = ggpubr::mean_ci,
+  #     orientation ="y",
+  #     colour = VLKR_POINTCOLOR
+  #   )
+  # }
+  # else if (bars == "se") {
+  #   pl <- pl + ggplot2::stat_summary(
+  #     geom = "errorbar",
+  #     fun.data = ggpubr::mean_se_,
+  #     orientation ="y",
+  #     colour = VLKR_POINTCOLOR
+  #   )
+  # }
+  # else if (bars == "sd") {
+  #   pl <- pl + ggplot2::stat_summary(
+  #     geom = "errorbar",
+  #     fun.data = ggpubr::mean_sd,
+  #     orientation ="y",
+  #     colour = VLKR_POINTCOLOR
+  #   )
+  # }
 
   if (length(scale) > 0) {
     pl <- pl +

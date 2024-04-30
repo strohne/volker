@@ -120,28 +120,50 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
 #' @return Data frame
 data_rm_missings <- function(data, cols) {
 
-  missings <- sum(is.na(dplyr::select(data, {{ cols }})))
+  cases <- sum(is.na(dplyr::select(data, {{ cols }})))
 
-  if (missings > 0) {
-    message(paste0(missings, " missing values have been removed."))
+  if (cases > 0) {
+    data <- tidyr::drop_na(data, {{ cols }})
+    message(paste0(cases, " missing values have been removed."))
   }
 
-  tidyr::drop_na(data, {{ cols }})
+  data
 }
 
+#' Remove zero values, drop missings and output a message
+#'
+#' @keywords internal
+#'
+#' @param data Data frame
+#' @param cols A tidy column selection
+#' @return Data frame
+data_rm_zeros <- function(data, cols) {
 
-#' Recode negatives and output a warning
+  cases <- sum(dplyr::select(data, {{ cols }}) == 0)
+
+  if (cases > 0) {
+    data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. == 0, NA, .)))
+    data <- tidyr::drop_na(data, {{ cols }})
+
+    message(paste0(cases, " zero values have been removed."))
+  }
+
+  data
+}
+
+#' Remove negatives and output a warning
+#'
+#' @keywords internal
 #'
 #' @param data Data frame
 #' @param cols A tidy column selection
 #' @return Data frame
 
-data_rc_negatives <- function(data, cols) {
+data_rm_negatives <- function(data, cols) {
+    cases <- sum(dplyr::select(data, {{ cols }}) < 0, na.rm=TRUE)
 
-    neg_values <- sum(dplyr::select(data, {{ cols }}) < 0, na.rm=TRUE)
-
-    if (neg_values > 0) {
-      message(paste0(neg_values, " negative values were recoded to NA."))
+    if (cases > 0) {
+      message(paste0(cases, " negative values were removed."))
     }
 
      data |>

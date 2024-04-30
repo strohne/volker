@@ -7,6 +7,7 @@
 tab_counts_items(
   data,
   cols,
+  ci = FALSE,
   missings = FALSE,
   values = c("n", "p"),
   percent = TRUE,
@@ -19,6 +20,8 @@ tab_counts_items(
 \item{data}{A tibble containing item measures}
 
 \item{cols}{Tidyselect item variables (e.g. starts_with...)}
+
+\item{ci}{Whether to compute confidence intervals}
 
 \item{missings}{Include missing values (default FALSE)}
 

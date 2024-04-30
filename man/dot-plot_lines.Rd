@@ -4,12 +4,23 @@
 \alias{.plot_lines}
 \title{Helper function: plot grouped line chart}
 \usage{
-.plot_lines(data, scale = NULL, bars = NULL, base = NULL, title = NULL)
+.plot_lines(
+  data,
+  ci = FALSE,
+  scale = NULL,
+  box = FALSE,
+  base = NULL,
+  title = NULL
+)
 }
 \arguments{
 \item{data}{Dataframe with the columns item, value}
 
+\item{ci}{Whether to plot confidence intervals of the means}
+
 \item{scale}{???}
+
+\item{box}{Whether to add boxplots}
 
 \item{base}{The plot base as character or NULL.}
 

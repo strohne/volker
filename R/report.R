@@ -11,10 +11,10 @@
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
-#' @param col_group Optional, a grouping column (without quotes).
-#' @param cols_cor Optional, a tidy column selection of metric variables
-#'                  to compute correlations (without quotes).
-#' @param cor Alternative to setting the cols_cor parameter: set to TRUE to use the cols selection for correlations.
+#' @param cross Optional, a grouping or correlation column (without quotes).
+#' @param cor When crossing variables, the cross column parameter can contain categorical or metric values.
+#'            By default, the cross column selection is treated as categorical data.
+#'            Set cor to TRUE, to treat is as metric and calculate correlations.
 #' @param ... Parameters passed to the plot and tab functions.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
@@ -35,7 +35,7 @@
 #' report_metrics(data, sd_age)
 #'
 #' @export
-report_metrics <- function(data, cols, col_group = NULL, cols_cor = NULL, ..., cor = FALSE, index = FALSE, stats= FALSE, title = TRUE, close = TRUE, clean = TRUE) {
+report_metrics <- function(data, cols, cross = NULL, cor = FALSE, ..., index = FALSE, stats= FALSE, title = TRUE, close = TRUE, clean = TRUE) {
 
   if (clean) {
     data <- data_clean(data)
@@ -59,22 +59,22 @@ report_metrics <- function(data, cols, col_group = NULL, cols_cor = NULL, ..., c
 
 
   # Add Plot
-  chunks <- plot_metrics(data, {{ cols}}, {{ col_group }}, {{ cols_cor }}, cor = cor, clean=clean, ..., title = plot_title) %>%
+  chunks <- plot_metrics(data, {{ cols}}, {{ cross }}, cor = cor, clean=clean, ..., title = plot_title) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
-  chunks <- tab_metrics(data, {{ cols}}, {{ col_group }}, {{ cols_cor }}, cor = cor, clean=clean, ...) %>%
+  chunks <- tab_metrics(data, {{ cols}}, {{ cross }}, cor = cor, clean=clean, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
 
   # Add effect sizes
   if (stats) {
-    chunks <- stat_metrics(data, {{ cols }}, {{ col_group }}, clean=clean, ...) %>%
+    chunks <- stat_metrics(data, {{ cols }}, {{ cross }}, clean=clean, ...) %>%
       .add_to_vlkr_rprt(chunks, "Statistics")
   }
 
   # Add index
   if (index) {
-    idx <- .report_idx(data, {{ cols}}, {{ col_group }}, title = plot_title)
+    idx <- .report_idx(data, {{ cols}}, {{ cross }}, title = plot_title)
     chunks <- append(chunks,idx)
   }
 
@@ -104,7 +104,10 @@ report_metrics <- function(data, cols, col_group = NULL, cols_cor = NULL, ..., c
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
-#' @param col_group Optional, a grouping column (without quotes).
+#' @param cross Optional, a grouping column (without quotes).
+#' @param cor When crossing variables, the cross column parameter can contain categorical or metric values.
+#'            By default, the cross column selection is treated as categorical data.
+#'            Set cor to TRUE, to treat is as metric and calculate correlations.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the 'psych' package.
@@ -126,7 +129,7 @@ report_metrics <- function(data, cols, col_group = NULL, cols_cor = NULL, ..., c
 #' report_counts(data, sd_gender)
 #'
 #' @export
-report_counts <- function(data, cols, col_group = NULL, index = FALSE, stats=FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
+report_counts <- function(data, cols, cross = NULL, cor = FALSE, index = FALSE, stats=FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
 
   if (clean) {
     data <- data_clean(data)
@@ -150,22 +153,22 @@ report_counts <- function(data, cols, col_group = NULL, index = FALSE, stats=FAL
 
 
   # Add Plot
-  chunks <- plot_counts(data, {{ cols }}, {{ col_group }}, ..., title = plot_title, numbers=numbers, clean=clean) %>%
+  chunks <- plot_counts(data, {{ cols }}, {{ cross }}, ..., title = plot_title, numbers=numbers, clean=clean) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
-  chunks <- tab_counts(data, {{ cols }}, {{ col_group }}, clean=clean, ...) %>%
+  chunks <- tab_counts(data, {{ cols }}, {{ cross }}, clean=clean, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
 
   # Add effect sizes
   if (stats) {
-    chunks <- stat_counts(data, {{ cols }}, {{ col_group }}, clean=clean, ...) %>%
+    chunks <- stat_counts(data, {{ cols }}, {{ cross }}, clean=clean, ...) %>%
       .add_to_vlkr_rprt(chunks, "Statistics")
   }
 
   # Add index
   if (index) {
-    idx <- .report_idx(data, {{ cols }}, {{ col_group }}, title = plot_title)
+    idx <- .report_idx(data, {{ cols }}, {{ cross }}, title = plot_title)
     chunks <- append(chunks,idx)
   }
 
@@ -190,10 +193,10 @@ report_counts <- function(data, cols, col_group = NULL, index = FALSE, stats=FAL
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
-#' @param col_group Optional, a grouping column (without quotes).
+#' @param cross Optional, a grouping column (without quotes).
 #' @param title Add a plot title (default = TRUE)
 #' @return A list containing a table and a plot volker report chunk
-.report_idx <- function(data, cols, col_group, title = TRUE) {
+.report_idx <- function(data, cols, cross, title = TRUE) {
   chunks <- list()
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -208,11 +211,11 @@ report_counts <- function(data, cols, col_group = NULL, index = FALSE, stats=FAL
     if (length(idx_name) > 0) {
 
       chunks <- idx %>%
-        plot_metrics(!!rlang::sym(idx_name), {{ col_group }}, title = title) %>%
+        plot_metrics(!!rlang::sym(idx_name), {{ cross }}, title = title) %>%
         .add_to_vlkr_rprt(chunks, "Index: Plot")
 
       chunks <- idx %>%
-        tab_metrics(!!rlang::sym(idx_name), {{ col_group }}) %>%
+        tab_metrics(!!rlang::sym(idx_name), {{ cross }}) %>%
         .add_to_vlkr_rprt(chunks, "Index: Table")
     }
   }
@@ -258,6 +261,10 @@ print.vlkr_list <- function(x, ...) {
       knitr::knit_print()
   } else {
     for (part in x) {
+      caption <- attr(part, "caption", exact=TRUE)
+      if (!is.null(caption)) {
+        cat("\n", caption)
+      }
       print(part, ...)
     }
   }
@@ -367,6 +374,7 @@ print.vlkr_rprt <- function(x, ...) {
       knitr::asis_output() %>%
       knitr::knit_print()
   } else {
+
     for (part in x) {
       print(part, ...)
     }

@@ -7,7 +7,7 @@
 tab_counts_one_grouped(
   data,
   col,
-  col_group,
+  cross,
   missings = FALSE,
   prop = "total",
   values = c("n", "p"),
@@ -22,7 +22,7 @@ tab_counts_one_grouped(
 
 \item{col}{The column holding factor values}
 
-\item{col_group}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare}
 
 \item{missings}{Include missing values in the output (default FALSE)}
 

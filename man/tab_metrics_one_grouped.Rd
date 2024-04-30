@@ -7,7 +7,7 @@
 tab_metrics_one_grouped(
   data,
   col,
-  col_group,
+  cross,
   negative = FALSE,
   digits = 1,
   labels = TRUE,
@@ -20,7 +20,7 @@ tab_metrics_one_grouped(
 
 \item{col}{The column holding metric values}
 
-\item{col_group}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 

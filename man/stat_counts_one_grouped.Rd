@@ -4,14 +4,14 @@
 \alias{stat_counts_one_grouped}
 \title{Output test statistics and effect size for contingency tables (Chi^2 and Cramer's V)}
 \usage{
-stat_counts_one_grouped(data, col, col_group, clean = TRUE, ...)
+stat_counts_one_grouped(data, col, cross, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A tibble}
 
 \item{col}{The column holding factor values}
 
-\item{col_group}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 

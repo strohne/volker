@@ -7,7 +7,9 @@
 plot_metrics_one_grouped(
   data,
   col,
-  col_group,
+  cross,
+  ci = FALSE,
+  box = FALSE,
   limits = NULL,
   negative = FALSE,
   numbers = NULL,
@@ -23,7 +25,11 @@ plot_metrics_one_grouped(
 
 \item{col}{The column holding metric values}
 
-\item{col_group}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare}
+
+\item{ci}{Whether to add error bars with 95\%-confidence-intervals}
+
+\item{box}{Whether to add boxplots}
 
 \item{limits}{The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.}
 

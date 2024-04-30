@@ -11,7 +11,10 @@
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with()
-#' @param col_group Optional, a grouping column. The column name without quotes.
+#' @param cross Optional, a grouping column. The column name without quotes.
+#' @param cor When crossing variables, the cross column parameter can contain categorical or metric values.
+#'            By default, the cross column selection is treated as categorical data.
+#'            Set cor to TRUE, to treat is as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate stat function
 #' @return A volker tibble
@@ -22,38 +25,36 @@
 #' stat_counts(data, sd_gender)
 #'
 #' @export
-stat_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
+stat_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
-  col_group_eval <- tidyselect::eval_select(expr = enquo(col_group), data = data)
+  cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   is_items <- length(cols_eval) > 1
-  is_grouped <- length(col_group_eval)== 1
+  is_grouped <- length(cross_eval)== 1
+  is_cor <- cor
 
   # Single variables
-  if (!is_items && !is_grouped) {
-    # TODO: implement
-    #stat_counts_one(data, {{ cols }}, ...)
+  if (!is_items && !is_grouped && !is_cor) {
+    stat_counts_one(data, {{ cols }}, ...)
   }
-  else if (!is_items && is_grouped) {
-    stat_counts_one_grouped(data, {{ cols }}, {{ col_group }}, ...)
+  else if (!is_items && is_grouped && !is_cor) {
+    stat_counts_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
 
   # Items
-  else if (is_items && !is_grouped) {
-    # TODO: implement
-    #stat_counts_items(data, {{ cols }} , ...)
+  else if (is_items && !is_grouped && !is_cor) {
+    stat_counts_items(data, {{ cols }} , ...)
   }
-  else if (is_items && is_grouped) {
-    # TODO: implement
-    #stat_counts_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
+  else if (is_items && is_grouped && !is_cor) {
+    stat_counts_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
   }
 
   # Not found
   else {
-    stop("Check your parameters: the column selection is not supported by volker functions.")
+    stop("Check your parameters: the column selection is not yet supported by volker functions.")
   }
 
 }
@@ -71,7 +72,10 @@ stat_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
-#' @param col_group Optional, a grouping column (without quotes).
+#' @param cross Optional, a grouping column (without quotes).
+#' @param cor When crossing variables, the cross column parameter can contain categorical or metric values.
+#'            By default, the cross column selection is treated as categorical data.
+#'            Set cor to TRUE, to treat is as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate table function
 #' @return A volker tibble
@@ -82,38 +86,36 @@ stat_counts <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #' tab_metrics(data, sd_age)
 #'
 #' @export
-stat_metrics <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
+stat_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
-  col_group_eval <- tidyselect::eval_select(expr = enquo(col_group), data = data)
+  cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   is_items <- length(cols_eval) > 1
-  is_grouped <- length(col_group_eval)== 1
+  is_grouped <- length(cross_eval)== 1
+  is_cor <- cor
 
   # Single variables
-  if (!is_items && !is_grouped) {
-    # TODO: implement
-    #stat_metrics_one(data, {{ cols }}, ...)
+  if (!is_items && !is_grouped && !is_cor) {
+    stat_metrics_one(data, {{ cols }}, ...)
   }
-  else if (!is_items && is_grouped) {
-    stat_metrics_one_grouped(data, {{ cols }}, {{ col_group }}, ...)
+  else if (!is_items && is_grouped && !is_cor) {
+    stat_metrics_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
 
   # Items
-  else if (is_items && !is_grouped) {
-    # TODO: implement
-    #stat_metrics_items(data, {{ cols }} , ...)
+  else if (is_items && !is_grouped && !is_cor) {
+    stat_metrics_items(data, {{ cols }} , ...)
   }
-  else if (is_items && is_grouped) {
-    # TODO: implement
-    #stat_metrics_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
+  else if (is_items && is_grouped && !is_cor) {
+    stat_metrics_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
   }
 
   # Not found
   else {
-    stop("Check your parameters: the column selection is not supported by volker functions.")
+    stop("Check your parameters: the column selection is not yet supported by volker functions.")
   }
 
 }
@@ -125,9 +127,10 @@ stat_metrics <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #'
 #' @param data A tibble
 #' @param col The column holding factor values
-#' @param clean Prepare data by \link{data_clean}.
+#' @param digits The number of digits to print
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_counts}.
 #' @return A volker tibble
 #' @examples
@@ -137,70 +140,8 @@ stat_metrics <- function(data, cols, col_group = NULL, clean = TRUE, ...) {
 #' stat_counts_one(data, adopter)
 #'
 #' @importFrom rlang .data
-stat_counts_one <- function(data, col, col_group, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
-
-  #stop("Not implemented yet")
-
-  # 1. Check parameters
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 4. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
-
-
-  # 4. Prepare data
-  # TODO: calculate CI for shares
-  # @Jakob: quick and dirty - param for confindence level?
-
-  # Count
-  result <- data %>%
-    dplyr::count({{ col }}) %>%
-    tidyr::drop_na() %>%
-    dplyr::mutate("{{ col }}" := as.character({{ col }})) %>%
-    dplyr::mutate(p = .data$n / sum(.data$n))
-
-
-  # Calculate params
-  total_obs <- sum(result$n)
-
-  num_groups <- nrow(result)
-
-  z <- qnorm(1 - (1 - 0.95) / 2)
-
-  # Confidence Intervals
-  result <- result %>%
-  dplyr::mutate(
-    std_error = round(sqrt(p * (1 - p) / total_obs), 2),
-    conf_low = round(p - z * std_error, 2),
-    conf_high = round(p + z * std_error, 2)
-  )
-
-  # Get variable caption from the attributes
-  if (labels) {
-    result <- labs_replace_values(result, {{ col }}, codebook(data, {{ col }}))
-    label <- get_title(data, {{ col }})
-    result <- dplyr::rename(result, {{ label }} := {{ col }})
-
-  }
-
-  # Formatting proportions in percent
-  if (percent) {
-    result <- dplyr::mutate(result, p = paste0(round(.data$p * 100, 0), "%"))
-  }
-
-  # Calculate gini coefficent
-  # TODO: cumsum and calculation
-
-  # 6. Prepare output
-  #results <- tibble()
-
-  .to_vlkr_tab(result)
+stat_counts_one <- function(data, col, digits = 2, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
+  stop("Not implemented yet")
 }
 
 
@@ -210,7 +151,7 @@ stat_counts_one <- function(data, col, col_group, percent = TRUE, labels = TRUE,
 #'
 #' @param data A tibble
 #' @param col The column holding factor values
-#' @param col_group The column holding groups to compare
+#' @param cross The column holding groups to compare
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_counts}.
 #' @return A volker tibble
@@ -221,12 +162,12 @@ stat_counts_one <- function(data, col, col_group, percent = TRUE, labels = TRUE,
 #' stat_counts_one_grouped(ds, adopter, sd_gender)
 #'
 #' @importFrom rlang .data
-stat_counts_one_grouped <- function(data, col, col_group, clean = TRUE, ...) {
+stat_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
-  check_has_column(data, {{ col_group }})
+  check_has_column(data, {{ cross }})
 
   # 2. Clean
   if (clean) {
@@ -234,13 +175,13 @@ stat_counts_one_grouped <- function(data, col, col_group, clean = TRUE, ...) {
   }
 
   # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
 
 
   # 4. Prepare data
   contingency <- data %>%
-    count({{ col }}, {{ col_group }}) %>%
-    spread({{ col_group }}, n, fill = 0) %>%
+    count({{ col }}, {{ cross }}) %>%
+    spread({{ cross }}, n, fill = 0) %>%
     as.data.frame() %>%
     select(-1) %>%
     as.matrix()
@@ -380,7 +321,7 @@ stat_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
 #'
 #' @param data A tibble containing item measures and grouping variable
 #' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param col_group The column holding groups to compare
+#' @param cross The column holding groups to compare
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder
 #' @return A volker tibble
@@ -392,7 +333,9 @@ stat_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
 #'
 #' @importFrom rlang .data
 #'
-stat_counts_items_grouped <- function(data, cols, col_group, clean = T, ...) {
+stat_counts_items_grouped <- function(data, cols, cross, clean = T, ...) {
+
+  stop("Not implemented yet")
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -403,7 +346,7 @@ stat_counts_items_grouped <- function(data, cols, col_group, clean = T, ...) {
   }
 
   # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}, {{ col_group }}))
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
 
   # 4. Calculate confindence intervals
 
@@ -417,7 +360,7 @@ stat_counts_items_grouped <- function(data, cols, col_group, clean = T, ...) {
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param cols_cor The target columns or NULL to calculate correlations within the source columns
+#' @param cross The target columns or NULL to calculate correlations within the source columns
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder
 #' @return A volker tibble
@@ -425,12 +368,12 @@ stat_counts_items_grouped <- function(data, cols, col_group, clean = T, ...) {
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_counts_items_grouped(ds, starts_with("cg_adoption_"))
+#' stat_counts_items_cor(ds, starts_with("cg_adoption_"), )
 #'
 #' @importFrom rlang .data
 #'
-stat_counts_items_cor <- function(data, cols, cols_cor, clean = T, ...) {
-
+stat_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
+  stop("Not implemented yet")
 }
 
 
@@ -526,7 +469,7 @@ stat_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, dig
 
   # Recode negative values
   if (!negative) {
-    data <- data_rc_negatives(data, {{ col }})
+    data <- data_rm_negatives(data, {{ col }})
   }
 
   # 3. Remove missings
@@ -586,7 +529,7 @@ stat_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, dig
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_metrics_items(data, starts_with("cg_adoption))
+#' stat_metrics_items(data, starts_with("cg_adoption"))
 #'
 #'
 #' @importFrom rlang .data
@@ -633,7 +576,7 @@ stat_metrics_items <- function(data, cols, clean = T, ...) {
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_metrics_items_grouped(data, starts_with("cg_adoption), sd_gender)
+#' stat_metrics_items_grouped(data, starts_with("cg_adoption"), sd_gender)
 #'
 #'
 #' @importFrom rlang .data
@@ -669,7 +612,7 @@ stat_metrics_items_grouped <- function(data, cols, col_group, clean = T, ...) {
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_metrics_items_grouped(data, starts_with("cg_adoption), sd_gender)
+#' stat_metrics_items_grouped(data, starts_with("cg_adoption"), sd_gender)
 #'
 #'
 #' @importFrom rlang .data

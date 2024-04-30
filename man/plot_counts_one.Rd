@@ -8,6 +8,7 @@ plot_counts_one(
   data,
   col,
   category = NULL,
+  ci = FALSE,
   limits = NULL,
   missings = FALSE,
   numbers = NULL,
@@ -25,6 +26,8 @@ plot_counts_one(
 \item{category}{The value FALSE will force to plot all categories.
 A character value will focus a selected category.
 When NULL, in case of boolean values, only the TRUE category is plotted.}
+
+\item{ci}{Whether to plot error bars for 95\%-confidence-intervals.}
 
 \item{limits}{The scale limits, autoscaled by default.
 Set to \code{c(0,100)} to make a 100 \% plot.
