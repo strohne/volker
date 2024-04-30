@@ -83,7 +83,57 @@ Which one is best? That depends on your objective:
 
 ## Examples
 
-31b8e172-b470-440e-83d8-e6b185028602:dAB5AHAAZQA6AE8AQQBCAGwAQQBHAFkAQQBOAFEAQgBoAEEARABjAEEATgB3AEEAeQBBAEMAMABBAFoAQQBCAGsAQQBEAFkAQQBNAHcAQQB0AEEARABRAEEATgBnAEEAeQBBAEQASQBBAEwAUQBBADQAQQBEAFEAQQBZAGcAQgBtAEEAQwAwAEEAWQBRAEIAbQBBAEQARQBBAE8AUQBBADUAQQBEAFUAQQBZAFEAQQB4AEEARwBJAEEATQBnAEIAaQBBAEQAawBBAAoAcABvAHMAaQB0AGkAbwBuADoATQB3AEEAMQBBAEQAYwBBAE4AQQBBAD0ACgBwAHIAZQBmAGkAeAA6AAoAcwBvAHUAcgBjAGUAOgBQAEEAQgAwAEEARwBFAEEAWQBnAEIAcwBBAEcAVQBBAFAAZwBBAEsAQQBEAHcAQQBkAEEAQgBpAEEARwA4AEEAWgBBAEIANQBBAEQANABBAEMAZwBBADgAQQBIAFEAQQBjAGcAQQArAEEAQQBvAEEAUABBAEIAMABBAEcAUQBBAFAAZwBBADgAQQBDADgAQQBkAEEAQgBrAEEARAA0AEEAQwBnAEEAOABBAEgAUQBBAFoAQQBBACsAQQBEAHcAQQBjAHcAQgAwAEEASABJAEEAYgB3AEIAdQBBAEcAYwBBAFAAZwBCAE4AQQBHAFUAQQBkAEEAQgB5AEEARwBrAEEAWQB3AEEAOABBAEMAOABBAGMAdwBCADAAQQBIAEkAQQBiAHcAQgB1AEEARwBjAEEAUABnAEEAOABBAEMAOABBAGQAQQBCAGsAQQBEADQAQQBDAGcAQQA4AEEASABRAEEAWgBBAEEAKwBBAEQAdwBBAGMAdwBCADAAQQBIAEkAQQBiAHcAQgB1AEEARwBjAEEAUABnAEIARABBAEcARQBBAGQAQQBCAGwAQQBHAGMAQQBiAHcAQgB5AEEARwBrAEEAWQB3AEIAaABBAEcAdwBBAFAAQQBBAHYAQQBIAE0AQQBkAEEAQgB5AEEARwA4AEEAYgBnAEIAbgBBAEQANABBAFAAQQBBAHYAQQBIAFEAQQBaAEEAQQArAEEAQQBvAEEAUABBAEEAdgBBAEgAUQBBAGMAZwBBACsAQQBBAG8AQQBQAEEAQgAwAEEASABJAEEAUABnAEEASwBBAEQAdwBBAGQAQQBCAGsAQQBEADQAQQBQAEEAQgB6AEEASABRAEEAYwBnAEIAdgBBAEcANABBAFoAdwBBAGcAQQBIAE0AQQBkAEEAQgA1AEEARwB3AEEAWgBRAEEAOQBBAEMASQBBAFoAQQBCAHAAQQBIAE0AQQBjAEEAQgBzAEEARwBFAEEAZQBRAEEANgBBAEMAQQBBAFkAZwBCAHMAQQBHADgAQQBZAHcAQgByAEEARABzAEEAZABBAEIAeQBBAEcARQBBAGIAZwBCAHoAQQBHAFkAQQBiAHcAQgB5AEEARwAwAEEATwBnAEEAZwBBAEgASQBBAGIAdwBCADAAQQBHAEUAQQBkAEEAQgBsAEEAQwBnAEEATABRAEEANQBBAEQAQQBBAFoAQQBCAGwAQQBHAGMAQQBLAFEAQQA3AEEAQwBJAEEAUABnAEIAUABBAEcANABBAFoAUQBBAGcAQQBIAFkAQQBZAFEAQgB5AEEARwBrAEEAWQBRAEIAaQBBAEcAdwBBAFoAUQBBADgAQQBDADgAQQBjAHcAQgAwAEEASABJAEEAYgB3AEIAdQBBAEcAYwBBAFAAZwBBADgAQQBDADgAQQBkAEEAQgBrAEEARAA0AEEAQwBnAEEAOABBAEgAUQBBAFoAQQBBAGcAQQBIAFkAQQBZAFEAQgBzAEEARwBrAEEAWgB3AEIAdQBBAEQAMABBAEkAZwBCADAAQQBHADgAQQBjAEEAQQBpAEEARAA0AEEAQwBnAEEAOABBAEcAawBBAGIAUQBCAG4AQQBDAEEAQQBjAHcAQgB5AEEARwBNAEEAUABRAEEAaQBBAEcAMABBAFkAUQBCAHUAQQBDADgAQQBaAGcAQgBwAEEARwBjAEEAZABRAEIAeQBBAEcAVQBBAGMAdwBBAHYAQQBIAEEAQQBiAEEAQgB2AEEASABRAEEAWAB3AEIAdABBAEcAVQBBAGQAQQBCAHkAQQBHAGsAQQBZAHcAQgB6AEEARgA4AEEAYgB3AEIAdQBBAEcAVQBBAEwAZwBCAHcAQQBHADQAQQBaAHcAQQBpAEEAQwBBAEEAWQBRAEIAcwBBAEgAUQBBAFAAUQBBAGkAQQBFAFEAQQBaAFEAQgB1AEEASABNAEEAYQBRAEIAMABBAEgAawBBAEkAQQBCAHcAQQBHAHcAQQBiAHcAQgAwAEEAQwBJAEEASQBBAEIAMwBBAEcAawBBAFoAQQBCADAAQQBHAGcAQQBQAFEAQQBpAEEARABNAEEATQBBAEEAdwBBAEMASQBBAFAAZwBBAEsAQQBEAHcAQQBMAHcAQgAwAEEARwBRAEEAUABnAEEASwBBAEQAdwBBAGQAQQBCAGsAQQBDAEEAQQBkAGcAQgBoAEEARwB3AEEAYQBRAEIAbgBBAEcANABBAFAAUQBBAGkAQQBIAFEAQQBiAHcAQgB3AEEAQwBJAEEAUABnAEEASwBBAEQAdwBBAGEAUQBCAHQAQQBHAGMAQQBJAEEAQgB6AEEASABJAEEAWQB3AEEAOQBBAEMASQBBAGIAUQBCAGgAQQBHADQAQQBMAHcAQgBtAEEARwBrAEEAWgB3AEIAMQBBAEgASQBBAFoAUQBCAHoAQQBDADgAQQBjAEEAQgBzAEEARwA4AEEAZABBAEIAZgBBAEcATQBBAGIAdwBCADEAQQBHADQAQQBkAEEAQgB6AEEARgA4AEEAYgB3AEIAdQBBAEcAVQBBAEwAZwBCAHcAQQBHADQAQQBaAHcAQQBpAEEAQwBBAEEAWQBRAEIAcwBBAEgAUQBBAFAAUQBBAGkAQQBFAEkAQQBZAFEAQgB5AEEAQwBBAEEAWQB3AEIAbwBBAEcARQBBAGMAZwBCADAAQQBDAEkAQQBJAEEAQgAzAEEARwBrAEEAWgBBAEIAMABBAEcAZwBBAFAAUQBBAGkAQQBEAE0AQQBNAEEAQQB3AEEAQwBJAEEAUABnAEEASwBBAEQAdwBBAEwAdwBCADAAQQBHAFEAQQBQAGcAQQBLAEEARAB3AEEATAB3AEIAMABBAEgASQBBAFAAZwBBAEsAQQBBAG8AQQBQAEEAQgAwAEEASABJAEEAUABnAEEASwBBAEQAdwBBAGQAQQBCAGsAQQBEADQAQQBQAEEAQgB6AEEASABRAEEAYwBnAEIAdgBBAEcANABBAFoAdwBBAGcAQQBIAE0AQQBkAEEAQgA1AEEARwB3AEEAWgBRAEEAOQBBAEMASQBBAFoAQQBCAHAAQQBIAE0AQQBjAEEAQgBzAEEARwBFAEEAZQBRAEEANgBBAEMAQQBBAFkAZwBCAHMAQQBHADgAQQBZAHcAQgByAEEARABzAEEAZABBAEIAeQBBAEcARQBBAGIAZwBCAHoAQQBHAFkAQQBiAHcAQgB5AEEARwAwAEEATwBnAEEAZwBBAEgASQBBAGIAdwBCADAAQQBHAEUAQQBkAEEAQgBsAEEAQwBnAEEATABRAEEANQBBAEQAQQBBAFoAQQBCAGwAQQBHAGMAQQBLAFEAQQA3AEEAQwBJAEEAUABnAEIASABBAEgASQBBAGIAdwBCADEAQQBIAEEAQQBJAEEAQgBqAEEARwA4AEEAYgBRAEIAdwBBAEcARQBBAGMAZwBCAHAAQQBIAE0AQQBiAHcAQgB1AEEAQwBBAEEAUABBAEEAdgBBAEgATQBBAGQAQQBCAHkAQQBHADgAQQBiAGcAQgBuAEEARAA0AEEAUABBAEEAdgBBAEgAUQBBAFoAQQBBACsAQQBBAG8AQQBQAEEAQgAwAEEARwBRAEEASQBBAEIAMgBBAEcARQBBAGIAQQBCAHAAQQBHAGMAQQBiAGcAQQA5AEEAQwBJAEEAZABBAEIAdgBBAEgAQQBBAEkAZwBBACsAQQBBAG8AQQBDAGcAQQA4AEEARwBrAEEAYgBRAEIAbgBBAEMAQQBBAGMAdwBCAHkAQQBHAE0AQQBQAFEAQQBpAEEARwAwAEEAWQBRAEIAdQBBAEMAOABBAFoAZwBCAHAAQQBHAGMAQQBkAFEAQgB5AEEARwBVAEEAYwB3AEEAdgBBAEgAQQBBAGIAQQBCAHYAQQBIAFEAQQBYAHcAQgB0AEEARwBVAEEAZABBAEIAeQBBAEcAawBBAFkAdwBCAHoAQQBGADgAQQBiAHcAQgB1AEEARwBVAEEAWAB3AEIAbgBBAEgASQBBAGIAdwBCADEAQQBIAEEAQQBaAFEAQgBrAEEAQwA0AEEAYwBBAEIAdQBBAEcAYwBBAEkAZwBBAGcAQQBHAEUAQQBiAEEAQgAwAEEARAAwAEEASQBnAEIASABBAEgASQBBAGIAdwBCADEAQQBIAEEAQQBJAEEAQgBqAEEARwA4AEEAYgBRAEIAdwBBAEcARQBBAGMAZwBCAHAAQQBIAE0AQQBiAHcAQgB1AEEAQwBJAEEASQBBAEIAMwBBAEcAawBBAFoAQQBCADAAQQBHAGcAQQBQAFEAQQBpAEEARABNAEEATQBBAEEAdwBBAEMASQBBAFAAZwBBAEsAQQBEAHcAQQBMAHcAQgAwAEEARwBRAEEAUABnAEEASwBBAEQAdwBBAGQAQQBCAGsAQQBDAEEAQQBkAGcAQgBoAEEARwB3AEEAYQBRAEIAbgBBAEcANABBAFAAUQBBAGkAQQBIAFEAQQBiAHcAQgB3AEEAQwBJAEEAUABnAEEASwBBAEEAbwBBAFAAQQBCAHAAQQBHADAAQQBaAHcAQQBnAEEASABNAEEAYwBnAEIAagBBAEQAMABBAEkAZwBCAHQAQQBHAEUAQQBiAGcAQQB2AEEARwBZAEEAYQBRAEIAbgBBAEgAVQBBAGMAZwBCAGwAQQBIAE0AQQBMAHcAQgB3AEEARwB3AEEAYgB3AEIAMABBAEYAOABBAFkAdwBCAHYAQQBIAFUAQQBiAGcAQgAwAEEASABNAEEAWAB3AEIAdgBBAEcANABBAFoAUQBCAGYAQQBHAGMAQQBjAGcAQgB2AEEASABVAEEAYwBBAEIAbABBAEcAUQBBAEwAZwBCAHcAQQBHADQAQQBaAHcAQQBpAEEAQwBBAEEAWQBRAEIAcwBBAEgAUQBBAFAAUQBBAGkAQQBGAE0AQQBkAEEAQgBoAEEARwBNAEEAYQB3AEIAbABBAEcAUQBBAEkAQQBCAGkAQQBHAEUAQQBjAGcAQQBnAEEARwBNAEEAYQBBAEIAaABBAEgASQBBAGQAQQBBAGkAQQBDAEEAQQBkAHcAQgBwAEEARwBRAEEAZABBAEIAbwBBAEQAMABBAEkAZwBBAHoAQQBEAEEAQQBNAEEAQQBpAEEARAA0AEEAQwBnAEEAOABBAEMAOABBAGQAQQBCAGsAQQBEADQAQQBDAGcAQQA4AEEAQwA4AEEAZABBAEIAeQBBAEQANABBAEMAZwBBAEsAQQBBAG8AQQBQAEEAQgAwAEEASABJAEEAUABnAEEASwBBAEQAdwBBAGQAQQBCAGsAQQBEADQAQQBQAEEAQgB6AEEASABRAEEAYwBnAEIAdgBBAEcANABBAFoAdwBBAGcAQQBIAE0AQQBkAEEAQgA1AEEARwB3AEEAWgBRAEEAOQBBAEMASQBBAFoAQQBCAHAAQQBIAE0AQQBjAEEAQgBzAEEARwBFAEEAZQBRAEEANgBBAEMAQQBBAFkAZwBCAHMAQQBHADgAQQBZAHcAQgByAEEARABzAEEAZABBAEIAeQBBAEcARQBBAGIAZwBCAHoAQQBHAFkAQQBiAHcAQgB5AEEARwAwAEEATwBnAEEAZwBBAEgASQBBAGIAdwBCADAAQQBHAEUAQQBkAEEAQgBsAEEAQwBnAEEATABRAEEANQBBAEQAQQBBAFoAQQBCAGwAQQBHAGMAQQBLAFEAQQA3AEEAQwBJAEEAUABnAEIATgBBAEgAVQBBAGIAQQBCADAAQQBHAGsAQQBjAEEAQgBzAEEARwBVAEEASQBBAEIAcABBAEgAUQBBAFoAUQBCAHQAQQBIAE0AQQBQAEEAQQB2AEEASABNAEEAZABBAEIAeQBBAEcAOABBAGIAZwBCAG4AQQBEADQAQQBQAEEAQQB2AEEASABRAEEAWgBBAEEAKwBBAEEAbwBBAFAAQQBCADAAQQBHAFEAQQBJAEEAQgAyAEEARwBFAEEAYgBBAEIAcABBAEcAYwBBAGIAZwBBADkAQQBDAEkAQQBkAEEAQgB2AEEASABBAEEASQBnAEEAKwBBAEMAQQBBAEkAQQBBAEsAQQBBAG8AQQBQAEEAQgBwAEEARwAwAEEAWgB3AEEAZwBBAEgATQBBAGMAZwBCAGoAQQBEADAAQQBJAGcAQgB0AEEARwBFAEEAYgBnAEEAdgBBAEcAWQBBAGEAUQBCAG4AQQBIAFUAQQBjAGcAQgBsAEEASABNAEEATAB3AEIAdwBBAEcAdwBBAGIAdwBCADAAQQBGADgAQQBiAFEAQgBsAEEASABRAEEAYwBnAEIAcABBAEcATQBBAGMAdwBCAGYAQQBHAGsAQQBkAEEAQgBsAEEARwAwAEEAYwB3AEEAdQBBAEgAQQBBAGIAZwBCAG4AQQBDAEkAQQBJAEEAQgBoAEEARwB3AEEAZABBAEEAOQBBAEMASQBBAFMAUQBCADAAQQBHAFUAQQBiAFEAQQBnAEEARwBJAEEAWQBRAEIAMABBAEgAUQBBAFoAUQBCAHkAQQBIAGsAQQBJAEEAQgBpAEEARwA4AEEAZQBBAEIAdwBBAEcAdwBBAGIAdwBCADAAQQBIAE0AQQBJAGcAQQBnAEEASABjAEEAYQBRAEIAawBBAEgAUQBBAGEAQQBBADkAQQBDAEkAQQBNAHcAQQB3AEEARABBAEEASQBnAEEAKwBBAEEAbwBBAFAAQQBBAHYAQQBIAFEAQQBaAEEAQQArAEEAQQBvAEEAUABBAEIAMABBAEcAUQBBAEkAQQBCADIAQQBHAEUAQQBiAEEAQgBwAEEARwBjAEEAYgBnAEEAOQBBAEMASQBBAGQAQQBCAHYAQQBIAEEAQQBJAGcAQQArAEEAQQBvAEEAQwBnAEEAOABBAEcAawBBAGIAUQBCAG4AQQBDAEEAQQBjAHcAQgB5AEEARwBNAEEAUABRAEEAaQBBAEcAMABBAFkAUQBCAHUAQQBDADgAQQBaAGcAQgBwAEEARwBjAEEAZABRAEIAeQBBAEcAVQBBAGMAdwBBAHYAQQBIAEEAQQBiAEEAQgB2AEEASABRAEEAWAB3AEIAagBBAEcAOABBAGQAUQBCAHUAQQBIAFEAQQBjAHcAQgBmAEEARwBrAEEAZABBAEIAbABBAEcAMABBAGMAdwBBAHUAQQBIAEEAQQBiAGcAQgBuAEEAQwBJAEEASQBBAEIAaABBAEcAdwBBAGQAQQBBADkAQQBDAEkAQQBTAFEAQgAwAEEARwBVAEEAYgBRAEEAZwBBAEcASQBBAFkAUQBCADAAQQBIAFEAQQBaAFEAQgB5AEEASABrAEEASQBBAEIAaQBBAEcARQBBAGMAZwBBAGcAQQBHAE0AQQBhAEEAQgBoAEEASABJAEEAZABBAEEAaQBBAEMAQQBBAGQAdwBCAHAAQQBHAFEAQQBkAEEAQgBvAEEARAAwAEEASQBnAEEAegBBAEQAQQBBAE0AQQBBAGkAQQBEADQAQQBDAGcAQQA4AEEAQwA4AEEAZABBAEIAawBBAEQANABBAEMAZwBBADgAQQBDADgAQQBkAEEAQgB5AEEARAA0AEEAQwBnAEEASwBBAEQAdwBBAEwAdwBCADAAQQBHAEkAQQBiAHcAQgBrAEEASABrAEEAUABnAEEASwBBAEQAdwBBAEwAdwBCADAAQQBHAEUAQQBZAGcAQgBzAEEARwBVAEEAUABnAEEAPQAKAHMAdQBmAGYAaQB4ADoA:31b8e172-b470-440e-83d8-e6b185028602
+<table>
+<tbody>
+<tr>
+<td>
+</td>
+<td>
+<strong>Metric</strong>
+</td>
+<td>
+<strong>Categorical</strong>
+</td>
+</tr>
+<tr>
+<td>
+<strong style="display: block;transform: rotate(-90deg);">One
+variable</strong>
+</td>
+<td valign="top">
+<img src="man/figures/plot_metrics_one.png" alt="Density plot" width="300">
+</td>
+<td valign="top">
+<img src="man/figures/plot_counts_one.png" alt="Bar chart" width="300">
+</td>
+</tr>
+<tr>
+<td>
+<strong style="display: block;transform: rotate(-90deg);">Group
+comparison </strong>
+</td>
+<td valign="top">
+<img src="man/figures/plot_metrics_one_grouped.png" alt="Group comparison" width="300">
+</td>
+<td valign="top">
+<img src="man/figures/plot_counts_one_grouped.png" alt="Stacked bar chart" width="300">
+</td>
+</tr>
+<tr>
+<td>
+<strong style="display: block;transform: rotate(-90deg);">Multiple
+items</strong>
+</td>
+<td valign="top">
+<img src="man/figures/plot_metrics_items.png" alt="Item battery boxplots" width="300">
+</td>
+<td valign="top">
+<img src="man/figures/plot_counts_items.png" alt="Item battery bar chart" width="300">
+</td>
+</tr>
+</tbody>
+</table>
+
 <br>
 
 All functions take a data frame as their first argument, followed by
@@ -105,145 +155,55 @@ the results, see the builtin function help (F1 key).
 
 After deciding whether to plot or tabulate, and whether to handle metric
 or counted data, the column selections determine which of the following
-methods are called under the hood. (Note: Some are not implemented yet.)
+methods are called under the hood. When you provide two sets of columns
+in the first two parameters, data is crossed. By default, the second
+parameter is handled as a categorical variable, resulting in grouped
+tables and plots. For handling metric variables and their correlations,
+set the `cor`-parameter to `TRUE`. (Note: Some are not implemented yet.)
 
-| \#  | function                   | implemented | output | scale   | columns  | crossings  |
-|-----|----------------------------|-------------|--------|---------|----------|------------|
-| 1   | tab_counts_one             |             | table  | counts  | one      |            |
-| 2   | tab_counts_one_grouped     |             | table  | counts  | one      | grouped    |
-| 3   | tab_counts_items           |             | table  | counts  | multiple |            |
-| 4   | tab_counts_items_grouped   | not yet     | table  | counts  | multipe  | grouped    |
-| 5   | tab_counts_items_cor       | not yet     | table  | counts  | multipe  | correlated |
-| 6   | tab_metrics_one            |             | table  | metrics | one      |            |
-| 7   | tab_metrics_one_grouped    |             | table  | metrics | one      | grouped    |
-| 8   | tab_metrics_items          |             | table  | metrics | multiple |            |
-| 9   | tab_metrics_items_grouped  |             | table  | metrics | multipe  | grouped    |
-| 10  | tab_metrics_items_cor      |             | table  | metrics | multipe  | correlated |
-| 11  | plot_counts_one            |             | plot   | counts  | one      |            |
-| 12  | plot_counts_one_grouped    |             | plot   | counts  | one      | grouped    |
-| 13  | plot_counts_items          |             | plot   | counts  | multiple |            |
-| 14  | plot_counts_items_grouped  | not yet     | plot   | counts  | multipe  | grouped    |
-| 15  | plot_counts_items_cor      | not yet     | plot   | counts  | multipe  | correlated |
-| 16  | plot_metrics_one           |             | plot   | metrics | one      |            |
-| 17  | plot_metrics_one_grouped   |             | plot   | metrics | one      | grouped    |
-| 18  | plot_metrics_items         |             | plot   | metrics | multiple |            |
-| 19  | plot_metrics_items_grouped |             | plot   | metrics | multipe  | grouped    |
-| 20  | plot_metrics_items_cor     | not yet     | plot   | metrics | multipe  | correlated |
+| \#  | function                    | implemented | output | scale   | columns  | crossings  |
+|-----|-----------------------------|-------------|--------|---------|----------|------------|
+| 1   | tab_counts_one              |             | table  | counts  | one      |            |
+| 2   | tab_counts_one_grouped      |             | table  | counts  | one      | grouped    |
+| 3   | tab_counts_one_cor          | not yet     | table  | counts  | one      | correlated |
+| 4   | tab_counts_items            |             | table  | counts  | multiple |            |
+| 5   | tab_counts_items_grouped    | not yet     | table  | counts  | multiple | grouped    |
+| 6   | tab_counts_items_cor        | not yet     | table  | counts  | multiple | correlated |
+| 7   | tab_metrics_one             |             | table  | metrics | one      |            |
+| 8   | tab_metrics_one_grouped     |             | table  | metrics | one      | grouped    |
+| 9   | tab_metrics_one_cor         | not yet     | table  | metrics | one      | correlated |
+| 10  | tab_metrics_items           |             | table  | metrics | multiple |            |
+| 11  | tab_metrics_items_grouped   |             | table  | metrics | multiple | grouped    |
+| 12  | tab_metrics_items_cor       |             | table  | metrics | multiple | correlated |
+| 13  | plot_counts_one             |             | plot   | counts  | one      |            |
+| 14  | plot_counts_one_grouped     |             | plot   | counts  | one      | grouped    |
+| 15  | plot_counts_one_cor         | not yet     | plot   | counts  | one      | correlated |
+| 16  | plot_counts_items           |             | plot   | counts  | multiple |            |
+| 17  | p lot_counts_i tems_grouped | not yet     | plot   | counts  | multiple | grouped    |
+| 18  | plot_counts_items_cor       | not yet     | plot   | counts  | multiple | correlated |
+| 19  | plot_metrics_one            |             | plot   | metrics | one      |            |
+| 20  | plot_metrics_one_grouped    |             | plot   | metrics | one      | grouped    |
+| 21  | plot_metrics_one_cor        | not yet     | plot   | metrics | one      | correlated |
+| 22  | plot_metrics_items          |             | plot   | metrics | multiple |            |
+| 23  | plot_metrics_items_grouped  |             | plot   | metrics | multiple | grouped    |
+| 24  | plot_metrics_items_cor      | not yet     | plot   | metrics | multiple | correlated |
 
 ## Statistical test
 
-**Planned statistical tests**
-
-<table style="width:99%;">
-<colgroup>
-<col style="width: 3%" />
-<col style="width: 10%" />
-<col style="width: 5%" />
-<col style="width: 42%" />
-<col style="width: 20%" />
-<col style="width: 17%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>#</th>
-<th>function</th>
-<th>implemented</th>
-<th>Effect size</th>
-<th>Estimators</th>
-<th>Significance test</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td>stat_counts_one</td>
-<td>not yet</td>
-<td>Gini coefficient</td>
-<td>Confidence intervals of the proportion</td>
-<td>Multinomial Test (?)</td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td>stat_counts_one_grouped</td>
-<td>alpha</td>
-<td>Cramér’s V</td>
-<td>Confidence intervals of the proportions</td>
-<td>Chi squared</td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td>stat_counts_items</td>
-<td>not yet</td>
-<td><p>Cramér’s V (?)</p>
-<p>Spearman’s Rho (?)</p></td>
-<td>Confidence intervals of the proportions</td>
-<td><p>Chi squared (?)</p>
-<p>MultinomialTest (?)</p></td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td>stat_counts_items_grouped</td>
-<td>not yet</td>
-<td>Cramér’s V (?)</td>
-<td>Confidence intervals of the proportion</td>
-<td>Chi squared (?)</td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td>stat_counts_items_cor</td>
-<td>not yet</td>
-<td><p>Spearman’s Rho (?)</p>
-<p>Cronbach’s Alpha (?)</p></td>
-<td></td>
-<td>t-Test</td>
-</tr>
-<tr class="even">
-<td>6</td>
-<td>stat_metrics_one</td>
-<td>not yet</td>
-<td><p>(?)</p>
-<p>Standardized difference to the mean based on reference value
-(e.g. showing how much sample deviates from population)</p></td>
-<td>Confidence intervals of the mean</td>
-<td>t-Test</td>
-</tr>
-<tr class="odd">
-<td>7</td>
-<td>stat_metrics_one_grouped</td>
-<td>alpha</td>
-<td>Cohen’s d<br />
-Eta squared</td>
-<td>Confidence intervals of the group means</td>
-<td>t-Test for independent samples ANOVA (F-Test)</td>
-</tr>
-<tr class="even">
-<td>8</td>
-<td>stat_metrics_items</td>
-<td>not yet</td>
-<td><p>Cohen’s d</p>
-<p>Partial Eta squared / Cohen’s f</p></td>
-<td>Confidence intervals of the group means</td>
-<td><p>t-Test for paired samples</p>
-<p>Repeated measures ANOVA</p></td>
-</tr>
-<tr class="odd">
-<td>9</td>
-<td>stat_metrics_items_grouped</td>
-<td>not yet</td>
-<td>Eta squared</td>
-<td>Confidence intervals of the group means</td>
-<td>ANOVA (F-Test)</td>
-</tr>
-<tr class="even">
-<td>10</td>
-<td>stat_metrics_items_cor</td>
-<td>not yet</td>
-<td>Pearson’s r</td>
-<td>Pearson’s r and confidence interval of Pearson’s r (?)</td>
-<td>t-Test</td>
-</tr>
-</tbody>
-</table>
+| \#  | function                   | implemented | effect size                         | confidence intervals | significance test |
+|-----|----------------------------|-------------|-------------------------------------|----------------------|-------------------|
+| 1   | stat_counts_one            | not yet     |                                     | proportions          |                   |
+| 2   | stat_counts_one_grouped    | alpha       | Cramér’s V                          | proportions          | Chi s quared      |
+| 3   | stat_counts_one_cor        | not yet     |                                     |                      |                   |
+| 4   | stat_counts_items          | not yet     | Cramér’s V                          | proportions          | Chi s quared      |
+| 5   | stat_counts_items_grouped  | not yet     | Cramér’s V                          | proportions          | Chi s quared      |
+| 6   | stat_counts_items_cor      | not yet     |                                     |                      |                   |
+| 7   | stat_metrics_one           | not yet     |                                     | mean                 |                   |
+| 8   | stat_metrics_one_grouped   | alpha       | Cohen’s d, (Cohen’s f, Eta squared) | means                | t-test            |
+| 9   | stat_metrics_one_cor       | not yet     | Pearson’s r, Spearman’s rho         | correlation          | t-Test            |
+| 10  | stat_metrics_items         | not yet     | Cohen’s d, (Cohen’s f, Eta squared) | means                | t-Test            |
+| 11  | stat_metrics_items_grouped | not yet     | Eta squared                         | means                |                   |
+| 12  | stat_metrics_items_cor     | not yet     | Pearson’s r                         | correlation          |                   |
 
 ## Where do all the labels go?
 
