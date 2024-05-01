@@ -348,7 +348,7 @@ stat_counts_items_grouped <- function(data, cols, cross, clean = T, ...) {
   # 3. Remove missings
   data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
 
-  # 4. Calculate confindence intervals
+  # 4. Calculate confidence intervals
 
 
 }
