@@ -94,7 +94,7 @@ tab_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
   is_items <- length(cols_eval) > 1
-  is_grouped <- length(cross_eval)== 1
+  is_grouped <- length(cross_eval) == 1
   is_cor <- cor != FALSE
 
   # Single variables

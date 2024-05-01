@@ -68,7 +68,7 @@ report_metrics <- function(data, cols, cross = NULL, cor = FALSE, ..., index = F
 
   # Add effect sizes
   if (stats) {
-    chunks <- stat_metrics(data, {{ cols }}, {{ cross }}, clean=clean, ...) %>%
+    chunks <- stat_metrics(data, {{ cols }}, {{ cross }}, cor = cor, clean=clean, ...) %>%
       .add_to_vlkr_rprt(chunks, "Statistics")
   }
 

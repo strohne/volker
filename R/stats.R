@@ -43,6 +43,9 @@ stat_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
   else if (!is_items && is_grouped && !is_cor) {
     stat_counts_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
+  else if (!is_items && is_grouped && is_cor) {
+    stat_counts_one_cor(data, {{ cols }}, {{ cross }}, ...)
+  }
 
   # Items
   else if (is_items && !is_grouped && !is_cor) {
@@ -51,7 +54,9 @@ stat_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
   else if (is_items && is_grouped && !is_cor) {
     stat_counts_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
   }
-
+  else if (is_items && is_grouped && is_cor) {
+    stat_counts_items_cor(data, {{ cols }}, {{ col_group }},  ...)
+  }
   # Not found
   else {
     stop("Check your parameters: the column selection is not yet supported by volker functions.")
@@ -104,6 +109,9 @@ stat_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ..
   else if (!is_items && is_grouped && !is_cor) {
     stat_metrics_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
+  else if (!is_items && is_grouped && is_cor) {
+    stat_metrics_one_cor(data, {{ cols }}, {{ cross }}, ...)
+  }
 
   # Items
   else if (is_items && !is_grouped && !is_cor) {
@@ -112,7 +120,9 @@ stat_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ..
   else if (is_items && is_grouped && !is_cor) {
     stat_metrics_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
   }
-
+  else if (is_items && is_grouped && is_cor) {
+    stat_metrics_items_cor(data, {{ cols }}, {{ col_group }},  ...)
+  }
   # Not found
   else {
     stop("Check your parameters: the column selection is not yet supported by volker functions.")
@@ -121,7 +131,7 @@ stat_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ..
 }
 
 
-#' Output confidence intervals for category shares
+#' Test whether the shares differ from homogeneity
 #'
 #' @keywords internal
 #'
@@ -203,6 +213,7 @@ stat_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
     "Phi", phi, 2,
     "Cramér's V", cramer_v, 2,
     "Chi-quared", fit$statistic, 2,
+    "Degrees of freedom", fit$parameter, 0,
     "p value", fit$p.value, 3,
     "Number of cases", n, 0
   )
@@ -210,9 +221,28 @@ stat_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   .to_vlkr_tab(results, caption=fit$method)
 }
 
+#' Output test statistics and effect size for categories correlated with a metric column
+#'
+#' @keywords internal
+#'
+#' @param data A tibble
+#' @param col The column holding factor values
+#' @param cross The column holding metric values
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_counts}.
+#' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' stat_counts_one_cor(ds, adopter, sd_gender)
+#'
+#' @importFrom rlang .data
+stat_counts_one_cor <- function(data, col, cross, clean = TRUE, ...) {
+  stop("Not implemented yet")
+}
 
-
-#' Output confidence intervals and effect size for multiple variables
+#' Test whether shares differ
 #'
 #' @keywords internal
 #'
@@ -232,90 +262,11 @@ stat_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 #' @importFrom rlang .data
 #'
 stat_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
-
-  # 1. Check parameters
-  check_is_dataframe(data)
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}))
-
-  # 4. Prepare data
-  result <- data %>%
-    tidyr::drop_na({{ cols }}) %>%
-    labs_clear({{ cols }}) %>%
-    tidyr::pivot_longer(
-      {{ cols }},
-      names_to = "item",
-      values_to = "value"
-    ) %>%
-    dplyr::count(dplyr::across(tidyselect::all_of(c("item", "value")))) %>%
-    dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
-    dplyr::mutate(p = .data$n / sum(.data$n)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(value = as.factor(.data$value)) %>%
-    dplyr::arrange(.data$value)
-
-
-  # # Absolute frequency
-  # value <- "n"
-  # result_n <- result %>%
-  #   dplyr::select("item", "value", !!sym(value)) %>%
-  #   tidyr::pivot_wider(
-  #     names_from = value,
-  #     values_from = !!sym(value),
-  #     values_fill = stats::setNames(list(0), value)
-  #   ) # %>%
-  #   #janitor::adorn_totals("col")
-
-  # Relative frequency
-  # value <- "p"
-  # result_p <- result %>%
-  #   dplyr::select("item", "value", !!sym(value)) %>%
-  #   tidyr::pivot_wider(
-  #     names_from = value,
-  #     values_from = !!sym(value),
-  #     values_fill = stats::setNames(list(0), value)
-  #   )
-
-  # Confidence intervals
-
-  # Calculate Confidence Intervals
-
-  total_obs <- sum(result$n)
-  #
-  num_groups <- nrow(result)
-  #
-  z <- qnorm(1 - (1 - 0.95) / 2)
-  #
-  # Confidence Intervals
-  result <- result %>%
-    dplyr::mutate(
-      std_error = round(sqrt(p * (1 - p) / total_obs), 2),
-      conf_low = round(p - z * std_error, 2),
-      conf_high = round(p + z * std_error, 2)
-    )
-
-  if (percent) {
-    result <- dplyr::mutate(result, p = paste0(round(.data$p * 100, 0), "%"))
-  }
-
-  result <- result %>%
-    dplyr::select("item", "value", "p") %>%
-    tidyr::pivot_wider(
-      names_from = value,
-      values_from = p)
-
-  .to_vlkr_tab(result)
-
+  stop("Not implemented yet")
 }
 
 
-#' Output confidence intervals and effect size for multiple variables by a grouping variable
+#' Effect size and test for comparing multiple variables by a grouping variable
 #'
 #' @keywords internal
 #'
@@ -334,27 +285,11 @@ stat_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
 #' @importFrom rlang .data
 #'
 stat_counts_items_grouped <- function(data, cols, cross, clean = T, ...) {
-
   stop("Not implemented yet")
-
-  # 1. Check parameters
-  check_is_dataframe(data)
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
-
-  # 4. Calculate confindence intervals
-
-
 }
 
 
-#' Correlate the values in multiple items (Pearson's R)
+#' Correlate the values in multiple items and output effect sizes and tests
 #'
 #' @keywords internal
 #'
@@ -377,7 +312,7 @@ stat_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
 }
 
 
-#' Output confidence interval of mean for one metric variable
+#' Test whether the mean is different from zero
 #'
 #'
 #' @keywords internal
@@ -396,38 +331,7 @@ stat_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
 #' @export
 #' @importFrom rlang .data
 stat_metrics_one <- function(data, col, clean = T, ... ) {
-
-  # 1. Check parameters
-  check_is_dataframe(data)
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, {{ col }})
-
-  # 4. Get label
-  label <- get_title(data, {{ col }})
-
-  # 5. Calculate mean and confidence interval
-
-  data <- data |>
-    dplyr::select(av = {{ col }})
-
-  fit <- lm(av ~ 1, data)
-
-  result <- broom::tidy(fit, conf.int = TRUE)
-
-  result <- result |>
-    dplyr::select(mean = estimate, conf.low, conf.high, std.error)
-
-  # Alternative choosing level param
-  # result <- confint(fit, level=level)
-
-  .to_vlkr_tab(result)
-
+  stop("Not implemented yet")
 }
 
 
@@ -441,7 +345,7 @@ stat_metrics_one <- function(data, col, clean = T, ... ) {
 #'
 #' @param data A tibble
 #' @param col The column holding metric values
-#' @param col_group The column holding groups to compare
+#' @param cross The column holding groups to compare
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param digits The number of digits to print
 #' @param missings Include missing values in the output (default FALSE)
@@ -457,7 +361,7 @@ stat_metrics_one <- function(data, col, clean = T, ... ) {
 #'
 #' @export
 #' @importFrom rlang .data
-stat_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, digits = 1, missings= FALSE, labels = TRUE, clean = TRUE, ...) {
+stat_metrics_one_grouped <- function(data, col, cross, negative = FALSE, digits = 1, missings= FALSE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -476,11 +380,11 @@ stat_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, dig
   # @JJ: optional param? if missings = FALSE, calculation fails
 
   if (!missings) {
-    data <- data_rm_missings(data, c({{ col }}, {{ col_group }}))
+    data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
   }
 
   lm_data <- data |>
-    dplyr::select(av = {{ col }}, uv = {{ col_group }})
+    dplyr::select(av = {{ col }}, uv = {{ cross }})
 
   # TODO: Add assumption tests, Shapiro (ttest, two groups), levene test?
   # Differentiate between samples? (independent?)
@@ -514,6 +418,31 @@ stat_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, dig
   .to_vlkr_list(result)
 }
 
+#' Test whether a correlation is different from zero
+#'
+#' @keywords internal
+#'
+#' @param data A tibble
+#' @param col The column holding metric values
+#' @param cross The column holding metric values to correlate
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param digits The number of digits to print
+#' @param missings Include missing values in the output (default FALSE)
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_metrics}.
+#' @return A volker chunks object containing tables for micro and macro statistics
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' stat_metrics_one_cor(data, sd_age, sd_gender)
+#'
+#' @export
+#' @importFrom rlang .data
+stat_metrics_one_cor <- function(data, col, cross, negative = FALSE, digits = 1, missings= FALSE, labels = TRUE, clean = TRUE, ...) {
+  stop("Not implemented yet")
+}
 
 #' Output test statistics and effect size (Cohen's d) for paired samples
 #'
@@ -534,32 +463,7 @@ stat_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, dig
 #'
 #' @importFrom rlang .data
 stat_metrics_items <- function(data, cols, clean = T, ...) {
-
   stop("Not implemented yet")
-
-  # 1. Check parameters
-  check_is_dataframe(data)
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  #data <- data_rm_missings(data, c({{ cols }}))
-
-  # 4. Calculate means and confidence intervals for items
-
-  result <- data %>%
-    dplyr::select({{ cols }})
-
-
-  # 5. TODO: Anova (multiple items), t-test (two items)
-
-  # Print
-
-  .to_vlkr_tab(result)
-
 }
 
 
@@ -584,18 +488,6 @@ stat_metrics_items <- function(data, cols, clean = T, ...) {
 #' @importFrom rlang .data
 stat_metrics_items_grouped <- function(data, cols, col_group, clean = T, ...) {
   stop("Not implemented yet")
-
-  # 1. Check parameters
-  check_is_dataframe(data)
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}), {{ col_group}})
-
 }
 
 
@@ -621,17 +513,4 @@ stat_metrics_items_grouped <- function(data, cols, col_group, clean = T, ...) {
 #' @importFrom rlang .data
 stat_metrics_items_cor <- function(data, cols, clean = T, ... ) {
   stop("Not implemented yet")
-
-  # 1. Check parameters
-  check_is_dataframe(data)
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}))
-
-
 }
