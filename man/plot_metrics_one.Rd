@@ -7,6 +7,7 @@
 plot_metrics_one(
   data,
   col,
+  ci = FALSE,
   limits = NULL,
   negative = FALSE,
   title = TRUE,
@@ -19,6 +20,8 @@ plot_metrics_one(
 \item{data}{A tibble}
 
 \item{col}{The column holding metric values}
+
+\item{ci}{Whether to plot the confidence interval}
 
 \item{limits}{The scale limits. Set NULL to extract limits from the label. NOT IMPLEMENTED YET.}
 

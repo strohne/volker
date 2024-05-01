@@ -34,7 +34,7 @@ tab_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cross_eval)== 1
-  is_cor <- cor
+  is_cor <- cor != FALSE
 
   # Single variables
   if (!is_items && !is_grouped) {
@@ -95,7 +95,7 @@ tab_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
 
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cross_eval)== 1
-  is_cor <- cor
+  is_cor <- cor != FALSE
 
   # Single variables
   if (!is_items && !is_grouped && !is_cor) {
@@ -106,7 +106,7 @@ tab_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
   }
 
   else if (!is_items && is_grouped && is_cor) {
-    tab_metrics_one_cor(data, {{ cols }}, {{ cross }}, ...)
+    tab_metrics_one_cor(data, {{ cols }}, {{ cross }}, cor=cor, ...)
   }
 
   # Items
@@ -767,11 +767,14 @@ tab_metrics_one <- function(data, col, ci = FALSE, negative = FALSE, digits = 1,
 
 #' Output a five point summary for groups
 #'
+#' TODO: handle missings parameter
+#'
 #' @keywords internal
 #'
 #' @param data A tibble
 #' @param col The column holding metric values
 #' @param cross The column holding groups to compare
+#' @param ci Whether to output confidence intervals
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param digits The number of digits to print
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -786,9 +789,11 @@ tab_metrics_one <- function(data, col, ci = FALSE, negative = FALSE, digits = 1,
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_one_grouped <- function(data, col, cross, negative = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
+  check_has_column(data, {{ col }})
+  check_has_column(data, {{ cross }})
 
   # 2. Clean
   if (clean) {
@@ -796,14 +801,15 @@ tab_metrics_one_grouped <- function(data, col, cross, negative = FALSE, digits =
   }
 
   # 3. Remove missings
-  data <- data_rm_missings(data, {{ col }})
+  #data <- data_rm_missings(data, {{ col }})
+  #data <- data_rm_missings(data, {{ cross }})
 
-  # Remove negative values
-  # TODO: warn if any negative values were recoded
+  # 4. Remove negative values
   if (!negative) {
-    data <- dplyr::mutate(data, dplyr::across({{ col }}, ~ dplyr::if_else(. < 0, NA, .)))
+    data <- data_rm_negatives(data,  {{ col }})
   }
 
+  # 5. Calculate values
   result_grouped <- data %>%
     dplyr::group_by({{ cross }}) %>%
     skim_metrics({{ col }}) %>%
@@ -811,32 +817,34 @@ tab_metrics_one_grouped <- function(data, col, cross, negative = FALSE, digits =
     dplyr::mutate(
       {{ cross }} := tidyr::replace_na(as.character({{ cross }}), "Missing")
     ) %>%
-    dplyr::select(-tidyselect::all_of(c("skim_variable","skim_type")))
+    dplyr::select(-tidyselect::all_of(c("skim_variable","skim_type"))) |>
+    dplyr::rename_with(function(x) stringr::str_remove(x,"numeric."))
 
   result_total <- data %>%
     skim_metrics({{ col }}) %>%
-    dplyr::mutate({{ cross }} := "Total")
+    dplyr::mutate({{ cross }} := "Total") |>
+    dplyr::rename_with(function(x) stringr::str_remove(x,"numeric."))
+
 
   result <- dplyr::bind_rows(
     result_grouped,
     result_total
-  ) %>%
-    dplyr::select(
-      {{ cross }},
-      min = "numeric.min",
-      q1 = "numeric.q1",
-      median = "numeric.median",
-      q3 = "numeric.q3",
-      max = "numeric.max",
-      m = "numeric.mean",
-      sd = "numeric.sd",
-      "missing",
-      "n",
-      items = "numeric.items",
-      alpha = "numeric.alpha"
-    )
+  )
 
-  # Remove items and alpha if not and index
+  if (ci) {
+    result <- dplyr::select(
+      result,  {{ cross }},
+      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","ci.low","ci.high","missing","n","items","alpha"))
+    )
+  } else {
+    result <- dplyr::select(
+      result, "item" = "skim_variable",
+      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","missing","n","items","alpha"))
+    )
+  }
+
+
+  # Remove items and alpha if not an index
   if (all(is.na(result$items)) || all(is.na(result$alpha))) {
     result$items <- NULL
     result$alpha <- NULL
@@ -881,16 +889,17 @@ tab_metrics_one_grouped <- function(data, col, cross, negative = FALSE, digits =
 #' @param data A tibble
 #' @param col The first item
 #' @param cross The column to correlate
-#' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param method The output metrics, p = Pearson's R, s = Spearman's rho
+#' @param cor The output metrics, TRUE or p = Pearson's R, s = Spearman's rho
 #' @param stats Add significance stars
+#' @param ci Whether to output confidence intervals
+#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param digits The number of digits to print
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @return A volker tibble
 #' @importFrom rlang .data
-tab_metrics_one_cor <- function(data, cols, cross, negative = FALSE, method="p", stats = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_one_cor <- function(data, cols, cross, cor="p", ci = FALSE, stats = FALSE, negative = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -909,49 +918,86 @@ tab_metrics_one_cor <- function(data, cols, cross, negative = FALSE, method="p",
   }
 
   # 4. Remove missings
-  #data <- data_rm_missings(data, {{ col }})
+  data <- data_rm_missings(data, {{ cols }})
   data <- data_rm_missings(data, {{ cross }})
 
   # 6. Get columns
-  cols <- tidyselect::eval_select(expr = enquo(cols), data = data)
-  cross <- tidyselect::eval_select(expr = enquo(cross), data = data)
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
 
-  result <- expand.grid(x = cols, y = cross, stringsAsFactors = FALSE) %>%
+  # Calculate correlation
+  method <- ifelse(cor == "s", "s", "p")
+  result <- expand.grid(
+    x = cols_eval, y = cross_eval, stringsAsFactors = FALSE
+  ) %>%
     dplyr::mutate(x_name = names(.data$x), y_name = names(.data$y)) %>%
     dplyr::mutate(
-      test = purrr::map2(
+      .test = purrr::map2(
         .data$x, .data$y,
-        function(x, y) stats::cor.test(data[[x]], data[[y]], method = method)
+        function(x, y) stats::cor.test(data[[x]], data[[y]], method = method, exact = method != "s")
       ),
-      p = map(.data$test, function(x) x$p.value),
-      value = purrr::map(.data$test, function(x) as.numeric(x$estimate)),
+      p = map(.data$.test, function(x) x$p.value),
+      r = purrr::map(.data$.test, function(x) as.numeric(x$estimate)),
+      ci.low = purrr::map(.data$.test, function(x) as.numeric(x$conf.int[1])),
+      ci.high = purrr::map(.data$.test, function(x) as.numeric(x$conf.int[2])),
       stars = get_stars(.data$p)
     ) %>%
-    dplyr::select(item = "x_name", target = "y_name", "value", "p", "stars")
+    dplyr::select(-tidyselect::all_of(c("x", "y",".test"))) |>
+    dplyr::select(item1 = "x_name", item2 = "y_name", "r", "ci.low", "ci.high", "p", "stars")
+
+  # Round
+  # TODO: round in print function
+  result <- result %>%
+    dplyr::mutate(
+      r = round(unlist(.data$r), 2),
+      ci.low = round(unlist(.data$ci.low), 2),
+      ci.high = round(unlist(.data$ci.high), 2),
+      p = round(unlist(.data$p), 3)
+    )
+
+  if (!stats) {
+    result <- result %>%
+      dplyr::select(-tidyselect::all_of(c("p","stars")))
+  }
+
+  if (!ci) {
+    result <- result %>%
+      dplyr::select(-tidyselect::all_of(c("ci.low","ci.high")))
+  }
+
+
+  # Get variable caption from the attributes
+  if (labels) {
+    result <- labs_replace(result, "item1", codebook(data, {{ cols }}), col_from="item_name", col_to="item_label")
+    result <- labs_replace(result, "item2", codebook(data, {{ cross }}), col_from="item_name", col_to="item_label" )
+  }
 
 
   # Remove common item prefix
-  result <- dplyr::mutate(result, item = trim_prefix(.data$item))
-  result <- dplyr::mutate(result, target = trim_prefix(.data$target))
+  prefix <- get_prefix(c(result$item1, result$item2))
+  result <- dplyr::mutate(result, item1 = trim_prefix(.data$item1, prefix))
+  result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix))
 
-  # Create table
-  result <- result %>%
-    dplyr::mutate(value = round(unlist(.data$value), 2))
-
-  if (stats == TRUE) {
-    result <- result %>%
-      dplyr::mutate(value = paste0(unlist(.data$value), .data$stars))
-      #dplyr::mutate(value = ifelse(.data$p >= 0.1, "", .data$value))
+  if (prefix == "") {
+    prefix <- "Item"
   }
 
-  result <- dplyr::select(result, "item", "target", "value")
+  if (!stats && !ci) {
+    result <- result %>%
+        tidyr::pivot_wider(names_from = "item2", values_from = "r") %>%
+        dplyr::rename({{ prefix }} := tidyselect::all_of("item1"))
+    title <- NULL
+  } else {
+    result <- result %>%
+      dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
+      dplyr::rename("Item 2" = tidyselect::all_of("item2"))
 
-  result <- result %>%
-    tidyr::pivot_wider(names_from = "target", values_from = "value") %>%
-    dplyr::rename(Item = tidyselect::all_of("item"))
+    title <- ifelse(prefix == "", NULL, prefix)
+  }
 
-  .to_vlkr_tab(result, digits= 2)
+  # TODO: print caption
+  .to_vlkr_tab(result, digits= 2, caption=title)
 }
 
 #' Output a five point summary table for multiple items

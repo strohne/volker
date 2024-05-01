@@ -34,7 +34,7 @@ plot_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
   col_group_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   is_items <- length(cols_eval) > 1
   is_grouped <- length(col_group_eval)== 1
-  is_cor <- cor
+  is_cor <- cor != FALSE
 
   # Single variables
   if (!is_items && !is_grouped) {
@@ -95,7 +95,7 @@ plot_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ..
 
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cols_cross_eval)== 1
-  is_cor <-cor
+  is_cor <- cor != FALSE
 
   # Single variables
   if (!is_items && !is_grouped && !is_cor) {
@@ -603,6 +603,7 @@ plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #'
 #' @param data A tibble
 #' @param col The column holding metric values
+#' @param ci Whether to plot the confidence interval
 #' @param limits The scale limits. Set NULL to extract limits from the label. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -619,7 +620,7 @@ plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one <- function(data, col, ci = FALSE, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -640,45 +641,33 @@ plot_metrics_one <- function(data, col, limits = NULL, negative = FALSE, title =
 
 
   # Extract the maximum density value
-  max_density <- data %>%
-    ggplot2::ggplot(ggplot2::aes({{ col }})) +
-    ggplot2::geom_density() +
-    #ggplot2::stat_density(aes(y = after_stat(density)), geom = "point", color = "transparent") +
-    ggplot2::theme_void()
-
-  max_density <- ggplot2::ggplot_build(max_density)$data[[1]]$y %>% max()
+  max_density <- .density_mode(data, {{ col }})
 
   # TODO: make configurable: density, boxplot or histogram
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes({{ col }})) +
-    ggplot2::geom_density() +
+    ggplot2::geom_density()
 
-    ggplot2::stat_summary(
-      fun.data = ggplot2::mean_cl_normal,
-      aes(x= {{ col }}, y=max_density / 2),
-      width= max_density / 20,
-      orientation ="y",
-      geom = "errorbar",
-      color = "black"
-    ) +
+  # Confidence interval
+  if (ci) {
+    pl <- pl +
+      ggplot2::stat_summary(
+        fun.data = ggplot2::mean_cl_normal,
+        aes(x= {{ col }}, y=max_density / 2),
+        width= max_density / 20,
+        orientation ="y",
+        geom = "errorbar",
+        color = "black"
+      )
+  }
 
+  pl <- pl +
     ggplot2::geom_point(
       aes(x= mean({{ col }}), y = max_density / 2),
       size=4,
       shape=18,
       color = "black"
     )
-
-
-    # ggplot2::stat_summary(
-    #   fun.data = mean,
-    #   aes(x= {{ col }}, y = max_density / 2),
-    #   orientation ="x",
-    #   geom = "point",
-    #   size=4,
-    #   shape=18,
-    #   color = "maroon"
-    # )
 
     #ggplot2::geom_vline(ggplot2::aes(xintercept=mean({{ col }})), color="black")
 
@@ -888,19 +877,18 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, logplot = FALS
   #   limits <- get_limits(data, {{ cols }})
   # }
 
-  # Replace item labels
-  # if (labels) {
-  #   result <- labs_replace(
-  #     result, "item",
-  #     codebook(data, {{ cols }}),
-  #     "item_name", "item_label"
-  #   )
-  # }
-
-  # Remove common item prefix
-  #prefix <- get_prefix(data$item, trim=TRUE)
+  # Get variable caption from the attributes
   prefix <- ""
-  # result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
+  if (labels) {
+    labs <- codebook(data, c({{ col }} , {{ cross }}))  |>
+      dplyr::distinct(across(tidyselect::all_of(c("item_name", "item_label")))) |>
+      dplyr::mutate(item_name = factor(.data$item_name, levels=c(col1, col2))) |>
+      dplyr::arrange(.data$item_name) |>
+      dplyr::pull(.data$item_label)
+
+    prefix <- get_prefix(labs)
+    labs <- trim_prefix(labs, prefix)
+  }
 
   # Order item levels
   # result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
@@ -918,33 +906,13 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, logplot = FALS
       ggplot2::scale_y_log10()
   }
 
-  # # Set the scale
-  # # TODO: get from attributes
-  # scale <- data %>%
-  #   codebook({{ cols }}) %>%
-  #   dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) %>%
-  #   prepare_scale()
-  #
-  # if (length(scale) > 0) {
-  #   pl <- pl +
-  #     ggplot2::scale_y_continuous(labels = ~ label_scale(., scale) )
-  # } else {
-  #   pl <- pl +
-  #     ggplot2::scale_y_continuous()
-  # }
-  #
-  # # Add scales, labels and theming
+  if (labels) {
+    pl <- pl +
+      ggplot2::labs(x = labs[1], y = labs[2])
+  }
+
+  # Add theming
   pl <- pl +
-    #   ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
-    #   ggplot2::scale_color_manual(
-    #     values = vlkr_colors_discrete(length(unique(result$group))),
-    #     labels = function(x) stringr::str_wrap(x, width = 40)
-    #     #guide = ggplot2::guide_legend(reverse = TRUE)
-    #   ) +
-    #   #ggplot2::scale_color_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +
-    #
-    #   ggplot2::ylab("Mean values") +
-    #   ggplot2::coord_flip(ylim = limits) +
     ggplot2::theme(
       plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
@@ -966,7 +934,7 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, logplot = FALS
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
   # Convert to vlkr_plot
-  .to_vlkr_plot(pl)
+  .to_vlkr_plot(pl, rows=15)
 }
 
 #' Output averages for multiple variables
@@ -1631,6 +1599,24 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot=FAL
   # Convert to vlkr_plot
   # Pass row number and label length to the knit_plot() function
   .to_vlkr_plot(pl, maxlab=maxlab)
+}
+
+#' Get the maximum density value in a density plot
+#'
+#' Useful for placing geoms in the center of density plots
+#'
+#' @internal
+#'
+#' @param data A tibble
+#' @param col A tidyselect column
+#' @return The maximum density value
+.density_mode <- function(data, col) {
+  pl <- data %>%
+    ggplot2::ggplot(ggplot2::aes({{ col }})) +
+    ggplot2::geom_density() +
+    ggplot2::theme_void()
+
+  ggplot2::ggplot_build(pl)$data[[1]]$y %>% max()
 }
 
 #' Add the volker class and options

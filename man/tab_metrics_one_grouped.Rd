@@ -8,6 +8,7 @@ tab_metrics_one_grouped(
   data,
   col,
   cross,
+  ci = FALSE,
   negative = FALSE,
   digits = 1,
   labels = TRUE,
@@ -21,6 +22,8 @@ tab_metrics_one_grouped(
 \item{col}{The column holding metric values}
 
 \item{cross}{The column holding groups to compare}
+
+\item{ci}{Whether to output confidence intervals}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
@@ -36,7 +39,7 @@ tab_metrics_one_grouped(
 A volker tibble
 }
 \description{
-Output a five point summary for groups
+TODO: handle missings parameter
 }
 \examples{
 library(volker)

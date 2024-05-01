@@ -8,9 +8,10 @@ tab_metrics_one_cor(
   data,
   cols,
   cross,
-  negative = FALSE,
-  method = "p",
+  cor = "p",
+  ci = FALSE,
   stats = FALSE,
+  negative = FALSE,
   digits = 1,
   labels = TRUE,
   clean = TRUE,
@@ -22,11 +23,13 @@ tab_metrics_one_cor(
 
 \item{cross}{The column to correlate}
 
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
+\item{cor}{The output metrics, TRUE or p = Pearson's R, s = Spearman's rho}
 
-\item{method}{The output metrics, p = Pearson's R, s = Spearman's rho}
+\item{ci}{Whether to output confidence intervals}
 
 \item{stats}{Add significance stars}
+
+\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{digits}{The number of digits to print}
 

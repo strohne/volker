@@ -34,7 +34,7 @@ stat_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cross_eval)== 1
-  is_cor <- cor
+  is_cor <- cor != FALSE
 
   # Single variables
   if (!is_items && !is_grouped && !is_cor) {
@@ -95,7 +95,7 @@ stat_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ..
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cross_eval)== 1
-  is_cor <- cor
+  is_cor <- cor != FALSE
 
   # Single variables
   if (!is_items && !is_grouped && !is_cor) {
@@ -535,6 +535,8 @@ stat_metrics_one_grouped <- function(data, col, col_group, negative = FALSE, dig
 #' @importFrom rlang .data
 stat_metrics_items <- function(data, cols, clean = T, ...) {
 
+  stop("Not implemented yet")
+
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -581,6 +583,7 @@ stat_metrics_items <- function(data, cols, clean = T, ...) {
 #'
 #' @importFrom rlang .data
 stat_metrics_items_grouped <- function(data, cols, col_group, clean = T, ...) {
+  stop("Not implemented yet")
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -616,8 +619,8 @@ stat_metrics_items_grouped <- function(data, cols, col_group, clean = T, ...) {
 #'
 #'
 #' @importFrom rlang .data
-
 stat_metrics_items_cor <- function(data, cols, clean = T, ... ) {
+  stop("Not implemented yet")
 
   # 1. Check parameters
   check_is_dataframe(data)
