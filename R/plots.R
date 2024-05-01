@@ -31,9 +31,9 @@ plot_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
 
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
-  col_group_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
+  cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   is_items <- length(cols_eval) > 1
-  is_grouped <- length(col_group_eval)== 1
+  is_grouped <- length(cross_eval)== 1
   is_cor <- cor != FALSE
 
   # Single variables
@@ -182,8 +182,8 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits=NULL,
       dplyr::rowwise() |>
       dplyr::mutate(.test = list(stats::prop.test(.data$n, n_total))) |>
       dplyr::mutate(
-        ci.low = .test$conf.int[1],
-        ci.high = .test$conf.int[2]
+        ci.low = .data$.test$conf.int[1],
+        ci.high = .data$.test$conf.int[2]
       ) |>
       dplyr::select(-tidyselect::all_of(c(".test")))
   }
@@ -418,13 +418,6 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits=NU
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object
-#' @examples
-#' library(volker)
-#' data <- volker::chatgpt
-#'
-#' plot_counts_one_cor(data, adopter, sd_gender)
-#'
-#' @export
 #' @importFrom rlang .data
 plot_counts_one_cor <- function(data, col, cross, limits=NULL, ordered = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   stop("Not implemented yet")
@@ -507,8 +500,8 @@ plot_counts_items <- function(data, cols, category = NULL, ci = FALSE, ordered =
       dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
       dplyr::mutate(.test = purrr::map(.data$n, function(x) stats::prop.test(x, sum(.data$n)))) |>
       dplyr::mutate(
-        ci.low =purrr::map_dbl(.test, function(x) x$conf.int[1]),
-        ci.high =purrr::map_dbl(.test, function(x) x$conf.int[2]),
+        ci.low =purrr::map_dbl(.data$.test, function(x) x$conf.int[1]),
+        ci.high =purrr::map_dbl(.data$.test, function(x) x$conf.int[2]),
       ) |>
       dplyr::select(-tidyselect::all_of(c(".test"))) |>
       dplyr::ungroup()
@@ -653,7 +646,7 @@ plot_metrics_one <- function(data, col, ci = FALSE, limits = NULL, negative = FA
     pl <- pl +
       ggplot2::stat_summary(
         fun.data = ggplot2::mean_cl_normal,
-        aes(x= {{ col }}, y=max_density / 2),
+        ggplot2::aes(x= {{ col }}, y=max_density / 2),
         width= max_density / 20,
         orientation ="y",
         geom = "errorbar",
@@ -663,7 +656,7 @@ plot_metrics_one <- function(data, col, ci = FALSE, limits = NULL, negative = FA
 
   pl <- pl +
     ggplot2::geom_point(
-      aes(x= mean({{ col }}), y = max_density / 2),
+      ggplot2::aes(x= mean({{ col }}), y = max_density / 2),
       size=4,
       shape=18,
       color = "black"
@@ -756,14 +749,14 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
 
     categories_n <- data |>
       dplyr::rename(value_name = {{ cross }}) |>
-      dplyr::count(value_name) |>
-      mutate(value_label = paste0(
-        stringr::str_wrap(value_name, width = 40), "\n",
-        "(n = ", n, ")")
+      dplyr::count(.data$value_name) |>
+      dplyr::mutate(value_label = paste0(
+        stringr::str_wrap(.data$value_name, width = 40), "\n",
+        "(n = ", .data$n, ")")
       )
 
     data <- data |>
-      labs_replace_values(
+      labs_replace(
         {{ cross }},
         categories_n
       )
@@ -881,7 +874,7 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, logplot = FALS
   prefix <- ""
   if (labels) {
     labs <- codebook(data, c({{ col }} , {{ cross }}))  |>
-      dplyr::distinct(across(tidyselect::all_of(c("item_name", "item_label")))) |>
+      dplyr::distinct(dplyr::across(tidyselect::all_of(c("item_name", "item_label")))) |>
       dplyr::mutate(item_name = factor(.data$item_name, levels=c(col1, col2))) |>
       dplyr::arrange(.data$item_name) |>
       dplyr::pull(.data$item_label)
@@ -1383,7 +1376,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot=FAL
     pl <- pl +
       ggplot2::geom_errorbar(
         #aes(ymin = .data$p_cum + .data$ci.low, ymax = .data$p_cum + .data$ci.high),
-        aes(ymin = .data$ci.low, ymax = .data$ci.high),
+        ggplot2::aes(ymin = .data$ci.low, ymax = .data$ci.high),
         width = 0.1, color = "black"
         )
   }
@@ -1480,7 +1473,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot=FAL
 
   if (box) {
     pl <- pl + ggplot2::geom_boxplot(
-      aes(group=item),
+      ggplot2::aes(group=.data$item),
       fill="transparent", color="darkgray"
     )
   }

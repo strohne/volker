@@ -325,8 +325,8 @@ the specific function:
 - **stats**: You are not sure whether the differences are statistical
   significant? One option is to look out for non overlapping confidence
   intervals. In addition, the stats option calculates effect sizes such
-  as Cramer’s v or Cohen’s and generates typical statistical tests such
-  as Chi-squared tests and t-tests.
+  as Cramer’s v or Cohen’s d and generates typical statistical tests
+  such as Chi-squared tests and t-tests.
 
 ## Installation
 

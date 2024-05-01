@@ -4,14 +4,14 @@
 \alias{stat_metrics_items_grouped}
 \title{Output confindence intervals of group means, F-Statistics and effectsize (Eta^2)}
 \usage{
-stat_metrics_items_grouped(data, cols, col_group, clean = T, ...)
+stat_metrics_items_grouped(data, cols, cross, clean = T, ...)
 }
 \arguments{
 \item{data}{A tibble}
 
 \item{cols}{The item columns that hold the values to summarize}
 
-\item{col_group}{The column holding groups to compare and test}
+\item{cross}{The column holding groups to compare and test}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 

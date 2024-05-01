@@ -33,6 +33,7 @@ stat_metrics_one_grouped(
 A volker chunks object containing tables for micro and macro statistics
 }
 \description{
+#TODO: remove tidycat from the package, implement own function
 #TODO: Fix bug, why is p in model statistics not above stars?
 #TODO: Remove NA from base level in regression table (and by this fix p=0 showing as NA for the Intercept)
 #TODO: Add ci for R squared

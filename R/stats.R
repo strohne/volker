@@ -52,10 +52,10 @@ stat_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
     stat_counts_items(data, {{ cols }} , ...)
   }
   else if (is_items && is_grouped && !is_cor) {
-    stat_counts_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
+    stat_counts_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
   else if (is_items && is_grouped && is_cor) {
-    stat_counts_items_cor(data, {{ cols }}, {{ col_group }},  ...)
+    stat_counts_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
   # Not found
   else {
@@ -118,10 +118,10 @@ stat_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ..
     stat_metrics_items(data, {{ cols }} , ...)
   }
   else if (is_items && is_grouped && !is_cor) {
-    stat_metrics_items_grouped(data, {{ cols }}, {{ col_group }},  ...)
+    stat_metrics_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
   else if (is_items && is_grouped && is_cor) {
-    stat_metrics_items_cor(data, {{ cols }}, {{ col_group }},  ...)
+    stat_metrics_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
   # Not found
   else {
@@ -157,6 +157,8 @@ stat_counts_one <- function(data, col, digits = 2, percent = TRUE, labels = TRUE
 
 #' Output test statistics and effect size for contingency tables (Chi^2 and Cramer's V)
 #'
+#' TODO: replace spread by pivot_wider (spread is superseded)
+#'
 #' @keywords internal
 #'
 #' @param data A tibble
@@ -190,10 +192,10 @@ stat_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 
   # 4. Prepare data
   contingency <- data %>%
-    count({{ col }}, {{ cross }}) %>%
+    dplyr::count({{ col }}, {{ cross }}) %>%
     spread({{ cross }}, n, fill = 0) %>%
     as.data.frame() %>%
-    select(-1) %>%
+    dplyr::select(-1) %>%
     as.matrix()
 
   # 5. Chi-squared test and Cramer's V
@@ -323,13 +325,6 @@ stat_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder
 #' @return A volker tibble
-#' @examples
-#' library(volker)
-#' data <- volker::chatgpt
-#'
-#' stat_metrics_one(data, sd_age)
-#'
-#' @export
 #' @importFrom rlang .data
 stat_metrics_one <- function(data, col, clean = T, ... ) {
   stop("Not implemented yet")
@@ -337,6 +332,7 @@ stat_metrics_one <- function(data, col, clean = T, ... ) {
 
 #' Output t-test results, a regression table with estimates and macro statistics
 #'
+#' #TODO: remove tidycat from the package, implement own function
 #' #TODO: Fix bug, why is p in model statistics not above stars?
 #' #TODO: Remove NA from base level in regression table (and by this fix p=0 showing as NA for the Intercept)
 #' #TODO: Add ci for R squared
@@ -389,7 +385,7 @@ stat_metrics_one_grouped <- function(data, col, cross, negative = FALSE, labels 
 
     stats_shapiro <- stats::shapiro.test(lm_data$av)
     stats_levene <- car::leveneTest(lm_data$av, group = lm_data$uv)
-    stats_varequal = stats_levene$`Pr(>F)`[1] > 0.05
+    stats_varequal = stats_levene[["Pr(>F)"]][1] > 0.05
     stats_cohen <- effectsize::cohens_d(lm_data$av, lm_data$uv, pooled_sd = stats_varequal, paired=FALSE)
     stats_t <- stats::t.test(lm_data$av ~ lm_data$uv, var.equal = stats_varequal)
 
@@ -402,9 +398,9 @@ stat_metrics_one_grouped <- function(data, col, cross, negative = FALSE, labels 
         "Normality" = ifelse(stats_shapiro$p.value > 0.05, "normal", "not normal")
       ),
       "Levene test", list(
-        "F" = round(stats_levene$`F value`[1],2),
-        "p" = round(stats_levene$`Pr(>F)`[1],3),
-        "stars" = get_stars(stats_levene$`Pr(>F)`[1]),
+        "F" = round(stats_levene[["F value"]][1],2),
+        "p" = round(stats_levene[["Pr(>F)"]][1],3),
+        "stars" = get_stars(stats_levene[["Pr(>F)"]][1]),
         "Variances" = ifelse(stats_varequal, "equal", "not equal")
       ),
       "Cohen's d" , list(
@@ -477,7 +473,7 @@ stat_metrics_one_grouped <- function(data, col, cross, negative = FALSE, labels 
       value_name=c( "adj.r.squared","statistic", "df", "df.residual",  "p.value", "stars"),
       value_label=c("Adjusted R squared", "F", "Degrees of freedom", "Residuals' degrees of freedom", "p", "stars")
     ), relevel = TRUE) |>
-    na.omit() |>
+    stats::na.omit() |>
     dplyr::arrange(tidyselect::all_of("Statistic"))
 
 
@@ -636,7 +632,7 @@ stat_metrics_items <- function(data, cols, method="p", negative = FALSE, labels 
 #'
 #' @param data A tibble
 #' @param cols The item columns that hold the values to summarize
-#' @param col_group The column holding groups to compare and test
+#' @param cross The column holding groups to compare and test
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder
 #' @return A volker tibble
@@ -648,7 +644,7 @@ stat_metrics_items <- function(data, cols, method="p", negative = FALSE, labels 
 #'
 #'
 #' @importFrom rlang .data
-stat_metrics_items_grouped <- function(data, cols, col_group, clean = T, ...) {
+stat_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
   stop("Not implemented yet")
 }
 

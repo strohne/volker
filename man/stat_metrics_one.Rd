@@ -21,11 +21,4 @@ A volker tibble
 \description{
 Test whether the mean is different from zero
 }
-\examples{
-library(volker)
-data <- volker::chatgpt
-
-stat_metrics_one(data, sd_age)
-
-}
 \keyword{internal}

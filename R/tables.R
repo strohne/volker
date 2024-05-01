@@ -174,10 +174,10 @@ tab_counts_one <- function(data, col, ci = FALSE, missings = TRUE, percent = TRU
     n_total <- sum(result$n)
     result <- result |>
       dplyr::rowwise() |>
-      dplyr::mutate(.test = list(prop.test(.data$n, n_total))) |>
+      dplyr::mutate(.test = list(stats::prop.test(.data$n, n_total))) |>
       dplyr::mutate(
-        ci.low = .test$conf.int[1],
-        ci.high = .test$conf.int[2]
+        ci.low = .data$.test$conf.int[1],
+        ci.high = .data$.test$conf.int[2]
       ) |>
       dplyr::select(-tidyselect::all_of(c(".test")))
   }
@@ -519,8 +519,8 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = FALSE, values = 
     dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
     dplyr::mutate(.test = purrr::map(.data$n, function(x) stats::prop.test(x, sum(.data$n)))) |>
     dplyr::mutate(
-      ci.low =purrr::map_dbl(.test, function(x) x$conf.int[1]),
-      ci.high =purrr::map_dbl(.test, function(x) x$conf.int[2]),
+      ci.low =purrr::map_dbl(.data$.test, function(x) x$conf.int[1]),
+      ci.high =purrr::map_dbl(.data$.test, function(x) x$conf.int[2]),
     ) |>
     dplyr::select(-tidyselect::all_of(c(".test", "n"))) |>
     dplyr::ungroup()
@@ -943,7 +943,7 @@ tab_metrics_one_cor <- function(data, col, cross, method="p", ci = FALSE, negati
       ci.high = purrr::map(.data$.test, function(x) round(as.numeric(x$conf.int[2]), 2))
     ) %>%
     dplyr::select(-tidyselect::all_of(c("x", "y",".test"))) |>
-    dplyr::select(item1 = "x_name", item2 = "y_name", everything())
+    dplyr::select(item1 = "x_name", item2 = "y_name", tidyselect::everything())
 
 
   if (!ci) {
@@ -1383,7 +1383,7 @@ knit_table <- function(df, ...) {
   if (".digits" %in% colnames(df)) {
     df <- df |>
       dplyr::rowwise() |>
-      dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), \(x) round(x, .digits))) |>
+      dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), \(x) round(x, .data$.digits))) |>
       dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), \(x) as.character(x)))
 
     df$.digits <- NULL

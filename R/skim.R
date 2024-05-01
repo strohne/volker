@@ -22,8 +22,8 @@ skim_metrics <- skimr::skim_with(
     max = ~ base::ifelse(any(!is.na(.)), base::max(., na.rm = TRUE), NA),
     mean = ~ base::mean(., na.rm = TRUE),
     sd = ~ stats::sd(., na.rm = TRUE),
-    ci.low = ~ base::ifelse(length(.) > 3,  stats::t.test(na.omit(.))$conf.int[1], NA),
-    ci.high = ~ base::ifelse(length(.) > 3, stats::t.test(na.omit(.))$conf.int[2], NA),
+    ci.low = ~ base::ifelse(length(.) > 3,  stats::t.test(stats::na.omit(.))$conf.int[1], NA),
+    ci.high = ~ base::ifelse(length(.) > 3, stats::t.test(stats::na.omit(.))$conf.int[2], NA),
     items = ~ idx_alpha(.)$items,
     alpha = ~ idx_alpha(.)$alpha
   ),

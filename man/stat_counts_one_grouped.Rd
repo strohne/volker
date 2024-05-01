@@ -21,7 +21,7 @@ stat_counts_one_grouped(data, col, cross, clean = TRUE, ...)
 A volker tibble
 }
 \description{
-Output test statistics and effect size for contingency tables (Chi^2 and Cramer's V)
+TODO: replace spread by pivot_wider (spread is superseded)
 }
 \examples{
 library(volker)

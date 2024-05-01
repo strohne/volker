@@ -53,11 +53,4 @@ A ggplot object
 \description{
 Plot correlation of categories with one metric column
 }
-\examples{
-library(volker)
-data <- volker::chatgpt
-
-plot_counts_one_cor(data, adopter, sd_gender)
-
-}
 \keyword{internal}

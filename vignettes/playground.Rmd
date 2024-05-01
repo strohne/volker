@@ -1,8 +1,8 @@
 ---
-title: "Introduction"
+title: "Playground"
 output: volker::html_report
 vignette: >
-  %\VignetteIndexEntry{Introduction}
+  %\VignetteIndexEntry{Playground}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 

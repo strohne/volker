@@ -36,6 +36,8 @@ Set cor to TRUE, to treat is as metric and calculate correlations.}
 an index will be calculated using the 'psych' package.
 Set to FALSE to suppress index generation.}
 
+\item{stats}{Whether to report statistical tests and effect sizes}
+
 \item{numbers}{The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 Set to NULL to remove numbers.}
 

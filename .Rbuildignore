@@ -12,5 +12,7 @@ vignettes/reports.Rmd
 vignettes/reports.html
 vignettes/scales.Rmd
 vignettes/scales.html
+vignettes/playground.Rmd
+vignettes/playground.html
 ^CRAN-SUBMISSION$
 private
