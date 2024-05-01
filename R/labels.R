@@ -322,10 +322,14 @@ labs_clear <- function(data, cols, labels = NULL) {
 #'              value_name and value_label.
 #'              Can be created by the \link{codebook} function, e.g. by calling
 #'              `codes <- codebook(data, myitemcolumn)`.
-#' @param col_from The tidyselect column with source values, defaults to value_name
-#' @param col_to The tidyselect column with target values, defaults to value_label
+#' @param col_from The tidyselect column with source values, defaults to value_name.
+#'               If the column is not found in the codebook, the first column is used.
+#' @param col_to The tidyselect column with target values, defaults to value_label.
+#'               If the column is not found in the codebook, the second column is used
+#' @param relevel By default, the column is converted to a factor with levels found in the codebook.
+#'                Other values will be set to NA. Set relevel to FALSE to keep other values.
 #' @return Tibble with new labels
-labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_label") {
+labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_label", relevel = TRUE) {
 
   # Column without quotes
   # TODO: could we just use "{{ col }}" with quotes in mutate below?
@@ -342,11 +346,17 @@ labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_
   if (rlang::quo_is_symbol(rlang::enquo(col_from))) {
     col_from <- rlang::enquo(col_from)
   } else {
+    if (!(col_from %in% colnames(codes))) {
+      colnames(codes)[1] <- col_from
+    }
     col_from <- rlang::sym(col_from)
   }
   if (rlang::quo_is_symbol(rlang::enquo(col_to))) {
     col_to <- rlang::enquo(col_to)
   } else {
+    if (!(col_to %in% colnames(codes))) {
+      colnames(codes)[2] <- col_to
+    }
     col_to <- rlang::sym(col_to)
   }
 
@@ -369,9 +379,12 @@ labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_
     data <- data %>%
       dplyr::mutate(.from = as.character(!!col)) %>%
       dplyr::left_join(codes, by = ".from") %>%
-      dplyr::mutate(!!col := dplyr::coalesce(.data$.to, .data$.from)) |>
-      dplyr::mutate(!!col := factor(!!col, levels=codes$.to)) |>
-      dplyr::select(-tidyselect::all_of(c(".from", ".to")))
+      dplyr::mutate(!!col := dplyr::coalesce(.data$.to, .data$.from))
+
+    if (relevel) {
+      data <- dplyr::mutate(data, !!col := factor(!!col, levels=codes$.to))
+    }
+    data <- dplyr::select(data, -tidyselect::all_of(c(".from", ".to")))
   }
 
   data
@@ -592,7 +605,7 @@ trim_prefix <- function(x, prefix=TRUE) {
     prefix <- get_prefix(x, trim=T)
   }
 
-  if (prefix != "") {
+  if (!is.na(prefix) && (prefix != "")) {
     x <- stringr::str_remove(x,stringr::fixed(prefix))
     x = ifelse(x == "", prefix, x)
   }

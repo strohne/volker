@@ -59,16 +59,16 @@ report_metrics <- function(data, cols, cross = NULL, cor = FALSE, ..., index = F
 
 
   # Add Plot
-  chunks <- plot_metrics(data, {{ cols}}, {{ cross }}, cor = cor, clean=clean, ..., title = plot_title) %>%
+  chunks <- plot_metrics(data, {{ cols}}, {{ cross }}, cor = cor, stats=stats, clean=clean, ..., title = plot_title) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
-  chunks <- tab_metrics(data, {{ cols}}, {{ cross }}, cor = cor, clean=clean, ...) %>%
+  chunks <- tab_metrics(data, {{ cols}}, {{ cross }}, cor = cor, stats=stats, clean=clean, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
 
   # Add effect sizes
   if (stats) {
-    chunks <- stat_metrics(data, {{ cols }}, {{ cross }}, cor = cor, clean=clean, ...) %>%
+    chunks <- stat_metrics(data, {{ cols }}, {{ cross }}, cor = cor, stats=stats, clean=clean, ...) %>%
       .add_to_vlkr_rprt(chunks, "Statistics")
   }
 
@@ -153,16 +153,16 @@ report_counts <- function(data, cols, cross = NULL, cor = FALSE, index = FALSE, 
 
 
   # Add Plot
-  chunks <- plot_counts(data, {{ cols }}, {{ cross }}, ..., title = plot_title, numbers=numbers, clean=clean) %>%
+  chunks <- plot_counts(data, {{ cols }}, {{ cross }}, ...,  stats=stats, title = plot_title, numbers=numbers, clean=clean) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
-  chunks <- tab_counts(data, {{ cols }}, {{ cross }}, clean=clean, ...) %>%
+  chunks <- tab_counts(data, {{ cols }}, {{ cross }},  stats=stats, clean=clean, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
 
   # Add effect sizes
   if (stats) {
-    chunks <- stat_counts(data, {{ cols }}, {{ cross }}, clean=clean, ...) %>%
+    chunks <- stat_counts(data, {{ cols }}, {{ cross }}, stats=stats, lean=clean, ...) %>%
       .add_to_vlkr_rprt(chunks, "Statistics")
   }
 

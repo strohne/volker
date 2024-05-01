@@ -4,7 +4,14 @@
 \alias{labs_replace}
 \title{Replace item value names in a column by their labels}
 \usage{
-labs_replace(data, col, codes, col_from = "value_name", col_to = "value_label")
+labs_replace(
+  data,
+  col,
+  codes,
+  col_from = "value_name",
+  col_to = "value_label",
+  relevel = TRUE
+)
 }
 \arguments{
 \item{data}{A tibble}
@@ -16,9 +23,14 @@ value_name and value_label.
 Can be created by the \link{codebook} function, e.g. by calling
 \code{codes <- codebook(data, myitemcolumn)}.}
 
-\item{col_from}{The tidyselect column with source values, defaults to value_name}
+\item{col_from}{The tidyselect column with source values, defaults to value_name.
+If the column is not found in the codebook, the first column is used.}
 
-\item{col_to}{The tidyselect column with target values, defaults to value_label}
+\item{col_to}{The tidyselect column with target values, defaults to value_label.
+If the column is not found in the codebook, the second column is used}
+
+\item{relevel}{By default, the column is converted to a factor with levels found in the codebook.
+Other values will be set to NA. Set relevel to FALSE to keep other values.}
 }
 \value{
 Tibble with new labels

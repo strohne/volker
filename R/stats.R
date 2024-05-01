@@ -210,12 +210,13 @@ stat_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   # 6. Prepare output
   results <- tibble::tribble(
     ~Statistic, ~Value, ~.digits,
+    "Number of cases", n, 0,
     "Phi", phi, 2,
     "Cramér's V", cramer_v, 2,
     "Chi-quared", fit$statistic, 2,
     "Degrees of freedom", fit$parameter, 0,
-    "p value", fit$p.value, 3,
-    "Number of cases", n, 0
+    "p value", fit$p.value, 3
+    #"stars", get_stars(fit$p.value), 0
   )
 
   .to_vlkr_tab(results, caption=fit$method)
@@ -334,12 +335,12 @@ stat_metrics_one <- function(data, col, clean = T, ... ) {
   stop("Not implemented yet")
 }
 
-
-
-#' Output a regression table with estimates and macro statistics
+#' Output t-test results, a regression table with estimates and macro statistics
 #'
-#' #TODO: Do we need the digits parameter?
-#' #TODO: Add CI for effect sizes
+#' #TODO: Fix bug, why is p in model statistics not above stars?
+#' #TODO: Remove NA from base level in regression table (and by this fix p=0 showing as NA for the Intercept)
+#' #TODO: Add ci for R squared
+#' #TODO: Implement a parameter to select from different outputs (don't show t-test by default)
 #'
 #' @keywords internal
 #'
@@ -347,8 +348,6 @@ stat_metrics_one <- function(data, col, clean = T, ... ) {
 #' @param col The column holding metric values
 #' @param cross The column holding groups to compare
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param digits The number of digits to print
-#' @param missings Include missing values in the output (default FALSE)
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_metrics}.
@@ -361,9 +360,11 @@ stat_metrics_one <- function(data, col, clean = T, ... ) {
 #'
 #' @export
 #' @importFrom rlang .data
-stat_metrics_one_grouped <- function(data, col, cross, negative = FALSE, digits = 1, missings= FALSE, labels = TRUE, clean = TRUE, ...) {
+stat_metrics_one_grouped <- function(data, col, cross, negative = FALSE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
+  check_has_column(data, {{ col }})
+  check_has_column(data, {{ cross }})
 
 
   # 2. Clean
@@ -377,71 +378,192 @@ stat_metrics_one_grouped <- function(data, col, cross, negative = FALSE, digits 
   }
 
   # 3. Remove missings
-  # @JJ: optional param? if missings = FALSE, calculation fails
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
 
-  if (!missings) {
-    data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+  # 4. Calculate
+  result <- list()
+  lm_data <- dplyr::select(data, av = {{ col }}, uv = {{ cross }})
+
+  # t.test
+  if (length(unique(lm_data$uv)) == 2) {
+
+    stats_shapiro <- stats::shapiro.test(lm_data$av)
+    stats_levene <- car::leveneTest(lm_data$av, group = lm_data$uv)
+    stats_varequal = stats_levene$`Pr(>F)`[1] > 0.05
+    stats_cohen <- effectsize::cohens_d(lm_data$av, lm_data$uv, pooled_sd = stats_varequal, paired=FALSE)
+    stats_t <- stats::t.test(lm_data$av ~ lm_data$uv, var.equal = stats_varequal)
+
+    stats_t <- tibble::tribble(
+      ~"Test", ~ "Results",
+      "Shapiro-Wilk normality test", list(
+        "W" = round(stats_shapiro$statistic,2),
+        "p" = round(stats_shapiro$p.value,3),
+        "stars" = get_stars(stats_shapiro$p.value),
+        "Normality" = ifelse(stats_shapiro$p.value > 0.05, "normal", "not normal")
+      ),
+      "Levene test", list(
+        "F" = round(stats_levene$`F value`[1],2),
+        "p" = round(stats_levene$`Pr(>F)`[1],3),
+        "stars" = get_stars(stats_levene$`Pr(>F)`[1]),
+        "Variances" = ifelse(stats_varequal, "equal", "not equal")
+      ),
+      "Cohen's d" , list(
+        "d" = round(stats_cohen$Cohens_d, 1),
+        "CI low" = round(stats_cohen$CI_low, 1),
+        "CI high" = round(stats_cohen$CI_high, 1)
+      ),
+      "t-Test" ,list(
+        "Method" = stats_t$method,
+        "Difference" = round(stats_t$estimate[1] - stats_t$estimate[2], 2),
+        "CI low" = round(stats_t$conf.int[1], 2),
+        "CI high" = round(stats_t$conf.int[2], 2),
+        "Standard error" = round(stats_t$stderr,2),
+        "df" = round(stats_t$parameter,2),
+        "t" = round(stats_t$statistic,2),
+        "p" = round(stats_t$p.value,3),
+        "stars" = get_stars(stats_t$p.value)
+      )
+    )
+
+    stats_t <- stats_t |>
+      tidyr::unnest_longer(
+        tidyselect::all_of("Results"),
+        indices_to="Statistic",
+        values_to="Value",
+        transform=as.character
+      ) |>
+      dplyr::select("Test", "Statistic","Value")
+
+    result <- c(result, list(.to_vlkr_tab(stats_t, caption="T-Test")))
   }
 
-  lm_data <- data |>
-    dplyr::select(av = {{ col }}, uv = {{ cross }})
 
-  # TODO: Add assumption tests, Shapiro (ttest, two groups), levene test?
-  # Differentiate between samples? (independent?)
-
-  #stats::shapiro.test(av)
-  #car::levene.test(fit)
+  # Regression model
   fit <- stats::lm(av ~ uv, data = lm_data)
 
-  result_params <- broom::tidy(fit, conf.int = TRUE)
-  result_params <- tidycat::tidy_categorical(m = fit, result_params, include_reference = TRUE)
+  # Regression parameters
+  lm_params <- broom::tidy(fit, conf.int = TRUE)
+  lm_params <- tidycat::tidy_categorical(m = fit, lm_params, include_reference = TRUE)
 
-  result_params <- result_params |>
-    dplyr::mutate(level = ifelse(
-      .data$reference == "Baseline Category",
-      paste0("(Baseline) ", .data$level),
-      as.character(.data$level)
-    )) |>
-    dplyr::select(level, estimate,  conf.low, conf.high, std.error, p.value)
+  lm_params <- lm_params |>
+    # dplyr::mutate(level = ifelse(
+    #   .data$reference == "Baseline Category",
+    #   paste0("(Baseline) ", .data$level),
+    #   as.character(.data$level)
+    # )) |>
+    dplyr::mutate(
+      stars = get_stars(.data$p.value),
+      estimate = round(.data$estimate,2),
+      conf.low = round(.data$conf.low,2),
+      conf.high = round(.data$conf.high,2),
+      std.error = round(.data$std.error,2),
+      t = round(.data$statistic,2),
+      p = round(.data$p.value,3)
+    ) |>
+    dplyr::select(tidyselect::all_of(c("level","estimate","conf.low","conf.high","std.error","t","p","stars"))) |>
+    dplyr::mutate(dplyr::across(-tidyselect::all_of("level"), function(x) ifelse(x == 0,NA,x)))
 
 
-  result_macro <- broom::glance(fit)
+  # Regression model statistics
+  lm_model <- broom::glance(fit) |>
+    dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), function(x) as.character(round(x,2)))) |>
+    dplyr::mutate(stars = get_stars(.data$p.value)) |>
+    tidyr::pivot_longer(
+      tidyselect::everything(),
+      names_to="Statistic",
+      values_to="Value"
+    ) |>
+    labs_replace("Statistic", tibble::tibble(
+      value_name=c( "adj.r.squared","statistic", "df", "df.residual",  "p.value", "stars"),
+      value_label=c("Adjusted R squared", "F", "Degrees of freedom", "Residuals' degrees of freedom", "p", "stars")
+    ), relevel = TRUE) |>
+    na.omit() |>
+    dplyr::arrange(tidyselect::all_of("Statistic"))
 
-  # Rename result labels
-  # TODO: .
 
-  result <- list(
-    micro = .to_vlkr_tab(result_params, caption = "Regression parameters"),
-    macro = .to_vlkr_tab(result_macro, caption = "Model statistics")
+  result <- c(
+    result,
+    list(.to_vlkr_tab(lm_params, caption = "Regression parameters")),
+    list(.to_vlkr_tab(lm_model, caption = "Model statistics"))
   )
 
   .to_vlkr_list(result)
 }
 
-#' Test whether a correlation is different from zero
+
+#' Test whether the correlation is different from zero
+#'
+#' #TODO: move stars to the last position
 #'
 #' @keywords internal
 #'
 #' @param data A tibble
 #' @param col The column holding metric values
 #' @param cross The column holding metric values to correlate
+#' @param method The output metrics, TRUE or p = Pearson's R, s = Spearman's rho
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param digits The number of digits to print
-#' @param missings Include missing values in the output (default FALSE)
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_metrics}.
-#' @return A volker chunks object containing tables for micro and macro statistics
+#' @return A volker table containing correlations
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_metrics_one_cor(data, sd_age, sd_gender)
+#' stat_metrics_one_cor(data, sd_age, use_private)
 #'
 #' @export
 #' @importFrom rlang .data
-stat_metrics_one_cor <- function(data, col, cross, negative = FALSE, digits = 1, missings= FALSE, labels = TRUE, clean = TRUE, ...) {
-  stop("Not implemented yet")
+stat_metrics_one_cor <- function(data, col, cross, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ col }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove negatives
+  if (! negative) {
+    data <- data_rm_negatives(data, {{ col }})
+    data <- data_rm_negatives(data, {{ cross }})
+  }
+
+  # 4. Remove missings
+  data <- data_rm_missings(data, {{ col }})
+  data <- data_rm_missings(data, {{ cross }})
+
+  result <- .stat_correlations(data, {{ col }}, {{ cross}}, method=method, labels = labels)
+
+  # Remove common item prefix
+  prefix <- get_prefix(c(result$item1, result$item2))
+  result <- dplyr::mutate(result, item1 = trim_prefix(.data$item1, prefix))
+  result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix))
+
+  if (prefix == "") {
+    prefix <- "Item"
+  }
+
+  result <- result %>%
+    dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
+    dplyr::rename("Item 2" = tidyselect::all_of("item2"))
+
+  title <- ifelse(prefix == "", NULL, prefix)
+
+  method <- ifelse(method == "s", "Spearman's rho", "Pearson's r")
+  result <- result |>
+    dplyr::rename({{ method }} := .data$r) |>
+    dplyr::mutate(dplyr::across(tidyselect::everything(), \(x) as.character(x))) |>
+    tidyr::pivot_longer(
+      cols = -tidyselect::all_of(c("Item 1", "Item 2")),
+      names_to ="Statistic"
+    ) |>
+    dplyr::select(-tidyselect::all_of(c("Item 1", "Item 2")))
+
+  .to_vlkr_tab(result, digits= 2, caption=title)
 }
 
 #' Output test statistics and effect size (Cohen's d) for paired samples
@@ -451,9 +573,12 @@ stat_metrics_one_cor <- function(data, col, cross, negative = FALSE, digits = 1,
 #'
 #' @param data A tibble
 #' @param cols The column holding metric values
+#' @param method The output metrics, TRUE or p = Pearson's R, s = Spearman's rho
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Placeholder
-#' @return A volker tibble
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_metrics}.
+#' @return A volker table containing correlations
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -462,8 +587,45 @@ stat_metrics_one_cor <- function(data, col, cross, negative = FALSE, digits = 1,
 #'
 #'
 #' @importFrom rlang .data
-stat_metrics_items <- function(data, cols, clean = T, ...) {
-  stop("Not implemented yet")
+stat_metrics_items <- function(data, cols, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ cols }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove negatives
+  if (! negative) {
+    data <- data_rm_negatives(data, {{ cols }})
+  }
+
+  # 4. Remove missings
+  data <- data_rm_missings(data, {{ cols }})
+
+  # 6. Calculate correlations
+  result <- .stat_correlations(data, {{ cols }}, {{ cols }}, method = method, labels = labels)
+  result <- dplyr::filter(result, .data$item1 != .data$item2)
+
+  # Remove common item prefix
+  prefix <- get_prefix(c(result$item1, result$item2))
+  result <- dplyr::mutate(result, item1 = trim_prefix(.data$item1, prefix))
+  result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix))
+
+  if (prefix == "") {
+    prefix <- "Item"
+  }
+
+  result <- result %>%
+    dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
+    dplyr::rename("Item 2" = tidyselect::all_of("item2"))
+
+  title <- ifelse(prefix == "", NULL, prefix)
+
+  .to_vlkr_tab(result, digits= 2, caption=title)
 }
 
 
@@ -494,23 +656,132 @@ stat_metrics_items_grouped <- function(data, cols, col_group, clean = T, ...) {
 
 #' Output correlation coefficents for items
 #'
-#'
 #' @keywords internal
 #'
 #' @param data A tibble
 #' @param cols The item columns that hold the values to summarize
-#' @param col_group The column holding groups to compare and test
+#' @param cross The column holding items to correlate
+#' @param method The output metrics, TRUE or p = Pearson's R, s = Spearman's rho
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Placeholder
-#' @return A volker tibble
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_metrics}.
+#' @return A volker table containing correlations
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_metrics_items_grouped(data, starts_with("cg_adoption"), sd_gender)
+#' stat_metrics_items_cor(data, starts_with("cg_adoption"), sd_age)
 #'
 #'
 #' @importFrom rlang .data
-stat_metrics_items_cor <- function(data, cols, clean = T, ... ) {
-  stop("Not implemented yet")
+stat_metrics_items_cor <- function(data, cols, cross, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ cols }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove negatives
+  if (! negative) {
+    data <- data_rm_negatives(data, {{ cols }})
+    data <- data_rm_negatives(data, {{ cross }})
+  }
+
+  # 4. Remove missings
+  data <- data_rm_missings(data, {{ cols }})
+  data <- data_rm_missings(data, {{ cross }})
+
+  result <- .stat_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
+
+  # Remove common item prefix
+  prefix <- get_prefix(c(result$item1, result$item2))
+  result <- dplyr::mutate(result, item1 = trim_prefix(.data$item1, prefix))
+  result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix))
+
+  if (prefix == "") {
+    prefix <- "Item"
+  }
+
+  result <- result %>%
+    dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
+    dplyr::rename("Item 2" = tidyselect::all_of("item2"))
+
+  title <- ifelse(prefix == "", NULL, prefix)
+
+  method <- ifelse(method == "s", "Spearman's rho", "Pearson's r")
+  result <- result |>
+    dplyr::rename({{ method }} := .data$r) |>
+    dplyr::mutate(dplyr::across(tidyselect::everything(), \(x) as.character(x))) |>
+    tidyr::pivot_longer(
+      cols = -tidyselect::all_of(c("Item 1", "Item 2")),
+      names_to ="Statistic"
+    ) |>
+    dplyr::select(-tidyselect::all_of(c("Item 1", "Item 2")))
+
+  .to_vlkr_tab(result, digits= 2, caption=title)
+}
+
+#' Test whether correlations are different from zero
+#'
+#' @keywords internal
+#'
+#' @param data A tibble
+#' @param cols The columns holding metric values
+#' @param cross The columns holding metric values to correlate
+#' @param method The output metrics, TRUE or p = Pearson's R, s = Spearman's rho
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @return A tibble with correlation results
+#' @importFrom rlang .data
+.stat_correlations <- function(data, cols, cross, method = "p", labels = TRUE) {
+
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
+
+
+  # Calculate correlation
+  method <- ifelse(method == "s", "s", "p")
+  result <- expand.grid(
+    x = cols_eval, y = cross_eval, stringsAsFactors = FALSE
+  ) %>%
+    dplyr::mutate(x_name = names(.data$x), y_name = names(.data$y)) %>%
+    dplyr::mutate(
+      .test = purrr::map2(
+        .data$x, .data$y,
+        function(x, y) stats::cor.test(
+          data[[x]], data[[y]],
+          method = method,
+          exact = method != "s"
+        )
+      ),
+
+      #stats_cohen <- effectsize::cohens_d(lm_data$av, lm_data$uv, pooled_sd = stats_varequal)
+
+      # TODO: geht das eleganter? Make DRY!
+      # TODO: round in print function, not here
+      n = nrow(data),
+      r = purrr::map(.data$.test, function(x) round(as.numeric(x$estimate),2)),
+      ci.low = purrr::map(.data$.test, function(x) round(as.numeric(x$conf.int[1]),2)),
+      ci.high = purrr::map(.data$.test, function(x) round(as.numeric(x$conf.int[2]),2)),
+      df = purrr::map(.data$.test, function(x) as.numeric(x$parameter)),
+      stars = map(.data$.test, function(x) get_stars(x$p.value)),
+      p = map(.data$.test, function(x) round(x$p.value,3)),
+    ) %>%
+    dplyr::select(-tidyselect::all_of(c("x", "y",".test"))) |>
+    dplyr::select(item1 = "x_name", item2 = "y_name", "n","r","ci.low","ci.high","df","p","stars")
+
+  result <- dplyr::arrange(result, .data$item1, .data$item2)
+
+  # Get variable caption from the attributes
+  if (labels) {
+    result <- labs_replace(result, "item1", codebook(data, {{ cols }}), col_from="item_name", col_to="item_label")
+    result <- labs_replace(result, "item2", codebook(data, {{ cross }}), col_from="item_name", col_to="item_label" )
+  }
+
+  result
 }

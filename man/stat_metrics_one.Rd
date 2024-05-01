@@ -2,7 +2,7 @@
 % Please edit documentation in R/stats.R
 \name{stat_metrics_one}
 \alias{stat_metrics_one}
-\title{Output confidence interval of mean for one metric variable}
+\title{Test whether the mean is different from zero}
 \usage{
 stat_metrics_one(data, col, clean = T, ...)
 }
@@ -19,7 +19,7 @@ stat_metrics_one(data, col, clean = T, ...)
 A volker tibble
 }
 \description{
-Output confidence interval of mean for one metric variable
+Test whether the mean is different from zero
 }
 \examples{
 library(volker)

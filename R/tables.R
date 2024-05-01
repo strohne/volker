@@ -150,6 +150,7 @@ tab_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
 tab_counts_one <- function(data, col, ci = FALSE, missings = TRUE, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
+  check_has_column(data, {{ col }})
 
   # 2. Clean
   if (clean) {
@@ -823,6 +824,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
   result_total <- data %>%
     skim_metrics({{ col }}) %>%
     dplyr::mutate({{ cross }} := "Total") |>
+    dplyr::select(-tidyselect::all_of(c("skim_variable","skim_type"))) |>
     dplyr::rename_with(function(x) stringr::str_remove(x,"numeric."))
 
 
@@ -838,7 +840,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
     )
   } else {
     result <- dplyr::select(
-      result, "item" = "skim_variable",
+      result,{{ cross }},
       tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","missing","n","items","alpha"))
     )
   }
@@ -889,21 +891,19 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
 #' @param data A tibble
 #' @param col The first item
 #' @param cross The column to correlate
-#' @param cor The output metrics, TRUE or p = Pearson's R, s = Spearman's rho
-#' @param stats Add significance stars
+#' @param method The output metrics, TRUE or p = Pearson's R, s = Spearman's rho
 #' @param ci Whether to output confidence intervals
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param digits The number of digits to print
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @return A volker tibble
 #' @importFrom rlang .data
-tab_metrics_one_cor <- function(data, cols, cross, cor="p", ci = FALSE, stats = FALSE, negative = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_one_cor <- function(data, col, cross, method="p", ci = FALSE, negative = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
-  check_has_column(data, {{ cols }})
+  check_has_column(data, {{ col }})
   check_has_column(data, {{ cross }})
 
   # 2. Clean
@@ -913,21 +913,21 @@ tab_metrics_one_cor <- function(data, cols, cross, cor="p", ci = FALSE, stats = 
 
   # 3. Remove negatives
   if (! negative) {
-    data <- data_rm_negatives(data, {{ cols }})
+    data <- data_rm_negatives(data, {{ col }})
     data <- data_rm_negatives(data, {{ cross }})
   }
 
   # 4. Remove missings
-  data <- data_rm_missings(data, {{ cols }})
+  data <- data_rm_missings(data, {{ col }})
   data <- data_rm_missings(data, {{ cross }})
 
   # 6. Get columns
-  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
 
   # Calculate correlation
-  method <- ifelse(cor == "s", "s", "p")
+  method <- ifelse(method == "s", "s", "p")
   result <- expand.grid(
     x = cols_eval, y = cross_eval, stringsAsFactors = FALSE
   ) %>%
@@ -937,39 +937,23 @@ tab_metrics_one_cor <- function(data, cols, cross, cor="p", ci = FALSE, stats = 
         .data$x, .data$y,
         function(x, y) stats::cor.test(data[[x]], data[[y]], method = method, exact = method != "s")
       ),
-      p = map(.data$.test, function(x) x$p.value),
-      r = purrr::map(.data$.test, function(x) as.numeric(x$estimate)),
-      ci.low = purrr::map(.data$.test, function(x) as.numeric(x$conf.int[1])),
-      ci.high = purrr::map(.data$.test, function(x) as.numeric(x$conf.int[2])),
-      stars = get_stars(.data$p)
+      n = nrow(data),
+      r = purrr::map(.data$.test, function(x) round(as.numeric(x$estimate),2)),
+      ci.low = purrr::map(.data$.test, function(x) round(as.numeric(x$conf.int[1]), 2)),
+      ci.high = purrr::map(.data$.test, function(x) round(as.numeric(x$conf.int[2]), 2))
     ) %>%
     dplyr::select(-tidyselect::all_of(c("x", "y",".test"))) |>
-    dplyr::select(item1 = "x_name", item2 = "y_name", "r", "ci.low", "ci.high", "p", "stars")
+    dplyr::select(item1 = "x_name", item2 = "y_name", everything())
 
-  # Round
-  # TODO: round in print function
-  result <- result %>%
-    dplyr::mutate(
-      r = round(unlist(.data$r), 2),
-      ci.low = round(unlist(.data$ci.low), 2),
-      ci.high = round(unlist(.data$ci.high), 2),
-      p = round(unlist(.data$p), 3)
-    )
-
-  if (!stats) {
-    result <- result %>%
-      dplyr::select(-tidyselect::all_of(c("p","stars")))
-  }
 
   if (!ci) {
-    result <- result %>%
-      dplyr::select(-tidyselect::all_of(c("ci.low","ci.high")))
+    result <- dplyr::select(result, -tidyselect::all_of(c("ci.low","ci.high")))
   }
 
 
   # Get variable caption from the attributes
   if (labels) {
-    result <- labs_replace(result, "item1", codebook(data, {{ cols }}), col_from="item_name", col_to="item_label")
+    result <- labs_replace(result, "item1", codebook(data, {{ col }}), col_from="item_name", col_to="item_label")
     result <- labs_replace(result, "item2", codebook(data, {{ cross }}), col_from="item_name", col_to="item_label" )
   }
 
@@ -983,18 +967,11 @@ tab_metrics_one_cor <- function(data, cols, cross, cor="p", ci = FALSE, stats = 
     prefix <- "Item"
   }
 
-  if (!stats && !ci) {
-    result <- result %>%
-        tidyr::pivot_wider(names_from = "item2", values_from = "r") %>%
-        dplyr::rename({{ prefix }} := tidyselect::all_of("item1"))
-    title <- NULL
-  } else {
-    result <- result %>%
-      dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
-      dplyr::rename("Item 2" = tidyselect::all_of("item2"))
+  result <- result %>%
+    dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
+    dplyr::rename("Item 2" = tidyselect::all_of("item2"))
 
-    title <- ifelse(prefix == "", NULL, prefix)
-  }
+  title <- ifelse(prefix == "", NULL, prefix)
 
   # TODO: print caption
   .to_vlkr_tab(result, digits= 2, caption=title)
@@ -1126,6 +1103,8 @@ tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits =
 tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, values = c("m", "sd"), digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
+  check_has_column(data, {{ cols }})
+  check_has_column(data, {{ cross }})
 
   # 2. Clean
   if (clean) {
@@ -1133,12 +1112,11 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, value
   }
 
   # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
 
   # Remove negative values
-  # TODO: warn if any negative values were recoded
   if (!negative) {
-    data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. < 0, NA, .)))
+    data <- data_rm_negatives(data, {{ cols }})
   }
 
   # Get positions of group cols
@@ -1283,6 +1261,8 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, value
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
+#' TODO: do we need stats parameter here?
+#'
 #' @keywords internal
 #'
 #' @param data A tibble
@@ -1298,7 +1278,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, value
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' tab_metrics_items_cor(data, starts_with("cg_adoption_adv"))
+#' tab_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 #'
 #' @importFrom rlang .data
 #' @export
@@ -1306,6 +1286,8 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "p", stats = FALSE
 
   # 1. Checks
   check_is_dataframe(data)
+  check_has_column(data, {{ cols }})
+  check_has_column(data, {{ cross }})
 
   # 2. Clean
   if (clean) {
@@ -1322,7 +1304,6 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "p", stats = FALSE
   cross <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
 
-
   result <- expand.grid(x = cols, y = cross, stringsAsFactors = FALSE) %>%
     dplyr::mutate(x_name = names(.data$x), y_name = names(.data$y)) %>%
     dplyr::mutate(
@@ -1330,9 +1311,9 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "p", stats = FALSE
         .data$x, .data$y,
         function(x, y) stats::cor.test(data[[x]], data[[y]], method = method)
       ),
-      p = map(.data$test, function(x) x$p.value),
-      value = purrr::map(.data$test, function(x) as.numeric(x$estimate)),
-      stars = get_stars(.data$p)
+      value = purrr::map(.data$test, function(x) round(as.numeric(x$estimate),2)),
+      stars = purrr::map(.data$test, function(x) get_stars(x$p.value)),
+      p = purrr::map(.data$test, function(x) round(x$p.value,2))
     ) %>%
     dplyr::select(item = "x_name", target = "y_name", "value", "p", "stars")
 
@@ -1341,6 +1322,7 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "p", stats = FALSE
   result <- dplyr::mutate(result, item = trim_prefix(.data$item))
   result <- dplyr::mutate(result, target = trim_prefix(.data$target))
 
+  return (result)
   # Create table
   result <- result %>%
     dplyr::mutate(value = round(unlist(.data$value), 2))

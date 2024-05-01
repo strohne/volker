@@ -17,3 +17,4 @@ The maximum density value
 \description{
 Useful for placing geoms in the center of density plots
 }
+\keyword{internal}

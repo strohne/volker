@@ -2,7 +2,7 @@
 % Please edit documentation in R/stats.R
 \name{stat_counts_items}
 \alias{stat_counts_items}
-\title{Output confidence intervals and effect size for multiple variables}
+\title{Test whether shares differ}
 \usage{
 stat_counts_items(data, cols, clean = TRUE, percent = TRUE, ...)
 }
@@ -23,7 +23,7 @@ stat_counts_items(data, cols, clean = TRUE, percent = TRUE, ...)
 A volker tibble
 }
 \description{
-Output confidence intervals and effect size for multiple variables
+Test whether shares differ
 }
 \examples{
 library(volker)

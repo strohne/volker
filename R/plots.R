@@ -1071,11 +1071,11 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
 
   # Recode negative values to NA
   if (!negative) {
-    data <- data_rm_negatives(data, c({{ cols }}))
+    data <- data_rm_negatives(data, {{ cols }})
   }
 
   # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
 
 
   # 4. Calculate
@@ -1605,7 +1605,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot=FAL
 #'
 #' Useful for placing geoms in the center of density plots
 #'
-#' @internal
+#' @keywords internal
 #'
 #' @param data A tibble
 #' @param col A tidyselect column

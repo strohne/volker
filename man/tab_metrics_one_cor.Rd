@@ -6,13 +6,11 @@
 \usage{
 tab_metrics_one_cor(
   data,
-  cols,
+  col,
   cross,
-  cor = "p",
+  method = "p",
   ci = FALSE,
-  stats = FALSE,
   negative = FALSE,
-  digits = 1,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -21,25 +19,21 @@ tab_metrics_one_cor(
 \arguments{
 \item{data}{A tibble}
 
+\item{col}{The first item}
+
 \item{cross}{The column to correlate}
 
-\item{cor}{The output metrics, TRUE or p = Pearson's R, s = Spearman's rho}
+\item{method}{The output metrics, TRUE or p = Pearson's R, s = Spearman's rho}
 
 \item{ci}{Whether to output confidence intervals}
 
-\item{stats}{Add significance stars}
-
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
-
-\item{digits}{The number of digits to print}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
-
-\item{col}{The first item}
 }
 \value{
 A volker tibble

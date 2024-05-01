@@ -168,6 +168,6 @@ data %>%
 ```{r results='asis'}
 
 data %>% 
-  tab_metrics_items_cor(starts_with("cg_adoption_advantage"))
+  tab_metrics_items_cor(starts_with("cg_adoption_advantage"), starts_with("cg_adoption_advantage"))
 
 ```

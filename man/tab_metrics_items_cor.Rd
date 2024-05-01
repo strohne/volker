@@ -37,12 +37,14 @@ A volker tibble
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+TODO: do we need stats parameter here?
 }
 \examples{
 library(volker)
 data <- volker::chatgpt
 
-tab_metrics_items_cor(data, starts_with("cg_adoption_adv"))
+tab_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 
 }
 \keyword{internal}

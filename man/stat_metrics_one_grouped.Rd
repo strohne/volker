@@ -2,15 +2,13 @@
 % Please edit documentation in R/stats.R
 \name{stat_metrics_one_grouped}
 \alias{stat_metrics_one_grouped}
-\title{Output a regression table with estimates and macro statistics}
+\title{Output t-test results, a regression table with estimates and macro statistics}
 \usage{
 stat_metrics_one_grouped(
   data,
   col,
-  col_group,
+  cross,
   negative = FALSE,
-  digits = 1,
-  missings = FALSE,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -21,13 +19,9 @@ stat_metrics_one_grouped(
 
 \item{col}{The column holding metric values}
 
-\item{col_group}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
-
-\item{digits}{The number of digits to print}
-
-\item{missings}{Include missing values in the output (default FALSE)}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
@@ -39,8 +33,10 @@ stat_metrics_one_grouped(
 A volker chunks object containing tables for micro and macro statistics
 }
 \description{
-#TODO: Do we need the digits parameter?
-#TODO: Add CI for effect sizes
+#TODO: Fix bug, why is p in model statistics not above stars?
+#TODO: Remove NA from base level in regression table (and by this fix p=0 showing as NA for the Intercept)
+#TODO: Add ci for R squared
+#TODO: Implement a parameter to select from different outputs (don't show t-test by default)
 }
 \examples{
 library(volker)

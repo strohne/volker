@@ -2,7 +2,7 @@
 % Please edit documentation in R/stats.R
 \name{stat_counts_one}
 \alias{stat_counts_one}
-\title{Output confidence intervals for category shares}
+\title{Test whether the shares differ from homogeneity}
 \usage{
 stat_counts_one(
   data,
@@ -33,7 +33,7 @@ stat_counts_one(
 A volker tibble
 }
 \description{
-Output confidence intervals for category shares
+Test whether the shares differ from homogeneity
 }
 \examples{
 library(volker)

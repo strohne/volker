@@ -2,7 +2,7 @@
 % Please edit documentation in R/stats.R
 \name{stat_counts_items_cor}
 \alias{stat_counts_items_cor}
-\title{Correlate the values in multiple items (Pearson's R)}
+\title{Correlate the values in multiple items and output effect sizes and tests}
 \usage{
 stat_counts_items_cor(data, cols, cross, clean = T, ...)
 }
@@ -21,7 +21,7 @@ stat_counts_items_cor(data, cols, cross, clean = T, ...)
 A volker tibble
 }
 \description{
-Correlate the values in multiple items (Pearson's R)
+Correlate the values in multiple items and output effect sizes and tests
 }
 \examples{
 library(volker)

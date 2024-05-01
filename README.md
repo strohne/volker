@@ -161,49 +161,49 @@ parameter is handled as a categorical variable, resulting in grouped
 tables and plots. For handling metric variables and their correlations,
 set the `cor`-parameter to `TRUE`. (Note: Some are not implemented yet.)
 
-| \#  | function                    | implemented | output | scale   | columns  | crossings  |
-|-----|-----------------------------|-------------|--------|---------|----------|------------|
-| 1   | tab_counts_one              |             | table  | counts  | one      |            |
-| 2   | tab_counts_one_grouped      |             | table  | counts  | one      | grouped    |
-| 3   | tab_counts_one_cor          | not yet     | table  | counts  | one      | correlated |
-| 4   | tab_counts_items            |             | table  | counts  | multiple |            |
-| 5   | tab_counts_items_grouped    | not yet     | table  | counts  | multiple | grouped    |
-| 6   | tab_counts_items_cor        | not yet     | table  | counts  | multiple | correlated |
-| 7   | tab_metrics_one             |             | table  | metrics | one      |            |
-| 8   | tab_metrics_one_grouped     |             | table  | metrics | one      | grouped    |
-| 9   | tab_metrics_one_cor         | not yet     | table  | metrics | one      | correlated |
-| 10  | tab_metrics_items           |             | table  | metrics | multiple |            |
-| 11  | tab_metrics_items_grouped   |             | table  | metrics | multiple | grouped    |
-| 12  | tab_metrics_items_cor       |             | table  | metrics | multiple | correlated |
-| 13  | plot_counts_one             |             | plot   | counts  | one      |            |
-| 14  | plot_counts_one_grouped     |             | plot   | counts  | one      | grouped    |
-| 15  | plot_counts_one_cor         | not yet     | plot   | counts  | one      | correlated |
-| 16  | plot_counts_items           |             | plot   | counts  | multiple |            |
-| 17  | p lot_counts_i tems_grouped | not yet     | plot   | counts  | multiple | grouped    |
-| 18  | plot_counts_items_cor       | not yet     | plot   | counts  | multiple | correlated |
-| 19  | plot_metrics_one            |             | plot   | metrics | one      |            |
-| 20  | plot_metrics_one_grouped    |             | plot   | metrics | one      | grouped    |
-| 21  | plot_metrics_one_cor        | not yet     | plot   | metrics | one      | correlated |
-| 22  | plot_metrics_items          |             | plot   | metrics | multiple |            |
-| 23  | plot_metrics_items_grouped  |             | plot   | metrics | multiple | grouped    |
-| 24  | plot_metrics_items_cor      | not yet     | plot   | metrics | multiple | correlated |
+| \#  | function                   | implemented | output | scale   | columns  | crossings  |
+|-----|----------------------------|-------------|--------|---------|----------|------------|
+| 1   | tab_counts_one             |             | table  | counts  | one      |            |
+| 2   | tab_counts_one_grouped     |             | table  | counts  | one      | grouped    |
+| 3   | tab_counts_one_cor         | not yet     | table  | counts  | one      | correlated |
+| 4   | tab_counts_items           |             | table  | counts  | multiple |            |
+| 5   | tab_counts_items_grouped   | not yet     | table  | counts  | multiple | grouped    |
+| 6   | tab_counts_items_cor       | not yet     | table  | counts  | multiple | correlated |
+| 7   | tab_metrics_one            |             | table  | metrics | one      |            |
+| 8   | tab_metrics_one_grouped    |             | table  | metrics | one      | grouped    |
+| 9   | tab_metrics_one_cor        |             | table  | metrics | one      | correlated |
+| 10  | tab_metrics_items          |             | table  | metrics | multiple |            |
+| 11  | tab_metrics_items_grouped  |             | table  | metrics | multiple | grouped    |
+| 12  | tab_metrics_items_cor      |             | table  | metrics | multiple | correlated |
+| 13  | plot_counts_one            |             | plot   | counts  | one      |            |
+| 14  | plot_counts_one_grouped    |             | plot   | counts  | one      | grouped    |
+| 15  | plot_counts_one_cor        | not yet     | plot   | counts  | one      | correlated |
+| 16  | plot_counts_items          |             | plot   | counts  | multiple |            |
+| 17  | plot_counts_items_grouped  | not yet     | plot   | counts  | multiple | grouped    |
+| 18  | plot_counts_items_cor      | not yet     | plot   | counts  | multiple | correlated |
+| 19  | plot_metrics_one           |             | plot   | metrics | one      |            |
+| 20  | plot_metrics_one_grouped   |             | plot   | metrics | one      | grouped    |
+| 21  | plot_metrics_one_cor       |             | plot   | metrics | one      | correlated |
+| 22  | plot_metrics_items         |             | plot   | metrics | multiple |            |
+| 23  | plot_metrics_items_grouped |             | plot   | metrics | multiple | grouped    |
+| 24  | plot_metrics_items_cor     |             | plot   | metrics | multiple | correlated |
 
 ## Statistical test
 
-| \#  | function                   | implemented | effect size                         | confidence intervals | significance test |
-|-----|----------------------------|-------------|-------------------------------------|----------------------|-------------------|
-| 1   | stat_counts_one            | not yet     |                                     | proportions          |                   |
-| 2   | stat_counts_one_grouped    | alpha       | Cramér’s V                          | proportions          | Chi s quared      |
-| 3   | stat_counts_one_cor        | not yet     |                                     |                      |                   |
-| 4   | stat_counts_items          | not yet     | Cramér’s V                          | proportions          | Chi s quared      |
-| 5   | stat_counts_items_grouped  | not yet     | Cramér’s V                          | proportions          | Chi s quared      |
-| 6   | stat_counts_items_cor      | not yet     |                                     |                      |                   |
-| 7   | stat_metrics_one           | not yet     |                                     | mean                 |                   |
-| 8   | stat_metrics_one_grouped   | alpha       | Cohen’s d, (Cohen’s f, Eta squared) | means                | t-test            |
-| 9   | stat_metrics_one_cor       | not yet     | Pearson’s r, Spearman’s rho         | correlation          | t-Test            |
-| 10  | stat_metrics_items         | not yet     | Cohen’s d, (Cohen’s f, Eta squared) | means                | t-Test            |
-| 11  | stat_metrics_items_grouped | not yet     | Eta squared                         | means                |                   |
-| 12  | stat_metrics_items_cor     | not yet     | Pearson’s r                         | correlation          |                   |
+| \#  | function                   | implemented | effect size                   | confidence intervals | significance test |
+|-----|----------------------------|-------------|-------------------------------|----------------------|-------------------|
+| 1   | stat_counts_one            | not yet     |                               | proportions          |                   |
+| 2   | stat_counts_one_grouped    |             | Cramér’s V                    | proportions          | Chis quared       |
+| 3   | stat_counts_one_cor        | not yet     |                               |                      |                   |
+| 4   | stat_counts_items          | not yet     | Cramér’s V                    | proportions          | Chi s quared      |
+| 5   | stat_counts_items_grouped  | not yet     | Cramér’s V                    | proportions          | Chi s quared      |
+| 6   | stat_counts_items_cor      | not yet     |                               |                      |                   |
+| 7   | stat_metrics_one           | not yet     |                               | mean                 |                   |
+| 8   | stat_metrics_one_grouped   |             | R squared (= Eta squared) eta | means                | t-test, F-test    |
+| 9   | stat_metrics_one_cor       |             | Pearson’s r, Spearman’s rho   | correlation          | t-test            |
+| 10  | stat_metrics_items         |             | R squared (=Eta squared)      | means                | t-test            |
+| 11  | stat_metrics_items_grouped | not yet     | Eta squared                   | means                |                   |
+| 12  | stat_metrics_items_cor     |             | Pearson’s r                   | correlation          | t-test            |
 
 ## Where do all the labels go?
 

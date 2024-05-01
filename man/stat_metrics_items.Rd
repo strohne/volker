@@ -4,19 +4,33 @@
 \alias{stat_metrics_items}
 \title{Output test statistics and effect size (Cohen's d) for paired samples}
 \usage{
-stat_metrics_items(data, cols, clean = T, ...)
+stat_metrics_items(
+  data,
+  cols,
+  method = "p",
+  negative = FALSE,
+  labels = TRUE,
+  clean = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{A tibble}
 
 \item{cols}{The column holding metric values}
 
+\item{method}{The output metrics, TRUE or p = Pearson's R, s = Spearman's rho}
+
+\item{negative}{If FALSE (default), negative values are recoded as missing values.}
+
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
+
 \item{clean}{Prepare data by \link{data_clean}.}
 
-\item{...}{Placeholder}
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{stat_metrics}.}
 }
 \value{
-A volker tibble
+A volker table containing correlations
 }
 \description{
 Output test statistics and effect size (Cohen's d) for paired samples

@@ -47,7 +47,9 @@ Imports:
     psych,
     broom, 
     ggpubr,
-    tidycat
+    tidycat,
+    effectsize,
+    car
 Depends:
   R (>= 4.2)
 Suggests:

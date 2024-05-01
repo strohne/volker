@@ -2,7 +2,7 @@
 % Please edit documentation in R/stats.R
 \name{stat_counts_items_grouped}
 \alias{stat_counts_items_grouped}
-\title{Output confidence intervals and effect size for multiple variables by a grouping variable}
+\title{Effect size and test for comparing multiple variables by a grouping variable}
 \usage{
 stat_counts_items_grouped(data, cols, cross, clean = T, ...)
 }
@@ -21,7 +21,7 @@ stat_counts_items_grouped(data, cols, cross, clean = T, ...)
 A volker tibble
 }
 \description{
-Output confidence intervals and effect size for multiple variables by a grouping variable
+Effect size and test for comparing multiple variables by a grouping variable
 }
 \examples{
 library(volker)
