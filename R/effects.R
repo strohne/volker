@@ -22,7 +22,7 @@
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' effects_counts(data, sd_gender)
+#' effects_counts(data, sd_gender, adopter)
 #'
 #' @export
 effects_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...) {
@@ -219,7 +219,7 @@ effects_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
     ~Statistic, ~Value, ~.digits,
     "Number of cases", n, 0,
     "Phi", phi, 2,
-    "Cramér's V", cramer_v, 2,
+    "Cramer's V", cramer_v, 2,
     "Chi-quared", fit$statistic, 2,
     "Degrees of freedom", fit$parameter, 0,
     "p value", fit$p.value, 3
