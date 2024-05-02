@@ -2,12 +2,13 @@
 % Please edit documentation in R/plots.R
 \name{plot_metrics_one}
 \alias{plot_metrics_one}
-\title{Output a histogram for a single metric variable}
+\title{Output a density plot for a single metric variable}
 \usage{
 plot_metrics_one(
   data,
   col,
   ci = FALSE,
+  box = FALSE,
   limits = NULL,
   negative = FALSE,
   title = TRUE,
@@ -22,6 +23,8 @@ plot_metrics_one(
 \item{col}{The column holding metric values}
 
 \item{ci}{Whether to plot the confidence interval}
+
+\item{box}{Whether to place a boxplot on top}
 
 \item{limits}{The scale limits. Set NULL to extract limits from the label. NOT IMPLEMENTED YET.}
 
@@ -40,7 +43,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 A ggplot object
 }
 \description{
-Output a histogram for a single metric variable
+Output a density plot for a single metric variable
 }
 \examples{
 library(volker)
