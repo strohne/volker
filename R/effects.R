@@ -143,12 +143,6 @@ effects_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TR
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effects_counts}.
 #' @return A volker tibble
-#' @examples
-#' library(volker)
-#' data <- volker::chatgpt
-#'
-#' effects_counts_one(data, adopter)
-#'
 #' @importFrom rlang .data
 effects_counts_one <- function(data, col, digits = 2, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
   stop("Not implemented yet")
@@ -261,14 +255,7 @@ effects_counts_one_cor <- function(data, col, cross, clean = TRUE, ...) {
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return  A volker tibble
-#' @examples
-#' library(volker)
-#' data <- volker::chatgpt
-#'
-#' effects_counts_items(data, starts_with("cg_adoption_"))
-#'
 #' @importFrom rlang .data
-#'
 effects_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
   stop("Not implemented yet")
 }
@@ -284,14 +271,7 @@ effects_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) 
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder
 #' @return A volker tibble
-#' @examples
-#' library(volker)
-#' data <- volker::chatgpt
-#'
-#' effects_counts_items_grouped(data, starts_with("cg_adoption_"))
-#'
 #' @importFrom rlang .data
-#'
 effects_counts_items_grouped <- function(data, cols, cross, clean = T, ...) {
   stop("Not implemented yet")
 }
@@ -307,12 +287,6 @@ effects_counts_items_grouped <- function(data, cols, cross, clean = T, ...) {
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder
 #' @return A volker tibble
-#' @examples
-#' library(volker)
-#' data <- volker::chatgpt
-#'
-#' effects_counts_items_cor(data, starts_with("cg_adoption_"), )
-#'
 #' @importFrom rlang .data
 #'
 effects_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
@@ -593,6 +567,7 @@ effects_metrics_one_cor <- function(data, col, cross, method="p", negative = FAL
 #'
 #'
 #' @importFrom rlang .data
+#' @export
 effects_metrics_items <- function(data, cols, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
@@ -646,13 +621,6 @@ effects_metrics_items <- function(data, cols, method="p", negative = FALSE, labe
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder
 #' @return A volker tibble
-#' @examples
-#' library(volker)
-#' data <- volker::chatgpt
-#'
-#' effects_metrics_items_grouped(data, starts_with("cg_adoption"), sd_gender)
-#'
-#'
 #' @importFrom rlang .data
 effects_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
   stop("Not implemented yet")
@@ -680,6 +648,7 @@ effects_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
 #' effects_metrics_items_cor(data, starts_with("cg_adoption"), sd_age)
 #'
 #'
+#' @export
 #' @importFrom rlang .data
 effects_metrics_items_cor <- function(data, cols, cross, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
 

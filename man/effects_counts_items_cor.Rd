@@ -23,11 +23,4 @@ A volker tibble
 \description{
 Correlate the values in multiple items and output effect sizes and tests
 }
-\examples{
-library(volker)
-data <- volker::chatgpt
-
-effects_counts_items_cor(data, starts_with("cg_adoption_"), )
-
-}
 \keyword{internal}

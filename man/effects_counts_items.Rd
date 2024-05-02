@@ -25,11 +25,4 @@ A volker tibble
 \description{
 Test whether shares differ
 }
-\examples{
-library(volker)
-data <- volker::chatgpt
-
-effects_counts_items(data, starts_with("cg_adoption_"))
-
-}
 \keyword{internal}

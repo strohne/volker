@@ -23,12 +23,4 @@ A volker tibble
 \description{
 Output confidence intervals of group means, F-Statistics and effect size (Eta^2)
 }
-\examples{
-library(volker)
-data <- volker::chatgpt
-
-effects_metrics_items_grouped(data, starts_with("cg_adoption"), sd_gender)
-
-
-}
 \keyword{internal}

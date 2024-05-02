@@ -35,11 +35,4 @@ A volker tibble
 \description{
 Test whether the shares differ from homogeneity
 }
-\examples{
-library(volker)
-data <- volker::chatgpt
-
-effects_counts_one(data, adopter)
-
-}
 \keyword{internal}

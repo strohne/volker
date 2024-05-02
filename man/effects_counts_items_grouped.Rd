@@ -23,11 +23,4 @@ A volker tibble
 \description{
 Effect size and test for comparing multiple variables by a grouping variable
 }
-\examples{
-library(volker)
-data <- volker::chatgpt
-
-effects_counts_items_grouped(data, starts_with("cg_adoption_"))
-
-}
 \keyword{internal}
