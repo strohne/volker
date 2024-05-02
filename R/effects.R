@@ -1,10 +1,10 @@
 #' Output effect sizes for count data
 #'
 #' The type of effect size depends on the number of selected columns:
-#' - One column: see \link{stat_counts_one}
-#' - Multiple columns: see \link{stat_counts_items}
-#' - One column and one grouping column: see \link{stat_counts_one_grouped}
-#' - Multiple columns and one grouping column: see \link{stat_counts_items_grouped}
+#' - One column: see \link{effects_counts_one}
+#' - Multiple columns: see \link{effects_counts_items}
+#' - One column and one grouping column: see \link{effects_counts_one_grouped}
+#' - Multiple columns and one grouping column: see \link{effects_counts_items_grouped}
 #'
 #'
 #' @param data A data frame
@@ -22,10 +22,10 @@
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_counts(data, sd_gender)
+#' effects_counts(data, sd_gender)
 #'
 #' @export
-stat_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...) {
+effects_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -38,24 +38,24 @@ stat_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
 
   # Single variables
   if (!is_items && !is_grouped && !is_cor) {
-    stat_counts_one(data, {{ cols }}, ...)
+    effects_counts_one(data, {{ cols }}, ...)
   }
   else if (!is_items && is_grouped && !is_cor) {
-    stat_counts_one_grouped(data, {{ cols }}, {{ cross }}, ...)
+    effects_counts_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
   else if (!is_items && is_grouped && is_cor) {
-    stat_counts_one_cor(data, {{ cols }}, {{ cross }}, ...)
+    effects_counts_one_cor(data, {{ cols }}, {{ cross }}, ...)
   }
 
   # Items
   else if (is_items && !is_grouped && !is_cor) {
-    stat_counts_items(data, {{ cols }} , ...)
+    effects_counts_items(data, {{ cols }} , ...)
   }
   else if (is_items && is_grouped && !is_cor) {
-    stat_counts_items_grouped(data, {{ cols }}, {{ cross }},  ...)
+    effects_counts_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
   else if (is_items && is_grouped && is_cor) {
-    stat_counts_items_cor(data, {{ cols }}, {{ cross }},  ...)
+    effects_counts_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
   # Not found
   else {
@@ -67,10 +67,10 @@ stat_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
 #' Output effect sizes and regression model parameters
 #'
 #' The regression type depends on the number of selected columns:
-#' - One column: see \link{stat_metrics_one}
-#' - Multiple columns: see \link{stat_metrics_items}
-#' - One column and one grouping column: see \link{stat_metrics_one_grouped}
-#' - Multiple columns and one grouping column: see \link{stat_metrics_items_grouped}
+#' - One column: see \link{effects_metrics_one}
+#' - Multiple columns: see \link{effects_metrics_items}
+#' - One column and one grouping column: see \link{effects_metrics_one_grouped}
+#' - Multiple columns and one grouping column: see \link{effects_metrics_items_grouped}
 #'
 #'
 #' @param data A data frame
@@ -88,10 +88,10 @@ stat_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' tab_metrics(data, sd_age)
+#' effects_metrics(data, sd_age)
 #'
 #' @export
-stat_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...) {
+effects_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -104,24 +104,24 @@ stat_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ..
 
   # Single variables
   if (!is_items && !is_grouped && !is_cor) {
-    stat_metrics_one(data, {{ cols }}, ...)
+    effects_metrics_one(data, {{ cols }}, ...)
   }
   else if (!is_items && is_grouped && !is_cor) {
-    stat_metrics_one_grouped(data, {{ cols }}, {{ cross }}, ...)
+    effects_metrics_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
   else if (!is_items && is_grouped && is_cor) {
-    stat_metrics_one_cor(data, {{ cols }}, {{ cross }}, ...)
+    effects_metrics_one_cor(data, {{ cols }}, {{ cross }}, ...)
   }
 
   # Items
   else if (is_items && !is_grouped && !is_cor) {
-    stat_metrics_items(data, {{ cols }} , ...)
+    effects_metrics_items(data, {{ cols }} , ...)
   }
   else if (is_items && is_grouped && !is_cor) {
-    stat_metrics_items_grouped(data, {{ cols }}, {{ cross }},  ...)
+    effects_metrics_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
   else if (is_items && is_grouped && is_cor) {
-    stat_metrics_items_cor(data, {{ cols }}, {{ cross }},  ...)
+    effects_metrics_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
   # Not found
   else {
@@ -141,23 +141,23 @@ stat_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ..
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_counts}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{effects_counts}.
 #' @return A volker tibble
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_counts_one(data, adopter)
+#' effects_counts_one(data, adopter)
 #'
 #' @importFrom rlang .data
-stat_counts_one <- function(data, col, digits = 2, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
+effects_counts_one <- function(data, col, digits = 2, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
   stop("Not implemented yet")
 }
 
 
 #' Output test statistics and effect size for contingency tables (Chi^2 and Cramer's V)
 #'
-#' TODO: replace spread by pivot_wider (spread is superseded)
+#'
 #'
 #' @keywords internal
 #'
@@ -165,16 +165,16 @@ stat_counts_one <- function(data, col, digits = 2, percent = TRUE, labels = TRUE
 #' @param col The column holding factor values
 #' @param cross The column holding groups to compare
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_counts}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{effects_counts}.
 #' @return A volker tibble
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_counts_one_grouped(ds, adopter, sd_gender)
+#' effects_counts_one_grouped(data, adopter, sd_gender)
 #'
 #' @importFrom rlang .data
-stat_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
+effects_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -193,10 +193,15 @@ stat_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   # 4. Prepare data
   contingency <- data %>%
     dplyr::count({{ col }}, {{ cross }}) %>%
-    spread({{ cross }}, n, fill = 0) %>%
+    tidyr::pivot_wider(
+      names_from = {{ cross }},
+      values_from = .data$n,
+      values_fill = 0) %>%
     as.data.frame() %>%
     dplyr::select(-1) %>%
     as.matrix()
+
+
 
   # 5. Chi-squared test and Cramer's V
   exact <- any(contingency < 5)
@@ -232,16 +237,16 @@ stat_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 #' @param col The column holding factor values
 #' @param cross The column holding metric values
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_counts}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{effects_counts}.
 #' @return A volker tibble
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_counts_one_cor(ds, adopter, sd_gender)
+#' effects_counts_one_cor(data, adopter, sd_gender)
 #'
 #' @importFrom rlang .data
-stat_counts_one_cor <- function(data, col, cross, clean = TRUE, ...) {
+effects_counts_one_cor <- function(data, col, cross, clean = TRUE, ...) {
   stop("Not implemented yet")
 }
 
@@ -260,11 +265,11 @@ stat_counts_one_cor <- function(data, col, cross, clean = TRUE, ...) {
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_counts_items(data, starts_with("cg_adoption_"))
+#' effects_counts_items(data, starts_with("cg_adoption_"))
 #'
 #' @importFrom rlang .data
 #'
-stat_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
+effects_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
   stop("Not implemented yet")
 }
 
@@ -283,11 +288,11 @@ stat_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_counts_items_grouped(data, starts_with("cg_adoption_"))
+#' effects_counts_items_grouped(data, starts_with("cg_adoption_"))
 #'
 #' @importFrom rlang .data
 #'
-stat_counts_items_grouped <- function(data, cols, cross, clean = T, ...) {
+effects_counts_items_grouped <- function(data, cols, cross, clean = T, ...) {
   stop("Not implemented yet")
 }
 
@@ -306,11 +311,11 @@ stat_counts_items_grouped <- function(data, cols, cross, clean = T, ...) {
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_counts_items_cor(ds, starts_with("cg_adoption_"), )
+#' effects_counts_items_cor(data, starts_with("cg_adoption_"), )
 #'
 #' @importFrom rlang .data
 #'
-stat_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
+effects_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
   stop("Not implemented yet")
 }
 
@@ -326,7 +331,7 @@ stat_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
 #' @param ... Placeholder
 #' @return A volker tibble
 #' @importFrom rlang .data
-stat_metrics_one <- function(data, col, clean = T, ... ) {
+effects_metrics_one <- function(data, col, clean = T, ... ) {
   stop("Not implemented yet")
 }
 
@@ -346,17 +351,17 @@ stat_metrics_one <- function(data, col, clean = T, ... ) {
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_metrics}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{effects_metrics}.
 #' @return A volker chunks object containing tables for micro and macro statistics
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_metrics_one_grouped(data, sd_age, sd_gender)
+#' effects_metrics_one_grouped(data, sd_age, sd_gender)
 #'
 #' @export
 #' @importFrom rlang .data
-stat_metrics_one_grouped <- function(data, col, cross, negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effects_metrics_one_grouped <- function(data, col, cross, negative = FALSE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
@@ -500,17 +505,17 @@ stat_metrics_one_grouped <- function(data, col, cross, negative = FALSE, labels 
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_metrics}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{effects_metrics}.
 #' @return A volker table containing correlations
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_metrics_one_cor(data, sd_age, use_private)
+#' effects_metrics_one_cor(data, sd_age, use_private)
 #'
 #' @export
 #' @importFrom rlang .data
-stat_metrics_one_cor <- function(data, col, cross, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effects_metrics_one_cor <- function(data, col, cross, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -532,7 +537,7 @@ stat_metrics_one_cor <- function(data, col, cross, method="p", negative = FALSE,
   data <- data_rm_missings(data, {{ col }})
   data <- data_rm_missings(data, {{ cross }})
 
-  result <- .stat_correlations(data, {{ col }}, {{ cross}}, method=method, labels = labels)
+  result <- .effects_correlations(data, {{ col }}, {{ cross}}, method=method, labels = labels)
 
   # Remove common item prefix
   prefix <- get_prefix(c(result$item1, result$item2))
@@ -573,17 +578,17 @@ stat_metrics_one_cor <- function(data, col, cross, method="p", negative = FALSE,
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_metrics}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{effects_metrics}.
 #' @return A volker table containing correlations
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_metrics_items(data, starts_with("cg_adoption"))
+#' effects_metrics_items(data, starts_with("cg_adoption"))
 #'
 #'
 #' @importFrom rlang .data
-stat_metrics_items <- function(data, cols, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effects_metrics_items <- function(data, cols, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -603,7 +608,7 @@ stat_metrics_items <- function(data, cols, method="p", negative = FALSE, labels 
   data <- data_rm_missings(data, {{ cols }})
 
   # 6. Calculate correlations
-  result <- .stat_correlations(data, {{ cols }}, {{ cols }}, method = method, labels = labels)
+  result <- .effects_correlations(data, {{ cols }}, {{ cols }}, method = method, labels = labels)
   result <- dplyr::filter(result, .data$item1 != .data$item2)
 
   # Remove common item prefix
@@ -625,14 +630,14 @@ stat_metrics_items <- function(data, cols, method="p", negative = FALSE, labels 
 }
 
 
-#' Output confindence intervals of group means, F-Statistics and effectsize (Eta^2)
+#' Output confidence intervals of group means, F-Statistics and effect size (Eta^2)
 #'
 #'
 #' @keywords internal
 #'
 #' @param data A tibble
-#' @param cols The item columns that hold the values to summarize
-#' @param cross The column holding groups to compare and test
+#' @param cols Tidyselect item variables (e.g. starts_with...)
+#' @param cross The column holding groups to compare
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder
 #' @return A volker tibble
@@ -640,11 +645,11 @@ stat_metrics_items <- function(data, cols, method="p", negative = FALSE, labels 
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_metrics_items_grouped(data, starts_with("cg_adoption"), sd_gender)
+#' effects_metrics_items_grouped(data, starts_with("cg_adoption"), sd_gender)
 #'
 #'
 #' @importFrom rlang .data
-stat_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
+effects_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
   stop("Not implemented yet")
 }
 
@@ -661,17 +666,17 @@ stat_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Placeholder to allow calling the method with unused parameters from \link{stat_metrics}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{effects_metrics}.
 #' @return A volker table containing correlations
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_metrics_items_cor(data, starts_with("cg_adoption"), sd_age)
+#' effects_metrics_items_cor(data, starts_with("cg_adoption"), sd_age)
 #'
 #'
 #' @importFrom rlang .data
-stat_metrics_items_cor <- function(data, cols, cross, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effects_metrics_items_cor <- function(data, cols, cross, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -693,7 +698,7 @@ stat_metrics_items_cor <- function(data, cols, cross, method="p", negative = FAL
   data <- data_rm_missings(data, {{ cols }})
   data <- data_rm_missings(data, {{ cross }})
 
-  result <- .stat_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
+  result <- .effects_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
 
   # Remove common item prefix
   prefix <- get_prefix(c(result$item1, result$item2))
@@ -734,7 +739,7 @@ stat_metrics_items_cor <- function(data, cols, cross, method="p", negative = FAL
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @return A tibble with correlation results
 #' @importFrom rlang .data
-.stat_correlations <- function(data, cols, cross, method = "p", labels = TRUE) {
+.effects_correlations <- function(data, cols, cross, method = "p", labels = TRUE) {
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)

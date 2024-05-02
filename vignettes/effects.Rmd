@@ -2,7 +2,7 @@
 title: "All kinds of statistics: effect sizes, parameter estimates, p values"
 output: volker::html_report
 vignette: >
-  %\VignetteIndexEntry{Introduction}
+  %\VignetteIndexEntry{Effects}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -27,8 +27,8 @@ ds <- volker::chatgpt
 
 ```{r}
 
-report_counts(ds, adopter, sd_gender, stats = T)
+report_counts(ds, adopter, sd_gender, effects = T)
 
-report_metrics(ds, sd_age, adopter, stats = T)
+report_metrics(ds, sd_age, adopter, effects = T)
 
 ```
