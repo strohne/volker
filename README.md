@@ -192,18 +192,18 @@ set the `cor`-parameter to `TRUE`. (Note: Some are not implemented yet.)
 
 | \#  | function                   | implemented | effect size                   | confidence intervals | significance test |
 |-----|----------------------------|-------------|-------------------------------|----------------------|-------------------|
-| 1   | stat_counts_one            | not yet     |                               | proportions          |                   |
-| 2   | stat_counts_one_grouped    |             | Cramér’s V                    | proportions          | Chis quared       |
-| 3   | stat_counts_one_cor        | not yet     |                               |                      |                   |
-| 4   | stat_counts_items          | not yet     | Cramér’s V                    | proportions          | Chi s quared      |
-| 5   | stat_counts_items_grouped  | not yet     | Cramér’s V                    | proportions          | Chi s quared      |
-| 6   | stat_counts_items_cor      | not yet     |                               |                      |                   |
-| 7   | stat_metrics_one           | not yet     |                               | mean                 |                   |
-| 8   | stat_metrics_one_grouped   |             | R squared (= Eta squared) eta | means                | t-test, F-test    |
-| 9   | stat_metrics_one_cor       |             | Pearson’s r, Spearman’s rho   | correlation          | t-test            |
-| 10  | stat_metrics_items         |             | R squared (=Eta squared)      | means                | t-test            |
-| 11  | stat_metrics_items_grouped | not yet     | Eta squared                   | means                |                   |
-| 12  | stat_metrics_items_cor     |             | Pearson’s r                   | correlation          | t-test            |
+| 1   | effects_counts_one            | not yet     |                               | proportions          |                   |
+| 2   | effects_counts_one_grouped    |             | Cramér’s V                    | proportions          | Chis quared       |
+| 3   | effects_counts_one_cor        | not yet     |                               |                      |                   |
+| 4   | effects_counts_items          | not yet     | Cramér’s V                    | proportions          | Chi s quared      |
+| 5   | effects_counts_items_grouped  | not yet     | Cramér’s V                    | proportions          | Chi s quared      |
+| 6   | effects_counts_items_cor      | not yet     |                               |                      |                   |
+| 7   | effects_metrics_one           | not yet     |                               | mean                 |                   |
+| 8   | effects_metrics_one_grouped   |             | R squared (= Eta squared) eta | means                | t-test, F-test    |
+| 9   | effects_metrics_one_cor       |             | Pearson’s r, Spearman’s rho   | correlation          | t-test            |
+| 10  | effects_metrics_items         |             | R squared (=Eta squared)      | means                | t-test            |
+| 11  | effects_metrics_items_grouped | not yet     | Eta squared                   | means                |                   |
+| 12  | effects_metrics_items_cor     |             | Pearson’s r                   | correlation          | t-test            |
 
 ## Where do all the labels go?
 
