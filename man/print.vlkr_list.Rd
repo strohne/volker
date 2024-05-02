@@ -21,7 +21,7 @@ Printing method for volker lists
 library(volker)
 data <- volker::chatgpt
 
-rp <- report_metrics(data, sd_age, effects=TRUE)
+rp <- report_metrics(data, sd_age, sd_gender, effects=TRUE)
 print(rp)
 
 }

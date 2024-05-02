@@ -28,38 +28,3 @@ zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
   }
   x
 }
-
-#' Get the p value of an lm model
-#'
-#' @keywords internal
-#'
-#' @param fit The result of an lm() call
-#' @return The p value of the model
-lm_pvalue <- function(fit) {
-  fstat <- summary(fit)$fstatistic
-  stats::pf(fstat[1], fstat[2], fstat[3], lower.tail = FALSE)
-}
-
-#' Get significance stars from p values
-#'
-#' @keywords internal
-#'
-#' @param x A vector of p values
-#' @return A character vector with significance stars
-get_stars <- function(x) {
-  sapply(x, function(p) {
-    if (p < 0.001) {
-      return("***")
-    } else if (p < 0.01) {
-      return("**")
-    } else if (p < 0.05) {
-      return("*")
-    } else if (p < 0.1) {
-      return(".")
-    } else {
-      return("")
-    }
-  })
-}
-
-

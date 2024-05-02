@@ -88,7 +88,7 @@ effects_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' effects_metrics(data, sd_age)
+#' effects_metrics(data, sd_age, sd_gender)
 #'
 #' @export
 effects_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...) {
@@ -168,6 +168,7 @@ effects_counts_one <- function(data, col, digits = 2, percent = TRUE, labels = T
 #' effects_counts_one_grouped(data, adopter, sd_gender)
 #'
 #' @importFrom rlang .data
+#' @export
 effects_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 
   # 1. Check parameters
@@ -415,15 +416,9 @@ effects_metrics_one_grouped <- function(data, col, cross, method = "lm", negativ
     fit <- stats::lm(av ~ uv, data = lm_data)
 
     # Regression parameters
-    lm_params <- broom::tidy(fit, conf.int = TRUE)
-    lm_params <- tidycat::tidy_categorical(m = fit, lm_params, include_reference = TRUE)
+    lm_params <- tidy_lm_levels(fit)
 
     lm_params <- lm_params |>
-      # dplyr::mutate(level = ifelse(
-      #   .data$reference == "Baseline Category",
-      #   paste0("(Baseline) ", .data$level),
-      #   as.character(.data$level)
-      # )) |>
       dplyr::mutate(
         stars = get_stars(.data$p.value),
         estimate = round(.data$estimate,2),
@@ -433,8 +428,7 @@ effects_metrics_one_grouped <- function(data, col, cross, method = "lm", negativ
         t = round(.data$statistic,2),
         p = round(.data$p.value,3)
       ) |>
-      dplyr::select(tidyselect::all_of(c("level","estimate","conf.low","conf.high","std.error","t","p","stars"))) |>
-      dplyr::mutate(dplyr::across(-tidyselect::all_of("level"), function(x) ifelse(x == 0,NA,x)))
+      dplyr::select(tidyselect::all_of(c("term","estimate","conf.low","conf.high","std.error","t","p","stars")))
 
 
     # Regression model statistics
@@ -753,4 +747,88 @@ effects_metrics_items_cor <- function(data, cols, cross, method="p", negative = 
   }
 
   result
+}
+
+#' Tidy lm results, replace categorical parameter names by their levels and add the reference level
+#'
+#' @keywords internal
+#'
+#' @param fit Result of a \link{lm} call
+#' @author Created with the help of ChatGPT
+#' @returns A tibble with regression parameters
+tidy_lm_levels <- function(fit) {
+  lm_tidy <- broom::tidy(fit, conf.int = TRUE)
+  lm_data <- fit$model
+
+  # Initialize an empty data frame for reference rows
+  ref_rows <- data.frame()
+
+  # Work through each factor in the model frame
+  for (var in names(lm_data)) {
+    if (is.factor(lm_data[[var]])) {
+      levels <- levels(lm_data[[var]])
+
+      # Rename the coefficients in tidy_data
+      for (level in levels[-1]) {
+        old_name <- paste0(var, level)
+        new_name <- paste0(level)
+        lm_tidy$term <- sub(paste0("^", var, level), new_name, lm_tidy$term)
+      }
+
+      # Create reference level row, assuming the first level is the reference
+      reference <- levels[1]
+      ref_row <- data.frame(term = paste0(reference, " (Reference)"))
+      ref_rows <- dplyr::bind_rows(ref_rows, ref_row)
+    }
+  }
+
+  # Insert the reference rows just below the intercept row
+  intercept_index <- which(lm_tidy$term == "(Intercept)")
+  lm_tidy <- dplyr::bind_rows(
+    lm_tidy[1:intercept_index, ],
+    ref_rows,
+    lm_tidy[-(1:intercept_index), ]
+  )
+
+  lm_tidy
+}
+
+
+#' Calculate ci values to be used for error bars on a plot
+#'
+#' @keywords internal
+#' @param x A numeric vector
+#' @param conf The conficence level
+#' @return A named list with values for y, ymin, and ymax
+get_ci <- function(x, conf = 0.95) {
+  n <- length(x)
+  m <- mean(x)
+  se <- stats::sd(x) / sqrt(n)
+  error_margin <- stats::qt(conf + (1 - conf) / 2, df = n - 1) * se
+  return(c(y = m, ymin = m - error_margin, ymax = m + error_margin))
+}
+
+
+#' Get significance stars from p values
+#'
+#' @keywords internal
+#'
+#' @param x A vector of p values
+#' @return A character vector with significance stars
+get_stars <- function(x) {
+  sapply(x, function(p) {
+    if (is.na(p)) {
+      return(NA)
+    } else if (p < 0.001) {
+      return("***")
+    } else if (p < 0.01) {
+      return("**")
+    } else if (p < 0.05) {
+      return("*")
+    } else if (p < 0.1) {
+      return(".")
+    } else {
+      return("")
+    }
+  })
 }

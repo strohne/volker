@@ -39,6 +39,6 @@ The regression type depends on the number of selected columns:
 library(volker)
 data <- volker::chatgpt
 
-effects_metrics(data, sd_age)
+effects_metrics(data, sd_age, sd_gender)
 
 }

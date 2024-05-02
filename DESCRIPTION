@@ -27,13 +27,11 @@ Imports:
     stats,
     rlang,
     lifecycle,
-    glue,
     tibble,
     dplyr,
     tidyr,
     tidyselect,
     ggplot2 (>= 2.2.1),
-    ggpubr,
     scales,
     base64enc,
     stringr,
@@ -45,9 +43,7 @@ Imports:
     knitr,
     kableExtra,
     rmarkdown,
-    janitor,
     psych,
-    tidycat,
     effectsize,
     car
 Depends:

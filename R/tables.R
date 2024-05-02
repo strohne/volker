@@ -494,7 +494,9 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = FALSE, values = 
       values_from = !!sym(value),
       values_fill = stats::setNames(list(0), value)
     ) %>%
-    janitor::adorn_totals("col")
+    dplyr::rowwise() %>%
+    dplyr::mutate(Total = sum(dplyr::c_across(-1), na.rm=TRUE)) %>%
+    dplyr::ungroup()
 
   # Relative frequency
   value <- "p"
@@ -505,7 +507,10 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = FALSE, values = 
       values_from = !!sym(value),
       values_fill = stats::setNames(list(0), value)
     ) %>%
-    janitor::adorn_totals("col")
+    dplyr::rowwise() %>%
+    dplyr::mutate(Total = sum(dplyr::c_across(-1), na.rm=TRUE)) %>%
+    dplyr::ungroup()
+
 
   # Add % sign
   if (percent) {

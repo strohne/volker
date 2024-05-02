@@ -1482,7 +1482,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot=FAL
     pl <- pl +
       ggplot2::stat_summary(
       geom = "errorbar",
-      fun.data = ggpubr::mean_ci,
+      fun.data = get_ci,
       orientation ="y",
       width=0.2,
       linewidth=1,
