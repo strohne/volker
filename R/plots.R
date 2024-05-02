@@ -14,7 +14,7 @@
 #' @param cross Optional, a grouping column. The column name without quotes.
 #' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
-#'            Set metric to TRUE, to treat is as metric and calculate correlations.
+#'            Set metric to TRUE, to treat it as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate plot function
 #' @return A ggplot2 plot object
@@ -74,7 +74,7 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 #' @param cross Optional, a grouping column (without quotes).
 #' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
-#'            Set metric to TRUE, to treat is as metric and calculate correlations.
+#'            Set metric to TRUE, to treat it as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate plot function
 #' @return A ggplot object

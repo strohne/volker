@@ -17,7 +17,7 @@ or multiple columns selected by methods such as starts_with()}
 
 \item{metric}{When crossing variables, the cross column parameter can contain categorical or metric values.
 By default, the cross column selection is treated as categorical data.
-Set metric to TRUE, to treat is as metric and calculate correlations.}
+Set metric to TRUE, to treat it as metric and calculate correlations.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 

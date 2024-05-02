@@ -12,9 +12,9 @@
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with()
 #' @param cross Optional, a grouping column. The column name without quotes.
-#' @param cor When crossing variables, the cross column parameter can contain categorical or metric values.
+#' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
-#'            Set cor to TRUE, to treat is as metric and calculate correlations.
+#'            Set metric to TRUE, to treat it as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate table function
 #' @return A volker tibble
@@ -25,7 +25,7 @@
 #' tab_counts(data, sd_gender)
 #'
 #' @export
-tab_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...) {
+tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -34,7 +34,7 @@ tab_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cross_eval)== 1
-  is_cor <- cor != FALSE
+  is_cor <- metric != FALSE
 
   # Single variables
   if (!is_items && !is_grouped) {
@@ -73,9 +73,9 @@ tab_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...)
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
 #' @param cross Optional, a grouping column (without quotes).
-#' @param cor When crossing variables, the cross column parameter can contain categorical or metric values.
+#' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
-#'            Set cor to TRUE, to treat is as metric and calculate correlations.
+#'            Set metric to TRUE, to treat it as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate table function
 #' @return A volker tibble
@@ -86,7 +86,7 @@ tab_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...)
 #' tab_metrics(data, sd_age)
 #'
 #' @export
-tab_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...) {
+tab_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -95,7 +95,7 @@ tab_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
 
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cross_eval) == 1
-  is_cor <- cor != FALSE
+  is_cor <- metric != FALSE
 
   # Single variables
   if (!is_items && !is_grouped && !is_cor) {
@@ -106,7 +106,7 @@ tab_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
   }
 
   else if (!is_items && is_grouped && is_cor) {
-    tab_metrics_one_cor(data, {{ cols }}, {{ cross }}, cor=cor, ...)
+    tab_metrics_one_cor(data, {{ cols }}, {{ cross }}, ...)
   }
 
   # Items

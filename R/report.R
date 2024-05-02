@@ -14,7 +14,7 @@
 #' @param cross Optional, a grouping or correlation column (without quotes).
 #' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
-#'            Set metric to TRUE, to treat is as metric and calculate correlations.
+#'            Set metric to TRUE, to treat it as metric and calculate correlations.
 #' @param ... Parameters passed to the plot and tab functions.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
@@ -69,7 +69,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
   # Add effect sizes
   if (effects) {
     chunks <- effects_metrics(data, {{ cols }}, {{ cross }}, metric = metric, effects=effects, clean=clean, ...) %>%
-      .add_to_vlkr_rprt(chunks, "Statistics")
+      .add_to_vlkr_rprt(chunks, "Effects")
   }
 
   # Add index
@@ -107,7 +107,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 #' @param cross Optional, a grouping column (without quotes).
 #' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
-#'            Set metric to TRUE, to treat is as metric and calculate correlations.
+#'            Set metric to TRUE, to treat it as metric and calculate correlations.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the 'psych' package.
@@ -163,8 +163,8 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 
   # Add effect sizes
   if (effects) {
-    chunks <- effects_counts(data, {{ cols }}, {{ cross }}, effects=effects, lean=clean, ...) %>%
-      .add_to_vlkr_rprt(chunks, "Statistics")
+    chunks <- effects_counts(data, {{ cols }}, {{ cross }}, effects=effects, clean=clean, ...) %>%
+      .add_to_vlkr_rprt(chunks, "Effects")
   }
 
   # Add index
