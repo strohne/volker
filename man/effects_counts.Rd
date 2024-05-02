@@ -39,6 +39,6 @@ The type of effect size depends on the number of selected columns:
 library(volker)
 data <- volker::chatgpt
 
-effects_counts(data, sd_gender)
+effects_counts(data, sd_gender, adopter)
 
 }

@@ -348,11 +348,14 @@ effects_metrics_one <- function(data, col, clean = T, ... ) {
 #' @param data A tibble
 #' @param col The column holding metric values
 #' @param cross The column holding groups to compare
+#' @param method A character vector of methods, e.g. c("t.test","lm").
+#'              Supported methods are t.test (only valid if the cross column contains two levels)
+#'              and lm (regression results).
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effects_metrics}.
-#' @return A volker chunks object containing tables for micro and macro statistics
+#' @return A volker list object containing volker tables with the requested statistics.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -361,7 +364,7 @@ effects_metrics_one <- function(data, col, clean = T, ... ) {
 #'
 #' @export
 #' @importFrom rlang .data
-effects_metrics_one_grouped <- function(data, col, cross, negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effects_metrics_one_grouped <- function(data, col, cross, method = "lm", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
@@ -386,7 +389,7 @@ effects_metrics_one_grouped <- function(data, col, cross, negative = FALSE, labe
   lm_data <- dplyr::select(data, av = {{ col }}, uv = {{ cross }})
 
   # t.test
-  if (length(unique(lm_data$uv)) == 2) {
+  if (("t.test" %in% method) && (length(unique(lm_data$uv)) == 2)) {
 
     stats_shapiro <- stats::shapiro.test(lm_data$av)
     stats_levene <- car::leveneTest(lm_data$av, group = lm_data$uv)
@@ -440,53 +443,55 @@ effects_metrics_one_grouped <- function(data, col, cross, negative = FALSE, labe
 
 
   # Regression model
-  fit <- stats::lm(av ~ uv, data = lm_data)
+  if ("lm" %in% method) {
+    fit <- stats::lm(av ~ uv, data = lm_data)
 
-  # Regression parameters
-  lm_params <- broom::tidy(fit, conf.int = TRUE)
-  lm_params <- tidycat::tidy_categorical(m = fit, lm_params, include_reference = TRUE)
+    # Regression parameters
+    lm_params <- broom::tidy(fit, conf.int = TRUE)
+    lm_params <- tidycat::tidy_categorical(m = fit, lm_params, include_reference = TRUE)
 
-  lm_params <- lm_params |>
-    # dplyr::mutate(level = ifelse(
-    #   .data$reference == "Baseline Category",
-    #   paste0("(Baseline) ", .data$level),
-    #   as.character(.data$level)
-    # )) |>
-    dplyr::mutate(
-      stars = get_stars(.data$p.value),
-      estimate = round(.data$estimate,2),
-      conf.low = round(.data$conf.low,2),
-      conf.high = round(.data$conf.high,2),
-      std.error = round(.data$std.error,2),
-      t = round(.data$statistic,2),
-      p = round(.data$p.value,3)
-    ) |>
-    dplyr::select(tidyselect::all_of(c("level","estimate","conf.low","conf.high","std.error","t","p","stars"))) |>
-    dplyr::mutate(dplyr::across(-tidyselect::all_of("level"), function(x) ifelse(x == 0,NA,x)))
-
-
-  # Regression model statistics
-  lm_model <- broom::glance(fit) |>
-    dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), function(x) as.character(round(x,2)))) |>
-    dplyr::mutate(stars = get_stars(.data$p.value)) |>
-    tidyr::pivot_longer(
-      tidyselect::everything(),
-      names_to="Statistic",
-      values_to="Value"
-    ) |>
-    labs_replace("Statistic", tibble::tibble(
-      value_name=c( "adj.r.squared","statistic", "df", "df.residual",  "p.value", "stars"),
-      value_label=c("Adjusted R squared", "F", "Degrees of freedom", "Residuals' degrees of freedom", "p", "stars")
-    ), relevel = TRUE) |>
-    stats::na.omit() |>
-    dplyr::arrange(tidyselect::all_of("Statistic"))
+    lm_params <- lm_params |>
+      # dplyr::mutate(level = ifelse(
+      #   .data$reference == "Baseline Category",
+      #   paste0("(Baseline) ", .data$level),
+      #   as.character(.data$level)
+      # )) |>
+      dplyr::mutate(
+        stars = get_stars(.data$p.value),
+        estimate = round(.data$estimate,2),
+        conf.low = round(.data$conf.low,2),
+        conf.high = round(.data$conf.high,2),
+        std.error = round(.data$std.error,2),
+        t = round(.data$statistic,2),
+        p = round(.data$p.value,3)
+      ) |>
+      dplyr::select(tidyselect::all_of(c("level","estimate","conf.low","conf.high","std.error","t","p","stars"))) |>
+      dplyr::mutate(dplyr::across(-tidyselect::all_of("level"), function(x) ifelse(x == 0,NA,x)))
 
 
-  result <- c(
-    result,
-    list(.to_vlkr_tab(lm_params, caption = "Regression parameters")),
-    list(.to_vlkr_tab(lm_model, caption = "Model statistics"))
-  )
+    # Regression model statistics
+    lm_model <- broom::glance(fit) |>
+      dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), function(x) as.character(round(x,2)))) |>
+      dplyr::mutate(stars = get_stars(.data$p.value)) |>
+      tidyr::pivot_longer(
+        tidyselect::everything(),
+        names_to="Statistic",
+        values_to="Value"
+      ) |>
+      labs_replace("Statistic", tibble::tibble(
+        value_name=c( "adj.r.squared","statistic", "df", "df.residual",  "p.value", "stars"),
+        value_label=c("Adjusted R squared", "F", "Degrees of freedom", "Residuals' degrees of freedom", "p", "stars")
+      ), relevel = TRUE) |>
+      stats::na.omit() |>
+      dplyr::arrange(tidyselect::all_of("Statistic"))
+
+
+    result <- c(
+      result,
+      list(.to_vlkr_tab(lm_params, caption = "Regression parameters")),
+      list(.to_vlkr_tab(lm_model, caption = "Model statistics"))
+    )
+  }
 
   .to_vlkr_list(result)
 }
