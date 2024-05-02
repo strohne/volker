@@ -157,7 +157,7 @@ stat_counts_one <- function(data, col, digits = 2, percent = TRUE, labels = TRUE
 
 #' Output test statistics and effect size for contingency tables (Chi^2 and Cramer's V)
 #'
-#' TODO: replace spread by pivot_wider (spread is superseded)
+#'
 #'
 #' @keywords internal
 #'
@@ -171,7 +171,7 @@ stat_counts_one <- function(data, col, digits = 2, percent = TRUE, labels = TRUE
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' stat_counts_one_grouped(ds, adopter, sd_gender)
+#' stat_counts_one_grouped(data, adopter, sd_gender)
 #'
 #' @importFrom rlang .data
 stat_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
@@ -193,10 +193,15 @@ stat_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   # 4. Prepare data
   contingency <- data %>%
     dplyr::count({{ col }}, {{ cross }}) %>%
-    spread({{ cross }}, n, fill = 0) %>%
+    tidyr::pivot_wider(
+      names_from = {{ cross }},
+      values_from = .data$n,
+      values_fill = 0) %>%
     as.data.frame() %>%
     dplyr::select(-1) %>%
     as.matrix()
+
+
 
   # 5. Chi-squared test and Cramer's V
   exact <- any(contingency < 5)
