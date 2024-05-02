@@ -590,13 +590,14 @@ plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
   stop("Not implemented yet")
 }
 
-#' Output a histogram for a single metric variable
+#' Output a density plot for a single metric variable
 #'
 #' @keywords internal
 #'
 #' @param data A tibble
 #' @param col The column holding metric values
 #' @param ci Whether to plot the confidence interval
+#' @param box Whether to place a boxplot on top
 #' @param limits The scale limits. Set NULL to extract limits from the label. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -613,7 +614,7 @@ plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one <- function(data, col, ci = FALSE, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -640,6 +641,15 @@ plot_metrics_one <- function(data, col, ci = FALSE, limits = NULL, negative = FA
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes({{ col }})) +
     ggplot2::geom_density()
+
+  # Boxplot
+  if (box) {
+    pl <- pl + ggplot2::geom_boxplot(
+      ggplot2::aes({{ col }}, y = max_density / 2),
+      width = max_density / 3,
+      fill="transparent", color="black"
+    )
+  }
 
   # Confidence interval
   if (ci) {
