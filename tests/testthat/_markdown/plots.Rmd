@@ -13,7 +13,6 @@ editor_options:
 knitr::opts_chunk$set(echo = FALSE, warning = TRUE, fig.width = 7)
 
 library(dplyr)
-library(forcats)
 library(ggplot2)
 library(volker)
 
@@ -74,7 +73,7 @@ plot_counts_one_grouped(data, adopter, sd_gender, prop = "cols")
 
 # Test whether factor is reversed
 data |> 
-  mutate(adopter=forcats::fct_rev(adopter)) |> 
+  mutate(adopter = factor(adopter, levels = rev(adopter))) |> 
   plot_counts_one_grouped(adopter, sd_gender, prop = "cols")
 
 ```

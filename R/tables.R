@@ -705,7 +705,7 @@ tab_metrics_one <- function(data, col, ci = FALSE, negative = FALSE, digits = 1,
   # Calculate values
   result <- data %>%
     skim_metrics({{ col }}) %>%
-    dplyr::rename_with(function(x) stringr::str_remove(x,"numeric.")) #
+    dplyr::rename_with(function(x) sub("numeric.", "", x, fixed = TRUE))
 
   if (ci) {
     result <- dplyr::select(
@@ -818,13 +818,13 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
       {{ cross }} := tidyr::replace_na(as.character({{ cross }}), "Missing")
     ) %>%
     dplyr::select(-tidyselect::all_of(c("skim_variable","skim_type"))) |>
-    dplyr::rename_with(function(x) stringr::str_remove(x,"numeric."))
+    dplyr::rename_with(function(x) sub("numeric.", "", x, fixed = TRUE))
 
   result_total <- data %>%
     skim_metrics({{ col }}) %>%
     dplyr::mutate({{ cross }} := "Total") |>
     dplyr::select(-tidyselect::all_of(c("skim_variable","skim_type"))) |>
-    dplyr::rename_with(function(x) stringr::str_remove(x,"numeric."))
+    dplyr::rename_with(function(x) sub("numeric.", "", x, fixed = TRUE))
 
 
   result <- dplyr::bind_rows(
@@ -1020,7 +1020,7 @@ tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits =
   result <- data %>%
     dplyr::select({{ cols }}) |>
     skim_metrics() |>
-    dplyr::rename_with(function(x) stringr::str_remove(x,"numeric."))
+    dplyr::rename_with(function(x) sub("numeric.", "", x, fixed = TRUE))
 
   if (ci) {
     result <- dplyr::select(

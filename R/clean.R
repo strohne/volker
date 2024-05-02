@@ -102,7 +102,10 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
       data,
       dplyr::across(
         tidyselect::where(is.factor),
-        ~ forcats::fct_relabel(., ~ stringr::str_replace_all(., stringr::fixed("/"), "/\u200B"))
+        function(x) {
+          levels(x) <- gsub("/","/\u200B", levels(x), fixed=T)
+          return (x)
+        }
       )
     )
   }

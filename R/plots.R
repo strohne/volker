@@ -1368,7 +1368,9 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot=FAL
 
   if (scale <= 0) {
     data <- data %>%
-      dplyr::mutate(value = forcats::fct_rev(.data$value))
+      dplyr::mutate(
+        value = factor(.data$value, levels = rev(levels(.data$value)))
+      )
   }
 
   # ci offset
