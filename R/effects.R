@@ -233,12 +233,6 @@ effects_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effects_counts}.
 #' @return A volker tibble
-#' @examples
-#' library(volker)
-#' data <- volker::chatgpt
-#'
-#' effects_counts_one_cor(data, adopter, sd_gender)
-#'
 #' @importFrom rlang .data
 effects_counts_one_cor <- function(data, col, cross, clean = TRUE, ...) {
   stop("Not implemented yet")

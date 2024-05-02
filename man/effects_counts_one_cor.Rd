@@ -23,11 +23,4 @@ A volker tibble
 \description{
 Output test statistics and effect size for categories correlated with a metric column
 }
-\examples{
-library(volker)
-data <- volker::chatgpt
-
-effects_counts_one_cor(data, adopter, sd_gender)
-
-}
 \keyword{internal}

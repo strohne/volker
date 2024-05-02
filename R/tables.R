@@ -248,7 +248,6 @@ tab_counts_one <- function(data, col, ci = FALSE, missings = TRUE, percent = TRU
 #' @importFrom rlang .data
 #' @export
 tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, prop = "total", values = c("n", "p"), percent = TRUE, labels = TRUE, clean = TRUE, ...) {
-
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
@@ -640,9 +639,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = FALSE, values = 
 #' @return A volker tibble
 #' @importFrom rlang .data
 tab_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
-
   stop("Not implemented yet")
-
 }
 
 #' Correlate the values in multiple items
@@ -658,9 +655,7 @@ tab_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @importFrom rlang .data
 tab_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
-
   stop("Not implemented yet")
-
 }
 
 #' Output a five point summary table for the values in multiple columns
@@ -685,7 +680,6 @@ tab_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #' @export
 #' @importFrom rlang .data
 tab_metrics_one <- function(data, col, ci = FALSE, negative = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
-
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{col}})
@@ -900,7 +894,6 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
 #' @return A volker tibble
 #' @importFrom rlang .data
 tab_metrics_one_cor <- function(data, col, cross, method="p", ci = FALSE, negative = FALSE, labels = TRUE, clean = TRUE, ...) {
-
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
@@ -1283,7 +1276,6 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, value
 #' @importFrom rlang .data
 #' @export
 tab_metrics_items_cor <- function(data, cols, cross, method = "p", effects = FALSE, labels = TRUE, clean = TRUE, ...) {
-
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -1352,7 +1344,6 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "p", effects = FAL
 #' @param digits Set the plot digits. If NULL (default), no digits are set.
 #' @return A volker tibble
 .to_vlkr_tab <- function(data, digits = NULL, caption=NULL) {
-
   if (!is.null(digits)) {
     attr(data, "digits") <- digits
   }
@@ -1438,7 +1429,6 @@ knit_table <- function(df, ...) {
 #'
 #' @export
 print.vlkr_tbl <- function(x, ...) {
-
   x <- knit_table(x)
 
   if (knitr::is_html_output()) {
