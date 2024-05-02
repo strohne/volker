@@ -12,9 +12,9 @@
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
 #' @param cross Optional, a grouping or correlation column (without quotes).
-#' @param cor When crossing variables, the cross column parameter can contain categorical or metric values.
+#' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
-#'            Set cor to TRUE, to treat is as metric and calculate correlations.
+#'            Set metric to TRUE, to treat is as metric and calculate correlations.
 #' @param ... Parameters passed to the plot and tab functions.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
@@ -35,7 +35,7 @@
 #' report_metrics(data, sd_age)
 #'
 #' @export
-report_metrics <- function(data, cols, cross = NULL, cor = FALSE, ..., index = FALSE, effects = FALSE, title = TRUE, close = TRUE, clean = TRUE) {
+report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index = FALSE, effects = FALSE, title = TRUE, close = TRUE, clean = TRUE) {
 
   if (clean) {
     data <- data_clean(data)
@@ -59,16 +59,16 @@ report_metrics <- function(data, cols, cross = NULL, cor = FALSE, ..., index = F
 
 
   # Add Plot
-  chunks <- plot_metrics(data, {{ cols}}, {{ cross }}, cor = cor, effects=effects, clean=clean, ..., title = plot_title) %>%
+  chunks <- plot_metrics(data, {{ cols}}, {{ cross }}, metric = metric, effects=effects, clean=clean, ..., title = plot_title) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
-  chunks <- tab_metrics(data, {{ cols}}, {{ cross }}, cor = cor, effects=effects, clean=clean, ...) %>%
+  chunks <- tab_metrics(data, {{ cols}}, {{ cross }}, metric = metric, effects=effects, clean=clean, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
 
   # Add effect sizes
   if (effects) {
-    chunks <- effects_metrics(data, {{ cols }}, {{ cross }}, cor = cor, effects=effects, clean=clean, ...) %>%
+    chunks <- effects_metrics(data, {{ cols }}, {{ cross }}, metric = metric, effects=effects, clean=clean, ...) %>%
       .add_to_vlkr_rprt(chunks, "Statistics")
   }
 
@@ -105,9 +105,9 @@ report_metrics <- function(data, cols, cross = NULL, cor = FALSE, ..., index = F
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
 #' @param cross Optional, a grouping column (without quotes).
-#' @param cor When crossing variables, the cross column parameter can contain categorical or metric values.
+#' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
-#'            Set cor to TRUE, to treat is as metric and calculate correlations.
+#'            Set metric to TRUE, to treat is as metric and calculate correlations.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the 'psych' package.
@@ -130,7 +130,7 @@ report_metrics <- function(data, cols, cross = NULL, cor = FALSE, ..., index = F
 #' report_counts(data, sd_gender)
 #'
 #' @export
-report_counts <- function(data, cols, cross = NULL, cor = FALSE, index = FALSE, effects=FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
+report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALSE, effects=FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
 
   if (clean) {
     data <- data_clean(data)

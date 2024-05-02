@@ -8,10 +8,10 @@ report_metrics(
   data,
   cols,
   cross = NULL,
-  cor = FALSE,
+  metric = FALSE,
   ...,
   index = FALSE,
-  stats = FALSE,
+  effects = FALSE,
   title = TRUE,
   close = TRUE,
   clean = TRUE
@@ -26,9 +26,9 @@ or multiple columns selected by methods such as starts_with().}
 
 \item{cross}{Optional, a grouping or correlation column (without quotes).}
 
-\item{cor}{When crossing variables, the cross column parameter can contain categorical or metric values.
+\item{metric}{When crossing variables, the cross column parameter can contain categorical or metric values.
 By default, the cross column selection is treated as categorical data.
-Set cor to TRUE, to treat is as metric and calculate correlations.}
+Set metric to TRUE, to treat is as metric and calculate correlations.}
 
 \item{...}{Parameters passed to the plot and tab functions.}
 
@@ -37,7 +37,7 @@ Set cor to TRUE, to treat is as metric and calculate correlations.}
 an index will be calculated using the 'psych' package.
 Set to FALSE to suppress index generation.}
 
-\item{stats}{Output effect sizes}
+\item{effects}{Output effect sizes}
 
 \item{title}{A character providing the heading or TRUE (default) to output a heading.
 Classes for tabset pills will be added.}

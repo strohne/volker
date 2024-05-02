@@ -12,9 +12,9 @@
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with()
 #' @param cross Optional, a grouping column. The column name without quotes.
-#' @param cor When crossing variables, the cross column parameter can contain categorical or metric values.
+#' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
-#'            Set cor to TRUE, to treat is as metric and calculate correlations.
+#'            Set metric to TRUE, to treat is as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate plot function
 #' @return A ggplot2 plot object
@@ -25,7 +25,7 @@
 #' plot_counts(data, sd_gender)
 #'
 #' @export
-plot_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...) {
+plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -34,13 +34,13 @@ plot_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cross_eval)== 1
-  is_cor <- cor != FALSE
+  is_metric <- metric != FALSE
 
   # Single variables
   if (!is_items && !is_grouped) {
     plot_counts_one(data, {{ cols }}, ...)
   }
-  else if (!is_items && is_grouped && !is_cor) {
+  else if (!is_items && is_grouped && !is_metric) {
     plot_counts_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
 
@@ -48,7 +48,7 @@ plot_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
   else if (is_items && !is_grouped) {
     plot_counts_items(data, {{ cols }} , ...)
   }
-  else if (is_items && is_grouped && !is_cor) {
+  else if (is_items && is_grouped && !is_metric) {
     plot_counts_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
 
@@ -72,9 +72,9 @@ plot_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
 #' @param cross Optional, a grouping column (without quotes).
-#' @param cor When crossing variables, the cross column parameter can contain categorical or metric values.
+#' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
-#'            Set cor to TRUE, to treat is as metric and calculate correlations.
+#'            Set metric to TRUE, to treat is as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Other parameters passed to the appropriate plot function
 #' @return A ggplot object
@@ -85,7 +85,7 @@ plot_counts <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...
 #' plot_metrics(data, sd_age)
 #'
 #' @export
-plot_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...) {
+plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -95,24 +95,24 @@ plot_metrics <- function(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ..
 
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cols_cross_eval)== 1
-  is_cor <- cor != FALSE
+  is_metric <- metric != FALSE
 
   # Single variables
-  if (!is_items && !is_grouped && !is_cor) {
+  if (!is_items && !is_grouped && !is_metric) {
     plot_metrics_one(data, {{ cols }}, ...)
   }
-  else if (!is_items && is_grouped && !is_cor) {
+  else if (!is_items && is_grouped && !is_metric) {
     plot_metrics_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
-  else if (!is_items && is_grouped && is_cor) {
+  else if (!is_items && is_grouped && is_metric) {
     plot_metrics_one_cor(data, {{ cols }}, {{ cross }}, ...)
   }
 
   # Items
-  else if (is_items && !is_grouped && !is_cor) {
+  else if (is_items && !is_grouped && !is_metric) {
     plot_metrics_items(data, {{ cols }} , ...)
   }
-  else if (is_items && is_grouped && !is_cor) {
+  else if (is_items && is_grouped && !is_metric) {
     plot_metrics_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
 

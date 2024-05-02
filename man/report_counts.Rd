@@ -8,9 +8,9 @@ report_counts(
   data,
   cols,
   cross = NULL,
-  cor = FALSE,
+  metric = FALSE,
   index = FALSE,
-  stats = FALSE,
+  effects = FALSE,
   numbers = NULL,
   title = TRUE,
   close = TRUE,
@@ -27,16 +27,16 @@ or multiple columns selected by methods such as starts_with().}
 
 \item{cross}{Optional, a grouping column (without quotes).}
 
-\item{cor}{When crossing variables, the cross column parameter can contain categorical or metric values.
+\item{metric}{When crossing variables, the cross column parameter can contain categorical or metric values.
 By default, the cross column selection is treated as categorical data.
-Set cor to TRUE, to treat is as metric and calculate correlations.}
+Set metric to TRUE, to treat is as metric and calculate correlations.}
 
 \item{index}{When the cols contain items on a metric scale
 (as determined by \link{get_direction}),
 an index will be calculated using the 'psych' package.
 Set to FALSE to suppress index generation.}
 
-\item{stats}{Whether to report statistical tests and effect sizes}
+\item{effects}{Whether to report statistical tests and effect sizes}
 
 \item{numbers}{The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 Set to NULL to remove numbers.}

@@ -9,7 +9,7 @@ tab_metrics_items_cor(
   cols,
   cross,
   method = "p",
-  stats = FALSE,
+  effects = FALSE,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -24,7 +24,7 @@ tab_metrics_items_cor(
 
 \item{method}{The output metrics, p = Pearson's R, s = Spearman's rho}
 
-\item{stats}{Add significance stars and only show significant values}
+\item{effects}{Add significance stars and only show significant values}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
@@ -38,7 +38,7 @@ A volker tibble
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-TODO: do we need stats parameter here?
+TODO: do we need effects parameter here?
 }
 \examples{
 library(volker)

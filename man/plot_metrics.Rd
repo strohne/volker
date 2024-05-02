@@ -4,7 +4,7 @@
 \alias{plot_metrics}
 \title{Output a plot with distribution parameters such as the mean values}
 \usage{
-plot_metrics(data, cols, cross = NULL, cor = FALSE, clean = TRUE, ...)
+plot_metrics(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A data frame}
@@ -15,9 +15,9 @@ or multiple columns selected by methods such as starts_with().}
 
 \item{cross}{Optional, a grouping column (without quotes).}
 
-\item{cor}{When crossing variables, the cross column parameter can contain categorical or metric values.
+\item{metric}{When crossing variables, the cross column parameter can contain categorical or metric values.
 By default, the cross column selection is treated as categorical data.
-Set cor to TRUE, to treat is as metric and calculate correlations.}
+Set metric to TRUE, to treat is as metric and calculate correlations.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
