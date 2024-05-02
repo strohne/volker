@@ -27,8 +27,8 @@ ds <- volker::chatgpt
 
 ```{r}
 
-report_counts(ds, adopter, sd_gender, stats = T)
+report_counts(ds, adopter, sd_gender, effects = T)
 
-report_metrics(ds, sd_age, adopter, stats = T)
+report_metrics(ds, sd_age, adopter, effects = T)
 
 ```

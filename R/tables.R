@@ -1261,7 +1261,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, value
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' TODO: do we need stats parameter here?
+#' TODO: do we need effects parameter here?
 #'
 #' @keywords internal
 #'
@@ -1269,7 +1269,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, value
 #' @param cols The source columns
 #' @param cross The target columns or NULL to calculate correlations within the source columns
 #' @param method The output metrics, p = Pearson's R, s = Spearman's rho
-#' @param stats Add significance stars and only show significant values
+#' @param effects Add significance stars and only show significant values
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
@@ -1282,7 +1282,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, value
 #'
 #' @importFrom rlang .data
 #' @export
-tab_metrics_items_cor <- function(data, cols, cross, method = "p", stats = FALSE, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_items_cor <- function(data, cols, cross, method = "p", effects = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -1327,7 +1327,7 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "p", stats = FALSE
   result <- result %>%
     dplyr::mutate(value = round(unlist(.data$value), 2))
 
-  if (stats == TRUE) {
+  if (effects == TRUE) {
     result <- result %>%
       dplyr::mutate(value = paste0(unlist(.data$value), .data$stars)) %>%
       dplyr::mutate(value = ifelse(.data$p >= 0.1, "", .data$value))
