@@ -268,7 +268,7 @@ labs_apply <- function(data, codes, cols = NULL, values = TRUE) {
           for (vr in c(1:nrow(value_rows))) {
             value_name <- value_rows$value_name[vr]
             value_label <- value_rows$value_label[vr]
-            attr(data[[col]], as.character(value_rows$value_name)) <- value_rows$value_label
+            attr(data[[col]], as.character(value_name)) <- value_label
           }
         }
       }
