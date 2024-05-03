@@ -18,11 +18,11 @@ plot_metrics_items_cor(
 )
 }
 \arguments{
-\item{data}{A tibble containing item measures}
+\item{data}{A tibble containing item measures.}
 
-\item{cols}{Tidyselect item variables (e.g. starts_with...)}
+\item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
-\item{cross}{Tidyselect item variables to correlate (e.g. starts_with...)}
+\item{cross}{Tidyselect item variables to correlate (e.g. starts_with...).}
 
 \item{limits}{The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.}
 
@@ -40,7 +40,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.}
 }
 \value{
-A ggplot object
+A ggplot object.
 }
 \description{
 Scatter plot of correlations between multiple items
@@ -49,7 +49,7 @@ Scatter plot of correlations between multiple items
 library(volker)
 data <- volker::chatgpt
 
-plot_metrics_items_cor(data, starts_with("cg_adoption_"), sd_gender)
+plot_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 
 }
 \keyword{internal}

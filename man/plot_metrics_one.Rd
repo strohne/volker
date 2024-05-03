@@ -18,13 +18,13 @@ plot_metrics_one(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{col}{The column holding metric values}
+\item{col}{The column holding metric values.}
 
-\item{ci}{Whether to plot the confidence interval}
+\item{ci}{Whether to plot the confidence interval.}
 
-\item{box}{Whether to place a boxplot on top}
+\item{box}{Whether to place a boxplot on top.}
 
 \item{limits}{The scale limits. Set NULL to extract limits from the label. NOT IMPLEMENTED YET.}
 
@@ -40,7 +40,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.}
 }
 \value{
-A ggplot object
+A ggplot object.
 }
 \description{
 Output a density plot for a single metric variable

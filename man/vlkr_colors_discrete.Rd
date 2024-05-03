@@ -7,10 +7,10 @@
 vlkr_colors_discrete(n)
 }
 \arguments{
-\item{n}{Number of colors}
+\item{n}{Number of colors.}
 }
 \value{
-A vector of colors
+A vector of colors.
 }
 \description{
 If the option ggplot2.discrete.fill is set,

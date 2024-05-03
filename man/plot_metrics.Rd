@@ -7,7 +7,7 @@
 plot_metrics(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...)
 }
 \arguments{
-\item{data}{A data frame}
+\item{data}{A data frame.}
 
 \item{cols}{A tidy column selection,
 e.g. a single column (without quotes)
@@ -21,10 +21,10 @@ Set metric to TRUE, to treat it as metric and calculate correlations.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
-\item{...}{Other parameters passed to the appropriate plot function}
+\item{...}{Other parameters passed to the appropriate plot function.}
 }
 \value{
-A ggplot object
+A ggplot object.
 }
 \description{
 The table type depends on the number of selected columns:

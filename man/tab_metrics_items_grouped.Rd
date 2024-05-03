@@ -17,11 +17,11 @@ tab_metrics_items_grouped(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{cols}{The item columns that hold the values to summarize}
+\item{cols}{The item columns that hold the values to summarize.}
 
-\item{cross}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
@@ -36,7 +36,7 @@ tab_metrics_items_grouped(
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 TODO: handle completely missing data in single groups

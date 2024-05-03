@@ -7,12 +7,12 @@
 \method{print}{vlkr_tbl}(x, ...)
 }
 \arguments{
-\item{x}{The volker table}
+\item{x}{The volker table.}
 
-\item{...}{Further parameters passed to print()}
+\item{...}{Further parameters passed to print().}
 }
 \value{
-No return value
+No return value.
 }
 \description{
 Printing method for volker tables.

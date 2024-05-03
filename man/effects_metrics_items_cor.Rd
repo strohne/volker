@@ -2,7 +2,7 @@
 % Please edit documentation in R/effects.R
 \name{effects_metrics_items_cor}
 \alias{effects_metrics_items_cor}
-\title{Output correlation coefficents for items}
+\title{Output correlation coefficients for items}
 \usage{
 effects_metrics_items_cor(
   data,
@@ -16,13 +16,13 @@ effects_metrics_items_cor(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble containing item measures.}
 
-\item{cols}{The item columns that hold the values to summarize}
+\item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
-\item{cross}{The column holding items to correlate}
+\item{cross}{Tidyselect item variables to correlate (e.g. starts_with...).}
 
-\item{method}{The output metrics, TRUE or p = Pearson's R, s = Spearman's rho}
+\item{method}{The output metrics, TRUE or p = Pearson's R, s = Spearman's rho.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
@@ -33,16 +33,16 @@ effects_metrics_items_cor(
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{effects_metrics}.}
 }
 \value{
-A volker table containing correlations
+A volker table containing correlations.
 }
 \description{
-Output correlation coefficents for items
+Output correlation coefficients for items
 }
 \examples{
 library(volker)
 data <- volker::chatgpt
 
-effects_metrics_items_cor(data, starts_with("cg_adoption"), sd_age)
+effects_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 
 
 }

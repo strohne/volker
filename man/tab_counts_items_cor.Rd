@@ -7,11 +7,11 @@
 tab_counts_items_cor(data, cols, cross, clean = TRUE, ...)
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble containing item measures.}
 
-\item{cols}{The source columns}
+\item{cols}{The source columns.}
 
-\item{cross}{The target columns or NULL to calculate correlations within the source columns}
+\item{cross}{The target columns or NULL to calculate correlations within the source columns.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 

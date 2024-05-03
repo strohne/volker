@@ -7,18 +7,18 @@
 effects_counts_one_grouped(data, col, cross, clean = TRUE, ...)
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{col}{The column holding factor values}
+\item{col}{The column holding factor values.}
 
-\item{cross}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{effects_counts}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 Output test statistics and effect size for contingency tables (Chi^2 and Cramer's V)

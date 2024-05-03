@@ -15,11 +15,11 @@ effects_metrics_items(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble containing item measures.}
 
-\item{cols}{The column holding metric values}
+\item{cols}{The column holding metric values.}
 
-\item{method}{The output metrics, TRUE or p = Pearson's R, s = Spearman's rho}
+\item{method}{The output metrics, TRUE or p = Pearson's R, s = Spearman's rho.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
@@ -30,7 +30,7 @@ effects_metrics_items(
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{effects_metrics}.}
 }
 \value{
-A volker table containing correlations
+A volker table containing correlations.
 }
 \description{
 Output test statistics and effect size (Cohen's d) for paired samples

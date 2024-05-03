@@ -7,12 +7,12 @@
 vlkr_colors_sequential(n)
 }
 \arguments{
-\item{n}{Number of colors}
+\item{n}{Number of colors.}
 }
 \value{
-A vector of colors
+A vector of colors.
 }
 \description{
-Creates a gradient scale based on VLKR_FILLGRADIENT
+Creates a gradient scale based on VLKR_FILLGRADIENT.
 }
 \keyword{internal}

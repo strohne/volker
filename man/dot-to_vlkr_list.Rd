@@ -7,12 +7,12 @@
 .to_vlkr_list(data, baseline = TRUE)
 }
 \arguments{
-\item{data}{A list}
+\item{data}{A list.}
 
 \item{baseline}{Whether to get the baseline.}
 }
 \value{
-A volker list
+A volker list.
 }
 \description{
 Used to collect multiple tables in a list,

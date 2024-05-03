@@ -12,16 +12,16 @@ theme_vlkr(
 )
 }
 \arguments{
-\item{base_size}{Base font size}
+\item{base_size}{Base font size.}
 
-\item{base_color}{Base font color}
+\item{base_color}{Base font color.}
 
 \item{base_fill}{A list of fill color sets. Each set can contain different numbers of colors.}
 
 \item{base_gradient}{A color vector used for creating gradient fill colors, e.g. in stacked bar plots.}
 }
 \value{
-A theme function
+A theme function.
 }
 \description{
 Define a default theme for volker plots

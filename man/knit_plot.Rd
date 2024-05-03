@@ -10,10 +10,10 @@ knit_plot(pl)
 \item{pl}{A ggplot object with vlkr_options.
 The vlk_options are added by .to_vlkr_plot()
 and provide information about the number of vertical items (rows)
-and the maximum}
+and the maximum.}
 }
 \value{
-Character string containing a html image tag, including the base64 encoded image
+Character string containing a html image tag, including the base64 encoded image.
 }
 \description{
 Automatically calculates the plot height from

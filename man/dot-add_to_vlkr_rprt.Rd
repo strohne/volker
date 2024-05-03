@@ -7,14 +7,14 @@
 .add_to_vlkr_rprt(obj, chunks, tab = NULL)
 }
 \arguments{
-\item{obj}{A new chunk (volker table, volker plot or character value)}
+\item{obj}{A new chunk (volker table, volker plot or character value).}
 
-\item{chunks}{The current report list}
+\item{chunks}{The current report list.}
 
-\item{tab}{A tabsheet name or NULL}
+\item{tab}{A tabsheet name or NULL.}
 }
 \value{
-A volker report object
+A volker report object.
 }
 \description{
 Add an object to the report list

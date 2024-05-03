@@ -7,10 +7,10 @@
 knit_prepare(x)
 }
 \arguments{
-\item{x}{Markdown text}
+\item{x}{Markdown text.}
 }
 \value{
-Markdown text with line breaks and excaped special characters
+Markdown text with line breaks and escaped special characters.
 }
 \description{
 Prepare markdown content for table rendering

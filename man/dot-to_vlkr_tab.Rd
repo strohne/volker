@@ -16,7 +16,7 @@
 \item{baseline}{A base line printed below the table.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 Additionally, removes the skim_df class if present.

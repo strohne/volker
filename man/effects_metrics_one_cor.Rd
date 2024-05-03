@@ -16,13 +16,13 @@ effects_metrics_one_cor(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{col}{The column holding metric values}
+\item{col}{The column holding metric values.}
 
-\item{cross}{The column holding metric values to correlate}
+\item{cross}{The column holding metric values to correlate.}
 
-\item{method}{The output metrics, TRUE or p = Pearson's R, s = Spearman's rho}
+\item{method}{The output metrics, TRUE or p = Pearson's R, s = Spearman's rho.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
@@ -33,7 +33,7 @@ effects_metrics_one_cor(
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{effects_metrics}.}
 }
 \value{
-A volker table containing correlations
+A volker table containing the requested statistics.
 }
 \description{
 #TODO: move stars to the last position

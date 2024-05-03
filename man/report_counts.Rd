@@ -19,7 +19,7 @@ report_counts(
 )
 }
 \arguments{
-\item{data}{A data frame}
+\item{data}{A data frame.}
 
 \item{cols}{A tidy column selection,
 e.g. a single column (without quotes)
@@ -36,7 +36,7 @@ Set metric to TRUE, to treat it as metric and calculate correlations.}
 an index will be calculated using the 'psych' package.
 Set to FALSE to suppress index generation.}
 
-\item{effects}{Whether to report statistical tests and effect sizes}
+\item{effects}{Whether to report statistical tests and effect sizes.}
 
 \item{numbers}{The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 Set to NULL to remove numbers.}
@@ -46,14 +46,14 @@ Classes for tabset pills will be added.}
 
 \item{close}{Whether to close the last tab (default value TRUE) or to keep it open.
 Keep it open to add further custom tabs by adding headers on the fifth level
-in Markdown (e.g. ##### Method)}
+in Markdown (e.g. ##### Method).}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
 \item{...}{Parameters passed to the plot and tab functions.}
 }
 \value{
-A volker report object
+A volker report object.
 }
 \description{
 Depending on your column selection, different types of plots and tables are generated.

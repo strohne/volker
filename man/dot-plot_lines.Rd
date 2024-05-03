@@ -14,20 +14,20 @@
 )
 }
 \arguments{
-\item{data}{Dataframe with the columns item, value}
+\item{data}{Dataframe with the columns item, value.}
 
-\item{ci}{Whether to plot confidence intervals of the means}
+\item{ci}{Whether to plot confidence intervals of the means.}
 
 \item{scale}{???}
 
-\item{box}{Whether to add boxplots}
+\item{box}{Whether to add boxplots.}
 
 \item{base}{The plot base as character or NULL.}
 
-\item{title}{The plot title as character or NULL}
+\item{title}{The plot title as character or NULL.}
 }
 \value{
-A ggplot object
+A ggplot object.
 }
 \description{
 Helper function: plot grouped line chart

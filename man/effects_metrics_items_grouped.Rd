@@ -7,18 +7,18 @@
 effects_metrics_items_grouped(data, cols, cross, clean = T, ...)
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble containing item measures.}
 
-\item{cols}{Tidyselect item variables (e.g. starts_with...)}
+\item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
-\item{cross}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
-\item{...}{Placeholder}
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{effects_metrics}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 Output confidence intervals of group means, F-Statistics and effect size (Eta^2)

@@ -8,7 +8,7 @@ tab_metrics_items_cor(
   data,
   cols,
   cross,
-  method = "p",
+  method = "pearson",
   negative = F,
   effects = FALSE,
   labels = TRUE,
@@ -17,13 +17,13 @@ tab_metrics_items_cor(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{cols}{The source columns}
+\item{cols}{The source columns.}
 
 \item{cross}{The target columns or NULL to calculate correlations within the source columns}
 
-\item{method}{The output metrics, p = Pearson's R, s = Spearman's rho}
+\item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 

@@ -714,8 +714,6 @@ tab_metrics_one <- function(data, col, ci = FALSE, negative = FALSE, digits = 1,
     data <- data_rm_negatives(data, {{ col }})
   }
 
-  #data <- data_rm_missings(data, {{ col }})
-
   # Calculate values
   result <- data %>%
     skim_metrics({{ col }}) %>%
@@ -900,7 +898,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
 #' @param data A tibble.
 #' @param col The first column holding metric values.
 #' @param cross The second column holding metric values.
-#' @param method The output metrics, TRUE or p = Pearson's R, s = Spearman's rho
+#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho
 #' @param ci Whether to output confidence intervals
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -915,7 +913,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_one_cor <- function(data, col, cross, method = "p", ci = FALSE, negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE, negative = FALSE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
@@ -939,7 +937,7 @@ tab_metrics_one_cor <- function(data, col, cross, method = "p", ci = FALSE, nega
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
   # Calculate correlation
-  method <- ifelse(method == "s", "s", "p")
+  method <- ifelse(method == "spearman", "spearman", "pearson")
   result <- expand.grid(
     x = cols_eval, y = cross_eval, stringsAsFactors = FALSE
   ) %>%
@@ -947,7 +945,7 @@ tab_metrics_one_cor <- function(data, col, cross, method = "p", ci = FALSE, nega
     dplyr::mutate(
       .test = purrr::map2(
         .data$x, .data$y,
-        function(x, y) stats::cor.test(data[[x]], data[[y]], method = method, exact = method != "s")
+        function(x, y) stats::cor.test(data[[x]], data[[y]], method = method, exact = method != "spearman")
       ),
       n = nrow(data),
       r = purrr::map(.data$.test, function(x) round(as.numeric(x$estimate),2)),
@@ -1276,7 +1274,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #' @param data A tibble.
 #' @param cols The source columns.
 #' @param cross The target columns or NULL to calculate correlations within the source columns
-#' @param method The output metrics, p = Pearson's R, s = Spearman's rho
+#' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param effects Add significance stars and only show significant values
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1291,7 +1289,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #'
 #' @importFrom rlang .data
 #' @export
-tab_metrics_items_cor <- function(data, cols, cross, method = "p", negative = F, effects = FALSE, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negative = F, effects = FALSE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -1307,7 +1305,7 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "p", negative = F,
 
   # 4. Remove negatives
   if (!negative) {
-    data <- data_rm_negatives(data, {{ cols }})
+    data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
   }
 
   # 5. Prepare parameters

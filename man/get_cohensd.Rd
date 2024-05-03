@@ -7,11 +7,11 @@
 get_cohensd(values, groups, conf = 0.95, pooled = FALSE)
 }
 \arguments{
-\item{values}{A numeric vector}
+\item{values}{A numeric vector.}
 
-\item{groups}{A vector indicating groups}
+\item{groups}{A vector indicating groups.}
 
-\item{conf}{The confidence interval}
+\item{conf}{The confidence interval.}
 
 \item{pooled}{Whether to pool variances.}
 }

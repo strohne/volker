@@ -18,11 +18,11 @@ plot_metrics_one_cor(
 )
 }
 \arguments{
-\item{data}{A tibble containing item measures}
+\item{data}{A tibble.}
 
-\item{col}{The first column holding metric values}
+\item{col}{The first column holding metric values.}
 
-\item{cross}{The second column holding metric values}
+\item{cross}{The second column holding metric values.}
 
 \item{limits}{The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.}
 
@@ -40,7 +40,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.}
 }
 \value{
-A ggplot object
+A ggplot object.
 }
 \description{
 Correlate two items
@@ -49,7 +49,7 @@ Correlate two items
 library(volker)
 data <- volker::chatgpt
 
-plot_metrics_one_cor(data, starts_with("cg_adoption_"), sd_gender)
+plot_metrics_one_cor(data, starts_with("cg_adoption_"), sd_age)
 
 }
 \keyword{internal}

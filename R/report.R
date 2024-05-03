@@ -294,17 +294,6 @@ print.vlkr_list <- function(x, ...) {
   }
 }
 
-#' Knit volker chunks
-#'
-#' @keywords internal
-#'
-#' @param data A volker chunks object.
-#' @return Formatted  table produced by \link{kable}.
-knit_chunks <- function(data, ...) {
-  # TODO: knit
-  data
-}
-
 #' Add the vlkr_rprt class to an object
 #'
 #' Adding the class makes sure the appropriate printing function
@@ -348,6 +337,12 @@ knit_chunks <- function(data, ...) {
         }
 
         chunks <- .add_to_vlkr_rprt(childobj, chunks)
+
+        baseline <- attr(childobj, "baseline", exact=TRUE)
+        if (!is.null(baseline)) {
+          baseline <- paste0("\n*", baseline, "*  \n")
+          chunks <- .add_to_vlkr_rprt(baseline, chunks)
+        }
       }
     }
 
@@ -364,6 +359,12 @@ knit_chunks <- function(data, ...) {
       }
 
       chunks <- append(chunks, newchunk)
+
+      baseline <- attr(obj, "baseline", exact=TRUE)
+      if (!is.null(baseline)) {
+        baseline <- paste0("\n*", baseline, "*  \n")
+        chunks <- .add_to_vlkr_rprt(baseline, chunks)
+      }
     }
   } else {
     if (!is.null(tab) && !is.null(obj)) {

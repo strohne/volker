@@ -18,13 +18,13 @@ tab_counts_one_grouped(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{col}{The column holding factor values}
+\item{col}{The column holding factor values.}
 
-\item{cross}{The column holding groups to split}
+\item{cross}{The column holding groups to split.}
 
-\item{missings}{Include missing values in the output (default FALSE)}
+\item{missings}{Include missing values in the output (default FALSE).}
 
 \item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
@@ -39,7 +39,7 @@ tab_counts_one_grouped(
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 Output frequencies cross tabulated with a grouping column

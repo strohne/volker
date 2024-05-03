@@ -15,6 +15,6 @@ data_rm_negatives(data, cols)
 Data frame
 }
 \description{
-Remove negatives and output a warning
+TODO: filter, pass by NAs
 }
 \keyword{internal}

@@ -8,7 +8,7 @@ tab_metrics_one_cor(
   data,
   col,
   cross,
-  method = "p",
+  method = "pearson",
   ci = FALSE,
   negative = FALSE,
   labels = TRUE,
@@ -17,13 +17,13 @@ tab_metrics_one_cor(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{col}{The first item}
+\item{col}{The first column holding metric values.}
 
-\item{cross}{The column to correlate}
+\item{cross}{The second column holding metric values.}
 
-\item{method}{The output metrics, TRUE or p = Pearson's R, s = Spearman's rho}
+\item{method}{The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho}
 
 \item{ci}{Whether to output confidence intervals}
 
@@ -45,7 +45,7 @@ Correlate two columns
 library(volker)
 data <- volker::chatgpt
 
-tab_metrics_one_cor(data, starts_with("cg_adoption_"), sd_gender)
+tab_metrics_one_cor(data, starts_with("cg_adoption_"), sd_age)
 
 }
 \keyword{internal}

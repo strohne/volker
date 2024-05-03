@@ -20,9 +20,9 @@ plot_counts_items(
 )
 }
 \arguments{
-\item{data}{A tibble containing item measures}
+\item{data}{A tibble containing item measures.}
 
-\item{cols}{Tidyselect item variables (e.g. starts_with...)}
+\item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
 \item{category}{The value FALSE will force to plot all categories.
 A character value will focus a selected category.
@@ -34,12 +34,12 @@ An appropriate color scale should be choosen depending on the ordering.
 For unordered values, colors from VLKR_FILLDISCRETE are used.
 For ordered values, shades of the VLKR_FILLGRADIENT option are used.}
 
-\item{ci}{Whether to plot error bars for 95\%-confidence-intervals.}
+\item{ci}{Whether to plot error bars for 95\% confidence intervals.}
 
 \item{limits}{The scale limits, autoscaled by default.
 Set to \code{c(0,100)} to make a 100 \% plot.}
 
-\item{missings}{Include missing values (default FALSE)}
+\item{missings}{Include missing values (default FALSE).}
 
 \item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
 
@@ -53,7 +53,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }
 \value{
-A ggplot object
+A ggplot object.
 }
 \description{
 TODO: move missings to the end

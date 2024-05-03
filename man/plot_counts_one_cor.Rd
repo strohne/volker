@@ -19,9 +19,9 @@ plot_counts_one_cor(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{col}{The column holding factor values}
+\item{col}{The column holding factor values.}
 
 \item{cross}{The metric column}
 

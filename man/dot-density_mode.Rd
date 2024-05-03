@@ -7,12 +7,12 @@
 .density_mode(data, col)
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{col}{A tidyselect column}
+\item{col}{A tidyselect column.}
 }
 \value{
-The maximum density value
+The maximum density value.
 }
 \description{
 Useful for placing geoms in the center of density plots

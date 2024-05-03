@@ -1784,7 +1784,12 @@ plot.vlkr_plt <- print.vlkr_plt
 #' @importFrom ggplot2 '%+replace%'
 #' @param base_size Base font size.
 #' @param base_color Base font color.
-#' @param base_fill A list of fill color sets. Each set can contain different numbers of colors.
+#' @param base_fill A list of fill color sets or at least one fill color set. Example:
+#'                  \code{list(c("red"), c("red", "blue", "green"))}.
+#'                  Each set can contain different numbers of colors.
+#'                  Depending on the number of colors needed,
+#'                  the set with at least the number of required colors is used.
+#'                  The first color is always used for simple bar charts.
 #' @param base_gradient A color vector used for creating gradient fill colors, e.g. in stacked bar plots.
 #' @return A theme function.
 #' @examples
@@ -1796,12 +1801,15 @@ plot.vlkr_plt <- print.vlkr_plt
 #' plot_counts(data, sd_gender)
 #' @export
 theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDISCRETE, base_gradient = VLKR_FILLGRADIENT) {
-
+  if (!is.list(base_fill)) {
+    base_fill <- list(base_fill)
+  }
+  base_fill_one <- base_fill[[1]][1]
   ggplot2::update_geom_defaults("text", list(size = (base_size-2) / ggplot2::.pt, color=base_color))
-  ggplot2::update_geom_defaults("col",   list(fill = base_fill[[1]]))
-  ggplot2::update_geom_defaults("density",   list(fill = base_fill[[1]]))
-  ggplot2::update_geom_defaults("point",   list(color = base_fill[[1]]))
-  ggplot2::update_geom_defaults("line",   list(color = base_fill[[1]]))
+  ggplot2::update_geom_defaults("col",   list(fill = base_fill_one))
+  ggplot2::update_geom_defaults("density",   list(fill = base_fill_one))
+  ggplot2::update_geom_defaults("point",   list(color = base_fill_one))
+  ggplot2::update_geom_defaults("line",   list(color = base_fill_one))
 
   options(ggplot2.discrete.fill=base_fill)
 

@@ -7,11 +7,11 @@
 .to_vlkr_rprt(chunks)
 }
 \arguments{
-\item{chunks}{A list of character strings}
+\item{chunks}{A list of character strings.}
 }
 \value{
 A volker report object: List of character strings with the vlkr_rprt class
-containing the parts of the report
+containing the parts of the report.
 }
 \description{
 Adding the class makes sure the appropriate printing function

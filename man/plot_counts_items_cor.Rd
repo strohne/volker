@@ -7,18 +7,18 @@
 plot_counts_items_cor(data, cols, cross, clean = TRUE, ...)
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble containing item measures.}
 
-\item{cols}{The item columns that hold the values to summarize}
+\item{cols}{The item columns that hold the values to summarize.}
 
-\item{cross}{The column holding metric values to correlate}
+\item{cross}{The column holding metric values to correlate.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }
 \value{
-A ggplot object
+A ggplot object.
 }
 \description{
 Correlate categorical items with a metric column

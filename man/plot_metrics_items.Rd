@@ -18,13 +18,13 @@ plot_metrics_items(
 )
 }
 \arguments{
-\item{data}{A tibble containing item measures}
+\item{data}{A tibble containing item measures.}
 
-\item{cols}{Tidyselect item variables (e.g. starts_with...)}
+\item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
-\item{ci}{Whether to plot the confidence interval of the mean}
+\item{ci}{Whether to plot the 95\% confidence interval of the mean.}
 
-\item{box}{Whether to add boxplots}
+\item{box}{Whether to add boxplots.}
 
 \item{limits}{The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.}
 

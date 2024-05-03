@@ -16,11 +16,11 @@ effects_metrics_one_grouped(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{col}{The column holding metric values}
+\item{col}{The column holding metric values.}
 
-\item{cross}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare.}
 
 \item{method}{A character vector of methods, e.g. c("t.test","lm").
 Supported methods are t.test (only valid if the cross column contains two levels)

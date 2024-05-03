@@ -15,11 +15,11 @@ effects_counts_one(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{col}{The column holding factor values}
+\item{col}{The column holding factor values.}
 
-\item{digits}{The number of digits to print}
+\item{digits}{The number of digits to print.}
 
 \item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
@@ -30,7 +30,7 @@ effects_counts_one(
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{effects_counts}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 Test whether the shares differ from homogeneity

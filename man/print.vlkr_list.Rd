@@ -7,12 +7,12 @@
 \method{print}{vlkr_list}(x, ...)
 }
 \arguments{
-\item{x}{The volker list}
+\item{x}{The volker list.}
 
-\item{...}{Further parameters passed to print}
+\item{...}{Further parameters passed to print.}
 }
 \value{
-No return value
+No return value.
 }
 \description{
 Printing method for volker lists

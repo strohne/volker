@@ -2,20 +2,20 @@
 % Please edit documentation in R/report.R
 \name{print.vlkr_rprt}
 \alias{print.vlkr_rprt}
-\title{Printing method for volker reports.}
+\title{Printing method for volker reports}
 \usage{
 \method{print}{vlkr_rprt}(x, ...)
 }
 \arguments{
-\item{x}{The volker report object}
+\item{x}{The volker report object.}
 
-\item{...}{Further parameters passed to print}
+\item{...}{Further parameters passed to print.}
 }
 \value{
-No return value
+No return value.
 }
 \description{
-Printing method for volker reports.
+Printing method for volker reports
 }
 \examples{
 library(volker)

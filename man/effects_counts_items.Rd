@@ -14,9 +14,9 @@ effects_counts_items(
 )
 }
 \arguments{
-\item{data}{A tibble containing item measures}
+\item{data}{A tibble containing item measures.}
 
-\item{cols}{Tidyselect item variables (e.g. starts_with...)}
+\item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
 \item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
@@ -24,10 +24,10 @@ effects_counts_items(
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
-\item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{effects_counts}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 Test whether shares differ

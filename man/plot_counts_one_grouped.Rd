@@ -21,11 +21,11 @@ plot_counts_one_grouped(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{col}{The column holding factor values}
+\item{col}{The column holding factor values.}
 
-\item{cross}{The column holding groups to split}
+\item{cross}{The column holding groups to split.}
 
 \item{category}{The value FALSE will force to plot all categories.
 A character value will focus a selected category.
@@ -34,13 +34,13 @@ When NULL, in case of boolean values, only the TRUE category is plotted.}
 \item{limits}{The scale limits, autoscaled by default.
 Set to \code{c(0,100)} to make a 100 \% plot.}
 
-\item{ordered}{Values of the cross column can be nominal (0) or ordered ascending (1) descending (-1).
+\item{ordered}{The values of the cross column can be nominal (0), ordered ascending (1), or descending (-1).
 By default (NULL), the ordering is automatically detected.
-An appropriate color scale should be choosen depending on the ordering.
+An appropriate color scale should be chosen depending on the ordering.
 For unordered values, colors from VLKR_FILLDISCRETE are used.
 For ordered values, shades of the VLKR_FILLGRADIENT option are used.}
 
-\item{missings}{Include missing values (default FALSE)}
+\item{missings}{Include missing values (default FALSE).}
 
 \item{prop}{The basis of percent calculation: "total" (the default), "rows" or "cols".
 Plotting row or column percentages results in stacked bars that add up to 100\%.
@@ -59,7 +59,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }
 \value{
-A ggplot object
+A ggplot object.
 }
 \description{
 Note: Only non-missing cases are used to calculate the percentage.

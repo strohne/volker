@@ -7,18 +7,18 @@
 tab_counts_one_cor(data, cols, cross, clean = TRUE, ...)
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{cols}{The item columns that hold the values to summarize}
+\item{cols}{The item columns that hold the values to summarize.}
 
-\item{cross}{The column to correlate}
+\item{cross}{The column to correlate.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 Correlate categorical groups with one metric column

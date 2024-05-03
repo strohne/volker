@@ -220,8 +220,7 @@ get_baseline <- function(obj) {
 
     baseline <- paste0(
       paste0(baseline, collapse=", "),
-      " case(s) removed from ",
-      paste0(unique(cols), collapse=", ")
+      " case(s) ommited."
     )
   } else {
     baseline <- NULL

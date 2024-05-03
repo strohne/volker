@@ -7,18 +7,18 @@
 effects_counts_items_cor(data, cols, cross, clean = T, ...)
 }
 \arguments{
-\item{data}{A tibble containing item measures}
+\item{data}{A tibble containing item measures.}
 
-\item{cols}{Tidyselect item variables (e.g. starts_with...)}
+\item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
-\item{cross}{The target columns or NULL to calculate correlations within the source columns}
+\item{cross}{The target columns or NULL to calculate correlations within the source columns.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
-\item{...}{Placeholder}
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{effects_counts}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 Correlate the values in multiple items and output effect sizes and tests

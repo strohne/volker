@@ -541,7 +541,7 @@ get_prefix <- function(x, ignore.case = FALSE, trim = FALSE, delimiters= c(":","
   x <- stats::na.omit(x)
 
   if (length(x) == 0) {
-    return (NA)
+    return ("")
   }
 
   if (length(x) == 1) {
@@ -641,7 +641,7 @@ trim_label <- function(x) {
 #' @param prefix The prefix. Set to TRUE to first extract the prefix.
 #' @return The trimmed character vector
 trim_prefix <- function(x, prefix=TRUE) {
-  if (prefix == TRUE) {
+  if (!is.na(prefix) && (prefix == TRUE)) {
     prefix <- get_prefix(x, trim=T)
   }
 

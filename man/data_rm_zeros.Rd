@@ -15,6 +15,6 @@ data_rm_zeros(data, cols)
 Data frame
 }
 \description{
-Remove zero values, drop missings and output a message
+TODO: filter, pass by NAs
 }
 \keyword{internal}

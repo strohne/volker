@@ -21,13 +21,13 @@ plot_metrics_one_grouped(
 )
 }
 \arguments{
-\item{data}{A tibble containing item measures}
+\item{data}{A tibble.}
 
-\item{col}{The column holding metric values}
+\item{col}{The column holding metric values.}
 
-\item{cross}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare.}
 
-\item{ci}{Whether to add error bars with 95\%-confidence-intervals}
+\item{ci}{Whether to add error bars with 95\% confidence intervals.}
 
 \item{box}{Whether to add boxplots}
 
@@ -37,7 +37,7 @@ plot_metrics_one_grouped(
 
 \item{numbers}{numbers to print on labels, 'n' for group size}
 
-\item{bars}{Add a boxplot (box), standard error (se) or 95\%-confidence-interval (ci).}
+\item{bars}{Add a boxplot (box), standard error (se) or 95\% confidence interval (ci).}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}
@@ -49,7 +49,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.}
 }
 \value{
-A ggplot object
+A ggplot object.
 }
 \description{
 Output averages for multiple variables

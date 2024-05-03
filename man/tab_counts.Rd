@@ -7,11 +7,11 @@
 tab_counts(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...)
 }
 \arguments{
-\item{data}{A data frame}
+\item{data}{A data frame.}
 
 \item{cols}{A tidy column selection,
 e.g. a single column (without quotes)
-or multiple columns selected by methods such as starts_with()}
+or multiple columns selected by methods such as starts_with().}
 
 \item{cross}{Optional, a grouping column. The column name without quotes.}
 
@@ -21,10 +21,10 @@ Set metric to TRUE, to treat it as metric and calculate correlations.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
-\item{...}{Other parameters passed to the appropriate table function}
+\item{...}{Other parameters passed to the appropriate table function.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 The type of frequency table depends on the number of selected columns:
