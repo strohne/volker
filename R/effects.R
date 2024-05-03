@@ -483,7 +483,7 @@ effects_metrics_one_grouped <- function(data, col, cross, method = "lm", negativ
 #'
 #' @export
 #' @importFrom rlang .data
-effects_metrics_one_cor <- function(data, col, cross, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effects_metrics_one_cor <- function(data, col, cross, method = "p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -557,7 +557,7 @@ effects_metrics_one_cor <- function(data, col, cross, method="p", negative = FAL
 #'
 #' @importFrom rlang .data
 #' @export
-effects_metrics_items <- function(data, cols, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effects_metrics_items <- function(data, cols, method = "p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
