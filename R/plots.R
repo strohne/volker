@@ -434,12 +434,12 @@ plot_counts_one_cor <- function(data, col, cross, ordered = NULL, limits=NULL, m
 #' @param category The value FALSE will force to plot all categories.
 #'                  A character value will focus a selected category.
 #'                  When NULL, in case of boolean values, only the TRUE category is plotted.
-#' @param ci Whether to plot error bars for 95%-confidence-intervals.
 #' @param ordered Values can be nominal (0) or ordered ascending (1) descending (-1).
 #'                By default (NULL), the ordering is automatically detected.
 #'                An appropriate color scale should be choosen depending on the ordering.
 #'                For unordered values, colors from VLKR_FILLDISCRETE are used.
 #'                For ordered values, shades of the VLKR_FILLGRADIENT option are used.
+#' @param ci Whether to plot error bars for 95%-confidence-intervals.
 #' @param limits The scale limits, autoscaled by default.
 #'               Set to \code{c(0,100)} to make a 100 % plot.
 #' @param missings Include missing values (default FALSE)
@@ -458,7 +458,7 @@ plot_counts_one_cor <- function(data, col, cross, ordered = NULL, limits=NULL, m
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_items <- function(data, cols, category = NULL, ci = FALSE, ordered = NULL, limits = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = FALSE, limits = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
