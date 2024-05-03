@@ -230,7 +230,7 @@ tab_counts_one <- function(data, col, ci = FALSE, missings = TRUE, percent = TRU
 #'
 #' @param data A tibble
 #' @param col The column holding factor values
-#' @param cross The column holding groups to compare
+#' @param cross The column holding groups to split
 #' @param missings Include missing values in the output (default FALSE)
 #' @param prop The basis of percent calculation: "total" (the default), "cols", or "rows".
 #' @param values The values to output: n (frequency) or p (percentage) or both (the default).
@@ -275,29 +275,29 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, prop = "t
   # 2. N
   #
   rows_n <- grouped %>%
-    dplyr::select({{ cross }}, {{ col }}, "n") %>%
+    dplyr::select({{ col }}, {{ cross }}, "n") %>%
     tidyr::pivot_wider(
-      names_from = {{ col }},
+      names_from = {{ cross }},
       values_from = "n",
       values_fill = list(n = 0)
     )
 
   # Total column
   total_col_n <- data %>%
-    dplyr::count({{ cross }}) %>%
+    dplyr::count({{ col }}) %>%
     dplyr::mutate(
-      "{{ cross }}" := tidyr::replace_na(as.character({{ cross }}), "Missing")
+      "{{ col }}" := tidyr::replace_na(as.character({{ col }}), "Missing")
     ) %>%
-    dplyr::select({{ cross }}, Total = "n")
+    dplyr::select({{ col }}, Total = "n")
 
   # Total row
   total_row_n <- grouped %>%
-    dplyr::group_by({{ col }}) %>%
+    dplyr::group_by({{ cross }}) %>%
     dplyr::summarise(n = sum(.data$n)) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate("{{ cross }}" := "Total") %>%
+    dplyr::mutate("{{ col }}" := "Total") %>%
     tidyr::pivot_wider(
-      names_from = {{ col }},
+      names_from = {{ cross }},
       values_from = "n",
       values_fill = list(n = 0)
     )
@@ -305,21 +305,21 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, prop = "t
   # Total
   total_n <- data %>%
     dplyr::count() %>%
-    dplyr::mutate("{{ cross }}" := "Total") %>%
-    dplyr::select({{ cross }}, Total = "n")
+    dplyr::mutate("{{ col }}" := "Total") %>%
+    dplyr::select({{ col }}, Total = "n")
 
   # Join
   result_n <-
     dplyr::full_join(
       total_col_n,
       rows_n,
-      by = as.character(rlang::get_expr(rlang::enquo(cross)))
+      by = as.character(rlang::get_expr(rlang::enquo(col)))
     ) %>%
     dplyr::bind_rows(
       dplyr::left_join(
         total_n,
         total_row_n,
-        by = as.character(rlang::get_expr(rlang::enquo(cross)))
+        by = as.character(rlang::get_expr(rlang::enquo(col)))
       )
     )
 
@@ -328,7 +328,7 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, prop = "t
   #
   if (prop == "cols") {
     rows_p <- grouped %>%
-      dplyr::group_by({{ col }}) %>%
+      dplyr::group_by({{ cross }}) %>%
       dplyr::mutate(p = .data$n / sum(.data$n)) %>%
       dplyr::ungroup()
 
@@ -339,7 +339,7 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, prop = "t
       dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), ~1))
   } else if (prop == "rows") {
     rows_p <- grouped %>%
-      dplyr::group_by({{ cross }}) %>%
+      dplyr::group_by({{ col }}) %>%
       dplyr::mutate(p = .data$n / sum(.data$n)) %>%
       dplyr::ungroup()
 
@@ -362,26 +362,26 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, prop = "t
   rows_p <- rows_p %>%
     dplyr::select({{ col }}, {{ cross }}, "p") %>%
     tidyr::pivot_wider(
-      names_from = {{ col }},
+      names_from = {{ cross }},
       values_from = "p",
       values_fill = list(p = 0)
     )
 
   total_p <- tibble::tibble("Total" = 1) %>%
-    dplyr::mutate("{{ cross }}" := "Total")
+    dplyr::mutate("{{col }}" := "Total")
 
   # Join
   result_p <-
     dplyr::full_join(
       total_col_p,
       rows_p,
-      by = as.character(rlang::get_expr(rlang::enquo(cross)))
+      by = as.character(rlang::get_expr(rlang::enquo(col)))
     ) %>%
     dplyr::bind_rows(
       dplyr::left_join(
         total_p,
         total_row_p,
-        by = as.character(rlang::get_expr(rlang::enquo(cross)))
+        by = as.character(rlang::get_expr(rlang::enquo(col)))
       )
     )
 
@@ -404,14 +404,14 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, prop = "t
   # Get item label from the attributes
   if (labels) {
     codes <- data %>%
-      codebook({{ cross }}) %>%
+      codebook({{ col }}) %>%
       dplyr::distinct(dplyr::across(tidyselect::all_of(c("item_name", "item_label")))) %>%
       stats::na.omit()
 
     if (nrow(codes) > 0) {
       label <- codes$item_label[1]
       result <- result %>%
-        dplyr::rename({{ label }} := {{ cross }})
+        dplyr::rename({{ label }} := {{ col }})
     }
   }
 

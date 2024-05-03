@@ -253,14 +253,15 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 
 #' Plot frequencies cross tabulated with a grouping column
 #'
-#' Note: only non-missing cases are used to calculate the percentage.
+#' Note: Only non-missing cases are used to calculate the percentage.
+#' TODO: For prop=cols, flip to columns instead of using bars
 #'
 #' @keywords internal
 #'
 #' @param data A tibble
 #' @param col The column holding factor values
-#' @param cross The column holding groups to compare
-#' @param ordered Values can be nominal (0) or ordered ascending (1) descending (-1).
+#' @param cross The column holding groups to split
+#' @param ordered Values of the cross column can be nominal (0) or ordered ascending (1) descending (-1).
 #'                By default (NULL), the ordering is automatically detected.
 #'                An appropriate color scale should be choosen depending on the ordering.
 #'                For unordered values, colors from VLKR_FILLDISCRETE are used.
@@ -328,13 +329,14 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
 
 
   result <- result %>%
-    dplyr::mutate(item = as.factor({{ cross }})) |>
-    dplyr::mutate(value = factor({{ col }}))
+    dplyr::mutate(item = factor({{ col }})) |>
+    dplyr::mutate(value = as.factor({{ cross }}))
+
     #dplyr::mutate(value = factor({{ col }}, levels = categories))
 
   if ((prop == "rows") || (prop == "cols")) {
     result <- result %>%
-      dplyr::group_by({{ cross }}) %>%
+      dplyr::group_by({{ col }}) %>%
       dplyr::mutate(p = (.data$n / sum(.data$n)) * 100) %>%
       dplyr::ungroup()
   } else {
@@ -344,9 +346,9 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
 
   # Detect the scale (whether the categories are binary and direction)
   # TODO: make dry
-  scale <-dplyr::coalesce(ordered, get_direction(data, {{ col }}))
+  scale <-dplyr::coalesce(ordered, get_direction(data, {{ cross }}))
 
-  categories <- dplyr::pull(result, {{ col }}) |> unique() |> as.character()
+  categories <- dplyr::pull(result, {{ cross }}) |> unique() |> as.character()
 
   if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
     category <- "TRUE"
@@ -354,8 +356,8 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
 
 
   if (labels) {
-    result <- labs_replace(result, "value", codebook(data, {{ col }}))
-    result <- labs_replace(result, "item", codebook(data, {{ cross }}))
+    result <- labs_replace(result, "value", codebook(data, {{ cross }}))
+    result <- labs_replace(result, "item", codebook(data, {{ col }}))
   }
 
 
