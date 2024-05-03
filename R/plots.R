@@ -1498,7 +1498,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot=FAL
       orientation ="y",
       width=0.2,
       linewidth=1,
-      colour = VLKR_POINTCOLOR
+      colour = vlkr_colors_discrete(1)
     )
   }
 
@@ -1802,7 +1802,9 @@ theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDI
   ggplot2::update_geom_defaults("line",   list(color = base_fill[[1]]))
 
   options(ggplot2.discrete.fill=base_fill)
+
   options(vlkr.gradient.fill=base_gradient)
+  options(vlkr.discrete.fill=base_fill)
 
   ggplot2::theme_bw(base_size) %+replace%
 
@@ -1832,7 +1834,7 @@ theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDI
 #' @param n Number of colors
 #' @return A vector of colors
 vlkr_colors_discrete <- function(n) {
-  colors <- getOption("ggplot2.discrete.fill")
+  colors <- getOption("vlkr.discrete.fill")
   if (is.null(colors)) {
     colors <- VLKR_FILLDISCRETE
   }
@@ -1868,6 +1870,3 @@ vlkr_colors_sequential <- function(n) {
   )
   colors
 }
-
-
-

@@ -16,11 +16,9 @@ VLKR_NA_LEVELS <- c("[NA] nicht beantwortet", "[NA] keine Angabe")
 #' @keywords internal
 VLKR_NA_NUMERIC <- c(-9)
 
-# Plot settings
-VLKR_POINTCOLOR <- "darkcyan"  #"#611F53FF"
-
-VLKR_FILLCOLOR <- "darkcyan"  #"#611F53FF"
-
+#' Fill colors
+#'
+#' @keywords internal
 VLKR_FILLDISCRETE <- list(
   c("darkcyan"),
   c("#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02", "#A6761D"),
@@ -28,8 +26,12 @@ VLKR_FILLDISCRETE <- list(
     "#44AA99", "#999933", "#882255", "#661100", "#6699CC")
 )
 
+#' Gradient colors
+#'
+#' @keywords internal
 VLKR_FILLGRADIENT <- c("#e5f7ff", "#96dfde", "#008b8b", "#006363", "#001212")
 
+# Thresholds
 VLKR_LOWPERCENT <- 5
 VLKR_SCATTER_ALPHA <- 0.3
 
