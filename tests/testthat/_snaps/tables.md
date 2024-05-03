@@ -163,149 +163,149 @@
       volker::tab_metrics_items_cor(data, tidyselect::starts_with("cg_adoption_"),
       tidyselect::starts_with("cg_adoption_"))
     Output
-                  item       target value    p stars
-      1   advantage_01 advantage_01     1    0   ***
-      2   advantage_02 advantage_01  0.37    0   ***
-      3   advantage_03 advantage_01  0.64    0   ***
-      4   advantage_04 advantage_01  0.61    0   ***
-      5   fearofuse_01 advantage_01 -0.14 0.17      
-      6   fearofuse_02 advantage_01  0.19 0.06     .
-      7   fearofuse_03 advantage_01  0.07 0.48      
-      8   fearofuse_04 advantage_01  0.01 0.92      
-      9      social_01 advantage_01  0.21 0.04     *
-      10     social_02 advantage_01  0.28 0.01    **
-      11     social_03 advantage_01  0.16 0.11      
-      12     social_04 advantage_01  0.27 0.01    **
-      13  advantage_01 advantage_02  0.37    0   ***
-      14  advantage_02 advantage_02     1    0   ***
-      15  advantage_03 advantage_02  0.46    0   ***
-      16  advantage_04 advantage_02  0.42    0   ***
-      17  fearofuse_01 advantage_02  0.02 0.83      
-      18  fearofuse_02 advantage_02  0.34    0   ***
-      19  fearofuse_03 advantage_02  0.34    0   ***
-      20  fearofuse_04 advantage_02  0.22 0.03     *
-      21     social_01 advantage_02  0.54    0   ***
-      22     social_02 advantage_02   0.5    0   ***
-      23     social_03 advantage_02  0.36    0   ***
-      24     social_04 advantage_02   0.4    0   ***
-      25  advantage_01 advantage_03  0.64    0   ***
-      26  advantage_02 advantage_03  0.46    0   ***
-      27  advantage_03 advantage_03     1    0   ***
-      28  advantage_04 advantage_03  0.47    0   ***
-      29  fearofuse_01 advantage_03 -0.11 0.27      
-      30  fearofuse_02 advantage_03  0.19 0.06     .
-      31  fearofuse_03 advantage_03  0.06 0.57      
-      32  fearofuse_04 advantage_03  0.09 0.39      
-      33     social_01 advantage_03  0.33    0   ***
-      34     social_02 advantage_03  0.34    0   ***
-      35     social_03 advantage_03  0.13 0.19      
-      36     social_04 advantage_03  0.31    0    **
-      37  advantage_01 advantage_04  0.61    0   ***
-      38  advantage_02 advantage_04  0.42    0   ***
-      39  advantage_03 advantage_04  0.47    0   ***
-      40  advantage_04 advantage_04     1    0   ***
-      41  fearofuse_01 advantage_04 -0.19 0.06     .
-      42  fearofuse_02 advantage_04  0.17  0.1      
-      43  fearofuse_03 advantage_04  0.14 0.16      
-      44  fearofuse_04 advantage_04 -0.07 0.51      
-      45     social_01 advantage_04  0.33    0   ***
-      46     social_02 advantage_04  0.26 0.01     *
-      47     social_03 advantage_04   0.2 0.05     .
-      48     social_04 advantage_04  0.36    0   ***
-      49  advantage_01 fearofuse_01 -0.14 0.17      
-      50  advantage_02 fearofuse_01  0.02 0.83      
-      51  advantage_03 fearofuse_01 -0.11 0.27      
-      52  advantage_04 fearofuse_01 -0.19 0.06     .
-      53  fearofuse_01 fearofuse_01     1    0   ***
-      54  fearofuse_02 fearofuse_01  0.29    0    **
-      55  fearofuse_03 fearofuse_01  0.36    0   ***
-      56  fearofuse_04 fearofuse_01  0.48    0   ***
-      57     social_01 fearofuse_01 -0.19 0.07     .
-      58     social_02 fearofuse_01  0.04 0.73      
-      59     social_03 fearofuse_01   0.1 0.35      
-      60     social_04 fearofuse_01 -0.07 0.47      
-      61  advantage_01 fearofuse_02  0.19 0.06     .
-      62  advantage_02 fearofuse_02  0.34    0   ***
-      63  advantage_03 fearofuse_02  0.19 0.06     .
-      64  advantage_04 fearofuse_02  0.17  0.1      
-      65  fearofuse_01 fearofuse_02  0.29    0    **
-      66  fearofuse_02 fearofuse_02     1    0   ***
-      67  fearofuse_03 fearofuse_02  0.38    0   ***
-      68  fearofuse_04 fearofuse_02  0.28 0.01    **
-      69     social_01 fearofuse_02  0.23 0.03     *
-      70     social_02 fearofuse_02  0.22 0.03     *
-      71     social_03 fearofuse_02  0.33    0   ***
-      72     social_04 fearofuse_02   0.3    0    **
-      73  advantage_01 fearofuse_03  0.07 0.48      
-      74  advantage_02 fearofuse_03  0.34    0   ***
-      75  advantage_03 fearofuse_03  0.06 0.57      
-      76  advantage_04 fearofuse_03  0.14 0.16      
-      77  fearofuse_01 fearofuse_03  0.36    0   ***
-      78  fearofuse_02 fearofuse_03  0.38    0   ***
-      79  fearofuse_03 fearofuse_03     1    0   ***
-      80  fearofuse_04 fearofuse_03  0.39    0   ***
-      81     social_01 fearofuse_03  0.06 0.54      
-      82     social_02 fearofuse_03   0.2 0.05     .
-      83     social_03 fearofuse_03  0.29    0    **
-      84     social_04 fearofuse_03   0.1 0.35      
-      85  advantage_01 fearofuse_04  0.01 0.92      
-      86  advantage_02 fearofuse_04  0.22 0.03     *
-      87  advantage_03 fearofuse_04  0.09 0.39      
-      88  advantage_04 fearofuse_04 -0.07 0.51      
-      89  fearofuse_01 fearofuse_04  0.48    0   ***
-      90  fearofuse_02 fearofuse_04  0.28 0.01    **
-      91  fearofuse_03 fearofuse_04  0.39    0   ***
-      92  fearofuse_04 fearofuse_04     1    0   ***
-      93     social_01 fearofuse_04  0.25 0.01     *
-      94     social_02 fearofuse_04  0.22 0.03     *
-      95     social_03 fearofuse_04  0.25 0.01     *
-      96     social_04 fearofuse_04  0.14 0.17      
-      97  advantage_01    social_01  0.21 0.04     *
-      98  advantage_02    social_01  0.54    0   ***
-      99  advantage_03    social_01  0.33    0   ***
-      100 advantage_04    social_01  0.33    0   ***
-      101 fearofuse_01    social_01 -0.19 0.07     .
-      102 fearofuse_02    social_01  0.23 0.03     *
-      103 fearofuse_03    social_01  0.06 0.54      
-      104 fearofuse_04    social_01  0.25 0.01     *
-      105    social_01    social_01     1    0   ***
-      106    social_02    social_01  0.73    0   ***
-      107    social_03    social_01  0.48    0   ***
-      108    social_04    social_01  0.57    0   ***
-      109 advantage_01    social_02  0.28 0.01    **
-      110 advantage_02    social_02   0.5    0   ***
-      111 advantage_03    social_02  0.34    0   ***
-      112 advantage_04    social_02  0.26 0.01     *
-      113 fearofuse_01    social_02  0.04 0.73      
-      114 fearofuse_02    social_02  0.22 0.03     *
-      115 fearofuse_03    social_02   0.2 0.05     .
-      116 fearofuse_04    social_02  0.22 0.03     *
-      117    social_01    social_02  0.73    0   ***
-      118    social_02    social_02     1    0   ***
-      119    social_03    social_02  0.58    0   ***
-      120    social_04    social_02  0.54    0   ***
-      121 advantage_01    social_03  0.16 0.11      
-      122 advantage_02    social_03  0.36    0   ***
-      123 advantage_03    social_03  0.13 0.19      
-      124 advantage_04    social_03   0.2 0.05     .
-      125 fearofuse_01    social_03   0.1 0.35      
-      126 fearofuse_02    social_03  0.33    0   ***
-      127 fearofuse_03    social_03  0.29    0    **
-      128 fearofuse_04    social_03  0.25 0.01     *
-      129    social_01    social_03  0.48    0   ***
-      130    social_02    social_03  0.58    0   ***
-      131    social_03    social_03     1    0   ***
-      132    social_04    social_03  0.56    0   ***
-      133 advantage_01    social_04  0.27 0.01    **
-      134 advantage_02    social_04   0.4    0   ***
-      135 advantage_03    social_04  0.31    0    **
-      136 advantage_04    social_04  0.36    0   ***
-      137 fearofuse_01    social_04 -0.07 0.47      
-      138 fearofuse_02    social_04   0.3    0    **
-      139 fearofuse_03    social_04   0.1 0.35      
-      140 fearofuse_04    social_04  0.14 0.17      
-      141    social_01    social_04  0.57    0   ***
-      142    social_02    social_04  0.54    0   ***
-      143    social_03    social_04  0.56    0   ***
-      144    social_04    social_04     1    0   ***
+                  item       target value
+      1   advantage_01 advantage_01     1
+      2   advantage_02 advantage_01  0.37
+      3   advantage_03 advantage_01  0.64
+      4   advantage_04 advantage_01  0.61
+      5   fearofuse_01 advantage_01 -0.14
+      6   fearofuse_02 advantage_01  0.19
+      7   fearofuse_03 advantage_01  0.07
+      8   fearofuse_04 advantage_01  0.01
+      9      social_01 advantage_01  0.21
+      10     social_02 advantage_01  0.28
+      11     social_03 advantage_01  0.16
+      12     social_04 advantage_01  0.27
+      13  advantage_01 advantage_02  0.37
+      14  advantage_02 advantage_02     1
+      15  advantage_03 advantage_02  0.46
+      16  advantage_04 advantage_02  0.42
+      17  fearofuse_01 advantage_02  0.02
+      18  fearofuse_02 advantage_02  0.34
+      19  fearofuse_03 advantage_02  0.34
+      20  fearofuse_04 advantage_02  0.22
+      21     social_01 advantage_02  0.54
+      22     social_02 advantage_02   0.5
+      23     social_03 advantage_02  0.36
+      24     social_04 advantage_02   0.4
+      25  advantage_01 advantage_03  0.64
+      26  advantage_02 advantage_03  0.46
+      27  advantage_03 advantage_03     1
+      28  advantage_04 advantage_03  0.47
+      29  fearofuse_01 advantage_03 -0.11
+      30  fearofuse_02 advantage_03  0.19
+      31  fearofuse_03 advantage_03  0.06
+      32  fearofuse_04 advantage_03  0.09
+      33     social_01 advantage_03  0.33
+      34     social_02 advantage_03  0.34
+      35     social_03 advantage_03  0.13
+      36     social_04 advantage_03  0.31
+      37  advantage_01 advantage_04  0.61
+      38  advantage_02 advantage_04  0.42
+      39  advantage_03 advantage_04  0.47
+      40  advantage_04 advantage_04     1
+      41  fearofuse_01 advantage_04 -0.19
+      42  fearofuse_02 advantage_04  0.17
+      43  fearofuse_03 advantage_04  0.14
+      44  fearofuse_04 advantage_04 -0.07
+      45     social_01 advantage_04  0.33
+      46     social_02 advantage_04  0.26
+      47     social_03 advantage_04   0.2
+      48     social_04 advantage_04  0.36
+      49  advantage_01 fearofuse_01 -0.14
+      50  advantage_02 fearofuse_01  0.02
+      51  advantage_03 fearofuse_01 -0.11
+      52  advantage_04 fearofuse_01 -0.19
+      53  fearofuse_01 fearofuse_01     1
+      54  fearofuse_02 fearofuse_01  0.29
+      55  fearofuse_03 fearofuse_01  0.36
+      56  fearofuse_04 fearofuse_01  0.48
+      57     social_01 fearofuse_01 -0.19
+      58     social_02 fearofuse_01  0.04
+      59     social_03 fearofuse_01   0.1
+      60     social_04 fearofuse_01 -0.07
+      61  advantage_01 fearofuse_02  0.19
+      62  advantage_02 fearofuse_02  0.34
+      63  advantage_03 fearofuse_02  0.19
+      64  advantage_04 fearofuse_02  0.17
+      65  fearofuse_01 fearofuse_02  0.29
+      66  fearofuse_02 fearofuse_02     1
+      67  fearofuse_03 fearofuse_02  0.38
+      68  fearofuse_04 fearofuse_02  0.28
+      69     social_01 fearofuse_02  0.23
+      70     social_02 fearofuse_02  0.22
+      71     social_03 fearofuse_02  0.33
+      72     social_04 fearofuse_02   0.3
+      73  advantage_01 fearofuse_03  0.07
+      74  advantage_02 fearofuse_03  0.34
+      75  advantage_03 fearofuse_03  0.06
+      76  advantage_04 fearofuse_03  0.14
+      77  fearofuse_01 fearofuse_03  0.36
+      78  fearofuse_02 fearofuse_03  0.38
+      79  fearofuse_03 fearofuse_03     1
+      80  fearofuse_04 fearofuse_03  0.39
+      81     social_01 fearofuse_03  0.06
+      82     social_02 fearofuse_03   0.2
+      83     social_03 fearofuse_03  0.29
+      84     social_04 fearofuse_03   0.1
+      85  advantage_01 fearofuse_04  0.01
+      86  advantage_02 fearofuse_04  0.22
+      87  advantage_03 fearofuse_04  0.09
+      88  advantage_04 fearofuse_04 -0.07
+      89  fearofuse_01 fearofuse_04  0.48
+      90  fearofuse_02 fearofuse_04  0.28
+      91  fearofuse_03 fearofuse_04  0.39
+      92  fearofuse_04 fearofuse_04     1
+      93     social_01 fearofuse_04  0.25
+      94     social_02 fearofuse_04  0.22
+      95     social_03 fearofuse_04  0.25
+      96     social_04 fearofuse_04  0.14
+      97  advantage_01    social_01  0.21
+      98  advantage_02    social_01  0.54
+      99  advantage_03    social_01  0.33
+      100 advantage_04    social_01  0.33
+      101 fearofuse_01    social_01 -0.19
+      102 fearofuse_02    social_01  0.23
+      103 fearofuse_03    social_01  0.06
+      104 fearofuse_04    social_01  0.25
+      105    social_01    social_01     1
+      106    social_02    social_01  0.73
+      107    social_03    social_01  0.48
+      108    social_04    social_01  0.57
+      109 advantage_01    social_02  0.28
+      110 advantage_02    social_02   0.5
+      111 advantage_03    social_02  0.34
+      112 advantage_04    social_02  0.26
+      113 fearofuse_01    social_02  0.04
+      114 fearofuse_02    social_02  0.22
+      115 fearofuse_03    social_02   0.2
+      116 fearofuse_04    social_02  0.22
+      117    social_01    social_02  0.73
+      118    social_02    social_02     1
+      119    social_03    social_02  0.58
+      120    social_04    social_02  0.54
+      121 advantage_01    social_03  0.16
+      122 advantage_02    social_03  0.36
+      123 advantage_03    social_03  0.13
+      124 advantage_04    social_03   0.2
+      125 fearofuse_01    social_03   0.1
+      126 fearofuse_02    social_03  0.33
+      127 fearofuse_03    social_03  0.29
+      128 fearofuse_04    social_03  0.25
+      129    social_01    social_03  0.48
+      130    social_02    social_03  0.58
+      131    social_03    social_03     1
+      132    social_04    social_03  0.56
+      133 advantage_01    social_04  0.27
+      134 advantage_02    social_04   0.4
+      135 advantage_03    social_04  0.31
+      136 advantage_04    social_04  0.36
+      137 fearofuse_01    social_04 -0.07
+      138 fearofuse_02    social_04   0.3
+      139 fearofuse_03    social_04   0.1
+      140 fearofuse_04    social_04  0.14
+      141    social_01    social_04  0.57
+      142    social_02    social_04  0.54
+      143    social_03    social_04  0.56
+      144    social_04    social_04     1
 

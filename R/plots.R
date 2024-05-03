@@ -695,7 +695,7 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
   }
   if (!is.null(limits)) {
     pl <- pl +
-      coord_cartesian(xlim = limits)
+      ggplot2::coord_cartesian(xlim = limits)
   }
 
   # Get base
@@ -731,7 +731,6 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
 #' @param limits The scale limits. Set NULL to extract limits from the labels.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param numbers numbers to print on labels, 'n' for group size
-#' @param bars Add a boxplot (box), standard error (se) or 95% confidence interval (ci).
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -746,7 +745,7 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, limits = NULL, negative = FALSE, numbers = NULL, bars = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, limits = NULL, negative = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -924,7 +923,7 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, logplot = FALS
 
   if (!is.null(limits)) {
     pl <- pl +
-      coord_cartesian(xlim = limits$x, ylim = limits$y)
+      ggplot2::coord_cartesian(xlim = limits$x, ylim = limits$y)
   }
 
 
@@ -1446,7 +1445,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
   # Add limits
   if (!is.null(limits)) {
     pl <- pl +
-      coord_cartesian(xlim = limits)
+      ggplot2::coord_cartesian(xlim = limits)
   }
 
   # Add scales
