@@ -7,17 +7,17 @@
 #' - Multiple columns and one grouping column: see \link{tab_counts_items_grouped}
 #'
 #'
-#' @param data A data frame
+#' @param data A data frame.
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
-#'             or multiple columns selected by methods such as starts_with()
+#'             or multiple columns selected by methods such as starts_with().
 #' @param cross Optional, a grouping column. The column name without quotes.
 #' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
 #'            Set metric to TRUE, to treat it as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Other parameters passed to the appropriate table function
-#' @return A volker tibble
+#' @param ... Other parameters passed to the appropriate table function.
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -68,7 +68,7 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
 #' - Multiple columns and one grouping column: see \link{tab_metrics_items_grouped}
 #'
 #'
-#' @param data A data frame
+#' @param data A data frame.
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
@@ -77,8 +77,8 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
 #'            By default, the cross column selection is treated as categorical data.
 #'            Set metric to TRUE, to treat it as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Other parameters passed to the appropriate table function
-#' @return A volker tibble
+#' @param ... Other parameters passed to the appropriate table function.
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -130,15 +130,15 @@ tab_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param col The column holding values to count
-#' @param ci Whether to compute confidence intervals
-#' @param missings Include missing values in the output (default TRUE)
+#' @param data A tibble.
+#' @param col The column holding values to count.
+#' @param ci Whether to compute 95% confidence intervals.
+#' @param missings Include missing values in the output (default TRUE).
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
-#' @return A volker tibble
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -230,17 +230,17 @@ tab_counts_one <- function(data, col, ci = FALSE, missings = TRUE, percent = TRU
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param col The column holding factor values
-#' @param cross The column holding groups to split
-#' @param missings Include missing values in the output (default FALSE)
+#' @param data A tibble.
+#' @param col The column holding factor values.
+#' @param cross The column holding groups to split.
+#' @param missings Include missing values in the output (default FALSE).
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param prop The basis of percent calculation: "total" (the default), "cols", or "rows".
 #' @param values The values to output: n (frequency) or p (percentage) or both (the default).
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
-#' @return A volker tibble
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -428,12 +428,12 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent =
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param cols The item columns that hold the values to summarize
-#' @param cross The column to correlate
+#' @param data A tibble.
+#' @param cols The item columns that hold the values to summarize.
+#' @param cross The column to correlate.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
-#' @return A volker tibble
+#' @return A volker tibble.
 #' @importFrom rlang .data
 tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
   stop("Not implemented yet")
@@ -446,16 +446,16 @@ tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #'
 #' @keywords internal
 #'
-#' @param data A tibble containing item measures
-#' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param ci Whether to compute confidence intervals
-#' @param missings Include missing values (default FALSE)
-#' @param percent Set to FALSE to prevent calculating percents from proportions
-#' @param values The values to output: n (frequency) or p (percentage) or both (the default)
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param ci Whether to compute 95% confidence intervals.
+#' @param missings Include missing values (default FALSE).
+#' @param percent Set to FALSE to prevent calculating percents from proportions.
+#' @param values The values to output: n (frequency) or p (percentage) or both (the default).
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
-#' @return A volker tibble
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -645,18 +645,18 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = FALSE, percent =
 }
 
 
-#' Compare the values in multiple items by a grouping column.
+#' Compare the values in multiple items by a grouping column
 #'
 #' TODO: implement -> focus one category and show n / p
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param cols The item columns that hold the values to summarize
-#' @param cross The column holding groups to compare
+#' @param data A tibble containing item measures.
+#' @param cols The item columns that hold the values to summarize.
+#' @param cross The column holding groups to compare.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
-#' @return A volker tibble
+#' @return A volker tibble.
 #' @importFrom rlang .data
 tab_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
   stop("Not implemented yet")
@@ -668,9 +668,9 @@ tab_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param cols The source columns
-#' @param cross The target columns or NULL to calculate correlations within the source columns
+#' @param data A tibble containing item measures.
+#' @param cols The source columns.
+#' @param cross The target columns or NULL to calculate correlations within the source columns.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @importFrom rlang .data
@@ -682,15 +682,15 @@ tab_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param col The columns holding metric values
-#' @param ci Whether to calculate confidence intervals of the mean
+#' @param data A tibble.
+#' @param col The columns holding metric values.
+#' @param ci Whether to calculate 95% confidence intervals of the mean.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param digits The number of digits to print.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
-#' @return A volker tibble
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -785,16 +785,16 @@ tab_metrics_one <- function(data, col, ci = FALSE, negative = FALSE, digits = 1,
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param col The column holding metric values
-#' @param cross The column holding groups to compare
-#' @param ci Whether to output confidence intervals
+#' @param data A tibble.
+#' @param col The column holding metric values.
+#' @param cross The column holding groups to compare.
+#' @param ci Whether to output 95% confidence intervals.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param digits The number of digits to print
+#' @param digits The number of digits to print.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
-#' @return A volker tibble
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -897,9 +897,9 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param col The first item
-#' @param cross The column to correlate
+#' @param data A tibble.
+#' @param col The first column holding metric values.
+#' @param cross The second column holding metric values.
 #' @param method The output metrics, TRUE or p = Pearson's R, s = Spearman's rho
 #' @param ci Whether to output confidence intervals
 #' @param negative If FALSE (default), negative values are recoded as missing values.
@@ -911,7 +911,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' tab_metrics_one_cor(data, starts_with("cg_adoption_"), sd_gender)
+#' tab_metrics_one_cor(data, starts_with("cg_adoption_"), sd_age)
 #'
 #' @export
 #' @importFrom rlang .data
@@ -1090,16 +1090,16 @@ tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits =
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param cols The item columns that hold the values to summarize
-#' @param cross The column holding groups to compare
+#' @param data A tibble.
+#' @param cols The item columns that hold the values to summarize.
+#' @param cross The column holding groups to compare.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param digits The number of digits to print.
 #' @param values The output metrics, mean (m), the standard deviation (sd) or both (the default).
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
-#' @return A volker tibble
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -1273,8 +1273,8 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param cols The source columns
+#' @param data A tibble.
+#' @param cols The source columns.
 #' @param cross The target columns or NULL to calculate correlations within the source columns
 #' @param method The output metrics, p = Pearson's R, s = Spearman's rho
 #' @param negative If FALSE (default), negative values are recoded as missing values.
@@ -1364,8 +1364,9 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "p", negative = F,
 #' @param digits Set the plot digits. If NULL (default), no digits are set.
 #' @param caption The caption printed above the table.
 #' @param baseline A base line printed below the table.
-#' @return A volker tibble
+#' @return A volker tibble.
 .to_vlkr_tab <- function(data, digits = NULL, caption = NULL, baseline = TRUE) {
+
   if (!is.null(digits)) {
     attr(data, "digits") <- digits
   }
@@ -1392,8 +1393,8 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "p", negative = F,
 #'
 #' @keywords internal
 #'
-#' @param df Data frame
-#' @return Formatted  table produced by \link{kable}
+#' @param df Data frame.
+#' @return Formatted  table produced by \link{kable}.
 knit_table <- function(df, ...) {
 
   options(knitr.kable.NA = '')
@@ -1457,8 +1458,8 @@ knit_table <- function(df, ...) {
 #'
 #' @keywords internal
 #'
-#' @param x Markdown text
-#' @return Markdown text with line breaks and excaped special characters
+#' @param x Markdown text.
+#' @return Markdown text with line breaks and escaped special characters.
 knit_prepare <- function(x) {
   x <- gsub("\n", "<br>", x, fixed=TRUE)
   x <- gsub("*", "\\*", x, fixed=TRUE)
@@ -1469,9 +1470,9 @@ knit_prepare <- function(x) {
 #'
 #' @keywords internal
 #'
-#' @param x The volker table
-#' @param ... Further parameters passed to print()
-#' @return No return value
+#' @param x The volker table.
+#' @param ... Further parameters passed to print().
+#' @return No return value.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
