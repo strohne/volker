@@ -245,13 +245,13 @@ effects_counts_one_cor <- function(data, col, cross, clean = TRUE, ...) {
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param clean Prepare data by \link{data_clean}.
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return  A volker tibble
 #' @importFrom rlang .data
-effects_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
+effects_counts_items <- function(data, cols, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
   stop("Not implemented yet")
 }
 
