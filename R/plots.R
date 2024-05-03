@@ -837,7 +837,7 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' plot_metrics_one_cor(data, starts_with("cg_adoption_"), sd_gender)
+#' plot_metrics_one_cor(data, starts_with("cg_adoption_"), sd_age)
 #'
 #' @export
 #' @importFrom rlang .data
