@@ -1348,15 +1348,15 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
 #'
 #' @keywords internal
 #'
-#' @param data Dataframe with the columns item, value, p, n
-#' @param category Category for filtering the dataframe
+#' @param data Dataframe with the columns item, value, p, n.
+#' @param category Category for filtering the dataframe.
 #' @param ci Whether to plot error bars for 95% confidence intervals. Provide the columns ci.low and ci.high in data.
 #' @param scale Direction of the scale: 0 = no direction for categories,
 #'              -1 = descending or 1 = ascending values.
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
-#' @param title The plot title as character or NULL
+#' @param title The plot title as character or NULL.
 #' @param base The plot base as character or NULL.
-#' @return A ggplot object
+#' @return A ggplot object.
 #' @importFrom rlang .data
 .plot_bars <- function(data, category = NULL, ci = FALSE, scale = NULL, limits = NULL, numbers = NULL, base = NULL, title = NULL) {
 
@@ -1462,13 +1462,13 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
 #'
 #' @keywords internal
 #'
-#' @param data Dataframe with the columns item, value
-#' @param ci Whether to plot confidence intervals of the means
+#' @param data Dataframe with the columns item, value.
+#' @param ci Whether to plot confidence intervals of the means.
 #' @param scale ???
-#' @param box Whether to add boxplots
-#' @param title The plot title as character or NULL
+#' @param box Whether to add boxplots.
+#' @param title The plot title as character or NULL.
 #' @param base The plot base as character or NULL.
-#' @return A ggplot object
+#' @return A ggplot object.
 #' @importFrom rlang .data
 .plot_lines <- function(data, ci = FALSE, scale = NULL, box = FALSE, base = NULL, title = NULL) {
 
@@ -1624,12 +1624,12 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
 #'
 #' @keywords internal
 #'
-#' @param pl A ggplot object
+#' @param pl A ggplot object.
 #' @param rows The number of items on the vertical axis. Will be automatically determined when NULL.
 #'             For stacked bar charts, don't forget to set the group parameter, otherwise it won't work
 #' @param maxlab The character length of the longest label to be plotted. Will be automatically determined when NULL.
-#'               on the vertical axis
-#' @return A ggplot object with vlkr_plt class
+#'               on the vertical axis.
+#' @return A ggplot object with vlkr_plt class.
 .to_vlkr_plot <- function(pl, rows = NULL, maxlab = NULL) {
   class(pl) <- c("vlkr_plt", class(pl))
 
@@ -1677,8 +1677,8 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
 #' @param pl A ggplot object with vlkr_options.
 #'           The vlk_options are added by .to_vlkr_plot()
 #'           and provide information about the number of vertical items (rows)
-#'           and the maximum
-#' @return Character string containing a html image tag, including the base64 encoded image
+#'           and the maximum.
+#' @return Character string containing a html image tag, including the base64 encoded image.
 knit_plot <- function(pl) {
   # Get knitr and volkr chunk options
   chunk_options <- knitr::opts_chunk$get()
@@ -1739,9 +1739,9 @@ knit_plot <- function(pl) {
 #'
 #' @keywords internal
 #'
-#' @param x The volker plot
-#' @param ... Further parameters passed to print()
-#' @return No return value
+#' @param x The volker plot.
+#' @param ... Further parameters passed to print().
+#' @return No return value.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -1775,11 +1775,11 @@ plot.vlkr_plt <- print.vlkr_plt
 #' Define a default theme for volker plots
 #'
 #' @importFrom ggplot2 '%+replace%'
-#' @param base_size Base font size
-#' @param base_color Base font color
+#' @param base_size Base font size.
+#' @param base_color Base font color.
 #' @param base_fill A list of fill color sets. Each set can contain different numbers of colors.
 #' @param base_gradient A color vector used for creating gradient fill colors, e.g. in stacked bar plots.
-#' @return A theme function
+#' @return A theme function.
 #' @examples
 #' library(volker)
 #' library(ggplot2)
@@ -1826,8 +1826,8 @@ theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDI
 #'
 #' @keywords internal
 #'
-#' @param n Number of colors
-#' @return A vector of colors
+#' @param n Number of colors.
+#' @return A vector of colors.
 vlkr_colors_discrete <- function(n) {
   colors <- getOption("vlkr.discrete.fill")
   if (is.null(colors)) {
@@ -1847,12 +1847,12 @@ vlkr_colors_discrete <- function(n) {
 
 #' Get colors for sequential scales
 #'
-#' Creates a gradient scale based on VLKR_FILLGRADIENT
+#' Creates a gradient scale based on VLKR_FILLGRADIENT.
 #'
 #' @keywords internal
 #'
-#' @param n Number of colors
-#' @return A vector of colors
+#' @param n Number of colors.
+#' @return A vector of colors.
 vlkr_colors_sequential <- function(n) {
   colors <- getOption("vlkr.gradient.fill")
   if (is.null(colors)) {
