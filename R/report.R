@@ -232,8 +232,20 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 #' @keywords internal
 #'
 #' @param data A list
+#' @param baseline Whether to get the baseline.
 #' @return A volker list
-.to_vlkr_list <- function(data) {
+.to_vlkr_list <- function(data, baseline = TRUE) {
+
+  if (baseline == TRUE) {
+    baseline <- get_baseline(data)
+  } else if (baseline == FALSE) {
+    baseline <- NULL
+  }
+
+  if (!is.null(baseline)) {
+    attr(data, "baseline") <- baseline
+  }
+
   class(data) <- c("vlkr_list", setdiff(class(data), "vlkr_list"))
   data
 }
@@ -260,13 +272,24 @@ print.vlkr_list <- function(x, ...) {
       paste0(collapse = "\n") %>%
       knitr::asis_output() %>%
       knitr::knit_print()
+
+    baseline <- attr(x, "baseline", exact=TRUE)
+    if (!is.null(baseline)) {
+      knitr::knit_print(baseline)
+    }
+
   } else {
     for (part in x) {
       caption <- attr(part, "caption", exact=TRUE)
       if (!is.null(caption)) {
-        cat("\n", caption)
+        cat("\n", caption, sep="")
       }
       print(part, ...)
+    }
+
+    baseline <- attr(x, "baseline", exact=TRUE)
+    if (!is.null(baseline)) {
+      cat("\n", baseline, "\n\n", sep="")
     }
   }
 }

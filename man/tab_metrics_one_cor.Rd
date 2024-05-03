@@ -41,4 +41,11 @@ A volker tibble
 \description{
 Correlate two columns
 }
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+tab_metrics_one_cor(data, starts_with("cg_adoption_"), sd_gender)
+
+}
 \keyword{internal}

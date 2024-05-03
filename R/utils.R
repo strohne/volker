@@ -28,3 +28,30 @@ zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
   }
   x
 }
+
+#' Insert a name-value-pair into an object attribute
+#'
+#' @keywords internal
+#'
+#' @param obj The object.
+#' @param key The attribute key.
+#' @param name The name of a list item within the attribute.
+#' @param value The value of the list item.
+#' @return The object with new attributes.
+.attr_insert <- function(obj, key, name, value) {
+  data <- attr(obj, key, exact = TRUE)
+  data[[name]] <- value
+  attr(obj, key) <- data
+  obj
+}
+
+#' Transfer an attribute from one to another object
+#'
+#' @param to The target object.
+#' @param from The source object.
+#' @param key The attribute key as character value.
+#' @return The target object with the updated attribute.
+.attr_transfer <- function(to, from, key) {
+  attr(to, key) <- attr(from, key, exact=TRUE)
+  to
+}

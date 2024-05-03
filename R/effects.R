@@ -171,7 +171,7 @@ effects_counts_one <- function(data, col, digits = 2, percent = TRUE, labels = T
 #' @export
 effects_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 
-  # 1. Check parameters
+  # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
   check_has_column(data, {{ cross }})
@@ -210,7 +210,7 @@ effects_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   # cramer_v <- effectsize::cramers_v(test, adjust = F)
 
   # 6. Prepare output
-  results <- tibble::tribble(
+  result <- tibble::tribble(
     ~Statistic, ~Value, ~.digits,
     "Number of cases", n, 0,
     "Phi", phi, 2,
@@ -221,7 +221,8 @@ effects_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
     #"stars", get_stars(fit$p.value), 0
   )
 
-  .to_vlkr_tab(results, caption=fit$method)
+  result <- .attr_transfer(result, data, "missings")
+  .to_vlkr_tab(result, caption=fit$method)
 }
 
 #' Output test statistics and effect size for categories correlated with a metric column
@@ -283,7 +284,6 @@ effects_counts_items_grouped <- function(data, cols, cross, clean = T, ...) {
 #' @param ... Placeholder
 #' @return A volker tibble
 #' @importFrom rlang .data
-#'
 effects_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
   stop("Not implemented yet")
 }
@@ -334,7 +334,7 @@ effects_metrics_one <- function(data, col, clean = T, ... ) {
 #' @export
 #' @importFrom rlang .data
 effects_metrics_one_grouped <- function(data, col, cross, method = "lm", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
-  # 1. Check parameters
+  # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
   check_has_column(data, {{ cross }})
@@ -345,15 +345,15 @@ effects_metrics_one_grouped <- function(data, col, cross, method = "lm", negativ
     data <- data_clean(data)
   }
 
-  # Recode negative values
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+
+  # 4. Remove negatives
   if (!negative) {
     data <- data_rm_negatives(data, {{ col }})
   }
 
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-
-  # 4. Calculate
+  # 5. Calculate
   result <- list()
   lm_data <- dplyr::select(data, av = {{ col }}, uv = {{ cross }})
 
@@ -456,6 +456,7 @@ effects_metrics_one_grouped <- function(data, col, cross, method = "lm", negativ
     )
   }
 
+  result <- .attr_transfer(result, data, "missings")
   .to_vlkr_list(result)
 }
 
@@ -495,16 +496,15 @@ effects_metrics_one_cor <- function(data, col, cross, method = "p", negative = F
     data <- data_clean(data)
   }
 
-  # 3. Remove negatives
-  if (! negative) {
-    data <- data_rm_negatives(data, {{ col }})
-    data <- data_rm_negatives(data, {{ cross }})
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+
+  # 4. Remove negatives
+  if (!negative) {
+    data <- data_rm_negatives(data, c({{ col }}, {{ cross }}))
   }
 
-  # 4. Remove missings
-  data <- data_rm_missings(data, {{ col }})
-  data <- data_rm_missings(data, {{ cross }})
-
+  # 5. Calculate
   result <- .effects_correlations(data, {{ col }}, {{ cross}}, method=method, labels = labels)
 
   # Remove common item prefix
@@ -532,6 +532,7 @@ effects_metrics_one_cor <- function(data, col, cross, method = "p", negative = F
     ) |>
     dplyr::select(-tidyselect::all_of(c("Item 1", "Item 2")))
 
+  result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits= 2, caption=title)
 }
 
@@ -568,13 +569,13 @@ effects_metrics_items <- function(data, cols, method = "p", negative = FALSE, la
     data <- data_clean(data)
   }
 
-  # 3. Remove negatives
-  if (! negative) {
+  # 3. Remove missings
+  data <- data_rm_missings(data, {{ cols }})
+
+  # 4. Remove negatives
+  if (!negative) {
     data <- data_rm_negatives(data, {{ cols }})
   }
-
-  # 4. Remove missings
-  data <- data_rm_missings(data, {{ cols }})
 
   # 6. Calculate correlations
   result <- .effects_correlations(data, {{ cols }}, {{ cols }}, method = method, labels = labels)
@@ -595,6 +596,7 @@ effects_metrics_items <- function(data, cols, method = "p", negative = FALSE, la
 
   title <- ifelse(prefix == "", NULL, prefix)
 
+  result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits= 2, caption=title)
 }
 
@@ -651,15 +653,13 @@ effects_metrics_items_cor <- function(data, cols, cross, method="p", negative = 
     data <- data_clean(data)
   }
 
-  # 3. Remove negatives
-  if (! negative) {
-    data <- data_rm_negatives(data, {{ cols }})
-    data <- data_rm_negatives(data, {{ cross }})
-  }
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
 
-  # 4. Remove missings
-  data <- data_rm_missings(data, {{ cols }})
-  data <- data_rm_missings(data, {{ cross }})
+  # 4. Remove negatives
+  if (! negative) {
+    data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
+  }
 
   result <- .effects_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
 
@@ -688,6 +688,7 @@ effects_metrics_items_cor <- function(data, cols, cross, method="p", negative = 
     ) |>
     dplyr::select(-tidyselect::all_of(c("Item 1", "Item 2")))
 
+  result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits= 2, caption=title)
 }
 

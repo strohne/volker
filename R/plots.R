@@ -157,7 +157,6 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
 plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
-  # Check columns
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
 
@@ -239,6 +238,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
   # Pass row number and label length to the knit_plot() function
   #.to_vlkr_plot(pl)
 
+  result <- .attr_transfer(result, data, "missings")
   .plot_bars(
     result,
     category = category,
@@ -354,12 +354,10 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
     category <- "TRUE"
   }
 
-
   if (labels) {
     result <- labs_replace(result, "value", codebook(data, {{ cross }}))
     result <- labs_replace(result, "item", codebook(data, {{ col }}))
   }
-
 
   lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
 
@@ -387,6 +385,8 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
   # Get base
   # TODO: report missing cases
   base_n <- nrow(data)
+
+  result <- .attr_transfer(result, data, "missings")
 
   .plot_bars(
     result,
@@ -547,7 +547,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
   # Base
   # TODO: report missing cases
   base_n <- nrow(data)
-
+  result <- .attr_transfer(result, data, "missings")
   .plot_bars(
     result,
     category = category,
@@ -627,14 +627,13 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
     data <- data_clean(data)
   }
 
-  # 3. Recode negative values to NA
+  # 3. Remove missings
+  data <- data_rm_missings(data, {{ col }})
+
+  # 4. Remove negatives
   if (!negative) {
     data <- data_rm_negatives(data, {{ col }})
   }
-
-  # 4. Remove missings
-  data <- data_rm_missings(data, {{ col }})
-
 
   # Extract the maximum density value
   max_density <- .density_mode(data, {{ col }})
@@ -706,6 +705,7 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
 
   # Pass row number and label length to the knit_plot() function
   # TODO: Don't set rows manually
+  pl <- .attr_transfer(pl, data, "missings")
   .to_vlkr_plot(pl, rows=4)
 }
 
@@ -748,15 +748,15 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
     data <- data_clean(data)
   }
 
-  # Recode negative values to NA
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+
+  # 4. Remove negatives
   if (!negative) {
     data <- data_rm_negatives(data, {{ col }})
   }
 
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-
-  # 4. Add n to labels
+  # 5. Add n to labels
   if (!is.null(numbers)) {
 
     categories_n <- data |>
@@ -768,10 +768,7 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
       )
 
     data <- data |>
-      labs_replace(
-        {{ cross }},
-        categories_n
-      )
+      labs_replace( {{ cross }}, categories_n)
   }
 
 
@@ -804,6 +801,7 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
   data <- data %>%
     dplyr::mutate(item = as.factor({{ cross }})) |>
     dplyr::mutate(value = ({{ col }}))
+
 
   # Plot
   .plot_lines(
@@ -853,20 +851,17 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, logplot = FALS
     data <- data_clean(data)
   }
 
-  # 3. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, {{ col }})
-    data <- data_rm_negatives(data, {{ cross }})
-  }
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
 
-  # 4. Remove missings
-  data <- data_rm_missings(data, {{ col }})
-  data <- data_rm_missings(data, {{ cross }})
+  # 4. Remove negatives
+  if (!negative) {
+    data <- data_rm_negatives(data, c({{ col }}, {{ cross}}))
+  }
 
   # 5. Remove 0 values in log plots
   if (logplot) {
-    data <- data_rm_zeros(data, {{ col }})
-    data <- data_rm_zeros(data, {{ cross }})
+    data <- data_rm_zeros(data, c({{ col }}, {{ cross }}))
   }
 
   # 6. Get column positions
@@ -939,6 +934,7 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, logplot = FALS
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
   # Convert to vlkr_plot
+  pl <- .attr_transfer(pl, data, "missings")
   .to_vlkr_plot(pl, rows=15)
 }
 
@@ -973,17 +969,17 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
   # 2. Clean
    if (clean) {
     data <- data_clean(data)
-  }
-
-  # Recode negative values to NA
-  if (!negative) {
-    data <- data_rm_negatives(data, c({{ cols }}))
-  }
+   }
 
   # 3. Remove missings
   data <- data_rm_missings(data, c({{ cols }}))
 
-  # Pivot items
+  # 4. Remove missings
+  if (!negative) {
+    data <- data_rm_negatives(data, c({{ cols }}))
+  }
+
+  # 5. Pivot items
   result <- data %>%
     labs_clear({{ cols }}) %>%
     tidyr::pivot_longer(
@@ -1029,7 +1025,7 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
   # Add base
   # TODO: report missings
   base_n <- nrow(data)
-
+  result <- .attr_transfer(result, data, "missings")
   .plot_lines(
     result,
     ci = ci,
@@ -1074,14 +1070,13 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
     data <- data_clean(data)
   }
 
-  # Recode negative values to NA
-  if (!negative) {
-    data <- data_rm_negatives(data, {{ cols }})
-  }
-
   # 3. Remove missings
   data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
 
+  # 4. Remove negatives
+  if (!negative) {
+    data <- data_rm_negatives(data, {{ cols }})
+  }
 
   # 4. Calculate
   # Get positions of group cols
@@ -1193,6 +1188,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n, "; multiple responses possible"))
 
   # Convert to vlkr_plot
+  pl <- .attr_transfer(pl, data, "missings")
   .to_vlkr_plot(pl)
 }
 
@@ -1230,24 +1226,20 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
     data <- data_clean(data)
   }
 
-  # TODO: warn if any negative values were recoded
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
+
+  # 4. Remove negatives
   if (!negative) {
-    data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. < 0, NA, .)))
-    data <- dplyr::mutate(data, dplyr::across({{ cross }}, ~ dplyr::if_else(. < 0, NA, .)))
+    data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
   }
 
-  # Remove 0 values in log plots
+  # 5. Remove 0 values in log plots
   if (logplot) {
-    data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. == 0, NA, .)))
-    data <- dplyr::mutate(data, dplyr::across({{ cross }}, ~ dplyr::if_else(. == 0, NA, .)))
+    data <- data_rm_zeros(data, c({{ cols }}, {{ cross }}))
   }
 
-  # Drop missings
-  # TODO: Report missings
-  data <- tidyr::drop_na(data, {{ cols }}, {{ cross }})
-
-
-  # 3. Calculate
+  # 6. Calculate
   # Get number and positions of cols
   cols_cor_eval <- tidyselect::eval_select(expr = rlang::enquo(cross), data = data)
   cols_eval <- tidyselect::eval_select(expr = rlang::enquo(cols), data = data)
@@ -1339,6 +1331,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
   # Convert to vlkr_plot
+  pl <- .attr_transfer(pl, data, "missings")
   .to_vlkr_plot(pl)
 }
 
@@ -1454,6 +1447,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
   }
 
   # Convert to vlkr_plot
+  pl <- .attr_transfer(pl, data, "missings")
   .to_vlkr_plot(pl)
 }
 
@@ -1599,6 +1593,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
 
   # Convert to vlkr_plot
   # Pass row number and label length to the knit_plot() function
+  pl <- .attr_transfer(pl, data, "missings")
   .to_vlkr_plot(pl, maxlab=maxlab)
 }
 
@@ -1629,10 +1624,12 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
 #'             For stacked bar charts, don't forget to set the group parameter, otherwise it won't work
 #' @param maxlab The character length of the longest label to be plotted. Will be automatically determined when NULL.
 #'               on the vertical axis
+#' @param baseline Whether to print a message about removed values
 #' @return A ggplot object with vlkr_plt class
-.to_vlkr_plot <- function(pl, rows = NULL, maxlab = NULL) {
+.to_vlkr_plot <- function(pl, rows = NULL, maxlab = NULL, baseline = TRUE) {
   class(pl) <- c("vlkr_plt", class(pl))
 
+  # Calculate rows and label lengths
   plot_data <- ggplot2::ggplot_build(pl)
   if (is.null(rows)) {
     if ("CoordFlip" %in% class(pl$coordinates)) {
@@ -1657,6 +1654,16 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
     rows = rows,
     maxlab = maxlab
   )
+
+  if (baseline == TRUE) {
+    baseline <- get_baseline(pl)
+  } else if (baseline == FALSE) {
+    baseline <- NULL
+  }
+  if (!is.null(baseline)) {
+    message(paste0("In the plot, ", baseline))
+  }
+
   pl
 }
 

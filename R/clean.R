@@ -127,13 +127,17 @@ data_rm_missings <- function(data, cols) {
 
   if (cases > 0) {
     data <- tidyr::drop_na(data, {{ cols }})
-    message(paste0(cases, " missing values have been removed."))
+
+    colnames <- rlang::as_label(rlang::enquo(cols))
+    data <- .attr_insert(data, "missings", "na", list("cols" = colnames, "n"=cases))
   }
 
   data
 }
 
 #' Remove zero values, drop missings and output a message
+#'
+#' TODO: filter, pass by NAs
 #'
 #' @keywords internal
 #'
@@ -145,10 +149,15 @@ data_rm_zeros <- function(data, cols) {
   cases <- sum(dplyr::select(data, {{ cols }}) == 0)
 
   if (cases > 0) {
-    data <- dplyr::mutate(data, dplyr::across({{ cols }}, ~ dplyr::if_else(. == 0, NA, .)))
+    data <- data |>
+      labs_store() |>
+      dplyr::mutate(dplyr::across({{ cols }}, ~ dplyr::if_else(. == 0, NA, .))) |>
+      labs_restore()
+
     data <- tidyr::drop_na(data, {{ cols }})
 
-    message(paste0(cases, " zero values have been removed."))
+    colnames <- rlang::as_label(rlang::enquo(cols))
+    data <- .attr_insert(data, "missings", "zero", list("cols" = colnames, "n"=cases))
   }
 
   data
@@ -156,25 +165,70 @@ data_rm_zeros <- function(data, cols) {
 
 #' Remove negatives and output a warning
 #'
+#' TODO: filter, pass by NAs
+#'
 #' @keywords internal
 #'
 #' @param data Data frame
 #' @param cols A tidy column selection
 #' @return Data frame
-
 data_rm_negatives <- function(data, cols) {
+
     cases <- sum(dplyr::select(data, {{ cols }}) < 0, na.rm=TRUE)
 
     if (cases > 0) {
-      message(paste0(cases, " negative values were removed."))
+      data |>
+        labs_store() |>
+        dplyr::mutate(dplyr::across({{ cols }}, ~ ifelse(. < 0, NA, .))) |>
+        labs_restore()
+
+      data <- tidyr::drop_na(data, {{ cols }})
+
+      colnames <- rlang::as_label(rlang::enquo(cols))
+      data <- .attr_insert(data, "missings", "negative", list("cols" = colnames, "n"=cases))
     }
 
-     data |>
-      labs_store() |>
-      dplyr::mutate(dplyr::across({{ cols }}, ~ ifelse(. < 0, NA, .))) |>
-      labs_restore()
+    data
 }
 
+#' Get a formatted baseline for removed zero, negative, and missing cases
+#'
+#' @keywords internal
+#'
+#' @param obj An object with the missings attribute.
+#' @return A formatted message or NULL if the missings attribute is not present.
+get_baseline <- function(obj) {
+  missings <- attr(obj, "missings", exact=TRUE)
+  if (!is.null(missings)) {
+    baseline <- c()
+    cols <- c()
+
+    if (!is.null(missings$na)) {
+      baseline <- c(baseline, paste0(missings$na$n," missing"))
+      cols <- c(cols, missings$na$cols)
+    }
+
+    if (!is.null(missings$zero)) {
+      baseline <- c(baseline, paste0(missings$zero$n," zero"))
+      cols <- c(cols, missings$zero$cols)
+    }
+
+    if (!is.null(missings$negative)) {
+      baseline <- c(baseline, paste0(missings$negative$n," negative"))
+      cols <- c(cols, missings$negative$cols)
+    }
+
+    baseline <- paste0(
+      paste0(baseline, collapse=", "),
+      " case(s) removed from ",
+      paste0(unique(cols), collapse=", ")
+    )
+  } else {
+    baseline <- NULL
+  }
+
+  baseline
+}
 
 #' Add vlkr_df class - that means, the data frame has been prepared
 #'

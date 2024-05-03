@@ -221,6 +221,8 @@ tab_counts_one <- function(data, col, ci = FALSE, missings = TRUE, percent = TRU
   result <- dplyr::mutate(result, dplyr::across(tidyselect::any_of(c("ci.low","ci.high")), ~ ifelse(is.na(.) && percent,"",.)))
 
   digits <- ifelse(percent, 0, 2)
+
+  result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits=digits)
 }
 
@@ -248,7 +250,7 @@ tab_counts_one <- function(data, col, ci = FALSE, missings = TRUE, percent = TRU
 #' @importFrom rlang .data
 #' @export
 tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent = TRUE, prop = "total", values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
-  # 1. Check parameters
+  # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
   check_has_column(data, {{ cross }})
@@ -259,10 +261,12 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent =
   }
 
   # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+  if (!missings) {
+    data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+  }
 
   #
-  # 1. Count
+  # 4. Count
   #
   grouped <- data %>%
     dplyr::count({{ col }}, {{ cross }}) %>%
@@ -415,6 +419,7 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent =
     }
   }
 
+  result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits=0)
 }
 
@@ -460,7 +465,7 @@ tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #' @export
 #' @importFrom rlang .data
 tab_counts_items <- function(data, cols, ci = FALSE, missings = FALSE, percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
-  # 1. Check parameters
+  # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
 
@@ -469,7 +474,12 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = FALSE, percent =
     data <- data_clean(data)
   }
 
-  # Calculate n and p
+  # 3. Remove missings
+  if (!missings) {
+    data <- data_rm_missings(data, {{ cols }})
+  }
+
+  # 4. Calculate n and p
   result <- data %>%
     tidyr::drop_na({{ cols }}) %>%
     labs_clear({{ cols }}) %>%
@@ -625,6 +635,11 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = FALSE, percent =
     result <- .to_vlkr_tab(result, digits= 0)
   }
 
+  if (!missings) {
+    result <- .attr_transfer(result, data, "missings")
+  }
+
+
   result
 
 }
@@ -685,7 +700,7 @@ tab_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #' @export
 #' @importFrom rlang .data
 tab_metrics_one <- function(data, col, ci = FALSE, negative = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
-  # 1. Check parameters
+  # 1. Check
   check_is_dataframe(data)
   check_has_column(data, {{col}})
 
@@ -694,12 +709,11 @@ tab_metrics_one <- function(data, col, ci = FALSE, negative = FALSE, digits = 1,
     data <- data_clean(data)
   }
 
-  # Recode negative values to NA
+  # 3. Remove negatives
   if (!negative) {
     data <- data_rm_negatives(data, {{ col }})
   }
 
-  # 3. Remove missings
   #data <- data_rm_missings(data, {{ col }})
 
   # Calculate values
@@ -760,7 +774,7 @@ tab_metrics_one <- function(data, col, ci = FALSE, negative = FALSE, digits = 1,
     label <- get_title(data, {{ col }})
     result <- dplyr::rename(result, {{ label }} := {{ col }})
   }
-
+  result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result)
 }
 
@@ -790,7 +804,7 @@ tab_metrics_one <- function(data, col, ci = FALSE, negative = FALSE, digits = 1,
 #' @export
 #' @importFrom rlang .data
 tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
-  # 1. Check parameters
+  # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
   check_has_column(data, {{ cross }})
@@ -800,16 +814,12 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
     data <- data_clean(data)
   }
 
-  # 3. Remove missings
-  #data <- data_rm_missings(data, {{ col }})
-  #data <- data_rm_missings(data, {{ cross }})
-
-  # 4. Remove negative values
+  # 3. Remove negatives
   if (!negative) {
     data <- data_rm_negatives(data,  {{ col }})
   }
 
-  # 5. Calculate values
+  # 4. Calculate values
   result_grouped <- data %>%
     dplyr::group_by({{ cross }}) %>%
     skim_metrics({{ col }}) %>%
@@ -879,7 +889,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
 
   # TODO: Add limits
   # attr(data[[newcol]],"limits")
-
+  result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits= digits)
 }
 
@@ -916,20 +926,17 @@ tab_metrics_one_cor <- function(data, col, cross, method = "p", ci = FALSE, nega
     data <- data_clean(data)
   }
 
-  # 3. Remove negatives
-  if (! negative) {
-    data <- data_rm_negatives(data, {{ col }})
-    data <- data_rm_negatives(data, {{ cross }})
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+
+  # 4. Remove negatives
+  if (!negative) {
+    data <- data_rm_negatives(data, c({{ col }}, {{ cross }}))
   }
 
-  # 4. Remove missings
-  data <- data_rm_missings(data, {{ col }})
-  data <- data_rm_missings(data, {{ cross }})
-
-  # 6. Get columns
+  # 5. Get columns
   cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
-
 
   # Calculate correlation
   method <- ifelse(method == "s", "s", "p")
@@ -978,7 +985,7 @@ tab_metrics_one_cor <- function(data, col, cross, method = "p", ci = FALSE, nega
 
   title <- ifelse(prefix == "", NULL, prefix)
 
-  # TODO: print caption
+  result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits= 2, caption=title)
 }
 
@@ -1004,7 +1011,7 @@ tab_metrics_one_cor <- function(data, col, cross, method = "p", ci = FALSE, nega
 #' @export
 #' @importFrom rlang .data
 tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
-  # 1. Check parameters
+  # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
 
@@ -1013,17 +1020,12 @@ tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits =
     data <- data_clean(data)
   }
 
-  # Recode negative values to NA
+  # 3. Remove negatives
   if (!negative) {
     data <- data_rm_negatives(data, {{ cols }})
   }
 
-  # # 3. Remove missings
-  # if (!missings) {
-  #   data <- data_rm_missings(data, {{ cols }})
-  # }
-
-
+  # 4. Calculate
   result <- data %>%
     dplyr::select({{ cols }}) |>
     skim_metrics() |>
@@ -1078,6 +1080,7 @@ tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits =
     result <- dplyr::rename(result, Item = tidyselect::all_of("item"))
   }
 
+  result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits= digits)
 }
 
@@ -1106,7 +1109,7 @@ tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits =
 #' @export
 #' @importFrom rlang .data
 tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digits = 1, values = c("m", "sd"), labels = TRUE, clean = TRUE, ...) {
-  # 1. Check parameters
+  # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
   check_has_column(data, {{ cross }})
@@ -1119,7 +1122,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
   # 3. Remove missings
   data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
 
-  # Remove negative values
+  # 4. Remove negatives
   if (!negative) {
     data <- data_rm_negatives(data, {{ cols }})
   }
@@ -1256,7 +1259,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
     result <- dplyr::rename(result, Item = tidyselect::all_of("item"))
   }
 
-
+  result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits= digits)
 }
 
@@ -1274,6 +1277,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #' @param cols The source columns
 #' @param cross The target columns or NULL to calculate correlations within the source columns
 #' @param method The output metrics, p = Pearson's R, s = Spearman's rho
+#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param effects Add significance stars and only show significant values
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
@@ -1287,7 +1291,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #'
 #' @importFrom rlang .data
 #' @export
-tab_metrics_items_cor <- function(data, cols, cross, method = "p", effects = FALSE, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_items_cor <- function(data, cols, cross, method = "p", negative = F, effects = FALSE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -1298,12 +1302,15 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "p", effects = FAL
     data <- data_clean(data)
   }
 
-  # Remove missings
-  # TODO: output a warning
-  # data <- data %>%
-  #   tidyr::drop_na({{ cols }}, {{ cols_cor }})
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
 
-  # Prepare parameters
+  # 4. Remove negatives
+  if (!negative) {
+    data <- data_rm_negatives(data, {{ cols }})
+  }
+
+  # 5. Prepare parameters
   cols <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
@@ -1343,25 +1350,38 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "p", effects = FAL
     tidyr::pivot_wider(names_from = "target", values_from = "value") %>%
     dplyr::rename(Item = tidyselect::all_of("item"))
 
+  result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits= 2)
 }
 
 #' Add vlkr_tbl class
 #'
-#' Additionally, removes the skim_df class if present
+#' Additionally, removes the skim_df class if present.
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
+#' @param data A tibble.
 #' @param digits Set the plot digits. If NULL (default), no digits are set.
+#' @param caption The caption printed above the table.
+#' @param baseline A base line printed below the table.
 #' @return A volker tibble
-.to_vlkr_tab <- function(data, digits = NULL, caption=NULL) {
+.to_vlkr_tab <- function(data, digits = NULL, caption = NULL, baseline = TRUE) {
   if (!is.null(digits)) {
     attr(data, "digits") <- digits
   }
 
   if (!is.null(caption)) {
     attr(data, "caption") <- caption
+  }
+
+  if (baseline == TRUE) {
+    baseline <- get_baseline(data)
+  } else if (baseline == FALSE) {
+    baseline <- NULL
+  }
+
+  if (!is.null(baseline)) {
+    attr(data, "baseline") <- baseline
   }
 
   class(data) <- c("vlkr_tbl", setdiff(class(data), "skim_df"))
@@ -1380,6 +1400,7 @@ knit_table <- function(df, ...) {
 
   # TODO: Embed "digits" in the vlkr_options list
   digits <- attr(df, "digits", exact = TRUE)
+  baseline <- attr(df, "baseline", exact=TRUE)
 
   if (is.null(digits)) {
     digits <- getOption("digits")
@@ -1424,6 +1445,10 @@ knit_table <- function(df, ...) {
       knitr::kable("pipe", align = c("l", rep("r", ncol(df) - 1)), digits = digits, ...)
   }
 
+  if (!is.null(baseline)) {
+    attr(df, "baseline") <- baseline
+  }
+
   df
 }
 
@@ -1459,14 +1484,28 @@ print.vlkr_tbl <- function(x, ...) {
   x <- knit_table(x)
 
   if (knitr::is_html_output()) {
+    baseline <- attr(x, "baseline", exact=TRUE)
+
     x <- knitr::asis_output(x)
     knitr::knit_print(x)
+
+    if (!is.null(baseline)) {
+      knitr::knit_print(baseline)
+    }
+
   } else {
     caption <- attr(x, "caption", exact=TRUE)
     if (!is.null(caption)) {
-      cat("\n",caption)
+      cat("\n",caption, sep="")
     }
+
     print(x, ...)
+
+    baseline <- attr(x, "baseline", exact=TRUE)
+    if (!is.null(baseline)) {
+      cat("\n", baseline, "\n\n", sep="")
+    }
+
   }
 }
 

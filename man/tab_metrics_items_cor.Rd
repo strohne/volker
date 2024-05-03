@@ -9,6 +9,7 @@ tab_metrics_items_cor(
   cols,
   cross,
   method = "p",
+  negative = F,
   effects = FALSE,
   labels = TRUE,
   clean = TRUE,
@@ -23,6 +24,8 @@ tab_metrics_items_cor(
 \item{cross}{The target columns or NULL to calculate correlations within the source columns}
 
 \item{method}{The output metrics, p = Pearson's R, s = Spearman's rho}
+
+\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{effects}{Add significance stars and only show significant values}
 

@@ -15,5 +15,5 @@ data_rm_missings(data, cols)
 Data frame
 }
 \description{
-Remove missings and output a message
+TODO: report missings without zeroes and negatives
 }

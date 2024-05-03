@@ -4,10 +4,12 @@
 \alias{.to_vlkr_list}
 \title{Add vlkr_list class}
 \usage{
-.to_vlkr_list(data)
+.to_vlkr_list(data, baseline = TRUE)
 }
 \arguments{
 \item{data}{A list}
+
+\item{baseline}{Whether to get the baseline.}
 }
 \value{
 A volker list
