@@ -1375,6 +1375,9 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "p", effects = FAL
 #' @param df Data frame
 #' @return Formatted  table produced by \link{kable}
 knit_table <- function(df, ...) {
+
+  options(knitr.kable.NA = '')
+
   # TODO: Embed "digits" in the vlkr_options list
   digits <- attr(df, "digits", exact = TRUE)
 
@@ -1396,7 +1399,7 @@ knit_table <- function(df, ...) {
   if (knitr::is_html_output()) {
     # Replace \n by <br>
     df <- df %>%
-      dplyr::mutate(dplyr::across(dplyr::where(is.character), ~ gsub("\n", "<br>", .))) %>%
+      dplyr::mutate(dplyr::across(dplyr::where(is.character), knit_prepare)) %>%
       knitr::kable(
         "html",
         escape = FALSE,
@@ -1424,6 +1427,18 @@ knit_table <- function(df, ...) {
   df
 }
 
+
+#' Prepare markdown content for table rendering
+#'
+#' @keywords internal
+#'
+#' @param x Markdown text
+#' @return Markdown text with line breaks and excaped special characters
+knit_prepare <- function(x) {
+  x <- gsub("\n", "<br>", x, fixed=TRUE)
+  x <- gsub("*", "\\*", x, fixed=TRUE)
+  x
+}
 
 #' Printing method for volker tables.
 #'

@@ -9,8 +9,8 @@ tab_counts_items(
   cols,
   ci = FALSE,
   missings = FALSE,
-  values = c("n", "p"),
   percent = TRUE,
+  values = c("n", "p"),
   labels = TRUE,
   clean = TRUE,
   ...
@@ -25,9 +25,9 @@ tab_counts_items(
 
 \item{missings}{Include missing values (default FALSE)}
 
-\item{values}{The values to output: n (frequency) or p (percentage) or both (the default)}
-
 \item{percent}{Set to FALSE to prevent calculating percents from proportions}
+
+\item{values}{The values to output: n (frequency) or p (percentage) or both (the default)}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

@@ -25,7 +25,7 @@ plot_counts_one_grouped(
 
 \item{col}{The column holding factor values}
 
-\item{cross}{The column holding groups to compare}
+\item{cross}{The column holding groups to split}
 
 \item{category}{The value FALSE will force to plot all categories.
 A character value will focus a selected category.
@@ -34,7 +34,7 @@ When NULL, in case of boolean values, only the TRUE category is plotted.}
 \item{limits}{The scale limits, autoscaled by default.
 Set to \code{c(0,100)} to make a 100 \% plot.}
 
-\item{ordered}{Values can be nominal (0) or ordered ascending (1) descending (-1).
+\item{ordered}{Values of the cross column can be nominal (0) or ordered ascending (1) descending (-1).
 By default (NULL), the ordering is automatically detected.
 An appropriate color scale should be choosen depending on the ordering.
 For unordered values, colors from VLKR_FILLDISCRETE are used.
@@ -62,7 +62,8 @@ Disable the title with FALSE or provide a custom title as character value.}
 A ggplot object
 }
 \description{
-Note: only non-missing cases are used to calculate the percentage.
+Note: Only non-missing cases are used to calculate the percentage.
+TODO: For prop=cols, flip to columns instead of using bars
 }
 \examples{
 library(volker)

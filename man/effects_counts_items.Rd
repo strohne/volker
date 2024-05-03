@@ -4,20 +4,27 @@
 \alias{effects_counts_items}
 \title{Test whether shares differ}
 \usage{
-effects_counts_items(data, cols, clean = TRUE, percent = TRUE, ...)
+effects_counts_items(
+  data,
+  cols,
+  percent = TRUE,
+  labels = TRUE,
+  clean = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{A tibble containing item measures}
 
 \item{cols}{Tidyselect item variables (e.g. starts_with...)}
 
-\item{clean}{Prepare data by \link{data_clean}.}
-
 \item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
-\item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
-
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
+
+\item{clean}{Prepare data by \link{data_clean}.}
+
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }
 \value{
 A volker tibble

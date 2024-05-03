@@ -9,9 +9,9 @@ tab_counts_one_grouped(
   col,
   cross,
   missings = FALSE,
+  percent = TRUE,
   prop = "total",
   values = c("n", "p"),
-  percent = TRUE,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -22,15 +22,15 @@ tab_counts_one_grouped(
 
 \item{col}{The column holding factor values}
 
-\item{cross}{The column holding groups to compare}
+\item{cross}{The column holding groups to split}
 
 \item{missings}{Include missing values in the output (default FALSE)}
+
+\item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
 \item{prop}{The basis of percent calculation: "total" (the default), "cols", or "rows".}
 
 \item{values}{The values to output: n (frequency) or p (percentage) or both (the default).}
-
-\item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
@@ -48,7 +48,7 @@ Output frequencies cross tabulated with a grouping column
 library(volker)
 data <- volker::chatgpt
 
-tab_counts(data, adopter, sd_gender)
+tab_counts_one_grouped(data, adopter, sd_gender)
 
 }
 \keyword{internal}

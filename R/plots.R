@@ -218,7 +218,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
   }
 
   result <- dplyr::rename(result, item = {{ col }})
-  result <- dplyr::mutate(result, value = "TRUE")
+  result <- dplyr::mutate(result, value = factor("TRUE"))
   category = "TRUE"
 
   # Title
@@ -1375,13 +1375,6 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
       )
   }
 
-  # ci offset
-  # data <- data |>
-  #   dplyr::group_by(.data$item) |>
-  #   dplyr::arrange(dplyr::desc(.data$value)) |>
-  #   mutate(p_cum = cumsum((.data$p - dplyr::first(.data$p)) / 100)) |>
-  #   dplyr::ungroup()
-
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(x = .data$item, y = .data$p / 100, fill = .data$value, group = .data$value)) +
     ggplot2::geom_col()
@@ -1389,10 +1382,9 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
   if (ci && !is.null(category)) {
     pl <- pl +
       ggplot2::geom_errorbar(
-        #aes(ymin = .data$p_cum + .data$ci.low, ymax = .data$p_cum + .data$ci.high),
         ggplot2::aes(ymin = .data$ci.low, ymax = .data$ci.high),
         width = 0.1, color = "black"
-        )
+      )
   }
 
   pl <- pl +
@@ -1420,6 +1412,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
   # - Simplify binary plots
   # - Generate a color scale for ordinal scales by vlkr_colors_sequential()
   # - Use vlkr_colors_discrete() for other cases
+
   if (!is.null(category)) {
     pl <- pl +
       ggplot2::scale_fill_manual(

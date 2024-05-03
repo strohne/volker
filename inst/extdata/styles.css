@@ -12,6 +12,11 @@ h3 {
   font-weight:bold;
 }
 
+h6 {
+  font-size:1em;
+  color:#337ab7;
+}
+
 .level4.tabset-pills {
   margin-top:1em;
 }
