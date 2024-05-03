@@ -897,8 +897,15 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @return A volker tibble
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' tab_metrics_one_cor(data, starts_with("cg_adoption_"), sd_gender)
+#'
+#' @export
 #' @importFrom rlang .data
-tab_metrics_one_cor <- function(data, col, cross, method="p", ci = FALSE, negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_one_cor <- function(data, col, cross, method = "p", ci = FALSE, negative = FALSE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
