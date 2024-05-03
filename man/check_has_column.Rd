@@ -9,9 +9,9 @@ check_has_column(data, cols, msg = NULL)
 \arguments{
 \item{data}{A data frame}
 
-\item{msg}{A custom error message if the check fails}
+\item{cols}{A tidyselection of columns}
 
-\item{col}{A column name}
+\item{msg}{A custom error message if the check fails}
 }
 \value{
 boolean Whether the column exists

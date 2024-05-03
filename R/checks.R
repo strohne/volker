@@ -39,7 +39,7 @@ check_is_dataframe <- function(obj, msg = NULL, stopit = TRUE) {
 #' @keywords internal
 #'
 #' @param data A data frame
-#' @param col A column name
+#' @param cols A tidyselection of columns
 #' @param msg A custom error message if the check fails
 #' @return boolean Whether the column exists
 check_has_column <- function(data, cols, msg = NULL) {
