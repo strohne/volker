@@ -24,7 +24,8 @@ plot_metrics_items_cor(
 
 \item{cross}{Tidyselect item variables to correlate (e.g. starts_with...).}
 
-\item{limits}{The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.}
+\item{limits}{The scale limits, a list with x and y components, e.g. \code{list(x=c(0,100), y=c(20,100))}.
+Set NULL to extract limits from the labels.}
 
 \item{logplot}{Whether to plot log scales.}
 
@@ -44,12 +45,5 @@ A ggplot object.
 }
 \description{
 Scatter plot of correlations between multiple items
-}
-\examples{
-library(volker)
-data <- volker::chatgpt
-
-plot_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use_"))
-
 }
 \keyword{internal}

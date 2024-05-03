@@ -909,7 +909,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' tab_metrics_one_cor(data, starts_with("cg_adoption_"), sd_age)
+#' tab_metrics_one_cor(data, use_private, sd_age)
 #'
 #' @export
 #' @importFrom rlang .data
@@ -1276,7 +1276,6 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #' @param cross The target columns or NULL to calculate correlations within the source columns
 #' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param effects Add significance stars and only show significant values
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
@@ -1289,7 +1288,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #'
 #' @importFrom rlang .data
 #' @export
-tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negative = F, effects = FALSE, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negative = F, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -1320,11 +1319,11 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negativ
         .data$x, .data$y,
         function(x, y) stats::cor.test(data[[x]], data[[y]], method = method)
       ),
-      value = purrr::map(.data$test, function(x) round(as.numeric(x$estimate),2)),
-      stars = purrr::map(.data$test, function(x) get_stars(x$p.value)),
-      p = purrr::map(.data$test, function(x) round(x$p.value,2))
+      value = purrr::map(.data$test, function(x) round(as.numeric(x$estimate),2))
+      #stars = purrr::map(.data$test, function(x) get_stars(x$p.value)),
+      #p = purrr::map(.data$test, function(x) round(x$p.value,2))
     ) %>%
-    dplyr::select(item = "x_name", target = "y_name", "value", "p", "stars")
+    dplyr::select(item = "x_name", target = "y_name", "value")
 
 
   # Remove common item prefix
@@ -1336,11 +1335,11 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negativ
   result <- result %>%
     dplyr::mutate(value = round(unlist(.data$value), 2))
 
-  if (effects == TRUE) {
-    result <- result %>%
-      dplyr::mutate(value = paste0(unlist(.data$value), .data$stars)) %>%
-      dplyr::mutate(value = ifelse(.data$p >= 0.1, "", .data$value))
-  }
+  # if (effects == TRUE) {
+  #   result <- result %>%
+  #     dplyr::mutate(value = paste0(unlist(.data$value), .data$stars)) %>%
+  #     dplyr::mutate(value = ifelse(.data$p >= 0.1, "", .data$value))
+  # }
 
   result <- dplyr::select(result, "item", "target", "value")
 

@@ -45,7 +45,7 @@ Correlate two columns
 library(volker)
 data <- volker::chatgpt
 
-tab_metrics_one_cor(data, starts_with("cg_adoption_"), sd_age)
+tab_metrics_one_cor(data, use_private, sd_age)
 
 }
 \keyword{internal}

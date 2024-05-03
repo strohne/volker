@@ -24,7 +24,8 @@ plot_metrics_one_cor(
 
 \item{cross}{The second column holding metric values.}
 
-\item{limits}{The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.}
+\item{limits}{The scale limits, a list with x and y components, e.g. \code{list(x=c(0,100), y=c(20,100))}.
+Set NULL to extract limits from the labels.}
 
 \item{logplot}{Whether to plot log scales.}
 
@@ -49,7 +50,7 @@ Correlate two items
 library(volker)
 data <- volker::chatgpt
 
-plot_metrics_one_cor(data, starts_with("cg_adoption_"), sd_age)
+plot_metrics_one_cor(data, use_private, sd_age)
 
 }
 \keyword{internal}

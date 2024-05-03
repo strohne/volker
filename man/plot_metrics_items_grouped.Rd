@@ -23,7 +23,7 @@ plot_metrics_items_grouped(
 
 \item{cross}{The column holding groups to compare.}
 
-\item{limits}{The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.}
+\item{limits}{The scale limits. Set NULL to extract limits from the labels.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 

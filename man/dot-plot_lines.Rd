@@ -9,6 +9,7 @@
   ci = FALSE,
   scale = NULL,
   box = FALSE,
+  limits = NULL,
   base = NULL,
   title = NULL
 )

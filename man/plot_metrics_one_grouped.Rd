@@ -31,7 +31,7 @@ plot_metrics_one_grouped(
 
 \item{box}{Whether to add boxplots}
 
-\item{limits}{The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.}
+\item{limits}{The scale limits. Set NULL to extract limits from the labels.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 

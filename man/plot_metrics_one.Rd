@@ -26,7 +26,7 @@ plot_metrics_one(
 
 \item{box}{Whether to place a boxplot on top.}
 
-\item{limits}{The scale limits. Set NULL to extract limits from the label. NOT IMPLEMENTED YET.}
+\item{limits}{The scale limits. Set NULL to extract limits from the label.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 

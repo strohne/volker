@@ -94,7 +94,7 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
   cols_cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
   is_items <- length(cols_eval) > 1
-  is_grouped <- length(cols_cross_eval)== 1
+  is_grouped <- length(cols_cross_eval) == 1
   is_metric <- metric != FALSE
 
   # Single variables
@@ -114,6 +114,9 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
   }
   else if (is_items && is_grouped && !is_metric) {
     plot_metrics_items_grouped(data, {{ cols }}, {{ cross }},  ...)
+  }
+  else if (is_items && !is_grouped && is_metric) {
+    plot_metrics_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
 
   # Not found
@@ -601,7 +604,7 @@ plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #' @param col The column holding metric values.
 #' @param ci Whether to plot the confidence interval.
 #' @param box Whether to place a boxplot on top.
-#' @param limits The scale limits. Set NULL to extract limits from the label. NOT IMPLEMENTED YET.
+#' @param limits The scale limits. Set NULL to extract limits from the label.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
@@ -674,8 +677,6 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
       color = "black"
     )
 
-    #ggplot2::geom_vline(ggplot2::aes(xintercept=mean({{ col }})), color="black")
-
   # Get title
   if (title == TRUE) {
     title <- get_title(data, {{ col }})
@@ -688,8 +689,16 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
       ggplot2::xlab(title)
   }
 
+  # Set limits
+  if (is.null(limits)) {
+    limits <- get_limits(data, {{ col }})
+  }
+  if (!is.null(limits)) {
+    pl <- pl +
+      coord_cartesian(xlim = limits)
+  }
+
   # Get base
-  # TODO: Report missings
   base_n <- data %>% nrow()
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
@@ -719,7 +728,7 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
 #' @param cross The column holding groups to compare.
 #' @param ci Whether to add error bars with 95% confidence intervals.
 #' @param box Whether to add boxplots
-#' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
+#' @param limits The scale limits. Set NULL to extract limits from the labels.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param numbers numbers to print on labels, 'n' for group size
 #' @param bars Add a boxplot (box), standard error (se) or 95% confidence interval (ci).
@@ -772,11 +781,10 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
       labs_replace( {{ cross }}, categories_n)
   }
 
-
-  # Set the scale
-  # if (is.null(limits)) {
-  #   limits <- get_limits(data, {{ col }})
-  # }
+  # Get scale and limits
+  if (is.null(limits)) {
+    limits <- get_limits(data, {{ col }})
+  }
 
   scale <- c()
   if (labels) {
@@ -810,6 +818,7 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
     scale = scale,
     ci = ci,
     box = box,
+    limits = limits,
     base = paste0("n=", nrow(data)),
     title = title
   )
@@ -823,7 +832,8 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
 #' @param data A tibble.
 #' @param col The first column holding metric values.
 #' @param cross The second column holding metric values.
-#' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
+#' @param limits The scale limits, a list with x and y components, e.g. \code{list(x=c(0,100), y=c(20,100))}.
+#'               Set NULL to extract limits from the labels.
 #' @param logplot Whether to plot log scales.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
@@ -836,7 +846,7 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' plot_metrics_one_cor(data, starts_with("cg_adoption_"), sd_age)
+#' plot_metrics_one_cor(data, use_private, sd_age)
 #'
 #' @export
 #' @importFrom rlang .data
@@ -874,10 +884,6 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, logplot = FALS
   col1 <- colnames(data)[cols_eval[1]]
   col2 <- colnames(data)[cross_eval[1]]
 
-  # if (is.null(limits)) {
-  #   limits <- get_limits(data, {{ cols }})
-  # }
-
   # Get variable caption from the attributes
   prefix <- ""
   if (labels) {
@@ -901,12 +907,28 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, logplot = FALS
     ) +
     ggplot2::geom_point(size=3, alpha=VLKR_SCATTER_ALPHA)
 
+  # Scale and limits
   if (logplot == TRUE) {
     pl <- pl +
       ggplot2::scale_x_log10() +
       ggplot2::scale_y_log10()
   }
 
+  # Set limits
+  if (is.null(limits)) {
+    limits <- list(
+      x = get_limits(data, {{ col }}),
+      y = get_limits(data, {{ cross }})
+    )
+  }
+
+  if (!is.null(limits)) {
+    pl <- pl +
+      coord_cartesian(xlim = limits$x, ylim = limits$y)
+  }
+
+
+  # Set axis labels
   if (labels) {
     pl <- pl +
       ggplot2::labs(x = labs[1], y = labs[2])
@@ -998,6 +1020,10 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
     )
   }
 
+  if (is.null(limits)) {
+    limits <- get_limits(data, {{ cols }})
+  }
+
   # Remove common item prefix and title
   # TODO: remove common postfix
   result <- dplyr::mutate(result, item = trim_prefix(.data$item))
@@ -1032,6 +1058,7 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
     ci = ci,
     box = box,
     scale = scale,
+    limits = limits,
     base = paste0("n=", base_n, "; multiple responses possible"),
     title = title
   )
@@ -1045,7 +1072,7 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
-#' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
+#' @param limits The scale limits. Set NULL to extract limits from the labels.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
@@ -1200,7 +1227,8 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
-#' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
+#' @param limits The scale limits, a list with x and y components, e.g. \code{list(x=c(0,100), y=c(20,100))}.
+#'               Set NULL to extract limits from the labels.
 #' @param logplot Whether to plot log scales.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
@@ -1209,131 +1237,9 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @return A ggplot object.
-#' @examples
-#' library(volker)
-#' data <- volker::chatgpt
-#'
-#' plot_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use_"))
-#'
-#' @export
 #' @importFrom rlang .data
 plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = FALSE, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  # 1. Check parameters
-  check_is_dataframe(data)
-  check_has_column(data, {{ cross }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
-
-  # 4. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
-  }
-
-  # 5. Remove 0 values in log plots
-  if (logplot) {
-    data <- data_rm_zeros(data, c({{ cols }}, {{ cross }}))
-  }
-
-  # 6. Calculate
-  # Get number and positions of cols
-  cols_cor_eval <- tidyselect::eval_select(expr = rlang::enquo(cross), data = data)
-  cols_eval <- tidyselect::eval_select(expr = rlang::enquo(cols), data = data)
-
-  # Get first cols
-  col1 <- colnames(data)[cols_eval[1]]
-  col2 <- colnames(data)[cols_cor_eval[1]]
-
-  # if (is.null(limits)) {
-  #   limits <- get_limits(data, {{ cols }})
-  # }
-
-  # Replace item labels
-  # if (labels) {
-  #   result <- labs_replace(
-  #     result, "item",
-  #     codebook(data, {{ cols }}),
-  #     "item_name", "item_label"
-  #   )
-  # }
-
-  # Remove common item prefix
-  #prefix <- get_prefix(data$item, trim=TRUE)
-  prefix <- ""
-  # result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
-
-  # Order item levels
-  # result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
-
-  pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(
-      x=.data[[col1]],
-      y=.data[[col2]],)
-    ) +
-    ggplot2::geom_point(size=3, alpha=VLKR_SCATTER_ALPHA)
-
-  if (logplot == TRUE) {
-    pl <- pl +
-      ggplot2::scale_x_log10() +
-      ggplot2::scale_y_log10()
-  }
-
-  # # Set the scale
-  # # TODO: get from attributes
-  # scale <- data %>%
-  #   codebook({{ cols }}) %>%
-  #   dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) %>%
-  #   prepare_scale()
-  #
-  # if (length(scale) > 0) {
-  #   pl <- pl +
-  #     ggplot2::scale_y_continuous(labels = ~ label_scale(., scale) )
-  # } else {
-  #   pl <- pl +
-  #     ggplot2::scale_y_continuous()
-  # }
-  #
-  # # Add scales, labels and theming
-  pl <- pl +
-  #   ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
-  #   ggplot2::scale_color_manual(
-  #     values = vlkr_colors_discrete(length(unique(result$group))),
-  #     labels = function(x) stringr::str_wrap(x, width = 40)
-  #     #guide = ggplot2::guide_legend(reverse = TRUE)
-  #   ) +
-  #   #ggplot2::scale_color_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +
-  #
-  #   ggplot2::ylab("Mean values") +
-  #   ggplot2::coord_flip(ylim = limits) +
-    ggplot2::theme(
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
-  # Add title
-  if (title == TRUE) {
-    title <- trim_label(prefix)
-  } else if (title == FALSE) {
-    title <- NULL
-  }
-  if (!is.null(title)) {
-    pl <- pl + ggplot2::ggtitle(label = title)
-  }
-
-  # Add base
-  # TODO: Report missings
-  base_n <- nrow(data)
-  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
-
-  # Convert to vlkr_plot
-  pl <- .attr_transfer(pl, data, "missings")
-  .to_vlkr_plot(pl)
+  warning("Not implemented yet", noBreaks. = TRUE)
 }
 
 #' Helper function: plot grouped bar chart
@@ -1467,7 +1373,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
 #' @param base The plot base as character or NULL.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-.plot_lines <- function(data, ci = FALSE, scale = NULL, box = FALSE, base = NULL, title = NULL) {
+.plot_lines <- function(data, ci = FALSE, scale = NULL, box = FALSE, limits = NULL, base = NULL, title = NULL) {
 
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(y=.data$item, x=.data$value, group=1))
@@ -1537,6 +1443,13 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
   #   )
   # }
 
+  # Add limits
+  if (!is.null(limits)) {
+    pl <- pl +
+      coord_cartesian(xlim = limits)
+  }
+
+  # Add scales
   if (length(scale) > 0) {
     pl <- pl +
       ggplot2::scale_x_continuous(labels = ~ label_scale(., scale) )
@@ -1545,13 +1458,11 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
       ggplot2::scale_x_continuous()
   }
 
-  # Add scales, labels and theming
   pl <- pl +
-    ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits = rev) +
+    ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits = rev)
 
-
-    # TODO: set limits
-    #coord_flip(ylim = limits) +
+  # Add theming
+  pl <- pl +
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
@@ -1580,7 +1491,6 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
   if (!is.null(title)) {
     pl <- pl + ggplot2::ggtitle(label = title)
   }
-
 
   # Add base
   if (!is.null(base)) {

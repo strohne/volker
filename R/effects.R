@@ -680,13 +680,7 @@ effects_metrics_items_cor <- function(data, cols, cross, method = "pearson", neg
 
   method <- ifelse(method == "spearman", "Spearman's rho", "Pearson's r")
   result <- result |>
-    dplyr::rename({{ method }} := .data$r) |>
-    dplyr::mutate(dplyr::across(tidyselect::everything(), \(x) as.character(x))) |>
-    tidyr::pivot_longer(
-      cols = -tidyselect::all_of(c("Item 1", "Item 2")),
-      names_to ="Statistic"
-    ) |>
-    dplyr::select(-tidyselect::all_of(c("Item 1", "Item 2")))
+    dplyr::rename({{ method }} := .data$r)
 
   result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits= 2, caption=title)

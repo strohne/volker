@@ -10,7 +10,6 @@ tab_metrics_items_cor(
   cross,
   method = "pearson",
   negative = F,
-  effects = FALSE,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -26,8 +25,6 @@ tab_metrics_items_cor(
 \item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
-
-\item{effects}{Add significance stars and only show significant values}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
