@@ -403,10 +403,10 @@ effects_metrics_one_grouped <- function(data, col, cross, method = "lm", negativ
       tidyr::unnest_longer(
         tidyselect::all_of("Results"),
         indices_to="Statistic",
-        values_to="Value",
+        values_to="value",
         transform=as.character
       ) |>
-      dplyr::select("Test", "Statistic","Value")
+      dplyr::select("Test", "Statistic","value")
 
     result <- c(result, list(.to_vlkr_tab(stats_t, caption="T-Test")))
   }
@@ -439,7 +439,7 @@ effects_metrics_one_grouped <- function(data, col, cross, method = "lm", negativ
       tidyr::pivot_longer(
         tidyselect::everything(),
         names_to="Statistic",
-        values_to="Value"
+        values_to="value"
       ) |>
       labs_replace("Statistic", tibble::tibble(
         value_name=c( "adj.r.squared","statistic", "df", "df.residual",  "p.value", "stars"),
@@ -773,7 +773,7 @@ tidy_lm_levels <- function(fit) {
       for (level in levels[-1]) {
         old_name <- paste0(var, level)
         new_name <- paste0(level)
-        lm_tidy$term <- sub(paste0("^", var, level), new_name, lm_tidy$term)
+        lm_tidy$term <- sub(paste0("^\\Q", var, level,"\\E"), new_name, lm_tidy$term)
       }
 
       # Create reference level row, assuming the first level is the reference

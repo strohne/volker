@@ -9,8 +9,8 @@ tab_metrics_items_grouped(
   cols,
   cross,
   negative = FALSE,
-  values = c("m", "sd"),
   digits = 1,
+  values = c("m", "sd"),
   labels = TRUE,
   clean = TRUE,
   ...
@@ -25,9 +25,9 @@ tab_metrics_items_grouped(
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
-\item{values}{The output metrics, mean (m), the standard deviation (sd) or both (the default).}
-
 \item{digits}{The number of digits to print.}
+
+\item{values}{The output metrics, mean (m), the standard deviation (sd) or both (the default).}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
