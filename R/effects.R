@@ -245,13 +245,13 @@ effects_counts_one_cor <- function(data, col, cross, clean = TRUE, ...) {
 #'
 #' @param data A tibble containing item measures
 #' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param clean Prepare data by \link{data_clean}.
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return  A volker tibble
 #' @importFrom rlang .data
-effects_counts_items <- function(data, cols, clean = TRUE, percent = TRUE, ...) {
+effects_counts_items <- function(data, cols, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
   stop("Not implemented yet")
 }
 
@@ -483,7 +483,7 @@ effects_metrics_one_grouped <- function(data, col, cross, method = "lm", negativ
 #'
 #' @export
 #' @importFrom rlang .data
-effects_metrics_one_cor <- function(data, col, cross, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effects_metrics_one_cor <- function(data, col, cross, method = "p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -557,7 +557,7 @@ effects_metrics_one_cor <- function(data, col, cross, method="p", negative = FAL
 #'
 #' @importFrom rlang .data
 #' @export
-effects_metrics_items <- function(data, cols, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effects_metrics_items <- function(data, cols, method = "p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)

@@ -232,9 +232,9 @@ tab_counts_one <- function(data, col, ci = FALSE, missings = TRUE, percent = TRU
 #' @param col The column holding factor values
 #' @param cross The column holding groups to split
 #' @param missings Include missing values in the output (default FALSE)
+#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param prop The basis of percent calculation: "total" (the default), "cols", or "rows".
 #' @param values The values to output: n (frequency) or p (percentage) or both (the default).
-#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
@@ -243,11 +243,11 @@ tab_counts_one <- function(data, col, ci = FALSE, missings = TRUE, percent = TRU
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' tab_counts(data, adopter, sd_gender)
+#' tab_counts_one_grouped(data, adopter, sd_gender)
 #'
 #' @importFrom rlang .data
 #' @export
-tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, prop = "total", values = c("n", "p"), percent = TRUE, labels = TRUE, clean = TRUE, ...) {
+tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent = TRUE, prop = "total", values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
@@ -445,8 +445,8 @@ tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #' @param cols Tidyselect item variables (e.g. starts_with...)
 #' @param ci Whether to compute confidence intervals
 #' @param missings Include missing values (default FALSE)
-#' @param values The values to output: n (frequency) or p (percentage) or both (the default)
 #' @param percent Set to FALSE to prevent calculating percents from proportions
+#' @param values The values to output: n (frequency) or p (percentage) or both (the default)
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
@@ -459,7 +459,7 @@ tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-tab_counts_items <- function(data, cols, ci = FALSE, missings = FALSE, values = c("n", "p"), percent = TRUE, labels = TRUE, clean = TRUE, ...) {
+tab_counts_items <- function(data, cols, ci = FALSE, missings = FALSE, percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -670,8 +670,8 @@ tab_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #' @param data A tibble
 #' @param col The columns holding metric values
 #' @param ci Whether to calculate confidence intervals of the mean
-#' @param digits The number of digits to print.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param digits The number of digits to print.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
@@ -1084,8 +1084,8 @@ tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits =
 #' @param cols The item columns that hold the values to summarize
 #' @param cross The column holding groups to compare
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param values The output metrics, mean (m), the standard deviation (sd) or both (the default).
 #' @param digits The number of digits to print.
+#' @param values The output metrics, mean (m), the standard deviation (sd) or both (the default).
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
@@ -1098,7 +1098,7 @@ tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits =
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, values = c("m", "sd"), digits = 1, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digits = 1, values = c("m", "sd"), labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
