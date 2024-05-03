@@ -670,8 +670,8 @@ tab_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #' @param data A tibble
 #' @param col The columns holding metric values
 #' @param ci Whether to calculate confidence intervals of the mean
-#' @param digits The number of digits to print.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param digits The number of digits to print.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
