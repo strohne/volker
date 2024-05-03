@@ -99,6 +99,3 @@ Basis: Only male and female respondents.
 
 #### {-}
 
-
-
-

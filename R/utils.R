@@ -29,37 +29,29 @@ zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
   x
 }
 
-#' Get the p value of an lm model
+#' Insert a name-value-pair into an object attribute
 #'
 #' @keywords internal
 #'
-#' @param fit The result of an lm() call
-#' @return The p value of the model
-lm_pvalue <- function(fit) {
-  fstat <- summary(fit)$fstatistic
-  stats::pf(fstat[1], fstat[2], fstat[3], lower.tail = FALSE)
+#' @param obj The object.
+#' @param key The attribute key.
+#' @param name The name of a list item within the attribute.
+#' @param value The value of the list item.
+#' @return The object with new attributes.
+.attr_insert <- function(obj, key, name, value) {
+  data <- attr(obj, key, exact = TRUE)
+  data[[name]] <- value
+  attr(obj, key) <- data
+  obj
 }
 
-#' Get significance stars from p values
+#' Transfer an attribute from one to another object
 #'
-#' @keywords internal
-#'
-#' @param x A vector of p values
-#' @return A character vector with significance stars
-get_stars <- function(x) {
-  sapply(x, function(p) {
-    if (p < 0.001) {
-      return("***")
-    } else if (p < 0.01) {
-      return("**")
-    } else if (p < 0.05) {
-      return("*")
-    } else if (p < 0.1) {
-      return(".")
-    } else {
-      return("")
-    }
-  })
+#' @param to The target object.
+#' @param from The source object.
+#' @param key The attribute key as character value.
+#' @return The target object with the updated attribute.
+.attr_transfer <- function(to, from, key) {
+  attr(to, key) <- attr(from, key, exact=TRUE)
+  to
 }
-
-

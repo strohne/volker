@@ -4,17 +4,21 @@
 \alias{.to_vlkr_tab}
 \title{Add vlkr_tbl class}
 \usage{
-.to_vlkr_tab(data, digits = NULL)
+.to_vlkr_tab(data, digits = NULL, caption = NULL, baseline = TRUE)
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
 \item{digits}{Set the plot digits. If NULL (default), no digits are set.}
+
+\item{caption}{The caption printed above the table.}
+
+\item{baseline}{A base line printed below the table.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
-Additionally, removes the skim_df class if present
+Additionally, removes the skim_df class if present.
 }
 \keyword{internal}

@@ -4,14 +4,14 @@
 \alias{check_has_column}
 \title{Check whether a column exist and stop if not}
 \usage{
-check_has_column(data, col, msg = NULL)
+check_has_column(data, cols, msg = NULL)
 }
 \arguments{
 \item{data}{A data frame}
 
-\item{col}{A column name}
-
 \item{msg}{A custom error message if the check fails}
+
+\item{col}{A column name}
 }
 \value{
 boolean Whether the column exists

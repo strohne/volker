@@ -82,12 +82,32 @@
 # Item labels are replaced and keep their order
 
     Code
-      levels(dplyr::pull(volker:::labs_replace_values(dplyr::select(data, adopter),
-      adopter, volker::codebook(data)), adopter))
+      levels(dplyr::pull(volker:::labs_replace(dplyr::select(data, adopter), adopter,
+      volker::codebook(data)), adopter))
     Output
       [1] "I try new offers immediately"                     
       [2] "I try new offers rather quickly"                  
       [3] "I wait until offers establish themselves"         
       [4] "I only use new offers when I have no other choice"
       [5] "[no answer]"                                      
+
+# A common prefix is removed from labels
+
+    Code
+      get_prefix(dplyr::pull(codebook(dplyr::select(data, starts_with("use"))),
+      item_label))
+    Output
+      [1] "Usage"
+
+---
+
+    Code
+      trim_prefix(dplyr::pull(codebook(dplyr::select(data, starts_with("use"))),
+      item_label))
+    Output
+       [1] "in private context"      "in private context"     
+       [3] "in private context"      "in private context"     
+       [5] "in private context"      "in professional context"
+       [7] "in professional context" "in professional context"
+       [9] "in professional context" "in professional context"
 

@@ -4,19 +4,21 @@
 \alias{.to_vlkr_plot}
 \title{Add the volker class and options}
 \usage{
-.to_vlkr_plot(pl, rows = NULL, maxlab = NULL)
+.to_vlkr_plot(pl, rows = NULL, maxlab = NULL, baseline = TRUE)
 }
 \arguments{
-\item{pl}{A ggplot object}
+\item{pl}{A ggplot object.}
 
 \item{rows}{The number of items on the vertical axis. Will be automatically determined when NULL.
 For stacked bar charts, don't forget to set the group parameter, otherwise it won't work}
 
 \item{maxlab}{The character length of the longest label to be plotted. Will be automatically determined when NULL.
-on the vertical axis}
+on the vertical axis.}
+
+\item{baseline}{Whether to print a message about removed values.}
 }
 \value{
-A ggplot object with vlkr_plt class
+A ggplot object with vlkr_plt class.
 }
 \description{
 Add the volker class and options

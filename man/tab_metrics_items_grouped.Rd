@@ -7,27 +7,27 @@
 tab_metrics_items_grouped(
   data,
   cols,
-  col_group,
+  cross,
   negative = FALSE,
-  values = c("m", "sd"),
   digits = 1,
+  values = c("m", "sd"),
   labels = TRUE,
   clean = TRUE,
   ...
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{cols}{The item columns that hold the values to summarize}
+\item{cols}{The item columns that hold the values to summarize.}
 
-\item{col_group}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
-\item{values}{The output metrics, mean (m), the standard deviation (sd) or both (the default).}
-
 \item{digits}{The number of digits to print.}
+
+\item{values}{The output metrics, mean (m), the standard deviation (sd) or both (the default).}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
@@ -36,7 +36,7 @@ tab_metrics_items_grouped(
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 TODO: handle completely missing data in single groups

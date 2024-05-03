@@ -7,24 +7,24 @@
 tab_metrics_items_cor(
   data,
   cols,
-  cols_cor,
-  method = "p",
-  significant = FALSE,
+  cross,
+  method = "pearson",
+  negative = F,
   labels = TRUE,
   clean = TRUE,
   ...
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{cols}{The source columns}
+\item{cols}{The source columns.}
 
-\item{cols_cor}{The target columns or NULL to calculate correlations within the source columns}
+\item{cross}{The target columns or NULL to calculate correlations within the source columns}
 
-\item{method}{The output metrics, p = Pearson's R, s = Spearman's rho}
+\item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho}
 
-\item{significant}{Only show significant values}
+\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
@@ -37,12 +37,14 @@ A volker tibble
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+TODO: do we need effects parameter here?
 }
 \examples{
 library(volker)
 data <- volker::chatgpt
 
-tab_metrics_items_cor(data, starts_with("cg_adoption_adv"))
+tab_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 
 }
 \keyword{internal}

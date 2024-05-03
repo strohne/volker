@@ -2,23 +2,23 @@
 % Please edit documentation in R/tables.R
 \name{tab_counts_items_grouped}
 \alias{tab_counts_items_grouped}
-\title{Compare the values in multiple items by a grouping column.}
+\title{Compare the values in multiple items by a grouping column}
 \usage{
-tab_counts_items_grouped(data, cols, col_group, clean = TRUE, ...)
+tab_counts_items_grouped(data, cols, cross, clean = TRUE, ...)
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble containing item measures.}
 
-\item{cols}{The item columns that hold the values to summarize}
+\item{cols}{The item columns that hold the values to summarize.}
 
-\item{col_group}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 TODO: implement -> focus one category and show n / p

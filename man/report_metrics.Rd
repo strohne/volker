@@ -7,22 +7,28 @@
 report_metrics(
   data,
   cols,
-  col_group = NULL,
+  cross = NULL,
+  metric = FALSE,
   ...,
-  index = TRUE,
+  index = FALSE,
+  effects = FALSE,
   title = TRUE,
   close = TRUE,
   clean = TRUE
 )
 }
 \arguments{
-\item{data}{A data frame}
+\item{data}{A data frame.}
 
 \item{cols}{A tidy column selection,
 e.g. a single column (without quotes)
 or multiple columns selected by methods such as starts_with().}
 
-\item{col_group}{Optional, a grouping column (without quotes).}
+\item{cross}{Optional, a grouping or correlation column (without quotes).}
+
+\item{metric}{When crossing variables, the cross column parameter can contain categorical or metric values.
+By default, the cross column selection is treated as categorical data.
+Set metric to TRUE, to treat it as metric and calculate correlations.}
 
 \item{...}{Parameters passed to the plot and tab functions.}
 
@@ -31,17 +37,19 @@ or multiple columns selected by methods such as starts_with().}
 an index will be calculated using the 'psych' package.
 Set to FALSE to suppress index generation.}
 
+\item{effects}{Output effect sizes.}
+
 \item{title}{A character providing the heading or TRUE (default) to output a heading.
 Classes for tabset pills will be added.}
 
 \item{close}{Whether to close the last tab (default value TRUE) or to keep it open.
 Keep it open to add further custom tabs by adding headers on the fifth level
-in Markdown (e.g. ##### Method)}
+in Markdown (e.g. ##### Method).}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 }
 \value{
-A volker report object
+A volker report object.
 }
 \description{
 Depending on your column selection, different types of plots and tables are generated.

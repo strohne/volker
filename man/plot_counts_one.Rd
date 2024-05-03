@@ -2,11 +2,14 @@
 % Please edit documentation in R/plots.R
 \name{plot_counts_one}
 \alias{plot_counts_one}
-\title{Plot the frequency of  values in one column.}
+\title{Plot the frequency of values in one column}
 \usage{
 plot_counts_one(
   data,
   col,
+  category = NULL,
+  ci = FALSE,
+  limits = NULL,
   missings = FALSE,
   numbers = NULL,
   title = TRUE,
@@ -16,11 +19,21 @@ plot_counts_one(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{col}{The column holding values to count}
+\item{col}{The column holding values to count.}
 
-\item{missings}{Include missing values (default FALSE)}
+\item{category}{The value FALSE will force to plot all categories.
+A character value will focus a selected category.
+When NULL, in case of boolean values, only the TRUE category is plotted.}
+
+\item{ci}{Whether to plot error bars for 95\% confidence intervals.}
+
+\item{limits}{The scale limits, autoscaled by default.
+Set to \code{c(0,100)} to make a 100\% plot.
+If the data is binary or focused on a single category, by default a 100\% plot is created.}
+
+\item{missings}{Include missing values (default FALSE).}
 
 \item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
 
@@ -34,7 +47,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }
 \value{
-A ggplot object
+A ggplot object.
 }
 \description{
 Note: only non-missing cases are used to calculate the percentage.

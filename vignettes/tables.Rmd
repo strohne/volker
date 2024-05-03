@@ -75,7 +75,7 @@ tab_metrics(data, starts_with("cg_adoption_"), sd_gender)
 ### Correlation of items: Adoption factors  
 
 ```{r}
-tab_metrics_items_cor(data, starts_with("cg_adoption_adv"))
+tab_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"))
 ```
 
 ### Correlation between different item groups: Adoption factors and usage

@@ -7,6 +7,7 @@
 tab_counts_one(
   data,
   col,
+  ci = FALSE,
   missings = TRUE,
   percent = TRUE,
   labels = TRUE,
@@ -15,11 +16,13 @@ tab_counts_one(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{col}{The column holding values to count}
+\item{col}{The column holding values to count.}
 
-\item{missings}{Include missing values in the output (default TRUE)}
+\item{ci}{Whether to compute 95\% confidence intervals.}
+
+\item{missings}{Include missing values in the output (default TRUE).}
 
 \item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
@@ -30,10 +33,10 @@ tab_counts_one(
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
-Output a frequency table for the values in one column
+TODO: option to choose from prop.test or binom.test
 }
 \examples{
 library(volker)

@@ -7,7 +7,8 @@
 tab_metrics_one_grouped(
   data,
   col,
-  col_group,
+  cross,
+  ci = FALSE,
   negative = FALSE,
   digits = 1,
   labels = TRUE,
@@ -16,15 +17,17 @@ tab_metrics_one_grouped(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{col}{The column holding metric values}
+\item{col}{The column holding metric values.}
 
-\item{col_group}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare.}
+
+\item{ci}{Whether to output 95\% confidence intervals.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
-\item{digits}{The number of digits to print}
+\item{digits}{The number of digits to print.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
@@ -33,10 +36,10 @@ tab_metrics_one_grouped(
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
-Output a five point summary for groups
+TODO: handle missings parameter
 }
 \examples{
 library(volker)

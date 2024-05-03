@@ -4,23 +4,27 @@
 \alias{tab_metrics}
 \title{Output a table with distribution parameters}
 \usage{
-tab_metrics(data, cols, col_group = NULL, clean = TRUE, ...)
+tab_metrics(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...)
 }
 \arguments{
-\item{data}{A data frame}
+\item{data}{A data frame.}
 
 \item{cols}{A tidy column selection,
 e.g. a single column (without quotes)
 or multiple columns selected by methods such as starts_with().}
 
-\item{col_group}{Optional, a grouping column (without quotes).}
+\item{cross}{Optional, a grouping column (without quotes).}
+
+\item{metric}{When crossing variables, the cross column parameter can contain categorical or metric values.
+By default, the cross column selection is treated as categorical data.
+Set metric to TRUE, to treat it as metric and calculate correlations.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
-\item{...}{Other parameters passed to the appropriate table function}
+\item{...}{Other parameters passed to the appropriate table function.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 The table type depends on the number of selected columns:

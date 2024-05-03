@@ -7,7 +7,7 @@
 plot_metrics_items_grouped(
   data,
   cols,
-  col_group,
+  cross,
   limits = NULL,
   negative = FALSE,
   title = TRUE,
@@ -17,13 +17,13 @@ plot_metrics_items_grouped(
 )
 }
 \arguments{
-\item{data}{A tibble containing item measures}
+\item{data}{A tibble containing item measures.}
 
-\item{cols}{Tidyselect item variables (e.g. starts_with...)}
+\item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
-\item{col_group}{The column holding groups to compare}
+\item{cross}{The column holding groups to compare.}
 
-\item{limits}{The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.}
+\item{limits}{The scale limits. Set NULL to extract limits from the labels.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
@@ -37,7 +37,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.}
 }
 \value{
-A ggplot object
+A ggplot object.
 }
 \description{
 Output averages for multiple variables compared by a grouping variable

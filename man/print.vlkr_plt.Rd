@@ -10,12 +10,12 @@
 \method{plot}{vlkr_plt}(x, ...)
 }
 \arguments{
-\item{x}{The volker plot}
+\item{x}{The volker plot.}
 
-\item{...}{Further parameters passed to print()}
+\item{...}{Further parameters passed to print().}
 }
 \value{
-No return value
+No return value.
 }
 \description{
 Printing method for volker plots

@@ -7,23 +7,27 @@
 #' When used in combination with the Markdown-template "html_report",
 #' the different parts of the report are grouped under a tabsheet selector.
 #'
-#' @param data A data frame
+#' @param data A data frame.
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
-#' @param col_group Optional, a grouping column (without quotes).
+#' @param cross Optional, a grouping or correlation column (without quotes).
+#' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
+#'            By default, the cross column selection is treated as categorical data.
+#'            Set metric to TRUE, to treat it as metric and calculate correlations.
 #' @param ... Parameters passed to the plot and tab functions.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the 'psych' package.
 #'              Set to FALSE to suppress index generation.
+#' @param effects Output effect sizes.
 #' @param title A character providing the heading or TRUE (default) to output a heading.
 #'               Classes for tabset pills will be added.
 #' @param close Whether to close the last tab (default value TRUE) or to keep it open.
 #'              Keep it open to add further custom tabs by adding headers on the fifth level
-#'              in Markdown (e.g. ##### Method)
+#'              in Markdown (e.g. ##### Method).
 #' @param clean Prepare data by \link{data_clean}.
-#' @return A volker report object
+#' @return A volker report object.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -31,7 +35,7 @@
 #' report_metrics(data, sd_age)
 #'
 #' @export
-report_metrics <- function(data, cols, col_group = NULL, ..., index = TRUE, title = TRUE, close = TRUE, clean = TRUE) {
+report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index = FALSE, effects = FALSE, title = TRUE, close = TRUE, clean = TRUE) {
 
   if (clean) {
     data <- data_clean(data)
@@ -55,17 +59,23 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index = TRUE, titl
 
 
   # Add Plot
-  chunks <- plot_metrics(data, {{ cols}}, {{ col_group }}, clean=clean, ..., title = plot_title) %>%
+  chunks <- plot_metrics(data, {{ cols }}, {{ cross }}, metric = metric, effects = effects, clean = clean, ..., title = plot_title) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
-  chunks <- tab_metrics(data, {{ cols}}, {{ col_group }}, clean=clean, ...) %>%
+  chunks <- tab_metrics(data, {{ cols}}, {{ cross }}, metric = metric, effects=effects, clean=clean, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
+
+  # Add effect sizes
+  if (effects) {
+    chunks <- effects_metrics(data, {{ cols }}, {{ cross }}, metric = metric, effects=effects, clean=clean, ...) %>%
+      .add_to_vlkr_rprt(chunks, "Effects")
+  }
 
   # Add index
   if (index) {
-    idx <- .report_idx(data, {{ cols}}, {{ col_group }}, title = plot_title)
-    chunks <- append(chunks,idx)
+    idx <- .report_idx(data, {{ cols }}, {{ cross }}, metric = metric, ..., effects = effects, title = plot_title)
+    chunks <- append(chunks, idx)
   }
 
   # Close tabs
@@ -90,25 +100,29 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index = TRUE, titl
 #' When used in combination with the Markdown-template "html_report",
 #' the different parts of the report are grouped under a tabsheet selector.
 #'
-#' @param data A data frame
+#' @param data A data frame.
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
-#' @param col_group Optional, a grouping column (without quotes).
+#' @param cross Optional, a grouping column (without quotes).
+#' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
+#'            By default, the cross column selection is treated as categorical data.
+#'            Set metric to TRUE, to treat it as metric and calculate correlations.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the 'psych' package.
 #'              Set to FALSE to suppress index generation.
+#' @param effects Whether to report statistical tests and effect sizes.
 #' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 #'                Set to NULL to remove numbers.
 #' @param title A character providing the heading or TRUE (default) to output a heading.
 #'               Classes for tabset pills will be added.
 #' @param close Whether to close the last tab (default value TRUE) or to keep it open.
 #'              Keep it open to add further custom tabs by adding headers on the fifth level
-#'              in Markdown (e.g. ##### Method)
+#'              in Markdown (e.g. ##### Method).
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Parameters passed to the plot and tab functions.
-#' @return A volker report object
+#' @return A volker report object.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -116,7 +130,7 @@ report_metrics <- function(data, cols, col_group = NULL, ..., index = TRUE, titl
 #' report_counts(data, sd_gender)
 #'
 #' @export
-report_counts <- function(data, cols, col_group = NULL, index = TRUE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
+report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALSE, effects = FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
 
   if (clean) {
     data <- data_clean(data)
@@ -140,16 +154,22 @@ report_counts <- function(data, cols, col_group = NULL, index = TRUE, numbers = 
 
 
   # Add Plot
-  chunks <- plot_counts(data, {{ cols }}, {{ col_group }}, ..., title = plot_title, numbers=numbers, clean=clean) %>%
+  chunks <- plot_counts(data, {{ cols }}, {{ cross }}, ...,  effects=effects, title = plot_title, numbers=numbers, clean=clean) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
-  chunks <- tab_counts(data, {{ cols }}, {{ col_group }}, clean=clean, ...) %>%
+  chunks <- tab_counts(data, {{ cols }}, {{ cross }},  effects=effects, clean=clean, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
+
+  # Add effect sizes
+  if (effects) {
+    chunks <- effects_counts(data, {{ cols }}, {{ cross }}, effects=effects, clean=clean, ...) %>%
+      .add_to_vlkr_rprt(chunks, "Effects")
+  }
 
   # Add index
   if (index) {
-    idx <- .report_idx(data, {{ cols }}, {{ col_group }}, title = plot_title)
+    idx <- .report_idx(data, {{ cols }}, {{ cross }}, metric = metric, effects = effects, title = plot_title)
     chunks <- append(chunks,idx)
   }
 
@@ -170,14 +190,18 @@ report_counts <- function(data, cols, col_group = NULL, index = TRUE, numbers = 
 #'
 #' @keywords internal
 #'
-#' @param data A data frame
+#' @param data A data frame.
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
-#' @param col_group Optional, a grouping column (without quotes).
-#' @param title Add a plot title (default = TRUE)
-#' @return A list containing a table and a plot volker report chunk
-.report_idx <- function(data, cols, col_group, title = TRUE) {
+#' @param cross Optional, a grouping column (without quotes).
+#' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
+#'            By default, the cross column selection is treated as categorical data.
+#'            Set metric to TRUE, to treat it as metric and calculate correlations.
+#' @param effects Whether to report statistical tests and effect sizes.
+#' @param title Add a plot title (default = TRUE).
+#' @return A list containing a table and a plot volker report chunk.
+.report_idx <- function(data, cols, cross, metric = FALSE, ..., effects = FALSE, title = TRUE) {
   chunks <- list()
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -192,16 +216,92 @@ report_counts <- function(data, cols, col_group = NULL, index = TRUE, numbers = 
     if (length(idx_name) > 0) {
 
       chunks <- idx %>%
-        plot_metrics(!!rlang::sym(idx_name), {{ col_group }}, title = title) %>%
+        plot_metrics(!!rlang::sym(idx_name), {{ cross }}, ..., title = title) %>%
         .add_to_vlkr_rprt(chunks, "Index: Plot")
 
       chunks <- idx %>%
-        tab_metrics(!!rlang::sym(idx_name), {{ col_group }}) %>%
+        tab_metrics(!!rlang::sym(idx_name), {{ cross }}, metric = metric, ...) %>%
         .add_to_vlkr_rprt(chunks, "Index: Table")
+
+      if (effects) {
+        chunks <- idx %>%
+          effects_metrics(!!rlang::sym(idx_name), {{ cross }}, metric = metric, ...) %>%
+          .add_to_vlkr_rprt(chunks, "Index: Effects")
+      }
     }
   }
 
   chunks
+}
+
+#' Add vlkr_list class
+#'
+#' Used to collect multiple tables in a list,
+#' e.g. from regression outputs
+#'
+#' @keywords internal
+#'
+#' @param data A list.
+#' @param baseline Whether to get the baseline.
+#' @return A volker list.
+.to_vlkr_list <- function(data, baseline = TRUE) {
+
+  if (baseline == TRUE) {
+    baseline <- get_baseline(data)
+  } else if (baseline == FALSE) {
+    baseline <- NULL
+  }
+
+  if (!is.null(baseline)) {
+    attr(data, "baseline") <- baseline
+  }
+
+  class(data) <- c("vlkr_list", setdiff(class(data), "vlkr_list"))
+  data
+}
+
+#' Printing method for volker lists
+#'
+#' @keywords internal
+#'
+#' @param x The volker list.
+#' @param ... Further parameters passed to print.
+#' @return No return value.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' rp <- report_metrics(data, sd_age, sd_gender, effects=TRUE)
+#' print(rp)
+#'
+#' @export
+print.vlkr_list <- function(x, ...) {
+  if (knitr::is_html_output()) {
+    x %>%
+      unlist() %>%
+      paste0(collapse = "\n") %>%
+      knitr::asis_output() %>%
+      knitr::knit_print()
+
+    baseline <- attr(x, "baseline", exact=TRUE)
+    if (!is.null(baseline)) {
+      knitr::knit_print(baseline)
+    }
+
+  } else {
+    for (part in x) {
+      caption <- attr(part, "caption", exact=TRUE)
+      if (!is.null(caption)) {
+        cat("\n", caption, sep="")
+      }
+      print(part, ...)
+    }
+
+    baseline <- attr(x, "baseline", exact=TRUE)
+    if (!is.null(baseline)) {
+      cat("\n", baseline, "\n\n", sep="")
+    }
+  }
 }
 
 #' Add the vlkr_rprt class to an object
@@ -211,9 +311,9 @@ report_counts <- function(data, cols, col_group = NULL, index = TRUE, numbers = 
 #'
 #' @keywords internal
 #'
-#' @param chunks A list of character strings
+#' @param chunks A list of character strings.
 #' @return A volker report object: List of character strings with the vlkr_rprt class
-#'         containing the parts of the report
+#'         containing the parts of the report.
 .to_vlkr_rprt <- function(chunks) {
   class(chunks) <- c("vlkr_rprt", setdiff(class(chunks),"vlkr_rprt"))
   chunks
@@ -223,10 +323,10 @@ report_counts <- function(data, cols, col_group = NULL, index = TRUE, numbers = 
 #'
 #' @keywords internal
 #'
-#' @param obj A new chunk (volker table, volker plot or character value)
-#' @param chunks The current report list
-#' @param tab A tabsheet name or NULL
-#' @return A volker report object
+#' @param obj A new chunk (volker table, volker plot or character value).
+#' @param chunks The current report list.
+#' @param tab A tabsheet name or NULL.
+#' @return A volker report object.
 .add_to_vlkr_rprt <- function(obj, chunks, tab = NULL) {
 
   if (knitr::is_html_output()) {
@@ -236,36 +336,73 @@ report_counts <- function(data, cols, col_group = NULL, index = TRUE, numbers = 
       chunks <- .add_to_vlkr_rprt(tab, chunks)
     }
 
-    # Objects
-    if (inherits(obj, "vlkr_tbl")) {
-      newchunk <- knit_table(obj)
-    } else if (inherits(obj, "vlkr_plt")) {
-      newchunk <- knit_plot(obj)
-    } else if (is.character(obj)) {
-      newchunk <- obj
-    } else {
-      warning("Could not determine the volker report chunk type")
+    # Nested objects
+    if (inherits(obj, "vlkr_list")) {
+      for (childobj in obj) {
+
+        caption <- attr(childobj, "caption", exact=TRUE)
+        if (!is.null(caption)) {
+          newchunk <- paste0("\n###### ", caption, "  \n")
+          chunks <- append(chunks, newchunk)
+        }
+
+        chunks <- .add_to_vlkr_rprt(childobj, chunks)
+
+        # baseline <- attr(childobj, "baseline", exact=TRUE)
+        # if (!is.null(baseline)) {
+        #   baseline <- paste0("\n*", baseline, "*  \n")
+        #   chunks <- .add_to_vlkr_rprt(baseline, chunks)
+        # }
+      }
     }
 
-    chunks <- append(chunks, newchunk)
+    # Objects
+    else {
+      if (inherits(obj, "vlkr_tbl")) {
+        newchunk <- knit_table(obj)
+      } else if (inherits(obj, "vlkr_plt")) {
+        newchunk <- knit_plot(obj)
+      } else if (is.character(obj)) {
+        newchunk <- obj
+      } else {
+        warning("Could not determine the volker report chunk type")
+      }
+
+      chunks <- append(chunks, newchunk)
+    }
+
+    # Add baseline
+    baseline <- attr(obj, "baseline", exact=TRUE)
+    if (!is.null(baseline)) {
+      newchunk <- paste0("\n*", baseline, "*  \n")
+      chunks <- append(chunks, newchunk)
+    }
+
   } else {
-    if (!is.null(tab)) {
+    if (!is.null(tab) && !is.null(obj)) {
       attr(obj,"comment") <- tab
     }
     chunks <- append(chunks, list(obj))
+
+    # Add baseline
+    # baseline <- attr(obj, "baseline", exact=TRUE)
+    # if (!is.null(baseline)) {
+    #   chunks <- append(chunks, list(baseline))
+    # }
+
   }
+
 
   .to_vlkr_rprt(chunks)
 }
 
-#' Printing method for volker reports.
+#' Printing method for volker reports
 #'
 #' @keywords internal
 #'
-#' @param x The volker report object
-#' @param ... Further parameters passed to print
-#' @importFrom rlang .data
-#' @return No return value
+#' @param x The volker report object.
+#' @param ... Further parameters passed to print.
+#' @return No return value.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -282,6 +419,7 @@ print.vlkr_rprt <- function(x, ...) {
       knitr::asis_output() %>%
       knitr::knit_print()
   } else {
+
     for (part in x) {
       print(part, ...)
     }

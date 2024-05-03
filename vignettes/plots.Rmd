@@ -30,6 +30,7 @@ data <- volker::chatgpt
 
 ### 1. One variable: Frequency plot of Gender
 ```{r}
+theme_set(theme_vlkr())
 plot_counts(data, sd_gender)
 ```
 
@@ -38,6 +39,7 @@ plot_counts(data, sd_gender)
 ```{r}
 # The prop parameter grows bars to 100%
 # The numbers parameter adds percentages to the bars
+
 plot_counts(data, adopter, sd_gender, prop = "rows", number="p")
 ```
 
@@ -60,7 +62,7 @@ plot_metrics(data, sd_age)
 
 ### 2. Distribution by a grouping variable
 ```{r}
-plot_metrics(data, sd_age, sd_gender)
+plot_metrics(data, sd_age, sd_gender, bars="box")
 ```
 
 
@@ -77,5 +79,11 @@ plot_metrics(data, starts_with("cg_adoption_"))
 data %>% 
   filter(sd_gender != "divers") %>% 
   plot_metrics(starts_with("cg_adoption_"), sd_gender)
+```
+
+## Correlations
+```{r}
+data |> 
+  plot_metrics(use_private, cols_cor = use_work)
 ```
 

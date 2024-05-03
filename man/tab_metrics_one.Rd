@@ -7,6 +7,7 @@
 tab_metrics_one(
   data,
   col,
+  ci = FALSE,
   negative = FALSE,
   digits = 1,
   labels = TRUE,
@@ -15,9 +16,11 @@ tab_metrics_one(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{col}{The columns holding metric values}
+\item{col}{The columns holding metric values.}
+
+\item{ci}{Whether to calculate 95\% confidence intervals of the mean.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
@@ -30,7 +33,7 @@ tab_metrics_one(
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 Output a five point summary table for the values in multiple columns

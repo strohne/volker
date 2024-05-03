@@ -43,6 +43,7 @@ test_that("Compare means of multiple items", {
   expect_snapshot(volker::tab_metrics_items_grouped(data, tidyselect::starts_with("cg_adoption_"), sd_gender), cran= TRUE)
 })
 
+
 # ...with missings
 test_that("Missing values make no trouble", {
   data %>%
@@ -53,6 +54,6 @@ test_that("Missing values make no trouble", {
 
 # Correlation of items
 test_that("Correlation of items", {
-  expect_snapshot(volker::tab_metrics_items_cor(data, tidyselect::starts_with("cg_adoption_")), cran= TRUE)
+  expect_snapshot(volker::tab_metrics_items_cor(data, tidyselect::starts_with("cg_adoption_"), tidyselect::starts_with("cg_adoption_")), cran= TRUE)
 })
 

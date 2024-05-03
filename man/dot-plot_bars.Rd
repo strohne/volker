@@ -7,16 +7,20 @@
 .plot_bars(
   data,
   category = NULL,
+  ci = FALSE,
   scale = NULL,
+  limits = NULL,
   numbers = NULL,
   base = NULL,
   title = NULL
 )
 }
 \arguments{
-\item{data}{Dataframe with the columns Item, value, p, n}
+\item{data}{Dataframe with the columns item, value, p, n.}
 
-\item{category}{Category for filtering the dataframe}
+\item{category}{Category for filtering the dataframe.}
+
+\item{ci}{Whether to plot error bars for 95\% confidence intervals. Provide the columns ci.low and ci.high in data.}
 
 \item{scale}{Direction of the scale: 0 = no direction for categories,
 -1 = descending or 1 = ascending values.}
@@ -25,12 +29,12 @@
 
 \item{base}{The plot base as character or NULL.}
 
-\item{title}{The plot title as character or NULL}
+\item{title}{The plot title as character or NULL.}
 }
 \value{
-A ggplot object
+A ggplot object.
 }
 \description{
-Helper function: plot grouped bar chart
+TODO: ci with stacked bar charts (where category is different from NULL)
 }
 \keyword{internal}

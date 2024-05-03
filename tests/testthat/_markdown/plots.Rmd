@@ -13,7 +13,6 @@ editor_options:
 knitr::opts_chunk$set(echo = FALSE, warning = TRUE, fig.width = 7)
 
 library(dplyr)
-library(forcats)
 library(ggplot2)
 library(volker)
 
@@ -26,16 +25,36 @@ data <- volker::chatgpt
 
 ## Frequencies of categorical variables
 
-### 1. One variable: Frequency plot of adopter
+### 1a. One variable: Frequency plot of adopter
 ```{r}
 data |> 
-#  mutate(adopter =fct_rev(adopter)) |> 
   plot_counts_one(adopter)
 ```
 
-### 2. Multiple items: Frequency plot for adoption factors
+### 1b. One variable: Frequency plot of binary data
+```{r}
+data |> 
+  mutate(adopter = adopter == "I try new offers immediately") |> 
+  plot_counts_one(adopter)
+```
+
+### cb. One variable: Frequency plot of a focus category
+```{r}
+data |> 
+  plot_counts_one(adopter, category="I try new offers immediately")
+```
+
+
+### 2a. Multiple items: Frequency plot for adoption factors
 ```{r}
 plot_counts_items(data, starts_with("cg_adoption_"), numbers = "p")
+```
+
+### 2b. Multiple items: Frequency plot for binary adoption values
+```{r}
+data |> 
+  mutate(across(starts_with("cg_adoption_advantage"), \(x) x > 3)) |> 
+  plot_counts(starts_with("cg_adoption_advantage"))
 ```
 
 ### 3. Two variables: Stacked frequency plot of innovator type by gender
@@ -54,7 +73,7 @@ plot_counts_one_grouped(data, adopter, sd_gender, prop = "cols")
 
 # Test whether factor is reversed
 data |> 
-  mutate(adopter=forcats::fct_rev(adopter)) |> 
+  mutate(adopter = factor(adopter, levels = rev(levels(adopter)))) |> 
   plot_counts_one_grouped(adopter, sd_gender, prop = "cols")
 
 ```
