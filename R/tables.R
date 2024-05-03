@@ -1084,8 +1084,8 @@ tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits =
 #' @param cols The item columns that hold the values to summarize
 #' @param cross The column holding groups to compare
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param values The output metrics, mean (m), the standard deviation (sd) or both (the default).
 #' @param digits The number of digits to print.
+#' @param values The output metrics, mean (m), the standard deviation (sd) or both (the default).
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
@@ -1098,7 +1098,7 @@ tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits =
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, values = c("m", "sd"), digits = 1, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digits = 1, values = c("m", "sd"), labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
