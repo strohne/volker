@@ -94,7 +94,7 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
       data,
       dplyr::across(
         tidyselect::where(is.character),
-        ~ stringr::str_replace_all(., stringr::fixed("/"), "/\u200B")
+        function(x) gsub("/", "/\u200B", x, fixed = TRUE)
       )
     )
 

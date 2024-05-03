@@ -35,7 +35,7 @@ codebook <- function(data, cols) {
   ) %>%
     dplyr::mutate(item_label = as.character(sapply(.data$item_label, function(x) ifelse(is.null(x), NA, x)))) %>%
     dplyr::mutate(item_label = ifelse(is.na(.data$item_label), .data$item_name, .data$item_label)) %>%
-    dplyr::mutate(item_group = stringr::str_remove(.data$item_name, "_.*")) %>%
+    dplyr::mutate(item_group = sub("_.*", "", .data$item_name)) |>
     dplyr::mutate(item_class = as.character(sapply(.data$item_class, function(x) ifelse(length(x) > 1, x[[length(x)]], x)))) %>%
     dplyr::select(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label", "value_label"))) %>%
     tidyr::unnest_longer(tidyselect::all_of("value_label"), keep_empty = TRUE)
@@ -46,7 +46,7 @@ codebook <- function(data, cols) {
     labels_codes <- labels %>%
       dplyr::rename(value_name = tidyselect::all_of("value_label_id")) %>%
       # dplyr::filter(!(value_name %in% c("comment", "class","levels","tzone"))) %>%
-      dplyr::filter(stringr::str_detect(.data$value_name, "^-?[0-9TF]+$")) %>%
+      dplyr::filter(grepl("^-?[0-9TF]+$", .data$value_name)) |>
       dplyr::mutate(value_label = as.character(.data$value_label)) %>%
       dplyr::select(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label", "value_name", "value_label")))
 
@@ -489,7 +489,7 @@ get_direction <- function(data, cols, extract = TRUE) {
     dplyr::mutate(dplyr::across(tidyselect::everything(), as.character)) %>%
     tidyr::pivot_longer(tidyselect::everything()) %>%
     dplyr::arrange(.data$value) %>%
-    dplyr::mutate(value = ifelse(extract, stringr::str_extract(.data$value, "[0-9-]+"), .data$value)) %>%
+    dplyr::mutate(value = ifelse(extract, regmatches(.data$value, regexpr("[0-9-]+", .data$value)), .data$value)) |>
     dplyr::distinct(dplyr::across(tidyselect::all_of("value"))) %>%
     dplyr::pull(.data$value)
 
@@ -575,6 +575,46 @@ get_prefix <- function(x, ignore.case = FALSE, trim = FALSE, delimiters= c(":","
   prefix
 }
 
+length(c("asdasd","sdf"))
+
+#' Wrap a string
+#'
+#' @keywords internal
+#'
+#' @param x A character vector
+#' @param width The number of chars after which to break
+#' @return A character vector with wrapped strings
+wrap_label <- function(x, width = 40) {
+  # Vectorize
+  if (length(x) > 1) {
+    return(sapply(x, wrap_label, width))
+  }
+
+  # Keep NA
+  else if (is.na(x)) {
+    return (x)
+  }
+
+  # Wrap at word boundaries
+  words <- unlist(strsplit(as.character(x), " "))
+  wrapped <- ""
+  line <- ""
+
+  for (word in words) {
+    if (nchar(line) + nchar(word) + 1 > width) {
+      wrapped <- paste(wrapped, line, sep = "\n")
+      line <- word
+    } else {
+      if (nchar(line) > 0) {
+        line <- paste(line, word, sep = " ")
+      } else {
+        line <- word
+      }
+    }
+  }
+  paste(wrapped, line, sep = "\n")
+}
+
 #' Remove trailing zeros and trailing or leading
 #' whitespaces, colons,
 #' hyphens and underscores
@@ -584,8 +624,8 @@ get_prefix <- function(x, ignore.case = FALSE, trim = FALSE, delimiters= c(":","
 #' @param x A character value
 #' @return The trimmed character value
 trim_label <- function(x) {
-  x <- stringr::str_remove(x, "[: ,0_-]*$")
-  x <- stringr::str_remove(x, "^[: ,_-]*")
+  x <- sub("[: ,0_-]*$", "", x)
+  x <- sub("^[: ,_-]*", "", x)
   x
 }
 
@@ -606,7 +646,7 @@ trim_prefix <- function(x, prefix=TRUE) {
   }
 
   if (!is.na(prefix) && (prefix != "")) {
-    x <- stringr::str_remove(x,stringr::fixed(prefix))
+    x <- sub(prefix, "", x, fixed = TRUE)
     x = ifelse(x == "", prefix, x)
   }
 
@@ -644,7 +684,7 @@ prepare_scale <- function(data) {
 label_scale <- function(x, scale) {
   ifelse(
     x %in% names(scale),
-    stringr::str_wrap(scale[as.character(x)], width = 10),
+    wrap_label(scale[as.character(x)], width = 10),
     x
   )
 }

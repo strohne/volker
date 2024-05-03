@@ -73,7 +73,7 @@ plot_counts_one_grouped(data, adopter, sd_gender, prop = "cols")
 
 # Test whether factor is reversed
 data |> 
-  mutate(adopter = factor(adopter, levels = rev(adopter))) |> 
+  mutate(adopter = factor(adopter, levels = rev(levels(adopter)))) |> 
   plot_counts_one_grouped(adopter, sd_gender, prop = "cols")
 
 ```

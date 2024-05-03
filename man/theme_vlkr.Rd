@@ -4,7 +4,12 @@
 \alias{theme_vlkr}
 \title{Define a default theme for volker plots}
 \usage{
-theme_vlkr(base_size = 11, base_color = "black", base_fill = VLKR_FILLDISCRETE)
+theme_vlkr(
+  base_size = 11,
+  base_color = "black",
+  base_fill = VLKR_FILLDISCRETE,
+  base_gradient = VLKR_FILLGRADIENT
+)
 }
 \arguments{
 \item{base_size}{Base font size}
@@ -12,6 +17,8 @@ theme_vlkr(base_size = 11, base_color = "black", base_fill = VLKR_FILLDISCRETE)
 \item{base_color}{Base font color}
 
 \item{base_fill}{A list of fill color sets. Each set can contain different numbers of colors.}
+
+\item{base_gradient}{A color vector used for creating gradient fill colors, e.g. in stacked bar plots.}
 }
 \value{
 A theme function

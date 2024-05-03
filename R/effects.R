@@ -363,6 +363,7 @@ effects_metrics_one_grouped <- function(data, col, cross, method = "lm", negativ
     stats_shapiro <- stats::shapiro.test(lm_data$av)
     stats_levene <- car::leveneTest(lm_data$av, group = lm_data$uv)
     stats_varequal = stats_levene[["Pr(>F)"]][1] > 0.05
+    #stats_cohen <- get_cohensd(lm_data$av, lm_data$uv, pooled_sd = stats_varequal)
     stats_cohen <- effectsize::cohens_d(lm_data$av, lm_data$uv, pooled_sd = stats_varequal, paired=FALSE)
     stats_t <- stats::t.test(lm_data$av ~ lm_data$uv, var.equal = stats_varequal)
 
@@ -806,6 +807,55 @@ get_ci <- function(x, conf = 0.95) {
   se <- stats::sd(x) / sqrt(n)
   error_margin <- stats::qt(conf + (1 - conf) / 2, df = n - 1) * se
   return(c(y = m, ymin = m - error_margin, ymax = m + error_margin))
+}
+
+#' Get Cohen's d for unpaired samples
+#'
+#' @keywords internal
+#'
+#' @param values A numeric vector
+#' @param groups A vector indicating groups
+#' @param conf The confidence interval
+#' @param pooled Whether to pool variances.
+#' @return A list with the elements d (Cohen's d), ci.low and ci.high (its confidence interval)
+get_cohensd <- function(values, groups, conf=0.95, pooled = FALSE) {
+  levels <- unique(stats::na.omit(groups))
+  x <- stats::na.omit(values[groups == levels[1]])
+  y <- stats::na.omit(values[groups == levels[2]])
+
+  di <- mean(x) - mean(y)
+  var_x <- stats::var(x)
+  var_y <- stats::var(y)
+  s_x <- stats::sd(x)
+  s_y <- stats::sd(y)
+  n_x <- length(x)
+  n_y <- length(y)
+  n <- n_x + n_y
+
+  if (pooled) {
+    s <- sqrt(((n_x - 1) * var_x + (n_y - 1) * var_y) / (n_x + n_y - 2))
+    cohensd <- di / s
+    df <- n - 2
+    se <-  sqrt((n_x + n_y) / (n_x * n_y) + (cohensd^2) / (2 * df))
+  }
+  else {
+    #s <- sqrt((var_x + var_y)/2)
+    s <- sqrt((s_x^2 / n_x) + (s_y^2 / n_y))
+    cohensd <- di / s
+    # Welch-Satterthwaite equation
+    df <- ((var_x / n_x + var_y / n_y)^2) /
+      ((var_x / n_x)^2 / (n_x - 1) + (var_y / n_y)^2 / (n_y - 1))
+    se <- sqrt((var_x / n_x) + (var_y / n_y))
+    #se <-  sqrt((n_x + n_y) / (n_x * n_y) + (cohensd^2) / (2 * df))
+  }
+
+  t_critical <- stats::qt(1 - ((1-conf) / 2), df)
+
+  list(
+    d = cohensd,
+    ci.low = cohensd - (t_critical * se),
+    ci.high= cohensd + (t_critical * se)
+  )
 }
 
 

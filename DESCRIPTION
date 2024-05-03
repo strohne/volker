@@ -34,7 +34,6 @@ Imports:
     ggplot2 (>= 2.2.1),
     scales,
     base64enc,
-    stringr,
     purrr,
     magrittr,
     skimr,

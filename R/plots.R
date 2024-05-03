@@ -761,7 +761,7 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
       dplyr::rename(value_name = {{ cross }}) |>
       dplyr::count(.data$value_name) |>
       dplyr::mutate(value_label = paste0(
-        stringr::str_wrap(.data$value_name, width = 40), "\n",
+        wrap_label(.data$value_name, width = 14), "\n",
         "(n = ", .data$n, ")")
       )
 
@@ -1158,7 +1158,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
     ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
     ggplot2::scale_color_manual(
       values = vlkr_colors_discrete(length(unique(result$group))),
-      labels = function(x) stringr::str_wrap(x, width = 40)
+      labels = function(x) wrap_label(x, width = 40)
       #guide = ggplot2::guide_legend(reverse = TRUE)
     ) +
     #ggplot2::scale_color_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +
@@ -1597,8 +1597,9 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot=FAL
 
   # Maximum label length
   maxlab  <- data %>%
-    dplyr::pull(.data$item) %>%
-    stringr::str_length() %>%
+    dplyr::pull(.data$item) |>
+    as.character() |>
+    nchar() |>
     max(na.rm= TRUE)
 
   # Convert to vlkr_plot
@@ -1653,7 +1654,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot=FAL
     labels <- plot_data$layout$panel_scales_x[[1]]$range$range
     #labels <- layer_scales(pl)$x$range$range
     #labels <- pl$data[[1]]
-    maxlab <- max(stringr::str_length(labels), na.rm= TRUE)
+    maxlab <- max(nchar(as.character(labels)), na.rm= TRUE)
 
   }
 
@@ -1782,6 +1783,7 @@ plot.vlkr_plt <- print.vlkr_plt
 #' @param base_size Base font size
 #' @param base_color Base font color
 #' @param base_fill A list of fill color sets. Each set can contain different numbers of colors.
+#' @param base_gradient A color vector used for creating gradient fill colors, e.g. in stacked bar plots.
 #' @return A theme function
 #' @examples
 #' library(volker)
@@ -1791,7 +1793,7 @@ plot.vlkr_plt <- print.vlkr_plt
 #' theme_set(theme_vlkr(base_size=15, base_fill = list("red")))
 #' plot_counts(data, sd_gender)
 #' @export
-theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDISCRETE) {
+theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDISCRETE, base_gradient = VLKR_FILLGRADIENT) {
 
   ggplot2::update_geom_defaults("text", list(size = (base_size-2) / ggplot2::.pt, color=base_color))
   ggplot2::update_geom_defaults("col",   list(fill = base_fill[[1]]))
@@ -1800,6 +1802,7 @@ theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDI
   ggplot2::update_geom_defaults("line",   list(color = base_fill[[1]]))
 
   options(ggplot2.discrete.fill=base_fill)
+  options(vlkr.gradient.fill=base_gradient)
 
   ggplot2::theme_bw(base_size) %+replace%
 
@@ -1854,7 +1857,13 @@ vlkr_colors_discrete <- function(n) {
 #' @param n Number of colors
 #' @return A vector of colors
 vlkr_colors_sequential <- function(n) {
-  colors <- scales::gradient_n_pal(VLKR_FILLGRADIENT)(
+  colors <- getOption("vlkr.gradient.fill")
+  if (is.null(colors)) {
+    colors <- VLKR_FILLGRADIENT
+  }
+
+
+  colors <- scales::gradient_n_pal(colors)(
     seq(0,1,length.out=n)
   )
   colors
