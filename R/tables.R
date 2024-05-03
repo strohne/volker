@@ -445,8 +445,8 @@ tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #' @param cols Tidyselect item variables (e.g. starts_with...)
 #' @param ci Whether to compute confidence intervals
 #' @param missings Include missing values (default FALSE)
-#' @param values The values to output: n (frequency) or p (percentage) or both (the default)
 #' @param percent Set to FALSE to prevent calculating percents from proportions
+#' @param values The values to output: n (frequency) or p (percentage) or both (the default)
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
@@ -459,7 +459,7 @@ tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-tab_counts_items <- function(data, cols, ci = FALSE, missings = FALSE, values = c("n", "p"), percent = TRUE, labels = TRUE, clean = TRUE, ...) {
+tab_counts_items <- function(data, cols, ci = FALSE, missings = FALSE, percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
