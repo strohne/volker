@@ -154,7 +154,7 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
 #'
 #' @importFrom rlang .data
 #' @export
-plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits=NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   # Check columns
@@ -290,7 +290,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits=NULL,
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits=NULL, ordered = NULL, missings = FALSE, prop = "total", numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = NULL, ordered = NULL, missings = FALSE, prop = "total", numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -419,7 +419,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits=NU
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object
 #' @importFrom rlang .data
-plot_counts_one_cor <- function(data, col, cross, ordered = NULL, limits=NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_one_cor <- function(data, col, cross, ordered = NULL, limits = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   stop("Not implemented yet")
 }
 
@@ -1218,7 +1218,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot=FALSE, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = FALSE, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ cross }})
@@ -1356,7 +1356,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot=FAL
 #' @param base The plot base as character or NULL.
 #' @return A ggplot object
 #' @importFrom rlang .data
-.plot_bars <- function(data, category = NULL, ci = FALSE, scale = NULL, limits=NULL, numbers = NULL, base = NULL, title = NULL) {
+.plot_bars <- function(data, category = NULL, ci = FALSE, scale = NULL, limits = NULL, numbers = NULL, base = NULL, title = NULL) {
 
   if (!is.null(category)) {
     data <- dplyr::filter(data, .data$value == category)
@@ -1475,7 +1475,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot=FAL
 #' @param base The plot base as character or NULL.
 #' @return A ggplot object
 #' @importFrom rlang .data
-.plot_lines <- function(data, ci = FALSE, scale = NULL, box=FALSE, base = NULL, title = NULL) {
+.plot_lines <- function(data, ci = FALSE, scale = NULL, box = FALSE, base = NULL, title = NULL) {
 
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(y=.data$item, x=.data$value, group=1))
