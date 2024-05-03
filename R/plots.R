@@ -600,9 +600,9 @@ plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #' @param box Whether to place a boxplot on top
 #' @param limits The scale limits. Set NULL to extract limits from the label. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @return A ggplot object
