@@ -16,7 +16,12 @@ theme_vlkr(
 
 \item{base_color}{Base font color.}
 
-\item{base_fill}{A list of fill color sets. Each set can contain different numbers of colors.}
+\item{base_fill}{A list of fill color sets or at least one fill color set. Example:
+\code{list(c("red"), c("red", "blue", "green"))}.
+Each set can contain different numbers of colors.
+Depending on the number of colors needed,
+the set with at least the number of required colors is used.
+The first color is always used for simple bar charts.}
 
 \item{base_gradient}{A color vector used for creating gradient fill colors, e.g. in stacked bar plots.}
 }

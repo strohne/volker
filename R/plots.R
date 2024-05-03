@@ -239,6 +239,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
   #.to_vlkr_plot(pl)
 
   result <- .attr_transfer(result, data, "missings")
+
   .plot_bars(
     result,
     category = category,
@@ -422,7 +423,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
 #' @return A ggplot object
 #' @importFrom rlang .data
 plot_counts_one_cor <- function(data, col, cross, ordered = NULL, limits = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  stop("Not implemented yet")
+  warning("Not implemented yet", noBreaks. = TRUE)
 }
 
 #' Output frequencies for multiple variables
@@ -574,7 +575,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #' @return A ggplot object.
 #' @importFrom rlang .data
 plot_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
-  stop("Not implemented yet")
+  warning("Not implemented yet", noBreaks. = TRUE)
 }
 
 #' Correlate categorical items with a metric column
@@ -589,7 +590,7 @@ plot_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
 #' @return A ggplot object.
 #' @importFrom rlang .data
 plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
-  stop("Not implemented yet")
+  warning("Not implemented yet", noBreaks. = TRUE)
 }
 
 #' Output a density plot for a single metric variable
@@ -1353,6 +1354,8 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
 #' @importFrom rlang .data
 .plot_bars <- function(data, category = NULL, ci = FALSE, scale = NULL, limits = NULL, numbers = NULL, base = NULL, title = NULL) {
 
+  data_missings <- attr(data, "missings", exact = TRUE)
+
   if (!is.null(category)) {
     data <- dplyr::filter(data, .data$value == category)
   }
@@ -1447,7 +1450,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
   }
 
   # Convert to vlkr_plot
-  pl <- .attr_transfer(pl, data, "missings")
+  attr(pl, "missings") <- data_missings
   .to_vlkr_plot(pl)
 }
 
@@ -1660,8 +1663,9 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
   } else if (baseline == FALSE) {
     baseline <- NULL
   }
+
   if (!is.null(baseline)) {
-    message(paste0("In the plot, ", baseline))
+    attr(pl, "baseline") <- baseline
   }
 
   pl
@@ -1690,6 +1694,7 @@ knit_plot <- function(pl) {
   # Get knitr and volkr chunk options
   chunk_options <- knitr::opts_chunk$get()
   plot_options <- attr(pl, "vlkr_options")
+  baseline <- attr(pl, "baseline", exact=TRUE)
 
   fig_width <- chunk_options$fig.width * 72
   fig_height <- chunk_options$fig.height * 72
@@ -1738,7 +1743,12 @@ knit_plot <- function(pl) {
   #dev.off()
 
   base64_string <- base64enc::base64encode(pngfile)
-  paste0('<img src="data:image/png;base64,', base64_string, '" width="100%">')
+  result <- paste0('<img src="data:image/png;base64,', base64_string, '" width="100%">')
+
+  if (!is.null(baseline)) {
+    attr(result, "baseline") <- baseline
+  }
+  result
 }
 
 
@@ -1769,6 +1779,11 @@ print.vlkr_plt <- function(x, ...) {
     NextMethod()
   } else {
     NextMethod()
+  }
+
+  baseline <- attr(x, "baseline", exact = TRUE)
+  if (!is.null(baseline)) {
+    message(paste0("In the plot, ", baseline))
   }
 }
 

@@ -59,7 +59,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 
 
   # Add Plot
-  chunks <- plot_metrics(data, {{ cols}}, {{ cross }}, metric = metric, effects=effects, clean=clean, ..., title = plot_title) %>%
+  chunks <- plot_metrics(data, {{ cols }}, {{ cross }}, metric = metric, effects = effects, clean = clean, ..., title = plot_title) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
@@ -74,8 +74,8 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 
   # Add index
   if (index) {
-    idx <- .report_idx(data, {{ cols}}, {{ cross }}, title = plot_title)
-    chunks <- append(chunks,idx)
+    idx <- .report_idx(data, {{ cols }}, {{ cross }}, metric = metric, ..., effects = effects, title = plot_title)
+    chunks <- append(chunks, idx)
   }
 
   # Close tabs
@@ -130,7 +130,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 #' report_counts(data, sd_gender)
 #'
 #' @export
-report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALSE, effects=FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
+report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALSE, effects = FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
 
   if (clean) {
     data <- data_clean(data)
@@ -169,7 +169,7 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 
   # Add index
   if (index) {
-    idx <- .report_idx(data, {{ cols }}, {{ cross }}, title = plot_title)
+    idx <- .report_idx(data, {{ cols }}, {{ cross }}, metric = metric, effects = effects, title = plot_title)
     chunks <- append(chunks,idx)
   }
 
@@ -195,9 +195,13 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
 #' @param cross Optional, a grouping column (without quotes).
+#' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
+#'            By default, the cross column selection is treated as categorical data.
+#'            Set metric to TRUE, to treat it as metric and calculate correlations.
+#' @param effects Whether to report statistical tests and effect sizes.
 #' @param title Add a plot title (default = TRUE).
 #' @return A list containing a table and a plot volker report chunk.
-.report_idx <- function(data, cols, cross, title = TRUE) {
+.report_idx <- function(data, cols, cross, metric = FALSE, ..., effects = FALSE, title = TRUE) {
   chunks <- list()
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -212,12 +216,18 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
     if (length(idx_name) > 0) {
 
       chunks <- idx %>%
-        plot_metrics(!!rlang::sym(idx_name), {{ cross }}, title = title) %>%
+        plot_metrics(!!rlang::sym(idx_name), {{ cross }}, ..., title = title) %>%
         .add_to_vlkr_rprt(chunks, "Index: Plot")
 
       chunks <- idx %>%
-        tab_metrics(!!rlang::sym(idx_name), {{ cross }}) %>%
+        tab_metrics(!!rlang::sym(idx_name), {{ cross }}, metric = metric, ...) %>%
         .add_to_vlkr_rprt(chunks, "Index: Table")
+
+      if (effects) {
+        chunks <- idx %>%
+          effects_metrics(!!rlang::sym(idx_name), {{ cross }}, metric = metric, ...) %>%
+          .add_to_vlkr_rprt(chunks, "Index: Effects")
+      }
     }
   }
 
@@ -332,17 +342,17 @@ print.vlkr_list <- function(x, ...) {
 
         caption <- attr(childobj, "caption", exact=TRUE)
         if (!is.null(caption)) {
-          caption <- paste0("\n###### ", caption, "  \n")
-          chunks <- .add_to_vlkr_rprt(caption, chunks)
+          newchunk <- paste0("\n###### ", caption, "  \n")
+          chunks <- append(chunks, newchunk)
         }
 
         chunks <- .add_to_vlkr_rprt(childobj, chunks)
 
-        baseline <- attr(childobj, "baseline", exact=TRUE)
-        if (!is.null(baseline)) {
-          baseline <- paste0("\n*", baseline, "*  \n")
-          chunks <- .add_to_vlkr_rprt(baseline, chunks)
-        }
+        # baseline <- attr(childobj, "baseline", exact=TRUE)
+        # if (!is.null(baseline)) {
+        #   baseline <- paste0("\n*", baseline, "*  \n")
+        #   chunks <- .add_to_vlkr_rprt(baseline, chunks)
+        # }
       }
     }
 
@@ -359,19 +369,29 @@ print.vlkr_list <- function(x, ...) {
       }
 
       chunks <- append(chunks, newchunk)
-
-      baseline <- attr(obj, "baseline", exact=TRUE)
-      if (!is.null(baseline)) {
-        baseline <- paste0("\n*", baseline, "*  \n")
-        chunks <- .add_to_vlkr_rprt(baseline, chunks)
-      }
     }
+
+    # Add baseline
+    baseline <- attr(obj, "baseline", exact=TRUE)
+    if (!is.null(baseline)) {
+      newchunk <- paste0("\n*", baseline, "*  \n")
+      chunks <- append(chunks, newchunk)
+    }
+
   } else {
     if (!is.null(tab) && !is.null(obj)) {
       attr(obj,"comment") <- tab
     }
     chunks <- append(chunks, list(obj))
+
+    # Add baseline
+    # baseline <- attr(obj, "baseline", exact=TRUE)
+    # if (!is.null(baseline)) {
+    #   chunks <- append(chunks, list(baseline))
+    # }
+
   }
+
 
   .to_vlkr_rprt(chunks)
 }

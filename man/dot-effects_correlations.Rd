@@ -4,7 +4,7 @@
 \alias{.effects_correlations}
 \title{Test whether correlations are different from zero}
 \usage{
-.effects_correlations(data, cols, cross, method = "p", labels = TRUE)
+.effects_correlations(data, cols, cross, method = "pearson", labels = TRUE)
 }
 \arguments{
 \item{data}{A tibble}
@@ -13,7 +13,7 @@
 
 \item{cross}{The columns holding metric values to correlate}
 
-\item{method}{The output metrics, TRUE or p = Pearson's R, s = Spearman's rho}
+\item{method}{The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 }

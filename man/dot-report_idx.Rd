@@ -4,7 +4,15 @@
 \alias{.report_idx}
 \title{Generate an index table and plot}
 \usage{
-.report_idx(data, cols, cross, title = TRUE)
+.report_idx(
+  data,
+  cols,
+  cross,
+  metric = FALSE,
+  ...,
+  effects = FALSE,
+  title = TRUE
+)
 }
 \arguments{
 \item{data}{A data frame.}
@@ -14,6 +22,12 @@ e.g. a single column (without quotes)
 or multiple columns selected by methods such as starts_with().}
 
 \item{cross}{Optional, a grouping column (without quotes).}
+
+\item{metric}{When crossing variables, the cross column parameter can contain categorical or metric values.
+By default, the cross column selection is treated as categorical data.
+Set metric to TRUE, to treat it as metric and calculate correlations.}
+
+\item{effects}{Whether to report statistical tests and effect sizes.}
 
 \item{title}{Add a plot title (default = TRUE).}
 }

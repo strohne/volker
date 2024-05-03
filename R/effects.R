@@ -145,7 +145,7 @@ effects_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TR
 #' @return A volker tibble.
 #' @importFrom rlang .data
 effects_counts_one <- function(data, col, digits = 2, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
-  stop("Not implemented yet")
+  warning("Not implemented yet", noBreaks. = TRUE)
 }
 
 
@@ -237,7 +237,7 @@ effects_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 #' @return A volker tibble.
 #' @importFrom rlang .data
 effects_counts_one_cor <- function(data, col, cross, clean = TRUE, ...) {
-  stop("Not implemented yet")
+  warning("Not implemented yet", noBreaks. = TRUE)
 }
 
 #' Test whether shares differ
@@ -253,7 +253,7 @@ effects_counts_one_cor <- function(data, col, cross, clean = TRUE, ...) {
 #' @return  A volker tibble.
 #' @importFrom rlang .data
 effects_counts_items <- function(data, cols, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
-  stop("Not implemented yet")
+  warning("Not implemented yet", noBreaks. = TRUE)
 }
 
 
@@ -269,7 +269,7 @@ effects_counts_items <- function(data, cols, percent = TRUE, labels = TRUE, clea
 #' @return A volker tibble.
 #' @importFrom rlang .data
 effects_counts_items_grouped <- function(data, cols, cross, clean = T, ...) {
-  stop("Not implemented yet")
+  warning("Not implemented yet", noBreaks. = TRUE)
 }
 
 
@@ -285,7 +285,7 @@ effects_counts_items_grouped <- function(data, cols, cross, clean = T, ...) {
 #' @return A volker tibble.
 #' @importFrom rlang .data
 effects_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
-  stop("Not implemented yet")
+  warning("Not implemented yet", noBreaks. = TRUE)
 }
 
 
@@ -301,7 +301,7 @@ effects_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
 #' @return A volker tibble.
 #' @importFrom rlang .data
 effects_metrics_one <- function(data, col, clean = T, ... ) {
-  stop("Not implemented yet")
+  warning("Not implemented yet", noBreaks. = TRUE)
 }
 
 #' Output t-test results, a regression table with estimates and macro statistics
@@ -470,7 +470,7 @@ effects_metrics_one_grouped <- function(data, col, cross, method = "lm", negativ
 #' @param data A tibble.
 #' @param col The column holding metric values.
 #' @param cross The column holding metric values to correlate.
-#' @param method The output metrics, TRUE or p = Pearson's R, s = Spearman's rho.
+#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
@@ -484,7 +484,7 @@ effects_metrics_one_grouped <- function(data, col, cross, method = "lm", negativ
 #'
 #' @export
 #' @importFrom rlang .data
-effects_metrics_one_cor <- function(data, col, cross, method = "p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effects_metrics_one_cor <- function(data, col, cross, method = "pearson", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -522,7 +522,7 @@ effects_metrics_one_cor <- function(data, col, cross, method = "p", negative = F
 
   title <- ifelse(prefix == "", NULL, prefix)
 
-  method <- ifelse(method == "s", "Spearman's rho", "Pearson's r")
+  method <- ifelse(method == "spearman", "Spearman's rho", "Pearson's r")
   result <- result |>
     dplyr::rename({{ method }} := .data$r) |>
     dplyr::mutate(dplyr::across(tidyselect::everything(), \(x) as.character(x))) |>
@@ -543,7 +543,7 @@ effects_metrics_one_cor <- function(data, col, cross, method = "p", negative = F
 #'
 #' @param data A tibble containing item measures.
 #' @param cols The column holding metric values.
-#' @param method The output metrics, TRUE or p = Pearson's R, s = Spearman's rho.
+#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
@@ -558,7 +558,7 @@ effects_metrics_one_cor <- function(data, col, cross, method = "p", negative = F
 #'
 #' @importFrom rlang .data
 #' @export
-effects_metrics_items <- function(data, cols, method = "p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effects_metrics_items <- function(data, cols, method = "pearson", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -614,7 +614,7 @@ effects_metrics_items <- function(data, cols, method = "p", negative = FALSE, la
 #' @return A volker tibble.
 #' @importFrom rlang .data
 effects_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
-  stop("Not implemented yet")
+  warning("Not implemented yet", noBreaks. = TRUE)
 }
 
 
@@ -626,7 +626,7 @@ effects_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
-#' @param method The output metrics, TRUE or p = Pearson's R, s = Spearman's rho.
+#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
@@ -641,7 +641,7 @@ effects_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-effects_metrics_items_cor <- function(data, cols, cross, method="p", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effects_metrics_items_cor <- function(data, cols, cross, method = "pearson", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -678,7 +678,7 @@ effects_metrics_items_cor <- function(data, cols, cross, method="p", negative = 
 
   title <- ifelse(prefix == "", NULL, prefix)
 
-  method <- ifelse(method == "s", "Spearman's rho", "Pearson's r")
+  method <- ifelse(method == "spearman", "Spearman's rho", "Pearson's r")
   result <- result |>
     dplyr::rename({{ method }} := .data$r) |>
     dplyr::mutate(dplyr::across(tidyselect::everything(), \(x) as.character(x))) |>
@@ -699,18 +699,18 @@ effects_metrics_items_cor <- function(data, cols, cross, method="p", negative = 
 #' @param data A tibble
 #' @param cols The columns holding metric values
 #' @param cross The columns holding metric values to correlate
-#' @param method The output metrics, TRUE or p = Pearson's R, s = Spearman's rho
+#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @return A tibble with correlation results
 #' @importFrom rlang .data
-.effects_correlations <- function(data, cols, cross, method = "p", labels = TRUE) {
+.effects_correlations <- function(data, cols, cross, method = "pearson", labels = TRUE) {
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
 
   # Calculate correlation
-  method <- ifelse(method == "s", "s", "p")
+  method <- ifelse(method == "sparman", "spearman", "pearson")
   result <- expand.grid(
     x = cols_eval, y = cross_eval, stringsAsFactors = FALSE
   ) %>%
@@ -721,7 +721,7 @@ effects_metrics_items_cor <- function(data, cols, cross, method="p", negative = 
         function(x, y) stats::cor.test(
           data[[x]], data[[y]],
           method = method,
-          exact = method != "s"
+          exact = method != "spearman"
         )
       ),
 

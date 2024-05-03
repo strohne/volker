@@ -436,7 +436,7 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent =
 #' @return A volker tibble.
 #' @importFrom rlang .data
 tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
-  stop("Not implemented yet")
+  warning("Not implemented yet", noBreaks. = TRUE)
 }
 
 #' Output frequencies for multiple variables
@@ -659,7 +659,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = FALSE, percent =
 #' @return A volker tibble.
 #' @importFrom rlang .data
 tab_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
-  stop("Not implemented yet")
+  warning("Not implemented yet", noBreaks. = TRUE)
 }
 
 #' Correlate the values in multiple items
@@ -675,7 +675,7 @@ tab_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @importFrom rlang .data
 tab_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
-  stop("Not implemented yet")
+  warning("Not implemented yet", noBreaks. = TRUE)
 }
 
 #' Output a five point summary table for the values in multiple columns
@@ -1481,9 +1481,9 @@ knit_prepare <- function(x) {
 #' @export
 print.vlkr_tbl <- function(x, ...) {
   x <- knit_table(x)
+  baseline <- attr(x, "baseline", exact=TRUE)
 
   if (knitr::is_html_output()) {
-    baseline <- attr(x, "baseline", exact=TRUE)
 
     x <- knitr::asis_output(x)
     knitr::knit_print(x)
@@ -1500,7 +1500,6 @@ print.vlkr_tbl <- function(x, ...) {
 
     print(x, ...)
 
-    baseline <- attr(x, "baseline", exact=TRUE)
     if (!is.null(baseline)) {
       cat("\n", baseline, "\n\n", sep="")
     }
