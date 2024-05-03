@@ -261,9 +261,9 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #' @param data A tibble.
 #' @param col The column holding factor values.
 #' @param cross The column holding groups to split.
-#' @param ordered Values of the cross column can be nominal (0) or ordered ascending (1) descending (-1).
+#' @param ordered The values of the cross column can be nominal (0), ordered ascending (1), or descending (-1).
 #'                By default (NULL), the ordering is automatically detected.
-#'                An appropriate color scale should be choosen depending on the ordering.
+#'                An appropriate color scale should be chosen depending on the ordering.
 #'                For unordered values, colors from VLKR_FILLDISCRETE are used.
 #'                For ordered values, shades of the VLKR_FILLGRADIENT option are used.
 #' @param category The value FALSE will force to plot all categories.
@@ -271,7 +271,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #'                  When NULL, in case of boolean values, only the TRUE category is plotted.
 #' @param limits The scale limits, autoscaled by default.
 #'               Set to \code{c(0,100)} to make a 100 % plot.
-#' @param missings Include missing values (default FALSE)
+#' @param missings Include missing values (default FALSE).
 #' @param prop The basis of percent calculation: "total" (the default), "rows" or "cols".
 #'             Plotting row or column percentages results in stacked bars that add up to 100%.
 #'             Whether you set rows or cols determines which variable is in the legend (fill color)
@@ -282,7 +282,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
-#' @return A ggplot object
+#' @return A ggplot object.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -402,8 +402,8 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param col The column holding factor values
+#' @param data A tibble.
+#' @param col The column holding factor values.
 #' @param cross The metric column
 #' @param ordered Values can be nominal (0) or ordered ascending (1) descending (-1).
 #'                By default (NULL), the ordering is automatically detected.
@@ -431,8 +431,8 @@ plot_counts_one_cor <- function(data, col, cross, ordered = NULL, limits = NULL,
 #'
 #' @keywords internal
 #'
-#' @param data A tibble containing item measures
-#' @param cols Tidyselect item variables (e.g. starts_with...)
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param category The value FALSE will force to plot all categories.
 #'                  A character value will focus a selected category.
 #'                  When NULL, in case of boolean values, only the TRUE category is plotted.
@@ -441,17 +441,17 @@ plot_counts_one_cor <- function(data, col, cross, ordered = NULL, limits = NULL,
 #'                An appropriate color scale should be choosen depending on the ordering.
 #'                For unordered values, colors from VLKR_FILLDISCRETE are used.
 #'                For ordered values, shades of the VLKR_FILLGRADIENT option are used.
-#' @param ci Whether to plot error bars for 95%-confidence-intervals.
+#' @param ci Whether to plot error bars for 95% confidence intervals.
 #' @param limits The scale limits, autoscaled by default.
 #'               Set to \code{c(0,100)} to make a 100 % plot.
-#' @param missings Include missing values (default FALSE)
+#' @param missings Include missing values (default FALSE).
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
-#' @return A ggplot object
+#' @return A ggplot object.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -566,12 +566,12 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param cols The item columns that hold the values to summarize
-#' @param cross The column holding groups to compare
+#' @param data A tibble containing item measures.
+#' @param cols The item columns that hold the values to summarize.
+#' @param cross The column holding groups to compare.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
-#' @return A ggplot object
+#' @return A ggplot object.
 #' @importFrom rlang .data
 plot_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
   stop("Not implemented yet")
@@ -581,12 +581,12 @@ plot_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param cols The item columns that hold the values to summarize
-#' @param cross The column holding metric values to correlate
+#' @param data A tibble containing item measures.
+#' @param cols The item columns that hold the values to summarize.
+#' @param cross The column holding metric values to correlate.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
-#' @return A ggplot object
+#' @return A ggplot object.
 #' @importFrom rlang .data
 plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
   stop("Not implemented yet")
@@ -596,10 +596,10 @@ plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param col The column holding metric values
-#' @param ci Whether to plot the confidence interval
-#' @param box Whether to place a boxplot on top
+#' @param data A tibble.
+#' @param col The column holding metric values.
+#' @param ci Whether to plot the confidence interval.
+#' @param box Whether to place a boxplot on top.
 #' @param limits The scale limits. Set NULL to extract limits from the label. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
@@ -607,7 +607,7 @@ plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
-#' @return A ggplot object
+#' @return A ggplot object.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -713,21 +713,21 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
 #'
 #' @keywords internal
 #'
-#' @param data A tibble containing item measures
-#' @param col The column holding metric values
-#' @param cross The column holding groups to compare
-#' @param ci Whether to add error bars with 95%-confidence-intervals
+#' @param data A tibble.
+#' @param col The column holding metric values.
+#' @param cross The column holding groups to compare.
+#' @param ci Whether to add error bars with 95% confidence intervals.
 #' @param box Whether to add boxplots
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param numbers numbers to print on labels, 'n' for group size
-#' @param bars Add a boxplot (box), standard error (se) or 95%-confidence-interval (ci).
+#' @param bars Add a boxplot (box), standard error (se) or 95% confidence interval (ci).
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
-#' @return A ggplot object
+#' @return A ggplot object.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -821,9 +821,9 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
 #'
 #' @keywords internal
 #'
-#' @param data A tibble containing item measures
-#' @param col The first column holding metric values
-#' @param cross The second column holding metric values
+#' @param data A tibble.
+#' @param col The first column holding metric values.
+#' @param cross The second column holding metric values.
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
 #' @param logplot Whether to plot log scales.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
@@ -832,7 +832,7 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
-#' @return A ggplot object
+#' @return A ggplot object.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -946,10 +946,10 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, logplot = FALS
 #'
 #' @keywords internal
 #'
-#' @param data A tibble containing item measures
-#' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param ci Whether to plot the confidence interval of the mean
-#' @param box Whether to add boxplots
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param ci Whether to plot the 95% confidence interval of the mean.
+#' @param box Whether to add boxplots.
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
@@ -1045,9 +1045,9 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
 #'
 #' @keywords internal
 #'
-#' @param data A tibble containing item measures
-#' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param cross The column holding groups to compare
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross The column holding groups to compare.
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
@@ -1055,7 +1055,7 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
-#' @return A ggplot object
+#' @return A ggplot object.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -1200,9 +1200,9 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
 #'
 #' @keywords internal
 #'
-#' @param data A tibble containing item measures
-#' @param cols Tidyselect item variables (e.g. starts_with...)
-#' @param cross Tidyselect item variables to correlate (e.g. starts_with...)
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
 #' @param logplot Whether to plot log scales.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
@@ -1211,12 +1211,12 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
-#' @return A ggplot object
+#' @return A ggplot object.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' plot_metrics_items_cor(data, starts_with("cg_adoption_"), sd_gender)
+#' plot_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 #'
 #' @export
 #' @importFrom rlang .data
@@ -1350,7 +1350,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
 #'
 #' @param data Dataframe with the columns item, value, p, n
 #' @param category Category for filtering the dataframe
-#' @param ci Whether to plot error bars for 95%-confidence-intervals. Provide the columns ci.low and ci.high in data.
+#' @param ci Whether to plot error bars for 95% confidence intervals. Provide the columns ci.low and ci.high in data.
 #' @param scale Direction of the scale: 0 = no direction for categories,
 #'              -1 = descending or 1 = ascending values.
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
