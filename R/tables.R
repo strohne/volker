@@ -901,7 +901,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' tab_metrics_one_cor(data, starts_with("cg_adoption_"), sd_gender)
+#' tab_metrics_one_cor(data, starts_with("cg_adoption_"), sd_age)
 #'
 #' @export
 #' @importFrom rlang .data
@@ -1087,16 +1087,16 @@ tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits =
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param cols The item columns that hold the values to summarize
-#' @param cross The column holding groups to compare
+#' @param data A tibble.
+#' @param cols The item columns that hold the values to summarize.
+#' @param cross The column holding groups to compare.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param digits The number of digits to print.
 #' @param values The output metrics, mean (m), the standard deviation (sd) or both (the default).
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
-#' @return A volker tibble
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -1270,8 +1270,8 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param cols The source columns
+#' @param data A tibble.
+#' @param cols The source columns.
 #' @param cross The target columns or NULL to calculate correlations within the source columns
 #' @param method The output metrics, p = Pearson's R, s = Spearman's rho
 #' @param effects Add significance stars and only show significant values
@@ -1348,13 +1348,13 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "p", effects = FAL
 
 #' Add vlkr_tbl class
 #'
-#' Additionally, removes the skim_df class if present
+#' Additionally, removes the skim_df class if present.
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
+#' @param data A tibble.
 #' @param digits Set the plot digits. If NULL (default), no digits are set.
-#' @return A volker tibble
+#' @return A volker tibble.
 .to_vlkr_tab <- function(data, digits = NULL, caption=NULL) {
   if (!is.null(digits)) {
     attr(data, "digits") <- digits
@@ -1372,8 +1372,8 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "p", effects = FAL
 #'
 #' @keywords internal
 #'
-#' @param df Data frame
-#' @return Formatted  table produced by \link{kable}
+#' @param df Data frame.
+#' @return Formatted  table produced by \link{kable}.
 knit_table <- function(df, ...) {
 
   options(knitr.kable.NA = '')
@@ -1432,8 +1432,8 @@ knit_table <- function(df, ...) {
 #'
 #' @keywords internal
 #'
-#' @param x Markdown text
-#' @return Markdown text with line breaks and excaped special characters
+#' @param x Markdown text.
+#' @return Markdown text with line breaks and escaped special characters.
 knit_prepare <- function(x) {
   x <- gsub("\n", "<br>", x, fixed=TRUE)
   x <- gsub("*", "\\*", x, fixed=TRUE)
@@ -1444,9 +1444,9 @@ knit_prepare <- function(x) {
 #'
 #' @keywords internal
 #'
-#' @param x The volker table
-#' @param ... Further parameters passed to print()
-#' @return No return value
+#' @param x The volker table.
+#' @param ... Further parameters passed to print().
+#' @return No return value.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt

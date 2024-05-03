@@ -1608,9 +1608,9 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = F
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param col A tidyselect column
-#' @return The maximum density value
+#' @param data A tibble.
+#' @param col A tidyselect column.
+#' @return The maximum density value.
 .density_mode <- function(data, col) {
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes({{ col }})) +
