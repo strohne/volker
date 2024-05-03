@@ -7,7 +7,7 @@
 #' When used in combination with the Markdown-template "html_report",
 #' the different parts of the report are grouped under a tabsheet selector.
 #'
-#' @param data A data frame
+#' @param data A data frame.
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
@@ -20,14 +20,14 @@
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the 'psych' package.
 #'              Set to FALSE to suppress index generation.
-#' @param effects Output effect sizes
+#' @param effects Output effect sizes.
 #' @param title A character providing the heading or TRUE (default) to output a heading.
 #'               Classes for tabset pills will be added.
 #' @param close Whether to close the last tab (default value TRUE) or to keep it open.
 #'              Keep it open to add further custom tabs by adding headers on the fifth level
-#'              in Markdown (e.g. ##### Method)
+#'              in Markdown (e.g. ##### Method).
 #' @param clean Prepare data by \link{data_clean}.
-#' @return A volker report object
+#' @return A volker report object.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -100,7 +100,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 #' When used in combination with the Markdown-template "html_report",
 #' the different parts of the report are grouped under a tabsheet selector.
 #'
-#' @param data A data frame
+#' @param data A data frame.
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
@@ -112,17 +112,17 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the 'psych' package.
 #'              Set to FALSE to suppress index generation.
-#' @param effects Whether to report statistical tests and effect sizes
+#' @param effects Whether to report statistical tests and effect sizes.
 #' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 #'                Set to NULL to remove numbers.
 #' @param title A character providing the heading or TRUE (default) to output a heading.
 #'               Classes for tabset pills will be added.
 #' @param close Whether to close the last tab (default value TRUE) or to keep it open.
 #'              Keep it open to add further custom tabs by adding headers on the fifth level
-#'              in Markdown (e.g. ##### Method)
+#'              in Markdown (e.g. ##### Method).
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Parameters passed to the plot and tab functions.
-#' @return A volker report object
+#' @return A volker report object.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -190,13 +190,13 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 #'
 #' @keywords internal
 #'
-#' @param data A data frame
+#' @param data A data frame.
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
 #' @param cross Optional, a grouping column (without quotes).
-#' @param title Add a plot title (default = TRUE)
-#' @return A list containing a table and a plot volker report chunk
+#' @param title Add a plot title (default = TRUE).
+#' @return A list containing a table and a plot volker report chunk.
 .report_idx <- function(data, cols, cross, title = TRUE) {
   chunks <- list()
 
@@ -231,8 +231,8 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 #'
 #' @keywords internal
 #'
-#' @param data A list
-#' @return A volker list
+#' @param data A list.
+#' @return A volker list.
 .to_vlkr_list <- function(data) {
   class(data) <- c("vlkr_list", setdiff(class(data), "vlkr_list"))
   data
@@ -242,9 +242,9 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 #'
 #' @keywords internal
 #'
-#' @param x The volker list
-#' @param ... Further parameters passed to print
-#' @return No return value
+#' @param x The volker list.
+#' @param ... Further parameters passed to print.
+#' @return No return value.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -275,8 +275,8 @@ print.vlkr_list <- function(x, ...) {
 #'
 #' @keywords internal
 #'
-#' @param data A volker chunks object
-#' @return Formatted  table produced by \link{kable}
+#' @param data A volker chunks object.
+#' @return Formatted  table produced by \link{kable}.
 knit_chunks <- function(data, ...) {
   # TODO: knit
   data
@@ -289,9 +289,9 @@ knit_chunks <- function(data, ...) {
 #'
 #' @keywords internal
 #'
-#' @param chunks A list of character strings
+#' @param chunks A list of character strings.
 #' @return A volker report object: List of character strings with the vlkr_rprt class
-#'         containing the parts of the report
+#'         containing the parts of the report.
 .to_vlkr_rprt <- function(chunks) {
   class(chunks) <- c("vlkr_rprt", setdiff(class(chunks),"vlkr_rprt"))
   chunks
@@ -301,10 +301,10 @@ knit_chunks <- function(data, ...) {
 #'
 #' @keywords internal
 #'
-#' @param obj A new chunk (volker table, volker plot or character value)
-#' @param chunks The current report list
-#' @param tab A tabsheet name or NULL
-#' @return A volker report object
+#' @param obj A new chunk (volker table, volker plot or character value).
+#' @param chunks The current report list.
+#' @param tab A tabsheet name or NULL.
+#' @return A volker report object.
 .add_to_vlkr_rprt <- function(obj, chunks, tab = NULL) {
 
   if (knitr::is_html_output()) {
@@ -352,13 +352,13 @@ knit_chunks <- function(data, ...) {
   .to_vlkr_rprt(chunks)
 }
 
-#' Printing method for volker reports.
+#' Printing method for volker reports
 #'
 #' @keywords internal
 #'
-#' @param x The volker report object
-#' @param ... Further parameters passed to print
-#' @return No return value
+#' @param x The volker report object.
+#' @param ... Further parameters passed to print.
+#' @return No return value.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
