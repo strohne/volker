@@ -7,17 +7,17 @@
 #' - Multiple columns and one grouping column: see \link{plot_counts_items_grouped}
 #'
 #'
-#' @param data A data frame
+#' @param data A data frame.
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
-#'             or multiple columns selected by methods such as starts_with()
+#'             or multiple columns selected by methods such as starts_with().
 #' @param cross Optional, a grouping column. The column name without quotes.
 #' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
 #'            Set metric to TRUE, to treat it as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Other parameters passed to the appropriate plot function
-#' @return A ggplot2 plot object
+#' @param ... Other parameters passed to the appropriate plot function.
+#' @return A ggplot2 plot object.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -67,7 +67,7 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 #' - One column and one grouping column: see \link{plot_metrics_one_grouped}
 #' - Multiple columns and one grouping column: see \link{plot_metrics_items_grouped}
 #'
-#' @param data A data frame
+#' @param data A data frame.
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
 #'             or multiple columns selected by methods such as starts_with().
@@ -76,8 +76,8 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 #'            By default, the cross column selection is treated as categorical data.
 #'            Set metric to TRUE, to treat it as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Other parameters passed to the appropriate plot function
-#' @return A ggplot object
+#' @param ... Other parameters passed to the appropriate plot function.
+#' @return A ggplot object.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -123,29 +123,29 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
 
 }
 
-#' Plot the frequency of  values in one column.
+#' Plot the frequency of values in one column
 #'
 #' Note: only non-missing cases are used to calculate the percentage.
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param col The column holding values to count
+#' @param data A tibble.
+#' @param col The column holding values to count.
 #' @param category The value FALSE will force to plot all categories.
 #'                  A character value will focus a selected category.
 #'                  When NULL, in case of boolean values, only the TRUE category is plotted.
-#' @param ci Whether to plot error bars for 95%-confidence-intervals.
+#' @param ci Whether to plot error bars for 95% confidence intervals.
 #' @param limits The scale limits, autoscaled by default.
-#'               Set to \code{c(0,100)} to make a 100 % plot.
+#'               Set to \code{c(0,100)} to make a 100% plot.
 #'               If the data is binary or focused on a single category, by default a 100% plot is created.
-#' @param missings Include missing values (default FALSE)
+#' @param missings Include missing values (default FALSE).
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
-#' @return A ggplot object
+#' @return A ggplot object.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -258,9 +258,9 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param col The column holding factor values
-#' @param cross The column holding groups to split
+#' @param data A tibble.
+#' @param col The column holding factor values.
+#' @param cross The column holding groups to split.
 #' @param ordered Values of the cross column can be nominal (0) or ordered ascending (1) descending (-1).
 #'                By default (NULL), the ordering is automatically detected.
 #'                An appropriate color scale should be choosen depending on the ordering.
