@@ -16,3 +16,4 @@ vignettes/playground.Rmd
 vignettes/playground.html
 ^CRAN-SUBMISSION$
 private
+revdep
