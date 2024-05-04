@@ -479,6 +479,10 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
   }
 
   # 4. Calculate data
+
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  cols_names <- colnames(dplyr::select(data, tidyselect::all_of(cols_eval)))
+
   # n and p
   result <- data %>%
     labs_clear({{ cols }}) %>%
@@ -492,7 +496,8 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
     dplyr::mutate(p = (.data$n / sum(.data$n)) * 100) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(value = as.factor(.data$value)) %>%
-    dplyr::arrange(.data$value)
+    dplyr::mutate(item = factor(.data$item, levels=cols_names)) |>
+    dplyr::arrange(.data$item)
 
   # Detect whether the categories are binary
   categories <- result$value |> unique() |> as.character()

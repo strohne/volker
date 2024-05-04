@@ -57,3 +57,19 @@ test_that("Correlation of items", {
   expect_snapshot(volker::tab_metrics_items_cor(data, tidyselect::starts_with("cg_adoption_"), tidyselect::starts_with("cg_adoption_")), cran= TRUE)
 })
 
+
+# Item order reflects column order
+test_that("Item order is kept", {
+  expect_snapshot(
+
+    tibble::tribble(
+      ~f1, ~f2, ~f10,
+      1,     1,    1,
+      1,     2,    1,
+      2,     2,    2
+    ) |>
+      tab_counts_items(c(f1:f10))
+
+    , cran= TRUE
+  )
+})

@@ -480,6 +480,9 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = TRUE, percent = 
   }
 
   # 4. Calculate n and p
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  cols_names <- colnames(dplyr::select(data, tidyselect::all_of(cols_eval)))
+
   result <- data %>%
     tidyr::drop_na({{ cols }}) %>%
     labs_clear({{ cols }}) %>%
@@ -493,7 +496,8 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = TRUE, percent = 
     dplyr::mutate(p = .data$n / sum(.data$n)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(value = as.factor(.data$value)) %>%
-    dplyr::arrange(.data$value)
+    dplyr::mutate(item = factor(.data$item, levels=cols_names)) |>
+    dplyr::arrange(.data$item)
 
   # Absolute frequency
   value <- "n"
@@ -529,19 +533,21 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = TRUE, percent = 
 
 
   # Confidence intervals
-  result_ci <- result |>
-    dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
-    dplyr::mutate(.test = purrr::map(.data$n, function(x) stats::prop.test(x, sum(.data$n)))) |>
-    dplyr::mutate(
-      ci.low =purrr::map_dbl(.data$.test, function(x) x$conf.int[1]),
-      ci.high =purrr::map_dbl(.data$.test, function(x) x$conf.int[2]),
-    ) |>
-    dplyr::select(-tidyselect::all_of(c(".test", "n"))) |>
-    dplyr::ungroup()
+  if (ci) {
+    result_ci <- result |>
+      dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
+      dplyr::mutate(.test = purrr::map(.data$n, function(x) stats::prop.test(x, sum(.data$n)))) |>
+      dplyr::mutate(
+        ci.low =purrr::map_dbl(.data$.test, function(x) x$conf.int[1]),
+        ci.high =purrr::map_dbl(.data$.test, function(x) x$conf.int[2]),
+      ) |>
+      dplyr::select(-tidyselect::all_of(c(".test", "n"))) |>
+      dplyr::ungroup()
 
-  # Add % sign
-  if (percent) {
-    result_ci <- dplyr::mutate(result_ci, dplyr::across(tidyselect::where(is.numeric), ~ paste0(round(. * 100, 0), "%")))
+    # Add % sign
+    if (percent) {
+      result_ci <- dplyr::mutate(result_ci, dplyr::across(tidyselect::where(is.numeric), ~ paste0(round(. * 100, 0), "%")))
+    }
   }
 
   # Add missings
@@ -585,25 +591,32 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = TRUE, percent = 
       "item_name", "item_label"
     )
 
-    result_ci <- labs_replace(
-      result_ci, "item",
-      codebook(data, {{ cols }}),
-      "item_name", "item_label"
-    )
+    if (ci) {
+      result_ci <- labs_replace(
+        result_ci, "item",
+        codebook(data, {{ cols }}),
+        "item_name", "item_label"
+      )
+    }
   }
 
   # Remove common item prefix
   # TODO: make dry
   prefix <- get_prefix(result$item, trim=T)
   result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
-  result_ci <- dplyr::mutate(result_ci, item = trim_prefix(.data$item, prefix))
 
   # Rename first columns
   if (prefix == "") {
     prefix <- "Item"
   }
+
   colnames(result)[1] <- prefix
-  colnames(result_ci)[1] <- prefix
+
+  if (ci) {
+    result_ci <- dplyr::mutate(result_ci, item = trim_prefix(.data$item, prefix))
+    colnames(result_ci)[1] <- prefix
+  }
+
 
   # Replace category labels
   if (labels) {
@@ -1040,7 +1053,6 @@ tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits =
       tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","missing","n","items","alpha"))
     )
   }
-
 
   # Remove items and alpha if not and index
   if (all(is.na(result$items)) || all(is.na(result$alpha))) {
