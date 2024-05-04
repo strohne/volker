@@ -5,19 +5,19 @@
 library(tidyverse)
 library(volker)
 
-#chatgpt <- readr::read_rds("data-raw/chatgpt.rds")
-
-# Rename vars
+# chatgpt <- readr::read_rds("data-raw/data/chatgpt.rds")
+#
+# # Rename vars
 # chatgpt <- chatgpt |>
 #   rename(
-#     use_private = use_private,
-#     use_work = use_work,
-#     adopter = adopter,
-#     sd_gender = sd_gender,
-#     sd_age = sd_age
+#     use_private = cg_nutzen_privat,
+#     use_work = cg_nutzen_beruflich,
+#     adopter = in_adoption,
+#     sd_gender = sd_geschlecht,
+#     sd_age = sd_alter
 #   )
 #
-# Add label to sd_age
+# #Add label to sd_age
 # chatgpt <- labs_apply(
 #   chatgpt,
 #   tibble::tribble(
@@ -35,18 +35,21 @@ library(volker)
 #write_csv2(codes_de,"data-raw/codes_de.csv", na="")
 
 chatgpt_en <- read_csv2("data-raw/data/chatgpt_en.csv", na="")
+
 codes_en <- read_csv2("data-raw/data/codes_en.csv", na="",col_types = "c")
 chatgpt_en <- labs_apply(chatgpt_en, codes_en)
 
 # Remove nonascii characters
 chatgpt_en <- chatgpt_en |>
+  labs_store() |>
   mutate(cg_activities = str_replace_all(
     cg_activities,
     setNames(
       c("ae","ue","oe","Ae","Oe","Ue","ss"),
       c("ä","ü","ö","Ä","Ö","Ü","ß")
     )
-  ))
+  )) |>
+  labs_restore()
 
 nonascii <- chatgpt_en |>
   select(cg_activities) |>

@@ -674,9 +674,16 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
       )
   }
 
+  mean_data <- tibble::tibble(
+    x = mean(dplyr::pull(data, {{col}} ), na.rm=T),
+    y = max_density / 2
+  )
+
   pl <- pl +
+
     ggplot2::geom_point(
-      ggplot2::aes(x= mean({{ col }}), y = max_density / 2),
+      ggplot2::aes(x= .data$x, y = .data$y),
+      data = mean_data,
       size=4,
       shape=18,
       color = "black"

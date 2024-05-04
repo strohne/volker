@@ -21,9 +21,13 @@ Useful links:
 \author{
 \strong{Maintainer}: Jakob Jünger \email{jakob.juenger@uni-muenster.de} (\href{https://orcid.org/0000-0003-1860-6695}{ORCID}) [copyright holder]
 
-Other contributors:
+Authors:
 \itemize{
   \item Henrieke Kotthoff \email{henrieke.kotthoff@uni-muenster.de} [contributor]
+}
+
+Other contributors:
+\itemize{
   \item Chantal Gärtner \email{chantal.gaertner@uni-muenster.de} (\href{https://orcid.org/0000-0002-3653-6013}{ORCID}) [contributor]
 }
 
