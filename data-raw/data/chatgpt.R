@@ -38,6 +38,23 @@ chatgpt_en <- read_csv2("data-raw/data/chatgpt_en.csv", na="")
 codes_en <- read_csv2("data-raw/data/codes_en.csv", na="",col_types = "c")
 chatgpt_en <- labs_apply(chatgpt_en, codes_en)
 
+# Remove nonascii characters
+chatgpt_en <- chatgpt_en |>
+  mutate(cg_activities = str_replace_all(
+    cg_activities,
+    setNames(
+      c("ae","ue","oe","Ae","Oe","Ue","ss"),
+      c("ä","ü","ö","Ä","Ö","Ü","ß")
+    )
+  ))
+
+nonascii <- chatgpt_en |>
+  select(cg_activities) |>
+  mutate(chars = str_extract_all(cg_activities,"[^a-zA-Z0-9\",;\\.<> /\\\\\\?\\(\\)-]")) |>
+  filter(sapply(chars,\(x) length(x) > 0))
+
+stopifnot(nrow(nonascii) == 0)
+
 # Use
 # chatgpt <- chatgpt_en
 # usethis::use_data(chatgpt, overwrite = TRUE)
