@@ -624,7 +624,7 @@ wrap_label <- function(x, width = 40) {
 #' @param x A character value
 #' @return The trimmed character value
 trim_label <- function(x) {
-  x <- sub("[: ,0_-]*$", "", x)
+  x <- sub("[: ,_-]*$", "", x)
   x <- sub("^[: ,_-]*", "", x)
   x
 }
