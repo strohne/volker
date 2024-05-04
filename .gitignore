@@ -7,6 +7,7 @@ volker_*.tar.gz
 /doc/
 /Meta/
 inst/doc
+revdep
 private
 cache/
 *_cache/
