@@ -464,7 +464,7 @@ tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-tab_counts_items <- function(data, cols, ci = FALSE, missings = FALSE, percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
+tab_counts_items <- function(data, cols, ci = FALSE, missings = TRUE, percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -630,18 +630,18 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = FALSE, percent =
       count = .to_vlkr_tab(result, caption = "Frequencies"),
       ci = .to_vlkr_tab(result_ci, digits=2, caption = "Confidence intervals")
     )
+    if (!missings) {
+      result <- .attr_transfer(result, data, "missings")
+    }
     result <- .to_vlkr_list(result)
   } else {
+    if (!missings) {
+      result <- .attr_transfer(result, data, "missings")
+    }
     result <- .to_vlkr_tab(result, digits= 0)
   }
 
-  if (!missings) {
-    result <- .attr_transfer(result, data, "missings")
-  }
-
-
-  result
-
+  return(result)
 }
 
 
@@ -1362,7 +1362,7 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negativ
 #' @param caption The caption printed above the table.
 #' @param baseline A base line printed below the table.
 #' @return A volker tibble.
-.to_vlkr_tab <- function(data, digits = NULL, caption = NULL, baseline = TRUE) {
+.to_vlkr_tab <- function(data, digits = NULL, caption = NULL, baseline = NULL) {
 
   if (!is.null(digits)) {
     attr(data, "digits") <- digits
@@ -1370,12 +1370,6 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negativ
 
   if (!is.null(caption)) {
     attr(data, "caption") <- caption
-  }
-
-  if (baseline == TRUE) {
-    baseline <- get_baseline(data)
-  } else if (baseline == FALSE) {
-    baseline <- NULL
   }
 
   if (!is.null(baseline)) {
@@ -1393,15 +1387,19 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negativ
 #' @param df Data frame.
 #' @return Formatted  table produced by \link{kable}.
 knit_table <- function(df, ...) {
-
   options(knitr.kable.NA = '')
 
   # TODO: Embed "digits" in the vlkr_options list
   digits <- attr(df, "digits", exact = TRUE)
-  baseline <- attr(df, "baseline", exact=TRUE)
-
   if (is.null(digits)) {
     digits <- getOption("digits")
+  }
+
+  baseline <- attr(df, "baseline", exact=TRUE)
+  if (is.null(baseline)) {
+    baseline <- get_baseline(df)
+  } else if (baseline == FALSE) {
+    baseline <- NULL
   }
 
   # Round

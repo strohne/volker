@@ -8,53 +8,41 @@ editor_options:
   chunk_output_type: console
 ---
 
-
 ```{r setup, include=FALSE}
 #
 # 1. Setup
 #
 
 # Knit settings
-# Note: you may want to set the root dir
-# in case the file is in a subfolder of your project:
-# knitr::opts_knit$set(root.dir="..")
 knitr::opts_chunk$set(echo = FALSE)
 
 # Load packages
-# Note: you may want to load tidyverse instead of dplyr:
-# library(tidyverse)
-library(dplyr)
-library(ggplot2)
 library(volker)
 
 # Set plot theme
-theme_set(theme_bw())
+theme_set(theme_vlkr())
 
 ```
 
 
 ```{r data, include=FALSE}
 #
-# 2. Load  and prepare data
+# 2. Load and prepare example data: replace by your own dataset
 #
 
-# Load example data: replace by your own dataset
-data <- volker::chatgpt
-
+ds <- volker::chatgpt
 
 ```
 
 
-```{r analysis}
+```{r}
 #
 # 3. Analyse data
 #
 
-data %>% 
-  filter(sd_gender != "divers") %>% 
+ds |> 
   report_counts(
     starts_with("cg_adoption_social"), 
-    prop="rows", 
     numbers="p"
   )
 
