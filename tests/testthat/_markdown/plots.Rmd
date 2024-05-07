@@ -12,10 +12,8 @@ editor_options:
 ```{r include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = TRUE, fig.width = 7)
 
-library(dplyr)
 library(ggplot2)
 library(volker)
-
 
 theme_set(theme_bw())
 
@@ -38,7 +36,7 @@ data |>
   plot_counts_one(adopter)
 ```
 
-### cb. One variable: Frequency plot of a focus category
+### 1c. One variable: Frequency plot of a focus category
 ```{r}
 data |> 
   plot_counts_one(adopter, category="I try new offers immediately")
@@ -46,7 +44,7 @@ data |>
 
 
 ### 2a. Multiple items: Frequency plot for adoption factors
-```{r}
+```{r, fig.height=5}
 plot_counts_items(data, starts_with("cg_adoption_"), numbers = "p")
 ```
 
@@ -87,13 +85,16 @@ plot_metrics_one(data, sd_age)
 
 
 ### 2. Distribution of multiple metric items: Adoption factors
-```{r}
+```{r, fig.height=5}
 plot_metrics_items(data, starts_with("cg_adoption_"))
 ```
 
 ### 3. Distribution by a grouping variable
 ```{r}
 plot_metrics_one_grouped(data, sd_age, sd_gender)
+```
+
+```{r, fig.height=5}
 plot_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_gender)
 ```
 

@@ -11,6 +11,7 @@ tab_metrics_one_cor(
   method = "pearson",
   ci = FALSE,
   negative = FALSE,
+  digits = 2,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -28,6 +29,8 @@ tab_metrics_one_cor(
 \item{ci}{Whether to output confidence intervals}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
+
+\item{digits}{The number of digits to print.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

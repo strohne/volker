@@ -10,6 +10,7 @@ tab_metrics_items_cor(
   cross,
   method = "pearson",
   negative = F,
+  digits = 2,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -25,6 +26,8 @@ tab_metrics_items_cor(
 \item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
+
+\item{digits}{The number of digits to print.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

@@ -36,6 +36,11 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
   # Check
   check_is_dataframe(data)
 
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
@@ -108,6 +113,11 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
   # Check
   check_is_dataframe(data)
 
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
@@ -152,14 +162,13 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
 #'
 #' @param data A tibble.
 #' @param col The column holding factor values.
-#' @param digits The number of digits to print.
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-effect_counts_one <- function(data, col, digits = 2, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
+effect_counts_one <- function(data, col, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
@@ -230,7 +239,7 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
     "Number of cases", n, 0,
     "Phi", phi, 2,
     "Cramer's V", cramer_v, 2,
-    "Chi-quared", fit$statistic, 2,
+    "Chi-squared", fit$statistic, 2,
     "Degrees of freedom", fit$parameter, 0,
     "p value", fit$p.value, 3
     #"stars", get_stars(fit$p.value), 0
@@ -475,8 +484,8 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", negative
 
     result <- c(
       result,
-      list(.to_vlkr_tab(lm_params, caption = "Regression parameters")),
-      list(.to_vlkr_tab(lm_model, caption = "Model statistics"))
+      list(.to_vlkr_tab(lm_params, digits=2, caption = "Regression parameters")),
+      list(.to_vlkr_tab(lm_model, digits=2, caption = "Model statistics"))
     )
   }
 
@@ -693,15 +702,12 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", nega
   result <- dplyr::mutate(result, item1 = trim_prefix(.data$item1, prefix))
   result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix))
 
-  if (prefix == "") {
-    prefix <- "Item"
-  }
+  prefix <- ifelse(prefix == "", "Item", prefix)
+  title <- ifelse(prefix == "", NULL, prefix)
 
   result <- result %>%
     dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
     dplyr::rename("Item 2" = tidyselect::all_of("item2"))
-
-  title <- ifelse(prefix == "", NULL, prefix)
 
   method <- ifelse(method == "spearman", "Spearman's rho", "Pearson's r")
   result <- result |>

@@ -28,13 +28,13 @@ plot_metrics_one_grouped(
 
 \item{ci}{Whether to add error bars with 95\% confidence intervals.}
 
-\item{box}{Whether to add boxplots}
+\item{box}{Whether to add boxplots.}
 
 \item{limits}{The scale limits. Set NULL to extract limits from the labels.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
-\item{numbers}{numbers to print on labels, 'n' for group size}
+\item{numbers}{Numbers to print on labels, 'n' for group sizes.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

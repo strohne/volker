@@ -36,6 +36,11 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
   # Check
   check_is_dataframe(data)
 
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
@@ -103,6 +108,11 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
 tab_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
@@ -930,6 +940,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
 #' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho
 #' @param ci Whether to output confidence intervals
 #' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param digits The number of digits to print.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
@@ -942,7 +953,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE, negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE, negative = FALSE, digits = 2, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
@@ -967,53 +978,30 @@ tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE
 
   # Calculate correlation
   method <- ifelse(method == "spearman", "spearman", "pearson")
-  result <- expand.grid(
-    x = cols_eval, y = cross_eval, stringsAsFactors = FALSE
-  ) %>%
-    dplyr::mutate(x_name = names(.data$x), y_name = names(.data$y)) %>%
-    dplyr::mutate(
-      .test = purrr::map2(
-        .data$x, .data$y,
-        function(x, y) stats::cor.test(data[[x]], data[[y]], method = method, exact = method != "spearman")
-      ),
-      n = nrow(data),
-      r = purrr::map(.data$.test, function(x) round(as.numeric(x$estimate),2)),
-      ci.low = purrr::map(.data$.test, function(x) round(as.numeric(x$conf.int[1]), 2)),
-      ci.high = purrr::map(.data$.test, function(x) round(as.numeric(x$conf.int[2]), 2))
-    ) %>%
-    dplyr::select(-tidyselect::all_of(c("x", "y",".test"))) |>
-    dplyr::select(item1 = "x_name", item2 = "y_name", tidyselect::everything())
+  result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
 
-
-  if (!ci) {
-    result <- dplyr::select(result, -tidyselect::all_of(c("ci.low","ci.high")))
+  values <- c("item1", "item2", "n", "r")
+  if (ci) {
+    values <- c(values, "ci.low", "ci.high")
   }
 
-
-  # Get variable caption from the attributes
-  if (labels) {
-    result <- labs_replace(result, "item1", codebook(data, {{ col }}), col_from="item_name", col_to="item_label")
-    result <- labs_replace(result, "item2", codebook(data, {{ cross }}), col_from="item_name", col_to="item_label" )
-  }
-
+  result <- dplyr::select(result, tidyselect::all_of(values))
 
   # Remove common item prefix
   prefix <- get_prefix(c(result$item1, result$item2))
   result <- dplyr::mutate(result, item1 = trim_prefix(.data$item1, prefix))
   result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix))
 
-  if (prefix == "") {
-    prefix <- "Item"
-  }
+  prefix <- ifelse(prefix == "", "Item", prefix)
+  title <- ifelse(prefix == "", NULL, prefix)
 
   result <- result %>%
     dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
     dplyr::rename("Item 2" = tidyselect::all_of("item2"))
 
-  title <- ifelse(prefix == "", NULL, prefix)
 
   result <- .attr_transfer(result, data, "missings")
-  .to_vlkr_tab(result, digits= 2, caption=title)
+  .to_vlkr_tab(result, digits = digits, caption = title)
 }
 
 #' Output a five point summary table for multiple items
@@ -1302,6 +1290,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #' @param cross The target columns or NULL to calculate correlations within the source columns
 #' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho
 #' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param digits The number of digits to print.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
@@ -1314,7 +1303,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #'
 #' @importFrom rlang .data
 #' @export
-tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negative = F, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negative = F, digits = 2, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -1333,48 +1322,26 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negativ
     data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
   }
 
-  # 5. Prepare parameters
-  cols <- tidyselect::eval_select(expr = enquo(cols), data = data)
-  cross <- tidyselect::eval_select(expr = enquo(cross), data = data)
-
-
-  result <- expand.grid(x = cols, y = cross, stringsAsFactors = FALSE) %>%
-    dplyr::mutate(x_name = names(.data$x), y_name = names(.data$y)) %>%
-    dplyr::mutate(
-      test = purrr::map2(
-        .data$x, .data$y,
-        function(x, y) stats::cor.test(data[[x]], data[[y]], method = method)
-      ),
-      value = purrr::map(.data$test, function(x) round(as.numeric(x$estimate),2))
-      #stars = purrr::map(.data$test, function(x) get_stars(x$p.value)),
-      #p = purrr::map(.data$test, function(x) round(x$p.value,2))
-    ) %>%
-    dplyr::select(item = "x_name", target = "y_name", "value")
+  # 5. Calculate correlation
+  result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
 
 
   # Remove common item prefix
-  result <- dplyr::mutate(result, item = trim_prefix(.data$item))
-  result <- dplyr::mutate(result, target = trim_prefix(.data$target))
+  prefix <- get_prefix(c(result$item1, result$item2))
+  result <- dplyr::mutate(result, item1 = trim_prefix(.data$item1, prefix))
+  result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix))
 
-  return (result)
   # Create table
   result <- result %>%
-    dplyr::mutate(value = round(unlist(.data$value), 2))
+    dplyr::select("item1", "item2", "value") |>
+    tidyr::pivot_wider(names_from = "item2", values_from = "value") |>
+    dplyr::rename(Item = tidyselect::all_of("item1"))
 
-  # if (effect == TRUE) {
-  #   result <- result %>%
-  #     dplyr::mutate(value = paste0(unlist(.data$value), .data$stars)) %>%
-  #     dplyr::mutate(value = ifelse(.data$p >= 0.1, "", .data$value))
-  # }
-
-  result <- dplyr::select(result, "item", "target", "value")
-
-  result <- result %>%
-    tidyr::pivot_wider(names_from = "target", values_from = "value") %>%
-    dplyr::rename(Item = tidyselect::all_of("item"))
+  prefix <- ifelse(prefix == "", "Item", prefix)
+  title <- ifelse(prefix == "", NULL, prefix)
 
   result <- .attr_transfer(result, data, "missings")
-  .to_vlkr_tab(result, digits= 2)
+  .to_vlkr_tab(result, digits = digits)
 }
 
 #' Add vlkr_tbl class
@@ -1418,8 +1385,9 @@ knit_table <- function(df, ...) {
   # TODO: Embed "digits" in the vlkr_options list
   digits <- attr(df, "digits", exact = TRUE)
   if (is.null(digits)) {
-    digits <- getOption("digits")
+    digits <- getOption("vlkr.digits", VLKR_NORMAL_DIGITS)
   }
+
 
   baseline <- attr(df, "baseline", exact=TRUE)
   if (is.null(baseline)) {
@@ -1436,7 +1404,12 @@ knit_table <- function(df, ...) {
       dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), \(x) as.character(x)))
 
     df$.digits <- NULL
-    digits <- getOption("digits")
+  }
+
+  if (!is.null(digits) && digits > 1) {
+    numberformat = list(nsmall = digits)
+  } else {
+    numberformat <- NULL
   }
 
   if (knitr::is_html_output()) {
@@ -1448,9 +1421,13 @@ knit_table <- function(df, ...) {
         escape = FALSE,
         align = c("l", rep("r", ncol(df) - 1)),
         digits = digits,
+        #format.args = numberformat,
         ...
       ) %>%
-      kableExtra::kable_styling()
+      kableExtra::kable_styling(
+        position = "left",
+        full_width = FALSE
+      )
   } else if (knitr::is_latex_output()) {
     df <- df %>%
       dplyr::mutate_all(kableExtra::linebreak) %>%
@@ -1460,6 +1437,7 @@ knit_table <- function(df, ...) {
         escape = FALSE,
         align = c("l", rep("r", ncol(df) - 1)),
         digits = digits,
+        #format.args = numberformat,
         ...
       )
   } else {
@@ -1508,12 +1486,13 @@ print.vlkr_tbl <- function(x, ...) {
 
   if (knitr::is_html_output()) {
 
-    x <- knitr::asis_output(x)
-    knitr::knit_print(x)
+    #x <- knitr::asis_output(x)
 
     if (!is.null(baseline)) {
-      knitr::knit_print(baseline)
+      x <- paste0(x,"  \n  ", baseline)
     }
+
+    knitr::knit_print(knitr::asis_output(x))
 
   } else {
     caption <- attr(x, "caption", exact=TRUE)

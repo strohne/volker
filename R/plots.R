@@ -35,6 +35,11 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
   # Check
   check_is_dataframe(data)
 
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
@@ -101,6 +106,11 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
 
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -756,10 +766,10 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
 #' @param col The column holding metric values.
 #' @param cross The column holding groups to compare.
 #' @param ci Whether to add error bars with 95% confidence intervals.
-#' @param box Whether to add boxplots
+#' @param box Whether to add boxplots.
 #' @param limits The scale limits. Set NULL to extract limits from the labels.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param numbers numbers to print on labels, 'n' for group size
+#' @param numbers Numbers to print on labels, 'n' for group sizes.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -795,7 +805,7 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
   }
 
   # 5. Add n to labels
-  if (!is.null(numbers)) {
+  if (!is.null(numbers) && any(numbers == "n")) {
 
     categories_n <- data |>
       dplyr::rename(value_name = {{ cross }}) |>

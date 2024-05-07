@@ -4,22 +4,12 @@
 \alias{effect_counts_one}
 \title{Test whether the shares differ from homogeneity}
 \usage{
-effect_counts_one(
-  data,
-  col,
-  digits = 2,
-  percent = TRUE,
-  labels = TRUE,
-  clean = TRUE,
-  ...
-)
+effect_counts_one(data, col, percent = TRUE, labels = TRUE, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A tibble.}
 
 \item{col}{The column holding factor values.}
-
-\item{digits}{The number of digits to print.}
 
 \item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
