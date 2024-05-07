@@ -78,3 +78,25 @@ NULL
 #' @export
 #' @importFrom ggplot2 theme_set
 NULL
+
+#' Tidy tibbles
+#'
+#' See \code{tibble::\link[tibble:tibble]{tibble}} for details.
+#'
+#' @name tibble
+#' @rdname tibble
+#' @keywords internal
+#' @export
+#' @importFrom tibble tibble
+NULL
+
+#' Tidy tribbles
+#'
+#' See \code{tibble::\link[tibble:tribble]{tribble}} for details.
+#'
+#' @name tribble
+#' @rdname tribble
+#' @keywords internal
+#' @export
+#' @importFrom tibble tribble
+NULL

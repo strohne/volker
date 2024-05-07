@@ -20,46 +20,57 @@ knitr::opts_chunk$set(
 ```
 
 
-## How to generate tables and plots?
+## How to use the volkeR package?
 
-First, to select the approriate function, you need to decide whether 
-your data is categorical or metric. 
-Second, the plot and table type is determined by your column selection.  
-
-**Try it out!**
-
+First, load the package, set the plot theme and get some data.
 
 ```{r, warning=FALSE}
 
-# Load the packages
-library(dplyr)
-library(ggplot2)
+# Load the package
 library(volker)
 
 # Set the basic plot theme
-theme_set(theme_bw())
+theme_set(theme_vlkr())
 
-# Load example data from the package
-data <- volker::chatgpt
+# Load an example dataset ds from the package
+ds <- volker::chatgpt
 
 ```
 
+
+
+## How to generate tables and plots?
+
+Decide whether your data is categorical or metric
+and choose the appropriate function:  
+
+- `tab_counts()` shows frequency tables.
+- `tab_metrics()` creates tables with distribution parameters.
+- `plot_counts()` generated simple and stacked bar charts.
+- `plot_metrics()` visualised distributions in density plots, box plots or scatter plots.
+- `effects_counts()` calculates test statistics for categorical data.
+- `effects_metrics()` calculates test statistics for metric data.
+
+The column selection determines whether to analyse single variables, item lists 
+or to compare and correlate multiple variables.
+
+**Try it out!**
 
 ### Categorical variables
 
 ```{r}
 # A single variable
-tab_counts(data, use_private)
+tab_counts(ds, use_private)
 ```
 
 ```{r}
 # A list of variables
-tab_counts(data, c(use_private, use_work))
+tab_counts(ds, c(use_private, use_work))
 ```
 
 ```{r}
 # Variables matched by a pattern
-tab_counts(data, starts_with("use_"))
+tab_counts(ds, starts_with("use_"))
 ```
 
 
@@ -67,14 +78,13 @@ tab_counts(data, starts_with("use_"))
 
 ```{r}
 # One metric variable
-tab_metrics(data, sd_age)
+tab_metrics(ds, sd_age)
 ```
 
 ```{r fig.width=6, fig.height=8}
 
 # Multiple metric items
-tab_metrics(data, starts_with("cg_adoption_"))
-plot_metrics(data, starts_with("cg_adoption_"))
+tab_metrics(ds, starts_with("cg_adoption_"))
 
 ```
 
@@ -83,35 +93,50 @@ plot_metrics(data, starts_with("cg_adoption_"))
 Provide a grouping column in the third parameter to compare different groups.
 
 ```{r}
-tab_counts(data, adopter, sd_gender)
-```
-
-In the corresponding plot function, you can use the prop parameter to grow bars to 100%.
-The numbers parameter prints the percentages onto the bars.
-
-```{r}
-data |> 
-  filter(sd_gender != "diverse") |> 
-  plot_counts(adopter, sd_gender, prop="rows", numbers="p")
+tab_counts(ds, adopter, sd_gender)
 ```
 
 For metric variables, you can compare the mean values.
 
 ```{r}
-# Compare the means of one variable
-tab_metrics(data, sd_age, sd_gender)
+# Compare the means of one grouping variable  (including the confidence interval)
+tab_metrics(ds, sd_age, sd_gender, ci = TRUE)
 ```
 
+By default, the crossing variable is treated as categorical. 
+You can change this behaviour using the metric-parameter to calculate correlations:
+
 ```{r}
-# Compare the means of multiple items
-tab_metrics(data, starts_with("cg_adoption_"), sd_gender)
+# Correlate two metric variables
+tab_metrics(ds, sd_age, use_work, metric = TRUE, ci = TRUE)
+```
+
+
+Each table function has a corresponding plot function with parameters
+to pimp the result. See the function help (F1 key) to learn the options.
+
+For example, you can use the prop parameter to grow bars to 100%.
+The numbers parameter prints the percentages onto the bars.
+
+```{r}
+ds |> 
+  filter(sd_gender != "diverse") |> 
+  plot_counts(adopter, sd_gender, prop="rows", numbers="p")
+```
+
+Further, the effects-functions implement statistical tests:
+
+```{r}
+ds |> 
+  filter(sd_gender != "diverse") |> 
+  effects_counts(adopter, sd_gender)
 ```
 
 
 # Automatically generate reports
 
 ## Step by step
-Reports combine plots and tables. Optionally, for item batteries, an index is calculated and reported.
+Reports combine plots, tables and effect calculations. Optionally, for item batteries, an index is calculated and reported.
 
 To see an example or develop own reports, use the volker report template in RStudio:
 
@@ -143,23 +168,25 @@ See the function help for further options (F1 key).
 
 ```{r}
 
-data %>% 
+ds %>% 
   filter(sd_gender != "diverse") %>% 
-  report_metrics(starts_with("cg_adoption_"), sd_gender)
+  report_metrics(starts_with("cg_adoption_"), sd_gender, index=TRUE, box=TRUE, ci=TRUE)
 
 ```
 
 
 ## Custom content
-If you want to add content before the report outputs, 
-set the title parameter to `FALSE` and add your 
-own title.
+By default, a header and tabsheets are automatically created. 
+You can mis in custom content.
 
-A good place for methodological details is a tabsheet 
-next to the "Plot" and the "Table" buttons. You can add a tab
-by setting the close-parameter to `FALSE` and adding a new header
-on the fifth level (5 x # followed by the tab name). Close your new tabsheet with
-`#### {-}` (4 x #). 
+- If you want to add content before the report outputs, 
+  set the title parameter to `FALSE` and add your 
+  own title.
+- A good place for methodological details is a custom tabsheet 
+  next to the "Plot" and the "Table" buttons. You can add a tab
+  by setting the close-parameter to `FALSE` and adding a new header
+  on the fifth level (5 x # followed by the tab name). 
+  Close your custom new tabsheet with `#### {-}` (4 x #). 
 
 All together, the following report output is generated by the pattern:
 
@@ -169,9 +196,9 @@ All together, the following report output is generated by the pattern:
 #> ### Adoption types
 #> 
 #> ```{r echo=FALSE}
-#> data %>% 
+#> ds %>% 
 #>   filter(sd_gender != "diverse") %>% 
-#>   report_counts(adopter, sd_gender, prop="rows", title=F, close=F)
+#>   report_counts(adopter, sd_gender, prop="rows", title=FALSE, close=FALSE, box=TRUE, ci=TRUE)
 #> ```
 #>
 #> ##### Method
@@ -185,9 +212,9 @@ All together, the following report output is generated by the pattern:
 ### Adoption types
 
 ```{r echo=FALSE}
-data %>% 
+ds %>% 
   filter(sd_gender != "diverse") %>% 
-  report_counts(adopter, sd_gender, prop="rows", title= FALSE, close= FALSE)
+  report_counts(adopter, sd_gender, prop="rows", title=FALSE, close=FALSE, box=TRUE, ci=TRUE)
 ```
 
 ##### Method
@@ -198,19 +225,17 @@ Basis: Only male and female respondents.
 
 # Customizing outputs
 
-Plot and table functions share a number of parameters that can be used to customize the outputs. Lookup the available parameters in the help of the specific function:
+Plot and table functions share a number of parameters that can be used to customize the outputs. Lookup the available parameters in the help of the specific function.
 
-- **labels**: Labels are extracted from the column attributes, if present. Set to FALSE to output bare column names and values.  
-- **title**: All plots usually get a title derived from the column attributes or column names. Set to FALSE to suppress the title or provide a title of your choice as a character value.  
-- **percent**: Frequency tables show percentages by default. Set to FALSE to get raw proportions - easier to postprocess in further calculations.
-- **digits**: Tables containing means and standard deviations by default round values to one digit. Increase the number to show more digits.
-- **numbers**: Bar plots give quick impressions, tables provide exact numbers. In bar charts you can combine both and print the frequencies onto the bars. Set the numbers parameter to "n", "p" or c("n","p"). To prevent cluttering and overlaps, numbers are only plotted on bars larger than 5%.
-- **values**: The more variables you desire, the denser the output must be. Some tables try to serve you insights at the maximum and show two values in one cell, for example the absolute counts (n) and the percentages (p), or the mean (m) and the standard deviation (sd). Control your desire with the values-parameter.
-- **prop**: Calculating percentages in a cross tab requires careful selection of the base. You can choose between total, row or column percentages. For stacked bar charts, displaying row percentages instead of total percentages gives a direct visual comparison of groups.
-- **negative**: In surveys, negative values such as -9 or -2 are often used to mark missing values or residual answers ("I don't know"). Therefore, all metric tables and plots remove negative values before calculation distribution parameters such as the mean. Set negative to TRUE for including those values. By the way: The handy prepare()-function can be used to recode all -9 to NA in a dataset.
-- **missings**: The number of missing values is an important indicator for data quality. In reports, the missings usually are ommited and so do the package functions by default. For data set statistics - for example when you monitor an ongoing survey or prepare a data set - you should set the missings-parameter to TRUE if the function supports it.
-- **ordered**: Sometimes categories have an order, from low to high or from few to many. It helps visual inspections to plot ordered values with shaded colors instead of arbitrary colors. For frequency plots, you can inform the method about the desired order. By default the functions try to automatically detect a sensitive order.
-- **limits**: Do you know how to create misleading graphs? It happens when you truncate the minimum or maximum value in a scale. The scale limits are automatically guessed by the package functions (work in progress). Use the limits-parameter to manually fix any misleading graphs.
+The theme_vlkr()-function lets you customise colors:
+
+```{r}
+theme_set(theme_vlkr(
+  base_fill = c("#F0983A","#3ABEF0","#95EF39","#E35FF5","#7A9B59"),
+  base_gradient = c("#FAE2C4","#F0983A")
+))
+
+```
 
 # Custom labels: Where do they come from?
 
@@ -218,7 +243,7 @@ Labels used in plots and tables are stored in the comment attribute of the varia
 You can inspect all labels using the `codebook()`-function:
 
 ```{r}
-codebook(data)
+codebook(ds)
 ```
 
 You can set custom or new labels with `labs_apply()` by providing a tibble 
@@ -233,31 +258,19 @@ newlabels <- tribble(
   "cg_adoption_advantage_04", "Macht mehr Spaß"
 )
 
-data %>%
+ds %>%
   labs_apply(newlabels) %>%
   tab_metrics_items(starts_with("cg_adoption_advantage_"))
 
 
 ```
 
-
-Remove all labels with `labs_clear()` to get a plain dataset.
-
-```{r}
-data %>%
-  labs_clear(everything()) %>%
-  tab_counts(starts_with("cg_adoption_advantage_"))
-```
-
-With the labels parameter, you achieve the same result.
-
-```{r}
-data %>%
-  tab_counts(starts_with("cg_adoption_advantage_"), labels= FALSE)
-```
+Alternatively, save the result of `codebook(ds)` to an Excel file,
+change the labels and then call `labs_apply()` with your new codebook.
 
 
-# Scales
+
+# Index calculation for item batteries
 
 You can calculate mean indexes from a bunch of items using `idx_add()`. 
 A new column is created with the average value of all selected columns
@@ -269,21 +282,21 @@ are printed by `tab_metrics()`.
 
 **Add a single index**
 ```{r}
-data %>%
+ds %>%
   idx_add(starts_with("cg_adoption_")) %>%
   tab_metrics(idx_cg_adoption)
 ```
 
 **Compare the index values by group**
 ```{r}
-data %>%
+ds %>%
   idx_add(starts_with("cg_adoption_")) %>%
   tab_metrics(idx_cg_adoption, adopter)
 ```
 
 **Add multiple indizes and summarize them**
 ```{r}
-data %>%
+ds %>%
   idx_add(starts_with("cg_adoption_")) %>%
   idx_add(starts_with("cg_adoption_advantage")) %>%
   idx_add(starts_with("cg_adoption_fearofuse")) %>%
@@ -311,4 +324,5 @@ To shape the data frames, two essential functions come into play:
 Plots are generated by `ggplot()`.
 
 The package provides print- and knit-functions that pimp console and markdown output. 
-To make this work, the cleaned data, produced plots, tables and markdown snippets gain new classes (`vlkr_df`, `vlkr_plt`, `vlkr_tbl`, `vlkr_rprt`).
+To make this work, the cleaned data, produced plots, tables and markdown snippets 
+gain new classes (`vlkr_df`, `vlkr_plt`, `vlkr_tbl`, `vlkr_list`, `vlkr_rprt`).
