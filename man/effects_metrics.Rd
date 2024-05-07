@@ -34,6 +34,13 @@ The regression type depends on the number of selected columns:
 \item One column and one grouping column: see \link{effects_metrics_one_grouped}
 \item Multiple columns and one grouping column: see \link{effects_metrics_items_grouped}
 }
+
+By default, if you provide two column selections, the second column is treated as categorical.
+Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
+\itemize{
+\item Two metric columns: see \link{effects_metrics_one_cor}
+\item Multiple columns: see \link{effects_metrics_items_cor}
+}
 }
 \examples{
 library(volker)

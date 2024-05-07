@@ -11,7 +11,7 @@
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
 #' - One column and one metric column: see \link{plot_counts_one_cor} (not yet implemented)
-#' - Multiple columns and one metric column: see \link{plot_counts_items_cor}  (not yet implemented)
+#' - Multiple columns and one metric column: see \link{plot_counts_items_cor} (not yet implemented)
 #'
 #' @param data A data frame.
 #' @param cols A tidy column selection,
@@ -67,11 +67,18 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 
 #' Output a plot with distribution parameters such as the mean values
 #'
-#' The table type depends on the number of selected columns:
+#' @description
+#' The plot type depends on the number of selected columns:
 #' - One column: see \link{plot_metrics_one}
 #' - Multiple columns: see \link{plot_metrics_items}
 #' - One column and one grouping column: see \link{plot_metrics_one_grouped}
 #' - Multiple columns and one grouping column: see \link{plot_metrics_items_grouped}
+#'
+#' By default, if you provide two column selections, the second column is treated as categorical.
+#' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
+#'
+#' - Two metric columns: see \link{plot_metrics_one_cor}
+#' - Multiple columns: see \link{plot_metrics_items_cor} (not yet implemented)
 #'
 #' @param data A data frame.
 #' @param cols A tidy column selection,

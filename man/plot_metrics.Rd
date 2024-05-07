@@ -27,12 +27,19 @@ Set metric to TRUE, to treat it as metric and calculate correlations.}
 A ggplot object.
 }
 \description{
-The table type depends on the number of selected columns:
+The plot type depends on the number of selected columns:
 \itemize{
 \item One column: see \link{plot_metrics_one}
 \item Multiple columns: see \link{plot_metrics_items}
 \item One column and one grouping column: see \link{plot_metrics_one_grouped}
 \item Multiple columns and one grouping column: see \link{plot_metrics_items_grouped}
+}
+
+By default, if you provide two column selections, the second column is treated as categorical.
+Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
+\itemize{
+\item Two metric columns: see \link{plot_metrics_one_cor}
+\item Multiple columns: see \link{plot_metrics_items_cor} (not yet implemented)
 }
 }
 \examples{

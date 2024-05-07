@@ -38,8 +38,8 @@ The type of frequency plot depends on the number of selected columns:
 By default, if you provide two column selections, the second column is treated as categorical.
 Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 \itemize{
-\item One column and one metric column: see \link{plot_counts_one_cor}
-\item Multiple columns and one metric column: see \link{plot_counts_items_cor}
+\item One column and one metric column: see \link{plot_counts_one_cor} (not yet implemented)
+\item Multiple columns and one metric column: see \link{plot_counts_items_cor} (not yet implemented)
 }
 }
 \examples{
