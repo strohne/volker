@@ -21,6 +21,6 @@ tab_counts_one_cor(data, cols, cross, clean = TRUE, ...)
 A volker tibble.
 }
 \description{
-Correlate categorical groups with one metric column
+\strong{Not yet implemented. The future will come.}
 }
 \keyword{internal}

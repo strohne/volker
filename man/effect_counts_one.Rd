@@ -33,6 +33,6 @@ effect_counts_one(
 A volker tibble.
 }
 \description{
-Test whether the shares differ from homogeneity
+\strong{Not yet implemented. The future will come.}
 }
 \keyword{internal}

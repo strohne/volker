@@ -21,6 +21,6 @@ plot_counts_items_grouped(data, cols, cross, clean = TRUE, ...)
 A ggplot object.
 }
 \description{
-TODO: implement -> focus one category and show n / p
+\strong{Not yet implemented. The future will come.}
 }
 \keyword{internal}

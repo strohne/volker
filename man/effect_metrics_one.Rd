@@ -19,6 +19,6 @@ effect_metrics_one(data, col, clean = T, ...)
 A volker tibble.
 }
 \description{
-Test whether the mean is different from zero
+\strong{Not yet implemented. The future will come.}
 }
 \keyword{internal}

@@ -38,8 +38,8 @@ The regression type depends on the number of selected columns:
 By default, if you provide two column selections, the second column is treated as categorical.
 Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 \itemize{
-\item Two metric columns: see \link{effects_metrics_one_cor}
-\item Multiple columns: see \link{effects_metrics_items_cor}
+\item Two metric columns: see \link{effect_metrics_one_cor}
+\item Multiple columns: see \link{effect_metrics_items_cor}
 }
 }
 \examples{

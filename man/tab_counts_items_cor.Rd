@@ -18,6 +18,6 @@ tab_counts_items_cor(data, cols, cross, clean = TRUE, ...)
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }
 \description{
-TODO: implement -> calculate npmi or similar for one value
+\strong{Not yet implemented. The future will come.}
 }
 \keyword{internal}

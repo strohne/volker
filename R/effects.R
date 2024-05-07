@@ -10,8 +10,8 @@
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
-#' - One column and one metric column: see \link{effects_counts_one_cor} (not yet implemented)
-#' - Multiple columns and one metric column: see \link{effects_counts_items_cor} (not yet implemented)
+#' - One column and one metric column: see \link{effect_counts_one_cor} (not yet implemented)
+#' - Multiple columns and one metric column: see \link{effect_counts_items_cor} (not yet implemented)
 #'
 #'
 #' @param data A data frame.
@@ -83,8 +83,8 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
 #'By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
-#' - Two metric columns: see \link{effects_metrics_one_cor}
-#' - Multiple columns: see \link{effects_metrics_items_cor}
+#' - Two metric columns: see \link{effect_metrics_one_cor}
+#' - Multiple columns: see \link{effect_metrics_items_cor}
 #'
 #' @param data A data frame.
 #' @param cols A tidy column selection,

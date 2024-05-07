@@ -1361,7 +1361,7 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negativ
   result <- result %>%
     dplyr::mutate(value = round(unlist(.data$value), 2))
 
-  # if (effects == TRUE) {
+  # if (effect == TRUE) {
   #   result <- result %>%
   #     dplyr::mutate(value = paste0(unlist(.data$value), .data$stars)) %>%
   #     dplyr::mutate(value = ifelse(.data$p >= 0.1, "", .data$value))

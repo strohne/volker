@@ -21,6 +21,6 @@ tab_counts_items_grouped(data, cols, cross, clean = TRUE, ...)
 A volker tibble.
 }
 \description{
-TODO: implement -> focus one category and show n / p
+\strong{Not yet implemented. The future will come.}
 }
 \keyword{internal}

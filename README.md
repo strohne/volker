@@ -201,7 +201,7 @@ yet.)
 
 You can calculate effect sizes and conduct basic statistical tests using
 `effect_counts()` and `effect_metrics()`. Effect calculation is included
-in the reports if you request it by the effects-parameter of
+in the reports if you request it by the effect-parameter of
 `report_counts()` or `report_metrics()`.
 
 **A word of warning:** Statistics is the world of uncertainty. All
@@ -340,7 +340,7 @@ the specific function.
   functions. Cronbach’s alpha is added to all table outputs.
 - **effect**: You are not sure whether the differences are statistical
   significant? One option is to look out for non overlapping confidence
-  intervals. In addition, the effects option calculates effect sizes
+  intervals. In addition, the effect option calculates effect sizes
   such as Cramer’s v or Cohen’s d and generates typical statistical
   tests such as Chi-squared tests and t-tests.
 - **method**: By default, correlations are calculated using Pearson’s R.

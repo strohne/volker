@@ -21,6 +21,6 @@ effect_counts_items_cor(data, cols, cross, clean = T, ...)
 A volker tibble.
 }
 \description{
-Correlate the values in multiple items and output effect sizes and tests
+\strong{Not yet implemented. The future will come.}
 }
 \keyword{internal}

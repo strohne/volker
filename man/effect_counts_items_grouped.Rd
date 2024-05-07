@@ -21,6 +21,6 @@ effect_counts_items_grouped(data, cols, cross, clean = T, ...)
 A volker tibble.
 }
 \description{
-Effect size and test for comparing multiple variables by a grouping variable
+\strong{Not yet implemented. The future will come.}
 }
 \keyword{internal}

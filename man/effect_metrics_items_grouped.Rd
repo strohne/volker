@@ -21,6 +21,6 @@ effect_metrics_items_grouped(data, cols, cross, clean = T, ...)
 A volker tibble.
 }
 \description{
-Output confidence intervals of group means, F-Statistics and effect size (Eta^2)
+\strong{Not yet implemented. The future will come.}
 }
 \keyword{internal}

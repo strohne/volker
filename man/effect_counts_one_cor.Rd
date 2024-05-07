@@ -21,6 +21,6 @@ effect_counts_one_cor(data, col, cross, clean = TRUE, ...)
 A volker tibble.
 }
 \description{
-Output test statistics and effect size for categories correlated with a metric column
+\strong{Not yet implemented. The future will come.}
 }
 \keyword{internal}
