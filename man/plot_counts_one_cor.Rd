@@ -51,6 +51,6 @@ Disable the title with FALSE or provide a custom title as character value.}
 A ggplot object
 }
 \description{
-\strong{Status:} \emph{\color{red}{Not yet implemented}}
+\strong{Not yet implemented. The future will come.}
 }
 \keyword{internal}

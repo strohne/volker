@@ -196,6 +196,11 @@ yet.)
 
 ## Statistical test
 
+You can conduct some basic statistical tests using the corresponding
+functions `effects_counts()` and `effects_metrics()`. Those functions
+are included in the reports if you set the effects-parameter of
+`report_counts()` or `report_metrics()` to `TRUE`.
+
 | \#  | function                      | implemented | effect size                   | confidence intervals | significance test |
 |-----|-------------------------------|-------------|-------------------------------|----------------------|-------------------|
 | 1   | effects_counts_one            | not yet     |                               | proportions          |                   |
@@ -274,65 +279,96 @@ functions. Missing control is on the list for the next package version.
 
 Plot and table functions share a number of parameters that can be used
 to customize the outputs. Lookup the available parameters in the help of
-the specific function:
+the specific function.
 
-- **labels**: Labels are extracted from the column attributes, if
-  present. Set to FALSE to output bare column names and values.  
-- **title**: All plots usually get a title derived from the column
-  attributes or column names. Set to FALSE to suppress the title or
-  provide a title of your choice as a character value.  
-- **percent**: Frequency tables show percentages by default. Set to
-  FALSE to get raw proportions - easier to postprocess in further
-  calculations.
-- **digits**: Tables containing means and standard deviations by default
-  round values to one digit. Increase the number to show more digits.
-- **numbers**: Bar plots give quick impressions, tables provide exact
-  numbers. In bar charts you can combine both and print the frequencies
-  onto the bars. Set the numbers parameter to “n”, “p” or c(“n”,“p”). To
-  prevent cluttering and overlaps, numbers are only plotted on bars
-  larger than 5%.
-- **values**: The more variables you desire, the denser the output must
-  be. Some tables try to serve you insights at the maximum and show two
-  values in one cell, for example the absolute counts (n) and the
-  percentages (p), or the mean (m) and the standard deviation (sd).
-  Control your desire with the values-parameter.
-- **prop**: Calculating percentages in a cross tab requires careful
-  selection of the base. You can choose between total, row or column
-  percentages. For stacked bar charts, displaying row percentages
-  instead of total percentages gives a direct visual comparison of
-  groups.
-- **negative**: In surveys, negative values such as -9 or -2 are often
-  used to mark missing values or residual answers (“I don’t know”).
-  Therefore, all metric tables and plots remove negative values before
-  calculation distribution parameters such as the mean. Set negative to
-  TRUE for including those values. By the way: The handy
-  prepare()-function can be used to recode all -9 to NA in a dataset.
+### Data preparation
+
 - **missings**: The number of missing values is an important indicator
   for data quality. In reports, the missings usually are ommited and so
   do the package functions by default. For data set statistics - for
   example when you monitor an ongoing survey or prepare a data set - you
   should set the missings-parameter to TRUE if the function supports it.
+- **negative**: In surveys, negative values such as -9 or -2 are often
+  used to mark missing values or residual answers (“I don’t know”).
+  Therefore, all metric tables and plots remove negative values before
+  calculation distribution parameters such as the mean. Set negative to
+  TRUE for including those values. Be aware that the cleaning plan may
+  remove some negative values as well and make sure disable cleaning of
+  negative numbers where necessary.
 - **ordered**: Sometimes categories have an order, from low to high or
   from few to many. It helps visual inspections to plot ordered values
   with shaded colors instead of arbitrary colors. For frequency plots,
   you can inform the method about the desired order. By default the
   functions try to automatically detect a sensitive order.
+- **category**: When you have multiple categories in a column, you can
+  focus one of the categories to simplify the plots and tables. By
+  default, if a column has only TRUE and FALSE values, the outputs focus
+  the TRUE category.
+- **clean** Before all calculations, the dataset goes through a cleaning
+  plan that, for example, recodes residual factor values such as “\[NA\]
+  nicht beantwortet” to missings. See the help for further details or
+  disable data cleaning if you don’t like it. For example, to disable
+  removing of negative residual values, call
+  `options(vlkr.na.numbers=c())`.
+
+### Calculations
+
+- **prop**: Calculating percentages in a cross tab requires careful
+  selection of the base. You can choose between total, row or column
+  percentages. For stacked bar charts, displaying row percentages
+  instead of total percentages gives a direct visual comparison of
+  groups.
+- **ci**: Add confidence intervals to plot and table outputs.
+- **index**: Indexes (=mean of multiple items) can be added using
+  `idx_add()` manually and are automatically calculated in report
+  functions. Cronbach’s alpha is added to all table outputs.
+- **effects**: You are not sure whether the differences are statistical
+  significant? One option is to look out for non overlapping confidence
+  intervals. In addition, the effects option calculates effect sizes
+  such as Cramer’s v or Cohen’s d and generates typical statistical
+  tests such as Chi-squared tests and t-tests.
+- **method**: By default, correlations are calculated using Pearson’s R.
+  You can choose Spearman’s Rho with the methods-parameter.
+
+### Labeling
+
+- **title**: All plots usually get a title derived from the column
+  attributes or column names. Set to FALSE to suppress the title or
+  provide a title of your choice as a character value.  
+- **labels**: Labels are extracted from the column attributes, if
+  present. Set to FALSE to output bare column names and values.
+
+### Tables
+
+- **percent**: Frequency tables show percentages by default. Set to
+  FALSE to get raw proportions - easier to postprocess in further
+  calculations.
+- **digits**: Tables containing means and standard deviations by default
+  round values to one digit. Increase the number to show more digits.
+- **values**: The more variables you desire, the denser the output must
+  be. Some tables try to serve you insights at the maximum and show two
+  values in one cell, for example the absolute counts (n) and the
+  percentages (p), or the mean (m) and the standard deviation (sd).
+  Control your desire with the values-parameter.
+
+### Plots
+
+- **numbers**: Bar plots give quick impressions, tables provide exact
+  numbers. In bar charts you can combine both and print the frequencies
+  onto the bars. Set the numbers parameter to “n”, “p” or c(“n”,“p”). To
+  prevent cluttering and overlaps, numbers are only plotted on bars
+  larger than 5%.
 - **limits**: Do you know how to create misleading graphs? It happens
   when you truncate the minimum or maximum value in a scale. The scale
   limits are automatically guessed by the package functions (work in
   progress). Use the limits-parameter to manually fix any misleading
   graphs.
-- **index**: Indexes (=mean of multiple items) can be added using
-  `idx_add()` manually and are automatically calculated in report
-  functions. Cronbach’s alpha is added to all table outputs.
 - **box**: In metric plots you can visualise the distribution by adding
   boxplots.
-- **ci**: Add confidence intervals to plot and table outputs.
-- **stats**: You are not sure whether the differences are statistical
-  significant? One option is to look out for non overlapping confidence
-  intervals. In addition, the stats option calculates effect sizes such
-  as Cramer’s v or Cohen’s d and generates typical statistical tests
-  such as Chi-squared tests and t-tests.
+- **log**: Metric values having long tail distributions are not easy to
+  visualise. In scatter plots, you can use a logarithmic scale. Be
+  aware, that zero values will be omitted because their log value is
+  undefined.
 
 ## Installation
 
@@ -421,13 +457,13 @@ Other packages with high-level reporting functions:
 
 ## Authors and citation
 
-**Author**  
-Jakob Jünger (University of Münster)
+**Authors**  
+Jakob Jünger (University of Münster) Henrieke Kotthoff (University of
+Münster)  
 
 **Contributers**  
-Henrieke Kotthoff (University of Münster)  
 Chantal Gärtner (University of Münster)
 
 **Citation**  
-Jünger, J. (2024). volker: High-level functions for tabulating, charting
-and reporting survey data. R package version 1.0.
+Jünger, J. & Kotthoff, H. (2024). volker: High-level functions for
+tabulating, charting and reporting survey data. R package version 2.0.
