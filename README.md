@@ -200,16 +200,16 @@ yet.)
 ## Effect sizes and statistical tests
 
 You can calculate effect sizes and conduct basic statistical tests using
-`effect_counts()` and `effect_metrics()`. Effect calculation is
-included in the reports if you request it by the effect-parameter of
+`effect_counts()` and `effect_metrics()`. Effect calculation is included
+in the reports if you request it by the effects-parameter of
 `report_counts()` or `report_metrics()`.
 
 **A word of warning:** Statistics is the world of uncertainty. All
 procedures require mindful interpretation. Counting stars might evoke
 illusions.
 
-| \#  | function                      | implemented | effect size                 | confidence intervals | significance test |
-|-----|-------------------------------|-------------|-----------------------------|----------------------|-------------------|
+| \#  | function                     | implemented | effect size                 | confidence intervals | significance test |
+|-----|------------------------------|-------------|-----------------------------|----------------------|-------------------|
 | 1   | effect_counts_one            | not yet     |                             |                      |                   |
 | 2   | effect_counts_one_grouped    |             | Cramér’s V                  | proportions          | Chi squared       |
 | 3   | effect_counts_one_cor        | not yet     |                             |                      |                   |
@@ -340,7 +340,7 @@ the specific function.
   functions. Cronbach’s alpha is added to all table outputs.
 - **effect**: You are not sure whether the differences are statistical
   significant? One option is to look out for non overlapping confidence
-  intervals. In addition, the effect option calculates effect sizes
+  intervals. In addition, the effects option calculates effect sizes
   such as Cramer’s v or Cohen’s d and generates typical statistical
   tests such as Chi-squared tests and t-tests.
 - **method**: By default, correlations are calculated using Pearson’s R.
@@ -475,8 +475,8 @@ Other packages with high-level reporting functions:
 ## Authors and citation
 
 **Authors**  
-Jakob Jünger (University of Münster) Henrieke Kotthoff (University of
-Münster)  
+Jakob Jünger (University of Münster)  
+Henrieke Kotthoff (University of Münster)  
 
 **Contributers**  
 Chantal Gärtner (University of Münster)

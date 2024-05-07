@@ -441,7 +441,7 @@ Other packages with high-level reporting functions:\
 ## Authors and citation
 
 **Authors**\
-Jakob Jünger (University of Münster)
+Jakob Jünger (University of Münster)\
 Henrieke Kotthoff (University of Münster)\
 
 **Contributers**\
