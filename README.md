@@ -45,6 +45,7 @@ in:
 
 - **Charts**: `plot_metrics()` and `plot_counts()`  
 - **Tables**: `tab_metrics()` and `tab_counts()`  
+- **Tests**: `effects_metrics()` and `effects_counts()`  
 - **Reports**: `report_metrics()` and `report_counts()`
 
 Which one is best? That depends on your objective:
@@ -61,11 +62,14 @@ Which one is best? That depends on your objective:
   Functions for categorical variables contain `counts` in their name,
   those for metric `metrics`.
 
-- *Individual or grouped?*  
+- *Individual, grouped or correlated?*  
   Groups can be compared (e.g., the average age by gender) or
   cross-tabulated (e.g. combinations of education level and gender) by
   providing a grouping column as third parameter of table, plot and
-  report functions.
+  report functions. To calculate correlations and show scatter plots,
+  provide a metric column and set the metric-Paramter to TRUE. The
+  effects-functions calculate effect sizes and statistical tests for
+  group comparisons and correlations.
 
 - *One variable or item batteries?*.  
   Item batteries are often used in surveys. Each item results in a
@@ -141,8 +145,7 @@ items</strong>
 All functions take a data frame as their first argument, followed by
 column selections, and optionally a grouping column. Examples:
 
-All functions take a data frame as their first argument, followed by
-column selections, and optionally a grouping column. Examples:
+Examples:
 
 - One metric variable: `tab_metrics(data, sd_age)`  
 - One categorical variable: `tab_counts(data, sd_gender)`  
@@ -194,27 +197,31 @@ yet.)
 | 23  | plot_metrics_items_grouped |             | plot   | metrics | multiple | grouped    |
 | 24  | plot_metrics_items_cor     |             | plot   | metrics | multiple | correlated |
 
-## Statistical test
+## Effect sizes and statistical tests
 
-You can conduct some basic statistical tests using the corresponding
-functions `effects_counts()` and `effects_metrics()`. Those functions
-are included in the reports if you set the effects-parameter of
-`report_counts()` or `report_metrics()` to `TRUE`.
+You can calculate effect sizes and conduct basic statistical tests using
+`effects_counts()` and `effects_metrics()`. Effect calculation is
+included in the reports if you request it by the effects-parameter of
+`report_counts()` or `report_metrics()`.
 
-| \#  | function                      | implemented | effect size                   | confidence intervals | significance test |
-|-----|-------------------------------|-------------|-------------------------------|----------------------|-------------------|
-| 1   | effects_counts_one            | not yet     |                               | proportions          |                   |
-| 2   | effects_counts_one_grouped    |             | Cramér’s V                    | proportions          | Chis quared       |
-| 3   | effects_counts_one_cor        | not yet     |                               |                      |                   |
-| 4   | effects_counts_items          | not yet     | Cramér’s V                    | proportions          | Chi s quared      |
-| 5   | effects_counts_items_grouped  | not yet     | Cramér’s V                    | proportions          | Chi s quared      |
-| 6   | effects_counts_items_cor      | not yet     |                               |                      |                   |
-| 7   | effects_metrics_one           | not yet     |                               | mean                 |                   |
-| 8   | effects_metrics_one_grouped   |             | R squared (= Eta squared) eta | means                | t-test, F-test    |
-| 9   | effects_metrics_one_cor       |             | Pearson’s r, Spearman’s rho   | correlation          | t-test            |
-| 10  | effects_metrics_items         |             | R squared (=Eta squared)      | means                | t-test            |
-| 11  | effects_metrics_items_grouped | not yet     | Eta squared                   | means                |                   |
-| 12  | effects_metrics_items_cor     |             | Pearson’s r                   | correlation          | t-test            |
+**A word of warning:** Statistics is the world of uncertainty. All
+procedures require mindful interpretation. Counting stars might evoke
+illusions.
+
+| \#  | function                      | implemented | effect size                 | confidence intervals | significance test |
+|-----|-------------------------------|-------------|-----------------------------|----------------------|-------------------|
+| 1   | effects_counts_one            | not yet     |                             |                      |                   |
+| 2   | effects_counts_one_grouped    |             | Cramér’s V                  | proportions          | Chi squared       |
+| 3   | effects_counts_one_cor        | not yet     |                             |                      |                   |
+| 4   | effects_counts_items          | not yet     |                             |                      |                   |
+| 5   | effects_counts_items_grouped  | not yet     |                             |                      |                   |
+| 6   | effects_counts_items_cor      | not yet     |                             |                      |                   |
+| 7   | effects_metrics_one           | not yet     |                             |                      |                   |
+| 8   | effects_metrics_one_grouped   |             | R squared                   | means                | t-test            |
+| 9   | effects_metrics_one_cor       |             | Pearson’s r, Spearman’s rho | correlation          | t-test            |
+| 10  | effects_metrics_items         |             | R squared                   | means                | t-test            |
+| 11  | effects_metrics_items_grouped | not yet     |                             |                      |                   |
+| 12  | effects_metrics_items_cor     |             | Pearson’s r, Spearman’s rho | correlation          | t-test            |
 
 ## Where do all the labels go?
 
@@ -246,7 +253,6 @@ codebook attribute of the data frame) before the operation and restore
 them afterwards:
 
     data %>%
-      
       labs_store() %>%
       mutate(sd_age = 2024 - sd_age) %>% 
       labs_restore() %>% 
@@ -272,10 +278,20 @@ For best results, use sensible prefixes and captions for your SoSci
 questions. The labels come directly from your questionnaire.
 
 *Please note:* The values `-9` and `[NA] nicht beantwortet` are
-automatically recoded to missing values within all plot, tab and report
-functions. Missing control is on the list for the next package version.
+automatically recoded to missing values within all plot, tab, effects,
+and report functions. See the negatives-Parameter and the
+clean-parameter how to disable automatic residual removal.
 
 ## Customization
+
+You can change plot colors using the theme_vlkr()-function:
+
+    theme_set(
+      theme_vlkr(
+        base_fill = c("#F0983A","#3ABEF0","#95EF39","#E35FF5","#7A9B59"),
+        base_gradient = c("#FAE2C4","#F0983A")
+      )
+    )
 
 Plot and table functions share a number of parameters that can be used
 to customize the outputs. Lookup the available parameters in the help of
@@ -420,7 +436,8 @@ You can try alternative versions:
 - Interactive reports: Use the `volker::html_report` template in your
   Markdown documents to switch between tables and plots when using the
   report-functions.  
-- Calculate metric indexes using `idx_add()` (*work in progress*).  
+- Calculate metric indexes using `idx_add()` and effect sizes  
+  (*work in progress*)  
 - Simplified hints for wrong parameters, e.g. if you forget to provide a
   data frame (*work in progress*).
 - Tidyverse style.

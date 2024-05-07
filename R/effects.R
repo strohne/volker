@@ -33,7 +33,7 @@ effects_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   is_items <- length(cols_eval) > 1
-  is_grouped <- length(cross_eval)== 1
+  is_grouped <- length(cross_eval) == 1
   is_cor <- metric != FALSE
 
   # Single variables
