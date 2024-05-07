@@ -11,7 +11,7 @@ report_metrics(
   metric = FALSE,
   ...,
   index = FALSE,
-  effects = FALSE,
+  effect = FALSE,
   title = TRUE,
   close = TRUE,
   clean = TRUE
@@ -30,14 +30,14 @@ or multiple columns selected by methods such as starts_with().}
 By default, the cross column selection is treated as categorical data.
 Set metric to TRUE, to treat it as metric and calculate correlations.}
 
-\item{...}{Parameters passed to the \link{plot_metrics} and \link{tab_metrics} and \link{effects_metrics} functions.}
+\item{...}{Parameters passed to the \link{plot_metrics} and \link{tab_metrics} and \link{effect_metrics} functions.}
 
 \item{index}{When the cols contain items on a metric scale
 (as determined by \link{get_direction}),
 an index will be calculated using the 'psych' package.
 Set to FALSE to suppress index generation.}
 
-\item{effects}{Whether to report statistical tests and effect sizes. See \link{effects_counts} for further parameters.}
+\item{effect}{Whether to report statistical tests and effect sizes. See \link{effect_counts} for further parameters.}
 
 \item{title}{A character providing the heading or TRUE (default) to output a heading.
 Classes for tabset pills will be added.}

@@ -45,7 +45,7 @@ in:
 
 - **Charts**: `plot_metrics()` and `plot_counts()`  
 - **Tables**: `tab_metrics()` and `tab_counts()`  
-- **Tests**: `effects_metrics()` and `effects_counts()`  
+- **Tests**: `effect_metrics()` and `effect_counts()`  
 - **Reports**: `report_metrics()` and `report_counts()`
 
 Which one is best? That depends on your objective:
@@ -68,7 +68,7 @@ Which one is best? That depends on your objective:
   providing a grouping column as third parameter of table, plot and
   report functions. To calculate correlations and show scatter plots,
   provide a metric column and set the metric-Paramter to TRUE. The
-  effects-functions calculate effect sizes and statistical tests for
+  effect-functions calculate effect sizes and statistical tests for
   group comparisons and correlations.
 
 - *One variable or item batteries?*.  
@@ -200,8 +200,8 @@ yet.)
 ## Effect sizes and statistical tests
 
 You can calculate effect sizes and conduct basic statistical tests using
-`effects_counts()` and `effects_metrics()`. Effect calculation is
-included in the reports if you request it by the effects-parameter of
+`effect_counts()` and `effect_metrics()`. Effect calculation is
+included in the reports if you request it by the effect-parameter of
 `report_counts()` or `report_metrics()`.
 
 **A word of warning:** Statistics is the world of uncertainty. All
@@ -210,18 +210,18 @@ illusions.
 
 | \#  | function                      | implemented | effect size                 | confidence intervals | significance test |
 |-----|-------------------------------|-------------|-----------------------------|----------------------|-------------------|
-| 1   | effects_counts_one            | not yet     |                             |                      |                   |
-| 2   | effects_counts_one_grouped    |             | Cramér’s V                  | proportions          | Chi squared       |
-| 3   | effects_counts_one_cor        | not yet     |                             |                      |                   |
-| 4   | effects_counts_items          | not yet     |                             |                      |                   |
-| 5   | effects_counts_items_grouped  | not yet     |                             |                      |                   |
-| 6   | effects_counts_items_cor      | not yet     |                             |                      |                   |
-| 7   | effects_metrics_one           | not yet     |                             |                      |                   |
-| 8   | effects_metrics_one_grouped   |             | R squared                   | means                | t-test            |
-| 9   | effects_metrics_one_cor       |             | Pearson’s r, Spearman’s rho | correlation          | t-test            |
-| 10  | effects_metrics_items         |             | R squared                   | means                | t-test            |
-| 11  | effects_metrics_items_grouped | not yet     |                             |                      |                   |
-| 12  | effects_metrics_items_cor     |             | Pearson’s r, Spearman’s rho | correlation          | t-test            |
+| 1   | effect_counts_one            | not yet     |                             |                      |                   |
+| 2   | effect_counts_one_grouped    |             | Cramér’s V                  | proportions          | Chi squared       |
+| 3   | effect_counts_one_cor        | not yet     |                             |                      |                   |
+| 4   | effect_counts_items          | not yet     |                             |                      |                   |
+| 5   | effect_counts_items_grouped  | not yet     |                             |                      |                   |
+| 6   | effect_counts_items_cor      | not yet     |                             |                      |                   |
+| 7   | effect_metrics_one           | not yet     |                             |                      |                   |
+| 8   | effect_metrics_one_grouped   |             | R squared                   | means                | t-test            |
+| 9   | effect_metrics_one_cor       |             | Pearson’s r, Spearman’s rho | correlation          | t-test            |
+| 10  | effect_metrics_items         |             | R squared                   | means                | t-test            |
+| 11  | effect_metrics_items_grouped | not yet     |                             |                      |                   |
+| 12  | effect_metrics_items_cor     |             | Pearson’s r, Spearman’s rho | correlation          | t-test            |
 
 ## Where do all the labels go?
 
@@ -278,7 +278,7 @@ For best results, use sensible prefixes and captions for your SoSci
 questions. The labels come directly from your questionnaire.
 
 *Please note:* The values `-9` and `[NA] nicht beantwortet` are
-automatically recoded to missing values within all plot, tab, effects,
+automatically recoded to missing values within all plot, tab, effect,
 and report functions. See the negatives-Parameter and the
 clean-parameter how to disable automatic residual removal.
 
@@ -338,9 +338,9 @@ the specific function.
 - **index**: Indexes (=mean of multiple items) can be added using
   `idx_add()` manually and are automatically calculated in report
   functions. Cronbach’s alpha is added to all table outputs.
-- **effects**: You are not sure whether the differences are statistical
+- **effect**: You are not sure whether the differences are statistical
   significant? One option is to look out for non overlapping confidence
-  intervals. In addition, the effects option calculates effect sizes
+  intervals. In addition, the effect option calculates effect sizes
   such as Cramer’s v or Cohen’s d and generates typical statistical
   tests such as Chi-squared tests and t-tests.
 - **method**: By default, correlations are calculated using Pearson’s R.

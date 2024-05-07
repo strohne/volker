@@ -10,7 +10,7 @@ report_counts(
   cross = NULL,
   metric = FALSE,
   index = FALSE,
-  effects = FALSE,
+  effect = FALSE,
   numbers = NULL,
   title = TRUE,
   close = TRUE,
@@ -36,7 +36,7 @@ Set metric to TRUE, to treat it as metric and calculate correlations.}
 an index will be calculated using the 'psych' package.
 Set to FALSE to suppress index generation.}
 
-\item{effects}{Whether to report statistical tests and effect sizes. See \link{effects_counts} for further parameters.}
+\item{effect}{Whether to report statistical tests and effect sizes. See \link{effect_counts} for further parameters.}
 
 \item{numbers}{The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 Set to NULL to remove numbers.}
@@ -50,7 +50,7 @@ in Markdown (e.g. ##### Method).}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
-\item{...}{Parameters passed to the \link{plot_counts} and \link{tab_counts} and \link{effects_counts} functions.}
+\item{...}{Parameters passed to the \link{plot_counts} and \link{tab_counts} and \link{effect_counts} functions.}
 }
 \value{
 A volker report object.

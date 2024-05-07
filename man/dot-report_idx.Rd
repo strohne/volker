@@ -10,7 +10,7 @@
   cross,
   metric = FALSE,
   ...,
-  effects = FALSE,
+  effect = FALSE,
   title = TRUE
 )
 }
@@ -27,7 +27,7 @@ or multiple columns selected by methods such as starts_with().}
 By default, the cross column selection is treated as categorical data.
 Set metric to TRUE, to treat it as metric and calculate correlations.}
 
-\item{effects}{Whether to report statistical tests and effect sizes.}
+\item{effect}{Whether to report statistical tests and effect sizes.}
 
 \item{title}{Add a plot title (default = TRUE).}
 }

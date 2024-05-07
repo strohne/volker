@@ -426,6 +426,8 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent =
 
 #' Correlate categorical groups with one metric column
 #'
+#' \strong{Not yet implemented. The future will come.}
+#'
 #' @keywords internal
 #'
 #' @param data A tibble.
@@ -436,7 +438,7 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent =
 #' @return A volker tibble.
 #' @importFrom rlang .data
 tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet", noBreaks. = TRUE)
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Output frequencies for multiple variables
@@ -660,7 +662,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = TRUE, percent = 
 
 #' Compare the values in multiple items by a grouping column
 #'
-#' TODO: implement -> focus one category and show n / p
+#' \strong{Not yet implemented. The future will come.}
 #'
 #' @keywords internal
 #'
@@ -672,12 +674,12 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = TRUE, percent = 
 #' @return A volker tibble.
 #' @importFrom rlang .data
 tab_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet", noBreaks. = TRUE)
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Correlate the values in multiple items
 #'
-#' TODO: implement -> calculate npmi or similar for one value
+#' \strong{Not yet implemented. The future will come.}
 #'
 #' @keywords internal
 #'
@@ -688,7 +690,7 @@ tab_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @importFrom rlang .data
 tab_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet", noBreaks. = TRUE)
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Output a five point summary table for the values in multiple columns
@@ -1278,9 +1280,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
-#'
-#' TODO: do we need effects parameter here?
-#'
+
 #' @keywords internal
 #'
 #' @param data A tibble.

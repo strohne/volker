@@ -434,7 +434,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
 #' @return A ggplot object
 #' @importFrom rlang .data
 plot_counts_one_cor <- function(data, col, cross, ordered = NULL, limits = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  warning("Not implemented yet", noBreaks. = TRUE)
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Output frequencies for multiple variables
@@ -579,7 +579,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 
 #' Plot frequencies of multiple items compared by groups
 #'
-#' TODO: implement -> focus one category and show n / p
+#' \strong{Not yet implemented. The future will come.}
 #'
 #' @keywords internal
 #'
@@ -591,10 +591,12 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #' @return A ggplot object.
 #' @importFrom rlang .data
 plot_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet", noBreaks. = TRUE)
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Correlate categorical items with a metric column
+#'
+#' \strong{Not yet implemented. The future will come.}
 #'
 #' @keywords internal
 #'
@@ -606,7 +608,7 @@ plot_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
 #' @return A ggplot object.
 #' @importFrom rlang .data
 plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet", noBreaks. = TRUE)
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Output a density plot for a single metric variable
@@ -1241,6 +1243,8 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
 
 #' Scatter plot of correlations between multiple items
 #'
+#' \strong{Not yet implemented. The future will come.}
+#'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
@@ -1258,7 +1262,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
 #' @return A ggplot object.
 #' @importFrom rlang .data
 plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, log = FALSE, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  warning("Not implemented yet", noBreaks. = TRUE)
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Helper function: plot grouped bar chart
