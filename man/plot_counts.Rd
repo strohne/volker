@@ -39,7 +39,7 @@ By default, if you provide two column selections, the second column is treated a
 Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 \itemize{
 \item One column and one metric column: see \link{plot_counts_one_cor} (not yet implemented)
-\item Multiple columns and one metric column: see \link{plot_counts_items_cor}  (not yet implemented)
+\item Multiple columns and one metric column: see \link{plot_counts_items_cor} (not yet implemented)
 }
 }
 \examples{
