@@ -7,14 +7,14 @@
 get_ci(x, conf = 0.95)
 }
 \arguments{
-\item{x}{A numeric vector}
+\item{x}{A numeric vector.}
 
-\item{conf}{The confidence level}
+\item{conf}{The confidence level.}
 }
 \value{
-A named list with values for y, ymin, and ymax
+A named list with values for y, ymin, and ymax.
 }
 \description{
 Calculate ci values to be used for error bars on a plot
 }
-\keyword{internal.}
+\keyword{internal}

@@ -749,9 +749,9 @@ effects_metrics_items_cor <- function(data, cols, cross, method = "pearson", neg
 #'
 #' @keywords internal
 #'
-#' @param fit Result of a \link{lm} call
-#' @author Created with the help of ChatGPT
-#' @returns A tibble with regression parameters
+#' @param fit Result of a \link{lm} call.
+#' @author Created with the help of ChatGPT.
+#' @returns A tibble with regression parameters.
 tidy_lm_levels <- function(fit) {
   lm_tidy <- broom::tidy(fit, conf.int = TRUE)
   lm_data <- fit$model
@@ -792,10 +792,11 @@ tidy_lm_levels <- function(fit) {
 
 #' Calculate ci values to be used for error bars on a plot
 #'
-#' @keywords internal.
-#' @param x A numeric vector
-#' @param conf The confidence level
-#' @return A named list with values for y, ymin, and ymax
+#' @keywords internal
+#'
+#' @param x A numeric vector.
+#' @param conf The confidence level.
+#' @return A named list with values for y, ymin, and ymax.
 get_ci <- function(x, conf = 0.95) {
   n <- length(x)
   m <- mean(x)

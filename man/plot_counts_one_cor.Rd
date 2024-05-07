@@ -51,6 +51,6 @@ Disable the title with FALSE or provide a custom title as character value.}
 A ggplot object
 }
 \description{
-Plot correlation of categories with one metric column
+\strong{Status:} \emph{\color{red}{Not yet implemented}}
 }
 \keyword{internal}

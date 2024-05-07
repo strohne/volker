@@ -3,6 +3,8 @@
 #' The tibble remembers whether it was already cleaned and
 #' the cleaning plan is only performed once in the first call.
 #'
+#' @keywords internal
+#'
 #' @param data Data frame
 #' @param plan The cleaning plan. By now, only "sosci" is supported. See \link{data_clean_sosci}.
 #' @param ... Other parameters passed to the appropriate cleaning function
@@ -117,6 +119,8 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
 }
 
 #' Remove missings and output a message
+#'
+#' @keywords internal
 #'
 #' @param data Data frame
 #' @param cols A tidy column selection

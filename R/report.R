@@ -15,12 +15,12 @@
 #' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
 #'            Set metric to TRUE, to treat it as metric and calculate correlations.
-#' @param ... Parameters passed to the plot and tab functions.
+#' @param ... Parameters passed to the \link{plot_metrics} and \link{tab_metrics} and \link{effects_metrics} functions.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the 'psych' package.
 #'              Set to FALSE to suppress index generation.
-#' @param effects Output effect sizes.
+#' @param effects Whether to report statistical tests and effect sizes. See \link{effects_counts} for further parameters.
 #' @param title A character providing the heading or TRUE (default) to output a heading.
 #'               Classes for tabset pills will be added.
 #' @param close Whether to close the last tab (default value TRUE) or to keep it open.
@@ -112,7 +112,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the 'psych' package.
 #'              Set to FALSE to suppress index generation.
-#' @param effects Whether to report statistical tests and effect sizes.
+#' @param effects Whether to report statistical tests and effect sizes. See \link{effects_counts} for further parameters.
 #' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 #'                Set to NULL to remove numbers.
 #' @param title A character providing the heading or TRUE (default) to output a heading.
@@ -121,7 +121,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 #'              Keep it open to add further custom tabs by adding headers on the fifth level
 #'              in Markdown (e.g. ##### Method).
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Parameters passed to the plot and tab functions.
+#' @param ... Parameters passed to the \link{plot_counts} and \link{tab_counts} and \link{effects_counts} functions.
 #' @return A volker report object.
 #' @examples
 #' library(volker)

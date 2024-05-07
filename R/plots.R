@@ -1,11 +1,17 @@
 #' Output a frequency plot
 #'
+#' @description
 #' The type of frequency plot depends on the number of selected columns:
 #' - One column: see \link{plot_counts_one}
 #' - Multiple columns: see \link{plot_counts_items}
 #' - One column and one grouping column: see \link{plot_counts_one_grouped}
 #' - Multiple columns and one grouping column: see \link{plot_counts_items_grouped}
 #'
+#' By default, if you provide two column selections, the second column is treated as categorical.
+#' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
+#'
+#' - One column and one metric column: see \link{plot_counts_one_cor} (not yet implemented)
+#' - Multiple columns and one metric column: see \link{plot_counts_items_cor}  (not yet implemented)
 #'
 #' @param data A data frame.
 #' @param cols A tidy column selection,
@@ -403,6 +409,8 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
 }
 
 #' Plot correlation of categories with one metric column
+#'
+#' \strong{Not yet implemented. The future will come.}
 #'
 #' @keywords internal
 #'

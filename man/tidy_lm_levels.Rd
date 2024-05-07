@@ -7,15 +7,15 @@
 tidy_lm_levels(fit)
 }
 \arguments{
-\item{fit}{Result of a \link{lm} call}
+\item{fit}{Result of a \link{lm} call.}
 }
 \value{
-A tibble with regression parameters
+A tibble with regression parameters.
 }
 \description{
 Tidy lm results, replace categorical parameter names by their levels and add the reference level
 }
 \author{
-Created with the help of ChatGPT
+Created with the help of ChatGPT.
 }
 \keyword{internal}

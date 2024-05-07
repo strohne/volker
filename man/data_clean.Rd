@@ -24,3 +24,4 @@ the cleaning plan is only performed once in the first call.
 ds <- volker::chatgpt
 ds <- data_clean(ds)
 }
+\keyword{internal}

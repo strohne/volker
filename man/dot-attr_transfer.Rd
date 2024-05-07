@@ -19,3 +19,4 @@ The target object with the updated attribute.
 \description{
 Transfer an attribute from one to another object
 }
+\keyword{internal}
