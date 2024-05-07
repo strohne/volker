@@ -36,9 +36,13 @@ data_clean <- function(data, plan = "sosci", ...) {
 #'
 #' @param data Data frame
 #' @param remove.na.levels Remove residual values from factor columns.
-#'                      Either a character vector with residual values or TRUE to use defaults in \link{VLKR_NA_LEVELS}
+#'                      Either a character vector with residual values or TRUE to use defaults in \link{VLKR_NA_LEVELS}.
+#'                      You can also define or disable residual levels by setting the global option vlkr.na.levels
+#'                      (e.g. `options(vlkr.na.levels=c("Not answered"))` or to disable `options(vlkr.na.levels=FALSE)`).
 #' @param remove.na.numbers Remove residual values from numeric columns.
-#'                      Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}
+#'                      Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}.
+#'                      You can also define or disable residual values by setting the global option vlkr.na.numbers
+#'                      (e.g. `options(vlkr.na.numbers=c(-2,-9))` or to disable `options(vlkr.na.numbers=FALSE)`).
 #' @param add.whitespace Add whitespace after slashes for improved label breaks
 #' @return Data frame with vlkr_df class (the class is used to prevent double preparation)
 #' @examples
@@ -63,7 +67,12 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
   # Remove residual levels such as "[NA] nicht beantwortet"
   if (remove.na.levels != FALSE) {
     if (is.logical(remove.na.levels)) {
-      remove.na.levels <- VLKR_NA_LEVELS
+      remove.na.levels <- getOption("vlkr.na.levels")
+      if (is.null(remove.na.levels)) {
+        remove.na.levels <- VLKR_NA_LEVELS
+      } else if (all(remove.na.levels == FALSE)) {
+        remove.na.levels <- c()
+      }
     }
 
     data <- dplyr::mutate(
@@ -78,7 +87,12 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
   # Remove residual numbers such as -9
   if (remove.na.numbers != FALSE) {
     if (is.logical(remove.na.numbers)) {
-      remove.na.numbers <- VLKR_NA_NUMERIC
+      remove.na.numbers <- getOption("vlkr.na.numbers")
+      if (is.null(remove.na.numbers)) {
+        remove.na.numbers <- VLKR_NA_NUMERIC
+      } else if (all(remove.na.numbers == FALSE)) {
+        remove.na.numbers <- c()
+      }
     }
 
     data <- dplyr::mutate(

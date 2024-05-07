@@ -9,7 +9,7 @@ plot_metrics_items_cor(
   cols,
   cross,
   limits = NULL,
-  logplot = FALSE,
+  log = FALSE,
   negative = FALSE,
   title = TRUE,
   labels = TRUE,
@@ -27,7 +27,7 @@ plot_metrics_items_cor(
 \item{limits}{The scale limits, a list with x and y components, e.g. \code{list(x=c(0,100), y=c(20,100))}.
 Set NULL to extract limits from the labels.}
 
-\item{logplot}{Whether to plot log scales.}
+\item{log}{Whether to plot log scales.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 

@@ -15,10 +15,14 @@ data_clean_sosci(
 \item{data}{Data frame}
 
 \item{remove.na.levels}{Remove residual values from factor columns.
-Either a character vector with residual values or TRUE to use defaults in \link{VLKR_NA_LEVELS}}
+Either a character vector with residual values or TRUE to use defaults in \link{VLKR_NA_LEVELS}.
+You can also define or disable residual levels by setting the global option vlkr.na.levels
+(e.g. \code{options(vlkr.na.levels=c("Not answered"))} or to disable \code{options(vlkr.na.levels=FALSE)}).}
 
 \item{remove.na.numbers}{Remove residual values from numeric columns.
-Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}}
+Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}.
+You can also define or disable residual values by setting the global option vlkr.na.numbers
+(e.g. \code{options(vlkr.na.numbers=c(-2,-9))} or to disable \code{options(vlkr.na.numbers=FALSE)}).}
 
 \item{add.whitespace}{Add whitespace after slashes for improved label breaks}
 }
