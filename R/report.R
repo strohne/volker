@@ -15,12 +15,12 @@
 #' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
 #'            Set metric to TRUE, to treat it as metric and calculate correlations.
-#' @param ... Parameters passed to the plot and tab functions.
+#' @param ... Parameters passed to the \link{plot_metrics} and \link{tab_metrics} and \link{effect_metrics} functions.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the 'psych' package.
 #'              Set to FALSE to suppress index generation.
-#' @param effects Output effect sizes.
+#' @param effect Whether to report statistical tests and effect sizes. See \link{effect_counts} for further parameters.
 #' @param title A character providing the heading or TRUE (default) to output a heading.
 #'               Classes for tabset pills will be added.
 #' @param close Whether to close the last tab (default value TRUE) or to keep it open.
@@ -35,7 +35,7 @@
 #' report_metrics(data, sd_age)
 #'
 #' @export
-report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index = FALSE, effects = FALSE, title = TRUE, close = TRUE, clean = TRUE) {
+report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index = FALSE, effect = FALSE, title = TRUE, close = TRUE, clean = TRUE) {
 
   if (clean) {
     data <- data_clean(data)
@@ -59,22 +59,22 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 
 
   # Add Plot
-  chunks <- plot_metrics(data, {{ cols }}, {{ cross }}, metric = metric, effects = effects, clean = clean, ..., title = plot_title) %>%
+  chunks <- plot_metrics(data, {{ cols }}, {{ cross }}, metric = metric, effect = effect, clean = clean, ..., title = plot_title) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
-  chunks <- tab_metrics(data, {{ cols}}, {{ cross }}, metric = metric, effects=effects, clean=clean, ...) %>%
+  chunks <- tab_metrics(data, {{ cols}}, {{ cross }}, metric = metric, effect = effect, clean=clean, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
 
   # Add effect sizes
-  if (effects) {
-    chunks <- effects_metrics(data, {{ cols }}, {{ cross }}, metric = metric, effects=effects, clean=clean, ...) %>%
+  if (effect) {
+    chunks <- effect_metrics(data, {{ cols }}, {{ cross }}, metric = metric, effect = effect, clean=clean, ...) %>%
       .add_to_vlkr_rprt(chunks, "Effects")
   }
 
   # Add index
   if (index) {
-    idx <- .report_idx(data, {{ cols }}, {{ cross }}, metric = metric, ..., effects = effects, title = plot_title)
+    idx <- .report_idx(data, {{ cols }}, {{ cross }}, metric = metric, ..., effect = effect, title = plot_title)
     chunks <- append(chunks, idx)
   }
 
@@ -112,7 +112,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the 'psych' package.
 #'              Set to FALSE to suppress index generation.
-#' @param effects Whether to report statistical tests and effect sizes.
+#' @param effect Whether to report statistical tests and effect sizes. See \link{effect_counts} for further parameters.
 #' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 #'                Set to NULL to remove numbers.
 #' @param title A character providing the heading or TRUE (default) to output a heading.
@@ -121,7 +121,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 #'              Keep it open to add further custom tabs by adding headers on the fifth level
 #'              in Markdown (e.g. ##### Method).
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Parameters passed to the plot and tab functions.
+#' @param ... Parameters passed to the \link{plot_counts} and \link{tab_counts} and \link{effect_counts} functions.
 #' @return A volker report object.
 #' @examples
 #' library(volker)
@@ -130,7 +130,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 #' report_counts(data, sd_gender)
 #'
 #' @export
-report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALSE, effects = FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
+report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALSE, effect = FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
 
   if (clean) {
     data <- data_clean(data)
@@ -154,22 +154,22 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 
 
   # Add Plot
-  chunks <- plot_counts(data, {{ cols }}, {{ cross }}, ...,  effects=effects, title = plot_title, numbers=numbers, clean=clean) %>%
+  chunks <- plot_counts(data, {{ cols }}, {{ cross }}, ...,  effect = effect, title = plot_title, numbers=numbers, clean=clean) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
-  chunks <- tab_counts(data, {{ cols }}, {{ cross }},  effects=effects, clean=clean, ...) %>%
+  chunks <- tab_counts(data, {{ cols }}, {{ cross }},  effect = effect, clean=clean, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
 
   # Add effect sizes
-  if (effects) {
-    chunks <- effects_counts(data, {{ cols }}, {{ cross }}, effects=effects, clean=clean, ...) %>%
+  if (effect) {
+    chunks <- effect_counts(data, {{ cols }}, {{ cross }}, effect = effect, clean=clean, ...) %>%
       .add_to_vlkr_rprt(chunks, "Effects")
   }
 
   # Add index
   if (index) {
-    idx <- .report_idx(data, {{ cols }}, {{ cross }}, metric = metric, effects = effects, title = plot_title)
+    idx <- .report_idx(data, {{ cols }}, {{ cross }}, metric = metric, effect = effect, title = plot_title)
     chunks <- append(chunks,idx)
   }
 
@@ -198,10 +198,10 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 #' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
 #'            Set metric to TRUE, to treat it as metric and calculate correlations.
-#' @param effects Whether to report statistical tests and effect sizes.
+#' @param effect Whether to report statistical tests and effect sizes.
 #' @param title Add a plot title (default = TRUE).
 #' @return A list containing a table and a plot volker report chunk.
-.report_idx <- function(data, cols, cross, metric = FALSE, ..., effects = FALSE, title = TRUE) {
+.report_idx <- function(data, cols, cross, metric = FALSE, ..., effect = FALSE, title = TRUE) {
   chunks <- list()
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -223,9 +223,9 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
         tab_metrics(!!rlang::sym(idx_name), {{ cross }}, metric = metric, ...) %>%
         .add_to_vlkr_rprt(chunks, "Index: Table")
 
-      if (effects) {
+      if (effect) {
         chunks <- idx %>%
-          effects_metrics(!!rlang::sym(idx_name), {{ cross }}, metric = metric, ...) %>%
+          effect_metrics(!!rlang::sym(idx_name), {{ cross }}, metric = metric, ...) %>%
           .add_to_vlkr_rprt(chunks, "Index: Effects")
       }
     }
@@ -271,7 +271,7 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' rp <- report_metrics(data, sd_age, sd_gender, effects=TRUE)
+#' rp <- report_metrics(data, sd_age, sd_gender, effect = TRUE)
 #' print(rp)
 #'
 #' @export

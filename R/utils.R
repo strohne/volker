@@ -47,6 +47,8 @@ zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
 
 #' Transfer an attribute from one to another object
 #'
+#' @keywords internal
+#'
 #' @param to The target object.
 #' @param from The source object.
 #' @param key The attribute key as character value.

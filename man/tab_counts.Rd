@@ -34,6 +34,13 @@ The type of frequency table depends on the number of selected columns:
 \item One column and one grouping column: see \link{tab_counts_one_grouped}
 \item Multiple columns and one grouping column: see \link{tab_counts_items_grouped}
 }
+
+By default, if you provide two column selections, the second column is treated as categorical.
+Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
+\itemize{
+\item One column and one metric column: see \link{tab_counts_one_cor} (not yet implemented)
+\item Multiple columns and one metric column: see \link{tab_counts_items_cor} (not yet implemented)
+}
 }
 \examples{
 library(volker)

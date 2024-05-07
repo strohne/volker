@@ -17,3 +17,4 @@ Data frame
 \description{
 Remove missings and output a message
 }
+\keyword{internal}

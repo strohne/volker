@@ -1,11 +1,17 @@
 #' Output a frequency plot
 #'
+#' @description
 #' The type of frequency plot depends on the number of selected columns:
 #' - One column: see \link{plot_counts_one}
 #' - Multiple columns: see \link{plot_counts_items}
 #' - One column and one grouping column: see \link{plot_counts_one_grouped}
 #' - Multiple columns and one grouping column: see \link{plot_counts_items_grouped}
 #'
+#' By default, if you provide two column selections, the second column is treated as categorical.
+#' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
+#'
+#' - One column and one metric column: see \link{plot_counts_one_cor} (not yet implemented)
+#' - Multiple columns and one metric column: see \link{plot_counts_items_cor} (not yet implemented)
 #'
 #' @param data A data frame.
 #' @param cols A tidy column selection,
@@ -61,11 +67,18 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 
 #' Output a plot with distribution parameters such as the mean values
 #'
-#' The table type depends on the number of selected columns:
+#' @description
+#' The plot type depends on the number of selected columns:
 #' - One column: see \link{plot_metrics_one}
 #' - Multiple columns: see \link{plot_metrics_items}
 #' - One column and one grouping column: see \link{plot_metrics_one_grouped}
 #' - Multiple columns and one grouping column: see \link{plot_metrics_items_grouped}
+#'
+#' By default, if you provide two column selections, the second column is treated as categorical.
+#' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
+#'
+#' - Two metric columns: see \link{plot_metrics_one_cor}
+#' - Multiple columns: see \link{plot_metrics_items_cor} (not yet implemented)
 #'
 #' @param data A data frame.
 #' @param cols A tidy column selection,
@@ -404,6 +417,8 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
 
 #' Plot correlation of categories with one metric column
 #'
+#' \strong{Not yet implemented. The future will come.}
+#'
 #' @keywords internal
 #'
 #' @param data A tibble.
@@ -426,7 +441,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
 #' @return A ggplot object
 #' @importFrom rlang .data
 plot_counts_one_cor <- function(data, col, cross, ordered = NULL, limits = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  warning("Not implemented yet", noBreaks. = TRUE)
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Output frequencies for multiple variables
@@ -571,7 +586,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 
 #' Plot frequencies of multiple items compared by groups
 #'
-#' TODO: implement -> focus one category and show n / p
+#' \strong{Not yet implemented. The future will come.}
 #'
 #' @keywords internal
 #'
@@ -583,10 +598,12 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #' @return A ggplot object.
 #' @importFrom rlang .data
 plot_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet", noBreaks. = TRUE)
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Correlate categorical items with a metric column
+#'
+#' \strong{Not yet implemented. The future will come.}
 #'
 #' @keywords internal
 #'
@@ -598,7 +615,7 @@ plot_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
 #' @return A ggplot object.
 #' @importFrom rlang .data
 plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet", noBreaks. = TRUE)
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Output a density plot for a single metric variable
@@ -845,7 +862,7 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
 #' @param cross The second column holding metric values.
 #' @param limits The scale limits, a list with x and y components, e.g. \code{list(x=c(0,100), y=c(20,100))}.
 #'               Set NULL to extract limits from the labels.
-#' @param logplot Whether to plot log scales.
+#' @param log Whether to plot log scales.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
@@ -861,7 +878,7 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one_cor <- function(data, col, cross, limits = NULL, logplot = FALSE, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one_cor <- function(data, col, cross, limits = NULL, log = FALSE, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -882,7 +899,7 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, logplot = FALS
   }
 
   # 5. Remove 0 values in log plots
-  if (logplot) {
+  if (log) {
     data <- data_rm_zeros(data, c({{ col }}, {{ cross }}))
   }
 
@@ -919,7 +936,7 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, logplot = FALS
     ggplot2::geom_point(size=3, alpha=VLKR_SCATTER_ALPHA)
 
   # Scale and limits
-  if (logplot == TRUE) {
+  if (log == TRUE) {
     pl <- pl +
       ggplot2::scale_x_log10() +
       ggplot2::scale_y_log10()
@@ -1233,6 +1250,8 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
 
 #' Scatter plot of correlations between multiple items
 #'
+#' \strong{Not yet implemented. The future will come.}
+#'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
@@ -1240,7 +1259,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
 #' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
 #' @param limits The scale limits, a list with x and y components, e.g. \code{list(x=c(0,100), y=c(20,100))}.
 #'               Set NULL to extract limits from the labels.
-#' @param logplot Whether to plot log scales.
+#' @param log Whether to plot log scales.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
@@ -1249,8 +1268,8 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, logplot = FALSE, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  warning("Not implemented yet", noBreaks. = TRUE)
+plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, log = FALSE, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Helper function: plot grouped bar chart

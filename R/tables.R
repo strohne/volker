@@ -1,10 +1,17 @@
 #' Output a frequency table
 #'
+#' @description
 #' The type of frequency table depends on the number of selected columns:
 #' - One column: see \link{tab_counts_one}
 #' - Multiple columns: see \link{tab_counts_items}
 #' - One column and one grouping column: see \link{tab_counts_one_grouped}
 #' - Multiple columns and one grouping column: see \link{tab_counts_items_grouped}
+#'
+#' By default, if you provide two column selections, the second column is treated as categorical.
+#' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
+#'
+#' - One column and one metric column: see \link{tab_counts_one_cor} (not yet implemented)
+#' - Multiple columns and one metric column: see \link{tab_counts_items_cor} (not yet implemented)
 #'
 #'
 #' @param data A data frame.
@@ -61,11 +68,18 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
 
 #' Output a table with distribution parameters
 #'
+#' @description
 #' The table type depends on the number of selected columns:
 #' - One column: see \link{tab_metrics_one}
 #' - Multiple columns: see \link{tab_metrics_items}
 #' - One column and one grouping column: see \link{tab_metrics_one_grouped}
 #' - Multiple columns and one grouping column: see \link{tab_metrics_items_grouped}
+#'
+#' By default, if you provide two column selections, the second column is treated as categorical.
+#' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
+#'
+#' - Two metric columns: see \link{tab_metrics_one_cor}
+#' - Multiple columns: see \link{tab_metrics_items_cor} (experimental)
 #'
 #'
 #' @param data A data frame.
@@ -426,6 +440,8 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent =
 
 #' Correlate categorical groups with one metric column
 #'
+#' \strong{Not yet implemented. The future will come.}
+#'
 #' @keywords internal
 #'
 #' @param data A tibble.
@@ -436,7 +452,7 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent =
 #' @return A volker tibble.
 #' @importFrom rlang .data
 tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet", noBreaks. = TRUE)
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Output frequencies for multiple variables
@@ -660,7 +676,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = TRUE, percent = 
 
 #' Compare the values in multiple items by a grouping column
 #'
-#' TODO: implement -> focus one category and show n / p
+#' \strong{Not yet implemented. The future will come.}
 #'
 #' @keywords internal
 #'
@@ -672,12 +688,12 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = TRUE, percent = 
 #' @return A volker tibble.
 #' @importFrom rlang .data
 tab_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet", noBreaks. = TRUE)
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Correlate the values in multiple items
 #'
-#' TODO: implement -> calculate npmi or similar for one value
+#' \strong{Not yet implemented. The future will come.}
 #'
 #' @keywords internal
 #'
@@ -688,7 +704,7 @@ tab_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @importFrom rlang .data
 tab_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet", noBreaks. = TRUE)
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Output a five point summary table for the values in multiple columns
@@ -1278,9 +1294,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
-#'
-#' TODO: do we need effects parameter here?
-#'
+
 #' @keywords internal
 #'
 #' @param data A tibble.

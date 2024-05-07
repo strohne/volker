@@ -37,8 +37,6 @@ A volker tibble
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
-TODO: do we need effects parameter here?
 }
 \examples{
 library(volker)
