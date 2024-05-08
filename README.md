@@ -299,11 +299,6 @@ the specific function.
 
 ### Data preparation
 
-- **missings**: The number of missing values is an important indicator
-  for data quality. In reports, the missings usually are ommited and so
-  do the package functions by default. For data set statistics - for
-  example when you monitor an ongoing survey or prepare a data set - you
-  should set the missings-parameter to TRUE if the function supports it.
 - **negative**: In surveys, negative values such as -9 or -2 are often
   used to mark missing values or residual answers (“I don’t know”).
   Therefore, all metric tables and plots remove negative values before
@@ -325,7 +320,7 @@ the specific function.
   nicht beantwortet” to missings. See the help for further details or
   disable data cleaning if you don’t like it. For example, to disable
   removing of negative residual values, call
-  `options(vlkr.na.numbers=c())`.
+  `options(vlkr.na.numbers=FALSE)`.
 
 ### Calculations
 
@@ -340,9 +335,9 @@ the specific function.
   functions. Cronbach’s alpha is added to all table outputs.
 - **effect**: You are not sure whether the differences are statistical
   significant? One option is to look out for non overlapping confidence
-  intervals. In addition, the effect option calculates effect sizes
-  such as Cramer’s v or Cohen’s d and generates typical statistical
-  tests such as Chi-squared tests and t-tests.
+  intervals. In addition, the effect option calculates effect sizes such
+  as Cramer’s v or Cohen’s d and generates typical statistical tests
+  such as Chi-squared tests and t-tests.
 - **method**: By default, correlations are calculated using Pearson’s R.
   You can choose Spearman’s Rho with the methods-parameter.
 

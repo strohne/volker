@@ -2,7 +2,7 @@
 % Please edit documentation in R/effects.R
 \name{effect_counts_one_grouped}
 \alias{effect_counts_one_grouped}
-\title{Output test statistics and effect size for contingency tables (Chi^2 and Cramer's V)}
+\title{Output test statistics and effect size for contingency tables}
 \usage{
 effect_counts_one_grouped(data, col, cross, clean = TRUE, ...)
 }
@@ -21,7 +21,12 @@ effect_counts_one_grouped(data, col, cross, clean = TRUE, ...)
 A volker tibble.
 }
 \description{
-Output test statistics and effect size for contingency tables (Chi^2 and Cramer's V)
+Chi squared is calculated using  \code{stats::\link[stats:chisq.test]{chisq.test}}.
+If any cell contains less than 5 observations, the exact-parameter is set.
+}
+\details{
+Phi is derived from the Chi squared value by \code{sqrt(fit$statistic / n)}.
+Cramer's V is derived by \code{phi / sqrt(min(dim(contingency)[1], dim(contingency)[1]) - 1)}.
 }
 \examples{
 library(volker)

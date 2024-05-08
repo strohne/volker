@@ -2,7 +2,7 @@
 % Please edit documentation in R/effects.R
 \name{effect_metrics_items}
 \alias{effect_metrics_items}
-\title{Output test statistics and effect size (Cohen's d) for paired samples}
+\title{Output effect size and test statistics for paired samples}
 \usage{
 effect_metrics_items(
   data,
@@ -33,7 +33,7 @@ effect_metrics_items(
 A volker table containing correlations.
 }
 \description{
-Output test statistics and effect size (Cohen's d) for paired samples
+The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}}.
 }
 \examples{
 library(volker)

@@ -175,9 +175,13 @@ effect_counts_one <- function(data, col, percent = TRUE, labels = TRUE, clean = 
 }
 
 
-#' Output test statistics and effect size for contingency tables (Chi^2 and Cramer's V)
+#' Output test statistics and effect size for contingency tables
 #'
+#' Chi squared is calculated using  \code{stats::\link[stats:chisq.test]{chisq.test}}.
+#' If any cell contains less than 5 observations, the exact-parameter is set.
 #'
+#' Phi is derived from the Chi squared value by \code{sqrt(fit$statistic / n)}.
+#' Cramer's V is derived by \code{phi / sqrt(min(dim(contingency)[1], dim(contingency)[1]) - 1)}.
 #'
 #' @keywords internal
 #'
@@ -223,7 +227,6 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
     as.matrix()
 
 
-
   # 5. Chi-squared test and Cramer's V
   exact <- any(contingency < 5)
   fit <- stats::chisq.test(contingency,simulate.p.value = exact)
@@ -232,18 +235,15 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   phi <- sqrt(fit$statistic / n)
   cramer_v <- round(phi / sqrt(min(dim(contingency)[1], dim(contingency)[1]) - 1),2)
 
-  # Alternative using effectsize package
-  # cramer_v <- effectsize::cramers_v(test, adjust = F)
-
   # 6. Prepare output
   result <- tibble::tribble(
     ~Statistic, ~Value,
     "Number of cases", as.character(n),
-    "Phi", as.character(round(phi, 2)),
-    "Cramer's V", as.character(round(cramer_v, 2)),
-    "Chi-squared", as.character(round(fit$statistic, 2)),
+    "Phi", sprintf("%.2f", round(phi, 2)),
+    "Cramer's V", sprintf("%.2f", round(cramer_v, 2)),
     "Degrees of freedom", as.character(fit$parameter),
-    "p value", as.character(round(fit$p.value, 3)),
+    "Chi-squared", sprintf("%.2f", round(fit$statistic, 2)),
+    "p value", sprintf("%.3f", round(fit$p.value, 3)),
     "stars", get_stars(fit$p.value)
   )
 
@@ -339,13 +339,9 @@ effect_metrics_one <- function(data, col, clean = T, ... ) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
-#' Output t-test results, a regression table with estimates and macro statistics
+#' Output a regression table with estimates and macro statistics
 #'
-#' #TODO: remove tidycat from the package, implement own function
-#' #TODO: Fix bug, why is p in model statistics not above stars?
-#' #TODO: Remove NA from base level in regression table (and by this fix p=0 showing as NA for the Intercept)
-#' #TODO: Add ci for R squared
-#' #TODO: Implement a parameter to select from different outputs (don't show t-test by default)
+#' The regression output comes from \code{stats::\link[stats:lm]{lm}}.
 #'
 #' @keywords internal
 #'
@@ -405,31 +401,31 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", negative
     stats_t <- tibble::tribble(
       ~"Test", ~ "Results",
       "Shapiro-Wilk normality test", list(
-        "W" = round(stats_shapiro$statistic,2),
-        "p" = round(stats_shapiro$p.value,3),
+        "W" = sprintf("%.2f",round(stats_shapiro$statistic,2)),
+        "p" = sprintf("%.3f",round(stats_shapiro$p.value,3)),
         "stars" = get_stars(stats_shapiro$p.value),
-        "Normality" = ifelse(stats_shapiro$p.value > 0.05, "normal", "not normal")
+        "normality" = ifelse(stats_shapiro$p.value > 0.05, "normal", "not normal")
       ),
       "Levene test", list(
-        "F" = round(stats_levene[["F value"]][1],2),
-        "p" = round(stats_levene[["Pr(>F)"]][1],3),
+        "F" = sprintf("%.2f",round(stats_levene[["F value"]][1],2)),
+        "p" = sprintf("%.3f",round(stats_levene[["Pr(>F)"]][1],3)),
         "stars" = get_stars(stats_levene[["Pr(>F)"]][1]),
-        "Variances" = ifelse(stats_varequal, "equal", "not equal")
+        "variances" = ifelse(stats_varequal, "equal", "not equal")
       ),
       "Cohen's d" , list(
-        "d" = round(stats_cohen$Cohens_d, 1),
-        "CI low" = round(stats_cohen$CI_low, 1),
-        "CI high" = round(stats_cohen$CI_high, 1)
+        "d" = sprintf("%.1f",round(stats_cohen$Cohens_d, 1)),
+        "ci low" = sprintf("%.1f",round(stats_cohen$CI_low, 1)),
+        "ci high" = sprintf("%.1f",round(stats_cohen$CI_high, 1))
       ),
       "t-Test" ,list(
-        "Method" = stats_t$method,
-        "Difference" = round(stats_t$estimate[1] - stats_t$estimate[2], 2),
-        "CI low" = round(stats_t$conf.int[1], 2),
-        "CI high" = round(stats_t$conf.int[2], 2),
-        "Standard error" = round(stats_t$stderr,2),
+        "method" = stats_t$method,
+        "difference" = sprintf("%.2f", round(stats_t$estimate[1] - stats_t$estimate[2], 2)),
+        "cI low" = sprintf("%.2f", round(stats_t$conf.int[1], 2)),
+        "cI high" = sprintf("%.2f",round(stats_t$conf.int[2], 2)),
+        "standard error" = sprintf("%.2f",round(stats_t$stderr,2)),
         "df" = round(stats_t$parameter,2),
-        "t" = round(stats_t$statistic,2),
-        "p" = round(stats_t$p.value,3),
+        "t" = sprintf("%.2f",round(stats_t$statistic,2)),
+        "p" = sprintf("%.3f",round(stats_t$p.value,3)),
         "stars" = get_stars(stats_t$p.value)
       )
     )
@@ -458,14 +454,19 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", negative
       dplyr::mutate(
         Term = .data$term,
         stars = get_stars(.data$p.value),
-        estimate = round(.data$estimate,2),
-        conf.low = round(.data$conf.low,2),
-        conf.high = round(.data$conf.high,2),
-        std.error = round(.data$std.error,2),
-        t = round(.data$statistic,2),
-        p = round(.data$p.value,3)
+        estimate = sprintf("%.2f",round(.data$estimate,2)),
+        conf.low = sprintf("%.2f",round(.data$conf.low,2)),
+        conf.high = sprintf("%.2f",round(.data$conf.high,2)),
+        std.error = sprintf("%.2f",round(.data$std.error,2)),
+        t = sprintf("%.2f", round(.data$statistic,2)),
+        p = sprintf("%.3f",round(.data$p.value,3))
       ) |>
-      dplyr::select(tidyselect::all_of(c("Term","estimate","conf.low","conf.high","std.error","t","p","stars")))
+      dplyr::mutate(dplyr::across(tidyselect::all_of(
+        c("estimate","conf.low","conf.high","std.error","t","p")
+      ), function(x) ifelse(x == "NA","",x))) |>
+      dplyr::select(tidyselect::all_of(c(
+        "Term","estimate","conf.low","conf.high","std.error","t","p","stars"
+      )))
 
 
     # Regression model statistics
@@ -478,11 +479,16 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", negative
         values_to="value"
       ) |>
       labs_replace("Statistic", tibble::tibble(
-        value_name=c( "adj.r.squared","statistic", "df", "df.residual",  "p.value", "stars"),
-        value_label=c("Adjusted R squared", "Degrees of freedom", "Residuals' degrees of freedom", "F", "p", "stars")
+        value_name=c(
+          "adj.r.squared","statistic", "df", "df.residual",  "p.value", "stars"
+        ),
+        value_label=c(
+          "Adjusted R squared", "Degrees of freedom", "Residuals' degrees of freedom",
+          "F", "p", "stars"
+        )
       ), relevel = TRUE) |>
       stats::na.omit() |>
-      dplyr::arrange(tidyselect::all_of("Statistic"))
+      dplyr::arrange(.data$Statistic)
 
 
     result <- c(
@@ -498,6 +504,8 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", negative
 
 
 #' Test whether the correlation is different from zero
+#'
+#' The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}}.
 #'
 #' #TODO: move stars to the last position
 #'
@@ -575,8 +583,9 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", negativ
   .to_vlkr_tab(result, digits= 2, caption=title)
 }
 
-#' Output test statistics and effect size (Cohen's d) for paired samples
+#' Output effect size and test statistics for paired samples
 #'
+#' The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}}.
 #'
 #' @keywords internal
 #'
@@ -665,6 +674,8 @@ effect_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
 
 #' Output correlation coefficients for items
 #'
+#' The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}}.
+#'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
@@ -750,7 +761,7 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", nega
 
 
   # Calculate correlation
-  method <- ifelse(method == "sparman", "spearman", "pearson")
+  method <- ifelse(method == "spearman", "spearman", "pearson")
   result <- expand.grid(
     x = cols_eval, y = cross_eval, stringsAsFactors = FALSE
   ) %>%
@@ -775,7 +786,7 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", nega
       ci.high = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[2]),2)),
       df = purrr::map_int(.data$.test, function(x) as.numeric(x$parameter)),
       stars = purrr::map_chr(.data$.test, function(x) get_stars(x$p.value)),
-      p = purrr::map_dbl(.data$.test, function(x) round(x$p.value,3)),
+      p = sprintf("%.3f", purrr::map_dbl(.data$.test, function(x) round(x$p.value,3))),
     ) %>%
     dplyr::select(-tidyselect::all_of(c("x", "y",".test"))) |>
     dplyr::select(item1 = "x_name", item2 = "y_name", "n","r","ci.low","ci.high","df","p","stars")
@@ -852,6 +863,8 @@ get_ci <- function(x, conf = 0.95) {
 }
 
 #' Get Cohen's d for unpaired samples
+#'
+#' TODO: NOT FINISHED YET
 #'
 #' @keywords internal
 #'

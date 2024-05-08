@@ -36,6 +36,9 @@ effect_metrics_one_cor(
 A volker table containing the requested statistics.
 }
 \description{
+The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}}.
+}
+\details{
 #TODO: move stars to the last position
 }
 \examples{

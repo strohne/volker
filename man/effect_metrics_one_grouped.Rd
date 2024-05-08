@@ -2,7 +2,7 @@
 % Please edit documentation in R/effects.R
 \name{effect_metrics_one_grouped}
 \alias{effect_metrics_one_grouped}
-\title{Output t-test results, a regression table with estimates and macro statistics}
+\title{Output a regression table with estimates and macro statistics}
 \usage{
 effect_metrics_one_grouped(
   data,
@@ -38,11 +38,11 @@ and lm (regression results).}
 A volker list object containing volker tables with the requested statistics.
 }
 \description{
-#TODO: remove tidycat from the package, implement own function
+The regression output comes from \code{stats::\link[stats:lm]{lm}}.
+}
+\details{
 #TODO: Fix bug, why is p in model statistics not above stars?
-#TODO: Remove NA from base level in regression table (and by this fix p=0 showing as NA for the Intercept)
 #TODO: Add ci for R squared
-#TODO: Implement a parameter to select from different outputs (don't show t-test by default)
 }
 \examples{
 library(volker)

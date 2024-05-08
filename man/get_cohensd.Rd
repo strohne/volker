@@ -19,6 +19,6 @@ get_cohensd(values, groups, conf = 0.95, pooled = FALSE)
 A list with the elements d (Cohen's d), ci.low and ci.high (its confidence interval)
 }
 \description{
-Get Cohen's d for unpaired samples
+TODO: NOT FINISHED YET
 }
 \keyword{internal}

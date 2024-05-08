@@ -36,7 +36,7 @@ effect_metrics_items_cor(
 A volker table containing correlations.
 }
 \description{
-Output correlation coefficients for items
+The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}}.
 }
 \examples{
 library(volker)

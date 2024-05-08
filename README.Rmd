@@ -312,11 +312,10 @@ Plot and table functions share a number of parameters that can be used to custom
 
 ### Data preparation  
 
-- **missings**: The number of missing values is an important indicator for data quality. In reports, the missings usually are ommited and so do the package functions by default. For data set statistics - for example when you monitor an ongoing survey or prepare a data set - you should set the missings-parameter to TRUE if the function supports it.
 - **negative**: In surveys, negative values such as -9 or -2 are often used to mark missing values or residual answers ("I don't know"). Therefore, all metric tables and plots remove negative values before calculation distribution parameters such as the mean. Set negative to TRUE for including those values. Be aware that the cleaning plan may remove some negative values as well and make sure disable cleaning of negative numbers where necessary.
 - **ordered**: Sometimes categories have an order, from low to high or from few to many. It helps visual inspections to plot ordered values with shaded colors instead of arbitrary colors. For frequency plots, you can inform the method about the desired order. By default the functions try to automatically detect a sensitive order.
 - **category**: When you have multiple categories in a column, you can focus one of the categories to simplify the plots and tables. By default, if a column has only TRUE and FALSE values, the outputs focus the TRUE category.
-- **clean** Before all calculations, the dataset goes through a cleaning plan that, for example, recodes residual factor values such as "[NA] nicht beantwortet" to missings. See the help for further details or disable data cleaning if you don't like it. For example, to disable removing of negative residual values, call `options(vlkr.na.numbers=c())`.
+- **clean** Before all calculations, the dataset goes through a cleaning plan that, for example, recodes residual factor values such as "[NA] nicht beantwortet" to missings. See the help for further details or disable data cleaning if you don't like it. For example, to disable removing of negative residual values, call `options(vlkr.na.numbers=FALSE)`.
 
 ### Calculations
 
