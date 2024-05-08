@@ -1327,21 +1327,34 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negativ
 
 
   # Remove common item prefix
-  prefix <- get_prefix(c(result$item1, result$item2))
-  result <- dplyr::mutate(result, item1 = trim_prefix(.data$item1, prefix))
-  result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix))
+  prefix1 <- get_prefix(result$item1)
+  prefix2 <- get_prefix(result$item2)
+  result <- dplyr::mutate(result, item1 = trim_prefix(.data$item1, prefix1))
+  if (prefix1 == prefix2) {
+    result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix2))
+    title <- prefix1
+  } else {
 
-  # Create table
+    if ((prefix1 != "") && (prefix2 != "")) {
+      title <- paste0(prefix1, " - ", prefix2)
+    } else {
+      title = ""
+    }
+  }
+
+  title <- ifelse(title == "", NULL, title)
+
+
+  # Create matrix
   result <- result %>%
-    dplyr::select("item1", "item2", "value") |>
-    tidyr::pivot_wider(names_from = "item2", values_from = "value") |>
-    dplyr::rename(Item = tidyselect::all_of("item1"))
+    dplyr::select("item1", "item2", "r") |>
+    tidyr::pivot_wider(names_from = "item2", values_from = "r")
 
-  prefix <- ifelse(prefix == "", "Item", prefix)
-  title <- ifelse(prefix == "", NULL, prefix)
+  prefix1 <- ifelse(prefix1 == "", "Item", prefix1)
+  result <- dplyr::rename(result, {{ prefix1 }} := .data$item1)
 
   result <- .attr_transfer(result, data, "missings")
-  .to_vlkr_tab(result, digits = digits)
+  .to_vlkr_tab(result, digits = digits, caption = title)
 }
 
 #' Add vlkr_tbl class
