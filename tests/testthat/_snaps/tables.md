@@ -1,7 +1,7 @@
 # Frequency table
 
     Code
-      volker::tab_counts_one(data, sd_gender)
+      volker::tab_counts(data, sd_gender)
     Output
       
       
@@ -13,30 +13,25 @@
       |Total   | 101| 100%|
       |Missing |   0|     |
 
-# Distribution table for age
+# Cross table of categorical variables
 
     Code
-      volker::tab_metrics_one(data, sd_age)
+      volker::tab_counts(data, adopter, sd_gender)
     Output
       
       
-      |Age     | value|
-      |:-------|-----:|
-      |min     |    18|
-      |q1      |    27|
-      |median  |    38|
-      |q3      |    52|
-      |max     |    68|
-      |mean    |  39.7|
-      |sd      |  13.8|
-      |missing |     0|
-      |n       |   101|
+      |Innovator type                                    |      Total|   female|     male| diverse|
+      |:-------------------------------------------------|----------:|--------:|--------:|-------:|
+      |I try new offers immediately                      |   15% (15)|   2% (2)| 12% (12)|  1% (1)|
+      |I try new offers rather quickly                   |   62% (63)| 25% (25)| 38% (38)|  0% (0)|
+      |I wait until offers establish themselves          |   22% (22)| 13% (13)|   9% (9)|  0% (0)|
+      |I only use new offers when I have no other choice |     1% (1)|   0% (0)|   1% (1)|  0% (0)|
+      |Total                                             | 100% (101)| 40% (40)| 59% (60)|  1% (1)|
 
 # Frequency table for multiple categorical variables
 
     Code
-      volker::tab_counts_items(data, tidyselect::starts_with("cg_adoption_"),
-      missings = TRUE)
+      volker::tab_counts(data, tidyselect::starts_with("cg_adoption_"), missings = TRUE)
     Output
       
       
@@ -55,47 +50,29 @@
       |Not using ChatGPT is considered being an outsider.          |          46% (45)| 27% (26)| 14% (14)|   7% (7)|         5% (5)| 100% (97)|     (1)|
       |Using ChatGPT brings me recognition from my environment.    |          33% (32)| 27% (26)| 21% (20)| 13% (13)|         6% (6)| 100% (97)|     (0)|
 
-# Distribution table for multiple metric items
+# Distribution table for age
 
     Code
-      volker::tab_metrics_items(data, tidyselect::starts_with("cg_adoption_"))
+      volker::tab_metrics(data, sd_age)
     Output
       
       
-      |Expectations                                                | min| q1| median| q3| max| mean|  sd| missing|   n|
-      |:-----------------------------------------------------------|---:|--:|------:|--:|---:|----:|---:|-------:|---:|
-      |ChatGPT has clear advantages compared to similar offerings. |   1|  3|      4|  4|   5|  3.5| 1.0|       2| 101|
-      |Using ChatGPT brings financial benefits.                    |   1|  2|      3|  4|   5|  2.7| 1.2|       0| 101|
-      |Using ChatGPT is advantageous in many tasks.                |   1|  3|      4|  4|   5|  3.6| 1.1|       0| 101|
-      |Compared to other systems, using ChatGPT is more fun.       |   1|  3|      4|  4|   5|  3.5| 1.0|       0| 101|
-      |Much can go wrong when using ChatGPT.                       |   1|  2|      3|  4|   5|  3.1| 1.1|       0| 101|
-      |There are legal issues with using ChatGPT.                  |   1|  2|      3|  4|   5|  3.1| 1.2|       0| 101|
-      |The security of user data is not guaranteed with ChatGPT.   |   1|  3|      3|  4|   5|  3.2| 1.0|       1| 101|
-      |Using ChatGPT could bring personal disadvantages.           |   1|  2|      3|  3|   5|  2.7| 1.1|       0| 101|
-      |In my environment, using ChatGPT is standard.               |   1|  2|      2|  3|   5|  2.5| 1.1|       1| 101|
-      |Almost everyone in my environment uses ChatGPT.             |   1|  1|      2|  3|   5|  2.4| 1.2|       0| 101|
-      |Not using ChatGPT is considered being an outsider.          |   1|  1|      2|  3|   5|  2.0| 1.2|       1| 101|
-      |Using ChatGPT brings me recognition from my environment.    |   1|  1|      2|  3|   5|  2.3| 1.2|       0| 101|
-
-# Cross table of categorical variables
-
-    Code
-      volker::tab_counts_one_grouped(data, adopter, sd_gender)
-    Output
-      
-      
-      |Innovator type                                    |      Total|   female|     male| diverse|
-      |:-------------------------------------------------|----------:|--------:|--------:|-------:|
-      |I try new offers immediately                      |   15% (15)|   2% (2)| 12% (12)|  1% (1)|
-      |I try new offers rather quickly                   |   62% (63)| 25% (25)| 38% (38)|  0% (0)|
-      |I wait until offers establish themselves          |   22% (22)| 13% (13)|   9% (9)|  0% (0)|
-      |I only use new offers when I have no other choice |     1% (1)|   0% (0)|   1% (1)|  0% (0)|
-      |Total                                             | 100% (101)| 40% (40)| 59% (60)|  1% (1)|
+      |Age     | value|
+      |:-------|-----:|
+      |min     |    18|
+      |q1      |    27|
+      |median  |    38|
+      |q3      |    52|
+      |max     |    68|
+      |mean    |  39.7|
+      |sd      |  13.8|
+      |missing |     0|
+      |n       |   101|
 
 # Group comparison of a metric variable
 
     Code
-      volker::tab_metrics_one_grouped(data, sd_age, sd_gender)
+      volker::tab_metrics(data, sd_age, sd_gender)
     Output
       
       
@@ -109,8 +86,18 @@
 # Compare means of multiple items
 
     Code
-      volker::tab_metrics_items_grouped(data, tidyselect::starts_with("cg_adoption_"),
-      sd_gender)
+      volker::tab_metrics(data, use_work, use_private, metric = TRUE)
+    Output
+      
+      
+      |Item 1                  |             Item 2|   n|    r|
+      |:-----------------------|------------------:|---:|----:|
+      |in professional context | in private context| 101| 0.37|
+
+---
+
+    Code
+      volker::tab_metrics(data, tidyselect::starts_with("cg_adoption_"), sd_gender)
     Output
       
       
@@ -131,6 +118,80 @@
       
       5 missing case(s) ommited.
       
+
+---
+
+    Code
+      volker::tab_metrics(data, tidyselect::starts_with("cg_adoption_"), sd_age,
+      metric = TRUE)
+    Output
+      
+      
+      |Expectations                                                |   Age|
+      |:-----------------------------------------------------------|-----:|
+      |ChatGPT has clear advantages compared to similar offerings. | -0.12|
+      |Using ChatGPT brings financial benefits.                    | -0.13|
+      |Using ChatGPT is advantageous in many tasks.                | -0.09|
+      |Compared to other systems, using ChatGPT is more fun.       | -0.12|
+      |Much can go wrong when using ChatGPT.                       |  0.18|
+      |There are legal issues with using ChatGPT.                  |  0.24|
+      |The security of user data is not guaranteed with ChatGPT.   |  -0.1|
+      |Using ChatGPT could bring personal disadvantages.           |  0.02|
+      |In my environment, using ChatGPT is standard.               | -0.17|
+      |Almost everyone in my environment uses ChatGPT.             | -0.06|
+      |Not using ChatGPT is considered being an outsider.          |  0.09|
+      |Using ChatGPT brings me recognition from my environment.    | -0.02|
+      
+      5 missing case(s) ommited.
+      
+
+---
+
+    Code
+      volker::tab_metrics(data, tidyselect::starts_with("cg_adoption_"), tidyselect::starts_with(
+        "use_"), metric = TRUE)
+    Output
+      
+      
+      |Expectations                                                | Usage: in private context| Usage: in professional context|
+      |:-----------------------------------------------------------|-------------------------:|------------------------------:|
+      |ChatGPT has clear advantages compared to similar offerings. |                       0.5|                           0.28|
+      |Using ChatGPT brings financial benefits.                    |                      0.21|                           0.54|
+      |Using ChatGPT is advantageous in many tasks.                |                      0.37|                           0.37|
+      |Compared to other systems, using ChatGPT is more fun.       |                      0.47|                           0.29|
+      |Much can go wrong when using ChatGPT.                       |                     -0.24|                          -0.09|
+      |There are legal issues with using ChatGPT.                  |                      0.08|                           0.31|
+      |The security of user data is not guaranteed with ChatGPT.   |                      0.02|                            0.2|
+      |Using ChatGPT could bring personal disadvantages.           |                     -0.09|                           0.15|
+      |In my environment, using ChatGPT is standard.               |                       0.4|                           0.58|
+      |Almost everyone in my environment uses ChatGPT.             |                      0.47|                           0.55|
+      |Not using ChatGPT is considered being an outsider.          |                      0.34|                           0.34|
+      |Using ChatGPT brings me recognition from my environment.    |                      0.42|                           0.46|
+      
+      5 missing case(s) ommited.
+      
+
+# Distribution table for multiple metric items
+
+    Code
+      volker::tab_metrics(data, tidyselect::starts_with("cg_adoption_"))
+    Output
+      
+      
+      |Expectations                                                | min| q1| median| q3| max| mean|  sd| missing|   n|
+      |:-----------------------------------------------------------|---:|--:|------:|--:|---:|----:|---:|-------:|---:|
+      |ChatGPT has clear advantages compared to similar offerings. |   1|  3|      4|  4|   5|  3.5| 1.0|       2| 101|
+      |Using ChatGPT brings financial benefits.                    |   1|  2|      3|  4|   5|  2.7| 1.2|       0| 101|
+      |Using ChatGPT is advantageous in many tasks.                |   1|  3|      4|  4|   5|  3.6| 1.1|       0| 101|
+      |Compared to other systems, using ChatGPT is more fun.       |   1|  3|      4|  4|   5|  3.5| 1.0|       0| 101|
+      |Much can go wrong when using ChatGPT.                       |   1|  2|      3|  4|   5|  3.1| 1.1|       0| 101|
+      |There are legal issues with using ChatGPT.                  |   1|  2|      3|  4|   5|  3.1| 1.2|       0| 101|
+      |The security of user data is not guaranteed with ChatGPT.   |   1|  3|      3|  4|   5|  3.2| 1.0|       1| 101|
+      |Using ChatGPT could bring personal disadvantages.           |   1|  2|      3|  3|   5|  2.7| 1.1|       0| 101|
+      |In my environment, using ChatGPT is standard.               |   1|  2|      2|  3|   5|  2.5| 1.1|       1| 101|
+      |Almost everyone in my environment uses ChatGPT.             |   1|  1|      2|  3|   5|  2.4| 1.2|       0| 101|
+      |Not using ChatGPT is considered being an outsider.          |   1|  1|      2|  3|   5|  2.0| 1.2|       1| 101|
+      |Using ChatGPT brings me recognition from my environment.    |   1|  1|      2|  3|   5|  2.3| 1.2|       0| 101|
 
 # Missing values make no trouble
 
@@ -163,151 +224,25 @@
       volker::tab_metrics_items_cor(data, tidyselect::starts_with("cg_adoption_"),
       tidyselect::starts_with("cg_adoption_"))
     Output
-                  item       target value
-      1   advantage_01 advantage_01     1
-      2   advantage_02 advantage_01  0.37
-      3   advantage_03 advantage_01  0.64
-      4   advantage_04 advantage_01  0.61
-      5   fearofuse_01 advantage_01 -0.14
-      6   fearofuse_02 advantage_01  0.19
-      7   fearofuse_03 advantage_01  0.07
-      8   fearofuse_04 advantage_01  0.01
-      9      social_01 advantage_01  0.21
-      10     social_02 advantage_01  0.28
-      11     social_03 advantage_01  0.16
-      12     social_04 advantage_01  0.27
-      13  advantage_01 advantage_02  0.37
-      14  advantage_02 advantage_02     1
-      15  advantage_03 advantage_02  0.46
-      16  advantage_04 advantage_02  0.42
-      17  fearofuse_01 advantage_02  0.02
-      18  fearofuse_02 advantage_02  0.34
-      19  fearofuse_03 advantage_02  0.34
-      20  fearofuse_04 advantage_02  0.22
-      21     social_01 advantage_02  0.54
-      22     social_02 advantage_02   0.5
-      23     social_03 advantage_02  0.36
-      24     social_04 advantage_02   0.4
-      25  advantage_01 advantage_03  0.64
-      26  advantage_02 advantage_03  0.46
-      27  advantage_03 advantage_03     1
-      28  advantage_04 advantage_03  0.47
-      29  fearofuse_01 advantage_03 -0.11
-      30  fearofuse_02 advantage_03  0.19
-      31  fearofuse_03 advantage_03  0.06
-      32  fearofuse_04 advantage_03  0.09
-      33     social_01 advantage_03  0.33
-      34     social_02 advantage_03  0.34
-      35     social_03 advantage_03  0.13
-      36     social_04 advantage_03  0.31
-      37  advantage_01 advantage_04  0.61
-      38  advantage_02 advantage_04  0.42
-      39  advantage_03 advantage_04  0.47
-      40  advantage_04 advantage_04     1
-      41  fearofuse_01 advantage_04 -0.19
-      42  fearofuse_02 advantage_04  0.17
-      43  fearofuse_03 advantage_04  0.14
-      44  fearofuse_04 advantage_04 -0.07
-      45     social_01 advantage_04  0.33
-      46     social_02 advantage_04  0.26
-      47     social_03 advantage_04   0.2
-      48     social_04 advantage_04  0.36
-      49  advantage_01 fearofuse_01 -0.14
-      50  advantage_02 fearofuse_01  0.02
-      51  advantage_03 fearofuse_01 -0.11
-      52  advantage_04 fearofuse_01 -0.19
-      53  fearofuse_01 fearofuse_01     1
-      54  fearofuse_02 fearofuse_01  0.29
-      55  fearofuse_03 fearofuse_01  0.36
-      56  fearofuse_04 fearofuse_01  0.48
-      57     social_01 fearofuse_01 -0.19
-      58     social_02 fearofuse_01  0.04
-      59     social_03 fearofuse_01   0.1
-      60     social_04 fearofuse_01 -0.07
-      61  advantage_01 fearofuse_02  0.19
-      62  advantage_02 fearofuse_02  0.34
-      63  advantage_03 fearofuse_02  0.19
-      64  advantage_04 fearofuse_02  0.17
-      65  fearofuse_01 fearofuse_02  0.29
-      66  fearofuse_02 fearofuse_02     1
-      67  fearofuse_03 fearofuse_02  0.38
-      68  fearofuse_04 fearofuse_02  0.28
-      69     social_01 fearofuse_02  0.23
-      70     social_02 fearofuse_02  0.22
-      71     social_03 fearofuse_02  0.33
-      72     social_04 fearofuse_02   0.3
-      73  advantage_01 fearofuse_03  0.07
-      74  advantage_02 fearofuse_03  0.34
-      75  advantage_03 fearofuse_03  0.06
-      76  advantage_04 fearofuse_03  0.14
-      77  fearofuse_01 fearofuse_03  0.36
-      78  fearofuse_02 fearofuse_03  0.38
-      79  fearofuse_03 fearofuse_03     1
-      80  fearofuse_04 fearofuse_03  0.39
-      81     social_01 fearofuse_03  0.06
-      82     social_02 fearofuse_03   0.2
-      83     social_03 fearofuse_03  0.29
-      84     social_04 fearofuse_03   0.1
-      85  advantage_01 fearofuse_04  0.01
-      86  advantage_02 fearofuse_04  0.22
-      87  advantage_03 fearofuse_04  0.09
-      88  advantage_04 fearofuse_04 -0.07
-      89  fearofuse_01 fearofuse_04  0.48
-      90  fearofuse_02 fearofuse_04  0.28
-      91  fearofuse_03 fearofuse_04  0.39
-      92  fearofuse_04 fearofuse_04     1
-      93     social_01 fearofuse_04  0.25
-      94     social_02 fearofuse_04  0.22
-      95     social_03 fearofuse_04  0.25
-      96     social_04 fearofuse_04  0.14
-      97  advantage_01    social_01  0.21
-      98  advantage_02    social_01  0.54
-      99  advantage_03    social_01  0.33
-      100 advantage_04    social_01  0.33
-      101 fearofuse_01    social_01 -0.19
-      102 fearofuse_02    social_01  0.23
-      103 fearofuse_03    social_01  0.06
-      104 fearofuse_04    social_01  0.25
-      105    social_01    social_01     1
-      106    social_02    social_01  0.73
-      107    social_03    social_01  0.48
-      108    social_04    social_01  0.57
-      109 advantage_01    social_02  0.28
-      110 advantage_02    social_02   0.5
-      111 advantage_03    social_02  0.34
-      112 advantage_04    social_02  0.26
-      113 fearofuse_01    social_02  0.04
-      114 fearofuse_02    social_02  0.22
-      115 fearofuse_03    social_02   0.2
-      116 fearofuse_04    social_02  0.22
-      117    social_01    social_02  0.73
-      118    social_02    social_02     1
-      119    social_03    social_02  0.58
-      120    social_04    social_02  0.54
-      121 advantage_01    social_03  0.16
-      122 advantage_02    social_03  0.36
-      123 advantage_03    social_03  0.13
-      124 advantage_04    social_03   0.2
-      125 fearofuse_01    social_03   0.1
-      126 fearofuse_02    social_03  0.33
-      127 fearofuse_03    social_03  0.29
-      128 fearofuse_04    social_03  0.25
-      129    social_01    social_03  0.48
-      130    social_02    social_03  0.58
-      131    social_03    social_03     1
-      132    social_04    social_03  0.56
-      133 advantage_01    social_04  0.27
-      134 advantage_02    social_04   0.4
-      135 advantage_03    social_04  0.31
-      136 advantage_04    social_04  0.36
-      137 fearofuse_01    social_04 -0.07
-      138 fearofuse_02    social_04   0.3
-      139 fearofuse_03    social_04   0.1
-      140 fearofuse_04    social_04  0.14
-      141    social_01    social_04  0.57
-      142    social_02    social_04  0.54
-      143    social_03    social_04  0.56
-      144    social_04    social_04     1
+      
+      
+      |Expectations                                                | ChatGPT has clear advantages compared to similar offerings.| Using ChatGPT brings financial benefits.| Using ChatGPT is advantageous in many tasks.| Compared to other systems, using ChatGPT is more fun.| Much can go wrong when using ChatGPT.| There are legal issues with using ChatGPT.| The security of user data is not guaranteed with ChatGPT.| Using ChatGPT could bring personal disadvantages.| In my environment, using ChatGPT is standard.| Almost everyone in my environment uses ChatGPT.| Not using ChatGPT is considered being an outsider.| Using ChatGPT brings me recognition from my environment.|
+      |:-----------------------------------------------------------|-----------------------------------------------------------:|----------------------------------------:|--------------------------------------------:|-----------------------------------------------------:|-------------------------------------:|------------------------------------------:|---------------------------------------------------------:|-------------------------------------------------:|---------------------------------------------:|-----------------------------------------------:|--------------------------------------------------:|--------------------------------------------------------:|
+      |ChatGPT has clear advantages compared to similar offerings. |                                                           1|                                     0.37|                                         0.64|                                                  0.61|                                 -0.14|                                       0.19|                                                      0.07|                                              0.01|                                          0.21|                                            0.28|                                               0.16|                                                     0.27|
+      |Using ChatGPT brings financial benefits.                    |                                                        0.37|                                        1|                                         0.46|                                                  0.42|                                  0.02|                                       0.34|                                                      0.34|                                              0.22|                                          0.54|                                             0.5|                                               0.36|                                                      0.4|
+      |Using ChatGPT is advantageous in many tasks.                |                                                        0.64|                                     0.46|                                            1|                                                  0.47|                                 -0.11|                                       0.19|                                                      0.06|                                              0.09|                                          0.33|                                            0.34|                                               0.13|                                                     0.31|
+      |Compared to other systems, using ChatGPT is more fun.       |                                                        0.61|                                     0.42|                                         0.47|                                                     1|                                 -0.19|                                       0.17|                                                      0.14|                                             -0.07|                                          0.33|                                            0.26|                                                0.2|                                                     0.36|
+      |Much can go wrong when using ChatGPT.                       |                                                       -0.14|                                     0.02|                                        -0.11|                                                 -0.19|                                     1|                                       0.29|                                                      0.36|                                              0.48|                                         -0.19|                                            0.04|                                                0.1|                                                    -0.07|
+      |There are legal issues with using ChatGPT.                  |                                                        0.19|                                     0.34|                                         0.19|                                                  0.17|                                  0.29|                                          1|                                                      0.38|                                              0.28|                                          0.23|                                            0.22|                                               0.33|                                                      0.3|
+      |The security of user data is not guaranteed with ChatGPT.   |                                                        0.07|                                     0.34|                                         0.06|                                                  0.14|                                  0.36|                                       0.38|                                                         1|                                              0.39|                                          0.06|                                             0.2|                                               0.29|                                                      0.1|
+      |Using ChatGPT could bring personal disadvantages.           |                                                        0.01|                                     0.22|                                         0.09|                                                 -0.07|                                  0.48|                                       0.28|                                                      0.39|                                                 1|                                          0.25|                                            0.22|                                               0.25|                                                     0.14|
+      |In my environment, using ChatGPT is standard.               |                                                        0.21|                                     0.54|                                         0.33|                                                  0.33|                                 -0.19|                                       0.23|                                                      0.06|                                              0.25|                                             1|                                            0.73|                                               0.48|                                                     0.57|
+      |Almost everyone in my environment uses ChatGPT.             |                                                        0.28|                                      0.5|                                         0.34|                                                  0.26|                                  0.04|                                       0.22|                                                       0.2|                                              0.22|                                          0.73|                                               1|                                               0.58|                                                     0.54|
+      |Not using ChatGPT is considered being an outsider.          |                                                        0.16|                                     0.36|                                         0.13|                                                   0.2|                                   0.1|                                       0.33|                                                      0.29|                                              0.25|                                          0.48|                                            0.58|                                                  1|                                                     0.56|
+      |Using ChatGPT brings me recognition from my environment.    |                                                        0.27|                                      0.4|                                         0.31|                                                  0.36|                                 -0.07|                                        0.3|                                                       0.1|                                              0.14|                                          0.57|                                            0.54|                                               0.56|                                                        1|
+      
+      5 missing case(s) ommited.
+      
 
 # Item order is kept
 

@@ -46,27 +46,28 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cross_eval) == 1
-  is_cor <- metric != FALSE
+  is_multi <- length(cross_eval) > 1
+  is_metric <- metric != FALSE
 
   # Single variables
-  if (!is_items && !is_grouped && !is_cor) {
+  if (!is_items && !(is_grouped ||is_multi) && !is_metric) {
     effect_counts_one(data, {{ cols }}, ...)
   }
-  else if (!is_items && is_grouped && !is_cor) {
+  else if (!is_items && is_grouped && !is_metric) {
     effect_counts_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
-  else if (!is_items && is_grouped && is_cor) {
+  else if (!is_items && is_grouped && is_metric) {
     effect_counts_one_cor(data, {{ cols }}, {{ cross }}, ...)
   }
 
   # Items
-  else if (is_items && !is_grouped && !is_cor) {
+  else if (is_items && !(is_grouped || is_multi) && !is_metric) {
     effect_counts_items(data, {{ cols }} , ...)
   }
-  else if (is_items && is_grouped && !is_cor) {
+  else if (is_items && is_grouped && !is_metric) {
     effect_counts_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
-  else if (is_items && is_grouped && is_cor) {
+  else if (is_items && (is_grouped || is_multi) && is_metric) {
     effect_counts_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
   # Not found
@@ -123,10 +124,11 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cross_eval)== 1
+  is_multi <- length(cross_eval) > 1
   is_cor <- metric != FALSE
 
   # Single variables
-  if (!is_items && !is_grouped && !is_cor) {
+  if (!is_items && !is_grouped && !is_multi && !is_cor) {
     effect_metrics_one(data, {{ cols }}, ...)
   }
   else if (!is_items && is_grouped && !is_cor) {
@@ -137,13 +139,13 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
   }
 
   # Items
-  else if (is_items && !is_grouped && !is_cor) {
+  else if (is_items && !is_grouped && !is_multi && !is_cor) {
     effect_metrics_items(data, {{ cols }} , ...)
   }
   else if (is_items && is_grouped && !is_cor) {
     effect_metrics_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
-  else if (is_items && is_grouped && is_cor) {
+  else if (is_items && (is_grouped || is_multi) && is_cor) {
     effect_metrics_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
   # Not found
@@ -235,14 +237,14 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 
   # 6. Prepare output
   result <- tibble::tribble(
-    ~Statistic, ~Value, ~.digits,
-    "Number of cases", n, 0,
-    "Phi", phi, 2,
-    "Cramer's V", cramer_v, 2,
-    "Chi-squared", fit$statistic, 2,
-    "Degrees of freedom", fit$parameter, 0,
-    "p value", fit$p.value, 3
-    #"stars", get_stars(fit$p.value), 0
+    ~Statistic, ~Value,
+    "Number of cases", as.character(n),
+    "Phi", as.character(round(phi, 2)),
+    "Cramer's V", as.character(round(cramer_v, 2)),
+    "Chi-squared", as.character(round(fit$statistic, 2)),
+    "Degrees of freedom", as.character(fit$parameter),
+    "p value", as.character(round(fit$p.value, 3)),
+    "stars", get_stars(fit$p.value)
   )
 
   result <- .attr_transfer(result, data, "missings")
@@ -484,8 +486,8 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", negative
 
     result <- c(
       result,
-      list(.to_vlkr_tab(lm_params, digits=2, caption = "Regression parameters")),
-      list(.to_vlkr_tab(lm_model, digits=2, caption = "Model statistics"))
+      list(.to_vlkr_tab(lm_params, digits=2)),
+      list(.to_vlkr_tab(lm_model, digits=2))
     )
   }
 
@@ -553,11 +555,14 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", negativ
     dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
     dplyr::rename("Item 2" = tidyselect::all_of("item2"))
 
-  title <- ifelse(prefix == "", NULL, prefix)
+  if (prefix == "") {
+    title <- NULL
+  }
+
 
   method <- ifelse(method == "spearman", "Spearman's rho", "Pearson's r")
   result <- result |>
-    dplyr::rename({{ method }} := .data$r) |>
+    dplyr::rename({{ method }} := "r") |>
     dplyr::mutate(dplyr::across(tidyselect::everything(), \(x) as.character(x))) |>
     tidyr::pivot_longer(
       cols = -tidyselect::all_of(c("Item 1", "Item 2")),
@@ -627,7 +632,11 @@ effect_metrics_items <- function(data, cols, method = "pearson", negative = FALS
     dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
     dplyr::rename("Item 2" = tidyselect::all_of("item2"))
 
-  title <- ifelse(prefix == "", NULL, prefix)
+  if (prefix == "") {
+    title <- NULL
+  } else {
+    title <- prefix
+  }
 
   result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits= 2, caption=title)
@@ -703,7 +712,12 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", nega
   result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix))
 
   prefix <- ifelse(prefix == "", "Item", prefix)
-  title <- ifelse(prefix == "", NULL, prefix)
+  if (prefix == "") {
+    title <- NULL
+  } else {
+    title <- prefix
+  }
+
 
   result <- result %>%
     dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
@@ -711,7 +725,7 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", nega
 
   method <- ifelse(method == "spearman", "Spearman's rho", "Pearson's r")
   result <- result |>
-    dplyr::rename({{ method }} := .data$r)
+    dplyr::rename({{ method }} := "r")
 
   result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits= 2, caption=title)

@@ -46,21 +46,22 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cross_eval)== 1
-  is_cor <- metric != FALSE
+  is_multi <- length(cross_eval) > 1
+  is_metric <- metric != FALSE
 
   # Single variables
-  if (!is_items && !is_grouped) {
+  if (!is_items && !(is_grouped || is_multi)) {
     tab_counts_one(data, {{ cols }}, ...)
   }
-  else if (!is_items && is_grouped && !is_cor) {
+  else if (!is_items && is_grouped && !is_metric) {
     tab_counts_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
 
   # Items
-  else if (is_items && !is_grouped) {
+  else if (is_items && !(is_grouped ||is_multi)) {
     tab_counts_items(data, {{ cols }} , ...)
   }
-  else if (is_items && is_grouped &&  !is_cor) {
+  else if (is_items && is_grouped &&  !is_metric) {
     tab_counts_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
 
@@ -119,26 +120,30 @@ tab_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cross_eval) == 1
-  is_cor <- metric != FALSE
+  is_multi <- length(cross_eval) > 1
+  is_metric <- metric != FALSE
 
   # Single variables
-  if (!is_items && !is_grouped && !is_cor) {
+  if (!is_items && !(is_grouped ||is_multi)) {
     tab_metrics_one(data, {{ cols }}, ...)
   }
-  else if (!is_items && is_grouped && !is_cor) {
+  else if (!is_items && is_grouped && !is_metric) {
     tab_metrics_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
 
-  else if (!is_items && is_grouped && is_cor) {
+  else if (!is_items && is_grouped && is_metric) {
     tab_metrics_one_cor(data, {{ cols }}, {{ cross }}, ...)
   }
 
   # Items
-  else if (is_items && !is_grouped && !is_cor) {
+  else if (is_items && !(is_grouped || is_multi) && !is_metric) {
     tab_metrics_items(data, {{ cols }} , ...)
   }
-  else if (is_items && is_grouped && !is_cor) {
+  else if (is_items && is_grouped && !is_metric) {
     tab_metrics_items_grouped(data, {{ cols }}, {{ cross }},  ...)
+  }
+  else if (is_items && (is_grouped || is_multi) && is_metric) {
+    tab_metrics_items_cor(data, {{ cols }}, {{ cross }}, ...)
   }
 
   # Not found
@@ -978,7 +983,7 @@ tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE
 
   # Calculate correlation
   method <- ifelse(method == "spearman", "spearman", "pearson")
-  result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
+  result <- .effect_correlations(data, {{ col }}, {{ cross}}, method = method, labels = labels)
 
   values <- c("item1", "item2", "n", "r")
   if (ci) {
@@ -993,7 +998,11 @@ tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE
   result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix))
 
   prefix <- ifelse(prefix == "", "Item", prefix)
-  title <- ifelse(prefix == "", NULL, prefix)
+  if (prefix == "") {
+    title <- NULL
+  } else {
+    title <- prefix
+  }
 
   result <- result %>%
     dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
@@ -1325,7 +1334,6 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negativ
   # 5. Calculate correlation
   result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
 
-
   # Remove common item prefix
   prefix1 <- get_prefix(result$item1)
   prefix2 <- get_prefix(result$item2)
@@ -1342,8 +1350,9 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negativ
     }
   }
 
-  title <- ifelse(title == "", NULL, title)
-
+  if(title == "")  {
+    title <- NULL
+  }
 
   # Create matrix
   result <- result %>%
@@ -1351,7 +1360,8 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negativ
     tidyr::pivot_wider(names_from = "item2", values_from = "r")
 
   prefix1 <- ifelse(prefix1 == "", "Item", prefix1)
-  result <- dplyr::rename(result, {{ prefix1 }} := .data$item1)
+
+  result <- dplyr::rename(result, {{ prefix1 }} := "item1")
 
   result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits = digits, caption = title)

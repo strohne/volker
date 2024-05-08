@@ -21,84 +21,96 @@ data <- volker::chatgpt
 
 ```
 
-## Frequencies of categorical variables
+## Categorical variables
 
-### 1a. One variable: Frequency plot of adopter
+### plot_counts_one
 ```{r}
 data |> 
-  plot_counts_one(adopter)
+  plot_counts(adopter)
 ```
 
-### 1b. One variable: Frequency plot of binary data
+### plot_counts_one with binary data
 ```{r}
 data |> 
   mutate(adopter = adopter == "I try new offers immediately") |> 
-  plot_counts_one(adopter)
+  plot_counts(adopter)
 ```
 
-### 1c. One variable: Frequency plot of a focus category
+### plot_counts_one with focus category
 ```{r}
 data |> 
-  plot_counts_one(adopter, category="I try new offers immediately")
+  plot_counts(adopter, category="I try new offers immediately")
 ```
 
+### plot_counts_one_grouped
+```{r}
+# Test order of items
+plot_counts(data, sd_gender, adopter)
+```
 
-### 2a. Multiple items: Frequency plot for adoption factors
+### plot_counts_one_grouped with row props
+```{r}
+# The last categories' percentage should be omitted in ordered plots
+data |> 
+  plot_counts(adopter, sd_gender, prop = "rows", numbers="p")
+```
+
+### plot_counts_one_grouped with col props
+```{r}
+# Test whether the figure is flipped
+plot_counts(data, adopter, sd_gender, prop = "cols", numbers="p", ordered = -1)
+```
+
+### plot_counts_one_grouped with reversed levels
+```{r}
+data |> 
+  mutate(adopter = factor(adopter, levels = rev(levels(adopter)))) |> 
+  plot_counts(adopter, sd_gender, prop = "cols")
+
+```
+
+### plot_counts_items
 ```{r, fig.height=5}
-plot_counts_items(data, starts_with("cg_adoption_"), numbers = "p")
+plot_counts(data, starts_with("cg_adoption_"), numbers = "p")
 ```
 
-### 2b. Multiple items: Frequency plot for binary adoption values
+### plot_counts_items with binary data
 ```{r}
 data |> 
   mutate(across(starts_with("cg_adoption_advantage"), \(x) x > 3)) |> 
   plot_counts(starts_with("cg_adoption_advantage"))
 ```
 
-### 3. Two variables: Stacked frequency plot of innovator type by gender
-
-```{r}
-
-# Test whether last categories' percentage is omitted in ordered plots
-data |> 
-  plot_counts_one_grouped(adopter, sd_gender, prop = "rows", numbers="p", ordered = -1)
-
-# Test order of items
-plot_counts_one_grouped(data, sd_gender, adopter)
-
-# Test whether the figure is flipped
-plot_counts_one_grouped(data, adopter, sd_gender, prop = "cols")
-
-# Test whether factor is reversed
-data |> 
-  mutate(adopter = factor(adopter, levels = rev(levels(adopter)))) |> 
-  plot_counts_one_grouped(adopter, sd_gender, prop = "cols")
-
-```
 
 ## Metric distributions
 
-### 1. Distribution for one metric variable: Age
+### plot_metrics_one
 ```{r}
-plot_metrics_one(data, sd_age)
+plot_metrics(data, sd_age)
 ```
 
-
-### 2. Distribution of multiple metric items: Adoption factors
-```{r, fig.height=5}
-plot_metrics_items(data, starts_with("cg_adoption_"))
-```
-
-### 3. Distribution by a grouping variable
+### plot_metrics_one_grouped
 ```{r}
-plot_metrics_one_grouped(data, sd_age, sd_gender)
+plot_metrics(data, sd_age, sd_gender)
 ```
 
+### plot_metrics_one_cor
+```{r}
+plot_metrics(data, sd_age, use_work, metric=TRUE)
+```
+
+
+### plot_metrics_items
 ```{r, fig.height=5}
-plot_metrics_items_grouped(data, starts_with("cg_adoption_"), sd_gender)
+plot_metrics(data, starts_with("cg_adoption_"))
 ```
 
-### 4. Index  distribution by a grouping variable
+### plot_metrics_items_grouped
+```{r, fig.height=5}
+plot_metrics(data, starts_with("cg_adoption_"), sd_gender)
+```
+
+## Index:  distribution by a grouping variable
 ```{r}
 
 data %>%

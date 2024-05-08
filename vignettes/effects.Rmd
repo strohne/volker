@@ -30,5 +30,5 @@ ds <- volker::chatgpt
 effect_counts(ds, adopter, sd_gender)
 effect_metrics(ds, sd_age, adopter)
 effect_metrics(ds, sd_age, use_private, metric=T)
-report_metrics(ds, sd_age, use_private, metric=T)
+effect_metrics(ds, sd_age, use_private, metric=T)
 ```

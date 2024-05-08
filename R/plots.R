@@ -45,22 +45,30 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cross_eval)== 1
+  is_multi <- length(cross_eval) > 1
   is_metric <- metric != FALSE
 
   # Single variables
-  if (!is_items && !is_grouped) {
+  if (!is_items && !(is_grouped || is_multi)) {
     plot_counts_one(data, {{ cols }}, ...)
   }
   else if (!is_items && is_grouped && !is_metric) {
     plot_counts_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
 
+  else if (!is_items && is_grouped && is_metric) {
+    plot_counts_one_cor(data, {{ cols }}, {{ cross }}, ...)
+  }
+
   # Items
-  else if (is_items && !is_grouped) {
+  else if (is_items && !(is_grouped || is_multi)) {
     plot_counts_items(data, {{ cols }} , ...)
   }
   else if (is_items && is_grouped && !is_metric) {
     plot_counts_items_grouped(data, {{ cols }}, {{ cross }},  ...)
+  }
+  else if (is_items && is_grouped && is_metric) {
+    plot_counts_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
 
   # Not found
@@ -114,14 +122,15 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
 
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
-  cols_cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
+  cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
   is_items <- length(cols_eval) > 1
-  is_grouped <- length(cols_cross_eval) == 1
+  is_grouped <- length(cross_eval) == 1
+  is_multi <- length(cross_eval) > 1
   is_metric <- metric != FALSE
 
   # Single variables
-  if (!is_items && !is_grouped && !is_metric) {
+  if (!is_items && !(is_grouped ||is_multi) && !is_metric) {
     plot_metrics_one(data, {{ cols }}, ...)
   }
   else if (!is_items && is_grouped && !is_metric) {
@@ -132,13 +141,13 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
   }
 
   # Items
-  else if (is_items && !is_grouped && !is_metric) {
+  else if (is_items && !(is_grouped || is_multi) && !is_metric) {
     plot_metrics_items(data, {{ cols }} , ...)
   }
   else if (is_items && is_grouped && !is_metric) {
     plot_metrics_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
-  else if (is_items && !is_grouped && is_metric) {
+  else if (is_items && (is_grouped || is_multi) && is_metric) {
     plot_metrics_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
 
