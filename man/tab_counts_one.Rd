@@ -19,7 +19,7 @@ tab_counts_one(
 
 \item{col}{The column holding values to count.}
 
-\item{ci}{Whether to compute 95\% confidence intervals.}
+\item{ci}{Whether to compute 95\% confidence intervals using \code{stats::\link[stats:prop.test]{prop.test}}.}
 
 \item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
@@ -33,7 +33,7 @@ tab_counts_one(
 A volker tibble.
 }
 \description{
-TODO: option to choose from prop.test or binom.test
+Output a frequency table for the values in one column
 }
 \examples{
 library(volker)

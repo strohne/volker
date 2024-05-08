@@ -31,16 +31,14 @@ idx_add <- function(data, cols, newcol = NULL, negative = FALSE, clean = TRUE) {
   idx <- data %>%
     dplyr::select({{ cols }})
 
-  # Remove negative values
-  # TODO: warn if any negative values were recoded
-  if (!negative) {
-    idx <- dplyr::mutate(idx, dplyr::across(tidyselect::where(is.numeric), ~ ifelse(. < 0, NA, .)))
-  }
-
   # Remove missings
-  # TODO: output a warning
-  # data <- data %>%
-  #   tidyr::drop_na({{ cols }})
+  idx <- data_rm_missings(idx, {{ cols }})
+
+
+  # Remove negative values
+  if (!negative) {
+    data <- data_rm_negatives(data, {{ cols }})
+  }
 
   prefix <- get_prefix(colnames(idx), FALSE, TRUE)
   if (is.null(newcol)) {

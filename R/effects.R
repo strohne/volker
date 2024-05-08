@@ -507,8 +507,6 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", negative
 #'
 #' The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}}.
 #'
-#' #TODO: move stars to the last position
-#'
 #' @keywords internal
 #'
 #' @param data A tibble.

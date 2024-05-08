@@ -261,18 +261,9 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
   } else if (title == FALSE) {
     title <- NULL
   }
-  # if (!is.null(title)) {
-  #   pl <- pl + ggplot2::ggtitle(label = title)
-  # }
 
   # Base
-  # TODO: report missing cases
   base_n <- nrow(data)
-  #pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
-
-  # Pass row number and label length to the knit_plot() function
-  #.to_vlkr_plot(pl)
-
   result <- .attr_transfer(result, data, "missings")
 
   .plot_bars(
@@ -416,7 +407,6 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
   }
 
   # Get base
-  # TODO: report missing cases
   base_n <- nrow(data)
 
   result <- .attr_transfer(result, data, "missings")
@@ -579,7 +569,6 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
   }
 
   # Base
-  # TODO: report missing cases
   base_n <- nrow(data)
   result <- .attr_transfer(result, data, "missings")
   .plot_bars(

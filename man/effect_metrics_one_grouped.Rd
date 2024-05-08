@@ -40,10 +40,6 @@ A volker list object containing volker tables with the requested statistics.
 \description{
 The regression output comes from \code{stats::\link[stats:lm]{lm}}.
 }
-\details{
-#TODO: Fix bug, why is p in model statistics not above stars?
-#TODO: Add ci for R squared
-}
 \examples{
 library(volker)
 data <- volker::chatgpt

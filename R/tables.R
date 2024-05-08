@@ -155,13 +155,11 @@ tab_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 
 #' Output a frequency table for the values in one column
 #'
-#' TODO: option to choose from prop.test or binom.test
-#'
 #' @keywords internal
 #'
 #' @param data A tibble.
 #' @param col The column holding values to count.
-#' @param ci Whether to compute 95% confidence intervals.
+#' @param ci Whether to compute 95% confidence intervals using \code{stats::\link[stats:prop.test]{prop.test}}.
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
@@ -196,6 +194,7 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
     dplyr::mutate(p = .data$n / sum(.data$n))
 
   # 5. Confidence intervals
+  # TODO: option to select from prop.test or binom.test
   if (ci) {
     n_total <- sum(result$n)
     result <- result |>
