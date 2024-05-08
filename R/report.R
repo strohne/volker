@@ -338,6 +338,7 @@ print.vlkr_list <- function(x, ...) {
 
     # Nested objects
     if (inherits(obj, "vlkr_list")) {
+      baseline <- attr(obj, "baseline", exact=TRUE)
       for (childobj in obj) {
 
         caption <- attr(childobj, "caption", exact=TRUE)
@@ -347,12 +348,6 @@ print.vlkr_list <- function(x, ...) {
         }
 
         chunks <- .add_to_vlkr_rprt(childobj, chunks)
-
-        # baseline <- attr(childobj, "baseline", exact=TRUE)
-        # if (!is.null(baseline)) {
-        #   baseline <- paste0("\n*", baseline, "*  \n")
-        #   chunks <- .add_to_vlkr_rprt(baseline, chunks)
-        # }
       }
     }
 
@@ -362,17 +357,18 @@ print.vlkr_list <- function(x, ...) {
         newchunk <- knit_table(obj)
       } else if (inherits(obj, "vlkr_plt")) {
         newchunk <- knit_plot(obj)
+
       } else if (is.character(obj)) {
         newchunk <- obj
       } else {
         warning("Could not determine the volker report chunk type")
       }
 
+      baseline <- attr(newchunk, "baseline", exact=TRUE)
       chunks <- append(chunks, newchunk)
     }
 
     # Add baseline
-    baseline <- attr(obj, "baseline", exact=TRUE)
     if (!is.null(baseline)) {
       newchunk <- paste0("\n*", baseline, "*  \n")
       chunks <- append(chunks, newchunk)
@@ -383,13 +379,6 @@ print.vlkr_list <- function(x, ...) {
       attr(obj,"comment") <- tab
     }
     chunks <- append(chunks, list(obj))
-
-    # Add baseline
-    # baseline <- attr(obj, "baseline", exact=TRUE)
-    # if (!is.null(baseline)) {
-    #   chunks <- append(chunks, list(baseline))
-    # }
-
   }
 
 

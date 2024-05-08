@@ -9,7 +9,7 @@ tab_metrics_items_cor(
   cols,
   cross,
   method = "pearson",
-  negative = F,
+  negative = FALSE,
   digits = 2,
   labels = TRUE,
   clean = TRUE,

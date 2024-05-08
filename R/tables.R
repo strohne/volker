@@ -1271,7 +1271,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #'
 #' @importFrom rlang .data
 #' @export
-tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negative = F, digits = 2, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negative = FALSE, digits = 2, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -1364,12 +1364,10 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", negativ
 knit_table <- function(df, ...) {
   options(knitr.kable.NA = '')
 
-  # TODO: Embed "digits" in the vlkr_options list
   digits <- attr(df, "digits", exact = TRUE)
   if (is.null(digits)) {
     digits <- getOption("vlkr.digits", VLKR_NORMAL_DIGITS)
   }
-
 
   baseline <- attr(df, "baseline", exact=TRUE)
   if (is.null(baseline)) {
