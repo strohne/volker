@@ -8,7 +8,6 @@ tab_counts_items(
   data,
   cols,
   ci = FALSE,
-  missings = TRUE,
   percent = TRUE,
   values = c("n", "p"),
   labels = TRUE,
@@ -22,8 +21,6 @@ tab_counts_items(
 \item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
 \item{ci}{Whether to compute 95\% confidence intervals.}
-
-\item{missings}{Include missing values (default FALSE).}
 
 \item{percent}{Set to FALSE to prevent calculating percents from proportions.}
 

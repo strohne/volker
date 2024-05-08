@@ -4,14 +4,14 @@
 
 #' Levels to remove from factors
 #'
-#' By default the value `[NA] nicht beantwortet` is removed from tables and plots
+#' Override with \code{options(vlkr.na.levels=c("Not answered"))}.
 #'
 #' @keywords internal
 VLKR_NA_LEVELS <- c("[NA] nicht beantwortet", "[NA] keine Angabe")
 
 #' Numbers to remove from vectors
 #'
-#' By default the value `-9` is removed  from tables and plots
+#' Override with \code{options(vlkr.na.numbers=c(-2,-9))}.
 #'
 #' @keywords internal
 VLKR_NA_NUMERIC <- c(-9)

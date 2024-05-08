@@ -39,7 +39,7 @@ tab_metrics_one_grouped(
 A volker tibble.
 }
 \description{
-TODO: handle missings parameter
+Output a five point summary for groups
 }
 \examples{
 library(volker)

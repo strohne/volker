@@ -10,7 +10,6 @@ plot_counts_one_cor(
   cross,
   ordered = NULL,
   limits = NULL,
-  missings = FALSE,
   numbers = NULL,
   title = TRUE,
   labels = TRUE,
@@ -33,8 +32,6 @@ For ordered values, shades of the VLKR_FILLGRADIENT option are used.}
 
 \item{limits}{The scale limits, autoscaled by default.
 Set to \code{c(0,100)} to make a 100 \% plot.}
-
-\item{missings}{Include missing values (default FALSE)}
 
 \item{numbers}{The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.}
 

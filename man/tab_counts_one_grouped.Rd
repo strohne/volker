@@ -8,7 +8,6 @@ tab_counts_one_grouped(
   data,
   col,
   cross,
-  missings = FALSE,
   percent = TRUE,
   prop = "total",
   values = c("n", "p"),
@@ -23,8 +22,6 @@ tab_counts_one_grouped(
 \item{col}{The column holding factor values.}
 
 \item{cross}{The column holding groups to split.}
-
-\item{missings}{Include missing values in the output (default FALSE).}
 
 \item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 

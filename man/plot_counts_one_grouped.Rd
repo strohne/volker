@@ -11,7 +11,6 @@ plot_counts_one_grouped(
   category = NULL,
   limits = NULL,
   ordered = NULL,
-  missings = FALSE,
   prop = "total",
   numbers = NULL,
   title = TRUE,
@@ -39,8 +38,6 @@ By default (NULL), the ordering is automatically detected.
 An appropriate color scale should be chosen depending on the ordering.
 For unordered values, colors from VLKR_FILLDISCRETE are used.
 For ordered values, shades of the VLKR_FILLGRADIENT option are used.}
-
-\item{missings}{Include missing values (default FALSE).}
 
 \item{prop}{The basis of percent calculation: "total" (the default), "rows" or "cols".
 Plotting row or column percentages results in stacked bars that add up to 100\%.

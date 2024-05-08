@@ -18,7 +18,7 @@
       10 use_work      use        <NA>       Usage: in profess~ 2          rarely     
       # i 84 more rows
 
-# Missing labels
+# missing labels
 
     Code
       .

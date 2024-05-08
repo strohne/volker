@@ -15,7 +15,7 @@ test_that("Labels", {
 })
 
 # What happens when labels are empty?
-test_that("Missing labels", {
+test_that("missing labels", {
   data %>%
     dplyr::select(starts_with("cg_adoption")) %>%
     volker::labs_clear() %>%

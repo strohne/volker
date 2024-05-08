@@ -11,7 +11,6 @@ plot_counts_items(
   ordered = NULL,
   ci = FALSE,
   limits = NULL,
-  missings = FALSE,
   numbers = NULL,
   title = TRUE,
   labels = TRUE,
@@ -39,8 +38,6 @@ For ordered values, shades of the VLKR_FILLGRADIENT option are used.}
 \item{limits}{The scale limits, autoscaled by default.
 Set to \code{c(0,100)} to make a 100 \% plot.}
 
-\item{missings}{Include missing values (default FALSE).}
-
 \item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
@@ -56,7 +53,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 A ggplot object.
 }
 \description{
-TODO: move missings to the end
+Output frequencies for multiple variables
 }
 \examples{
 library(volker)

@@ -10,7 +10,6 @@ plot_counts_one(
   category = NULL,
   ci = FALSE,
   limits = NULL,
-  missings = FALSE,
   numbers = NULL,
   title = TRUE,
   labels = TRUE,
@@ -32,8 +31,6 @@ When NULL, in case of boolean values, only the TRUE category is plotted.}
 \item{limits}{The scale limits, autoscaled by default.
 Set to \code{c(0,100)} to make a 100\% plot.
 If the data is binary or focused on a single category, by default a 100\% plot is created.}
-
-\item{missings}{Include missing values (default FALSE).}
 
 \item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
 

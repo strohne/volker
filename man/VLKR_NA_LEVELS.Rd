@@ -11,6 +11,6 @@ An object of class \code{character} of length 2.
 VLKR_NA_LEVELS
 }
 \description{
-By default the value \verb{[NA] nicht beantwortet} is removed from tables and plots
+Override with \code{options(vlkr.na.levels=c("Not answered"))}.
 }
 \keyword{internal}

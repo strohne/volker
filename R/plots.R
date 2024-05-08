@@ -43,6 +43,7 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
+
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cross_eval)== 1
   is_multi <- length(cross_eval) > 1
@@ -173,7 +174,6 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
 #' @param limits The scale limits, autoscaled by default.
 #'               Set to \code{c(0,100)} to make a 100% plot.
 #'               If the data is binary or focused on a single category, by default a 100% plot is created.
-#' @param missings Include missing values (default FALSE).
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
@@ -189,7 +189,7 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
 #'
 #' @importFrom rlang .data
 #' @export
-plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -307,7 +307,6 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #'                  When NULL, in case of boolean values, only the TRUE category is plotted.
 #' @param limits The scale limits, autoscaled by default.
 #'               Set to \code{c(0,100)} to make a 100 % plot.
-#' @param missings Include missing values (default FALSE).
 #' @param prop The basis of percent calculation: "total" (the default), "rows" or "cols".
 #'             Plotting row or column percentages results in stacked bars that add up to 100%.
 #'             Whether you set rows or cols determines which variable is in the legend (fill color)
@@ -327,7 +326,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = NULL, ordered = NULL, missings = FALSE, prop = "total", numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = NULL, ordered = NULL, prop = "total", numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -350,9 +349,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
   }
 
   # 3. Remove missings
-  if (!missings) {
-    data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-  }
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
 
   # 4. Calculate data
   result <- data %>%
@@ -450,7 +447,6 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
 #'                For ordered values, shades of the VLKR_FILLGRADIENT option are used.
 #' @param limits The scale limits, autoscaled by default.
 #'               Set to \code{c(0,100)} to make a 100 % plot.
-#' @param missings Include missing values (default FALSE)
 #' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
@@ -459,13 +455,11 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object
 #' @importFrom rlang .data
-plot_counts_one_cor <- function(data, col, cross, ordered = NULL, limits = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_one_cor <- function(data, col, cross, ordered = NULL, limits = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Output frequencies for multiple variables
-#'
-#' TODO: move missings to the end
 #'
 #' @keywords internal
 #'
@@ -482,7 +476,6 @@ plot_counts_one_cor <- function(data, col, cross, ordered = NULL, limits = NULL,
 #' @param ci Whether to plot error bars for 95% confidence intervals.
 #' @param limits The scale limits, autoscaled by default.
 #'               Set to \code{c(0,100)} to make a 100 % plot.
-#' @param missings Include missing values (default FALSE).
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
@@ -498,7 +491,7 @@ plot_counts_one_cor <- function(data, col, cross, ordered = NULL, limits = NULL,
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = FALSE, limits = NULL, missings = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = FALSE, limits = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
 
@@ -508,9 +501,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
   }
 
   # 3. Remove missings
-  if(!missings) {
-    data <- data_rm_missings(data, c({{ cols }}))
-  }
+  data <- data_rm_missings(data, c({{ cols }}))
 
   # 4. Calculate data
 
@@ -1097,7 +1088,6 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
 
 
   # Add base
-  # TODO: report missings
   base_n <- nrow(data)
   result <- .attr_transfer(result, data, "missings")
   .plot_lines(
@@ -1158,7 +1148,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
   cross <- tidyselect::eval_select(expr = rlang::enquo(cross), data = data)
 
   # Grouped means
-  result <- map(
+  result <- purrr::map(
     cross,
     function(col) {
       col <- names(data)[col]
@@ -1258,7 +1248,6 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
   }
 
   # Add base
-  # TODO: Report missings
   base_n <- nrow(data)
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n, "; multiple responses possible"))
 

@@ -162,7 +162,6 @@ tab_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 #' @param data A tibble.
 #' @param col The column holding values to count.
 #' @param ci Whether to compute 95% confidence intervals.
-#' @param missings Include missing values in the output (default TRUE).
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
@@ -176,7 +175,7 @@ tab_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 #'
 #' @importFrom rlang .data
 #' @export
-tab_counts_one <- function(data, col, ci = FALSE, missings = TRUE, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
+tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
@@ -187,9 +186,7 @@ tab_counts_one <- function(data, col, ci = FALSE, missings = TRUE, percent = TRU
   }
 
   # 3. Remove missings
-  if (!missings) {
-    data <- data_rm_missings(data, {{ col }})
-  }
+  data <- data_rm_missings(data, {{ col }})
 
   # 4. Count
   result <- data %>%
@@ -224,9 +221,9 @@ tab_counts_one <- function(data, col, ci = FALSE, missings = TRUE, percent = TRU
   }
 
 
-  # Totals
+  # totals
   result_total <- tibble::tibble(
-    "Total",
+    "total",
     sum(!is.na(dplyr::select(data, {{ col }}))),
     ifelse(percent, "100%", 1)
   )
@@ -234,17 +231,6 @@ tab_counts_one <- function(data, col, ci = FALSE, missings = TRUE, percent = TRU
 
   result <- dplyr::bind_rows(result, result_total)
 
-  # Missings
-  if (missings) {
-    result_missing <- tibble::tibble(
-      "Missing",
-      sum(is.na(dplyr::select(data, {{ col }}))),
-      ifelse(percent, "", NA)
-    )
-    colnames(result_missing) <- colnames(result)
-    result <- dplyr::bind_rows(result, result_missing)
-
-  }
 
   # Clean NA
   result <- dplyr::mutate(result, dplyr::across(tidyselect::any_of(c("ci.low","ci.high")), ~ ifelse(is.na(.) && percent,"",.)))
@@ -262,7 +248,6 @@ tab_counts_one <- function(data, col, ci = FALSE, missings = TRUE, percent = TRU
 #' @param data A tibble.
 #' @param col The column holding factor values.
 #' @param cross The column holding groups to split.
-#' @param missings Include missing values in the output (default FALSE).
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param prop The basis of percent calculation: "total" (the default), "cols", or "rows".
 #' @param values The values to output: n (frequency) or p (percentage) or both (the default).
@@ -278,7 +263,7 @@ tab_counts_one <- function(data, col, ci = FALSE, missings = TRUE, percent = TRU
 #'
 #' @importFrom rlang .data
 #' @export
-tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent = TRUE, prop = "total", values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
+tab_counts_one_grouped <- function(data, col, cross, percent = TRUE, prop = "total", values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
@@ -290,9 +275,7 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent =
   }
 
   # 3. Remove missings
-  if (!missings) {
-    data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-  }
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
 
   #
   # 4. Count
@@ -300,8 +283,8 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent =
   grouped <- data %>%
     dplyr::count({{ col }}, {{ cross }}) %>%
     dplyr::mutate(
-      "{{ cross }}" := tidyr::replace_na(as.character({{ cross }}), "Missing"),
-      "{{ col }}" := tidyr::replace_na(as.character({{ col }}), "Missing")
+      "{{ cross }}" := tidyr::replace_na(as.character({{ cross }}), "missing"),
+      "{{ col }}" := tidyr::replace_na(as.character({{ col }}), "missing")
     )
 
   #
@@ -315,31 +298,31 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent =
       values_fill = list(n = 0)
     )
 
-  # Total column
+  # total column
   total_col_n <- data %>%
     dplyr::count({{ col }}) %>%
     dplyr::mutate(
-      "{{ col }}" := tidyr::replace_na(as.character({{ col }}), "Missing")
+      "{{ col }}" := tidyr::replace_na(as.character({{ col }}), "missing")
     ) %>%
-    dplyr::select({{ col }}, Total = "n")
+    dplyr::select({{ col }}, total = "n")
 
-  # Total row
+  # total row
   total_row_n <- grouped %>%
     dplyr::group_by({{ cross }}) %>%
     dplyr::summarise(n = sum(.data$n)) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate("{{ col }}" := "Total") %>%
+    dplyr::mutate("{{ col }}" := "total") %>%
     tidyr::pivot_wider(
       names_from = {{ cross }},
       values_from = "n",
       values_fill = list(n = 0)
     )
 
-  # Total
+  # total
   total_n <- data %>%
     dplyr::count() %>%
-    dplyr::mutate("{{ col }}" := "Total") %>%
-    dplyr::select({{ col }}, Total = "n")
+    dplyr::mutate("{{ col }}" := "total") %>%
+    dplyr::select({{ col }}, total = "n")
 
   # Join
   result_n <-
@@ -366,7 +349,7 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent =
       dplyr::ungroup()
 
     total_col_p <- total_col_n %>%
-      dplyr::mutate(Total = .data$Total / sum(.data$Total))
+      dplyr::mutate(total = .data$total / sum(.data$total))
 
     total_row_p <- total_row_n %>%
       dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), ~1))
@@ -377,19 +360,19 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent =
       dplyr::ungroup()
 
     total_col_p <- total_col_n %>%
-      dplyr::mutate(Total = 1)
+      dplyr::mutate(total = 1)
 
     total_row_p <- total_row_n %>%
-      dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), ~ .x / total_n$Total))
+      dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), ~ .x / total_n$total))
   } else {
     rows_p <- grouped %>%
       dplyr::mutate(p = .data$n / sum(.data$n))
 
     total_col_p <- total_col_n %>%
-      dplyr::mutate(Total = .data$Total / sum(.data$Total))
+      dplyr::mutate(total = .data$total / sum(.data$total))
 
     total_row_p <- total_row_n %>%
-      dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), ~ .x / total_n$Total))
+      dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), ~ .x / total_n$total))
   }
 
   rows_p <- rows_p %>%
@@ -400,8 +383,8 @@ tab_counts_one_grouped <- function(data, col, cross, missings = FALSE, percent =
       values_fill = list(p = 0)
     )
 
-  total_p <- tibble::tibble("Total" = 1) %>%
-    dplyr::mutate("{{col }}" := "Total")
+  total_p <- tibble::tibble("total" = 1) %>%
+    dplyr::mutate("{{col }}" := "total")
 
   # Join
   result_p <-
@@ -480,7 +463,6 @@ tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param ci Whether to compute 95% confidence intervals.
-#' @param missings Include missing values (default FALSE).
 #' @param percent Set to FALSE to prevent calculating percents from proportions.
 #' @param values The values to output: n (frequency) or p (percentage) or both (the default).
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -495,7 +477,7 @@ tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-tab_counts_items <- function(data, cols, ci = FALSE, missings = TRUE, percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
+tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -506,21 +488,19 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = TRUE, percent = 
   }
 
   # 3. Remove missings
-  if (!missings) {
-    data <- data_rm_missings(data, {{ cols }})
-  }
+  data <- data_rm_missings(data, {{ cols }})
 
   # 4. Calculate n and p
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cols_names <- colnames(dplyr::select(data, tidyselect::all_of(cols_eval)))
 
   result <- data %>%
-    tidyr::drop_na({{ cols }}) %>%
     labs_clear({{ cols }}) %>%
     tidyr::pivot_longer(
       {{ cols }},
       names_to = "item",
-      values_to = "value"
+      values_to = "value",
+      values_drop_na = TRUE
     ) %>%
     dplyr::count(dplyr::across(tidyselect::all_of(c("item", "value")))) %>%
     dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
@@ -540,7 +520,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = TRUE, percent = 
       values_fill = stats::setNames(list(0), value)
     ) %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(Total = sum(dplyr::c_across(-1), na.rm=TRUE)) %>%
+    dplyr::mutate(total = sum(dplyr::c_across(-1), na.rm=TRUE)) %>%
     dplyr::ungroup()
 
   # Relative frequency
@@ -553,7 +533,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = TRUE, percent = 
       values_fill = stats::setNames(list(0), value)
     ) %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(Total = sum(dplyr::c_across(-1), na.rm=TRUE)) %>%
+    dplyr::mutate(total = sum(dplyr::c_across(-1), na.rm=TRUE)) %>%
     dplyr::ungroup()
 
 
@@ -572,37 +552,13 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = TRUE, percent = 
         ci.low =purrr::map_dbl(.data$.test, function(x) x$conf.int[1]),
         ci.high =purrr::map_dbl(.data$.test, function(x) x$conf.int[2]),
       ) |>
-      dplyr::select(-tidyselect::all_of(c(".test", "n"))) |>
+      dplyr::select(-tidyselect::all_of(c(".test"))) |>
       dplyr::ungroup()
 
     # Add % sign
     if (percent) {
-      result_ci <- dplyr::mutate(result_ci, dplyr::across(tidyselect::where(is.numeric), ~ paste0(round(. * 100, 0), "%")))
+      result_ci <- dplyr::mutate(result_ci, dplyr::across(tidyselect::all_of(c("p","ci.low","ci.high")), ~ paste0(round(. * 100, 0), "%")))
     }
-  }
-
-  # Add missings
-  if (missings) {
-    result_missing <-  data %>%
-      labs_clear({{ cols }}) %>%
-      tidyr::pivot_longer(
-        {{ cols }},
-        names_to = "item",
-        values_to = "value"
-      ) %>%
-      dplyr::mutate(value = is.na(.data$value)) %>%
-      dplyr::count(dplyr::across(tidyselect::all_of(c("item", "value")))) %>%
-      dplyr::mutate(value = factor(.data$value,levels=c("TRUE","FALSE"))) %>%
-      tidyr::pivot_wider(
-        names_from = value,
-        values_from = "n",
-        values_fill = 0,
-        names_expand=TRUE
-      ) %>%
-      dplyr::select("item", Missing = "TRUE")
-
-    result_n <- dplyr::left_join(result_n, result_missing, by="item")
-    result_p <-dplyr::mutate(result_p, Missing="")
   }
 
   # Combine n and p if requested
@@ -671,17 +627,13 @@ tab_counts_items <- function(data, cols, ci = FALSE, missings = TRUE, percent = 
 
   if (ci) {
     result <- list(
-      count = .to_vlkr_tab(result, caption = "Frequencies"),
-      ci = .to_vlkr_tab(result_ci, digits=2, caption = "Confidence intervals")
+      count = .to_vlkr_tab(result),
+      ci = .to_vlkr_tab(result_ci, digits=2)
     )
-    if (!missings) {
-      result <- .attr_transfer(result, data, "missings")
-    }
+    result <- .attr_transfer(result, data, "missings")
     result <- .to_vlkr_list(result)
   } else {
-    if (!missings) {
-      result <- .attr_transfer(result, data, "missings")
-    }
+    result <- .attr_transfer(result, data, "missings")
     result <- .to_vlkr_tab(result, digits= 0)
   }
 
@@ -753,7 +705,10 @@ tab_metrics_one <- function(data, col, ci = FALSE, negative = FALSE, digits = 1,
     data <- data_clean(data)
   }
 
-  # 3. Remove negatives
+  # 3. Remove missings
+  data <- data_rm_missings(data, {{ col }})
+
+  # 4. Remove negatives
   if (!negative) {
     data <- data_rm_negatives(data, {{ col }})
   }
@@ -766,12 +721,12 @@ tab_metrics_one <- function(data, col, ci = FALSE, negative = FALSE, digits = 1,
   if (ci) {
     result <- dplyr::select(
       result, "item" = "skim_variable",
-      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","ci.low","ci.high","missing","n","items","alpha"))
+      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","ci.low","ci.high","n", "items","alpha"))
     )
   } else {
     result <- dplyr::select(
       result, "item" = "skim_variable",
-      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","missing","n","items","alpha"))
+      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","n","items","alpha"))
     )
   }
 
@@ -804,7 +759,7 @@ tab_metrics_one <- function(data, col, ci = FALSE, negative = FALSE, digits = 1,
   result <- result %>%
     # TODO: can we leave digits calculation to .to_vlkr_tab?
     #       So that the resulting data frame contains all digits?
-    dplyr::mutate(dplyr::across(tidyselect::all_of(c("missing", "n")), ~ as.character(round(., 0)))) %>%
+    dplyr::mutate(dplyr::across(tidyselect::all_of(c("n")), ~ as.character(round(., 0)))) %>%
     dplyr::mutate(dplyr::across(tidyselect::all_of(c("min", "q1", "median", "q3", "max")), ~ as.character(round(., digits)))) %>%
     dplyr::mutate(dplyr::across(tidyselect::any_of(c("mean", "sd", "ci.low", "ci.high")), ~ as.character(round(., digits)))) %>%
     # labs_clear(-item) %>%
@@ -822,8 +777,6 @@ tab_metrics_one <- function(data, col, ci = FALSE, negative = FALSE, digits = 1,
 
 
 #' Output a five point summary for groups
-#'
-#' TODO: handle missings parameter
 #'
 #' @keywords internal
 #'
@@ -861,20 +814,23 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
     data <- data_rm_negatives(data,  {{ col }})
   }
 
-  # 4. Calculate values
+  # 4. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+
+  # 5. Calculate values
   result_grouped <- data %>%
     dplyr::group_by({{ cross }}) %>%
     skim_metrics({{ col }}) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(
-      {{ cross }} := tidyr::replace_na(as.character({{ cross }}), "Missing")
-    ) %>%
+    # dplyr::ungroup() %>%
+    # dplyr::mutate(
+    #   {{ cross }} := tidyr::replace_na(as.character({{ cross }}), "missing")
+    # ) %>%
     dplyr::select(-tidyselect::all_of(c("skim_variable","skim_type"))) |>
     dplyr::rename_with(function(x) sub("numeric.", "", x, fixed = TRUE))
 
   result_total <- data %>%
     skim_metrics({{ col }}) %>%
-    dplyr::mutate({{ cross }} := "Total") |>
+    dplyr::mutate({{ cross }} := "total") |>
     dplyr::select(-tidyselect::all_of(c("skim_variable","skim_type"))) |>
     dplyr::rename_with(function(x) sub("numeric.", "", x, fixed = TRUE))
 
@@ -887,12 +843,12 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, negative = FAL
   if (ci) {
     result <- dplyr::select(
       result,  {{ cross }},
-      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","ci.low","ci.high","missing","n","items","alpha"))
+      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","ci.low","ci.high","n","items","alpha"))
     )
   } else {
     result <- dplyr::select(
       result,{{ cross }},
-      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","missing","n","items","alpha"))
+      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","n","items","alpha"))
     )
   }
 
@@ -1044,12 +1000,15 @@ tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits =
     data <- data_clean(data)
   }
 
-  # 3. Remove negatives
+  # 3. Remove missings
+  data <- data_rm_missings(data, {{ cols }})
+
+  # 4. Remove negatives
   if (!negative) {
     data <- data_rm_negatives(data, {{ cols }})
   }
 
-  # 4. Calculate
+  # 5. Calculate
   result <- data %>%
     dplyr::select({{ cols }}) |>
     skim_metrics() |>
@@ -1058,12 +1017,12 @@ tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits =
   if (ci) {
     result <- dplyr::select(
       result, "item" = "skim_variable",
-      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","ci.low","ci.high","missing","n","items","alpha"))
+      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","ci.low","ci.high","n","items","alpha"))
     )
   } else {
     result <- dplyr::select(
       result, "item" = "skim_variable",
-      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","missing","n","items","alpha"))
+      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","n","items","alpha"))
     )
   }
 
@@ -1153,23 +1112,23 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
   # Get positions of group cols
   cross <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
-  # Total means
+  # total means
   value <- "numeric.mean"
   total_mean <- data %>%
     dplyr::select({{ cols }}) %>%
     skim_metrics() %>%
-    dplyr::select("skim_variable", Total = !!sym(value))
+    dplyr::select("skim_variable", total = !!sym(value))
 
-  # Total sd
+  # total sd
   value <- "numeric.sd"
   total_sd <- data %>%
     dplyr::select({{ cols }}) %>%
     skim_metrics() %>%
-    dplyr::select("skim_variable", Total = !!sym(value))
+    dplyr::select("skim_variable", total = !!sym(value))
 
   # Grouped means
   value <- "numeric.mean"
-  grouped_mean <- map(
+  grouped_mean <- purrr::map(
     cross,
     function(col) {
       col <- names(data)[col]
@@ -1194,7 +1153,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 
   # Grouped sd
   value <- "numeric.sd"
-  grouped_sd <- map(
+  grouped_sd <- purrr::map(
     cross,
     function(col) {
       col <- names(data)[col]
@@ -1219,7 +1178,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 
   # Significance of lm
   # TODO
-  # grouped_p <- map(
+  # grouped_p <- purrr::map(
   #   col_group,
   #   function(col) {
   #     col <- names(data)[col]
@@ -1508,8 +1467,6 @@ print.vlkr_tbl <- function(x, ...) {
   baseline <- attr(x, "baseline", exact=TRUE)
 
   if (knitr::is_html_output()) {
-
-    #x <- knitr::asis_output(x)
 
     if (!is.null(baseline)) {
       x <- paste0(x,"  \n  ", baseline)

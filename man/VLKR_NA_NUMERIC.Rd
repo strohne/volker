@@ -11,6 +11,6 @@ An object of class \code{numeric} of length 1.
 VLKR_NA_NUMERIC
 }
 \description{
-By default the value \code{-9} is removed  from tables and plots
+Override with \code{options(vlkr.na.numbers=c(-2,-9))}.
 }
 \keyword{internal}

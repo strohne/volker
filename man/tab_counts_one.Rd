@@ -8,7 +8,6 @@ tab_counts_one(
   data,
   col,
   ci = FALSE,
-  missings = TRUE,
   percent = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -21,8 +20,6 @@ tab_counts_one(
 \item{col}{The column holding values to count.}
 
 \item{ci}{Whether to compute 95\% confidence intervals.}
-
-\item{missings}{Include missing values in the output (default TRUE).}
 
 \item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 

@@ -437,13 +437,13 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", negative
     stats_t <- stats_t |>
       tidyr::unnest_longer(
         tidyselect::all_of("Results"),
-        indices_to="Statistic",
+        indices_to="statistic",
         values_to="value",
         transform=as.character
       ) |>
-      dplyr::select("Test", "Statistic","value")
+      dplyr::select("Test", "statistic","value")
 
-    result <- c(result, list(.to_vlkr_tab(stats_t, caption="T-Test")))
+    result <- c(result, list(.to_vlkr_tab(stats_t)))
   }
 
 
@@ -456,6 +456,7 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", negative
 
     lm_params <- lm_params |>
       dplyr::mutate(
+        Term = .data$term,
         stars = get_stars(.data$p.value),
         estimate = round(.data$estimate,2),
         conf.low = round(.data$conf.low,2),
@@ -464,7 +465,7 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", negative
         t = round(.data$statistic,2),
         p = round(.data$p.value,3)
       ) |>
-      dplyr::select(tidyselect::all_of(c("term","estimate","conf.low","conf.high","std.error","t","p","stars")))
+      dplyr::select(tidyselect::all_of(c("Term","estimate","conf.low","conf.high","std.error","t","p","stars")))
 
 
     # Regression model statistics
@@ -478,7 +479,7 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", negative
       ) |>
       labs_replace("Statistic", tibble::tibble(
         value_name=c( "adj.r.squared","statistic", "df", "df.residual",  "p.value", "stars"),
-        value_label=c("Adjusted R squared", "F", "Degrees of freedom", "Residuals' degrees of freedom", "p", "stars")
+        value_label=c("Adjusted R squared", "Degrees of freedom", "Residuals' degrees of freedom", "F", "p", "stars")
       ), relevel = TRUE) |>
       stats::na.omit() |>
       dplyr::arrange(tidyselect::all_of("Statistic"))
@@ -769,12 +770,12 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", nega
       # TODO: geht das eleganter? Make DRY!
       # TODO: round in print function, not here
       n = nrow(data),
-      r = purrr::map(.data$.test, function(x) round(as.numeric(x$estimate),2)),
-      ci.low = purrr::map(.data$.test, function(x) round(as.numeric(x$conf.int[1]),2)),
-      ci.high = purrr::map(.data$.test, function(x) round(as.numeric(x$conf.int[2]),2)),
-      df = purrr::map(.data$.test, function(x) as.numeric(x$parameter)),
-      stars = map(.data$.test, function(x) get_stars(x$p.value)),
-      p = map(.data$.test, function(x) round(x$p.value,3)),
+      r = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate),2)),
+      ci.low = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[1]),2)),
+      ci.high = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[2]),2)),
+      df = purrr::map_int(.data$.test, function(x) as.numeric(x$parameter)),
+      stars = purrr::map_chr(.data$.test, function(x) get_stars(x$p.value)),
+      p = purrr::map_dbl(.data$.test, function(x) round(x$p.value,3)),
     ) %>%
     dplyr::select(-tidyselect::all_of(c("x", "y",".test"))) |>
     dplyr::select(item1 = "x_name", item2 = "y_name", "n","r","ci.low","ci.high","df","p","stars")
