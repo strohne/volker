@@ -39,7 +39,7 @@ tab_metrics_items_grouped(
 A volker tibble.
 }
 \description{
-TODO: handle completely missing data in single groups
+Output the means for groups in one or multiple columns
 }
 \examples{
 library(volker)

@@ -35,6 +35,6 @@
 A ggplot object.
 }
 \description{
-TODO: ci with stacked bar charts (where category is different from NULL)
+Helper function: plot grouped bar chart
 }
 \keyword{internal}

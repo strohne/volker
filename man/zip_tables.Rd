@@ -21,6 +21,8 @@ zip_tables(x, y, newline = TRUE, brackets = FALSE)
 A combined data frame.
 }
 \description{
-TODO: implement newline parameter
+Combine two identically shaped data frames
+by adding values of each column from the second data frame
+into the corresponding column in the first dataframe using parentheses
 }
 \keyword{internal}

@@ -454,9 +454,6 @@ tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
 
 #' Output frequencies for multiple variables
 #'
-#' TODO: Reorder boolean categories: first TRUE, then FALSE
-#' TODO: Support single columns
-#'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
@@ -1066,8 +1063,6 @@ tab_metrics_items <- function(data, cols, ci = FALSE, negative = FALSE, digits =
 }
 
 #' Output the means for groups in one or multiple columns
-#'
-#' TODO: handle completely missing data in single groups
 #'
 #' @keywords internal
 #'

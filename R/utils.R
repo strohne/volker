@@ -2,8 +2,6 @@
 #' by adding values of each column from the second data frame
 #' into the corresponding column in the first dataframe using parentheses
 #'
-#' TODO: implement newline parameter
-#'
 #' @keywords internal
 #'
 #' @param x The first data frame.

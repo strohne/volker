@@ -1265,8 +1265,6 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, log = FALSE
 
 #' Helper function: plot grouped bar chart
 #'
-#' TODO: ci with stacked bar charts (where category is different from NULL)
-#'
 #' @keywords internal
 #'
 #' @param data Dataframe with the columns item, value, p, n.

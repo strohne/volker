@@ -36,8 +36,7 @@ tab_counts_items(
 A volker tibble.
 }
 \description{
-TODO: Reorder boolean categories: first TRUE, then FALSE
-TODO: Support single columns
+Output frequencies for multiple variables
 }
 \examples{
 library(volker)
