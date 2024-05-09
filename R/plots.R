@@ -5,7 +5,7 @@
 #' - One column: see \link{plot_counts_one}
 #' - Multiple columns: see \link{plot_counts_items}
 #' - One column and one grouping column: see \link{plot_counts_one_grouped}
-#' - Multiple columns and one grouping column: see \link{plot_counts_items_grouped}
+#' - Multiple columns and one grouping column: see \link{plot_counts_items_grouped} (not yet implemented)
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:

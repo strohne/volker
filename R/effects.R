@@ -2,10 +2,10 @@
 #'
 #' @description
 #' The type of effect size depends on the number of selected columns:
-#' - One column: see \link{effect_counts_one}
-#' - Multiple columns: see \link{effect_counts_items}
+#' - One column: see \link{effect_counts_one} (not yet implemented)
+#' - Multiple columns: see \link{effect_counts_items} (not yet implemented)
 #' - One column and one grouping column: see \link{effect_counts_one_grouped}
-#' - Multiple columns and one grouping column: see \link{effect_counts_items_grouped}
+#' - Multiple columns and one grouping column: see \link{effect_counts_items_grouped} (not yet implemented)
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
@@ -81,10 +81,10 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
 #'
 #' @description
 #' The regression type depends on the number of selected columns:
-#' - One column: see \link{effect_metrics_one}
+#' - One column: see \link{effect_metrics_one} (not yet implemented)
 #' - Multiple columns: see \link{effect_metrics_items}
 #' - One column and one grouping column: see \link{effect_metrics_one_grouped}
-#' - Multiple columns and one grouping column: see \link{effect_metrics_items_grouped}
+#' - Multiple columns and one grouping column: see \link{effect_metrics_items_grouped} (not yet implemented)
 #'
 #'By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
@@ -231,14 +231,13 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   fit <- stats::chisq.test(contingency,simulate.p.value = exact)
 
   n <- sum(contingency)
-  phi <- sqrt(fit$statistic / n)
-  cramer_v <- round(phi / sqrt(min(dim(contingency)[1], dim(contingency)[1]) - 1),2)
+  cells <- min(dim(contingency)[1], dim(contingency)[1]) - 1
+  cramer_v <- round(fit$statistic / (n * sqrt(cells)), 2)
 
   # 6. Prepare output
   result <- tibble::tribble(
     ~Statistic, ~Value,
     "Number of cases", as.character(n),
-    "Phi", sprintf("%.2f", round(phi, 2)),
     "Cramer's V", sprintf("%.2f", round(cramer_v, 2)),
     "Degrees of freedom", as.character(fit$parameter),
     "Chi-squared", sprintf("%.2f", round(fit$statistic, 2)),
@@ -478,7 +477,7 @@ effect_metrics_one_grouped <- function(data, col, cross, negative = FALSE, metho
       ) |>
       labs_replace("Statistic", tibble::tibble(
         value_name=c(
-          "adj.r.squared","statistic", "df", "df.residual",  "p.value", "stars"
+          "adj.r.squared", "df", "df.residual", "statistic", "p.value", "stars"
         ),
         value_label=c(
           "Adjusted R squared", "Degrees of freedom", "Residuals' degrees of freedom",
@@ -564,10 +563,7 @@ effect_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = 
     title <- NULL
   }
 
-
-  method <- ifelse(method == "spearman", "Spearman's rho", "Pearson's r")
   result <- result |>
-    dplyr::rename({{ method }} := "r") |>
     dplyr::mutate(dplyr::across(tidyselect::everything(), \(x) as.character(x))) |>
     tidyr::pivot_longer(
       cols = -tidyselect::all_of(c("Item 1", "Item 2")),
@@ -731,10 +727,6 @@ effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method
     dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
     dplyr::rename("Item 2" = tidyselect::all_of("item2"))
 
-  method <- ifelse(method == "spearman", "Spearman's rho", "Pearson's r")
-  result <- result |>
-    dplyr::rename({{ method }} := "r")
-
   result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits= 2, caption=title)
 }
@@ -757,6 +749,8 @@ effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method
 
 
   # Calculate correlation
+  #stats_cohen <- effectsize::cohens_d(lm_data$av, lm_data$uv, pooled_sd = stats_varequal)
+
   method <- ifelse(method == "spearman", "spearman", "pearson")
   result <- expand.grid(
     x = cols_eval, y = cross_eval, stringsAsFactors = FALSE
@@ -770,22 +764,42 @@ effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method
           method = method,
           exact = method != "spearman"
         )
-      ),
+      )
+    )
 
-      #stats_cohen <- effectsize::cohens_d(lm_data$av, lm_data$uv, pooled_sd = stats_varequal)
+  if (method == "spearman") {
+    # TODO: geht das eleganter? Make DRY!
+    # TODO: round in print function, not here
+    result <- result |>
+      dplyr::mutate(
+        n = nrow(data),
+        "Spearman's rho" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate),2)),
+        s = sprintf("%.2f", purrr::map_dbl(.data$.test, function(x) round(x$statistic,2))),
+        stars = purrr::map_chr(.data$.test, function(x) get_stars(x$p.value)),
+        p = sprintf("%.3f", purrr::map_dbl(.data$.test, function(x) round(x$p.value,3))),
+        ) %>%
+      dplyr::select(
+        item1 = "x_name", item2 = "y_name",
+        "n","Spearman's rho","s","p","stars"
+      )
 
-      # TODO: geht das eleganter? Make DRY!
-      # TODO: round in print function, not here
-      n = nrow(data),
-      r = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate),2)),
-      ci.low = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[1]),2)),
-      ci.high = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[2]),2)),
-      df = purrr::map_int(.data$.test, function(x) as.numeric(x$parameter)),
-      stars = purrr::map_chr(.data$.test, function(x) get_stars(x$p.value)),
-      p = sprintf("%.3f", purrr::map_dbl(.data$.test, function(x) round(x$p.value,3))),
-    ) %>%
-    dplyr::select(-tidyselect::all_of(c("x", "y",".test"))) |>
-    dplyr::select(item1 = "x_name", item2 = "y_name", "n","r","ci.low","ci.high","df","p","stars")
+  } else {
+    result <- result |>
+      dplyr::mutate(
+        n = nrow(data),
+        "Pearson's r" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate),2)),
+        ci.low = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[1]),2)),
+        ci.high = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[2]),2)),
+        df = purrr::map_int(.data$.test, function(x) as.numeric(x$parameter)),
+        t = sprintf("%.2f", purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$statistic),2))),
+        stars = purrr::map_chr(.data$.test, function(x) get_stars(x$p.value)),
+        p = sprintf("%.3f", purrr::map_dbl(.data$.test, function(x) round(x$p.value,3))),
+      ) %>%
+      dplyr::select(
+        item1 = "x_name", item2 = "y_name",
+        "n","Pearson's r","ci.low","ci.high","df","t","p","stars"
+      )
+  }
 
   result <- dplyr::arrange(result, .data$item1, .data$item2)
 
@@ -814,6 +828,9 @@ tidy_lm_levels <- function(fit) {
 
   # Work through each factor in the model frame
   for (var in names(lm_data)) {
+    if (is.character(lm_data[[var]])) {
+      lm_data[[var]] <- as.factor(lm_data[[var]])
+    }
     if (is.factor(lm_data[[var]])) {
       levels <- levels(lm_data[[var]])
 

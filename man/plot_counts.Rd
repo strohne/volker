@@ -32,7 +32,7 @@ The type of frequency plot depends on the number of selected columns:
 \item One column: see \link{plot_counts_one}
 \item Multiple columns: see \link{plot_counts_items}
 \item One column and one grouping column: see \link{plot_counts_one_grouped}
-\item Multiple columns and one grouping column: see \link{plot_counts_items_grouped}
+\item Multiple columns and one grouping column: see \link{plot_counts_items_grouped} (not yet implemented)
 }
 
 By default, if you provide two column selections, the second column is treated as categorical.

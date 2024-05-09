@@ -91,9 +91,9 @@
     Output
       
       
-      |Item 1                  |             Item 2|   n|    r|
-      |:-----------------------|------------------:|---:|----:|
-      |in professional context | in private context| 101| 0.37|
+      |Item 1                  |             Item 2|   n| Pearson's r|
+      |:-----------------------|------------------:|---:|-----------:|
+      |in professional context | in private context| 101|        0.37|
 
 ---
 

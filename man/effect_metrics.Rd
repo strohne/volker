@@ -29,10 +29,10 @@ A volker tibble.
 \description{
 The regression type depends on the number of selected columns:
 \itemize{
-\item One column: see \link{effect_metrics_one}
+\item One column: see \link{effect_metrics_one} (not yet implemented)
 \item Multiple columns: see \link{effect_metrics_items}
 \item One column and one grouping column: see \link{effect_metrics_one_grouped}
-\item Multiple columns and one grouping column: see \link{effect_metrics_items_grouped}
+\item Multiple columns and one grouping column: see \link{effect_metrics_items_grouped} (not yet implemented)
 }
 
 By default, if you provide two column selections, the second column is treated as categorical.

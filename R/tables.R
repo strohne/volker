@@ -937,7 +937,11 @@ tab_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pe
   method <- ifelse(method == "spearman", "spearman", "pearson")
   result <- .effect_correlations(data, {{ col }}, {{ cross}}, method = method, labels = labels)
 
-  values <- c("item1", "item2", "n", "r")
+  if (method=="spearman") {
+    values <- c("item1", "item2", "n", "Spearman's rho")
+  } else {
+    values <- c("item1", "item2", "n", "Pearson's r")
+  }
   if (ci) {
     values <- c(values, "ci.low", "ci.high")
   }
@@ -1308,9 +1312,10 @@ tab_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = 
   }
 
   # Create matrix
+  method <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
   result <- result %>%
-    dplyr::select("item1", "item2", "r") |>
-    tidyr::pivot_wider(names_from = "item2", values_from = "r")
+    dplyr::select(tidyselect::all_of(c("item1", "item2", method))) |>
+    tidyr::pivot_wider(names_from = "item2", values_from = !!sym(method))
 
   prefix1 <- ifelse(prefix1 == "", "Item", prefix1)
 
