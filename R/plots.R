@@ -676,7 +676,7 @@ plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALS
   if (ci) {
     pl <- pl +
       ggplot2::stat_summary(
-        fun.data = ggplot2::mean_cl_normal,
+        fun.data = get_ci,
         ggplot2::aes(x= {{ col }}, y=max_density / 2),
         width= max_density / 20,
         orientation ="y",
