@@ -29,7 +29,10 @@ The first color is always used for simple bar charts.}
 A theme function.
 }
 \description{
-Define a default theme for volker plots
+Set ggplot colors, sizes and layout parameters.
+}
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 library(volker)

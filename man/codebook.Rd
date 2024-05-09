@@ -23,7 +23,7 @@ the attribute values.
 In case a column has a levels attribute, the levels.
 }
 \description{
-Get variable labels from their comment attributes
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 volker::codebook(volker::chatgpt)

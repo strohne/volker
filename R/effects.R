@@ -13,6 +13,7 @@
 #' - One column and one metric column: see \link{effect_counts_one_cor} (not yet implemented)
 #' - Multiple columns and one metric column: see \link{effect_counts_items_cor} (not yet implemented)
 #'
+#' `r lifecycle::badge("experimental")`
 #'
 #' @param data A data frame.
 #' @param cols A tidy column selection,
@@ -91,6 +92,8 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
 #'
 #' - Two metric columns: see \link{effect_metrics_one_cor}
 #' - Multiple columns: see \link{effect_metrics_items_cor}
+#'
+#' `r lifecycle::badge("experimental")`
 #'
 #' @param data A data frame.
 #' @param cols A tidy column selection,

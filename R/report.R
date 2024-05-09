@@ -7,6 +7,8 @@
 #' When used in combination with the Markdown-template "html_report",
 #' the different parts of the report are grouped under a tabsheet selector.
 #'
+#' `r lifecycle::badge("experimental")`
+#'
 #' @param data A data frame.
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
@@ -99,6 +101,8 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 #' For item batteries, an index is calculated and reported.
 #' When used in combination with the Markdown-template "html_report",
 #' the different parts of the report are grouped under a tabsheet selector.
+#'
+#' `r lifecycle::badge("experimental")`
 #'
 #' @param data A data frame.
 #' @param cols A tidy column selection,

@@ -63,6 +63,8 @@ See \link{plot_counts} and \link{tab_counts}.
 For item batteries, an index is calculated and reported.
 When used in combination with the Markdown-template "html_report",
 the different parts of the report are grouped under a tabsheet selector.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 library(volker)

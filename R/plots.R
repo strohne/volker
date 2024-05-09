@@ -13,6 +13,8 @@
 #' - One column and one metric column: see \link{plot_counts_one_cor} (not yet implemented)
 #' - Multiple columns and one metric column: see \link{plot_counts_items_cor} (not yet implemented)
 #'
+#' `r lifecycle::badge("experimental")`
+#'
 #' @param data A data frame.
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
@@ -93,6 +95,8 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 #'
 #' - Two metric columns: see \link{plot_metrics_one_cor}
 #' - Multiple columns: see \link{plot_metrics_items_cor} (not yet implemented)
+#'
+#' `r lifecycle::badge("experimental")`
 #'
 #' @param data A data frame.
 #' @param cols A tidy column selection,
@@ -1678,6 +1682,10 @@ plot.vlkr_plt <- print.vlkr_plt
 
 
 #' Define a default theme for volker plots
+#'
+#' Set ggplot colors, sizes and layout parameters.
+#'
+#' `r lifecycle::badge("experimental")`
 #'
 #' @importFrom ggplot2 '%+replace%'
 #' @param base_size Base font size.

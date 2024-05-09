@@ -41,6 +41,8 @@ Setting the metric-parameter to TRUE will call the appropriate functions for cor
 \item Two metric columns: see \link{tab_metrics_one_cor}
 \item Multiple columns: see \link{tab_metrics_items_cor} (experimental)
 }
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 library(volker)

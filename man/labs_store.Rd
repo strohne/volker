@@ -16,6 +16,9 @@ A data frame.
 You can restore the labels after mutate operations by calling
 \link{labs_restore}.
 }
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+}
 \examples{
 library(dplyr)
 library(volker)

@@ -24,7 +24,7 @@ The input tibble with an additional column that contains the index values.
 The column contains the result of the alpha calculation in the attribute named "psych.alpha".
 }
 \description{
-Calculate the mean value of multiple items
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 ds <- volker::chatgpt

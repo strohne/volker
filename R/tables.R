@@ -14,6 +14,9 @@
 #' - Multiple columns and one metric column: see \link{tab_counts_items_cor} (not yet implemented)
 #'
 #'
+#' `r lifecycle::badge("experimental")`
+#'
+#'
 #' @param data A data frame.
 #' @param cols A tidy column selection,
 #'             e.g. a single column (without quotes)
@@ -87,6 +90,7 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
 #' - Two metric columns: see \link{tab_metrics_one_cor}
 #' - Multiple columns: see \link{tab_metrics_items_cor} (experimental)
 #'
+#' `r lifecycle::badge("experimental")`
 #'
 #' @param data A data frame.
 #' @param cols A tidy column selection,

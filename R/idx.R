@@ -4,6 +4,8 @@
 
 #' Calculate the mean value of multiple items
 #'
+#' `r lifecycle::badge("experimental")`
+#'
 #' @param data A dataframe.
 #' @param cols A tidy selection of item columns.
 #' @param newcol Name of the index as a character value.

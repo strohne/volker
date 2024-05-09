@@ -17,7 +17,7 @@ labs_clear(data, cols, labels = NULL)
 A tibble with comments removed.
 }
 \description{
-Remove all comments from the selected columns
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 library(volker)

@@ -28,7 +28,7 @@ value_name and value_label in your codebook.}
 A tibble with new labels.
 }
 \description{
-Set variable labels by setting their comment attributes
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 library(tibble)

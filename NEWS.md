@@ -1,4 +1,9 @@
-# volker (development version)
+# volker 2.0.0
+
+* Added effect size calculation and statistical tests
+* Added theme support for colors and other design elements
+* Reorganised parameters
+* Revised documentation
 
 # volker 1.0.2
 

@@ -1,5 +1,7 @@
 #' Get variable labels from their comment attributes
 #'
+#' `r lifecycle::badge("experimental")`
+#'
 #' @param data A tibble.
 #' @param cols A tidy variable selections to filter specific columns.
 #' @return A tibble with the columns:
@@ -100,6 +102,8 @@ codebook <- function(data, cols) {
 #' You can restore the labels after mutate operations by calling
 #' \link{labs_restore}.
 #'
+#' `r lifecycle::badge("experimental")`
+#'
 #' @param data A data frame.
 #' @return A data frame.
 #' @examples
@@ -119,6 +123,8 @@ labs_store <- function(data) {
 }
 
 #' Restore labels from the codebook store in the codebook attribute.
+#'
+#' `r lifecycle::badge("experimental")`
 #'
 #' You can store labels before mutate operations by calling
 #' \link{labs_store}.
@@ -151,6 +157,8 @@ labs_restore <- function(data, cols = NULL, values = TRUE) {
 }
 
 #' Set variable labels by setting their comment attributes
+#'
+#' `r lifecycle::badge("experimental")`
 #'
 #' @param data A tibble.
 #' @param codes A tibble in \link{codebook} format.
@@ -280,6 +288,8 @@ labs_apply <- function(data, codes, cols = NULL, values = TRUE) {
 
 
 #' Remove all comments from the selected columns
+#'
+#' `r lifecycle::badge("experimental")`
 #'
 #' @param data A tibble.
 #' @param cols Tidyselect columns.

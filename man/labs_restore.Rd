@@ -18,6 +18,9 @@ Item labels correspond to columns, value labels to values in the columns.}
 A data frame.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+}
+\details{
 You can store labels before mutate operations by calling
 \link{labs_store}.
 }
