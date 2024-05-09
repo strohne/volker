@@ -1,3 +1,12 @@
+## R CMD check results
+
+0 errors | 0 warnings | 0 notes
+
+* This is the release of version 2
+* No reverse dependencies found
+* Removed non-ASCII characters from the example dataset 
+  (as they were noted in the CRAN Package Check Results for linux fedora)
+
 ## Resubmission
 This is a resubmission. In this version I have:
 
