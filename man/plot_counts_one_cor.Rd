@@ -45,7 +45,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }
 \value{
-A ggplot object
+A ggplot object.
 }
 \description{
 \strong{Not yet implemented. The future will come.}

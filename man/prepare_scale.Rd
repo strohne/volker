@@ -7,10 +7,10 @@
 prepare_scale(data)
 }
 \arguments{
-\item{data}{A tibble with a scale attribute}
+\item{data}{A tibble with a scale attribute.}
 }
 \value{
-A named list or NULL
+A named list or NULL.
 }
 \description{
 Prepare the scale attribute values

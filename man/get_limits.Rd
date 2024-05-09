@@ -7,14 +7,14 @@
 get_limits(data, cols, negative = FALSE)
 }
 \arguments{
-\item{data}{The labeled data frame}
+\item{data}{The labeled data frame.}
 
-\item{cols}{A tidy variable selection}
+\item{cols}{A tidy variable selection.}
 
-\item{negative}{Whether to include negative values}
+\item{negative}{Whether to include negative values.}
 }
 \value{
-A list or NULL
+A list or NULL.
 }
 \description{
 Get the numeric range from the labels

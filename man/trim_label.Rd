@@ -9,10 +9,10 @@ hyphens and underscores}
 trim_label(x)
 }
 \arguments{
-\item{x}{A character value}
+\item{x}{A character value.}
 }
 \value{
-The trimmed character value
+The trimmed character value.
 }
 \description{
 Remove trailing zeros and trailing or leading

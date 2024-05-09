@@ -24,10 +24,10 @@ Either a numeric vector with residual values or TRUE to use defaults in \link{VL
 You can also define or disable residual values by setting the global option vlkr.na.numbers
 (e.g. \code{options(vlkr.na.numbers=c(-2,-9))} or to disable \code{options(vlkr.na.numbers=FALSE)}).}
 
-\item{add.whitespace}{Add whitespace after slashes for improved label breaks}
+\item{add.whitespace}{Add whitespace after slashes for improved label breaks.}
 }
 \value{
-Data frame with vlkr_df class (the class is used to prevent double preparation)
+Data frame with vlkr_df class (the class is used to prevent double preparation).
 }
 \description{
 The tibble remembers whether it was already prepared and

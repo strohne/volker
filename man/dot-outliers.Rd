@@ -7,10 +7,10 @@
 .outliers(x, k = 1.5)
 }
 \arguments{
-\item{x}{A numeric vector}
+\item{x}{A numeric vector.}
 }
 \value{
-A list of outliers
+A list of outliers.
 }
 \description{
 Calculate outliers

@@ -12,7 +12,6 @@ plot_metrics_one_grouped(
   box = FALSE,
   limits = NULL,
   negative = FALSE,
-  numbers = NULL,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -33,8 +32,6 @@ plot_metrics_one_grouped(
 \item{limits}{The scale limits. Set NULL to extract limits from the labels.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
-
-\item{numbers}{Numbers to print on labels, 'n' for group sizes.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

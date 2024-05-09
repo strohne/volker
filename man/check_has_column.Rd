@@ -7,14 +7,14 @@
 check_has_column(data, cols, msg = NULL)
 }
 \arguments{
-\item{data}{A data frame}
+\item{data}{A data frame.}
 
-\item{cols}{A tidyselection of columns}
+\item{cols}{A tidyselection of columns.}
 
-\item{msg}{A custom error message if the check fails}
+\item{msg}{A custom error message if the check fails.}
 }
 \value{
-boolean Whether the column exists
+boolean Whether the column exists.
 }
 \description{
 Check whether a column exist and stop if not

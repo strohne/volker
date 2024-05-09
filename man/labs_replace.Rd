@@ -14,9 +14,9 @@ labs_replace(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{col}{The column holding item values}
+\item{col}{The column holding item values.}
 
 \item{codes}{The codebook to use: A tibble with the columns
 value_name and value_label.
@@ -33,7 +33,7 @@ If the column is not found in the codebook, the second column is used}
 Other values will be set to NA. Set relevel to FALSE to keep other values.}
 }
 \value{
-Tibble with new labels
+Tibble with new labels.
 }
 \description{
 Replace item value names in a column by their labels

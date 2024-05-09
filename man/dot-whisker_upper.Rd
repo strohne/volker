@@ -7,10 +7,10 @@
 .whisker_upper(x, k = 1.5)
 }
 \arguments{
-\item{x}{A numeric vector}
+\item{x}{A numeric vector.}
 }
 \value{
-The upper whisker value
+The upper whisker value.
 }
 \description{
 Calculate upper whisker in a boxplot

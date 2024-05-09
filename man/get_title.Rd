@@ -7,12 +7,12 @@
 get_title(data, cols)
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{cols}{A tidy column selection}
+\item{cols}{A tidy column selection.}
 }
 \value{
-A character string
+A character string.
 }
 \description{
 Get a common title for a column selection

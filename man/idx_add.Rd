@@ -7,13 +7,13 @@
 idx_add(data, cols, newcol = NULL, negative = FALSE, clean = TRUE)
 }
 \arguments{
-\item{data}{A dataframe}
+\item{data}{A dataframe.}
 
-\item{cols}{A tidy selection of item columns}
+\item{cols}{A tidy selection of item columns.}
 
 \item{newcol}{Name of the index as a character value.
 Set to NULL (default) to automatically build a name
-from the common column prefix, prefixed with "idx_"}
+from the common column prefix, prefixed with "idx_".}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 

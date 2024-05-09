@@ -7,12 +7,12 @@
 wrap_label(x, width = 40)
 }
 \arguments{
-\item{x}{A character vector}
+\item{x}{A character vector.}
 
-\item{width}{The number of chars after which to break}
+\item{width}{The number of chars after which to break.}
 }
 \value{
-A character vector with wrapped strings
+A character vector with wrapped strings.
 }
 \description{
 Wrap a string

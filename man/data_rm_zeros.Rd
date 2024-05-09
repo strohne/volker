@@ -7,14 +7,14 @@
 data_rm_zeros(data, cols)
 }
 \arguments{
-\item{data}{Data frame}
+\item{data}{Data frame.}
 
-\item{cols}{A tidy column selection}
+\item{cols}{A tidy column selection.}
 }
 \value{
-Data frame
+Data frame.
 }
 \description{
-TODO: filter, pass by NAs
+Remove zero values, drop missings and output a message
 }
 \keyword{internal}

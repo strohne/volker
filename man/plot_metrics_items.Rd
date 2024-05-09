@@ -40,7 +40,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.}
 }
 \value{
-A ggplot object
+A ggplot object.
 }
 \description{
 Output averages for multiple variables

@@ -23,7 +23,7 @@
 #'            By default, the cross column selection is treated as categorical data.
 #'            Set metric to TRUE, to treat it as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Other parameters passed to the appropriate stat function.
+#' @param ... Other parameters passed to the appropriate effect function.
 #' @return A volker tibble.
 #' @examples
 #' library(volker)
@@ -101,7 +101,7 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
 #'            By default, the cross column selection is treated as categorical data.
 #'            Set metric to TRUE, to treat it as metric and calculate correlations.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Other parameters passed to the appropriate table function.
+#' @param ... Other parameters passed to the appropriate effect function.
 #' @return A volker tibble.
 #' @examples
 #' library(volker)
@@ -745,12 +745,12 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", nega
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param cols The columns holding metric values
-#' @param cross The columns holding metric values to correlate
+#' @param data A tibble.
+#' @param cols The columns holding metric values.
+#' @param cross The columns holding metric values to correlate.
 #' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
-#' @return A tibble with correlation results
+#' @return A tibble with correlation results.
 #' @importFrom rlang .data
 .effect_correlations <- function(data, cols, cross, method = "pearson", labels = TRUE) {
 
@@ -806,7 +806,7 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", nega
 #'
 #' @param fit Result of a \link{lm} call.
 #' @author Created with the help of ChatGPT.
-#' @returns A tibble with regression parameters.
+#' @return A tibble with regression parameters.
 tidy_lm_levels <- function(fit) {
   lm_tidy <- broom::tidy(fit, conf.int = TRUE)
   lm_data <- fit$model
@@ -870,7 +870,7 @@ get_ci <- function(x, conf = 0.95) {
 #' @param groups A vector indicating groups.
 #' @param conf The confidence interval.
 #' @param pooled Whether to pool variances.
-#' @return A list with the elements d (Cohen's d), ci.low and ci.high (its confidence interval)
+#' @return A list with the elements d (Cohen's d), ci.low and ci.high (its confidence interval).
 get_cohensd <- function(values, groups, conf=0.95, pooled = FALSE) {
   levels <- unique(stats::na.omit(groups))
   x <- stats::na.omit(values[groups == levels[1]])

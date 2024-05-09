@@ -7,10 +7,10 @@
 idx_alpha(data)
 }
 \arguments{
-\item{data}{A data frame column}
+\item{data}{A data frame column.}
 }
 \value{
-A named list with with the keys "items" and "alpha"
+A named list with with the keys "items" and "alpha".
 }
 \description{
 Get number of items and Cronbach's alpha of a scale added by idx_add()

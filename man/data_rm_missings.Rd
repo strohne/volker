@@ -7,12 +7,12 @@
 data_rm_missings(data, cols)
 }
 \arguments{
-\item{data}{Data frame}
+\item{data}{Data frame.}
 
-\item{cols}{A tidy column selection}
+\item{cols}{A tidy column selection.}
 }
 \value{
-Data frame
+Data frame.
 }
 \description{
 Remove missings and output a message

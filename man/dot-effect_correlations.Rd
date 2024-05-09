@@ -7,18 +7,18 @@
 .effect_correlations(data, cols, cross, method = "pearson", labels = TRUE)
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{cols}{The columns holding metric values}
+\item{cols}{The columns holding metric values.}
 
-\item{cross}{The columns holding metric values to correlate}
+\item{cross}{The columns holding metric values to correlate.}
 
 \item{method}{The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 }
 \value{
-A tibble with correlation results
+A tibble with correlation results.
 }
 \description{
 Test whether correlations are different from zero

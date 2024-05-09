@@ -16,15 +16,15 @@ tab_metrics_items(
 )
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
-\item{cols}{The columns holding metric values}
+\item{cols}{The columns holding metric values.}
 
-\item{ci}{Whether to compute confidence intervals of the mean}
+\item{ci}{Whether to compute confidence intervals of the mean.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
-\item{digits}{The number of digits to print}
+\item{digits}{The number of digits to print.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
@@ -33,7 +33,7 @@ tab_metrics_items(
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 Output a five point summary table for multiple items

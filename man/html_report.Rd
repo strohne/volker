@@ -7,10 +7,10 @@
 html_report(...)
 }
 \arguments{
-\item{...}{Additional arguments passed to html_document}
+\item{...}{Additional arguments passed to html_document.}
 }
 \value{
-R Markdown output format
+R Markdown output format.
 }
 \description{
 Based on the standard theme, tweaks the pill navigation

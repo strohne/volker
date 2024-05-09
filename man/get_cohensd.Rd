@@ -16,7 +16,7 @@ get_cohensd(values, groups, conf = 0.95, pooled = FALSE)
 \item{pooled}{Whether to pool variances.}
 }
 \value{
-A list with the elements d (Cohen's d), ci.low and ci.high (its confidence interval)
+A list with the elements d (Cohen's d), ci.low and ci.high (its confidence interval).
 }
 \description{
 TODO: NOT FINISHED YET

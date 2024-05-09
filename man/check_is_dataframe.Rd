@@ -7,14 +7,14 @@
 check_is_dataframe(obj, msg = NULL, stopit = TRUE)
 }
 \arguments{
-\item{obj}{The object to test}
+\item{obj}{The object to test.}
 
-\item{msg}{Optional, a custom error message}
+\item{msg}{Optional, a custom error message.}
 
-\item{stopit}{Whether to stop execution with an error message}
+\item{stopit}{Whether to stop execution with an error message.}
 }
 \value{
-boolean Whether the object is a data.frame object
+boolean Whether the object is a data.frame object.
 }
 \description{
 Check whether the object is a dataframe

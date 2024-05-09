@@ -972,15 +972,15 @@ tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param cols The columns holding metric values
-#' @param ci Whether to compute confidence intervals of the mean
+#' @param data A tibble.
+#' @param cols The columns holding metric values.
+#' @param ci Whether to compute confidence intervals of the mean.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param digits The number of digits to print
+#' @param digits The number of digits to print.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
-#' @return A volker tibble
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -1254,14 +1254,14 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #'
 #' @param data A tibble.
 #' @param cols The source columns.
-#' @param cross The target columns or NULL to calculate correlations within the source columns
-#' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho
+#' @param cross The target columns or NULL to calculate correlations within the source columns.
+#' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param digits The number of digits to print.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
-#' @return A volker tibble
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt

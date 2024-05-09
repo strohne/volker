@@ -161,8 +161,6 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
 
 #' Plot the frequency of values in one column
 #'
-#' Note: only non-missing cases are used to calculate the percentage.
-#'
 #' @keywords internal
 #'
 #' @param data A tibble.
@@ -279,9 +277,6 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 }
 
 #' Plot frequencies cross tabulated with a grouping column
-#'
-#' Note: Only non-missing cases are used to calculate the percentage.
-#' TODO: For prop=cols, flip to columns instead of using bars
 #'
 #' @keywords internal
 #'
@@ -443,7 +438,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
-#' @return A ggplot object
+#' @return A ggplot object.
 #' @importFrom rlang .data
 plot_counts_one_cor <- function(data, col, cross, ordered = NULL, limits = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
@@ -758,7 +753,6 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
 #' @param box Whether to add boxplots.
 #' @param limits The scale limits. Set NULL to extract limits from the labels.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param numbers Numbers to print on labels, 'n' for group sizes.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -773,7 +767,7 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, limits = NULL, negative = FALSE, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -794,19 +788,19 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
   }
 
   # 5. Add n to labels
-  if (!is.null(numbers) && any(numbers == "n")) {
-
-    categories_n <- data |>
-      dplyr::rename(value_name = {{ cross }}) |>
-      dplyr::count(.data$value_name) |>
-      dplyr::mutate(value_label = paste0(
-        wrap_label(.data$value_name, width = 14), "\n",
-        "(n = ", .data$n, ")")
-      )
-
-    data <- data |>
-      labs_replace( {{ cross }}, categories_n)
-  }
+  # if (!is.null(numbers) && any(numbers == "n")) {
+  #
+  #   categories_n <- data |>
+  #     dplyr::rename(value_name = {{ cross }}) |>
+  #     dplyr::count(.data$value_name) |>
+  #     dplyr::mutate(value_label = paste0(
+  #       wrap_label(.data$value_name, width = 14), "\n",
+  #       "(n = ", .data$n, ")")
+  #     )
+  #
+  #   data <- data |>
+  #     labs_replace( {{ cross }}, categories_n)
+  # }
 
   # Get scale and limits
   if (is.null(limits)) {
@@ -1003,7 +997,7 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, log = FALSE, n
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
-#' @return A ggplot object
+#' @return A ggplot object.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -1394,7 +1388,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, log = FALSE
 #'
 #' @param data Dataframe with the columns item, value.
 #' @param ci Whether to plot confidence intervals of the means.
-#' @param scale ???
+#' @param scale Passed to the label scale function.
 #' @param box Whether to add boxplots.
 #' @param title The plot title as character or NULL.
 #' @param base The plot base as character or NULL.
@@ -1404,9 +1398,6 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, log = FALSE
 
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(y=.data$item, x=.data$value, group=1))
-    #ggplot2::geom_point(size=3, shape=18)
-    #ggplot2::geom_boxplot(fill="transparent", color="darkgray") +
-
 
   if (box) {
     pl <- pl + ggplot2::geom_boxplot(
@@ -1434,41 +1425,6 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, log = FALSE
 
   pl <- pl + ggplot2::stat_summary(fun = mean, geom="point", size=4, shape=18)
 
-
-  # Error bars or box plot
-  # if (is.null(bars)) {
-  #   # Do nothing
-  # }
-  # else if (bars == "box") {
-  #   pl <- pl + ggplot2::geom_boxplot(
-  #     aes(group=item),
-  #     fill="transparent", color="darkgray"
-  #   )
-  # }
-  # else if (bars == "ci") {
-  #   pl <- pl + ggplot2::stat_summary(
-  #     geom = "errorbar",
-  #     fun.data = ggpubr::mean_ci,
-  #     orientation ="y",
-  #     colour = VLKR_POINTCOLOR
-  #   )
-  # }
-  # else if (bars == "se") {
-  #   pl <- pl + ggplot2::stat_summary(
-  #     geom = "errorbar",
-  #     fun.data = ggpubr::mean_se_,
-  #     orientation ="y",
-  #     colour = VLKR_POINTCOLOR
-  #   )
-  # }
-  # else if (bars == "sd") {
-  #   pl <- pl + ggplot2::stat_summary(
-  #     geom = "errorbar",
-  #     fun.data = ggpubr::mean_sd,
-  #     orientation ="y",
-  #     colour = VLKR_POINTCOLOR
-  #   )
-  # }
 
   # Add limits
   if (!is.null(limits)) {

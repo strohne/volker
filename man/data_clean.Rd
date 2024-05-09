@@ -7,14 +7,14 @@
 data_clean(data, plan = "sosci", ...)
 }
 \arguments{
-\item{data}{Data frame}
+\item{data}{Data frame.}
 
 \item{plan}{The cleaning plan. By now, only "sosci" is supported. See \link{data_clean_sosci}.}
 
-\item{...}{Other parameters passed to the appropriate cleaning function}
+\item{...}{Other parameters passed to the appropriate cleaning function.}
 }
 \value{
-Cleaned data frame with vlkr_df class
+Cleaned data frame with vlkr_df class.
 }
 \description{
 The tibble remembers whether it was already cleaned and

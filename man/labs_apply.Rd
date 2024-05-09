@@ -7,7 +7,7 @@
 labs_apply(data, codes, cols = NULL, values = TRUE)
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 
 \item{codes}{A tibble in \link{codebook} format.
 To set column labels, use item_name and item_label columns.}
@@ -25,7 +25,7 @@ from the value_label column.
 value_name and value_label in your codebook.}
 }
 \value{
-A tibble with new labels
+A tibble with new labels.
 }
 \description{
 Set variable labels by setting their comment attributes

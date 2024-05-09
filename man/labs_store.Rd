@@ -7,10 +7,10 @@
 labs_store(data)
 }
 \arguments{
-\item{data}{A data frame}
+\item{data}{A data frame.}
 }
 \value{
-A data frame
+A data frame.
 }
 \description{
 You can restore the labels after mutate operations by calling

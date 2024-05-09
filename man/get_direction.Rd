@@ -7,14 +7,14 @@
 get_direction(data, cols, extract = TRUE)
 }
 \arguments{
-\item{data}{The dataframe}
+\item{data}{The dataframe.}
 
-\item{cols}{The tidy selection}
+\item{cols}{The tidy selection.}
 
-\item{extract}{Whether to extract numeric values from characters}
+\item{extract}{Whether to extract numeric values from characters.}
 }
 \value{
-0 = an undirected scale, -1 = descending values, 1 = ascending values
+0 = an undirected scale, -1 = descending values, 1 = ascending values.
 }
 \description{
 From all values in the selected columns, the numbers are extracted.

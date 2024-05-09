@@ -4,11 +4,11 @@
 
 #' Calculate the mean value of multiple items
 #'
-#' @param data A dataframe
-#' @param cols A tidy selection of item columns
+#' @param data A dataframe.
+#' @param cols A tidy selection of item columns.
 #' @param newcol Name of the index as a character value.
 #'              Set to NULL (default) to automatically build a name
-#'              from the common column prefix, prefixed with "idx_"
+#'              from the common column prefix, prefixed with "idx_".
 #' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param clean Prepare data by \link{data_clean}.
 #' @return The input tibble with an additional column that contains the index values.
@@ -79,8 +79,8 @@ idx_add <- function(data, cols, newcol = NULL, negative = FALSE, clean = TRUE) {
 #'
 #' @keywords internal
 #'
-#' @param data A data frame column
-#' @return A named list with with the keys "items" and "alpha"
+#' @param data A data frame column.
+#' @return A named list with with the keys "items" and "alpha".
 idx_alpha <- function(data) {
   idx <- attr(data, "psych.alpha")
   if (!is.null(idx)) {

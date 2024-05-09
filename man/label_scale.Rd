@@ -6,6 +6,15 @@
 \usage{
 label_scale(x, scale)
 }
+\arguments{
+\item{x}{The label vector.}
+
+\item{scale}{A named label vector to select elements that should be wrapped.
+Prevents numbers from being wrapped.}
+}
+\value{
+A vevtor of wrapped labels.
+}
 \description{
 Wrap labels in plot scales
 }

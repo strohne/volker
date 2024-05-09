@@ -59,8 +59,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 A ggplot object.
 }
 \description{
-Note: Only non-missing cases are used to calculate the percentage.
-TODO: For prop=cols, flip to columns instead of using bars
+Plot frequencies cross tabulated with a grouping column
 }
 \examples{
 library(volker)

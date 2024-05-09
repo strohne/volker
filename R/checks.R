@@ -6,10 +6,10 @@
 #'
 #' @keywords internal
 #'
-#' @param obj The object to test
-#' @param msg Optional, a custom error message
-#' @param stopit Whether to stop execution with an error message
-#' @return boolean Whether the object is a data.frame object
+#' @param obj The object to test.
+#' @param msg Optional, a custom error message.
+#' @param stopit Whether to stop execution with an error message.
+#' @return boolean Whether the object is a data.frame object.
 check_is_dataframe <- function(obj, msg = NULL, stopit = TRUE) {
   check <-tryCatch(
     {
@@ -38,10 +38,10 @@ check_is_dataframe <- function(obj, msg = NULL, stopit = TRUE) {
 #'
 #' @keywords internal
 #'
-#' @param data A data frame
-#' @param cols A tidyselection of columns
-#' @param msg A custom error message if the check fails
-#' @return boolean Whether the column exists
+#' @param data A data frame.
+#' @param cols A tidyselection of columns.
+#' @param msg A custom error message if the check fails.
+#' @return boolean Whether the column exists.
 check_has_column <- function(data, cols, msg = NULL) {
 
   colexpr <- as.character(rlang::get_expr(rlang::enquo(cols)))

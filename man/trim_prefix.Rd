@@ -7,12 +7,12 @@
 trim_prefix(x, prefix = TRUE)
 }
 \arguments{
-\item{x}{A character vector}
+\item{x}{A character vector.}
 
 \item{prefix}{The prefix. Set to TRUE to first extract the prefix.}
 }
 \value{
-The trimmed character vector
+The trimmed character vector.
 }
 \description{
 If the resulting character would be empty,

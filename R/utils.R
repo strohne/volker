@@ -6,11 +6,11 @@
 #'
 #' @keywords internal
 #'
-#' @param x The first data frame
-#' @param y The second data frame
+#' @param x The first data frame.
+#' @param y The second data frame.
 #' @param newline Whether to add a new line character between the values (default: TRUE).
 #' @param brackets Whether to set the secondary values in brackets (default: FALSE).
-#' @return A combined data frame
+#' @return A combined data frame.
 zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
   newline <- newline && (knitr::is_html_output() || knitr::is_latex_output())
   sep <- ifelse(newline, "\n", " ")

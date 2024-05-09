@@ -21,9 +21,9 @@ tab_metrics_items_cor(
 
 \item{cols}{The source columns.}
 
-\item{cross}{The target columns or NULL to calculate correlations within the source columns}
+\item{cross}{The target columns or NULL to calculate correlations within the source columns.}
 
-\item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho}
+\item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
@@ -36,7 +36,7 @@ tab_metrics_items_cor(
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

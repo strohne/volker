@@ -1,7 +1,7 @@
 #' Get variable labels from their comment attributes
 #'
-#' @param data A tibble
-#' @param cols A tidy variable selections to filter specific columns
+#' @param data A tibble.
+#' @param cols A tidy variable selections to filter specific columns.
 #' @return A tibble with the columns:
 #'        - item_name: The column name.
 #'        - item_group: First part of the column name, up to an underscore.
@@ -100,8 +100,8 @@ codebook <- function(data, cols) {
 #' You can restore the labels after mutate operations by calling
 #' \link{labs_restore}.
 #'
-#' @param data A data frame
-#' @return A data frame
+#' @param data A data frame.
+#' @return A data frame.
 #' @examples
 #' library(dplyr)
 #' library(volker)
@@ -123,11 +123,11 @@ labs_store <- function(data) {
 #' You can store labels before mutate operations by calling
 #' \link{labs_store}.
 #'
-#' @param data A data frame
-#' @param cols A tidyselect column selection
+#' @param data A data frame.
+#' @param cols A tidyselect column selection.
 #' @param values If TRUE (default), restores value labels in addition to item labels.
 #'              Item labels correspond to columns, value labels to values in the columns.
-#' @return A data frame
+#' @return A data frame.
 #' @examples
 #' library(dplyr)
 #' library(volker)
@@ -152,7 +152,7 @@ labs_restore <- function(data, cols = NULL, values = TRUE) {
 
 #' Set variable labels by setting their comment attributes
 #'
-#' @param data A tibble
+#' @param data A tibble.
 #' @param codes A tibble in \link{codebook} format.
 #'              To set column labels, use item_name and item_label columns.
 #' @param cols A tidy column selection. Set to NULL (default) to apply to all columns
@@ -165,7 +165,7 @@ labs_restore <- function(data, cols = NULL, values = TRUE) {
 #'                 from the value_label column.
 #'               - For item values: they are retrieved from both the columns
 #'                 value_name and value_label in your codebook.
-#' @return A tibble with new labels
+#' @return A tibble with new labels.
 #' @examples
 #' library(tibble)
 #' library(volker)
@@ -281,10 +281,10 @@ labs_apply <- function(data, codes, cols = NULL, values = TRUE) {
 
 #' Remove all comments from the selected columns
 #'
-#' @param data A tibble
-#' @param cols Tidyselect columns
-#' @param labels The attributes to remove. NULL to remove all attributes except levels and class
-#' @return A tibble with comments removed
+#' @param data A tibble.
+#' @param cols Tidyselect columns.
+#' @param labels The attributes to remove. NULL to remove all attributes except levels and class.
+#' @return A tibble with comments removed.
 #' @examples
 #' library(volker)
 #' volker::chatgpt |>
@@ -316,8 +316,8 @@ labs_clear <- function(data, cols, labels = NULL) {
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param col The column holding item values
+#' @param data A tibble.
+#' @param col The column holding item values.
 #' @param codes The codebook to use: A tibble with the columns
 #'              value_name and value_label.
 #'              Can be created by the \link{codebook} function, e.g. by calling
@@ -328,7 +328,7 @@ labs_clear <- function(data, cols, labels = NULL) {
 #'               If the column is not found in the codebook, the second column is used
 #' @param relevel By default, the column is converted to a factor with levels found in the codebook.
 #'                Other values will be set to NA. Set relevel to FALSE to keep other values.
-#' @return Tibble with new labels
+#' @return Tibble with new labels.
 labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_label", relevel = TRUE) {
 
   # Column without quotes
@@ -394,9 +394,9 @@ labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @param cols A tidy column selection
-#' @return A character string
+#' @param data A tibble.
+#' @param cols A tidy column selection.
+#' @return A character string.
 #' @importFrom rlang .data
 get_title <- function(data, cols) {
   labels <- data %>%
@@ -423,10 +423,10 @@ get_title <- function(data, cols) {
 #'
 #' @keywords internal
 #'
-#' @param data The labeled data frame
-#' @param cols A tidy variable selection
-#' @param negative Whether to include negative values
-#' @return A list or NULL
+#' @param data The labeled data frame.
+#' @param cols A tidy variable selection.
+#' @param negative Whether to include negative values.
+#' @return A list or NULL.
 #' @importFrom rlang .data
 get_limits <- function(data, cols, negative = FALSE) {
 
@@ -476,10 +476,10 @@ get_limits <- function(data, cols, negative = FALSE) {
 #'
 #' @keywords internal
 #'
-#' @param data The dataframe
-#' @param cols The tidy selection
-#' @param extract Whether to extract numeric values from characters
-#' @return 0 = an undirected scale, -1 = descending values, 1 = ascending values
+#' @param data The dataframe.
+#' @param cols The tidy selection.
+#' @param extract Whether to extract numeric values from characters.
+#' @return 0 = an undirected scale, -1 = descending values, 1 = ascending values.
 #' @importFrom rlang .data
 get_direction <- function(data, cols, extract = TRUE) {
   data <- dplyr::select(data, {{ cols }})
@@ -521,9 +521,9 @@ get_direction <- function(data, cols, extract = TRUE) {
 #'
 #' @keywords internal
 #'
-#' @param x Character vector
-#' @param ignore.case Whether case matters (default)
-#' @param trim Whether non alphabetic characters should be trimmed
+#' @param x Character vector.
+#' @param ignore.case Whether case matters (default).
+#' @param trim Whether non alphabetic characters should be trimmed.
 #' @param delimiters A list of prefix delimiters.
 #'                   If any of the delimiters is present in the extracted prefix,
 #'                   the part after is removed from the prefix.
@@ -531,7 +531,7 @@ get_direction <- function(data, cols, extract = TRUE) {
 #'                   \code{c("Usage: in private context", "Usage: in work context")}.
 #'                   The common prefix would be \preformatted{"Usage: in "}, but it makes
 #'                   more sense to break it after the colon.
-#' @return The longest common prefix of the strings
+#' @return The longest common prefix of the strings.
 get_prefix <- function(x, ignore.case = FALSE, trim = FALSE, delimiters= c(":","\n")) {
 
   x <- as.character(x)
@@ -581,9 +581,9 @@ length(c("asdasd","sdf"))
 #'
 #' @keywords internal
 #'
-#' @param x A character vector
-#' @param width The number of chars after which to break
-#' @return A character vector with wrapped strings
+#' @param x A character vector.
+#' @param width The number of chars after which to break.
+#' @return A character vector with wrapped strings.
 wrap_label <- function(x, width = 40) {
   # Vectorize
   if (length(x) > 1) {
@@ -621,8 +621,8 @@ wrap_label <- function(x, width = 40) {
 #'
 #' @keywords internal
 #'
-#' @param x A character value
-#' @return The trimmed character value
+#' @param x A character value.
+#' @return The trimmed character value.
 trim_label <- function(x) {
   x <- sub("[: ,_-]*$", "", x)
   x <- sub("^[: ,_-]*", "", x)
@@ -637,9 +637,9 @@ trim_label <- function(x) {
 #'
 #' @keywords internal
 #'
-#' @param x A character vector
+#' @param x A character vector.
 #' @param prefix The prefix. Set to TRUE to first extract the prefix.
-#' @return The trimmed character vector
+#' @return The trimmed character vector.
 trim_prefix <- function(x, prefix=TRUE) {
   if (!is.na(prefix) && (prefix == TRUE)) {
     prefix <- get_prefix(x, trim=T)
@@ -658,8 +658,8 @@ trim_prefix <- function(x, prefix=TRUE) {
 #'
 #' @keywords internal
 #'
-#' @param data A tibble with a scale attribute
-#' @return A named list or NULL
+#' @param data A tibble with a scale attribute.
+#' @return A named list or NULL.
 #' @importFrom rlang .data
 prepare_scale <- function(data) {
   if (!is.null(data)) {
@@ -681,6 +681,11 @@ prepare_scale <- function(data) {
 #' Wrap labels in plot scales
 #'
 #' @keywords internal
+#'
+#' @param x The label vector.
+#' @param scale A named label vector to select elements that should be wrapped.
+#'              Prevents numbers from being wrapped.
+#' @return A vevtor of wrapped labels.
 label_scale <- function(x, scale) {
   ifelse(
     x %in% names(scale),

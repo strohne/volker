@@ -5,10 +5,10 @@
 #'
 #' @keywords internal
 #'
-#' @param data Data frame
+#' @param data Data frame.
 #' @param plan The cleaning plan. By now, only "sosci" is supported. See \link{data_clean_sosci}.
-#' @param ... Other parameters passed to the appropriate cleaning function
-#' @return Cleaned data frame with vlkr_df class
+#' @param ... Other parameters passed to the appropriate cleaning function.
+#' @return Cleaned data frame with vlkr_df class.
 #' @examples
 #' ds <- volker::chatgpt
 #' ds <- data_clean(ds)
@@ -43,8 +43,8 @@ data_clean <- function(data, plan = "sosci", ...) {
 #'                      Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}.
 #'                      You can also define or disable residual values by setting the global option vlkr.na.numbers
 #'                      (e.g. `options(vlkr.na.numbers=c(-2,-9))` or to disable `options(vlkr.na.numbers=FALSE)`).
-#' @param add.whitespace Add whitespace after slashes for improved label breaks
-#' @return Data frame with vlkr_df class (the class is used to prevent double preparation)
+#' @param add.whitespace Add whitespace after slashes for improved label breaks.
+#' @return Data frame with vlkr_df class (the class is used to prevent double preparation).
 #' @examples
 #' ds <- volker::chatgpt
 #' ds <- data_clean_sosci(ds)
@@ -136,9 +136,9 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
 #'
 #' @keywords internal
 #'
-#' @param data Data frame
-#' @param cols A tidy column selection
-#' @return Data frame
+#' @param data Data frame.
+#' @param cols A tidy column selection.
+#' @return Data frame.
 data_rm_missings <- function(data, cols) {
 
   cases <- sum(is.na(dplyr::select(data, {{ cols }})))
@@ -155,13 +155,11 @@ data_rm_missings <- function(data, cols) {
 
 #' Remove zero values, drop missings and output a message
 #'
-#' TODO: filter, pass by NAs
-#'
 #' @keywords internal
 #'
-#' @param data Data frame
-#' @param cols A tidy column selection
-#' @return Data frame
+#' @param data Data frame.
+#' @param cols A tidy column selection.
+#' @return Data frame.
 data_rm_zeros <- function(data, cols) {
 
   cases <- sum(dplyr::select(data, {{ cols }}) == 0)
@@ -182,8 +180,6 @@ data_rm_zeros <- function(data, cols) {
 }
 
 #' Remove negatives and output a warning
-#'
-#' TODO: filter, pass by NAs
 #'
 #' @keywords internal
 #'
@@ -251,8 +247,8 @@ get_baseline <- function(obj) {
 #'
 #' @keywords internal
 #'
-#' @param data A tibble
-#' @return A tibble of class vlkr_df
+#' @param data A tibble.
+#' @return A tibble of class vlkr_df.
 .to_vlkr_df <- function(data, digits = NULL) {
   data <- dplyr::as_tibble(data)
   class(data) <- c("vlkr_df", setdiff(class(data), "vlkr_df"))

@@ -7,10 +7,10 @@
 .to_vlkr_df(data, digits = NULL)
 }
 \arguments{
-\item{data}{A tibble}
+\item{data}{A tibble.}
 }
 \value{
-A tibble of class vlkr_df
+A tibble of class vlkr_df.
 }
 \description{
 Add vlkr_df class - that means, the data frame has been prepared

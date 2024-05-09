@@ -7,10 +7,10 @@
 .whisker_lower(x, k = 1.5)
 }
 \arguments{
-\item{x}{A numeric vector}
+\item{x}{A numeric vector.}
 }
 \value{
-The lower whisker value
+The lower whisker value.
 }
 \description{
 Calculate lower whisker in a boxplot

@@ -21,7 +21,7 @@ Set metric to TRUE, to treat it as metric and calculate correlations.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
-\item{...}{Other parameters passed to the appropriate stat function.}
+\item{...}{Other parameters passed to the appropriate effect function.}
 }
 \value{
 A volker tibble.

@@ -19,7 +19,7 @@
 
 \item{ci}{Whether to plot confidence intervals of the means.}
 
-\item{scale}{???}
+\item{scale}{Passed to the label scale function.}
 
 \item{box}{Whether to add boxplots.}
 

@@ -47,7 +47,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 A ggplot object.
 }
 \description{
-Note: only non-missing cases are used to calculate the percentage.
+Plot the frequency of values in one column
 }
 \examples{
 library(volker)

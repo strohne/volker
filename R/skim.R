@@ -49,8 +49,8 @@ skim_metrics <- skimr::skim_with(
 #'
 #' @keywords internal
 #'
-#' @param x A numeric vector
-#' @return The lower whisker value
+#' @param x A numeric vector.
+#' @return The lower whisker value.
 .whisker_lower <- function(x, k=1.5) {
   i <- stats::quantile(x, 0.25, na.rm= TRUE) - k * stats::IQR(x, na.rm= TRUE)
   min(x[x >= i], na.rm= TRUE)
@@ -60,8 +60,8 @@ skim_metrics <- skimr::skim_with(
 #'
 #' @keywords internal
 #'
-#' @param x A numeric vector
-#' @return The upper whisker value
+#' @param x A numeric vector.
+#' @return The upper whisker value.
 .whisker_upper <- function(x, k=1.5) {
   i <- stats::quantile(x, 0.75, na.rm= TRUE) + k * stats::IQR(x, na.rm= TRUE)
   max(x[x <= i], na.rm= TRUE)
@@ -71,8 +71,8 @@ skim_metrics <- skimr::skim_with(
 #'
 #' @keywords internal
 #'
-#' @param x A numeric vector
-#' @return A list of outliers
+#' @param x A numeric vector.
+#' @return A list of outliers.
 .outliers <- function(x, k=1.5) {
   list(stats::na.omit(x[(x < .whisker_lower(x)) | (x > .whisker_upper(x))]))
 }

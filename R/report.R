@@ -422,8 +422,8 @@ print.vlkr_rprt <- function(x, ...) {
 #' To use the format, in the header of your Markdown document,
 #' set `output: volker::html_report`.
 #'
-#' @param ... Additional arguments passed to html_document
-#' @return R Markdown output format
+#' @param ... Additional arguments passed to html_document.
+#' @return R Markdown output format.
 #' @examples
 #' \dontrun{
 #' # Add `volker::html_report` to the output options of your Markdown document:

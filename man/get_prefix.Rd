@@ -7,11 +7,11 @@
 get_prefix(x, ignore.case = FALSE, trim = FALSE, delimiters = c(":", "\\n"))
 }
 \arguments{
-\item{x}{Character vector}
+\item{x}{Character vector.}
 
-\item{ignore.case}{Whether case matters (default)}
+\item{ignore.case}{Whether case matters (default).}
 
-\item{trim}{Whether non alphabetic characters should be trimmed}
+\item{trim}{Whether non alphabetic characters should be trimmed.}
 
 \item{delimiters}{A list of prefix delimiters.
 If any of the delimiters is present in the extracted prefix,
@@ -22,7 +22,7 @@ The common prefix would be \preformatted{"Usage: in "}, but it makes
 more sense to break it after the colon.}
 }
 \value{
-The longest common prefix of the strings
+The longest common prefix of the strings.
 }
 \description{
 Helper function taken from the biobase package.

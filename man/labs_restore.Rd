@@ -7,15 +7,15 @@
 labs_restore(data, cols = NULL, values = TRUE)
 }
 \arguments{
-\item{data}{A data frame}
+\item{data}{A data frame.}
 
-\item{cols}{A tidyselect column selection}
+\item{cols}{A tidyselect column selection.}
 
 \item{values}{If TRUE (default), restores value labels in addition to item labels.
 Item labels correspond to columns, value labels to values in the columns.}
 }
 \value{
-A data frame
+A data frame.
 }
 \description{
 You can store labels before mutate operations by calling
