@@ -8,9 +8,9 @@ plot_metrics_one_cor(
   data,
   col,
   cross,
+  negative = FALSE,
   limits = NULL,
   log = FALSE,
-  negative = FALSE,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -24,12 +24,12 @@ plot_metrics_one_cor(
 
 \item{cross}{The second column holding metric values.}
 
+\item{negative}{If FALSE (default), negative values are recoded as missing values.}
+
 \item{limits}{The scale limits, a list with x and y components, e.g. \code{list(x=c(0,100), y=c(20,100))}.
 Set NULL to extract limits from the labels.}
 
 \item{log}{Whether to plot log scales.}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

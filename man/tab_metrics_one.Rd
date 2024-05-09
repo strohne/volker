@@ -7,8 +7,8 @@
 tab_metrics_one(
   data,
   col,
-  ci = FALSE,
   negative = FALSE,
+  ci = FALSE,
   digits = 1,
   labels = TRUE,
   clean = TRUE,
@@ -20,9 +20,9 @@ tab_metrics_one(
 
 \item{col}{The columns holding metric values.}
 
-\item{ci}{Whether to calculate 95\% confidence intervals of the mean.}
-
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
+
+\item{ci}{Whether to calculate 95\% confidence intervals of the mean.}
 
 \item{digits}{The number of digits to print.}
 

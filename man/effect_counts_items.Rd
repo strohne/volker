@@ -4,21 +4,12 @@
 \alias{effect_counts_items}
 \title{Test whether shares differ}
 \usage{
-effect_counts_items(
-  data,
-  cols,
-  percent = TRUE,
-  labels = TRUE,
-  clean = TRUE,
-  ...
-)
+effect_counts_items(data, cols, labels = TRUE, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A tibble containing item measures.}
 
 \item{cols}{Tidyselect item variables (e.g. starts_with...).}
-
-\item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

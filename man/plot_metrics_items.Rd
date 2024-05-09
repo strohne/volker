@@ -7,10 +7,10 @@
 plot_metrics_items(
   data,
   cols,
+  negative = FALSE,
   ci = FALSE,
   box = FALSE,
   limits = NULL,
-  negative = FALSE,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -22,13 +22,13 @@ plot_metrics_items(
 
 \item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
+\item{negative}{If FALSE (default), negative values are recoded as missing values.}
+
 \item{ci}{Whether to plot the 95\% confidence interval of the mean.}
 
 \item{box}{Whether to add boxplots.}
 
 \item{limits}{The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

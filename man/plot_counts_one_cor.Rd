@@ -8,9 +8,6 @@ plot_counts_one_cor(
   data,
   col,
   cross,
-  ordered = NULL,
-  limits = NULL,
-  numbers = NULL,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -23,17 +20,6 @@ plot_counts_one_cor(
 \item{col}{The column holding factor values.}
 
 \item{cross}{The metric column}
-
-\item{ordered}{Values can be nominal (0) or ordered ascending (1) descending (-1).
-By default (NULL), the ordering is automatically detected.
-An appropriate color scale should be choosen depending on the ordering.
-For unordered values, colors from VLKR_FILLDISCRETE are used.
-For ordered values, shades of the VLKR_FILLGRADIENT option are used.}
-
-\item{limits}{The scale limits, autoscaled by default.
-Set to \code{c(0,100)} to make a 100 \% plot.}
-
-\item{numbers}{The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

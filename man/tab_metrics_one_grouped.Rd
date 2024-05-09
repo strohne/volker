@@ -8,8 +8,8 @@ tab_metrics_one_grouped(
   data,
   col,
   cross,
-  ci = FALSE,
   negative = FALSE,
+  ci = FALSE,
   digits = 1,
   labels = TRUE,
   clean = TRUE,
@@ -23,9 +23,9 @@ tab_metrics_one_grouped(
 
 \item{cross}{The column holding groups to compare.}
 
-\item{ci}{Whether to output 95\% confidence intervals.}
-
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
+
+\item{ci}{Whether to output 95\% confidence intervals.}
 
 \item{digits}{The number of digits to print.}
 

@@ -8,8 +8,8 @@ effect_metrics_one_grouped(
   data,
   col,
   cross,
-  method = "lm",
   negative = FALSE,
+  method = "lm",
   labels = TRUE,
   clean = TRUE,
   ...
@@ -22,11 +22,11 @@ effect_metrics_one_grouped(
 
 \item{cross}{The column holding groups to compare.}
 
+\item{negative}{If FALSE (default), negative values are recoded as missing values.}
+
 \item{method}{A character vector of methods, e.g. c("t.test","lm").
 Supported methods are t.test (only valid if the cross column contains two levels)
 and lm (regression results).}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

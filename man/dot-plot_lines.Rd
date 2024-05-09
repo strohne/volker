@@ -8,9 +8,9 @@
   data,
   ci = FALSE,
   scale = NULL,
+  base = NULL,
   box = FALSE,
   limits = NULL,
-  base = NULL,
   title = NULL
 )
 }
@@ -21,9 +21,9 @@
 
 \item{scale}{Passed to the label scale function.}
 
-\item{box}{Whether to add boxplots.}
-
 \item{base}{The plot base as character or NULL.}
+
+\item{box}{Whether to add boxplots.}
 
 \item{title}{The plot title as character or NULL.}
 }

@@ -7,10 +7,10 @@
 plot_metrics_one(
   data,
   col,
+  negative = FALSE,
   ci = FALSE,
   box = FALSE,
   limits = NULL,
-  negative = FALSE,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -22,13 +22,13 @@ plot_metrics_one(
 
 \item{col}{The column holding metric values.}
 
+\item{negative}{If FALSE (default), negative values are recoded as missing values.}
+
 \item{ci}{Whether to plot the confidence interval.}
 
-\item{box}{Whether to place a boxplot on top.}
+\item{box}{Whether to add a boxplot.}
 
 \item{limits}{The scale limits. Set NULL to extract limits from the label.}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

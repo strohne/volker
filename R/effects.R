@@ -164,13 +164,12 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
 #'
 #' @param data A tibble.
 #' @param col The column holding factor values.
-#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-effect_counts_one <- function(data, col, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
+effect_counts_one <- function(data, col, labels = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
@@ -276,13 +275,12 @@ effect_counts_one_cor <- function(data, col, cross, clean = TRUE, ...) {
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
-#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return  A volker tibble.
 #' @importFrom rlang .data
-effect_counts_items <- function(data, cols, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
+effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
@@ -348,10 +346,10 @@ effect_metrics_one <- function(data, col, clean = T, ... ) {
 #' @param data A tibble.
 #' @param col The column holding metric values.
 #' @param cross The column holding groups to compare.
+#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param method A character vector of methods, e.g. c("t.test","lm").
 #'              Supported methods are t.test (only valid if the cross column contains two levels)
 #'              and lm (regression results).
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -364,7 +362,7 @@ effect_metrics_one <- function(data, col, clean = T, ... ) {
 #'
 #' @export
 #' @importFrom rlang .data
-effect_metrics_one_grouped <- function(data, col, cross, method = "lm", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effect_metrics_one_grouped <- function(data, col, cross, negative = FALSE, method = "lm", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
@@ -512,8 +510,8 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", negative
 #' @param data A tibble.
 #' @param col The column holding metric values.
 #' @param cross The column holding metric values to correlate.
-#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -526,7 +524,7 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", negative
 #'
 #' @export
 #' @importFrom rlang .data
-effect_metrics_one_cor <- function(data, col, cross, method = "pearson", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effect_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pearson", labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -589,8 +587,8 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", negativ
 #'
 #' @param data A tibble containing item measures.
 #' @param cols The column holding metric values.
-#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -604,7 +602,7 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", negativ
 #'
 #' @importFrom rlang .data
 #' @export
-effect_metrics_items <- function(data, cols, method = "pearson", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effect_metrics_items <- function(data, cols, negative = FALSE, method = "pearson", labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -679,8 +677,8 @@ effect_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
-#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -694,7 +692,7 @@ effect_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", negative = FALSE, labels = TRUE, clean = TRUE, ...) {
+effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = "pearson", labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)

@@ -425,14 +425,6 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
 #' @param data A tibble.
 #' @param col The column holding factor values.
 #' @param cross The metric column
-#' @param ordered Values can be nominal (0) or ordered ascending (1) descending (-1).
-#'                By default (NULL), the ordering is automatically detected.
-#'                An appropriate color scale should be choosen depending on the ordering.
-#'                For unordered values, colors from VLKR_FILLDISCRETE are used.
-#'                For ordered values, shades of the VLKR_FILLGRADIENT option are used.
-#' @param limits The scale limits, autoscaled by default.
-#'               Set to \code{c(0,100)} to make a 100 % plot.
-#' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -440,7 +432,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = 
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-plot_counts_one_cor <- function(data, col, cross, ordered = NULL, limits = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_one_cor <- function(data, col, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
@@ -618,10 +610,10 @@ plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #'
 #' @param data A tibble.
 #' @param col The column holding metric values.
-#' @param ci Whether to plot the confidence interval.
-#' @param box Whether to place a boxplot on top.
-#' @param limits The scale limits. Set NULL to extract limits from the label.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param ci Whether to plot the confidence interval.
+#' @param box Whether to add a boxplot.
+#' @param limits The scale limits. Set NULL to extract limits from the label.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -636,7 +628,7 @@ plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -749,10 +741,10 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
 #' @param data A tibble.
 #' @param col The column holding metric values.
 #' @param cross The column holding groups to compare.
+#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param ci Whether to add error bars with 95% confidence intervals.
 #' @param box Whether to add boxplots.
 #' @param limits The scale limits. Set NULL to extract limits from the labels.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -767,7 +759,7 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -853,10 +845,10 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
 #' @param data A tibble.
 #' @param col The first column holding metric values.
 #' @param cross The second column holding metric values.
+#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param limits The scale limits, a list with x and y components, e.g. \code{list(x=c(0,100), y=c(20,100))}.
 #'               Set NULL to extract limits from the labels.
 #' @param log Whether to plot log scales.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -871,7 +863,7 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one_cor <- function(data, col, cross, limits = NULL, log = FALSE, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one_cor <- function(data, col, cross, negative = FALSE, limits = NULL, log = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Check parameters
   check_is_dataframe(data)
@@ -988,10 +980,10 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, log = FALSE, n
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param ci Whether to plot the 95% confidence interval of the mean.
 #' @param box Whether to add boxplots.
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1005,7 +997,7 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, log = FALSE, n
 #' plot_metrics_items(data, starts_with("cg_adoption_"))
 #'
 #' @export
-plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -1092,8 +1084,8 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
-#' @param limits The scale limits. Set NULL to extract limits from the labels.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param limits The scale limits. Set NULL to extract limits from the labels.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1108,7 +1100,7 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ cross }})
@@ -1248,10 +1240,6 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
-#' @param limits The scale limits, a list with x and y components, e.g. \code{list(x=c(0,100), y=c(20,100))}.
-#'               Set NULL to extract limits from the labels.
-#' @param log Whether to plot log scales.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1259,7 +1247,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, negativ
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, log = FALSE, negative = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
@@ -1392,7 +1380,7 @@ plot_metrics_items_cor <- function(data, cols, cross, limits = NULL, log = FALSE
 #' @param base The plot base as character or NULL.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-.plot_lines <- function(data, ci = FALSE, scale = NULL, box = FALSE, limits = NULL, base = NULL, title = NULL) {
+.plot_lines <- function(data, ci = FALSE, scale = NULL, base = NULL, box = FALSE, limits = NULL, title = NULL) {
 
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(y=.data$item, x=.data$value, group=1))

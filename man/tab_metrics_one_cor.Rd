@@ -8,9 +8,9 @@ tab_metrics_one_cor(
   data,
   col,
   cross,
+  negative = FALSE,
   method = "pearson",
   ci = FALSE,
-  negative = FALSE,
   digits = 2,
   labels = TRUE,
   clean = TRUE,
@@ -24,11 +24,11 @@ tab_metrics_one_cor(
 
 \item{cross}{The second column holding metric values.}
 
+\item{negative}{If FALSE (default), negative values are recoded as missing values.}
+
 \item{method}{The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho}
 
 \item{ci}{Whether to output confidence intervals}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{digits}{The number of digits to print.}
 

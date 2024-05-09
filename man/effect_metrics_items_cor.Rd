@@ -8,8 +8,8 @@ effect_metrics_items_cor(
   data,
   cols,
   cross,
-  method = "pearson",
   negative = FALSE,
+  method = "pearson",
   labels = TRUE,
   clean = TRUE,
   ...
@@ -22,9 +22,9 @@ effect_metrics_items_cor(
 
 \item{cross}{Tidyselect item variables to correlate (e.g. starts_with...).}
 
-\item{method}{The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.}
-
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
+
+\item{method}{The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
