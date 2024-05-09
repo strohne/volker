@@ -4,7 +4,7 @@
 \alias{plot_counts_items_grouped}
 \title{Plot frequencies of multiple items compared by groups}
 \usage{
-plot_counts_items_grouped(data, cols, cross, clean = TRUE, ...)
+plot_counts_items_grouped(data, cols, cross, title = TRUE, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A tibble containing item measures.}
@@ -12,6 +12,9 @@ plot_counts_items_grouped(data, cols, cross, clean = TRUE, ...)
 \item{cols}{The item columns that hold the values to summarize.}
 
 \item{cross}{The column holding groups to compare.}
+
+\item{title}{If TRUE (default) shows a plot title derived from the column labels.
+Disable the title with FALSE or provide a custom title as character value.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 

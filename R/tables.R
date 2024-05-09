@@ -247,8 +247,8 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
 #' @param data A tibble.
 #' @param col The column holding factor values.
 #' @param cross The column holding groups to split.
-#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param prop The basis of percent calculation: "total" (the default), "cols", or "rows".
+#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param values The values to output: n (frequency) or p (percentage) or both (the default).
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
@@ -262,7 +262,7 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
 #'
 #' @importFrom rlang .data
 #' @export
-tab_counts_one_grouped <- function(data, col, cross, percent = TRUE, prop = "total", values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
+tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ col }})

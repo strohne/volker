@@ -291,12 +291,12 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #' @param category The value FALSE will force to plot all categories.
 #'                  A character value will focus a selected category.
 #'                  When NULL, in case of boolean values, only the TRUE category is plotted.
-#' @param limits The scale limits, autoscaled by default.
-#'               Set to \code{c(0,100)} to make a 100 % plot.
 #' @param prop The basis of percent calculation: "total" (the default), "rows" or "cols".
 #'             Plotting row or column percentages results in stacked bars that add up to 100%.
 #'             Whether you set rows or cols determines which variable is in the legend (fill color)
 #'             and which on the vertical scale.
+#' @param limits The scale limits, autoscaled by default.
+#'               Set to \code{c(0,100)} to make a 100 % plot.
 #' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
@@ -312,7 +312,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_one_grouped <- function(data, col, cross, category = NULL, limits = NULL, ordered = NULL, prop = "total", numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "total", limits = NULL, ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -579,11 +579,13 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #' @param data A tibble containing item measures.
 #' @param cols The item columns that hold the values to summarize.
 #' @param cross The column holding groups to compare.
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-plot_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
+plot_counts_items_grouped <- function(data, cols, cross, title = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
@@ -596,11 +598,13 @@ plot_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
 #' @param data A tibble containing item measures.
 #' @param cols The item columns that hold the values to summarize.
 #' @param cross The column holding metric values to correlate.
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-plot_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
+plot_counts_items_cor <- function(data, cols, cross, title = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 

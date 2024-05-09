@@ -8,8 +8,8 @@ tab_counts_one_grouped(
   data,
   col,
   cross,
-  percent = TRUE,
   prop = "total",
+  percent = TRUE,
   values = c("n", "p"),
   labels = TRUE,
   clean = TRUE,
@@ -23,9 +23,9 @@ tab_counts_one_grouped(
 
 \item{cross}{The column holding groups to split.}
 
-\item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
-
 \item{prop}{The basis of percent calculation: "total" (the default), "cols", or "rows".}
+
+\item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
 \item{values}{The values to output: n (frequency) or p (percentage) or both (the default).}
 
