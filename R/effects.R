@@ -795,11 +795,13 @@ effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method
         stars = purrr::map_chr(.data$.test, function(x) get_stars(x$p.value)),
         p = sprintf("%.3f", purrr::map_dbl(.data$.test, function(x) round(x$p.value,3))),
       ) %>%
+      dplyr::mutate(t = ifelse(.data$x_name == .data$y_name, "Inf", t)) |>
       dplyr::select(
         item1 = "x_name", item2 = "y_name",
         "n","Pearson's r","ci.low","ci.high","df","t","p","stars"
       )
   }
+
 
   result <- dplyr::arrange(result, .data$item1, .data$item2)
 

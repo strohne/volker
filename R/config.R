@@ -31,6 +31,10 @@ VLKR_FILLDISCRETE <- list(
 #' @keywords internal
 VLKR_FILLGRADIENT <- c("#e5f7ff", "#96dfde", "#008b8b", "#006363", "#001212")
 
+VLKR_COLOR_BOX_BACKGROUND <- "#aaaaaa"
+VLKR_COLOR_BOX_FOREGROUND <- "#222222"
+VLKR_COLOR_CI <- "#222222"
+
 # Thresholds
 VLKR_NORMAL_DIGITS <- 1
 VLKR_SMALL_DIGITS <- 2

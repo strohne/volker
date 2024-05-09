@@ -664,7 +664,7 @@ plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALS
     pl <- pl + ggplot2::geom_boxplot(
       ggplot2::aes({{ col }}, y = max_density / 2),
       width = max_density / 3,
-      fill="transparent", color="black"
+      fill="transparent", color=VLKR_COLOR_BOX_FOREGROUND
     )
   }
 
@@ -677,7 +677,7 @@ plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALS
         width= max_density / 20,
         orientation ="y",
         geom = "errorbar",
-        color = "black"
+        color = VLKR_COLOR_CI
       )
   }
 
@@ -1296,7 +1296,7 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
     pl <- pl +
       ggplot2::geom_errorbar(
         ggplot2::aes(ymin = .data$ci.low, ymax = .data$ci.high),
-        width = 0.1, color = "black"
+        width = 0.1, color = VLKR_COLOR_CI
       )
   }
 
@@ -1392,7 +1392,7 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
   if (box) {
     pl <- pl + ggplot2::geom_boxplot(
       ggplot2::aes(group=.data$item),
-      fill="transparent", color="darkgray"
+      fill="transparent", color=VLKR_COLOR_BOX_BACKGROUND
     )
   }
 
@@ -1403,8 +1403,8 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
       fun.data = get_ci,
       orientation ="y",
       width=0.2,
-      linewidth=1,
-      colour = vlkr_colors_discrete(1)
+      #linewidth=1,
+      colour = VLKR_COLOR_CI
     )
   }
 
