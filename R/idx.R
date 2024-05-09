@@ -28,17 +28,18 @@ idx_add <- function(data, cols, newcol = NULL, negative = FALSE, clean = TRUE) {
     data <- data_clean(data)
   }
 
-  idx <- data %>%
-    dplyr::select({{ cols }})
 
   # Remove missings
-  idx <- data_rm_missings(idx, {{ cols }})
-
+  data <- data_rm_missings(data, {{ cols }})
 
   # Remove negative values
   if (!negative) {
     data <- data_rm_negatives(data, {{ cols }})
   }
+
+
+  idx <- data %>%
+    dplyr::select({{ cols }})
 
   prefix <- get_prefix(colnames(idx), FALSE, TRUE)
   if (is.null(newcol)) {
@@ -50,7 +51,7 @@ idx_add <- function(data, cols, newcol = NULL, negative = FALSE, clean = TRUE) {
     dplyr::distinct(dplyr::across(tidyselect::all_of("item_label"))) %>%
     stats::na.omit() %>%
     dplyr::pull(.data$item_label) %>%
-    get_prefix(FALSE, TRUE)
+    get_prefix(ignore.case = FALSE, trim = TRUE)
 
   if (is.na(newlabel)) {
     newlabel <- prefix
