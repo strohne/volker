@@ -10,7 +10,7 @@ editor_options:
 
 ```{r setup, include=FALSE}
 #
-# 1. Setup
+# 1. Setup ----
 #
 
 # Knit settings
@@ -27,9 +27,10 @@ theme_set(theme_vlkr())
 
 ```{r data, include=FALSE}
 #
-# 2. Load and prepare example data: replace by your own dataset
+# 2. Load and prepare data ----
 #
 
+# Example data. Replace by your own dataset.
 ds <- volker::chatgpt
 
 ```
@@ -37,7 +38,7 @@ ds <- volker::chatgpt
 
 ```{r}
 #
-# 3. Analyse data
+# 3. Analyse data ----
 #
 
 ds |> 
