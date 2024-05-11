@@ -14,6 +14,7 @@ vignettes/scales.Rmd
 vignettes/scales.html
 vignettes/playground.Rmd
 vignettes/playground.html
+inst/rmarkdown/templates/volker-report/skeleton/skeleton.html
 ^CRAN-SUBMISSION$
 private
 revdep
