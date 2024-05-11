@@ -177,7 +177,7 @@ ds %>%
 
 ## Custom content
 By default, a header and tabsheets are automatically created. 
-You can mis in custom content.
+You can mix in custom content.
 
 - If you want to add content before the report outputs, 
   set the title parameter to `FALSE` and add your 
