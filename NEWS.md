@@ -1,3 +1,6 @@
+# volker 2.0.1
+* Fixed markdown template
+
 # volker 2.0.0
 
 * Added effect size calculation and statistical tests

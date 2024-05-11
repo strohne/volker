@@ -2,6 +2,17 @@
 
 0 errors | 0 warnings | 0 notes
 
+* This is the release of version 2.0.1
+* Removed the rendered skeleton.html from the markdown template folder
+  (it sneaked into the last release, in consequence folders instead of single
+  files were created)
+* No reverse dependencies found.
+* No issues in the CRAN Package Check Results
+  
+## R CMD check results
+
+0 errors | 0 warnings | 0 notes
+
 * This is the release of version 2
 * No reverse dependencies found
 * Removed non-ASCII characters from the example dataset 
