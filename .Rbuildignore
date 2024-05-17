@@ -18,3 +18,6 @@ inst/rmarkdown/templates/volker-report/skeleton/skeleton.html
 ^CRAN-SUBMISSION$
 private
 revdep
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

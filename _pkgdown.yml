@@ -1,0 +1,12 @@
+url: ~
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left:  [intro, introduction, reference, news]
+    right: [search, github]
+  components:
+    introduction:
+      text: Introduction
+      href: articles/introduction.html
