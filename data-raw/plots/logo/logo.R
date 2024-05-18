@@ -16,6 +16,12 @@ bar_data <- tibble(
   val = c(4, 7, 6, 9)
 )
 
+
+#
+# Logo ----
+#
+
+
 # Bar chart
 bar_plot <- ggplot(bar_data, aes(x=cat, y=val, fill=cat)) +
   geom_bar(stat="identity") +
@@ -23,7 +29,7 @@ bar_plot <- ggplot(bar_data, aes(x=cat, y=val, fill=cat)) +
   theme_void() +
   theme(legend.position="none")
 
-# GenerateSticker
+# Sticker
 s <- sticker(
   bar_plot,
   package = "volkeR",
@@ -43,11 +49,20 @@ s <- sticker(
 
 
 plot(s)
-
 usethis::use_logo("plots/logo_tmp.png", geometry = "240x278", retina = TRUE)
 
-# Button
-# GenerateSticker
+#
+# Button ----
+#
+
+# Bar plot
+bar_plot <- ggplot(bar_data, aes(x=cat, y=val, fill=cat)) +
+  geom_bar(stat="identity") +
+  scale_fill_manual(values = c("A" = "#96dfde", "B" = "#008b8b", "C" = "#006363", "D" = "black")) +
+  theme_void() +
+  theme(legend.position="none")
+
+# Generate sticker
 sticker(
   bar_plot,
   package = "volkeR",
@@ -63,8 +78,12 @@ sticker(
   h_size=2,
   h_fill="white",
   h_color="#006363",
-  filename = "plots/button_tmp.png"
+  filename = "data-raw/plots/logo/button.png"
 ) %>% plot()
+
+#
+# Color variations ---
+#
 
 yellow <- "#D89900"
 pink <- "#CD52A3"
@@ -83,6 +102,7 @@ v_blue3 <- "#006363"
 green1 <- "#ACDEBA"
 green2 <- "#74B976"
 green3 <- "#488E4A"
+
 # Different color schemes:
 bar_plot <- ggplot(bar_data, aes(x=cat, y=val, fill=cat)) +
   geom_bar(stat="identity") +
@@ -105,9 +125,9 @@ s_magenta <- sticker(
   s_y = 1.1,
   s_width = 0.95,
   s_height = 0.95,
-  h_fill="#9E1910",
-  h_color="#9E1910",
-  filename = "plots/logo_tmp.png"
-)
-
-plot(s_magenta)
+  h_fill=v_blue2,
+  h_color="white",
+  # h_fill="#9E1910",
+  # h_color="#9E1910",
+  filename = "data-raw/plots/logo/white.png"
+) |> plot()
