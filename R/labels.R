@@ -406,12 +406,14 @@ labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_
 #'
 #' @param data A tibble.
 #' @param cols A tidy column selection.
+#' @param default A character string used in case not prefix is found
 #' @return A character string.
 #' @importFrom rlang .data
-get_title <- function(data, cols) {
+get_title <- function(data, cols, default=NULL) {
   labels <- data %>%
-    codebook({{ cols }}) %>%
-    tidyr::drop_na("item_label")
+    codebook({{ cols }}) |>
+    tidyr::drop_na("item_label") |>
+    dplyr::distinct(dplyr::across(tidyselect::all_of("item_label")))
 
   if (nrow(labels) > 0) {
     labels <- labels$item_label
@@ -424,6 +426,8 @@ get_title <- function(data, cols) {
 
   if ((prefix == "") & (length(labels) == 1)) {
     prefix <- labels[[1]]
+  } else if (prefix == "") {
+    prefix <- default
   }
 
   prefix

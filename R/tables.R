@@ -211,7 +211,7 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
       dplyr::select(-tidyselect::all_of(c(".test")))
   }
 
-  # Get variable caption from the attributes
+    # Get variable caption from the attributes
   if (labels) {
     result <- labs_replace(result, {{ col }}, codebook(data, {{ col }}))
     label <- get_title(data, {{ col }})

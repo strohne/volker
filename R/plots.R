@@ -677,7 +677,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, prop =
   }
 
   result <- result %>%
-    dplyr::mutate(value = as.factor(value)) %>%
+    dplyr::mutate(value = as.factor(.data$value)) %>%
     dplyr::mutate(item = factor(.data$item, levels=cols_names)) |>
     dplyr::arrange(.data$item)
 
