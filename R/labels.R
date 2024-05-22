@@ -422,7 +422,7 @@ get_title <- function(data, cols) {
   prefix <- get_prefix(labels)
   prefix <- trim_label(prefix)
 
-  if (prefix == "") {
+  if ((prefix == "") & (length(labels) == 1)) {
     prefix <- labels[[1]]
   }
 
