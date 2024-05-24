@@ -123,8 +123,8 @@ categorical data.</li>
 data.</li>
 </ul>
 <p>The column selection determines whether to analyse single variables,
-item lists or to compare and correlate multiple variables.</p>
-<p><strong>Try it out!</strong></p>
+item lists or to compare and correlate multiple variables. <strong>Try
+it out!</strong></p>
 <div class="section level4">
 <h4 id="categorical-variables">Categorical variables<a class="anchor" aria-label="anchor" href="#categorical-variables"></a>
 </h4>
@@ -1175,16 +1175,16 @@ Usage: in professional context
 </tr></tbody>
 </table>
 <p>Each table function has a corresponding plot function with parameters
-to pimp the result. See the function help (F1 key) to learn the
-options.</p>
-<p>For example, you can use the prop parameter to grow bars to 100%. The
-numbers parameter prints the percentages onto the bars.</p>
+to pimp the result. See the function help (F1 key) to learn the options.
+For example, you can use the <code>prop</code> parameter to grow bars to
+100%. The <code>numbers</code> parameter prints frequencies and
+percentages onto the bars.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/filter.html">filter</a></span><span class="op">(</span><span class="va">sd_gender</span> <span class="op">!=</span> <span class="st">"diverse"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="../reference/plot_counts.html">plot_counts</a></span><span class="op">(</span><span class="va">adopter</span>, <span class="va">sd_gender</span>, prop<span class="op">=</span><span class="st">"rows"</span>, numbers<span class="op">=</span><span class="st">"p"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/plot_counts.html">plot_counts</a></span><span class="op">(</span><span class="va">adopter</span>, <span class="va">sd_gender</span>, prop<span class="op">=</span><span class="st">"rows"</span>, numbers<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p"</span>,<span class="st">"n"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
-<p>Further, the effect-functions implement statistical tests:</p>
+<p>Further, the effect-functions conduct statistical tests:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/filter.html">filter</a></span><span class="op">(</span><span class="va">sd_gender</span> <span class="op">!=</span> <span class="st">"diverse"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -1254,7 +1254,7 @@ stars
 <h2 id="automatically-generate-reports">Automatically generate reports<a class="anchor" aria-label="anchor" href="#automatically-generate-reports"></a>
 </h2>
 <div class="section level3">
-<h3 id="step-by-step">Step by step<a class="anchor" aria-label="anchor" href="#step-by-step"></a>
+<h3 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h3>
 <p>Reports combine plots, tables and effect calculations. Optionally,
 for item batteries, an index is calculated and reported.</p>
@@ -1271,8 +1271,13 @@ template in RStudio:</p>
 result.</li>
 </ul>
 <p>Have fun with developing own reports!</p>
-<p>Alternatively, manually add <code><a href="../reference/html_report.html">volker::html_report</a></code> to the
-output options of your Markdown document:</p>
+</div>
+<div class="section level3">
+<h3 id="custom-reports">Custom reports<a class="anchor" aria-label="anchor" href="#custom-reports"></a>
+</h3>
+<p>To generate a volker-report from any R-Markdown document, add
+<code><a href="../reference/html_report.html">volker::html_report</a></code> to the output options of your Markdown
+document:</p>
 <pre><code>---
 title: "How to create reports?"
 output: 
@@ -1280,9 +1285,8 @@ output:
 ---</code></pre>
 <p>Then, you can generate combined outputs using the report-functions.
 One advantage of the report-functions is that plots are automatically
-scaled to fit the page.</p>
-<p>The main entry point for reports are the report-functions. See the
-function help for further options (F1 key).</p>
+scaled to fit the page. See the function help for further options (F1
+key).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/filter.html">filter</a></span><span class="op">(</span><span class="va">sd_gender</span> <span class="op">!=</span> <span class="st">"diverse"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
@@ -1675,7 +1679,7 @@ total
 </div>
 </div>
 <div class="section level3">
-<h3 id="custom-content">Custom content<a class="anchor" aria-label="anchor" href="#custom-content"></a>
+<h3 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h3>
 <p>By default, a header and tabsheets are automatically created. You can
 mix in custom content.</p>
