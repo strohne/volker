@@ -188,7 +188,7 @@ yet.)
 | 14  | plot_counts_one_grouped    |             | plot   | counts  | one      | grouped    |
 | 15  | plot_counts_one_cor        | not yet     | plot   | counts  | one      | correlated |
 | 16  | plot_counts_items          |             | plot   | counts  | multiple |            |
-| 17  | plot_counts_items_grouped  | not yet     | plot   | counts  | multiple | grouped    |
+| 17  | plot_counts_items_grouped  |             | plot   | counts  | multiple | grouped    |
 | 18  | plot_counts_items_cor      | not yet     | plot   | counts  | multiple | correlated |
 | 19  | plot_metrics_one           |             | plot   | metrics | one      |            |
 | 20  | plot_metrics_one_grouped   |             | plot   | metrics | one      | grouped    |

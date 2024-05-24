@@ -30,7 +30,7 @@ data_clean <- function(data, plan = "sosci", ...) {
 #'   (comes from SoSci and prevents combining vectors)
 #' - Recode residual factor values to NA (e.g. "[NA] nicht beantwortet")
 #' - Recode residual numeric values to NA (e.g. -9)
-#' - Add whitespace after slashes to better label breaks
+#' - Add whitespace after slashes to improve label breaks
 #'
 #' @keywords internal
 #'

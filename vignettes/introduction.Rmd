@@ -52,9 +52,7 @@ and choose the appropriate function:
 - `effect_metrics()` calculates test statistics for metric data.
 
 The column selection determines whether to analyse single variables, item lists 
-or to compare and correlate multiple variables.
-
-**Try it out!**
+or to compare and correlate multiple variables. **Try it out!**  
 
 ### Categorical variables
 
@@ -113,18 +111,15 @@ tab_metrics(ds, sd_age, use_work, metric = TRUE, ci = TRUE)
 
 
 Each table function has a corresponding plot function with parameters
-to pimp the result. See the function help (F1 key) to learn the options.
-
-For example, you can use the prop parameter to grow bars to 100%.
-The numbers parameter prints the percentages onto the bars.
+to pimp the result. See the function help (F1 key) to learn the options. For example, you can use the `prop` parameter to grow bars to 100%. The `numbers` parameter prints frequencies and percentages onto the bars.
 
 ```{r}
 ds |> 
   filter(sd_gender != "diverse") |> 
-  plot_counts(adopter, sd_gender, prop="rows", numbers="p")
+  plot_counts(adopter, sd_gender, prop="rows", numbers=c("p","n"))
 ```
 
-Further, the effect-functions implement statistical tests:
+Further, the effect-functions conduct statistical tests:
 
 ```{r}
 ds |> 
@@ -135,7 +130,7 @@ ds |>
 
 # Automatically generate reports
 
-## Step by step
+## Getting started
 Reports combine plots, tables and effect calculations. Optionally, for item batteries, an index is calculated and reported.
 
 To see an example or develop own reports, use the volker report template in RStudio:
@@ -148,7 +143,8 @@ To see an example or develop own reports, use the volker report template in RStu
 
 Have fun with developing own reports!
 
-Alternatively, manually add `volker::html_report` to the 
+## Custom reports
+To generate a volker-report from any R-Markdown document, add `volker::html_report` to the 
 output options of your Markdown document:
 
 ```
@@ -160,11 +156,8 @@ output:
 ```
 
 Then, you can generate combined outputs using the report-functions.
-One advantage of the report-functions is that plots are automatically 
-scaled to fit the page.
-
-The main entry point for reports are the report-functions.
-See the function help for further options (F1 key).
+One advantage of the report-functions is that plots are automatically scaled to fit the page.
+See the function help for further options (F1 key). 
 
 ```{r}
 
@@ -175,7 +168,7 @@ ds %>%
 ```
 
 
-## Custom content
+## Setup
 By default, a header and tabsheets are automatically created. 
 You can mix in custom content.
 

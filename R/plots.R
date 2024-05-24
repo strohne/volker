@@ -601,6 +601,15 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#' plot_counts_items_grouped(
+#'   data, starts_with("cg_adoption_"), adopter,
+#'   category=c(4,5), numbers = "n", prop="rows"
+#' )
+#'
+#' @export
 #' @importFrom rlang .data
 plot_counts_items_grouped <- function(data, cols, cross, category = NULL, prop = "total", ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks

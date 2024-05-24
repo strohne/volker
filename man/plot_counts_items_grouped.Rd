@@ -58,4 +58,13 @@ A ggplot object.
 \description{
 Plot frequencies of multiple items compared by groups
 }
+\examples{
+library(volker)
+data <- volker::chatgpt
+plot_counts_items_grouped(
+  data, starts_with("cg_adoption_"), adopter,
+  category=c(4,5), numbers = "n", prop="rows"
+)
+
+}
 \keyword{internal}
