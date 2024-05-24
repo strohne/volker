@@ -116,7 +116,7 @@ That depends on your objective:
 <td><strong>Categorical</strong></td>
 </tr>
 <tr>
-<td><strong style="display: block;transform: rotate(-90deg);">One variable</strong></td>
+<td style="vertical-align:middle"><strong style="display: inline-block;transform: rotate(-90deg);">One variable</strong></td>
 <td valign="top">
 <img src="man/figures/plot_metrics_one.png" alt="Density plot" width="300">
 </td>
@@ -126,7 +126,7 @@ That depends on your objective:
 </tr>
 
 <tr>
-<td><strong style="display: block;transform: rotate(-90deg);">Group comparison </strong></td>
+<td style="vertical-align:middle"><strong style="display: inline-block;transform: rotate(-90deg);">Group comparison </strong></td>
 <td valign="top">
 
 <img src="man/figures/plot_metrics_one_grouped.png" alt="Group comparison" width="300">
@@ -139,7 +139,7 @@ That depends on your objective:
 
 
 <tr>
-<td><strong style="display: block;transform: rotate(-90deg);">Multiple items</strong></td>
+<td style="vertical-align:middle"><strong style="display: inline-block;transform: rotate(-90deg);">Multiple items</strong></td>
 <td valign="top">  
 
 <img src="man/figures/plot_metrics_items.png" alt="Item battery boxplots" width="300">

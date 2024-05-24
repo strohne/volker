@@ -102,8 +102,8 @@ Which one is best? That depends on your objective:
 </td>
 </tr>
 <tr>
-<td>
-<strong style="display: block;transform: rotate(-90deg);">One
+<td style="vertical-align:middle">
+<strong style="display: inline-block;transform: rotate(-90deg);">One
 variable</strong>
 </td>
 <td valign="top">
@@ -114,8 +114,8 @@ variable</strong>
 </td>
 </tr>
 <tr>
-<td>
-<strong style="display: block;transform: rotate(-90deg);">Group
+<td style="vertical-align:middle">
+<strong style="display: inline-block;transform: rotate(-90deg);">Group
 comparison </strong>
 </td>
 <td valign="top">
@@ -126,8 +126,8 @@ comparison </strong>
 </td>
 </tr>
 <tr>
-<td>
-<strong style="display: block;transform: rotate(-90deg);">Multiple
+<td style="vertical-align:middle">
+<strong style="display: inline-block;transform: rotate(-90deg);">Multiple
 items</strong>
 </td>
 <td valign="top">
