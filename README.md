@@ -30,7 +30,7 @@ High-level functions for tabulating, charting and reporting survey data.
     tab_metrics(data, starts_with("cg_adoption_social"))
 
 See further [examples in the introduction
-vignette](vignettes/introduction.Rmd).
+vignette](articles/introduction.html).
 
 Don’t miss the template feature: Within RStudio, create a new Markdown
 document, select `From template`, choose and finally knit the **volkeR

@@ -15,6 +15,9 @@ navbar:
     introduction:
       text: Introduction
       href: articles/introduction.html
+vignettes:
+- title: "Introduction"
+  name: "introduction"
 
 reference:
 - title: Analysis
