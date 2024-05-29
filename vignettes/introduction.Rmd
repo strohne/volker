@@ -266,9 +266,17 @@ ds %>%
 ```
 
 Alternatively, save the result of `codebook(ds)` to an Excel file,
-change the labels and then call `labs_apply()` with your new codebook.
+change the labels manually and then call `labs_apply()` with your new codebook.
 
+```{r, eval = FALSE}
 
+codes <- codebook(ds)
+write_xlsx(codes,"codebook.xlsx")
+
+codes <- read_xlsx("codebook-new.xlsx")
+ds <- labs_apply(codebook)
+
+```
 
 # Index calculation for item batteries
 
