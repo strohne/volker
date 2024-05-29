@@ -191,7 +191,7 @@ data_rm_negatives <- function(data, cols) {
     cases <- sum(dplyr::select(data, {{ cols }}) < 0, na.rm=TRUE)
 
     if (cases > 0) {
-      data |>
+      data <- data |>
         labs_store() |>
         dplyr::mutate(dplyr::across({{ cols }}, ~ ifelse(. < 0, NA, .))) |>
         labs_restore()
