@@ -14,6 +14,7 @@ Craft polished tables and plots in Markdown reports. Simply choose whether to tr
 Useful links:
 \itemize{
   \item \url{https://github.com/strohne/volker}
+  \item \url{https://strohne.github.io/volker/}
   \item Report bugs at \url{https://github.com/strohne/volker/issues}
 }
 
