@@ -10,7 +10,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 [![R-CMD-check](https://github.com/strohne/volker/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/strohne/volker/actions/workflows/R-CMD-check.yaml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/volker)](https://CRAN.R-project.org/package=volker)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/https%3A%2F%2Fmybinder.org%2Fv2%2Fgh%2Fstrohne%2Fvolker.git%2FHEAD%3Flabpath%3Dvignettes/HEAD)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/strohne/volker.git/HEAD?labpath=vignettes)
 
 <!-- badges: end -->
 
