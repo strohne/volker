@@ -17,6 +17,8 @@ knitr::opts_chunk$set(
   message = FALSE
 )
 
+options(crayon.enabled = FALSE)
+
 ```
 
 
@@ -236,15 +238,10 @@ theme_set(theme_vlkr(
 Labels used in plots and tables are stored in the comment attribute of the variable. 
 You can inspect all labels using the `codebook()`-function:
 
-```
+```{r}
 codebook(ds)
 ```
 
-```{r echo=FALSE}
-codebook(ds, c(case, sd_age, starts_with("use_"))) |> 
-  knitr::kable()
-```
-*output truncated*
 
 You can set custom or new labels with `labs_apply()` by providing a tibble 
 with item names in the first column and item labels in the second column.
