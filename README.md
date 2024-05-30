@@ -10,7 +10,6 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 [![R-CMD-check](https://github.com/strohne/volker/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/strohne/volker/actions/workflows/R-CMD-check.yaml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/volker)](https://CRAN.R-project.org/package=volker)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/strohne/volker.git/HEAD?labpath=vignettes)
 
 <!-- badges: end -->
 
@@ -30,8 +29,7 @@ High-level functions for tabulating, charting and reporting survey data.
     # Create your first table, summarising the item battery
     tab_metrics(data, starts_with("cg_adoption_social"))
 
-See further [examples in the introduction
-vignette](articles/introduction.html).
+See further examples in `vignette("introduction", package="volker")`.
 
 Don’t miss the template feature: Within RStudio, create a new Markdown
 document, select `From template`, choose and finally knit the **volkeR
@@ -158,9 +156,9 @@ Examples:
   `tab_counts(data, starts_with("cg_adoption"))`
 
 **Hint**: replace `tab_` by `plot_` to reproduce the examples above.
-You’ll find different table, plot and report types in [the introduction
-vignette](vignettes/introduction.Rmd). For further options to customize
-the results, see the builtin function help (F1 key).
+You’ll find different table, plot and report types in the
+`vignette("introduction", package="volker")`. For further options to
+customize the results, see the builtin function help (F1 key).
 
 After deciding whether to plot or tabulate, and whether to handle metric
 or counted data, the column selections determine which of the following
