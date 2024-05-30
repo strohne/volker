@@ -13,8 +13,7 @@ editor_options:
 knitr::opts_chunk$set(
   comment = "", 
   echo = TRUE,
-  message = FALSE,
-  knitr.table.format = "html"
+  message = FALSE
 )
 
 ```

@@ -444,6 +444,7 @@ html_report <- function(...) {
   cssfile <-  paste0(system.file("extdata", package = "volker"),"/styles.css")
   rmarkdown::html_document(
     css = cssfile,
+    #df_print = "kable",
     ...
   )
 }
