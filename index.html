@@ -93,7 +93,7 @@
 <span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co"># Create your first table, summarising the item battery</span></span>
 <span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="fu">tab_metrics</span>(data, <span class="fu">starts_with</span>(<span class="st">"cg_adoption_social"</span>))</span></code></pre></div>
-<p>See further <a href="articles/introduction.html">examples in the introduction vignette</a>.</p>
+<p>See further examples in <code><a href="articles/introduction.html">vignette("introduction", package="volker")</a></code>.</p>
 <p>Don’t miss the template feature: Within RStudio, create a new Markdown document, select <code>From template</code>, choose and finally knit the <strong>volkeR Report</strong>! It’s a blueprint for your own tidy reports.</p>
 </div>
 <div class="section level2">
@@ -193,7 +193,7 @@ All table functions return data frames that can be processed further. The tables
 <li>Multiple categorical variables: <code>tab_counts(data, starts_with("cg_adoption"))</code>
 </li>
 </ul>
-<p><strong>Hint</strong>: replace <code>tab_</code> by <code>plot_</code> to reproduce the examples above. You’ll find different table, plot and report types in <a href="vignettes/introduction.Rmd">the introduction vignette</a>. For further options to customize the results, see the builtin function help (F1 key).</p>
+<p><strong>Hint</strong>: replace <code>tab_</code> by <code>plot_</code> to reproduce the examples above. You’ll find different table, plot and report types in the <code><a href="articles/introduction.html">vignette("introduction", package="volker")</a></code>. For further options to customize the results, see the builtin function help (F1 key).</p>
 <p>After deciding whether to plot or tabulate, and whether to handle metric or counted data, the column selections determine which of the following methods are called under the hood. When you provide two sets of columns in the first two parameters, data is crossed. By default, the second parameter is handled as a categorical variable, resulting in grouped tables and plots. For handling metric variables and their correlations, set the <code>metric</code>-parameter to <code>TRUE</code>. (Note: Some are not implemented yet.)</p>
 <table class="table">
 <colgroup>
