@@ -12,13 +12,11 @@ editor_options:
 
 ```{r include=FALSE}
 knitr::opts_chunk$set(
-  comment = "", 
+  comment = "#>",
   echo = TRUE,
   message = FALSE,
   collapse=TRUE
 )
-
-
 ```
 
 
