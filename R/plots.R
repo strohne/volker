@@ -1342,13 +1342,13 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
   } else if ((scale > 0) || (scale < 0)) {
     pl <- pl +
       ggplot2::scale_fill_manual(
-        values = vlkr_colors_sequential(length(levels(data$value))),
+        values = vlkr_colors_sequential(length(levels(as.factor(data$value)))),
         guide = ggplot2::guide_legend(reverse = TRUE)
       )
   } else {
     pl <- pl +
       ggplot2::scale_fill_manual(
-        values = vlkr_colors_discrete(length(levels(data$value))),
+        values = vlkr_colors_discrete(length(levels(as.factor(data$value)))),
         guide = ggplot2::guide_legend(reverse = TRUE)
       )
   }

@@ -336,10 +336,10 @@ labs_clear <- function(data, cols, labels = NULL) {
 #'               If the column is not found in the codebook, the first column is used.
 #' @param col_to The tidyselect column with target values, defaults to value_label.
 #'               If the column is not found in the codebook, the second column is used
-#' @param relevel By default, the column is converted to a factor with levels found in the codebook.
-#'                Other values will be set to NA. Set relevel to FALSE to keep other values.
+#' @param na.missing By default, the column is converted to a factor with levels combined from the codebook and the data.
+#'                Set na.missing to TRUE to set all levels not found in the codes to NA.
 #' @return Tibble with new labels.
-labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_label", relevel = TRUE) {
+labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_label", na.missing = FALSE) {
 
   # Column without quotes
   # TODO: could we just use "{{ col }}" with quotes in mutate below?
@@ -374,26 +374,36 @@ labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_
   codes <- dplyr::rename(codes,.to = !!col_to)
 
   # Store levels
-  levels_before <- data |>
-    dplyr::select(!! col) |>
-    dplyr::pull(1) |>
-    as.character() |>
-    unique()
+  before <- data |>
+    dplyr::distinct(!!col) |>
+    dplyr::arrange(!!col) |>
+    dplyr::mutate(!!col := as.character(!! col)) |>
+    dplyr::rename(.from = !!col)
+
 
   codes <- codes %>%
-    dplyr::filter(as.character(.data$.from) %in% levels_before) |>
+    dplyr::filter(as.character(.data$.from) %in% before$.from) |>
     dplyr::distinct(dplyr::across(tidyselect::all_of(c(".from", ".to")))) %>%
     stats::na.omit()
 
+
   if (nrow(codes) > 0) {
+
+    # If any values were missing in the codes, add them
+    # and order as before.
+    if  (!na.missing && !all((before$.from %in% codes$.from))) {
+      codes <- before |>
+        dplyr::left_join(codes, by=".from") |>
+        dplyr::mutate(.to = dplyr::coalesce(.data$.to, .data$.from))
+    }
+
     data <- data %>%
       dplyr::mutate(.from = as.character(!!col)) %>%
       dplyr::left_join(codes, by = ".from") %>%
-      dplyr::mutate(!!col := dplyr::coalesce(.data$.to, .data$.from))
+      dplyr::mutate(!!col := .data$.to)
 
-    if (relevel) {
-      data <- dplyr::mutate(data, !!col := factor(!!col, levels=codes$.to))
-    }
+
+    data <- dplyr::mutate(data, !!col := factor(!!col, levels=codes$.to))
     data <- dplyr::select(data, -tidyselect::all_of(c(".from", ".to")))
   }
 

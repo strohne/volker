@@ -10,7 +10,7 @@ labs_replace(
   codes,
   col_from = "value_name",
   col_to = "value_label",
-  relevel = TRUE
+  na.missing = FALSE
 )
 }
 \arguments{
@@ -29,8 +29,8 @@ If the column is not found in the codebook, the first column is used.}
 \item{col_to}{The tidyselect column with target values, defaults to value_label.
 If the column is not found in the codebook, the second column is used}
 
-\item{relevel}{By default, the column is converted to a factor with levels found in the codebook.
-Other values will be set to NA. Set relevel to FALSE to keep other values.}
+\item{na.missing}{By default, the column is converted to a factor with levels combined from the codebook and the data.
+Set na.missing to TRUE to set all levels not found in the codes to NA.}
 }
 \value{
 Tibble with new labels.

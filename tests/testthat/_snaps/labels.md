@@ -91,6 +91,21 @@
       [4] "I only use new offers when I have no other choice"
       [5] "[no answer]"                                      
 
+# Item values are kept even if they are not in the codebook
+
+    Code
+      dplyr::arrange(volker:::labs_replace(dplyr::mutate(dplyr::distinct(data, from = use_private),
+      to = from), to, codes), to)
+    Output
+      # A tibble: 5 x 2
+         from to          
+        <dbl> <fct>       
+      1     1 never       
+      2     2 2           
+      3     3 3           
+      4     4 4           
+      5     5 almost daily
+
 # A common prefix is removed from labels
 
     Code
