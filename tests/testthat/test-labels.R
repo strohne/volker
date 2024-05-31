@@ -55,16 +55,32 @@ test_that("Store, clear and restore the codebook", {
     expect_snapshot(cran= TRUE)
 })
 
-# Replace item labels
-test_that("Item labels are replaced and keep their order", {
+# Replace item values
+test_that("Item values are replaced and keep their order", {
 
   data |>
     dplyr::select(adopter) |>
     # TODO: Even if the column was converted to character beforehand
     #  dplyr::mutate(adopter = as.character(adopter)) |>
-    volker:::labs_replace(adopter, volker::codebook(data)) |>
+    volker:::labs_replace(adopter, volker::codebook(data, adopter)) |>
     dplyr::pull(adopter) |>
     levels() |>
+    expect_snapshot(cran= TRUE)
+})
+
+
+# Replace item values
+test_that("Item values are kept even if they are not in the codebook", {
+
+  codes <- data |>
+    codebook(use_private) |>
+    filter(value_name %in% c("1","5"))
+
+  data |>
+    dplyr::distinct(from = use_private) |>
+    dplyr::mutate(to = from) |>
+    volker:::labs_replace(to, codes) |>
+    dplyr::arrange(to) |>
     expect_snapshot(cran= TRUE)
 })
 

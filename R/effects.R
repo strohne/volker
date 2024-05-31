@@ -486,7 +486,7 @@ effect_metrics_one_grouped <- function(data, col, cross, negative = FALSE, metho
           "Adjusted R squared", "Degrees of freedom", "Residuals' degrees of freedom",
           "F", "p", "stars"
         )
-      ), relevel = TRUE) |>
+      ), na.missing = TRUE) |>
       stats::na.omit() |>
       dplyr::arrange(.data$Statistic)
 
