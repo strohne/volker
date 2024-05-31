@@ -60,7 +60,7 @@
 <span>  <span class="va">codes</span>,</span>
 <span>  col_from <span class="op">=</span> <span class="st">"value_name"</span>,</span>
 <span>  col_to <span class="op">=</span> <span class="st">"value_label"</span>,</span>
-<span>  relevel <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  na.missing <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -91,9 +91,9 @@ If the column is not found in the codebook, the first column is used.</p></dd>
 If the column is not found in the codebook, the second column is used</p></dd>
 
 
-<dt>relevel</dt>
-<dd><p>By default, the column is converted to a factor with levels found in the codebook.
-Other values will be set to NA. Set relevel to FALSE to keep other values.</p></dd>
+<dt>na.missing</dt>
+<dd><p>By default, the column is converted to a factor with levels combined from the codebook and the data.
+Set na.missing to TRUE to set all levels not found in the codes to NA.</p></dd>
 
 </dl></div>
     <div class="section level2">
