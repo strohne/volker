@@ -46,17 +46,17 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
   chunks <- list()
 
   # Add title
-  if (!is.character(title) && (title == TRUE)) {
-    title <- get_title(data, {{ cols }})
-  } else if (!is.character(title)) {
-    title <- ""
-  }
+  if (knitr::is_html_output()) {
+    if (!is.character(title) && (title == TRUE)) {
+      title <- get_title(data, {{ cols }})
+    } else if (!is.character(title)) {
+      title <- ""
+    }
 
-  if (is.character(title) && knitr::is_html_output()) {
     chunks <- .add_to_vlkr_rprt(paste0("\n#### ", title, " {.tabset .tabset-pills}  \n"), chunks)
     plot_title <- FALSE
   } else {
-    plot_title <- TRUE
+    plot_title <- title
   }
 
 
