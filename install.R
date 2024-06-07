@@ -1,3 +1,4 @@
 install.packages("tidyverse")
 install.packages("knitr")
-install.packages("volker")
+#install.packages("volker")
+devtools::install_github("strohne/volker")
