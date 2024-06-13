@@ -10,5 +10,5 @@ data <- volker::chatgpt
 
 test_that("skim_metrics",{
          skim_metrics(data)
-         expect_snapshot(data)
+         expect_snapshot(data, cran = TRUE)
 })

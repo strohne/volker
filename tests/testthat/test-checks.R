@@ -1,5 +1,5 @@
 #
-# Test check functions
+# Test check functions and error messages
 #
 
 library(testthat)
@@ -43,7 +43,6 @@ test_that("check_is_dataframe", {
   expect_error(check_is_dataframe(data.frame()), "Check your data: Are they empty?")
 
 })
-
 
 # Check has column
 test_that("check_has_column", {
