@@ -79,11 +79,11 @@
       10 use_work      use        <NA>       Usage: in profess~ 2          rarely     
       # i 84 more rows
 
-# Item labels are replaced and keep their order
+# Item values are replaced and keep their order
 
     Code
       levels(dplyr::pull(volker:::labs_replace(dplyr::select(data, adopter), adopter,
-      volker::codebook(data)), adopter))
+      volker::codebook(data, adopter)), adopter))
     Output
       [1] "I try new offers immediately"                     
       [2] "I try new offers rather quickly"                  
