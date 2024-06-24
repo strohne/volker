@@ -85,16 +85,6 @@ sticker(
 # Color variations ---
 #
 
-yellow <- "#D89900"
-pink <- "#CD52A3"
-magenta <- "#8F0B70"
-dark_magenta <- "#611938"
-red <- "#9E1910"
-
-cs_purple <- "#0C0A69"
-cs_beige <- "#F6EED2"
-cs_beige2 <- "#F9F3DF"
-
 v_blue1 <- "#96dfde"
 v_blue2 <- "#008b8b"
 v_blue3 <- "#006363"
@@ -103,11 +93,15 @@ green1 <- "#ACDEBA"
 green2 <- "#74B976"
 green3 <- "#488E4A"
 
-# Different color schemes:
+pink <- "#CD52A3"
+magenta <- "#8F0B70"
+dark_magenta <- "#611938"
+
+yellow <- "#D89900"
+
+# White bar plot ----
 bar_plot <- ggplot(bar_data, aes(x=cat, y=val, fill=cat)) +
   geom_bar(stat="identity") +
-  #scale_fill_manual(values = c("A" = "#96dfde", "B" = "#008b8b", "C" = "#006363", "D" = "black")) +
- # scale_fill_manual(values=c("A" = "#CD52A3", "B" = "#8F0B70", "C" = "black", "D" = "#D89900"))+
   scale_fill_manual(values=c("A" = "white", "B" = "white", "C" = "white", "D" = "white"))+
   theme_void() +
   theme(legend.position="none")
@@ -126,8 +120,108 @@ s_magenta <- sticker(
   s_width = 0.95,
   s_height = 0.95,
   h_fill=v_blue2,
-  h_color="white",
+  h_color=v_blue2,
   # h_fill="#9E1910",
   # h_color="#9E1910",
-  filename = "data-raw/plots/logo/white.png"
+  filename = "data-raw/plots/logo/volker_white.png"
 ) |> plot()
+
+
+# green bar plot ----
+bar_plot <- ggplot(bar_data, aes(x=cat, y=val, fill=cat)) +
+  geom_bar(stat="identity") +
+  scale_fill_manual(values=c("A" = green1, "B" = green2, "C" = magenta, "D" = green3))+
+  theme_void() +
+  theme(legend.position="none")
+
+# GenerateSticker
+s_magenta <- sticker(
+  bar_plot,
+  package = "volkeR",
+  p_size = 15,
+  p_color = magenta,
+  p_family="robo_mono",
+  p_y = 0.53,
+  s_x = 1,
+  s_y = 1.1,
+  s_width = 0.95,
+  s_height = 0.95,
+  h_fill="white",
+  h_color=magenta,
+  filename = "data-raw/plots/logo/volker_green.png"
+) |> plot()
+
+
+# magenta bar plot ----
+bar_plot <- ggplot(bar_data, aes(x=cat, y=val, fill=cat)) +
+  geom_bar(stat="identity") +
+  scale_fill_manual(values=c("A" = pink, "B" = magenta, "C" = "black", "D" = dark_magenta))+
+  theme_void() +
+  theme(legend.position="none")
+
+# GenerateSticker
+s_magenta <- sticker(
+  bar_plot,
+  package = "volkeR",
+  p_size = 15,
+  p_color = dark_magenta,
+  p_family="robo_mono",
+  p_y = 0.53,
+  s_x = 1,
+  s_y = 1.1,
+  s_width = 0.95,
+  s_height = 0.95,
+  h_fill="white",
+  h_color=dark_magenta,
+  filename = "data-raw/plots/logo/volker_magenta.png"
+) |> plot()
+
+
+# purplegreen bar plot ----
+bar_plot <- ggplot(bar_data, aes(x=cat, y=val, fill=cat)) +
+  geom_bar(stat="identity") +
+  scale_fill_manual(values=c("A" = pink, "B" = magenta, "C" = v_blue3, "D" = v_blue2))+
+  theme_void() +
+  theme(legend.position="none")
+
+# GenerateSticker
+s_magenta <- sticker(
+  bar_plot,
+  package = "volkeR",
+  p_size = 15,
+  p_color = magenta,
+  p_family="robo_mono",
+  p_y = 0.53,
+  s_x = 1,
+  s_y = 1.1,
+  s_width = 0.95,
+  s_height = 0.95,
+  h_fill="white",
+  h_color=magenta,
+  filename = "data-raw/plots/logo/volker_purplegreen.png"
+) |> plot()
+
+# wildmix bar plot ----
+bar_plot <- ggplot(bar_data, aes(x=cat, y=val, fill=cat)) +
+  geom_bar(stat="identity") +
+  scale_fill_manual(values=c("A" = pink, "B" = magenta, "C" = v_blue3, "D" = yellow))+
+  theme_void() +
+  theme(legend.position="none")
+
+# GenerateSticker
+s_magenta <- sticker(
+  bar_plot,
+  package = "volkeR",
+  p_size = 15,
+  p_color = v_blue3,
+  p_family="robo_mono",
+  p_y = 0.53,
+  s_x = 1,
+  s_y = 1.1,
+  s_width = 0.95,
+  s_height = 0.95,
+  h_fill="white",
+  h_color=v_blue3,
+  filename = "data-raw/plots/logo/volker_wildmix.png"
+) |> plot()
+
