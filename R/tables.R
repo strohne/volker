@@ -205,8 +205,8 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
       dplyr::rowwise() |>
       dplyr::mutate(.test = list(stats::prop.test(.data$n, n_total))) |>
       dplyr::mutate(
-        ci.low = .data$.test$conf.int[1],
-        ci.high = .data$.test$conf.int[2]
+        "ci low" = .data$.test$conf.int[1],
+        "ci high" = .data$.test$conf.int[2]
       ) |>
       dplyr::select(-tidyselect::all_of(c(".test")))
   }
@@ -220,7 +220,7 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
   }
 
   if (percent) {
-    result <- dplyr::mutate(result, dplyr::across(tidyselect::any_of(c("p","ci.low","ci.high")), ~ paste0(round(. * 100, 0), "%")))
+    result <- dplyr::mutate(result, dplyr::across(tidyselect::any_of(c("p","ci low","ci high")), ~ paste0(round(. * 100, 0), "%")))
   }
 
 
@@ -236,7 +236,7 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
 
 
   # Clean NA
-  result <- dplyr::mutate(result, dplyr::across(tidyselect::any_of(c("ci.low","ci.high")), ~ ifelse(is.na(.) && percent,"",.)))
+  result <- dplyr::mutate(result, dplyr::across(tidyselect::any_of(c("ci low","ci high")), ~ ifelse(is.na(.) && percent,"",.)))
 
   digits <- ifelse(percent, 0, 2)
 
@@ -549,15 +549,15 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
       dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
       dplyr::mutate(.test = purrr::map(.data$n, function(x) stats::prop.test(x, sum(.data$n)))) |>
       dplyr::mutate(
-        ci.low =purrr::map_dbl(.data$.test, function(x) x$conf.int[1]),
-        ci.high =purrr::map_dbl(.data$.test, function(x) x$conf.int[2]),
+        "ci low" =purrr::map_dbl(.data$.test, function(x) x$conf.int[1]),
+        "ci high" =purrr::map_dbl(.data$.test, function(x) x$conf.int[2]),
       ) |>
       dplyr::select(-tidyselect::all_of(c(".test"))) |>
       dplyr::ungroup()
 
     # Add % sign
     if (percent) {
-      result_ci <- dplyr::mutate(result_ci, dplyr::across(tidyselect::all_of(c("p","ci.low","ci.high")), ~ paste0(round(. * 100, 0), "%")))
+      result_ci <- dplyr::mutate(result_ci, dplyr::across(tidyselect::all_of(c("p","ci low","ci high")), ~ paste0(round(. * 100, 0), "%")))
     }
   }
 
@@ -721,7 +721,7 @@ tab_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, digits = 1,
   if (ci) {
     result <- dplyr::select(
       result, "item" = "skim_variable",
-      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","ci.low","ci.high","n", "items","alpha"))
+      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd", "ci low" = "ci.low","ci high" = "ci.high","n", "items","alpha"))
     )
   } else {
     result <- dplyr::select(
@@ -761,7 +761,7 @@ tab_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, digits = 1,
     #       So that the resulting data frame contains all digits?
     dplyr::mutate(dplyr::across(tidyselect::all_of(c("n")), ~ as.character(round(., 0)))) %>%
     dplyr::mutate(dplyr::across(tidyselect::all_of(c("min", "q1", "median", "q3", "max")), ~ as.character(round(., digits)))) %>%
-    dplyr::mutate(dplyr::across(tidyselect::any_of(c("mean", "sd", "ci.low", "ci.high")), ~ as.character(round(., digits)))) %>%
+    dplyr::mutate(dplyr::across(tidyselect::any_of(c("mean", "sd", "ci low", "ci high")), ~ as.character(round(., digits)))) %>%
     # labs_clear(-item) %>%
     tidyr::pivot_longer(-tidyselect::all_of("item")) %>%
     dplyr::select(-tidyselect::all_of("item"), {{ col }} := "name", "value")
@@ -843,7 +843,7 @@ tab_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FAL
   if (ci) {
     result <- dplyr::select(
       result,  {{ cross }},
-      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","ci.low","ci.high","n","items","alpha"))
+      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd", "ci low" = "ci.low", "ci high" = "ci.high","n","items","alpha"))
     )
   } else {
     result <- dplyr::select(
@@ -947,7 +947,7 @@ tab_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pe
     values <- c("item1", "item2", "n", "Pearson's r")
   }
   if (ci) {
-    values <- c(values, "ci.low", "ci.high")
+    values <- c(values, "ci low", "ci high")
   }
 
   result <- dplyr::select(result, tidyselect::all_of(values))
@@ -1021,7 +1021,7 @@ tab_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, digits =
   if (ci) {
     result <- dplyr::select(
       result, "item" = "skim_variable",
-      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","ci.low","ci.high","n","items","alpha"))
+      tidyselect::all_of(c("min","q1","median","q3","max","mean","sd", "ci low" = "ci.low", "ci high" = "ci.high","n","items","alpha"))
     )
   } else {
     result <- dplyr::select(

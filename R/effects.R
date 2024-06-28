@@ -420,8 +420,8 @@ effect_metrics_one_grouped <- function(data, col, cross, negative = FALSE, metho
       "t-Test" ,list(
         "method" = stats_t$method,
         "difference" = sprintf("%.2f", round(stats_t$estimate[1] - stats_t$estimate[2], 2)),
-        "cI low" = sprintf("%.2f", round(stats_t$conf.int[1], 2)),
-        "cI high" = sprintf("%.2f",round(stats_t$conf.int[2], 2)),
+        "ci low" = sprintf("%.2f", round(stats_t$conf.int[1], 2)),
+        "ci high" = sprintf("%.2f",round(stats_t$conf.int[2], 2)),
         "standard error" = sprintf("%.2f",round(stats_t$stderr,2)),
         "df" = round(stats_t$parameter,2),
         "t" = sprintf("%.2f",round(stats_t$statistic,2)),
@@ -455,19 +455,18 @@ effect_metrics_one_grouped <- function(data, col, cross, negative = FALSE, metho
         Term = .data$term,
         stars = get_stars(.data$p.value),
         estimate = sprintf("%.2f",round(.data$estimate,2)),
-        conf.low = sprintf("%.2f",round(.data$conf.low,2)),
-        conf.high = sprintf("%.2f",round(.data$conf.high,2)),
-        std.error = sprintf("%.2f",round(.data$std.error,2)),
+        "ci low" = sprintf("%.2f",round(.data$conf.low,2)),
+        "ci high" = sprintf("%.2f",round(.data$conf.high,2)),
+        "standard error" = sprintf("%.2f",round(.data$std.error,2)),
         t = sprintf("%.2f", round(.data$statistic,2)),
         p = sprintf("%.3f",round(.data$p.value,3))
       ) |>
       dplyr::mutate(dplyr::across(tidyselect::all_of(
-        c("estimate","conf.low","conf.high","std.error","t","p")
+        c("estimate","ci low", "ci high" , "standard error","t","p")
       ), function(x) ifelse(x == "NA","",x))) |>
       dplyr::select(tidyselect::all_of(c(
-        "Term","estimate","conf.low","conf.high","std.error","t","p","stars"
+        "Term","estimate","ci low","ci high","standard error","t","p","stars"
       )))
-
 
     # Regression model statistics
     lm_model <- broom::glance(fit) |>
@@ -791,8 +790,8 @@ effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method
       dplyr::mutate(
         n = nrow(data),
         "Pearson's r" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate),2)),
-        ci.low = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[1]),2)),
-        ci.high = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[2]),2)),
+        "ci low" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[1]),2)),
+        "ci high" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[2]),2)),
         df = purrr::map_int(.data$.test, function(x) as.numeric(x$parameter)),
         t = sprintf("%.2f", purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$statistic),2))),
         stars = purrr::map_chr(.data$.test, function(x) get_stars(x$p.value)),
@@ -801,7 +800,7 @@ effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method
       dplyr::mutate(t = ifelse(.data$x_name == .data$y_name, "Inf", t)) |>
       dplyr::select(
         item1 = "x_name", item2 = "y_name",
-        "n","Pearson's r","ci.low","ci.high","df","t","p","stars"
+        "n","Pearson's r", "ci low", "ci high","df","t","p","stars"
       )
   }
 
@@ -890,7 +889,7 @@ get_ci <- function(x, conf = 0.95) {
 #' @param groups A vector indicating groups.
 #' @param conf The confidence interval.
 #' @param pooled Whether to pool variances.
-#' @return A list with the elements d (Cohen's d), ci.low and ci.high (its confidence interval).
+#' @return A list with the elements d (Cohen's d), ci low and ci high (its confidence interval).
 get_cohensd <- function(values, groups, conf=0.95, pooled = FALSE) {
   levels <- unique(stats::na.omit(groups))
   x <- stats::na.omit(values[groups == levels[1]])
@@ -926,8 +925,8 @@ get_cohensd <- function(values, groups, conf=0.95, pooled = FALSE) {
 
   list(
     d = cohensd,
-    ci.low = cohensd - (t_critical * se),
-    ci.high= cohensd + (t_critical * se)
+    "ci low" = cohensd - (t_critical * se),
+    "ci high" = cohensd + (t_critical * se)
   )
 }
 
