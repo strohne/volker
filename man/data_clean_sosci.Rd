@@ -40,7 +40,7 @@ Prepares SoSci Survey data:
 (comes from SoSci and prevents combining vectors)
 \item Recode residual factor values to NA (e.g. "\link{NA} nicht beantwortet")
 \item Recode residual numeric values to NA (e.g. -9)
-\item Add whitespace after slashes to better label breaks
+\item Add whitespace after slashes to improve label breaks
 }
 }
 \examples{

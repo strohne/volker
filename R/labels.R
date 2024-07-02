@@ -9,7 +9,7 @@
 #'        - item_group: First part of the column name, up to an underscore.
 #'        - item_class: The last class value of an item (e.g. numeric, factor).
 #'        - item_label: The comment attribute of the column.
-#'        - value_name: In case a column has numeric attributes, the attribute names
+#'        - value_name: In case a column has numeric attributes, the attribute names.
 #'        - value_label: In case a column has numeric attributes or T/F-attributes,
 #'                       the attribute values.
 #'                       In case a column has a levels attribute, the levels.
@@ -416,12 +416,14 @@ labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_
 #'
 #' @param data A tibble.
 #' @param cols A tidy column selection.
+#' @param default A character string used in case not prefix is found
 #' @return A character string.
 #' @importFrom rlang .data
-get_title <- function(data, cols) {
+get_title <- function(data, cols, default=NULL) {
   labels <- data %>%
-    codebook({{ cols }}) %>%
-    tidyr::drop_na("item_label")
+    codebook({{ cols }}) |>
+    tidyr::drop_na("item_label") |>
+    dplyr::distinct(dplyr::across(tidyselect::all_of("item_label")))
 
   if (nrow(labels) > 0) {
     labels <- labels$item_label
@@ -432,8 +434,10 @@ get_title <- function(data, cols) {
   prefix <- get_prefix(labels)
   prefix <- trim_label(prefix)
 
-  if (prefix == "") {
+  if ((prefix == "") & (length(labels) == 1)) {
     prefix <- labels[[1]]
+  } else if (prefix == "") {
+    prefix <- default
   }
 
   prefix

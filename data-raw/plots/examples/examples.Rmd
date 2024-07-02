@@ -13,7 +13,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo=FALSE, fig.width = 7
 library(dplyr)
 library(ggplot2)
 library(volker)
-theme_set(theme_bw())
+theme_set(theme_vlkr())
 
 data <- volker::chatgpt
 
@@ -78,7 +78,7 @@ data |>
 
 data %>% 
   filter(sd_gender != "diverse") %>% 
-  plot_metrics(sd_age, sd_gender)
+  plot_metrics(sd_age, sd_gender, box=T)
 
 ggsave("man/figures/plot_metrics_one_grouped.png", width=300,height=200, units="px", dpi=96, scale = 1)
 ```
@@ -95,7 +95,7 @@ data %>%
   select(sd_gender, adopter) |> 
   filter(sd_gender != "diverse") %>% 
   filter(adopter %in% c("I tend to wait", "I try quickly")) %>% 
-  plot_counts(adopter, sd_gender, prop="rows", ordered = 1) +
+  plot_counts(adopter, sd_gender, prop="cols", ordered = 0) +
   theme(legend.position = "bottom")
 
 ggsave("man/figures/plot_counts_one_grouped.png", width=300,height=200, units="px", dpi=96, scale = 1)

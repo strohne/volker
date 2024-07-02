@@ -12,6 +12,8 @@ vignettes/reports.Rmd
 vignettes/reports.html
 vignettes/scales.Rmd
 vignettes/scales.html
+vignettes/effects.Rmd
+vignettes/effects.html
 vignettes/playground.Rmd
 vignettes/playground.html
 inst/rmarkdown/templates/volker-report/skeleton/skeleton.html
