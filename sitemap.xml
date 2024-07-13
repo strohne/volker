@@ -1,399 +1,135 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://strohne.github.io/volker/404.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/articles/effects.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/articles/introduction.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/articles/plots.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/articles/reports.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/articles/scales.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/articles/tables.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/index.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/VLKR_FILLDISCRETE.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/VLKR_FILLGRADIENT.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/VLKR_NA_LEVELS.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/VLKR_NA_NUMERIC.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/chatgpt.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/check_has_column.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/check_is_dataframe.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/codebook.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/data_clean.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/data_clean_sosci.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/data_rm_missings.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/data_rm_negatives.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/data_rm_zeros.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-add_to_vlkr_rprt.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-attr_insert.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-attr_transfer.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-density_mode.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-effect_correlations.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-iqr.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-outliers.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-plot_bars.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-plot_lines.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-report_idx.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-to_vlkr_df.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-to_vlkr_list.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-to_vlkr_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-to_vlkr_rprt.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-to_vlkr_tab.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-whisker_lower.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/dot-whisker_upper.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/effect_counts.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/effect_counts_items.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/effect_counts_items_cor.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/effect_counts_items_grouped.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/effect_counts_one.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/effect_counts_one_cor.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/effect_counts_one_grouped.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/effect_metrics.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/effect_metrics_items.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/effect_metrics_items_cor.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/effect_metrics_items_grouped.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/effect_metrics_one.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/effect_metrics_one_cor.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/effect_metrics_one_grouped.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/ends_with.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/filter.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/get_baseline.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/get_ci.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/get_cohensd.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/get_direction.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/get_limits.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/get_prefix.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/get_stars.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/get_title.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/html_report.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/idx_add.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/idx_alpha.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/knit_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/knit_prepare.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/knit_table.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/label_scale.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/labs_apply.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/labs_clear.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/labs_replace.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/labs_restore.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/labs_store.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/mutate.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/plot_counts.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/plot_counts_items.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/plot_counts_items_cor.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/plot_counts_items_grouped.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/plot_counts_one.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/plot_counts_one_cor.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/plot_counts_one_grouped.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/plot_metrics.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/plot_metrics_items.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/plot_metrics_items_cor.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/plot_metrics_items_grouped.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/plot_metrics_one.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/plot_metrics_one_cor.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/plot_metrics_one_grouped.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/prepare_scale.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/print.vlkr_list.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/print.vlkr_plt.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/print.vlkr_rprt.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/print.vlkr_tbl.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/report_counts.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/report_metrics.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/select.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/skim_boxplot.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/skim_metrics.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/starts_with.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tab_counts.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tab_counts_items.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tab_counts_items_cor.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tab_counts_items_grouped.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tab_counts_one.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tab_counts_one_cor.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tab_counts_one_grouped.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tab_metrics.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tab_metrics_items.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tab_metrics_items_cor.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tab_metrics_items_grouped.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tab_metrics_one.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tab_metrics_one_cor.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tab_metrics_one_grouped.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/theme_set.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/theme_vlkr.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tibble.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tidy_lm_levels.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/tribble.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/trim_label.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/trim_prefix.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/vlkr_colors_discrete.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/vlkr_colors_sequential.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/volker-package.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/wrap_label.html</loc>
-  </url>
-  <url>
-    <loc>https://strohne.github.io/volker/reference/zip_tables.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://strohne.github.io/volker/404.html</loc></url>
+<url><loc>https://strohne.github.io/volker/LICENSE-text.html</loc></url>
+<url><loc>https://strohne.github.io/volker/articles/effects.html</loc></url>
+<url><loc>https://strohne.github.io/volker/articles/index.html</loc></url>
+<url><loc>https://strohne.github.io/volker/articles/introduction.html</loc></url>
+<url><loc>https://strohne.github.io/volker/articles/plots.html</loc></url>
+<url><loc>https://strohne.github.io/volker/articles/reports.html</loc></url>
+<url><loc>https://strohne.github.io/volker/articles/scales.html</loc></url>
+<url><loc>https://strohne.github.io/volker/articles/tables.html</loc></url>
+<url><loc>https://strohne.github.io/volker/authors.html</loc></url>
+<url><loc>https://strohne.github.io/volker/index.html</loc></url>
+<url><loc>https://strohne.github.io/volker/news/index.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/VLKR_FILLDISCRETE.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/VLKR_FILLGRADIENT.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/VLKR_NA_LEVELS.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/VLKR_NA_NUMERIC.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/chatgpt.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/check_has_column.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/check_is_dataframe.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/codebook.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/data_clean.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/data_clean_sosci.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/data_rm_missings.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/data_rm_negatives.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/data_rm_zeros.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-add_to_vlkr_rprt.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-attr_insert.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-attr_transfer.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-density_mode.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-effect_correlations.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-iqr.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-outliers.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-plot_bars.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-plot_lines.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-report_idx.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-to_vlkr_df.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-to_vlkr_list.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-to_vlkr_plot.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-to_vlkr_rprt.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-to_vlkr_tab.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-whisker_lower.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-whisker_upper.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/effect_counts.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/effect_counts_items.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/effect_counts_items_cor.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/effect_counts_items_grouped.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/effect_counts_one.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/effect_counts_one_cor.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/effect_counts_one_grouped.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/effect_metrics.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/effect_metrics_items.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/effect_metrics_items_cor.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/effect_metrics_items_grouped.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/effect_metrics_one.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/effect_metrics_one_cor.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/effect_metrics_one_grouped.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/ends_with.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/filter.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/get_baseline.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/get_ci.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/get_cohensd.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/get_direction.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/get_limits.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/get_prefix.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/get_stars.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/get_title.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/html_report.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/idx_add.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/idx_alpha.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/index.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/knit_plot.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/knit_prepare.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/knit_table.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/label_scale.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/labs_apply.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/labs_clear.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/labs_replace.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/labs_restore.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/labs_store.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/mutate.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/pipe.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/plot_counts.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/plot_counts_items.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/plot_counts_items_cor.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/plot_counts_items_grouped.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/plot_counts_one.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/plot_counts_one_cor.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/plot_counts_one_grouped.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/plot_metrics.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/plot_metrics_items.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/plot_metrics_items_cor.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/plot_metrics_items_grouped.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/plot_metrics_one.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/plot_metrics_one_cor.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/plot_metrics_one_grouped.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/prepare_scale.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/print.vlkr_list.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/print.vlkr_plt.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/print.vlkr_rprt.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/print.vlkr_tbl.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/report_counts.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/report_metrics.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/select.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/skim_boxplot.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/skim_metrics.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/starts_with.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tab_counts.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tab_counts_items.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tab_counts_items_cor.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tab_counts_items_grouped.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tab_counts_one.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tab_counts_one_cor.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tab_counts_one_grouped.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tab_metrics.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tab_metrics_items.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tab_metrics_items_cor.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tab_metrics_items_grouped.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tab_metrics_one.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tab_metrics_one_cor.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tab_metrics_one_grouped.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/theme_set.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/theme_vlkr.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tibble.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tidy_lm_levels.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/tribble.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/trim_label.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/trim_prefix.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/vlkr_colors_discrete.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/vlkr_colors_sequential.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/volker-package.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/wrap_label.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/zip_tables.html</loc></url>
 </urlset>
+
