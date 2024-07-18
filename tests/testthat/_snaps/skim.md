@@ -24,3 +24,24 @@
       #   cg_adoption_social_02 <dbl>, cg_adoption_social_03 <dbl>,
       #   cg_adoption_social_04 <dbl>, adopter <fct>, sd_age <dbl>, ...
 
+# five-point-summary
+
+    Code
+      list(iqr_age = .iqr(data$sd_age), whisker_lower = .whisker_lower(data$sd_age),
+      whisker_upper = .whisker_upper(data$sd_age), outliers = .outliers(data$sd_age))
+    Output
+      $iqr_age
+      [1] 25
+      
+      $whisker_lower
+      [1] 18
+      
+      $whisker_upper
+      [1] 68
+      
+      $outliers
+      $outliers[[1]]
+      numeric(0)
+      
+      
+
