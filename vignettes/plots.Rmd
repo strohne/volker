@@ -19,7 +19,8 @@ knitr::opts_chunk$set(
 library(dplyr)
 library(ggplot2)
 library(volker)
-theme_set(theme_bw())
+
+theme_set(theme_vlkr())
 
 # Load data
 data <- volker::chatgpt
@@ -30,7 +31,6 @@ data <- volker::chatgpt
 
 ### 1. One variable: Frequency plot of Gender
 ```{r}
-theme_set(theme_vlkr())
 plot_counts(data, sd_gender)
 ```
 

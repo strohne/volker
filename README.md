@@ -194,7 +194,7 @@ yet.)
 | 21  | plot_metrics_one_cor       |             | plot   | metrics | one      | correlated |
 | 22  | plot_metrics_items         |             | plot   | metrics | multiple |            |
 | 23  | plot_metrics_items_grouped |             | plot   | metrics | multiple | grouped    |
-| 24  | plot_metrics_items_cor     |             | plot   | metrics | multiple | correlated |
+| 24  | plot_metrics_items_cor     | not yet     | plot   | metrics | multiple | correlated |
 
 ## Effect sizes and statistical tests
 
