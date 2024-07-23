@@ -643,19 +643,174 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 
 #' Compare the values in multiple items by a grouping column
 #'
-#' \strong{Not yet implemented. The future will come.}
-#'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
-#' @param cols The item columns that hold the values to summarize.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
+#' @param prop The basis of percent calculation: "total" (the default), "cols", or "rows".
+#' @param category Summarizing multiple items (the cols parameter) by group requires a focus category.
+#'                 By default, for logical column types, only TRUE values are counted.
+#'                 For other column types, the first category is counted.
+#'                 Provide a character vector with focus categories to override the default behavior.
+#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
+#' @param values The values to output: n (frequency) or p (percentage) or both (the default).
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
-#' @return A volker tibble.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
+#' @return A ggplot object.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#' tab_counts_items_grouped(
+#'   data, starts_with("cg_adoption_"), adopter,
+#'   category=c(4,5)
+#' )
+#'
+#' @export
 #' @importFrom rlang .data
-tab_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+tab_counts_items_grouped <- function(data, cols, cross, prop = "total", category = NULL, percent = TRUE, values = c("n", "p"), title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ cols }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
+
+  # 4. Calculate data
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  cols_names <- colnames(dplyr::select(data, tidyselect::all_of(cols_eval)))
+
+  cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
+  cross_names <- colnames(dplyr::select(data, tidyselect::all_of(cross_eval)))
+
+  # Pivot
+  result <- data %>%
+    labs_clear({{ cols }}) %>%
+    tidyr::pivot_longer(
+      {{ cols }},
+      names_to = "item",
+      values_to = ".category"
+    )
+
+  # Focus TRUE category or the first category
+  base_category <-  NULL
+  if (is.null(category)) {
+    categories <- result$.category |> unique() |> as.character()
+    if ((length(categories) == 2) && ("TRUE" %in% categories)) {
+      category <- "TRUE"
+    } else {
+      category <- categories[1]
+      base_category <- category
+    }
+    categories <- NULL
+  } else {
+    base_category <- category
+  }
+
+  # Filter category
+  result <- dplyr::filter(result, .data$.category %in% category)
+
+  # Get category labels
+  category_labels <- codebook(data, {{ cols }}) |>
+    dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) |>
+    dplyr::filter(.data$value_name %in% base_category) |>
+    dplyr::pull(.data$value_label)
+
+  if (length(category_labels) == length(base_category)) {
+    base_category <- category_labels
+  }
+
+  base_category <- paste0(base_category, collapse=", ")
+  message("Counting for items is based on values: ", base_category)
+
+  # Count
+  result <- result %>%
+    dplyr::mutate(value = as.factor({{ cross }})) %>%
+    dplyr::count(dplyr::across(tidyselect::all_of(c("item", "value"))))
+
+
+  # Percentages
+  if ((prop == "rows") || (prop == "cols")) {
+    result <- result %>%
+      dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
+      dplyr::mutate(p = (.data$n / sum(.data$n))) %>%
+      dplyr::ungroup()
+
+  } else {
+    result <- result %>%
+      dplyr::mutate(p = (.data$n / sum(.data$n)))
+  }
+
+  # Factor result
+  result <- result %>%
+    dplyr::mutate(value = as.factor(.data$value)) %>%
+    dplyr::mutate(item = factor(.data$item, levels=cols_names)) |>
+    dplyr::arrange(.data$item)
+
+  # Result n
+  result_n <- result %>%
+    dplyr::select(-p) %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
+    tidyr::pivot_wider(
+      names_from = value,
+      values_from = n,
+      values_fill = list(n = 0))
+
+  # Result p
+  result_p <- result %>%
+    dplyr::select(-n) %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
+    tidyr::pivot_wider(
+      names_from = value,
+      values_from = p,
+      values_fill = list(p = 0))
+
+  # Add % sign
+  if (percent) {
+    result_p <- dplyr::mutate(result_p, dplyr::across(tidyselect::where(is.numeric), ~ paste0(round(. *100, 0), "%")))
+  }
+
+  # Combine n and p if requested
+  if (("n" %in% values) && ("p" %in% values)) {
+    result <- zip_tables(result_p, result_n, brackets = TRUE, newline = FALSE)
+  } else if ("p" %in% values) {
+    result <- result_p
+  } else {
+    result <- result_n
+  }
+
+  # 5. Set labels
+  if (labels) {
+    result <- labs_replace(
+      result, "item",
+      codebook(data, {{ cols }}),
+      "item_name", "item_label"
+    )}
+
+  # Remove common item prefix
+  prefix <- get_prefix(result$item, trim=T)
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
+
+  # Rename first columns
+  if (prefix == "") {
+    prefix <- "Item"
+  }
+
+  colnames(result)[1] <- prefix
+
+  result <- .attr_transfer(result, data, "missings")
+
+  .to_vlkr_tab(result)
+
 }
 
 #' Correlate the values in multiple items
