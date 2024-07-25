@@ -1404,25 +1404,113 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
   .to_vlkr_plot(pl)
 }
 
-#' Scatter plot of correlations between multiple items
+#' Heatmap for correlations between multiple items
 #'
-#' \strong{Not yet implemented. The future will come.}
 #'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
+#' @param negative description
+#' @param method description
+#' @param numbers
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @return A ggplot object.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+#'
 #' @importFrom rlang .data
-plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+#'
+plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, title = TRUE,  method = "pearson", numbers = F, digits = 2, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ cols }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
+
+  # 4. Remove negatives
+  if (!negative) {
+    data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
+  }
+
+  # 5. Calculate correlation
+  result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
+
+  # Remove common item prefix
+  prefix1 <- get_prefix(result$item1)
+  prefix2 <- get_prefix(result$item2)
+
+  result <- dplyr::mutate(result,
+                          item1 = trim_prefix(.data$item1, prefix1),
+                          item2 = trim_prefix(.data$item2, prefix2)
+  )
+
+  method <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
+
+  # Plot
+  pl <- ggplot2::ggplot(result, ggplot2::aes(item1, item2, fill = !!sym(method))) +
+    ggplot2::geom_tile(color = "white")
+
+  if (numbers) {
+    pl <- pl + ggplot2::geom_text(ggplot2::aes(label = !!sym(method)), color = "black", size = 3)
+  }
+
+  # Add labels
+  if (labels)
+    pl <- pl + ggplot2::labs(
+      x = prefix1,
+      y = prefix2)
+
+  # Add title
+  if (isTRUE(title)) {
+    if (prefix1 == prefix2) {
+      plot_title <- prefix1
+    } else {
+      plot_title <- ifelse((prefix1 != "" && prefix2 != ""), paste0(prefix1, " - ", prefix2), "")
+    }
+    if (plot_title == "") {
+      plot_title <- NULL
+    }
+  } else if (is.character(title)) {
+    plot_title <- title
+  } else {
+    plot_title <- NULL
+  }
+
+  pl <- pl + ggplot2::ggtitle(label = plot_title)
+
+  # Add theming
+  pl <- pl +
+    ggplot2::theme(
+      plot.caption = ggplot2::element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position = "plot"
+    )
+  # Add base
+  base_n <- nrow(data)
+  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
+
+  # Convert to vlkr_plot
+  pl <- .attr_transfer(pl, data, "missings")
+  .to_vlkr_plot(pl)
+
 }
+
 
 #' Helper function: plot grouped bar chart
 #'
