@@ -1412,9 +1412,9 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
-#' @param negative description
-#' @param method description
-#' @param numbers
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param method The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.
+#' @param numbers Controls whether to display correlation coefficients on the plot.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1501,6 +1501,11 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, title = 
       plot.title.position = "plot",
       plot.caption.position = "plot"
     )
+
+  # Wrap labels
+  pl <- pl +
+    ggplot2::scale_x_discrete(labels = scales::label_wrap(40))
+
   # Add base
   base_n <- nrow(data)
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
