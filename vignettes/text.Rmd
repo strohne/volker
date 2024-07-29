@@ -24,7 +24,47 @@ ds <- volker::chatgpt
 
 ```{r results='asis'}
 
-ds |> 
-  volker:::lda_report(cg_activities)
+# @CG: Es geht darum, die Spalte relevance zu prüfen
+ds_topics <- ds |> 
+  volker:::lda_report(cg_activities, k=3)
+
+
+# @CG: lda_report legt das model im lda-Attribut ab....
+fit <- attr(ds_topics$tpc_topic,"lda")
+
+# @CG ... das brauchst Du um die Funktion aufzurufen
+lda_rel <- lda_get_termrelevance(fit, lambda=0.6)
+
+
+
+
+```
+
+
+```{r results='asis'}
+
+
+# @CG... hier nochmal der konkrete Code aus der Funktion, der geprüft werden müsste
+#        (Berechnung von lda_rel). Ich habe die Kommentare und Verweise zu Alternativen mal drin gelassen.
+
+
+lambda <- 0.6
+lda_phi <- modeltools::posterior(fit)$terms %>% as.matrix()
+
+# See http://vis.stanford.edu/files/2012-Termite-AVI.pdf and
+# https://nlp.stanford.edu/events/illvi2014/papers/sievert-illvi2014.pdf
+# lda_rel  = lambda * lda_phi + (1 - lambda) * (lda_phi / col_sums(lda_phi))
+
+# Calculate relevance
+# See section 3 in https://nlp.stanford.edu/events/illvi2014/papers/sievert-illvi2014.pdf
+# relevance is p_kw for lambda = 1 and the probability shift for lambda = 0
+# mutate(relevance = lambda * log(p_kw) + (1- lambda) * log (p_kw / p_w))
+# TODO: is col_sums(lda_phi) correct here?
+lda_rel  = lambda * log(lda_phi) + (1 - lambda) * log(lda_phi / slam::col_sums(lda_phi))
+
+lda_rel <- lda_rel %>% t() %>% as_tibble(rownames ="term") %>%
+  pivot_longer(-1, names_to="topic", values_to="relevance")
+
+
 
 ```
