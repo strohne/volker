@@ -1,0 +1,173 @@
+---
+title: "Create example plots and tables"
+output: rmarkdown::html_vignette
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+
+knitr::opts_knit$set(root.dir = "../..")
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo=FALSE, fig.width = 7)
+
+library(dplyr)
+library(ggplot2)
+library(volker)
+theme_set(theme_vlkr())
+
+data <- volker::chatgpt
+
+# Simplify labels for examples
+data <- data |> 
+  labs_store() |> 
+  mutate(adopter = case_when(
+    adopter == "I try new offers immediately" ~ "I try quickly",
+    adopter == "I try new offers rather quickly" ~ "I try quickly",
+    adopter == "I wait until offers establish themselves" ~ "I tend to wait",
+    adopter == "I only use new offers when I have no other choice" ~ "I tend to wait"
+  )) |> 
+  labs_restore()
+
+data <- data %>%
+  labs_apply(tribble(
+    ~item_name, ~item_label,
+    "cg_adoption_advantage_01", "Benefits: General", 
+    "cg_adoption_advantage_02", "Benefits: Financial",
+    "cg_adoption_advantage_03", "Benefits: Workplace",
+    "cg_adoption_advantage_04", "Benefits: Joy"
+  ))
+```
+
+## 1. One variable
+
+### Metric: Age
+```{r}
+
+data %>%
+  tab_metrics(sd_age)
+
+data %>%
+  plot_metrics(sd_age)
+
+ggsave("man/figures/plot_metrics_one.png", width=300,height=200, units="px", dpi=96)
+
+```
+
+
+### Categorical: Adoption
+```{r}
+
+data %>% 
+  tab_counts(adopter)
+
+data %>% 
+  plot_counts(adopter)
+
+ggsave("man/figures/plot_counts_one.png", width=300,height=200, units="px", dpi=96)
+
+```
+
+## 2. Two variables (one being categorical)
+
+### Group comparison: Age by gender
+
+```{r results='asis'}
+
+data |> 
+  tab_metrics(sd_age, sd_gender)
+
+data %>% 
+  filter(sd_gender != "diverse") %>% 
+  plot_metrics(sd_age, sd_gender, box=T)
+
+ggsave("man/figures/plot_metrics_one_grouped.png", width=300,height=200, units="px", dpi=96, scale = 1)
+```
+
+
+### Cross table: Innovator type by gender
+
+```{r}
+
+data %>% 
+  tab_counts(adopter, sd_gender)
+
+data %>% 
+  select(sd_gender, adopter) |> 
+  filter(sd_gender != "diverse") %>% 
+  filter(adopter %in% c("I tend to wait", "I try quickly")) %>% 
+  plot_counts(adopter, sd_gender, prop="cols", ordered = 0) +
+  theme(legend.position = "bottom")
+
+ggsave("man/figures/plot_counts_one_grouped.png", width=300,height=200, units="px", dpi=96, scale = 1)
+```
+
+
+## 2. Multiple items
+
+### Adoption factors as metric variables
+```{r}
+
+data %>% 
+  tab_metrics(starts_with("cg_adoption_advantage_"))
+
+data |> 
+  select(starts_with("cg_adoption_advantage_")) |> 
+  labs_apply(
+    tribble(
+      ~value_name, ~value_label,
+      "1" , "not at all",
+      "2", "",
+      "3", "",
+      "4", "",
+      "5" , "fully applies"
+    ),
+    cols = starts_with("cg_adoption_advantage_")
+  )  |>
+  plot_metrics_items(starts_with("cg_adoption_advantage_")) 
+
+ggsave("man/figures/plot_metrics_items.png", width=600,height=400, units="px", dpi=96, scale = 0.5)
+```
+
+
+### Adoption factors as frequencies
+```{r}
+
+# TODO: better recode 1+2 and 4+5
+data %>% 
+  filter(
+    cg_adoption_advantage_01 %in% c(1,3,5),
+    cg_adoption_advantage_02 %in% c(1,3,5),
+    cg_adoption_advantage_03 %in% c(1,3,5),
+    cg_adoption_advantage_04  %in% c(1,3,5)
+    
+  ) %>% 
+  tab_counts(starts_with("cg_adoption_advantage_"))
+
+data %>% 
+  plot_counts_items(starts_with("cg_adoption_advantage_")) +
+  theme(legend.position = "none")
+
+ggsave("man/figures/plot_counts_items.png", width=600,height=400, units="px", dpi=96, scale = 0.5)
+```
+
+
+## 4. Multiple metric variables
+
+### Compare means of multiple items: Adoption factors by gender
+```{r results='asis'}
+
+data %>% 
+  tab_metrics(
+    starts_with("cg_adoption_advantage"), 
+    sd_gender
+  )
+
+```
+
+### Correlation of items: Adoption factors by adoption factors
+```{r results='asis'}
+
+data %>% 
+  tab_metrics_items_cor(starts_with("cg_adoption_advantage"), starts_with("cg_adoption_advantage"))
+
+```

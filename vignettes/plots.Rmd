@@ -7,88 +7,94 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   chunk_output_type: console
+
 ---
 
 ```{r include=FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo = TRUE)
+knitr::opts_chunk$set(
+   echo = TRUE,
+   fig.width=7
+)
 
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 library(volker)
-theme_set(theme_bw())
 
+theme_set(theme_vlkr())
+
+# Load data
 data <- volker::chatgpt
 
-
-# Recode -9 to NA
-data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(., -9)))
-
-# Add label to sd_alter
-data <- set_item_labels(data, tibble("sd_alter", "Alter"))
 ```
 
 ## Frequencies of categorical variables
 
 ### 1. One variable: Frequency plot of Gender
-```{r results='asis'}
-plot_var_counts(data, sd_geschlecht)
+```{r}
+plot_counts(data, sd_gender)
 ```
 
-### 2. Multiple items: Frequency plot for adoption factors
-```{r results='asis'}
-# Use the .numbers parameter to add counts to the bars
-plot_item_counts(data, starts_with("cg_adoption_"), numbers = "p")
+### 2. Two variables: Stacked frequency plot of innovator type by gender
+
+```{r}
+# The prop parameter grows bars to 100%
+# The numbers parameter adds percentages to the bars
+
+plot_counts(data, adopter, sd_gender, prop = "rows", number="p")
+```
+
+
+### 3. Multiple items: Frequency plot for adoption factors
+```{r, fig.height=6}
+# The numbers parameter adds percentages to the bars
+plot_counts(data, starts_with("cg_adoption_"), numbers = "p")
 
 ```
 
-### 3. Two variables: Stacked frequency plot of innovator type by gender
 
-```{r results='asis'}
-# TODO: use number=c("n","p")
-plot_group_counts(data, in_adoption, sd_geschlecht, prop = "rows")
+### 4. Multiple items: Frequency plot for adoption factors grouped by adopter category
+```{r, fig.height=6}
+
+plot_counts_items_grouped(
+  data, starts_with("cg_adoption_"), adopter, category=c(4,5),
+  numbers = "n", prop="rows"
+)
+
 ```
+
 
 ## Metric distributions
 
 ### 1. Distribution for one metric variable: Age
-```{r results='asis'}
-
-plot_var_metrics(data, sd_alter)
-
+```{r}
+plot_metrics(data, sd_age)
 ```
 
 
-### 2. Distribution of multiple metric items: Adoption factors
-```{r results='asis'}
+### 2. Distribution by a grouping variable
+```{r}
+plot_metrics(data, sd_age, sd_gender, bars="box")
+```
 
+
+### 3. Distribution of multiple metric items: Adoption factors
+```{r, fig.height=6}
 # Note that negative values are omitted,
-# you can change the behavior with the .negative parameter
-plot_item_metrics(data, starts_with("cg_adoption_"))
-
+# you can change the behavior with the negative-parameter
+plot_metrics(data, starts_with("cg_adoption_"))
 ```
 
-### 3. Distribution by a grouping variable
-```{r results='asis'}
-plot_group_metrics(data, sd_alter, sd_geschlecht)
-plot_multi_means(data, starts_with("cg_adoption_"), sd_geschlecht)
+### 4. Group comparison of multiple metric items: Adoption factors by gender
+```{r, fig.height=6}
+# Filter out one group, too few cases in the sample
+data %>% 
+  filter(sd_gender != "divers") %>% 
+  plot_metrics(starts_with("cg_adoption_"), sd_gender)
 ```
 
-### 4. Index  distribution by a grouping variable
-```{r results='asis'}
-
-data %>%
-  add_idx(starts_with("cg_adoption_social_")) %>%
-  add_idx(starts_with("cg_adoption_fearofuse_")) %>%
-  add_idx(starts_with("cg_adoption_advantage_")) %>%
-  
-  # Set new labels for the three index columns
-  set_col_label(starts_with("idx_cg_adoption"), c(
-    "ChatGPT-Erwartung: Social",
-    "ChatGPT-Erwartung: Fear of Use",
-    "ChatGPT-Erwartung: Advantage"
-  )) %>%
-  
-  select(starts_with("idx_"), in_adoption) %>% 
-  plot_multi_means(starts_with("idx_cg_adoption"), in_adoption)
-  
+## Correlations
+```{r}
+data |> 
+  plot_metrics(use_private, cols_cor = use_work)
 ```
 

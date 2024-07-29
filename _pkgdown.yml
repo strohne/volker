@@ -1,0 +1,56 @@
+url: https://strohne.github.io/volker/
+template:
+  bootstrap: 5
+navbar:
+  structure:
+    left:
+    - intro
+    - introduction
+    - reference
+    - news
+    right:
+    - search
+    - github
+  components:
+    introduction:
+      text: Introduction
+      href: articles/introduction.html
+vignettes:
+- title: "Introduction"
+  name: "introduction"
+
+reference:
+- title: Analysis
+  desc: >
+    Functions for describing and analyzing categorical and metric data.
+    Report functions call table, plot, and effect functions.
+- contents:
+  - starts_with("report")
+  - starts_with("tab")
+  - starts_with("plot")
+  - starts_with("effect")
+
+- title: Labeling
+  desc: Manage and apply variable labels.
+- contents:
+  - codebook
+  - labs_apply
+  - labs_clear
+  - labs_store
+  - labs_restore
+
+- title: Styling
+  desc: >
+      Functions for customized visual styling and formatting.
+- contents:
+  - theme_vlkr
+  - html_report
+
+- title: Data preparation
+  desc: Functions for data preparation and calculation.
+- contents:
+  - idx_add
+
+- title: Example data
+- contents:
+  - chatgpt

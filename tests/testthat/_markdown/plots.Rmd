@@ -1,0 +1,132 @@
+---
+title: "Test plot variations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Test plot variations}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = TRUE, fig.width = 7)
+
+library(ggplot2)
+library(volker)
+
+theme_set(theme_bw())
+
+data <- volker::chatgpt
+
+```
+
+## Categorical variables
+
+### plot_counts_one
+```{r}
+data |> 
+  plot_counts(adopter)
+```
+
+### plot_counts_one with binary data
+```{r}
+data |> 
+  mutate(adopter = adopter == "I try new offers immediately") |> 
+  plot_counts(adopter)
+```
+
+### plot_counts_one with focus category
+```{r}
+data |> 
+  plot_counts(adopter, category="I try new offers immediately")
+```
+
+### plot_counts_one_grouped
+```{r}
+# Test order of items
+plot_counts(data, sd_gender, adopter)
+```
+
+### plot_counts_one_grouped with row props
+```{r}
+# The last categories' percentage should be omitted in ordered plots
+data |> 
+  plot_counts(adopter, sd_gender, prop = "rows", numbers="p")
+```
+
+### plot_counts_one_grouped with col props
+```{r}
+# Test whether the figure is flipped
+plot_counts(data, adopter, sd_gender, prop = "cols", numbers="p", ordered = -1)
+```
+
+### plot_counts_one_grouped with reversed levels
+```{r}
+data |> 
+  mutate(adopter = factor(adopter, levels = rev(levels(adopter)))) |> 
+  plot_counts(adopter, sd_gender, prop = "cols")
+
+```
+
+### plot_counts_items
+```{r, fig.height=5}
+plot_counts(data, starts_with("cg_adoption_"), numbers = "p")
+```
+
+### plot_counts_items with binary data
+```{r}
+data |> 
+  mutate(across(starts_with("cg_adoption_advantage"), \(x) x > 3)) |> 
+  plot_counts(starts_with("cg_adoption_advantage"))
+```
+
+
+## Metric distributions
+
+### plot_metrics_one
+```{r}
+plot_metrics(data, sd_age)
+```
+
+### plot_metrics_one_grouped
+```{r}
+plot_metrics(data, sd_age, sd_gender)
+```
+
+### plot_metrics_one_cor
+```{r}
+plot_metrics(data, sd_age, use_work, metric=TRUE)
+```
+
+
+### plot_metrics_items
+```{r, fig.height=5}
+plot_metrics(data, starts_with("cg_adoption_"))
+```
+
+### plot_metrics_items_grouped
+```{r, fig.height=5}
+plot_metrics(data, starts_with("cg_adoption_"), sd_gender)
+```
+
+## Index:  distribution by a grouping variable
+```{r}
+
+data %>%
+  idx_add(starts_with("cg_adoption_social_")) %>%
+  idx_add(starts_with("cg_adoption_fearofuse_")) %>%
+  idx_add(starts_with("cg_adoption_advantage_")) %>%
+  
+  # Set new labels for the three index columns
+  labs_apply(tribble(
+    ~item_name, ~item_label,
+    "idx_cg_adoption_social", "ChatGPT-Erwartung: Social",
+    "idx_cg_adoption_fearofuse", "ChatGPT-Erwartung: Fear of Use",
+    "idx_cg_adoption_advantage", "ChatGPT-Erwartung: Advantage"
+  )) %>%
+  
+  plot_metrics_items_grouped(starts_with("idx_cg_adoption"), adopter)
+  
+```
+

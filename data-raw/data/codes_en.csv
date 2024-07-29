@@ -1,0 +1,95 @@
+item_name;item_group;item_class;item_label;value_name;value_label
+case;case;;case;;
+sd_age;sd;;Age;;
+cg_activities;cg;;Activities with ChatGPT;;
+use_private;use;;Usage: in private context;1;never
+use_private;use;;Usage: in private context;2;rarely
+use_private;use;;Usage: in private context;3;several times a month
+use_private;use;;Usage: in private context;4;several times a week
+use_private;use;;Usage: in private context;5;almost daily
+use_work;use;;Usage: in professional context;1;never
+use_work;use;;Usage: in professional context;2;rarely
+use_work;use;;Usage: in professional context;3;several times a month
+use_work;use;;Usage: in professional context;4;several times a week
+use_work;use;;Usage: in professional context;5;almost daily
+cg_adoption_advantage_01;cg;;Expectations: ChatGPT has clear advantages compared to similar offerings.;1;strongly disagree
+cg_adoption_advantage_01;cg;;Expectations: ChatGPT has clear advantages compared to similar offerings.;2;disagree
+cg_adoption_advantage_01;cg;;Expectations: ChatGPT has clear advantages compared to similar offerings.;3;neutral
+cg_adoption_advantage_01;cg;;Expectations: ChatGPT has clear advantages compared to similar offerings.;4;agree
+cg_adoption_advantage_01;cg;;Expectations: ChatGPT has clear advantages compared to similar offerings.;5;strongly agree
+cg_adoption_advantage_01;cg;;Expectations: ChatGPT has clear advantages compared to similar offerings.;-1;[no answer]
+cg_adoption_advantage_02;cg;;Expectations: Using ChatGPT brings financial benefits.;1;strongly disagree
+cg_adoption_advantage_02;cg;;Expectations: Using ChatGPT brings financial benefits.;2;disagree
+cg_adoption_advantage_02;cg;;Expectations: Using ChatGPT brings financial benefits.;3;neutral
+cg_adoption_advantage_02;cg;;Expectations: Using ChatGPT brings financial benefits.;4;agree
+cg_adoption_advantage_02;cg;;Expectations: Using ChatGPT brings financial benefits.;5;strongly agree
+cg_adoption_advantage_02;cg;;Expectations: Using ChatGPT brings financial benefits.;-1;[no answer]
+cg_adoption_advantage_03;cg;;Expectations: Using ChatGPT is advantageous in many tasks.;1;strongly disagree
+cg_adoption_advantage_03;cg;;Expectations: Using ChatGPT is advantageous in many tasks.;2;disagree
+cg_adoption_advantage_03;cg;;Expectations: Using ChatGPT is advantageous in many tasks.;3;neutral
+cg_adoption_advantage_03;cg;;Expectations: Using ChatGPT is advantageous in many tasks.;4;agree
+cg_adoption_advantage_03;cg;;Expectations: Using ChatGPT is advantageous in many tasks.;5;strongly agree
+cg_adoption_advantage_03;cg;;Expectations: Using ChatGPT is advantageous in many tasks.;-1;[no answer]
+cg_adoption_advantage_04;cg;;Expectations: Compared to other systems, using ChatGPT is more fun.;1;strongly disagree
+cg_adoption_advantage_04;cg;;Expectations: Compared to other systems, using ChatGPT is more fun.;2;disagree
+cg_adoption_advantage_04;cg;;Expectations: Compared to other systems, using ChatGPT is more fun.;3;neutral
+cg_adoption_advantage_04;cg;;Expectations: Compared to other systems, using ChatGPT is more fun.;4;agree
+cg_adoption_advantage_04;cg;;Expectations: Compared to other systems, using ChatGPT is more fun.;5;strongly agree
+cg_adoption_advantage_04;cg;;Expectations: Compared to other systems, using ChatGPT is more fun.;-1;[no answer]
+cg_adoption_fearofuse_01;cg;;Expectations: Much can go wrong when using ChatGPT.;1;strongly disagree
+cg_adoption_fearofuse_01;cg;;Expectations: Much can go wrong when using ChatGPT.;2;disagree
+cg_adoption_fearofuse_01;cg;;Expectations: Much can go wrong when using ChatGPT.;3;neutral
+cg_adoption_fearofuse_01;cg;;Expectations: Much can go wrong when using ChatGPT.;4;agree
+cg_adoption_fearofuse_01;cg;;Expectations: Much can go wrong when using ChatGPT.;5;strongly agree
+cg_adoption_fearofuse_01;cg;;Expectations: Much can go wrong when using ChatGPT.;-1;[no answer]
+cg_adoption_fearofuse_02;cg;;Expectations: There are legal issues with using ChatGPT.;1;strongly disagree
+cg_adoption_fearofuse_02;cg;;Expectations: There are legal issues with using ChatGPT.;2;disagree
+cg_adoption_fearofuse_02;cg;;Expectations: There are legal issues with using ChatGPT.;3;neutral
+cg_adoption_fearofuse_02;cg;;Expectations: There are legal issues with using ChatGPT.;4;agree
+cg_adoption_fearofuse_02;cg;;Expectations: There are legal issues with using ChatGPT.;5;strongly agree
+cg_adoption_fearofuse_02;cg;;Expectations: There are legal issues with using ChatGPT.;-1;[no answer]
+cg_adoption_fearofuse_03;cg;;Expectations: The security of user data is not guaranteed with ChatGPT.;1;strongly disagree
+cg_adoption_fearofuse_03;cg;;Expectations: The security of user data is not guaranteed with ChatGPT.;2;disagree
+cg_adoption_fearofuse_03;cg;;Expectations: The security of user data is not guaranteed with ChatGPT.;3;neutral
+cg_adoption_fearofuse_03;cg;;Expectations: The security of user data is not guaranteed with ChatGPT.;4;agree
+cg_adoption_fearofuse_03;cg;;Expectations: The security of user data is not guaranteed with ChatGPT.;5;strongly agree
+cg_adoption_fearofuse_03;cg;;Expectations: The security of user data is not guaranteed with ChatGPT.;-1;[no answer]
+cg_adoption_fearofuse_04;cg;;Expectations: Using ChatGPT could bring personal disadvantages.;1;strongly disagree
+cg_adoption_fearofuse_04;cg;;Expectations: Using ChatGPT could bring personal disadvantages.;2;disagree
+cg_adoption_fearofuse_04;cg;;Expectations: Using ChatGPT could bring personal disadvantages.;3;neutral
+cg_adoption_fearofuse_04;cg;;Expectations: Using ChatGPT could bring personal disadvantages.;4;agree
+cg_adoption_fearofuse_04;cg;;Expectations: Using ChatGPT could bring personal disadvantages.;5;strongly agree
+cg_adoption_fearofuse_04;cg;;Expectations: Using ChatGPT could bring personal disadvantages.;-1;[no answer]
+cg_adoption_social_01;cg;;Expectations: In my environment, using ChatGPT is standard.;1;strongly disagree
+cg_adoption_social_01;cg;;Expectations: In my environment, using ChatGPT is standard.;2;disagree
+cg_adoption_social_01;cg;;Expectations: In my environment, using ChatGPT is standard.;3;neutral
+cg_adoption_social_01;cg;;Expectations: In my environment, using ChatGPT is standard.;4;agree
+cg_adoption_social_01;cg;;Expectations: In my environment, using ChatGPT is standard.;5;strongly agree
+cg_adoption_social_01;cg;;Expectations: In my environment, using ChatGPT is standard.;-1;[no answer]
+cg_adoption_social_02;cg;;Expectations: Almost everyone in my environment uses ChatGPT.;1;strongly disagree
+cg_adoption_social_02;cg;;Expectations: Almost everyone in my environment uses ChatGPT.;2;disagree
+cg_adoption_social_02;cg;;Expectations: Almost everyone in my environment uses ChatGPT.;3;neutral
+cg_adoption_social_02;cg;;Expectations: Almost everyone in my environment uses ChatGPT.;4;agree
+cg_adoption_social_02;cg;;Expectations: Almost everyone in my environment uses ChatGPT.;5;strongly agree
+cg_adoption_social_02;cg;;Expectations: Almost everyone in my environment uses ChatGPT.;-1;[no answer]
+cg_adoption_social_03;cg;;Expectations: Not using ChatGPT is considered being an outsider.;1;strongly disagree
+cg_adoption_social_03;cg;;Expectations: Not using ChatGPT is considered being an outsider.;2;disagree
+cg_adoption_social_03;cg;;Expectations: Not using ChatGPT is considered being an outsider.;3;neutral
+cg_adoption_social_03;cg;;Expectations: Not using ChatGPT is considered being an outsider.;4;agree
+cg_adoption_social_03;cg;;Expectations: Not using ChatGPT is considered being an outsider.;5;strongly agree
+cg_adoption_social_03;cg;;Expectations: Not using ChatGPT is considered being an outsider.;-1;[no answer]
+cg_adoption_social_04;cg;;Expectations: Using ChatGPT brings me recognition from my environment.;1;strongly disagree
+cg_adoption_social_04;cg;;Expectations: Using ChatGPT brings me recognition from my environment.;2;disagree
+cg_adoption_social_04;cg;;Expectations: Using ChatGPT brings me recognition from my environment.;3;neutral
+cg_adoption_social_04;cg;;Expectations: Using ChatGPT brings me recognition from my environment.;4;agree
+cg_adoption_social_04;cg;;Expectations: Using ChatGPT brings me recognition from my environment.;5;strongly agree
+cg_adoption_social_04;cg;;Expectations: Using ChatGPT brings me recognition from my environment.;-1;[no answer]
+adopter;adopter;factor;Innovator type;;I try new offers immediately
+adopter;adopter;factor;Innovator type;;I try new offers rather quickly
+adopter;adopter;factor;Innovator type;;I wait until offers establish themselves
+adopter;adopter;factor;Innovator type;;I only use new offers when I have no other choice
+adopter;adopter;factor;Innovator type;;[no answer]
+sd_gender;sd;factor;Gender;;female
+sd_gender;sd;factor;Gender;;male
+sd_gender;sd;factor;Gender;;diverse
+sd_gender;sd;factor;Gender;;[no answer]

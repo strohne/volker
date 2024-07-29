@@ -1,9 +1,9 @@
-
 ---
-title: "Reports"
-output: rmarkdown::html_vignette
+title: "How to create volker reports?"
+output: 
+  volker::html_report
 vignette: >
-  %\VignetteIndexEntry{Table variations}
+  %\VignetteIndexEntry{Reports}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -11,30 +11,91 @@ editor_options:
 ---
 
 ```{r include=FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo = TRUE)
 
+# Markdown options
+knitr::opts_chunk$set(echo = TRUE, include= TRUE)
+
+# Load packages
 library(tidyverse)
+library(ggplot2)
 library(volker)
 theme_set(theme_bw())
 
+# Load example data
 data <- volker::chatgpt
-
-
-# Recode -9 to NA
-data <- mutate(data, across(starts_with("cg_adoption_"), ~ na_if(., -9)))
-
-# Add label to sd_alter
-data <- set_item_labels(data, tibble("sd_alter", "Alter"))
 ```
 
-# Multiple variables
+Reports combine graphs, tables, indexes and additional output.´
+The volker package comes with a Markdown template that generates 
+interactive HTML documents in which you can switch between 
+the different parts of the report.
+
+How to use the template:
+- Create a new R Markdown document from the menu
+- Select "From template"
+
+Alternatively, manually add `volker::html_report` to the 
+output options of your Markdown document:
+
+
+```
+---
+title: "How to create reports?"
+output: 
+  volker::html_report
+---
+```
+
+Then, you can generate combined outputs using the report-functions.
+One advantage of the report-functions is that plots are automatically 
+scaled to fit the page.
+
+# A single categorical variable
+
 ```{r}
-report(data, c("sd_geschlecht", "cg_adoption_"))
+report_counts(data, sd_gender)
 ```
 
+# A cross table
 
-# Group comparisons
 ```{r}
-report(data, "cg_adoption_", "in_adoption")
+data %>% 
+  filter(sd_gender != "divers") %>% 
+  report_counts(adopter, sd_gender, prop="rows", title="Innovator")
 ```
+
+
+# Group comparisons of an automaticaly calculated index
+```{r}
+data %>% 
+  filter(sd_gender != "divers") %>% 
+  report_metrics(starts_with("cg_adoption_"), sd_gender)
+
+```
+
+# Mix in your own content
+
+If you want to add content before the outputs, 
+set the title parameter to `FALSE` and add your 
+own title.
+
+A good place for methodological details is a tabsheet 
+next to the "Plot" and the "Table" buttons. You can add a tab
+by setting the close-parameter to `FALSE` and adding a new header
+on the fifth level (5 x # followed by the tab name). Close your new tabsheet with
+`#### {-}` (4 x #). See the example Markdown behind this vignette.
+
+### Adoption types
+
+```{r}
+data %>% 
+  filter(sd_gender != "divers") %>% 
+  report_counts(adopter, sd_gender, prop="rows", title= FALSE, close= FALSE)
+```
+
+
+##### Method
+Basis: Only male and female respondents.
+
+#### {-}
 

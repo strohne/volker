@@ -2,13 +2,27 @@
 % Please edit documentation in R/report.R
 \name{print.vlkr_rprt}
 \alias{print.vlkr_rprt}
-\title{Printing method for volker reports.}
+\title{Printing method for volker reports}
 \usage{
-\method{print}{vlkr_rprt}(obj)
+\method{print}{vlkr_rprt}(x, ...)
 }
 \arguments{
-\item{obj}{The volker report}
+\item{x}{The volker report object.}
+
+\item{...}{Further parameters passed to print.}
+}
+\value{
+No return value.
 }
 \description{
-Printing method for volker reports.
+Printing method for volker reports
 }
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+rp <- report_metrics(data, sd_age)
+print(rp)
+
+}
+\keyword{internal}

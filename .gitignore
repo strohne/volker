@@ -7,6 +7,7 @@ volker_*.tar.gz
 /doc/
 /Meta/
 inst/doc
+revdep
 private
 cache/
 *_cache/
@@ -14,3 +15,4 @@ plots/examples/*.html
 tests/testthat/_markdown/*.html
 tests/testthat/_snaps/vignette/*.new.html
 inst/rmarkdown/templates/**/*.html
+docs

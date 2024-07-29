@@ -1,40 +1,55 @@
 Package: volker
 Type: Package
-Title: A Package for Survey Data Summaries and Graphics
-Version: 1.0
-Date: 2023-10-23
+Title: High-Level Functions for Tabulating, Charting and Reporting Survey Data
+Version: 2.0.1.9000
+Date: 2024-05-07
 Authors@R:
-  c(person("Jakob", "Jünger", email = "jakob.juenger@uni-muenster.de", role = c("aut", "cre")),
-    person("Henrieke", "Kotthoff", email = "henrieke.kotthoff@uni-muenster.de", role = "ctb"))
-Description: This package contains functions for creating summaries and graphics for survey data.
-License: MIT
+  c(
+    person("Jakob", "Jünger", email = "jakob.juenger@uni-muenster.de", role = c("aut", "cre", "cph"),
+      comment = c(ORCID = "0000-0003-1860-6695")),
+    person("Henrieke", "Kotthoff", email = "henrieke.kotthoff@uni-muenster.de", role = c("aut","ctb")),
+    person("Chantal", "Gärtner", email = "chantal.gaertner@uni-muenster.de", role = "ctb", 
+      comment = c(ORCID = "0000-0002-3653-6013"))
+  )
+Description: Craft polished tables and plots in Markdown reports. 
+             Simply choose whether to treat your data as counts or metrics, 
+             and the package will automatically generate well-designed default tables and plots for you.
+             Boiled down to the basics, with labeling features and simple interactive reports.
+             All functions are 'tidyverse' compatible.
+URL: https://github.com/strohne/volker, https://strohne.github.io/volker/
+BugReports: https://github.com/strohne/volker/issues
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 LazyData: true
 Imports:
-  forcats,
-  dplyr,
-  rlang,
-  lifecycle,
-  cli,
-  glue,
-  withr,
-  magrittr,
-  tidyr,
-  tidyselect,
-  skimr,
-  knitr,
-  kableExtra,
-  janitor,
-  scales,
-  viridis
+    stats,
+    rlang,
+    lifecycle,
+    tibble,
+    dplyr,
+    tidyr,
+    tidyselect,
+    ggplot2 (>= 2.2.1),
+    scales,
+    base64enc,
+    purrr,
+    magrittr,
+    skimr,
+    broom,
+    knitr,
+    kableExtra,
+    rmarkdown,
+    psych,
+    effectsize,
+    car
 Depends:
-  R (>= 2.10)
+  R (>= 4.2)
 Suggests:
-  knitr,
-  kableExtra,
-  rmarkdown, 
+  tidyverse,
+  remotes,
+  usethis,
   testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3

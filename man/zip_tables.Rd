@@ -9,17 +9,20 @@ into the corresponding column in the first dataframe using parentheses}
 zip_tables(x, y, newline = TRUE, brackets = FALSE)
 }
 \arguments{
-\item{x}{The first data frame}
+\item{x}{The first data frame.}
 
-\item{y}{The second data frame}
+\item{y}{The second data frame.}
 
 \item{newline}{Whether to add a new line character between the values (default: TRUE).}
 
 \item{brackets}{Whether to set the secondary values in brackets (default: FALSE).}
 }
 \value{
-A combined data frame
+A combined data frame.
 }
 \description{
-TODO: implement newline parameter
+Combine two identically shaped data frames
+by adding values of each column from the second data frame
+into the corresponding column in the first dataframe using parentheses
 }
+\keyword{internal}

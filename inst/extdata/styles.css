@@ -1,22 +1,48 @@
-h1.title {font-size:24px; font-weight:bold;}
-.tab-content .tabset-pills {
+#header h1 {
+  font-size:24px; font-weight:bold;
+}
+
+#header h4 {
+  font-size: 0.9em;
+  font-style: italic;
+}
+
+h3 {
+  font-size: 1.2em;
+  font-weight:bold;
+}
+
+h6 {
+  font-size:1em;
+  color:#337ab7;
+}
+
+.level4.tabset-pills {
+  margin-top:1em;
+}
+
+.level4.tabset-pills {
   display:flex;
   flex-wrap:wrap;
 }
 
-.tab-content .tabset-pills h4 {
+.level4.tabset-pills h4 {
   margin-right:1em;
 }
 
-.tab-content .tabset-pills .nav-pills {
+.level4.tabset-pills h4:empty {
+  margin-right:0;
+}
+
+.level4.tabset-pills .nav-pills {
   flex:1;
   margin:auto;
 }
 
-.tab-content .tabset-pills .nav-pills li a {
+.level4.tabset-pills .nav-pills li a {
   padding: 0 0.5em;
 }
 
-.tab-content .tabset-pills .tab-content {
+.level4.tabset-pills .tab-content {
   flex-basis:100%;
 }

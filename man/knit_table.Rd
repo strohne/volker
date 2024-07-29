@@ -7,11 +7,12 @@
 knit_table(df, ...)
 }
 \arguments{
-\item{df}{Data frame}
+\item{df}{Data frame.}
 }
 \value{
-Formatted table
+Formatted  table produced by \link{kable}.
 }
 \description{
 Knit volker tables
 }
+\keyword{internal}

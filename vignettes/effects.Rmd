@@ -1,0 +1,34 @@
+---
+title: "All kinds of statistics: effect sizes, parameter estimates, p values"
+output: volker::html_report
+vignette: >
+  %\VignetteIndexEntry{Effects}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(
+  echo = F,
+  knitr.table.format = "html"
+)
+
+library(tidyverse)
+library(volker)
+```
+
+```{r}
+
+# Load data 
+ds <- volker::chatgpt
+```
+
+```{r}
+
+effect_counts(ds, adopter, sd_gender)
+effect_metrics(ds, sd_age, adopter)
+effect_metrics(ds, sd_age, use_private, metric=T)
+effect_metrics(ds, sd_age, use_private, metric=T)
+```
