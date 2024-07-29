@@ -1,0 +1,30 @@
+
+---
+title: "Topic modeling"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Topic modeling}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo = TRUE)
+
+library(tidyverse)
+library(volker)
+theme_set(theme_bw())
+
+ds <- volker::chatgpt
+
+```
+
+
+```{r results='asis'}
+
+ds |> 
+  volker:::lda_report(cg_activities)
+
+```
