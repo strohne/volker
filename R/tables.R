@@ -648,7 +648,6 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
-#' @param prop The basis of percent calculation: "total" (the default), "cols", or "rows".
 #' @param category Summarizing multiple items (the cols parameter) by group requires a focus category.
 #'                 By default, for logical column types, only TRUE values are counted.
 #'                 For other column types, the first category is counted.
@@ -671,7 +670,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 #'
 #' @export
 #' @importFrom rlang .data
-tab_counts_items_grouped <- function(data, cols, cross, prop = "total", category = NULL, percent = TRUE, values = c("n", "p"), title = TRUE, labels = TRUE, clean = TRUE, ...) {
+tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent = TRUE, values = c("n", "p"), title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -716,6 +715,7 @@ tab_counts_items_grouped <- function(data, cols, cross, prop = "total", category
     base_category <- category
   }
 
+  # TODO: Choose "neutral" , "agree" instead of "3" , "4"
   # Filter category
   result <- dplyr::filter(result, .data$.category %in% category)
 
