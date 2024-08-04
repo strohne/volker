@@ -732,23 +732,10 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   base_category <- paste0(base_category, collapse=", ")
   message("Counting for items is based on values: ", base_category)
 
-  # Count
+  # Counts
   result <- result %>%
     dplyr::mutate(value = as.factor({{ cross }})) %>%
     dplyr::count(dplyr::across(tidyselect::all_of(c("item", "value"))))
-
-
-  # Percentages
-  if ((prop == "rows") || (prop == "cols")) {
-    result <- result %>%
-      dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
-      dplyr::mutate(p = (.data$n / sum(.data$n))) %>%
-      dplyr::ungroup()
-
-  } else {
-    result <- result %>%
-      dplyr::mutate(p = (.data$n / sum(.data$n)))
-  }
 
   # Factor result
   result <- result %>%
@@ -758,25 +745,29 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 
   # Result n
   result_n <- result %>%
-    dplyr::select(-p) %>%
     dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
     tidyr::pivot_wider(
       names_from = value,
       values_from = n,
-      values_fill = list(n = 0))
+      values_fill = list(n = 0)) %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(total = sum(dplyr::c_across(cols = everything()), na.rm=TRUE))
 
   # Result p
   result_p <- result %>%
-    dplyr::select(-n) %>%
     dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
+    dplyr::mutate(p = (.data$n / sum(.data$n))) %>%
+    select(-n) %>%
     tidyr::pivot_wider(
       names_from = value,
       values_from = p,
-      values_fill = list(p = 0))
+      values_fill = list(p = 0)) %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(total = sum(dplyr::c_across(cols = everything()), na.rm=TRUE))
 
   # Add % sign
   if (percent) {
-    result_p <- dplyr::mutate(result_p, dplyr::across(tidyselect::where(is.numeric), ~ paste0(round(. *100, 0), "%")))
+    result_p <- dplyr::mutate(result_p, dplyr::across(tidyselect::where(is.numeric), ~ paste0(round(. * 100, 0), "%")))
   }
 
   # Combine n and p if requested
