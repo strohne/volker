@@ -715,10 +715,6 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     base_category <- category
   }
 
-  # TODO: Choose "neutral" , "agree" instead of "3" , "4"
-  # Filter category
-  result <- dplyr::filter(result, .data$.category %in% category)
-
   # Get category labels
   category_labels <- codebook(data, {{ cols }}) |>
     dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) |>
@@ -732,38 +728,56 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   base_category <- paste0(base_category, collapse=", ")
   message("Counting for items is based on values: ", base_category)
 
-  # Counts
+  # Recode
   result <- result %>%
-    dplyr::mutate(value = as.factor({{ cross }})) %>%
-    dplyr::count(dplyr::across(tidyselect::all_of(c("item", "value"))))
+    dplyr::mutate(.category = .data$.category %in% category)
 
-  # Factor result
+  # Count
   result <- result %>%
-    dplyr::mutate(value = as.factor(.data$value)) %>%
-    dplyr::mutate(item = factor(.data$item, levels=cols_names)) |>
-    dplyr::arrange(.data$item)
+    dplyr::mutate(.cross = as.factor({{ cross }})) %>%
+    dplyr::mutate(.category = as.factor(.data$.category)) %>%
+    dplyr::count(dplyr::across(tidyselect::all_of(c("item", ".cross", ".category"))))
+
+  # Group and percent
+  result <- result %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of(c("item",".cross")))) %>%
+    dplyr::mutate(p = (.data$n / sum(.data$n)))
+
+  # Total column
+
+  # Total row
+
+  # Filter category
+  result <- dplyr::filter(result, .data$.category == TRUE) %>%
+    dplyr::select(-.category)
 
   # Result n
   result_n <- result %>%
+    dplyr::select(-p) %>%
     dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
     tidyr::pivot_wider(
-      names_from = value,
+      names_from = .cross,
       values_from = n,
-      values_fill = list(n = 0)) %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(total = sum(dplyr::c_across(cols = everything()), na.rm=TRUE))
+      values_fill = list(n = 0)) #%>%
+    # dplyr::rowwise() %>%
+    # dplyr::mutate(total = sum(dplyr::c_across(cols = everything()), na.rm=TRUE))
 
   # Result p
   result_p <- result %>%
+    dplyr::select(-n) %>%
     dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
-    dplyr::mutate(p = (.data$n / sum(.data$n))) %>%
-    select(-n) %>%
     tidyr::pivot_wider(
-      names_from = value,
+      names_from = .cross,
       values_from = p,
-      values_fill = list(p = 0)) %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(total = sum(dplyr::c_across(cols = everything()), na.rm=TRUE))
+      values_fill = list(p = 0)) #%>%
+    # dplyr::rowwise() %>%
+    # dplyr::mutate(total = sum(dplyr::c_across(cols = everything()), na.rm=TRUE))
+
+  # # Factor result
+  # result <- result %>%
+  #   dplyr::mutate(value = as.factor(.data$value)) %>%
+  #   dplyr::mutate(item = factor(.data$item, levels=cols_names)) |>
+  #   dplyr::arrange(.data$item)
 
   # Add % sign
   if (percent) {
