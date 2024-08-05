@@ -757,7 +757,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   result_p <- result %>%
     dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
     dplyr::mutate(p = (.data$n / sum(.data$n))) %>%
-    select(-n) %>%
+    dplyr::select(-n) %>%
     tidyr::pivot_wider(
       names_from = value,
       values_from = p,
