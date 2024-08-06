@@ -736,7 +736,8 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   result <- result %>%
     dplyr::mutate(.cross = as.factor({{ cross }})) %>%
     dplyr::mutate(.category = as.factor(.data$.category)) %>%
-    dplyr::count(dplyr::across(tidyselect::all_of(c("item", ".cross", ".category"))))
+    dplyr::count(dplyr::across(tidyselect::all_of(c("item", ".cross", ".category")))) %>%
+    tidyr::complete(.data$item, .data$.cross, .data$.category, fill=list(n=0))
 
   # Group and percent
   result <- result %>%

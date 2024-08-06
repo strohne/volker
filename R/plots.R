@@ -693,22 +693,27 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
 
   # Remove common item prefix
   prefix <- get_prefix(result$item, trim=TRUE)
-  result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix)) %>%
+            dplyr::ungroup()
 
   # Order item levels
   result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
 
-  pl <-  result %>%
-    ggplot2::ggplot(ggplot2::aes(
+  pl <- result %>%
+      ggplot2::ggplot(ggplot2::aes(
       x = .data$item,
       y = .data$p,
       color = .data$.cross,
-      group= .data$.cross
+      group = .data$.cross
     )
     ) +
     ggplot2::geom_line() +
-    ggplot2::geom_point(size=3, shape=18) +
+    ggplot2::geom_point(size=3, shape=18)
+
+  # Add scales, labels and theming
+  pl <- pl +
     ggplot2::scale_y_continuous(limits = c(0, 100)) +
+    ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits=rev) +
     ggplot2::coord_flip() +
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
