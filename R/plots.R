@@ -644,11 +644,13 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
     )
 
   # Get labels from cross variable
+  if (labels) {
   result <- labs_replace(
     result, {{ cross }},
     codebook(data, {{ cross }}),
     "value_name", "value_label"
   )
+  }
 
   # Focus TRUE category or the first category
   base_category <-  NULL
@@ -668,7 +670,6 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
   # Recode
   result <- result %>%
     dplyr::mutate(.category = .data$.category %in% category)
-
 
   # Count
   result <- result %>%
@@ -744,7 +745,6 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
     pl <- pl + ggplot2::ggtitle(label = title)
   }
 
-
   # Get category labels
   category_labels <- codebook(data, {{ cols }}) |>
     dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) |>
@@ -756,6 +756,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
   }
 
   # Add base
+  # TODO: @Jakob: information in subtitle?
   base_n <- nrow(data)
   base_category <- paste0(base_category, collapse=", ")
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n,
