@@ -643,6 +643,13 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
       values_to = ".category"
     )
 
+  # Get labels from cross variable
+  result <- labs_replace(
+    result, {{ cross }},
+    codebook(data, {{ cross }}),
+    "value_name", "value_label"
+  )
+
   # Focus TRUE category or the first category
   base_category <-  NULL
   if (is.null(category)) {
@@ -661,6 +668,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
   # Recode
   result <- result %>%
     dplyr::mutate(.category = .data$.category %in% category)
+
 
   # Count
   result <- result %>%
