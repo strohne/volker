@@ -680,7 +680,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
   # Result p
   result <- result %>%
     dplyr::group_by(dplyr::across(tidyselect::all_of(c("item",".cross")))) %>%
-    dplyr::mutate(p = (.data$n / sum(.data$n)) * 100)
+    dplyr::mutate(p = (.data$n / sum(.data$n)))
 
   result <- dplyr::filter(result, .data$.category == TRUE)
 
@@ -720,7 +720,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
 
   # Add scales, labels and theming
   pl <- pl +
-    ggplot2::scale_y_continuous(limits = c(0, 100)) +
+    ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100), limits = c(0,1)) +
     ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits=rev) +
     ggplot2::coord_flip() +
     ggplot2::theme(
