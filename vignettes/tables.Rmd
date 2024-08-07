@@ -38,15 +38,36 @@ tab_counts(data, adopter, sd_gender)
 ```
 
 
-### 3. Multiple items: Frequency table of adoption factors
+### 3. Two variables: One categorical and one metric
+
+```{r}
+
+# TODO: redirect to tab_metrics(data, sd_age, adopter) 
+tab_counts(data, adopter, sd_age, metric=T)
+```
+
+
+
+### 4. Multiple items: Frequency table of adoption factors
 ```{r}
 tab_counts(data, starts_with("cg_adoption_"))
 ```
 
 
-### 4. Multiple grouped items: Frequency table of adoption factors grouped by gender
+### 5. Multiple grouped items: Frequency table of adoption factors grouped by gender
 ```{r}
 tab_counts(data, starts_with("cg_adoption_"), sd_gender)
+```
+
+### 6. Multiple categorical items and one metric variable
+```{r}
+# TODO
+#data |> 
+#  tidyr::pivot_longer(starts_with("use_")) |> 
+#  tab_metrics(value, name)
+  
+tab_counts(data, starts_with("use_"), sd_age)
+
 ```
 
 
