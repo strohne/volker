@@ -1464,7 +1464,9 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, title = 
 
   # Plot
   pl <- ggplot2::ggplot(result, ggplot2::aes(item1, item2, fill = !!sym(method))) +
-    ggplot2::geom_tile(color = "white")
+    ggplot2::geom_tile(color = "white") #+
+    #ggplot2::scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0)
+ #TODO: use vlkt_colors_sequential
 
   if (numbers) {
     pl <- pl + ggplot2::geom_text(ggplot2::aes(label = !!sym(method)), color = "black", size = 3)
@@ -1497,6 +1499,10 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, title = 
   # Add theming
   pl <- pl +
     ggplot2::theme(
+      axis.title.x = ggplot2::element_blank(),
+      axis.title.y = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_text(), #size = 11
+      #legend.title = ggplot2::element_blank(),
       plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
       plot.caption.position = "plot"
@@ -1504,7 +1510,9 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, title = 
 
   # Wrap labels
   pl <- pl +
-    ggplot2::scale_x_discrete(labels = scales::label_wrap(40))
+    ggplot2::scale_x_discrete(labels = scales::label_wrap(40)) +
+    ggplot2::scale_y_discrete(labels = scales::label_wrap(40))
+
 
   # Add base
   base_n <- nrow(data)
