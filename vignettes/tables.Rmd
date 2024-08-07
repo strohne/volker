@@ -44,6 +44,12 @@ tab_counts(data, starts_with("cg_adoption_"))
 ```
 
 
+### 4. Multiple grouped items: Frequency table of adoption factors grouped by gender
+```{r}
+tab_counts(data, starts_with("cg_adoption_"), sd_gender)
+```
+
+
 ## Distributions of metric variables
 
 ### 1. Distribution table for one metric variable: Age
