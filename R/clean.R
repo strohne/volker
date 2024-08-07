@@ -79,7 +79,7 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
       data,
       dplyr::across(
         tidyselect::where(~ is.factor(.)),
-        ~ replace(., . %in% remove.na.levels, NA)
+        ~ factor(replace(., . %in% remove.na.levels, NA),setdiff(levels(.), remove.na.levels))
       )
     )
   }
