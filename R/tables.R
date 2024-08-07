@@ -701,19 +701,20 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
       values_to = ".category"
     )
 
-  # Add label column for category
+  # Add label column for category for filtering based on character input
   #TODO: @jj improve?
 
   codebook_df <- codebook(data, {{ cols }})
 
   result <- result %>%
     dplyr::mutate(
-      .category_label = ifelse(.category %in% codebook_df$value_name,
-                               codebook_df$value_label[match(.category, codebook_df$value_name)],
-                               as.character(.category))
+      .category_label = ifelse(
+        .category %in% codebook_df$value_name,
+        codebook_df$value_label[match(.category, codebook_df$value_name)],
+        as.character(.category))
     )
 
-  #  Set labels: cross
+  #  Set labels: cross variable
   # TODO: @Jakob: implement in tab_counts_grouped as well?
   if (labels) {
     result <- labs_replace(
@@ -736,28 +737,14 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     numeric_categories <- unique(as.character(result$.category))
     label_categories <- unique(result$.category_label)
 
-    if (!(base_category %in% numeric_categories || base_category %in% label_categories)) {
-      stop("The specified category does not exist in the data.")
+    if (!all(base_category %in% numeric_categories | base_category %in% label_categories)) {
+      stop("One or more specified categories do not exist in the data.")
     }
   }
 
-  # Get category labels
-  category_labels <- codebook(data, {{ cols }}) |>
-    dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) |>
-    dplyr::filter(.data$value_name %in% base_category) |>
-    dplyr::pull(.data$value_label)
-
-  if (length(category_labels) == length(base_category)) {
-    base_category <- category_labels
-  }
-
-  # TODO: @Jakob: Improve message? How?
-  base_category <- paste0(base_category, collapse=", ")
-  message("Percentage shares reflecting values for: ", base_category)
-
   # Recode
   result <- result %>%
-    dplyr::mutate(.category = (.category == base_category | .category_label == base_category))
+    mutate(.category = (.category %in% base_category | .category_label %in% base_category))
 
   # Count
   result <- result %>%
@@ -765,6 +752,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     dplyr::mutate(.category = as.factor(.data$.category)) %>%
     dplyr::count(dplyr::across(tidyselect::all_of(c("item", ".cross", ".category")))) %>%
     tidyr::complete(.data$item, .data$.cross, .data$.category, fill=list(n=0))
+
 
   # Group and percent
   result <- result %>%
@@ -797,7 +785,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     tidyr::pivot_wider(
       names_from = .cross,
       values_from = p,
-      values_fill = list(p = 0)) #%>%
+      values_fill = list(n = 0)) #%>%
     # dplyr::rowwise() %>%
     # dplyr::mutate(total = sum(dplyr::c_across(cols = everything()), na.rm=TRUE))
 
@@ -821,7 +809,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     result <- result_n
   }
 
-  # 5. Set labels: items
+  # Get item labels
   if (labels) {
     result <- labs_replace(
       result, "item",
@@ -829,6 +817,20 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
       "item_name", "item_label"
     )}
 
+  # Get category labels
+  category_labels <- codebook(data, {{ cols }}) |>
+    dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) |>
+    dplyr::filter(.data$value_name %in% base_category) |>
+    dplyr::pull(.data$value_label)
+
+  if (length(category_labels) == length(base_category)) {
+    base_category <- category_labels
+  }
+
+  # TODO: @Jakob: Improve message? How?
+  # Message
+  base_category <- paste0(base_category, collapse=", ")
+  message("Percentage shares reflecting values for: ", base_category)
 
   # Remove common item prefix
   prefix <- get_prefix(result$item, trim=T)

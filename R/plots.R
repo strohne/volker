@@ -614,16 +614,6 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
     data <- data_clean(data)
   }
 
-  # # Swap columns
-  # if (prop == "cols") {
-  #   cols <- rlang::enquo(cols)
-  #   cross <- rlang::enquo(cross)
-  #   cols_temp <- cols
-  #   cols <- cross
-  #   cross <- cols_temp
-  #   #stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
-  # }
-
   # 3. Remove missings
   data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
 
@@ -643,6 +633,19 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
       values_to = ".category"
     )
 
+  # Add label column for category for filtering based on characters
+  #TODO: @jj improve?
+
+  codebook_df <- codebook(data, {{ cols }})
+
+  result <- result %>%
+    dplyr::mutate(
+      .category_label = ifelse(
+        .category %in% codebook_df$value_name,
+        codebook_df$value_label[match(.category, codebook_df$value_name)],
+        as.character(.category))
+    )
+
   # Get labels from cross variable
   if (labels) {
   result <- labs_replace(
@@ -653,23 +656,27 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
   }
 
   # Focus TRUE category or the first category
-  base_category <-  NULL
   if (is.null(category)) {
-    categories <- result$.category |> unique() |> as.character()
+    categories <- unique(as.character(result$.category))
     if ((length(categories) == 2) && ("TRUE" %in% categories)) {
-      category <- "TRUE"
+      base_category <- "TRUE"
     } else {
-      category <- categories[1]
-      base_category <- category
+      base_category <- categories[1]
     }
-    categories <- NULL
   } else {
-    base_category <- category
+    base_category <- if (is.numeric(category)) as.character(category) else category
+
+    numeric_categories <- unique(as.character(result$.category))
+    label_categories <- unique(result$.category_label)
+
+    if (!all(base_category %in% numeric_categories | base_category %in% label_categories)) {
+      stop("One or more specified categories do not exist in the data.")
+    }
   }
 
   # Recode
   result <- result %>%
-    dplyr::mutate(.category = .data$.category %in% category)
+    mutate(.category = (.category %in% base_category | .category_label %in% base_category))
 
   # Count
   result <- result %>%
@@ -745,6 +752,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
     pl <- pl + ggplot2::ggtitle(label = title)
   }
 
+  # TODO: Use category labels from above
   # Get category labels
   category_labels <- codebook(data, {{ cols }}) |>
     dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) |>
