@@ -1425,11 +1425,11 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' plot_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+#' plot_metrics_items_cor_items(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 #'
 #' @importFrom rlang .data
 #'
-plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, title = TRUE,  method = "pearson", numbers = F, digits = 2, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, title = TRUE,  method = "pearson", numbers = F, digits = 2, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -1462,14 +1462,20 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, title = 
 
   method <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
 
+  colors <- vlkr_colors_sequential(5)
+  low <- colors[1]
+  mid <- colors[3]
+  high <- colors[5]
+
   # Plot
   pl <- ggplot2::ggplot(result, ggplot2::aes(item1, item2, fill = !!sym(method))) +
-    ggplot2::geom_tile(color = "white") #+
-    #ggplot2::scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0)
- #TODO: use vlkt_colors_sequential
+    ggplot2::geom_tile(color = "white") +
+    #ggplot2::scale_fill_gradientn(colors = vlkr_colors_sequential(5))
+    ggplot2::scale_fill_gradient2(low = low, high = high, mid = mid, midpoint = 0)
 
   if (numbers) {
-    pl <- pl + ggplot2::geom_text(ggplot2::aes(label = !!sym(method)), color = "black", size = 3)
+    pl <- pl + ggplot2::geom_text(ggplot2::aes(label = !!sym(method)),
+                                  color = "white", size = 3)
   }
 
   # Add labels
@@ -1510,9 +1516,10 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, title = 
 
   # Wrap labels
   pl <- pl +
-    ggplot2::scale_x_discrete(labels = scales::label_wrap(40)) +
-    ggplot2::scale_y_discrete(labels = scales::label_wrap(40))
-
+    ggplot2::scale_y_discrete(labels = scales::label_wrap(40)) +
+    #ggplot2::scale_x_discrete(labels = scales::label_wrap(40)) +
+    ggplot2::theme(axis.text.x = element_text(angle = get_angle(result$item1), hjust = 1) ) +
+    ggplot2::scale_x_discrete(labels = trunc_labels())
 
   # Add base
   base_n <- nrow(data)
@@ -2052,3 +2059,43 @@ vlkr_colors_sequential <- function(n) {
   )
   colors
 }
+
+#' Truncate labels
+#'
+#' Truncate labels that exceed a specified maximum length.
+#'
+#' @keywords internal
+#'
+#' @param max_length Specifies max_length, default is 20.
+#' @return A function that truncates labels to the max_length,
+#'        appending "..." if shortened.
+
+trunc_labels <- function(max_length = 20) {
+  function(labels) {
+
+    ifelse(nchar(labels) > max_length, paste0(substr(labels, 1, max_length), "..."), labels)
+  }
+}
+
+#' Angle labels
+#'
+#' Calculate angle for label adjustment based on character length.
+#'
+#' @keywords internal
+#'
+#' @param labels Vector of labels to check.
+#' @param threshold Length threshold beyond which the angle is applied.
+#'                  Default is 20.
+#' @parm angle The angle to apply if any label exceeds the threshold.
+#'            Default is 45.
+#'
+#' @return A single angle value.
+get_angle <- function(labels, threshold = 20, angle = 45) {
+  # Check if any label exceeds the threshold and return the angle accordingly
+  if (any(nchar(labels) > threshold)) {
+    return(angle)
+  } else {
+    return(0)
+  }
+}
+
