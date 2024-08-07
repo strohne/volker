@@ -575,7 +575,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 }
 
 
-#' Plot frequencies of multiple items compared by groups
+#' Plot percent shares of multiple items compared by groups
 #'
 #' @keywords internal
 #'
@@ -583,10 +583,9 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
 #' @param category Summarizing multiple items (the cols parameter) by group requires a focus category.
-#'                 By default, for logical column types, only TRUE values are counted.
-#'                 For other column types, the first category is counted.
-#'                 Provide a character vector with focus categories to override the default behavior.
-#' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
+#'                By default, for logical column types, only TRUE values are counted.
+#'                For other column types, the first category is counted.
+#'                Accepts both character and numeric vectors to override default counting behavior.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -598,7 +597,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #' data <- volker::chatgpt
 #' plot_counts_items_grouped(
 #'   data, starts_with("cg_adoption_"), adopter,
-#'   category=c(4,5), numbers = "n", prop="rows"
+#'   category=c("agree","strongly agree")
 #' )
 #'
 #' @export
@@ -633,8 +632,8 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
       values_to = ".category"
     )
 
-  # Add label column for category for filtering based on characters
-  #TODO: @jj improve?
+  # Add label column for category (filtering based on characters)
+  #TODO: @jj gehts leichter?
 
   codebook_df <- codebook(data, {{ cols }})
 
@@ -673,6 +672,9 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
       stop("One or more specified categories do not exist in the data.")
     }
   }
+
+  # Get category labels
+  category_labels <- result$.category_label[match(base_category, result$.category)]
 
   # Recode
   result <- result %>%
@@ -741,7 +743,6 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
       plot.caption.position = "plot"
     )
 
-
   # Add title
   if (title == TRUE) {
     title <- trim_label(prefix)
@@ -752,21 +753,10 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
     pl <- pl + ggplot2::ggtitle(label = title)
   }
 
-  # TODO: Use category labels from above
-  # Get category labels
-  category_labels <- codebook(data, {{ cols }}) |>
-    dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) |>
-    dplyr::filter(.data$value_name %in% base_category) |>
-    dplyr::pull(.data$value_label)
-
-  if (length(category_labels) == length(base_category)) {
-    base_category <- category_labels
-  }
-
   # Add base
   # TODO: @Jakob: information in subtitle?
   base_n <- nrow(data)
-  base_category <- paste0(base_category, collapse=", ")
+  base_category <- paste0(category_labels, collapse=", ")
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n,
                                             "; multiple responses possible",
                                             "; values=", base_category))

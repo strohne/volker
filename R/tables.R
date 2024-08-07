@@ -649,9 +649,9 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
 #' @param category Summarizing multiple items (the cols parameter) by group requires a focus category.
-#'                 By default, for logical column types, only TRUE values are counted.
-#'                 For other column types, the first category is counted.
-#'                 Provide a character vector with focus categories to override the default behavior.
+#'                By default, for logical column types, only TRUE values are counted.
+#'                For other column types, the first category is counted.
+#'                Accepts both character and numeric vectors to override default counting behavior.
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param values The values to output: n (frequency) or p (percentage) or both (the default).
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
@@ -665,7 +665,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 #' data <- volker::chatgpt
 #' tab_counts_items_grouped(
 #'   data, starts_with("cg_adoption_"), adopter,
-#'   category=c(4,5)
+#'   category=c("agree", "strongly agree")
 #' )
 #'
 #' @export
@@ -701,8 +701,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
       values_to = ".category"
     )
 
-  # Add label column for category for filtering based on character input
-  #TODO: @jj improve?
+  # Add label column for category
 
   codebook_df <- codebook(data, {{ cols }})
 
@@ -742,6 +741,9 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     }
   }
 
+  # Get category labels
+  category_labels <- result$.category_label[match(base_category, result$.category)]
+
   # Recode
   result <- result %>%
     mutate(.category = (.category %in% base_category | .category_label %in% base_category))
@@ -752,7 +754,6 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     dplyr::mutate(.category = as.factor(.data$.category)) %>%
     dplyr::count(dplyr::across(tidyselect::all_of(c("item", ".cross", ".category")))) %>%
     tidyr::complete(.data$item, .data$.cross, .data$.category, fill=list(n=0))
-
 
   # Group and percent
   result <- result %>%
@@ -817,19 +818,9 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
       "item_name", "item_label"
     )}
 
-  # Get category labels
-  category_labels <- codebook(data, {{ cols }}) |>
-    dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) |>
-    dplyr::filter(.data$value_name %in% base_category) |>
-    dplyr::pull(.data$value_label)
-
-  if (length(category_labels) == length(base_category)) {
-    base_category <- category_labels
-  }
-
   # TODO: @Jakob: Improve message? How?
   # Message
-  base_category <- paste0(base_category, collapse=", ")
+  base_category <- paste0(category_labels, collapse=", ")
   message("Percentage shares reflecting values for: ", base_category)
 
   # Remove common item prefix
