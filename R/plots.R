@@ -602,7 +602,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_items_grouped <- function(data, cols, cross, category = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -673,8 +673,16 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
     }
   }
 
-  # Get category labels
+  # Get category labels if numeric
+  if (is.numeric(base_category)) {
+
   category_labels <- result$.category_label[match(base_category, result$.category)]
+
+  } else {
+
+    category_labels <- base_category
+
+  }
 
   # Recode
   result <- result %>%
@@ -690,7 +698,8 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
   # Result p
   result <- result %>%
     dplyr::group_by(dplyr::across(tidyselect::all_of(c("item",".cross")))) %>%
-    dplyr::mutate(p = (.data$n / sum(.data$n)))
+    dplyr::mutate(p = (.data$n / sum(.data$n))) %>%
+    dplyr::mutate(p = ifelse(is.na(p), 0, p))
 
   result <- dplyr::filter(result, .data$.category == TRUE)
 
@@ -725,7 +734,8 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
       group = .data$.cross
     )
     ) +
-    ggplot2::geom_line() +
+    # TODO: improve geom_line for overlapping lines?
+    ggplot2::geom_line(alpha = 0.5) +
     ggplot2::geom_point(size=3, shape=18)
 
   # Add scales, labels and theming
@@ -754,12 +764,11 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, number
   }
 
   # Add base
-  # TODO: @Jakob: information in subtitle?
   base_n <- nrow(data)
-  base_category <- paste0(category_labels, collapse=", ")
+  category_labels <- paste0(category_labels, collapse=", ")
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n,
                                             "; multiple responses possible",
-                                            "; values=", base_category))
+                                            "; values=", category_labels))
 
   # Convert to vlkr_plot
   pl <- .attr_transfer(pl, data, "missings")

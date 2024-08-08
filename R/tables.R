@@ -741,8 +741,16 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     }
   }
 
-  # Get category labels
-  category_labels <- result$.category_label[match(base_category, result$.category)]
+  # Get category labels if numeric
+  if (is.numeric(base_category)) {
+
+    category_labels <- result$.category_label[match(base_category, result$.category)]
+
+  } else {
+
+    category_labels <- base_category
+
+  }
 
   # Recode
   result <- result %>%
@@ -755,14 +763,14 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     dplyr::count(dplyr::across(tidyselect::all_of(c("item", ".cross", ".category")))) %>%
     tidyr::complete(.data$item, .data$.cross, .data$.category, fill=list(n=0))
 
+  # TODO: Add total column
+
   # Group and percent
   result <- result %>%
-    dplyr::group_by(dplyr::across(tidyselect::all_of(c("item",".cross")))) %>%
-    dplyr::mutate(p = (.data$n / sum(.data$n)))
-
-  # TODO: Total column
-
-  # TODO: Total row
+    dplyr::group_by(dplyr::across(tidyselect::all_of(c("item",".cross"))))%>%
+    dplyr::mutate(p = (.data$n / sum(.data$n))) %>%
+    dplyr::mutate(p = ifelse(is.na(p), 0, p)) %>%
+    dplyr::ungroup()
 
   # Filter category
   result <- dplyr::filter(result, .data$.category == TRUE) %>%
@@ -775,9 +783,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     tidyr::pivot_wider(
       names_from = .cross,
       values_from = n,
-      values_fill = list(n = 0)) #%>%
-    # dplyr::rowwise() %>%
-    # dplyr::mutate(total = sum(dplyr::c_across(cols = everything()), na.rm=TRUE))
+      values_fill = list(n = 0))
 
   # Result p
   result_p <- result %>%
@@ -786,9 +792,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     tidyr::pivot_wider(
       names_from = .cross,
       values_from = p,
-      values_fill = list(n = 0)) #%>%
-    # dplyr::rowwise() %>%
-    # dplyr::mutate(total = sum(dplyr::c_across(cols = everything()), na.rm=TRUE))
+      values_fill = list(n = 0))
 
   # # Factor result
   # result <- result %>%
@@ -820,8 +824,8 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 
   # TODO: @Jakob: Improve message? How?
   # Message
-  base_category <- paste0(category_labels, collapse=", ")
-  message("Percentage shares reflecting values for: ", base_category)
+  category_labels <- paste0(category_labels, collapse=", ")
+  message("Percentage shares reflecting values for: ", category_labels)
 
   # Remove common item prefix
   prefix <- get_prefix(result$item, trim=T)
