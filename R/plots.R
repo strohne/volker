@@ -1458,24 +1458,33 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, ti
   result <- dplyr::mutate(result,
                           item1 = trim_prefix(.data$item1, prefix1),
                           item2 = trim_prefix(.data$item2, prefix2)
+
   )
 
   method <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
 
   colors <- vlkr_colors_sequential(5)
-  low <- colors[1]
-  mid <- colors[3]
-  high <- colors[5]
+  #colors_dis <- vlkr_colors_discrete(7)
+  method_range <- range(result[[method]], na.rm = TRUE)
 
   # Plot
   pl <- ggplot2::ggplot(result, ggplot2::aes(item1, item2, fill = !!sym(method))) +
-    ggplot2::geom_tile(color = "white") +
-    #ggplot2::scale_fill_gradientn(colors = vlkr_colors_sequential(5))
-    ggplot2::scale_fill_gradient2(low = low, high = high, mid = mid, midpoint = 0)
+    ggplot2::geom_tile()
+
+  if (all(method_range >= 0 & method_range <= 1)) {
+    # range 0 to 1
+    pl <- pl + ggplot2::scale_fill_gradientn(colors = colors,
+                                            limits = c(0,1))
+  } else {
+    # range -1 to 1
+    pl <- pl + ggplot2::scale_fill_gradient2(low = colors[1], high = colors[5], mid = colors[3], midpoint = 0,
+                                    limits = c(-1, 1))
+  }
 
   if (numbers) {
     pl <- pl + ggplot2::geom_text(ggplot2::aes(label = !!sym(method)),
-                                  color = "white", size = 3)
+                                  size = 3,
+                                  color = ifelse(result[[method]] < 0, "#E6AB02", "white"))
   }
 
   # Add labels
@@ -1518,8 +1527,9 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, ti
   pl <- pl +
     ggplot2::scale_y_discrete(labels = scales::label_wrap(40)) +
     #ggplot2::scale_x_discrete(labels = scales::label_wrap(40)) +
-    ggplot2::theme(axis.text.x = element_text(angle = get_angle(result$item1), hjust = 1) ) +
-    ggplot2::scale_x_discrete(labels = trunc_labels())
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = get_angle(result$item1), hjust = 1) ) +
+    ggplot2::scale_x_discrete(labels = trunc_labels()) +
+    ggplot2::coord_fixed()
 
   # Add base
   base_n <- nrow(data)
