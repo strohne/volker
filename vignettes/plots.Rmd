@@ -55,9 +55,9 @@ plot_counts(data, starts_with("cg_adoption_"), numbers = "p")
 ### 4. Multiple items: Frequency plot for adoption factors grouped by adopter category
 ```{r, fig.height=6}
 
-plot_counts_items_grouped(
-  data, starts_with("cg_adoption_"), adopter, category=c(4,5),
-  numbers = "n", prop="rows"
+plot_counts(
+  data, starts_with("cg_adoption_"), adopter,
+  category=c("agree", "strongly agree")
 )
 
 ```
