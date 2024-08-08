@@ -7,7 +7,7 @@
 #' Override with \code{options(vlkr.na.levels=c("Not answered"))}.
 #'
 #' @keywords internal
-VLKR_NA_LEVELS <- c("[NA] nicht beantwortet", "[NA] keine Angabe")
+VLKR_NA_LEVELS <- c("[NA] nicht beantwortet", "[NA] keine Angabe", "[no answer]")
 
 #' Numbers to remove from vectors
 #'
