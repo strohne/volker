@@ -674,14 +674,10 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
   }
 
   # Get category labels if numeric
-  if (is.numeric(base_category)) {
-
-  category_labels <- result$.category_label[match(base_category, result$.category)]
-
+  if (is.null(category) || is.numeric(base_category)) {
+    category_labels <- result$.category_label[match(base_category, result$.category)]
   } else {
-
     category_labels <- base_category
-
   }
 
   # Recode

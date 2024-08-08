@@ -730,6 +730,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     } else {
       base_category <- categories[1]
     }
+
   } else {
     base_category <- if (is.numeric(category)) as.character(category) else category
 
@@ -742,14 +743,10 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   }
 
   # Get category labels if numeric
-  if (is.numeric(base_category)) {
-
+  if (is.null(category) || is.numeric(base_category)) {
     category_labels <- result$.category_label[match(base_category, result$.category)]
-
   } else {
-
     category_labels <- base_category
-
   }
 
   # Recode
@@ -763,7 +760,16 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     dplyr::count(dplyr::across(tidyselect::all_of(c("item", ".cross", ".category")))) %>%
     tidyr::complete(.data$item, .data$.cross, .data$.category, fill=list(n=0))
 
-  # TODO: Add total column
+  total_n <- result %>%
+    dplyr::group_by(item, .category) %>%
+    dplyr::mutate(
+      total = sum(n)
+    ) %>%
+    dplyr::ungroup()
+
+  return(total_n)
+
+  # TODO: Add total column: insgesamt haben so und so viele zugestimmt
 
   # Group and percent
   result <- result %>%
@@ -784,6 +790,8 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
       names_from = .cross,
       values_from = n,
       values_fill = list(n = 0))
+
+  return(result_n)
 
   # Result p
   result_p <- result %>%
