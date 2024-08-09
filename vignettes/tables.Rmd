@@ -56,7 +56,8 @@ tab_counts(data, starts_with("cg_adoption_"))
 
 ### 5. Multiple grouped items: Frequency table of adoption factors grouped by gender
 ```{r}
-tab_counts(data, starts_with("cg_adoption_"), sd_gender)
+tab_counts(data, starts_with("cg_adoption_"), sd_gender, 
+           category = c("agree", "strongly agree"))
 ```
 
 ### 6. Multiple categorical items and one metric variable
