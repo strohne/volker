@@ -632,17 +632,17 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
       values_to = ".category"
     )
 
-  # Add label column for category (filtering based on characters)
-  #TODO: @jj gehts leichter?
+  # Add label column for category
 
   codebook_df <- codebook(data, {{ cols }})
 
   result <- result %>%
     dplyr::mutate(
       .category_label = ifelse(
-        .category %in% codebook_df$value_name,
-        codebook_df$value_label[match(.category, codebook_df$value_name)],
-        as.character(.category))
+        .data$.category %in% codebook_df$value_name,
+        codebook_df$value_label[match(.data$.category, codebook_df$value_name)],
+        as.character(.data$.category)
+      )
     )
 
   # Get labels from cross variable
@@ -674,7 +674,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
   }
 
   # Get category labels if numeric
-  if (is.null(category) || is.numeric(base_category)) {
+  if (is.null(category) || is.numeric(category)) {
     category_labels <- result$.category_label[match(base_category, result$.category)]
   } else {
     category_labels <- base_category
@@ -682,7 +682,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
 
   # Recode
   result <- result %>%
-    mutate(.category = (.category %in% base_category | .category_label %in% base_category))
+    mutate(.category = (.data$.category %in% base_category | .data$.category_label %in% base_category))
 
   # Count
   result <- result %>%
@@ -695,7 +695,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
   result <- result %>%
     dplyr::group_by(dplyr::across(tidyselect::all_of(c("item",".cross")))) %>%
     dplyr::mutate(p = (.data$n / sum(.data$n))) %>%
-    dplyr::mutate(p = ifelse(is.na(p), 0, p))
+    dplyr::mutate(p = ifelse(is.na(.data$p), 0, .data$p))
 
   result <- dplyr::filter(result, .data$.category == TRUE)
 
