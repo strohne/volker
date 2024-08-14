@@ -27,6 +27,7 @@ table {margin-left:0 !important;}
 ## Frequencies of categorical variables
 
 ### 1. One variable: Frequency table of gender
+
 ```{r}
 tab_counts(data, sd_gender)
 ```
@@ -37,13 +38,16 @@ tab_counts(data, sd_gender)
 tab_counts(data, adopter, sd_gender)
 ```
 
-
 ### 3. Two variables: One categorical and one metric
 
 ```{r}
-tab_counts(data, adopter, sd_age, metric = T, method="cor")
-```
+# Redirected to tab_metrics
+tab_counts(data, adopter, sd_age, metric = T, method = "grouped")
 
+# TODO: implement npmi for method cor 
+# Implement method param = "cor" vs. "grouped" ? 
+tab_counts(data, adopter, use_work, method = "cor")
+```
 
 
 ### 4. Multiple items: Frequency table of adoption factors
@@ -51,37 +55,20 @@ tab_counts(data, adopter, sd_age, metric = T, method="cor")
 tab_counts(data, starts_with("cg_adoption_"))
 ```
 
-
 ### 5. Multiple grouped items: Frequency table of adoption factors grouped by gender
 ```{r}
 tab_counts(data, starts_with("cg_adoption_"), sd_gender, 
            category = c("agree", "strongly agree"))
 ```
 
-### 6. Multiple categorical items and one metric variable
+### 6. Multiple categorical items and one metric variable 
 ```{r}
-# TODO
-#data |> 
-#  tidyr::pivot_longer(starts_with("use_")) |> 
-#  tab_metrics(value, name)
+# TODO: implement nmpi calculation for categorical 
+data |>
+ tidyr::pivot_longer(starts_with("use_")) |>
+ tab_metrics(value, name)
 
-
-tab_counts(data, starts_with("use_"), sd_age, metric = T, method = "cor")
-
-tab_metrics(data, starts_with("use_"), sd_age, metric = T)
-
-```
-
-
-### 7. Multiple categorical items and one categorical
-```{r}
-# TODO
-#data |> 
-#  tidyr::pivot_longer(starts_with("use_")) |> 
-#  tab_metrics(value, name)
-
-
-tab_counts(data, starts_with("use_"), sd_age, metric = T, method = "cor")
+tab_counts(data, starts_with("use_"), sd_age, metric = T,  method = "cor")
 
 tab_metrics(data, starts_with("use_"), sd_age, metric = T)
 

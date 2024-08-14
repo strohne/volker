@@ -59,6 +59,9 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
   else if (!is_items && is_grouped && !is_metric) {
     tab_counts_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
+  else if (!is_items && is_grouped && is_metric) {
+    tab_counts_one_cor(data, {{ cols }}, {{ cross }}, ...)
+  }
 
   # Items
   else if (is_items && !(is_grouped ||is_multi)) {
@@ -449,14 +452,55 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
 #' @keywords internal
 #'
 #' @param data A tibble.
-#' @param cols The item columns that hold the values to summarize.
+#' @param col The item column that hold the values to summarize.
 #' @param cross The column to correlate.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+tab_counts_one_cor <- function(data, col, cross, clean = TRUE, method = c("cor", "grouped"), ...) {
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ col }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+
+  if (method == "grouped") {
+
+    result <- data %>%
+    tab_metrics( {{ cross }}, {{ col }})
+
+    return(result)
+
+  }
+
+  if (method == "cor") {
+
+    grouped <- data %>%
+    dplyr::count({{ col }}, {{ cross }}) %>%
+    dplyr::mutate(
+      "{{ cross }}" := tidyr::replace_na(as.character({{ cross }}), "missing"),
+      "{{ col }}" := tidyr::replace_na(as.character({{ col }}), "missing"))
+
+    # Pivot wider
+    grouped <- grouped %>%
+      dplyr::select({{ col }}, {{ cross }}, "n") %>%
+      tidyr::pivot_wider(
+        names_from = {{ cross }},
+        values_from = "n",
+        values_fill = list(n = 0)
+    )
+
+    print(grouped)
+
+  }
 }
 
 #' Output frequencies for multiple variables
@@ -885,12 +929,15 @@ tab_counts_items_cor <- function(data, cols, cross, method = c("cor", "grouped")
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   cross_names <- colnames(dplyr::select(data, tidyselect::all_of(cross_eval)))
 
-  if(method == "cor")
+  if(method == "grouped") {
 
     result <- data %>%
     tab_metrics({{ cols }}, {{ cross }}, metric = TRUE)
 
-  if(method == "grouped")
+    return(result)
+  }
+
+  if(method == "cor")
     result <-
     return(result)
 }
