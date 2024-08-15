@@ -35,7 +35,7 @@
 #' tab_counts(data, sd_gender)
 #'
 #' @export
-tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...) {
+tab_counts <- function(data, cols, cross = NULL, metric = FALSE, cor = FALSE, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -51,15 +51,19 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
   is_grouped <- length(cross_eval)== 1
   is_multi <- length(cross_eval) > 1
   is_metric <- metric != FALSE
+  is_cor <- cor != FALSE
 
   # Single variables
   if (!is_items && !(is_grouped || is_multi)) {
     tab_counts_one(data, {{ cols }}, ...)
   }
-  else if (!is_items && is_grouped && !is_metric) {
+  else if (!is_items && is_grouped && !is_metric && !is_cor) {
     tab_counts_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
   else if (!is_items && is_grouped && is_metric) {
+    tab_metrics_one_grouped(data, {{ cross }}, {{ cols }}, ...)
+  }
+  else if (!is_items && is_grouped && !is_metric && is_cor) {
     tab_counts_one_cor(data, {{ cols }}, {{ cross }}, ...)
   }
 
@@ -67,10 +71,13 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
   else if (is_items && !(is_grouped ||is_multi)) {
     tab_counts_items(data, {{ cols }} , ...)
   }
-  else if (is_items && is_grouped &&  !is_metric) {
+  else if (is_items && is_grouped && !is_metric ) {
     tab_counts_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
-  else if (is_items && is_grouped &&  is_metric) {
+  else if (is_items && is_grouped && is_metric && !is_cor) {
+    tab_metrics_items_cor(data, {{ cols }}, {{ cross }}, ...)
+  }
+  else if (is_items && is_grouped && is_metric && is_cor) {
     tab_counts_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
 
@@ -445,20 +452,22 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
 }
 
 
-#' Correlate categorical groups with one metric column
+#' Correlate categorical groups with one categorical column
 #'
-#' \strong{Not yet implemented. The future will come.}
 #'
 #' @keywords internal
 #'
 #' @param data A tibble.
-#' @param col The item column that hold the values to summarize.
+#' @param col The column holding factor values.
 #' @param cross The column to correlate.
+#' @param smoothing Add pseudocount. Calculate the pseudocount based on the number of trials
+#'        to apply Laplace's rule of succession.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-tab_counts_one_cor <- function(data, col, cross, clean = TRUE, method = c("cor", "grouped"), ...) {
+tab_counts_one_cor <- function(data, col, cross, labels = TRUE, clean = TRUE, smoothing = 0, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ col }})
@@ -472,36 +481,51 @@ tab_counts_one_cor <- function(data, col, cross, clean = TRUE, method = c("cor",
   # 3. Remove missings
   data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
 
-  if (method == "grouped") {
+  # 4. Get cross variables names
 
-    result <- data %>%
-    tab_metrics( {{ cross }}, {{ col }})
+  if (labels) {
+    data <- labs_replace(
+      data, {{ cross }},
+      codebook(data, {{ cross }}),
+      "value_name", "value_label"
+    )}
 
-    return(result)
+  # 5. Calculate npmi
 
-  }
-
-  if (method == "cor") {
-
-    grouped <- data %>%
+  # Calculate marginal probabilities
+  result <- data %>%
     dplyr::count({{ col }}, {{ cross }}) %>%
-    dplyr::mutate(
-      "{{ cross }}" := tidyr::replace_na(as.character({{ cross }}), "missing"),
-      "{{ col }}" := tidyr::replace_na(as.character({{ col }}), "missing"))
+      dplyr::group_by({{ col }}) %>%
+      dplyr::mutate(Total_X = sum(n)) %>%
+      dplyr::ungroup() %>%
+      dplyr::group_by({{ cross }}) %>%
+      dplyr::mutate(Total_Y = sum(n)) %>%
+      dplyr::ungroup() %>%
+    # Calculate joint probablities
+      dplyr::mutate(Total = sum(n),
+             P_XY = (n + smoothing) / (Total + smoothing),
+             P_X = (Total_X + smoothing) / (Total + smoothing),
+             P_Y = (Total_Y + smoothing) / (Total + smoothing),
+             ratio = P_XY / P_Y,
+             pmi = dplyr::case_when(
+               P_XY == 0 ~ -Inf,
+               P_Y == 0 ~ Inf,
+               TRUE ~ log2(ratio)
+             ),
+             npmi = dplyr::case_when(
+               pmi == -Inf ~ -1,
+               pmi == Inf ~ 1,
+               pmi == 0 ~ 0,
+               pmi > 0 ~ pmi / -log2(P_Y + smoothing),
+               pmi < 0 ~ pmi / -log2(P_XY + smoothing)
+             )) %>%
+      # Pivot wider
+      dplyr::select({{ col }}, {{ cross }}, npmi) %>%
+      tidyr::pivot_wider(names_from = {{ col }}, values_from = npmi, values_fill = list(npmi = 0))
 
-    # Pivot wider
-    grouped <- grouped %>%
-      dplyr::select({{ col }}, {{ cross }}, "n") %>%
-      tidyr::pivot_wider(
-        names_from = {{ cross }},
-        values_from = "n",
-        values_fill = list(n = 0)
-    )
-
-    print(grouped)
-
-  }
+  .to_vlkr_tab(result)
 }
+
 
 #' Output frequencies for multiple variables
 #'
@@ -908,7 +932,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @importFrom rlang .data
-tab_counts_items_cor <- function(data, cols, cross, method = c("cor", "grouped"), clean = TRUE, ...) {
+tab_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -929,17 +953,7 @@ tab_counts_items_cor <- function(data, cols, cross, method = c("cor", "grouped")
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   cross_names <- colnames(dplyr::select(data, tidyselect::all_of(cross_eval)))
 
-  if(method == "grouped") {
-
-    result <- data %>%
-    tab_metrics({{ cols }}, {{ cross }}, metric = TRUE)
-
-    return(result)
-  }
-
-  if(method == "cor")
-    result <-
-    return(result)
+  # 5. Calculate Npmi for items
 }
 
 #' Output a five point summary table for the values in multiple columns
