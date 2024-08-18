@@ -56,7 +56,7 @@ tab_metrics(data, sd_age, adopter)
 # verstehe smoothing noch nicht genau 
 # TODO: implement npmi confidence intervals
 # Implement method param = "cor" vs. "grouped" instead of cor = T ? 
-tab_counts(data, adopter, use_work, cor = T)
+tab_counts(data, adopter, use_work, smoothing=1, cor = T)
 
 ```
 

@@ -498,6 +498,7 @@ tab_counts_one_cor <- function(data, col, cross, labels = TRUE, clean = TRUE, sm
   # TODO: What if columns named Total_x etc. exist? Revise by either using dot column names or rename selected columns first
   result <- data %>%
     dplyr::count({{ col }}, {{ cross }}) %>%
+    #tidyr::complete({{ col }}, {{ cross }}, fill=list(n=0)) |>
 
       dplyr::group_by({{ col }}) %>%
       dplyr::mutate(Total_X = sum(n)) %>%
@@ -508,9 +509,9 @@ tab_counts_one_cor <- function(data, col, cross, labels = TRUE, clean = TRUE, sm
 
       # Calculate joint probablities
       dplyr::mutate(Total = sum(n),
-             P_XY = (n + smoothing) / (Total + smoothing),
-             P_X = (Total_X + smoothing) / (Total + smoothing),
-             P_Y = (Total_Y + smoothing) / (Total + smoothing),
+             P_XY = (n + smoothing) / (Total + dplyr::n_distinct({{ col }}) * dplyr::n_distinct({{ cross }}) *  smoothing),
+             P_X = (Total_X + smoothing) / (Total + (dplyr::n_distinct({{ col }}) * smoothing)),
+             P_Y = (Total_Y + smoothing) / (Total + dplyr::n_distinct({{ cross }}) * smoothing),
              ratio = P_XY / (P_X * P_Y),
              pmi = dplyr::case_when(
                P_XY == 0 ~ -Inf,
