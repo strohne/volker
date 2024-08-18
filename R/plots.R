@@ -1406,6 +1406,12 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 
 #' Heatmap for correlations between multiple items
 #'
+#' TODO: Reihenfolge der Parameter und der Dokumentation vereinheitlichen
+#' TODO: Leerzeile nach dem importFrom wegnehmen
+#' TODO: export keyword ergänzen
+#' TODO: Weiche in plot_metrics einbauen, damit plot_metrics_items_cor_items überhaupt aufgerufen wird
+#' TODO: plot_metrics_items_cor (für eine cross-Variable) implementieren und die Weiche in plot_metrics einbauen
+#' TODO: Hilfe aktualisieren
 #'
 #' @keywords internal
 #'
@@ -1455,6 +1461,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, ti
   prefix1 <- get_prefix(result$item1)
   prefix2 <- get_prefix(result$item2)
 
+  # TODO: Coding Style: Bitte Umbruch nach öffnener Klammer und nach links rücken
   result <- dplyr::mutate(result,
                           item1 = trim_prefix(.data$item1, prefix1),
                           item2 = trim_prefix(.data$item2, prefix2)
@@ -1482,6 +1489,9 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, ti
   }
 
   if (numbers) {
+    # TODO: keine hart kodierten Farbwerte - gehört in die Config
+    # TODO: in die Config Farbbereiche für polarisierte Darstellungen aufnehmen und hier verwenden
+    #       (z.B. rot bis weiß und weiß bis grün)
     pl <- pl + ggplot2::geom_text(ggplot2::aes(label = !!sym(method)),
                                   size = 3,
                                   color = ifelse(result[[method]] < 0, "#E6AB02", "white"))
@@ -1494,6 +1504,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, ti
       y = prefix2)
 
   # Add title
+  # TODO: Vereinfachen
   if (isTRUE(title)) {
     if (prefix1 == prefix2) {
       plot_title <- prefix1
@@ -2072,6 +2083,8 @@ vlkr_colors_sequential <- function(n) {
 
 #' Truncate labels
 #'
+#' TODO: Move to labels.R and remove blank line between documentation and function definition
+#'
 #' Truncate labels that exceed a specified maximum length.
 #'
 #' @keywords internal
@@ -2088,6 +2101,8 @@ trunc_labels <- function(max_length = 20) {
 }
 
 #' Angle labels
+#'
+#' TODO: move to labels.R
 #'
 #' Calculate angle for label adjustment based on character length.
 #'

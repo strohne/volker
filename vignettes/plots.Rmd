@@ -55,6 +55,7 @@ plot_counts(data, starts_with("cg_adoption_"), numbers = "p")
 ### 4. Multiple items: Frequency plot for adoption factors grouped by adopter category
 ```{r, fig.height=6}
 
+# TODO: Coding style: fix whitespace in function call
 plot_counts_items_grouped(
   data, starts_with("cg_adoption_"), adopter,   category=c(4,5),
   numbers = "n"
@@ -94,7 +95,9 @@ data %>%
 
 ## 5. Correlation of multiple items
 ```{r}
-
+# TODO: Fix heading level ("## 5. Correlation of multiple items" one level down)
+# TODO: Es gibt kein plot_metrics_items_cor mehr, Weiche in plot_metrics einbauen und 
+#       hier plot_metrics aufrufen
 plot_metrics_items_cor(data, starts_with("cg_adoption"), starts_with("cg_adoption"), labels = F, numbers=T)
 
 ```
