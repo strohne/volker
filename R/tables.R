@@ -493,35 +493,37 @@ tab_counts_one_cor <- function(data, col, cross, labels = TRUE, clean = TRUE, sm
   # 5. Calculate npmi
 
   # Calculate marginal probabilities
+  # TODO: move to own function, move to effects.R
+  # TODO: use lower case for new column names: p_xy, p_x, p_y
+  # TODO: What if columns named Total_x etc. exist? Revise by either using dot column names or rename selected columns first
   result <- data %>%
     dplyr::count({{ col }}, {{ cross }}) %>%
+
       dplyr::group_by({{ col }}) %>%
       dplyr::mutate(Total_X = sum(n)) %>%
       dplyr::ungroup() %>%
       dplyr::group_by({{ cross }}) %>%
       dplyr::mutate(Total_Y = sum(n)) %>%
       dplyr::ungroup() %>%
-    # Calculate joint probablities
+
+      # Calculate joint probablities
       dplyr::mutate(Total = sum(n),
              P_XY = (n + smoothing) / (Total + smoothing),
              P_X = (Total_X + smoothing) / (Total + smoothing),
              P_Y = (Total_Y + smoothing) / (Total + smoothing),
-             ratio = P_XY / P_Y,
+             ratio = P_XY / (P_X * P_Y),
              pmi = dplyr::case_when(
                P_XY == 0 ~ -Inf,
-               P_Y == 0 ~ Inf,
                TRUE ~ log2(ratio)
              ),
              npmi = dplyr::case_when(
-               pmi == -Inf ~ -1,
-               pmi == Inf ~ 1,
-               pmi == 0 ~ 0,
-               pmi > 0 ~ pmi / -log2(P_Y + smoothing),
-               pmi < 0 ~ pmi / -log2(P_XY + smoothing)
+               P_XY == 0 ~ -1,
+               TRUE ~ pmi / -log2(P_XY)
              )) %>%
+
       # Pivot wider
       dplyr::select({{ col }}, {{ cross }}, npmi) %>%
-      tidyr::pivot_wider(names_from = {{ col }}, values_from = npmi, values_fill = list(npmi = 0))
+      tidyr::pivot_wider(names_from = {{ col }}, values_from = npmi, values_fill = list(npmi = -1))
 
   .to_vlkr_tab(result)
 }
