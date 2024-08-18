@@ -827,7 +827,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
       "item_name", "item_label"
     )}
 
-  # TODO: @Jakob: Improve message? How?
+  # TODO: @Jakob: Improve message? How? -> below the table, add to the base / missing message
   # Message
   category_labels <- paste0(category_labels, collapse=", ")
   message("Percentage shares reflecting values for: ", category_labels)
