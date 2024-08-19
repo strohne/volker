@@ -280,8 +280,16 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
   # 3. Remove missings
   data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
 
+  # 4. Get labels for cross variable
+  if (labels) {
+    data <- labs_replace(
+      data, {{ cross }},
+      codebook(data, {{ cross }}),
+      "value_name", "value_label"
+    )}
+
   #
-  # 4. Count
+  # 5. Count
   #
   grouped <- data %>%
     dplyr::count({{ col }}, {{ cross }}) %>%
@@ -715,7 +723,6 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     )
 
   #  Set labels: cross variable
-  # TODO: @Jakob: implement in tab_counts_grouped as well?
   if (labels) {
     result <- labs_replace(
       result, {{ cross }},
