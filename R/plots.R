@@ -155,6 +155,9 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
   else if (is_items && (is_grouped || is_multi) && is_metric) {
     plot_metrics_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
+  else if (is_items && !is_grouped && is_multi && !is_metric) {
+    plot_metrics_items_cor_items(data, {{ cols }}, {{ cross }},  ...)
+  }
 
   # Not found
   else {
@@ -1406,10 +1409,10 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 
 #' Heatmap for correlations between multiple items
 #'
-#' TODO: Reihenfolge der Parameter und der Dokumentation vereinheitlichen
-#' TODO: Leerzeile nach dem importFrom wegnehmen
-#' TODO: export keyword ergänzen
-#' TODO: Weiche in plot_metrics einbauen, damit plot_metrics_items_cor_items überhaupt aufgerufen wird
+#' TODO: Reihenfolge der Parameter und der Dokumentation vereinheitlichen (y)
+#' TODO: Leerzeile nach dem importFrom wegnehmen (y)
+#' TODO: export keyword ergänzen (y)
+#' TODO: Weiche in plot_metrics einbauen, damit plot_metrics_items_cor_items überhaupt aufgerufen wird (y)
 #' TODO: plot_metrics_items_cor (für eine cross-Variable) implementieren und die Weiche in plot_metrics einbauen
 #' TODO: Hilfe aktualisieren
 #'
@@ -1418,8 +1421,8 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param method The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.
+#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param numbers Controls whether to display correlation coefficients on the plot.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
@@ -1433,9 +1436,10 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 #'
 #' plot_metrics_items_cor_items(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 #'
-#' @importFrom rlang .data
+#'@export
+#'@importFrom rlang .data
 #'
-plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, title = TRUE,  method = "pearson", numbers = F, digits = 2, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", negative = FALSE, numbers = F, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -1461,11 +1465,10 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, ti
   prefix1 <- get_prefix(result$item1)
   prefix2 <- get_prefix(result$item2)
 
-  # TODO: Coding Style: Bitte Umbruch nach öffnener Klammer und nach links rücken
-  result <- dplyr::mutate(result,
-                          item1 = trim_prefix(.data$item1, prefix1),
-                          item2 = trim_prefix(.data$item2, prefix2)
-
+  result <- dplyr::mutate(
+    result,
+    item1 = trim_prefix(.data$item1, prefix1),
+    item2 = trim_prefix(.data$item2, prefix2)
   )
 
   method <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
@@ -2079,48 +2082,5 @@ vlkr_colors_sequential <- function(n) {
     seq(0,1,length.out=n)
   )
   colors
-}
-
-#' Truncate labels
-#'
-#' TODO: Move to labels.R and remove blank line between documentation and function definition
-#'
-#' Truncate labels that exceed a specified maximum length.
-#'
-#' @keywords internal
-#'
-#' @param max_length Specifies max_length, default is 20.
-#' @return A function that truncates labels to the max_length,
-#'        appending "..." if shortened.
-
-trunc_labels <- function(max_length = 20) {
-  function(labels) {
-
-    ifelse(nchar(labels) > max_length, paste0(substr(labels, 1, max_length), "..."), labels)
-  }
-}
-
-#' Angle labels
-#'
-#' TODO: move to labels.R
-#'
-#' Calculate angle for label adjustment based on character length.
-#'
-#' @keywords internal
-#'
-#' @param labels Vector of labels to check.
-#' @param threshold Length threshold beyond which the angle is applied.
-#'                  Default is 20.
-#' @parm angle The angle to apply if any label exceeds the threshold.
-#'            Default is 45.
-#'
-#' @return A single angle value.
-get_angle <- function(labels, threshold = 20, angle = 45) {
-  # Check if any label exceeds the threshold and return the angle accordingly
-  if (any(nchar(labels) > threshold)) {
-    return(angle)
-  } else {
-    return(0)
-  }
 }
 

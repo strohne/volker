@@ -718,3 +718,42 @@ label_scale <- function(x, scale) {
   )
 }
 
+
+#' Truncate labels
+#'
+#' Truncate labels that exceed a specified maximum length.
+#'
+#' @keywords internal
+#'
+#' @param max_length Specifies max_length, default is 20.
+#'
+#' @return A function that truncates labels to the max_length,
+#'        appending "..." if shortened.
+trunc_labels <- function(max_length = 20) {
+  function(labels) {
+
+    ifelse(nchar(labels) > max_length, paste0(substr(labels, 1, max_length), "..."), labels)
+  }
+}
+
+#' Angle labels
+#'
+#' Calculate angle for label adjustment based on character length.
+#'
+#' @keywords internal
+#'
+#' @param labels Vector of labels to check.
+#' @param threshold Length threshold beyond which the angle is applied.
+#'                  Default is 20.
+#' @parm angle The angle to apply if any label exceeds the threshold.
+#'            Default is 45.
+#'
+#' @return A single angle value.
+get_angle <- function(labels, threshold = 20, angle = 45) {
+  # Check if any label exceeds the threshold and return the angle accordingly
+  if (any(nchar(labels) > threshold)) {
+    return(angle)
+  } else {
+    return(0)
+  }
+}
