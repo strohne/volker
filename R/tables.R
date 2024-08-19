@@ -791,25 +791,25 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 
   # Filter category
   result <- dplyr::filter(result, .data$.category == TRUE) %>%
-    dplyr::select(-.data$.category)
+    dplyr::select(-tidyselect::any_of(".category"))
 
   # Result n
   result_n <- result %>%
-    dplyr::select(-.data$p, -.data$total_p) %>%
+    dplyr::select(-tidyselect::any_of("p"), -tidyselect::any_of("total_p")) %>%
     dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
     tidyr::pivot_wider(
-      names_from = .data$.cross,
-      values_from = .data$n,
+      names_from = ".cross",
+      values_from = "n",
       values_fill = list(n = 0)) %>%
     dplyr::rename(total = "total_n")
 
   # Result p
   result_p <- result %>%
-    dplyr::select(-.data$n, -.data$total_n) %>%
+    dplyr::select(-tidyselect::any_of("n"), -tidyselect::any_of("total_n")) %>%
     dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
     tidyr::pivot_wider(
-      names_from = .data$.cross,
-      values_from = .data$p,
+      names_from = ".cross",
+      values_from = "p",
       values_fill = list(n = 0)) %>%
     dplyr::rename(total = "total_p")
 
