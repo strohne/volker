@@ -262,11 +262,79 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 #' @param col The column holding factor values.
 #' @param cross The column holding metric values.
 #' @param clean Prepare data by \link{data_clean}.
+#' @param method Specifies the analysis type. "npmi" calculates normalized pointwise mutual information,
+#'               quantifying variable associations. "logreg" performs logistic regression.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-effect_counts_one_cor <- function(data, col, cross, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+effect_counts_one_cor <- function(data, col, cross, clean = TRUE, method = "npmi",labels = TRUE, ...) {
+
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ col }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+
+  # 4. Get cross variables names
+  if (labels) {
+    data <- labs_replace(
+      data, {{ cross }},
+      codebook(data, {{ cross }}),
+      "value_name", "value_label"
+    )}
+
+  # 5. Calculation according to method
+  # Calculate npmi
+
+  if ("npmi" %in% method) {
+    result <- .effect_npmi(data, {{ col }}, {{ cross }})
+
+    # Pivot wider
+    result <- result %>%
+    dplyr::select({{ col }}, {{ cross }}, npmi) %>%
+      tidyr::pivot_wider(names_from = {{ col }}, values_from = npmi, values_fill = list(npmi = -1))
+  }
+
+  # Calculate logistic regression
+  if ("logreg" %in% method) {
+
+    lm_data <- dplyr::select(data, av = {{ col }}, uv = {{ cross }})
+    fit <- stats::glm(av ~ uv, data = lm_data, family = "binomial")
+
+    # Regression parameters
+    lm_params <- tidy_lm_levels(fit)
+
+    lm_params <- lm_params |>
+      dplyr::mutate(
+        Term = .data$term,
+        stars = get_stars(.data$p.value),
+        estimate = sprintf("%.2f",round(.data$estimate,2)),
+        "ci low" = sprintf("%.2f",round(.data$conf.low,2)),
+        "ci high" = sprintf("%.2f",round(.data$conf.high,2)),
+        "standard error" = sprintf("%.2f",round(.data$std.error,2)),
+        t = sprintf("%.2f", round(.data$statistic,2)),
+        p = sprintf("%.3f",round(.data$p.value,3))
+      ) |>
+      dplyr::mutate(dplyr::across(tidyselect::all_of(
+        c("estimate","ci low", "ci high" , "standard error","t","p")
+      ), function(x) ifelse(x == "NA","",x))) |>
+      dplyr::select(tidyselect::all_of(c(
+        "Term","estimate","ci low","ci high","standard error","t","p","stars"
+      )))
+
+    return(lm_params)
+  }
+
+  result <- .attr_transfer(result, data, "missings")
+  .to_vlkr_tab(result)
+
 }
 
 #' Test whether shares differ
@@ -815,6 +883,66 @@ effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method
 
   result
 }
+
+#' Calculate nmpi
+#'
+#' @keywords internal
+#'
+#' @param data A tibble.
+#' @param col The column holding factor values.
+#' @param cross The column to correlate.
+#' @param smoothing Add pseudocount. Calculate the pseudocount based on the number of trials
+#'        to apply Laplace's rule of succession.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
+#' @return A volker tibble.
+#' @importFrom rlang .data
+#'
+.effect_npmi <- function(data, col, cross, labels = TRUE, clean = TRUE, smoothing = 0, ...) {
+
+  cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
+  cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
+
+  # 5. Calculate npmi
+
+# Calculate marginal probabilities
+# TODO: move to own function, move to effects.R
+# TODO: use lower case for new column names: p_xy, p_x, p_y
+# TODO: What if columns named Total_x etc. exist? Revise by either using dot column names or rename selected columns first
+  result <- data %>%
+    dplyr::count({{ col }}, {{ cross }}) %>%
+    #tidyr::complete({{ col }}, {{ cross }}, fill=list(n=0)) |>
+
+    dplyr::group_by({{ col }}) %>%
+    dplyr::mutate(.total_x = sum(n)) %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by({{ cross }}) %>%
+    dplyr::mutate(.total_y = sum(n)) %>%
+    dplyr::ungroup() %>%
+
+    # Calculate joint probablities
+    dplyr::mutate(.total = sum(n),
+                  p_xy = (n + smoothing) / (.total + dplyr::n_distinct({{ col }}) * dplyr::n_distinct({{ cross }}) *  smoothing),
+                  p_x = (.total_x + smoothing) / (.total + (dplyr::n_distinct({{ col }}) * smoothing)),
+                  p_y = (.total_y + smoothing) / (.total + dplyr::n_distinct({{ cross }}) * smoothing),
+                  ratio = p_xy / (p_x * p_y),
+                  pmi = dplyr::case_when(
+                    p_xy == 0 ~ -Inf,
+                    TRUE ~ log2(ratio)
+                  ),
+                  npmi = dplyr::case_when(
+                    p_xy == 0 ~ -1,
+                    TRUE ~ pmi / -log2(p_xy)
+                  )) #%>%
+
+    # # Pivot wider
+    # dplyr::select({{ col }}, {{ cross }}, npmi) %>%
+    # tidyr::pivot_wider(names_from = {{ col }}, values_from = npmi, values_fill = list(npmi = -1))
+
+  result
+
+  }
 
 #' Tidy lm results, replace categorical parameter names by their levels and add the reference level
 #'
