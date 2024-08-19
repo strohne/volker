@@ -142,7 +142,7 @@
       |Expectations: Not using ChatGPT is considered being an outsider.          |    Age| 97|        0.09|  -0.11|    0.28| 95|  0.87| 0.387|      |
       |Expectations: Using ChatGPT brings me recognition from my environment.    |    Age| 97|       -0.02|  -0.22|    0.18| 95| -0.22| 0.823|      |
       
-      4 missing case(s) ommited.
+      4 missing case(s) omitted.
       
 
 # effect_metrics_items with spearman
@@ -312,7 +312,7 @@
       |Using ChatGPT brings me recognition from my environment.    |          Not using ChatGPT is considered being an outsider.| 97|        0.56|   0.40|    0.68| 95|  6.53| 0.000|   ***|
       |Using ChatGPT brings me recognition from my environment.    |    Using ChatGPT brings me recognition from my environment.| 97|        1.00|   1.00|    1.00| 95|   Inf| 0.000|   ***|
       
-      4 missing case(s) ommited.
+      4 missing case(s) omitted.
       
 
 # effect_metrics_items_cor with two batteries
@@ -350,6 +350,6 @@
       |Expectations: Using ChatGPT brings me recognition from my environment.    |      Usage: in private context| 97|        0.42|   0.24|    0.57| 95|  4.52| 0.000|   ***|
       |Expectations: Using ChatGPT brings me recognition from my environment.    | Usage: in professional context| 97|        0.46|   0.28|    0.60| 95|  4.99| 0.000|   ***|
       
-      4 missing case(s) ommited.
+      4 missing case(s) omitted.
       
 

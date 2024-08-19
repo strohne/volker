@@ -3,7 +3,7 @@
     Code
       volker::codebook(data)
     Output
-      # A tibble: 94 x 6
+      # A tibble: 92 x 6
          item_name     item_group item_class item_label         value_name value_label
          <chr>         <chr>      <chr>      <chr>              <chr>      <chr>      
        1 case          case       <NA>       case               <NA>       <NA>       
@@ -16,7 +16,7 @@
        8 use_private   use        <NA>       Usage: in private~ 5          almost dai~
        9 use_work      use        <NA>       Usage: in profess~ 1          never      
       10 use_work      use        <NA>       Usage: in profess~ 2          rarely     
-      # i 84 more rows
+      # i 82 more rows
 
 # missing labels
 
@@ -44,7 +44,7 @@
     Code
       .
     Output
-      # A tibble: 26 x 6
+      # A tibble: 24 x 6
          item_name             item_group item_class item_label value_name value_label
          <chr>                 <chr>      <chr>      <chr>      <chr>      <chr>      
        1 case                  case       <NA>       case       <NA>       <NA>       
@@ -57,14 +57,14 @@
        8 cg_adoption_fearofus~ cg         <NA>       cg_adopti~ <NA>       <NA>       
        9 cg_adoption_fearofus~ cg         <NA>       cg_adopti~ <NA>       <NA>       
       10 cg_adoption_fearofus~ cg         <NA>       cg_adopti~ <NA>       <NA>       
-      # i 16 more rows
+      # i 14 more rows
 
 # Store, clear and restore the codebook
 
     Code
       .
     Output
-      # A tibble: 94 x 6
+      # A tibble: 92 x 6
          item_name     item_group item_class item_label         value_name value_label
          <chr>         <chr>      <chr>      <chr>              <chr>      <chr>      
        1 case          case       <NA>       case               <NA>       <NA>       
@@ -77,7 +77,7 @@
        8 use_private   use        <NA>       Usage: in private~ 5          almost dai~
        9 use_work      use        <NA>       Usage: in profess~ 1          never      
       10 use_work      use        <NA>       Usage: in profess~ 2          rarely     
-      # i 84 more rows
+      # i 82 more rows
 
 # Item values are replaced and keep their order
 
@@ -89,7 +89,6 @@
       [2] "I try new offers rather quickly"                  
       [3] "I wait until offers establish themselves"         
       [4] "I only use new offers when I have no other choice"
-      [5] "[no answer]"                                      
 
 # Item values are kept even if they are not in the codebook
 

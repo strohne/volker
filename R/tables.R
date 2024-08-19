@@ -760,7 +760,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   base_labels <- base_category
   if (is.null(category) || all(base_labels %in% result$.value_name)) {
     base_labels <- codebook_df %>%
-      dplyr::filter(value_name %in% base_category) %>%
+      dplyr::filter(.data$value_name %in% base_category) %>%
       dplyr::pull(.data$value_label)
   }
 

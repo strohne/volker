@@ -49,7 +49,7 @@
       |Not using ChatGPT is considered being an outsider.          |          46% (45)| 27% (26)| 14% (14)|   7% (7)|         5% (5)| 100% (97)|
       |Using ChatGPT brings me recognition from my environment.    |          33% (32)| 27% (26)| 21% (20)| 13% (13)|         6% (6)| 100% (97)|
       
-      4 missing case(s) ommited.
+      4 missing case(s) omitted.
       
 
 # Frequency table for multiple categorical variables by grouping variable
@@ -57,6 +57,46 @@
     Code
       volker::tab_counts(data, tidyselect::starts_with("cg_adoption_"), sd_gender,
       category = c("agree", "strongly agree"))
+    Condition
+      Warning:
+      Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+      i Please use `".category"` instead of `.data$.category`
+      Warning:
+      Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+      i Please use `"p"` instead of `.data$p`
+      Warning:
+      Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+      i Please use `"total_p"` instead of `.data$total_p`
+      Warning:
+      Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+      i Please use `".cross"` instead of `.data$.cross`
+      Warning:
+      Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+      i Please use `"n"` instead of `.data$n`
+      Warning:
+      Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+      i Please use `".cross"` instead of `.data$.cross`
+      Warning:
+      Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+      i Please use `"n"` instead of `.data$n`
+      Warning:
+      Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+      i Please use `"n"` instead of `.data$n`
+      Warning:
+      Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+      i Please use `"total_n"` instead of `.data$total_n`
+      Warning:
+      Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+      i Please use `".cross"` instead of `.data$.cross`
+      Warning:
+      Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+      i Please use `"p"` instead of `.data$p`
+      Warning:
+      Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+      i Please use `".cross"` instead of `.data$.cross`
+      Warning:
+      Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+      i Please use `"p"` instead of `.data$p`
     Output
       
       
@@ -75,7 +115,7 @@
       |Not using ChatGPT is considered being an outsider.          | 12% (12)|   3% (1)| 17% (10)| 100% (1)|
       |Using ChatGPT brings me recognition from my environment.    | 20% (19)|  16% (6)| 22% (13)|   0% (0)|
       
-      Frequencies based on categories: agree, strongly agree. 4 missing case(s) omitted.
+      Frequencies based on values: agree, strongly agree. 4 missing case(s) omitted.
       
 
 # Distribution table for age
@@ -143,7 +183,7 @@
       |Not using ChatGPT is considered being an outsider.          | 2.0 (1.2)| 1.8 (1.0)| 2.1 (1.3)| 4.0 (NA)|
       |Using ChatGPT brings me recognition from my environment.    | 2.3 (1.2)| 2.4 (1.2)| 2.3 (1.3)| 3.0 (NA)|
       
-      4 missing case(s) ommited.
+      4 missing case(s) omitted.
       
 
 ---
@@ -169,7 +209,7 @@
       |Not using ChatGPT is considered being an outsider.          |  0.09|
       |Using ChatGPT brings me recognition from my environment.    | -0.02|
       
-      4 missing case(s) ommited.
+      4 missing case(s) omitted.
       
 
 ---
@@ -195,7 +235,7 @@
       |Not using ChatGPT is considered being an outsider.          |                      0.34|                           0.34|
       |Using ChatGPT brings me recognition from my environment.    |                      0.42|                           0.46|
       
-      4 missing case(s) ommited.
+      4 missing case(s) omitted.
       
 
 # Distribution table for multiple metric items
@@ -220,7 +260,7 @@
       |Not using ChatGPT is considered being an outsider.          |   1|  1|      2|  3|   5|  2.0| 1.2| 97|
       |Using ChatGPT brings me recognition from my environment.    |   1|  1|      2|  3|   5|  2.3| 1.2| 97|
       
-      4 missing case(s) ommited.
+      4 missing case(s) omitted.
       
 
 # missing values make no trouble
@@ -245,7 +285,7 @@
       |social_03    | 2.0 (1.2)| 4.0 (NA)| 1.8 (1.0)| 2.1 (1.3)|
       |social_04    | 2.3 (1.2)| 3.0 (NA)| 2.4 (1.2)| 2.3 (1.3)|
       
-      7 missing case(s) ommited.
+      7 missing case(s) omitted.
       
 
 # Correlation of items
@@ -271,7 +311,7 @@
       |Not using ChatGPT is considered being an outsider.          |                                                        0.16|                                     0.36|                                         0.13|                                                  0.20|                                  0.10|                                       0.33|                                                      0.29|                                              0.25|                                          0.48|                                            0.58|                                               1.00|                                                     0.56|
       |Using ChatGPT brings me recognition from my environment.    |                                                        0.27|                                     0.40|                                         0.31|                                                  0.36|                                 -0.07|                                       0.30|                                                      0.10|                                              0.14|                                          0.57|                                            0.54|                                               0.56|                                                     1.00|
       
-      4 missing case(s) ommited.
+      4 missing case(s) omitted.
       
 
 # Item order is kept

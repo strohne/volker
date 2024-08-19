@@ -35,3 +35,15 @@ test_that("Negatives are kept", {
     expect_snapshot(cran= TRUE)
   options("vlkr.na.numbers"=c(-9))
 })
+
+# Get baseline
+
+test_that("Baseline is extracted", {
+  result <- volker::tab_counts(data,
+    tidyselect::starts_with("cg_adoption_"), sd_gender,
+    category = c("agree", "strongly agree")
+ )
+  get_baseline(result) |>
+    expect_snapshot(cran= TRUE)
+
+})
