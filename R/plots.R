@@ -1407,16 +1407,150 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
   .to_vlkr_plot(pl)
 }
 
+#' Pairwise scatter plot matrix
+#'
+#'
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross The column to correlate.
+#' @param method The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param numbers Controls whether to display correlation coefficients on the plot.
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
+#' @return A ggplot object.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_metrics_items_cor(data, starts_with("cg_adoption_adv"), sd_age)
+#'
+#'@export
+#'@importFrom rlang .data
+plot_metrics_items_cor <- function(data, cols, cross, method = "pearson", negative = FALSE, numbers = F, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ cols }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
+
+  # 4. Remove negatives
+  if (!negative) {
+    data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
+  }
+
+  # 5. Pivot longer
+  result <- data %>%
+    tidyr::pivot_longer(
+      {{ cols }},
+      names_to = "variable",
+      values_to = "value")
+
+
+  plot <- ggplot2::ggplot(result, ggplot2::aes(x = value, y = {{cross}})) +
+    ggplot2::geom_point(alpha = 0.6, color = "red") +
+    ggplot2::geom_smooth(method = "lm", se = FALSE, color = "blue") +
+    ggplot2::facet_wrap(~ variable, scales = "free")
+
+  return(plot)
+
+
+  # 5. Calculate correlation
+  result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
+
+  # Remove common item prefix
+  prefix1 <- get_prefix(result$item1)
+  prefix2 <- get_prefix(result$item2)
+
+  result <- dplyr::mutate(
+    result,
+    item1 = trim_prefix(.data$item1, prefix1),
+    item2 = trim_prefix(.data$item2, prefix2)
+  )
+
+  method <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
+
+  # Plot
+  pl <- ggplot2::ggplot(result, ggplot2::aes(item1, item2, fill = !!sym(method))) +
+    ggplot2::geom_tile()
+
+  # if (numbers) {
+  #   pl <- pl + ggplot2::geom_text(
+  #     ggplot2::aes(label = !!sym(method)),
+  #     size = 3,
+  #     color = ifelse(result[[method]] < 0,
+  #     VLKR_NEGATIVE, VLKR_POSITIVE))
+  # }
+
+  # Add labels
+  if (labels)
+    pl <- pl + ggplot2::labs(
+      x = prefix1,
+      y = prefix2)
+
+  # Add title
+  if (title == TRUE) {
+    if (prefix1 != prefix2) {
+      title <- paste0(prefix1, " - ", prefix2)
+    } else {
+      title <- prefix1
+    }
+  } else if (title == FALSE) {
+    title <- NULL
+  }
+
+  if (!is.null(title)) {
+    pl <- pl + ggplot2::ggtitle(label = title)
+  }
+
+  # Add theming
+  pl <- pl +
+    ggplot2::theme(
+      axis.title.x = ggplot2::element_blank(),
+      axis.title.y = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_text(), #size = 11
+      #legend.title = ggplot2::element_blank(),
+      plot.caption = ggplot2::element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position = "plot"
+    )
+
+  # Wrap labels
+  pl <- pl +
+    ggplot2::scale_y_discrete(labels = scales::label_wrap(40)) +
+    #ggplot2::scale_x_discrete(labels = scales::label_wrap(40)) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = get_angle(result$item1), hjust = 1) ) +
+    ggplot2::scale_x_discrete(labels = trunc_labels()) +
+    ggplot2::coord_fixed()
+
+  # Add base
+  base_n <- nrow(data)
+  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
+
+  # Convert to vlkr_plot
+  pl <- .attr_transfer(pl, data, "missings")
+  .to_vlkr_plot(pl)
+
+}
+
 #' Heatmap for correlations between multiple items
 #'
-#' TODO: Reihenfolge der Parameter und der Dokumentation vereinheitlichen (y)
-#' TODO: Leerzeile nach dem importFrom wegnehmen (y)
-#' TODO: export keyword ergänzen (y)
-#' TODO: Weiche in plot_metrics einbauen, damit plot_metrics_items_cor_items überhaupt aufgerufen wird (y)
+#'
 #' TODO: plot_metrics_items_cor (für eine cross-Variable) implementieren und die Weiche in plot_metrics einbauen
 #' TODO: Hilfe aktualisieren
 #'
-#' @keywords internal
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
@@ -1473,8 +1607,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 
   method <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
 
-  colors <- vlkr_colors_sequential(5)
-  #colors_dis <- vlkr_colors_discrete(7)
   method_range <- range(result[[method]], na.rm = TRUE)
 
   # Plot
@@ -1483,23 +1615,26 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 
   if (all(method_range >= 0 & method_range <= 1)) {
     # range 0 to 1
-    pl <- pl + ggplot2::scale_fill_gradientn(colors = colors,
-                                            limits = c(0,1))
+    pl <- pl + ggplot2::scale_fill_gradientn(
+      colors = VLKR_FILLGRADIENT,
+      limits = c(0,1))
+
   } else {
+
     # range -1 to 1
-    pl <- pl + ggplot2::scale_fill_gradient2(low = colors[1], high = colors[5], mid = colors[3], midpoint = 0,
-                                    limits = c(-1, 1))
+    pl <- pl + ggplot2::scale_fill_gradient2(
+      low = VLKR_LOW, high = VLKR_HIGH,
+      mid = VLKR_MID, midpoint = 0,
+      limits = c(-1, 1))
   }
 
   if (numbers) {
-    # TODO: keine hart kodierten Farbwerte - gehört in die Config
-    # TODO: in die Config Farbbereiche für polarisierte Darstellungen aufnehmen und hier verwenden
-    #       (z.B. rot bis weiß und weiß bis grün)
-    pl <- pl + ggplot2::geom_text(ggplot2::aes(label = !!sym(method)),
-                                  size = 3,
-                                  color = ifelse(result[[method]] < 0, "#E6AB02", "white"))
+    pl <- pl + ggplot2::geom_text(
+      ggplot2::aes(label = !!sym(method)),
+      size = 3,
+      color = ifelse(result[[method]] < 0,
+                     VLKR_NEGATIVE, VLKR_POSITIVE))
   }
-
   # Add labels
   if (labels)
     pl <- pl + ggplot2::labs(
@@ -1507,23 +1642,19 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       y = prefix2)
 
   # Add title
-  # TODO: Vereinfachen
-  if (isTRUE(title)) {
-    if (prefix1 == prefix2) {
-      plot_title <- prefix1
+  if (title == TRUE) {
+    if (prefix1 != prefix2) {
+      title <- paste0(prefix1, " - ", prefix2)
     } else {
-      plot_title <- ifelse((prefix1 != "" && prefix2 != ""), paste0(prefix1, " - ", prefix2), "")
+      title <- prefix1
     }
-    if (plot_title == "") {
-      plot_title <- NULL
-    }
-  } else if (is.character(title)) {
-    plot_title <- title
-  } else {
-    plot_title <- NULL
+  } else if (title == FALSE) {
+    title <- NULL
   }
 
-  pl <- pl + ggplot2::ggtitle(label = plot_title)
+  if (!is.null(title)) {
+    pl <- pl + ggplot2::ggtitle(label = title)
+  }
 
   # Add theming
   pl <- pl +

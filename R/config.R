@@ -35,6 +35,16 @@ VLKR_COLOR_BOX_BACKGROUND <- "#aaaaaa"
 VLKR_COLOR_BOX_FOREGROUND <- "#222222"
 VLKR_COLOR_CI <- "#222222"
 
+#' Polarized colors
+#'
+#' @keywords internal
+VLKR_NEGATIVE <- "#E6AB02"
+VLKR_POSITIVE <- "white"
+VLKR_NEUTRAL <- "#FFFFFF"
+VLKR_LOW <- "#D95F02"
+VLKR_MID <- "white"
+VLKR_HIGH <- "#66A61E"
+
 # Thresholds
 VLKR_NORMAL_DIGITS <- 1
 VLKR_SMALL_DIGITS <- 2
