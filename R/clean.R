@@ -207,12 +207,12 @@ data_rm_negatives <- function(data, cols) {
 }
 
 #' Get a formatted baseline for removed zero, negative, and missing cases
-#' and include category information if present
+#' and include focus category information if present
 #'
 #' @keywords internal
 #'
-#' @param obj An object with the missings and categories attribute.
-#' @return A formatted message or NULL if the missings attribute is not present.
+#' @param obj An object with the missings and focus attributes.
+#' @return A formatted message or NULL if missings and focus attributes are not present.
 get_baseline <- function(obj) {
   baseline <- c()
 

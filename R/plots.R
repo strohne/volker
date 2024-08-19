@@ -585,7 +585,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #' @param category Summarizing multiple items (the cols parameter) by group requires a focus category.
 #'                By default, for logical column types, only TRUE values are counted.
 #'                For other column types, the first category is counted.
-#'                Accepts both character and numeric vectors to override default counting behavior.
+#'                To override the default behavior, provide a vector of values in the dataset or labels from the codebook.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -598,6 +598,11 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #' plot_counts_items_grouped(
 #'   data, starts_with("cg_adoption_"), adopter,
 #'   category=c("agree","strongly agree")
+#' )
+#'
+#' plot_counts_items_grouped(
+#'   data, starts_with("cg_adoption_"), adopter,
+#'   category=c(4,5)
 #' )
 #'
 #' @export
