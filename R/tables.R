@@ -699,7 +699,6 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   cross_names <- colnames(dplyr::select(data, tidyselect::all_of(cross_eval)))
 
-
   # Pivot
   result <- data %>%
     labs_clear({{ cols }}) %>%
@@ -834,12 +833,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
       "item_name", "item_label"
     )}
 
-  # TODO: @Jakob: Improve message? How? -> below the table, add to the base / missing message
-  # Message
-  category_labels <- paste0(category_labels, collapse=", ")
-  message("Percentage shares reflecting values for: ", category_labels)
-
-  # Remove common item prefix
+   # Remove common item prefix
   prefix <- get_prefix(result$item, trim=T)
   result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
 
@@ -850,7 +844,11 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 
   colnames(result)[1] <- prefix
 
+  # Add baseline
+  attr(data, "categories") <- category_labels
+
   result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data, "categories")
 
   .to_vlkr_tab(result)
 

@@ -43,7 +43,7 @@ tab_counts(data, adopter, sd_gender)
 ```{r}
 
 # TODO: redirect to tab_metrics(data, sd_age, adopter) 
-tab_counts(data, adopter, sd_age, metric=T)
+#tab_counts(data, adopter, sd_age, metric=T)
 ```
 
 

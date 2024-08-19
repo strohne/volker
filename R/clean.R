@@ -207,13 +207,16 @@ data_rm_negatives <- function(data, cols) {
 }
 
 #' Get a formatted baseline for removed zero, negative, and missing cases
+#' and include category information if present
 #'
 #' @keywords internal
 #'
-#' @param obj An object with the missings attribute.
+#' @param obj An object with the missings and categories attribute.
 #' @return A formatted message or NULL if the missings attribute is not present.
 get_baseline <- function(obj) {
   missings <- attr(obj, "missings", exact=TRUE)
+  categories <- attr(obj, "categories", exact=TRUE)
+
   if (!is.null(missings)) {
     baseline <- c()
     cols <- c()
@@ -233,10 +236,12 @@ get_baseline <- function(obj) {
       cols <- c(cols, missings$negative$cols)
     }
 
-    baseline <- paste0(
-      paste0(baseline, collapse=", "),
-      " case(s) ommited."
-    )
+    if (!is.null(categories)) {
+      category_message <- paste0("Frequencies based on categories: ", paste(categories, collapse=", "))
+      baseline <- paste0(category_message, ". ", paste0(baseline, collapse=", "), " case(s) omitted.")
+    } else {
+      baseline <- paste0(paste0(baseline, collapse=", "), " case(s) omitted.")
+    }
   } else {
     baseline <- NULL
   }
