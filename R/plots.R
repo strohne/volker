@@ -633,7 +633,6 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
     )
 
   # Add label column for category
-
   codebook_df <- codebook(data, {{ cols }})
 
   result <- result %>%
