@@ -1429,7 +1429,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' plot_metrics_items_cor(data, starts_with("cg_adoption_adv"), sd_age)
+#' plot_metrics_items_cor(data, starts_with("use_"), sd_age)
 #'
 #'@export
 #'@importFrom rlang .data
@@ -1459,44 +1459,49 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, limits =
 
   # 6. Pivot longer
   result <- data %>%
+    labs_clear({{ cols }}) %>%
     tidyr::pivot_longer(
       {{ cols }},
       names_to = ".item1",
       values_to = ".value_name") %>%
-    dplyr::select(.item1, .value_name, {{ cross }}) %>%
-    dplyr::rename(.item2 = {{ cross }})
+  dplyr::select(.item1, .value_name, {{ cross }})
 
-  plot <- ggplot2::ggplot(
-    result,
-    ggplot2::aes(x = .data$.value_name, y = .item2)) +
-    ggplot2::geom_point(alpha = VLKR_SCATTER_ALPHA) +
-    ggplot2::facet_wrap(~ .data$.value_name, scales = "free")
+  # Replace item labels
+  if (labels) {
+    result <- labs_replace(
+      result, ".item1",
+      codebook(data, {{ cols }}),
+      "item_name", "item_label"
+    )
+  }
 
-  # Remove common item prefix
   prefix1 <- get_prefix(result$.item1)
-  prefix2 <- get_prefix(result$.item2)
-
+  prefix2 <- get_title(data, {{ cross }})
   result <- dplyr::mutate(
     result,
-    item1 = trim_prefix(.data$.item1, prefix1),
-    item2 = trim_prefix(.data$.item2, prefix2)
-  )
+    .item1 = trim_prefix(.data$.item1, prefix1))
 
-  return(result)
-  method <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
+  # TODO: dynamic facet
+  pl <- ggplot2::ggplot(
+    result,
+    ggplot2::aes(x = .data$.value_name, y = {{ cross }})) +
+    ggplot2::geom_point(alpha = VLKR_SCATTER_ALPHA) +
+    ggplot2::facet_wrap(~.data$.item1, scales = "fixed", ncol = length(unique(result$.item1)))
 
-  # Plot
-  pl <- ggplot2::ggplot(result, ggplot2::aes(item1, item2, fill = !!sym(method))) +
-    ggplot2::geom_tile()
+  # Set limits
+  if (is.null(limits)) {
+    limits <- list(
+      x = get_limits(data, {{ cols }}),
+      y = get_limits(data, {{ cross }})
+    )
+  }
 
-  # if (numbers) {
-  #   pl <- pl + ggplot2::geom_text(
-  #     ggplot2::aes(label = !!sym(method)),
-  #     size = 3,
-  #     color = ifelse(result[[method]] < 0,
-  #     VLKR_NEGATIVE, VLKR_POSITIVE))
-  # }
+  if (!is.null(limits)) {
+    pl <- pl +
+      ggplot2::coord_cartesian(xlim = limits$x, ylim = limits$y)
+  }
 
+  # TODO: if labels equals false remove prefix
   # Add labels
   if (labels)
     pl <- pl + ggplot2::labs(
@@ -1517,26 +1522,6 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, limits =
   if (!is.null(title)) {
     pl <- pl + ggplot2::ggtitle(label = title)
   }
-
-  # Add theming
-  pl <- pl +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(), #size = 11
-      #legend.title = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
-  # Wrap labels
-  pl <- pl +
-    ggplot2::scale_y_discrete(labels = scales::label_wrap(40)) +
-    #ggplot2::scale_x_discrete(labels = scales::label_wrap(40)) +
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = get_angle(result$item1), hjust = 1) ) +
-    ggplot2::scale_x_discrete(labels = trunc_labels()) +
-    ggplot2::coord_fixed()
 
   # Add base
   base_n <- nrow(data)
