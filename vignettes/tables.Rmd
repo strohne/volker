@@ -50,14 +50,6 @@ tab_counts(data, adopter, sd_gender)
 tab_counts(data, adopter, sd_age, metric = T)
 # equals ...
 tab_metrics(data, sd_age, adopter)
-
-# @Jakob: 
-# hier habe ich versucht deine nmpi funktion einzubauen für wide-format
-# verstehe smoothing noch nicht genau 
-# TODO: implement npmi confidence intervals
-# Implement method param = "cor" vs. "grouped" instead of cor = T ? 
-tab_counts(data, adopter, use_work, smoothing=1, cor = T)
-
 ```
 
 ### 4. Multiple items: Frequency table of adoption factors
@@ -71,25 +63,12 @@ tab_counts(data, starts_with("cg_adoption_"), sd_gender,
            category = c("agree", "strongly agree"))
 ```
 
-### 6. Multiple categorical items and one metric variable [... and categorical items and one categorical]
+### 6. Multiple categorical items and one metric variable
 ```{r}
-
-# @Jakob: 
-# if metric redirect to tab_metrics
-# Group comparison per item not implemented, would be correlated here,
-# hence cor param questionable? 
-
 # by now... 
 tab_counts(data, starts_with("use_"), sd_age, metric = T)
 # equals.. 
 tab_metrics(data, starts_with("use_"), sd_age, metric = T)
-
-# TODO: implement nmpi calculation for categorical 
-data |>
- tidyr::pivot_longer(starts_with("use_")) |>
- tab_metrics(value, name)
-
-tab_counts(data, starts_with("use_"), adopter)
 
 ```
 

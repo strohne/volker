@@ -35,7 +35,7 @@
 #' tab_counts(data, sd_gender)
 #'
 #' @export
-tab_counts <- function(data, cols, cross = NULL, metric = FALSE, cor = FALSE, clean = TRUE, ...) {
+tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -51,20 +51,16 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, cor = FALSE, cl
   is_grouped <- length(cross_eval)== 1
   is_multi <- length(cross_eval) > 1
   is_metric <- metric != FALSE
-  is_cor <- cor != FALSE
 
   # Single variables
   if (!is_items && !(is_grouped || is_multi)) {
     tab_counts_one(data, {{ cols }}, ...)
   }
-  else if (!is_items && is_grouped && !is_metric && !is_cor) {
+  else if (!is_items && is_grouped && !is_metric) {
     tab_counts_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
   else if (!is_items && is_grouped && is_metric) {
     tab_metrics_one_grouped(data, {{ cross }}, {{ cols }}, ...)
-  }
-  else if (!is_items && is_grouped && !is_metric && is_cor) {
-    tab_counts_one_cor(data, {{ cols }}, {{ cross }}, ...)
   }
 
   # Items
@@ -74,11 +70,8 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, cor = FALSE, cl
   else if (is_items && is_grouped && !is_metric ) {
     tab_counts_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
-  else if (is_items && is_grouped && is_metric && !is_cor) {
+  else if (is_items && is_grouped && is_metric) {
     tab_metrics_items_cor(data, {{ cols }}, {{ cross }}, ...)
-  }
-  else if (is_items && is_grouped && is_metric && is_cor) {
-    tab_counts_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
 
   # Not found

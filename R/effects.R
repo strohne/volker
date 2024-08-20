@@ -907,9 +907,7 @@ effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method
   # 5. Calculate npmi
 
 # Calculate marginal probabilities
-# TODO: move to own function, move to effects.R
-# TODO: use lower case for new column names: p_xy, p_x, p_y
-# TODO: What if columns named Total_x etc. exist? Revise by either using dot column names or rename selected columns first
+
   result <- data %>%
     dplyr::count({{ col }}, {{ cross }}) %>%
     #tidyr::complete({{ col }}, {{ cross }}, fill=list(n=0)) |>
@@ -934,13 +932,9 @@ effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method
                   npmi = dplyr::case_when(
                     p_xy == 0 ~ -1,
                     TRUE ~ pmi / -log2(p_xy)
-                  )) #%>%
+                  ))
 
-    # # Pivot wider
-    # dplyr::select({{ col }}, {{ cross }}, npmi) %>%
-    # tidyr::pivot_wider(names_from = {{ col }}, values_from = npmi, values_fill = list(npmi = -1))
-
-  result
+    result
 
   }
 
