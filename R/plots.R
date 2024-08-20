@@ -579,6 +579,8 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #'
 #' @keywords internal
 #'
+#' TODO: @JJ SET LIMITIS: force to 100%
+#'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
@@ -629,7 +631,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
     tidyr::pivot_longer(
       {{ cols }},
       names_to = "item",
-      values_to = ".category"
+      values_to = ".value_name"
     )
 
   # Add label column for category
@@ -637,51 +639,55 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
 
   result <- result %>%
     dplyr::mutate(
-      .category_label = ifelse(
-        .data$.category %in% codebook_df$value_name,
-        codebook_df$value_label[match(.data$.category, codebook_df$value_name)],
-        as.character(.data$.category)
+      .value_label = ifelse(
+        .data$.value_name %in% codebook_df$value_name,
+        codebook_df$value_label[match(.data$.value_name, codebook_df$value_name)],
+        as.character(.data$.value_name)
       )
     )
 
-  # Get labels from cross variable
+  #  Set labels: cross variable
   if (labels) {
-  result <- labs_replace(
-    result, {{ cross }},
-    codebook(data, {{ cross }}),
-    "value_name", "value_label"
-  )
+    result <- labs_replace(
+      result, {{ cross }},
+      codebook(data, {{ cross }}),
+      "value_name", "value_label"
+    )
   }
 
   # Focus TRUE category or the first category
   if (is.null(category)) {
-    categories <- unique(as.character(result$.category))
-    if ((length(categories) == 2) && ("TRUE" %in% categories)) {
+    value_names <- unique(as.character(result$.value_name))
+    if ((length(value_names) == 2) && ("TRUE" %in% value_names)) {
       base_category <- "TRUE"
     } else {
-      base_category <- categories[1]
+      base_category <- value_names[1]
     }
   } else {
-    base_category <- if (is.numeric(category)) as.character(category) else category
+    base_category <- as.character(category)
 
-    numeric_categories <- unique(as.character(result$.category))
-    label_categories <- unique(result$.category_label)
-
-    if (!all(base_category %in% numeric_categories | base_category %in% label_categories)) {
+    if (
+      !all(
+        (base_category %in% as.character(result$.value_name)) |
+        (base_category %in% result$.value_label)
+      )
+    ) {
       stop("One or more specified categories do not exist in the data.")
     }
   }
 
-  # Get category labels if numeric
-  if (is.null(category) || is.numeric(category)) {
-    category_labels <- result$.category_label[match(base_category, result$.category)]
-  } else {
-    category_labels <- base_category
+  # Get category labels if names are provided (e.g. for numeric values)
+  base_labels <- base_category
+  if (is.null(category) || all(base_labels %in% result$.value_name)) {
+    base_labels <- codebook_df %>%
+      dplyr::filter(.data$value_name %in% base_category) %>%
+      dplyr::pull(.data$value_label) %>%
+      unique()
   }
 
   # Recode
   result <- result %>%
-    mutate(.category = (.data$.category %in% base_category | .data$.category_label %in% base_category))
+    mutate(.category = (.data$.value_name %in% base_category) | (.data$.value_label %in% base_category))
 
   # Count
   result <- result %>%
@@ -702,7 +708,6 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
   result <- result %>%
     dplyr::mutate(.cross = as.factor(.data$.cross)) %>%
     dplyr::mutate(item = factor(.data$item, levels=cols_names))
-
 
   # Replace item labels
   if (labels) {
@@ -730,14 +735,15 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
     )
     ) +
     # TODO: improve geom_line for overlapping lines?
-    ggplot2::geom_line(alpha = 0.5) +
+    # -> If two lines are exactly the same
+    ggplot2::geom_line(alpha = VLKR_LINE_ALPHA) +
     ggplot2::geom_point(size=3, shape=18)
 
   # Add scales, labels and theming
   pl <- pl +
-    ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100), limits = c(0,1)) +
+    ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100)) +
     ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits=rev) +
-    ggplot2::coord_flip() +
+    ggplot2::coord_flip(ylim = c(0,1)) +
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
@@ -760,10 +766,10 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
 
   # Add base
   base_n <- nrow(data)
-  category_labels <- paste0(category_labels, collapse=", ")
+  base_labels <- paste0(base_labels, collapse=", ")
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n,
                                             "; multiple responses possible",
-                                            "; values=", category_labels))
+                                            "; values=", base_labels))
 
   # Convert to vlkr_plot
   pl <- .attr_transfer(pl, data, "missings")

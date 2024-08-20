@@ -76,7 +76,6 @@ plot_metrics(data, sd_age)
 plot_metrics(data, sd_age, sd_gender, bars="box")
 ```
 
-
 ### 3. Distribution of multiple metric items: Adoption factors
 ```{r, fig.height=6}
 # Note that negative values are omitted,
