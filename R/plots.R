@@ -1415,9 +1415,10 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column to correlate.
-#' @param method The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param numbers Controls whether to display correlation coefficients on the plot.
+#' @param limits The scale limits, a list with x and y components, e.g. \code{list(x=c(0,100), y=c(20,100))}.
+#'               Set NULL to extract limits from the labels.
+#' @param log Whether to plot log scales.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1432,7 +1433,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 #'
 #'@export
 #'@importFrom rlang .data
-plot_metrics_items_cor <- function(data, cols, cross, method = "pearson", negative = FALSE, numbers = F, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, limits = NULL, log = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -1451,35 +1452,37 @@ plot_metrics_items_cor <- function(data, cols, cross, method = "pearson", negati
     data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
   }
 
-  # 5. Pivot longer
+  # 5. Remove 0 values in log plots
+  if (log) {
+    data <- data_rm_zeros(data, c({{ col }}, {{ cross }}))
+  }
+
+  # 6. Pivot longer
   result <- data %>%
     tidyr::pivot_longer(
       {{ cols }},
-      names_to = "variable",
-      values_to = "value")
+      names_to = ".item1",
+      values_to = ".value_name") %>%
+    dplyr::select(.item1, .value_name, {{ cross }}) %>%
+    dplyr::rename(.item2 = {{ cross }})
 
-
-  plot <- ggplot2::ggplot(result, ggplot2::aes(x = value, y = {{cross}})) +
-    ggplot2::geom_point(alpha = 0.6, color = "red") +
-    ggplot2::geom_smooth(method = "lm", se = FALSE, color = "blue") +
-    ggplot2::facet_wrap(~ variable, scales = "free")
-
-  return(plot)
-
-
-  # 5. Calculate correlation
-  result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
+  plot <- ggplot2::ggplot(
+    result,
+    ggplot2::aes(x = .data$.value_name, y = .item2)) +
+    ggplot2::geom_point(alpha = VLKR_SCATTER_ALPHA) +
+    ggplot2::facet_wrap(~ .data$.value_name, scales = "free")
 
   # Remove common item prefix
-  prefix1 <- get_prefix(result$item1)
-  prefix2 <- get_prefix(result$item2)
+  prefix1 <- get_prefix(result$.item1)
+  prefix2 <- get_prefix(result$.item2)
 
   result <- dplyr::mutate(
     result,
-    item1 = trim_prefix(.data$item1, prefix1),
-    item2 = trim_prefix(.data$item2, prefix2)
+    item1 = trim_prefix(.data$.item1, prefix1),
+    item2 = trim_prefix(.data$.item2, prefix2)
   )
 
+  return(result)
   method <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
 
   # Plot
