@@ -705,6 +705,24 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   cross_names <- colnames(dplyr::select(data, tidyselect::all_of(cross_eval)))
 
+  # total row n
+  total_row_n <- data %>%
+    dplyr::group_by({{ cross }}) %>%
+    dplyr::count() %>%
+    dplyr::summarise(n = sum(.data$n)) %>%
+    dplyr::ungroup() %>%
+    tidyr::pivot_wider(
+      names_from = {{ cross }},
+      values_from = "n",
+      values_fill = list(n = 0)
+    ) %>%
+    dplyr::mutate(total = rowSums(dplyr::across(tidyselect::everything()))) %>%
+    dplyr::mutate(item = "total")
+
+  # total_row_p
+  total_row_p <- total_row_n %>%
+    dplyr::mutate(dplyr::across(-tidyselect::any_of("item"), ~ . / .data$total))
+
   # Pivot
   result <- data %>%
     labs_clear({{ cols }}) %>%
@@ -804,6 +822,9 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
       values_fill = list(n = 0)) %>%
     dplyr::rename(total = "total_n")
 
+  # Add total row n
+  result_n <- dplyr::bind_rows(result_n, total_row_n)
+
   # Result p
   result_p <- result %>%
     dplyr::select(-tidyselect::any_of("n"), -tidyselect::any_of("total_n")) %>%
@@ -813,6 +834,9 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
       values_from = "p",
       values_fill = list(n = 0)) %>%
     dplyr::rename(total = "total_p")
+
+  # Add total row
+  result_p <- dplyr::bind_rows(result_p, total_row_p)
 
   # # Factor result
   # result <- result %>%
