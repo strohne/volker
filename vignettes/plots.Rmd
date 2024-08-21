@@ -56,7 +56,7 @@ plot_counts(data, starts_with("cg_adoption_"), numbers = "p")
 ```{r, fig.height=6}
 
 plot_counts(
-  data, starts_with("cg_adoption_"), adopter,
+  data, starts_with("cg_adoption_"), sd_gender,
   category=c("agree", "strongly agree")
 )
 

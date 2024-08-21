@@ -34,7 +34,7 @@ tab_counts(data, sd_gender)
 ### 2. Two variables: Cross table of innovator type by gender
 
 ```{r}
-tab_counts(data, adopter, sd_gender)
+tab_counts(data, adopter, sd_gender, prop="cols")
 ```
 
 
