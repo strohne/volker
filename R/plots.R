@@ -743,7 +743,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
   result <- .attr_transfer(result, data, "missings")
 
   # Plot
-  .plot_lines_items(
+  .plot_lines(
   result,
   title = title,
   base = paste0("n=", base_n,
@@ -994,7 +994,7 @@ plot_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FA
 
 
   # Plot
-  .plot_lines(
+  .plot_summary(
     data,
     scale = scale,
     ci = ci,
@@ -1233,7 +1233,7 @@ plot_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, box = F
   # Add base
   base_n <- nrow(data)
   result <- .attr_transfer(result, data, "missings")
-  .plot_lines(
+  .plot_summary(
     result,
     ci = ci,
     box = box,
@@ -1350,7 +1350,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
   result <- .attr_transfer(result, data, "missings")
 
   # Plot
-  .plot_lines_items(
+  .plot_lines(
     result,
     scale = scale,
     title = title,
@@ -1500,7 +1500,7 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
 }
 
 
-#' Helper function: plot grouped line chart
+#' Helper function: plot grouped line chart by summarising values
 #'
 #' @keywords internal
 #'
@@ -1512,7 +1512,7 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
 #' @param base The plot base as character or NULL.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-.plot_lines <- function(data, ci = FALSE, scale = NULL, base = NULL, box = FALSE, limits = NULL, title = NULL) {
+.plot_summary <- function(data, ci = FALSE, scale = NULL, base = NULL, box = FALSE, limits = NULL, title = NULL) {
 
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(y=.data$item, x=.data$value, group=1))
@@ -1625,7 +1625,7 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
 #' @param title The plot title as character or NULL.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-.plot_lines_items <- function(data, scale = NULL, base = NULL, limits = NULL, title = NULL) {
+.plot_lines <- function(data, scale = NULL, base = NULL, limits = NULL, title = NULL) {
 
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(
