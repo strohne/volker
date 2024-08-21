@@ -1407,9 +1407,9 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
   .to_vlkr_plot(pl)
 }
 
-#' Pairwise scatter plot matrix
+#' Multiple items correlated with one metric variable
 #'
-#'
+#' TODO: ADD CI PARAM AFTER MERGE WITH FEATURE ITEMS_GROUPED
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
@@ -1433,7 +1433,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 #'
 #'@export
 #'@importFrom rlang .data
-plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, limits = NULL, log = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE,  negative = FALSE, method = "pearson", limits = NULL, log = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -1452,61 +1452,36 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, limits =
     data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
   }
 
-  # 5. Remove 0 values in log plots
-  if (log) {
-    data <- data_rm_zeros(data, c({{ col }}, {{ cross }}))
-  }
+  # 5. Calculate correlation
+  result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
 
-  # 6. Pivot longer
-  result <- data %>%
-    labs_clear({{ cols }}) %>%
-    tidyr::pivot_longer(
-      {{ cols }},
-      names_to = ".item1",
-      values_to = ".value_name") %>%
-  dplyr::select(.item1, .value_name, {{ cross }})
-
-  # Replace item labels
-  if (labels) {
-    result <- labs_replace(
-      result, ".item1",
-      codebook(data, {{ cols }}),
-      "item_name", "item_label"
-    )
-  }
-
-  prefix1 <- get_prefix(result$.item1)
+  # Remove common item prefix
+  prefix1 <- get_prefix(result$item1)
   prefix2 <- get_title(data, {{ cross }})
+
   result <- dplyr::mutate(
     result,
-    .item1 = trim_prefix(.data$.item1, prefix1))
+    item1 = trim_prefix(.data$item1, prefix1)
+  )
 
-  # TODO: dynamic facet
-  pl <- ggplot2::ggplot(
-    result,
-    ggplot2::aes(x = .data$.value_name, y = {{ cross }})) +
-    ggplot2::geom_point(alpha = VLKR_SCATTER_ALPHA) +
-    ggplot2::facet_wrap(~.data$.item1, scales = "fixed", ncol = length(unique(result$.item1)))
+  method <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
 
-  # Set limits
-  if (is.null(limits)) {
-    limits <- list(
-      x = get_limits(data, {{ cols }}),
-      y = get_limits(data, {{ cross }})
-    )
+  # Adjust result
+  result <- result %>%
+    dplyr::rename(item = "item1",
+                  .cross = "item2",
+                  value = !!sym(method),
+                  low = "ci low",
+                  high = "ci high")
+
+  # Get limits
+  method_range <- range(result$value, na.rm = TRUE)
+
+  if (all(method_range >= 0 & method_range <= 1)) {
+    limits <- c(0, 1)
+  } else {
+    limits <- c(-1, 1)
   }
-
-  if (!is.null(limits)) {
-    pl <- pl +
-      ggplot2::coord_cartesian(xlim = limits$x, ylim = limits$y)
-  }
-
-  # TODO: if labels equals false remove prefix
-  # Add labels
-  if (labels)
-    pl <- pl + ggplot2::labs(
-      x = prefix1,
-      y = prefix2)
 
   # Add title
   if (title == TRUE) {
@@ -1519,17 +1494,30 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, limits =
     title <- NULL
   }
 
-  if (!is.null(title)) {
-    pl <- pl + ggplot2::ggtitle(label = title)
-  }
-
   # Add base
   base_n <- nrow(data)
-  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
-  # Convert to vlkr_plot
-  pl <- .attr_transfer(pl, data, "missings")
-  .to_vlkr_plot(pl)
+  # Missings
+  result <- .attr_transfer(result, data, "missings")
+
+  # pl <- result %>%
+  #   ggplot2::ggplot(ggplot2::aes(y=.data$item, x=.data$value, group=1)) +
+  #   ggplot2::geom_errorbar(
+  #   ggplot2::aes(xmin = .data$low, xmax = .data$high),
+  #   orientation ="y",
+  #   width=0.2,
+  #   #linewidth=1,
+  #   colour = VLKR_COLOR_CI) +
+  #   ggplot2::geom_point(colour = "black")
+  #
+  # return(pl)
+
+  .plot_lines(
+    result,
+    title = title,
+    limits = limits,
+    base = paste0("n=", base_n)
+  )
 
 }
 
