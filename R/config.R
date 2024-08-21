@@ -49,4 +49,10 @@ VLKR_PLOT_WIDTH <- 910
 VLKR_PLOT_PXPERLINE <- 15
 VLKR_PLOT_OFFSETROWS <- 5
 VLKR_PLOT_TITLEROWS <- 2
+
+#' Wrapping threshold
+#'
+#' Override with \code{options(vlkr.wrap.labels=20)}.
+#'
+#' @keywords internal
 VLKR_PLOT_LABELWRAP <- 40
