@@ -55,8 +55,11 @@ plot_counts(data, starts_with("cg_adoption_"), numbers = "p")
 ### 4. Multiple items: Frequency plot for adoption factors grouped by adopter category
 ```{r, fig.height=6}
 
+options(vlkr.wrap.labels=30)
+options(vlkr.wrap.legend=10)
+
 plot_counts(
-  data, starts_with("cg_adoption_"), sd_gender,
+  data, starts_with("cg_adoption_"), adopter,
   category=c("agree", "strongly agree")
 )
 

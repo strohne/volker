@@ -744,13 +744,20 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
     ggplot2::geom_line(alpha = VLKR_LINE_ALPHA) +
     ggplot2::geom_point(size=3, shape=18)
 
-  # Add scales, labels and theming
+    # Add scales, labels and theming
   pl <- pl +
     ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100)) +
     ggplot2::scale_x_discrete(
       labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)),
       limits=rev
     ) +
+    ggplot2::scale_color_manual(
+      values = vlkr_colors_discrete(length(unique(result$.cross))),
+      labels = function(x) wrap_label(x, width = dplyr::coalesce(getOption("vlkr.wrap.legend"), VLKR_PLOT_LEGENDWRAP))
+      #guide = ggplot2::guide_legend(reverse = TRUE)
+    )
+
+  pl <- pl +
     ggplot2::coord_flip(ylim = c(0,1)) +
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
@@ -1397,8 +1404,13 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
       limits = rev
     ) +
     ggplot2::scale_color_manual(
+<<<<<<< HEAD
       values = vlkr_colors_discrete(length(unique(result$.cross))),
       labels = function(x) wrap_label(x, width = 40)
+=======
+      values = vlkr_colors_discrete(length(unique(result$group))),
+      labels = function(x) wrap_label(x, width = dplyr::coalesce(getOption("vlkr.wrap.legend"), VLKR_PLOT_LEGENDWRAP))
+>>>>>>> af0edd2b652222104938455a05293d32a808d3b5
       #guide = ggplot2::guide_legend(reverse = TRUE)
     ) +
     #ggplot2::scale_color_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +

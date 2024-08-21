@@ -53,6 +53,10 @@ VLKR_PLOT_TITLEROWS <- 2
 #' Wrapping threshold
 #'
 #' Override with \code{options(vlkr.wrap.labels=20)}.
+#' Override with \code{options(vlkr.wrap.legend=10)}.
+#' Override with \code{options(vlkr.wrap.scale=10)}.
 #'
 #' @keywords internal
 VLKR_PLOT_LABELWRAP <- 40
+VLKR_PLOT_LEGENDWRAP <- 20
+VLKR_PLOT_SCALEWRAP <- 10
