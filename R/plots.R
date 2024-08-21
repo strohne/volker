@@ -1586,7 +1586,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   method_range <- range(result[[method]], na.rm = TRUE)
 
   # Plot
-  pl <- ggplot2::ggplot(result, ggplot2::aes(item1, item2, fill = !!sym(method))) +
+  pl <- ggplot2::ggplot(result, ggplot2::aes(y = item1,x=  item2, fill = !!sym(method))) +
     ggplot2::geom_tile()
 
   if (all(method_range >= 0 & method_range <= 1)) {
