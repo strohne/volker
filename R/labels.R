@@ -713,7 +713,7 @@ prepare_scale <- function(data) {
 label_scale <- function(x, scale) {
   ifelse(
     x %in% names(scale),
-    wrap_label(scale[as.character(x)], width = 10),
+    wrap_label(scale[as.character(x)], width = dplyr::coalesce(getOption("vlkr.wrap.scale"), VLKR_PLOT_SCALEWRAP)),
     x
   )
 }

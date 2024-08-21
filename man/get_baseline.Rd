@@ -3,18 +3,18 @@
 \name{get_baseline}
 \alias{get_baseline}
 \title{Get a formatted baseline for removed zero, negative, and missing cases
-and include category information if present}
+and include focus category information if present}
 \usage{
 get_baseline(obj)
 }
 \arguments{
-\item{obj}{An object with the missings and categories attribute.}
+\item{obj}{An object with the missings and focus attributes.}
 }
 \value{
-A formatted message or NULL if the missings attribute is not present.
+A formatted message or NULL if missings and focus attributes are not present.
 }
 \description{
 Get a formatted baseline for removed zero, negative, and missing cases
-and include category information if present
+and include focus category information if present
 }
 \keyword{internal}

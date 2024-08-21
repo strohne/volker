@@ -25,7 +25,7 @@ plot_counts_items_grouped(
 \item{category}{Summarizing multiple items (the cols parameter) by group requires a focus category.
 By default, for logical column types, only TRUE values are counted.
 For other column types, the first category is counted.
-Accepts both character and numeric vectors to override default counting behavior.}
+To override the default behavior, provide a vector of values in the dataset or labels from the codebook.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}
@@ -50,5 +50,17 @@ plot_counts_items_grouped(
   category=c("agree","strongly agree")
 )
 
+plot_counts_items_grouped(
+  data, starts_with("cg_adoption_"), adopter,
+  category=c(4,5)
+)
+
 }
+\keyword{100%}
+\keyword{@JJ}
+\keyword{LIMITIS:}
+\keyword{SET}
+\keyword{TODO:}
+\keyword{force}
 \keyword{internal}
+\keyword{to}
