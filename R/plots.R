@@ -579,7 +579,6 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #'
 #' @keywords internal
 #'
-#' TODO: @JJ SET LIMITIS: force to 100%
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
@@ -731,64 +730,26 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
   # Order item levels
   result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
 
-  pl <- result %>%
-      ggplot2::ggplot(ggplot2::aes(
-      x = .data$item,
-      y = .data$value,
-      color = .data$.cross,
-      group = .data$.cross
-    )
-    ) +
-    # TODO: improve geom_line for overlapping lines?
-    # -> If two lines are exactly the same
-    ggplot2::geom_line(alpha = VLKR_LINE_ALPHA) +
-    ggplot2::geom_point(size=3, shape=18)
-
-    # Add scales, labels and theming
-  pl <- pl +
-    ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100)) +
-    ggplot2::scale_x_discrete(
-      labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)),
-      limits=rev
-    ) +
-    ggplot2::scale_color_manual(
-      values = vlkr_colors_discrete(length(unique(result$.cross))),
-      labels = function(x) wrap_label(x, width = dplyr::coalesce(getOption("vlkr.wrap.legend"), VLKR_PLOT_LEGENDWRAP))
-      #guide = ggplot2::guide_legend(reverse = TRUE)
-    )
-
-  pl <- pl +
-    ggplot2::coord_flip(ylim = c(0,1)) +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(), #size = 11
-      legend.title = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
   # Add title
   if (title == TRUE) {
     title <- trim_label(prefix)
   } else if (title == FALSE) {
     title <- NULL
   }
-  if (!is.null(title)) {
-    pl <- pl + ggplot2::ggtitle(label = title)
-  }
 
-  # Add base
+  # Get base
   base_n <- nrow(data)
   base_labels <- paste0(base_labels, collapse=", ")
-  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n,
-                                            "; multiple responses possible",
-                                            "; values=", base_labels))
+  result <- .attr_transfer(result, data, "missings")
 
-  # Convert to vlkr_plot
-  pl <- .attr_transfer(pl, data, "missings")
-  .to_vlkr_plot(pl)
+  # Plot
+  .plot_lines_items(
+  result,
+  title = title,
+  base = paste0("n=", base_n,
+                "; multiple responses possible",
+                "; values=", base_labels)
+  )
 }
 
 
@@ -1325,7 +1286,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
     data <- data_rm_negatives(data, {{ cols }})
   }
 
-  # 4. Calculate
+  # 5. Calculate
   # Get positions of group cols
   cross <- tidyselect::eval_select(expr = rlang::enquo(cross), data = data)
 
@@ -1349,6 +1310,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
       dplyr::bind_rows
     )
 
+  # Get limits
   if (is.null(limits)) {
     limits <- get_limits(data, {{ cols }})
   }
@@ -1369,19 +1331,6 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
   # Order item levels
   result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
 
-  #print(result)
-  # class(result) <- setdiff(class(result),"skim_df")
-
-  pl <- result %>%
-    ggplot2::ggplot(ggplot2::aes(
-      .data$item,
-      y = .data$value,
-      color = .data$.cross,
-      group=.data$.cross)
-    ) +
-    ggplot2::geom_line() +
-    ggplot2::geom_point(size=3, shape=18)
-
   # Set the scale
   # TODO: get from attributes
   scale <- data %>%
@@ -1389,61 +1338,26 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
     dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) %>%
     prepare_scale()
 
-  if (length(scale) > 0) {
-    pl <- pl +
-      ggplot2::scale_y_continuous(labels = ~ label_scale(., scale) )
-  } else {
-    pl <- pl +
-      ggplot2::scale_y_continuous()
-  }
-
-  # Add scales, labels and theming
-  pl <- pl +
-    ggplot2::scale_x_discrete(
-      labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)),
-      limits = rev
-    ) +
-    ggplot2::scale_color_manual(
-<<<<<<< HEAD
-      values = vlkr_colors_discrete(length(unique(result$.cross))),
-      labels = function(x) wrap_label(x, width = 40)
-=======
-      values = vlkr_colors_discrete(length(unique(result$group))),
-      labels = function(x) wrap_label(x, width = dplyr::coalesce(getOption("vlkr.wrap.legend"), VLKR_PLOT_LEGENDWRAP))
->>>>>>> af0edd2b652222104938455a05293d32a808d3b5
-      #guide = ggplot2::guide_legend(reverse = TRUE)
-    ) +
-    #ggplot2::scale_color_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +
-
-    ggplot2::ylab("Mean values") +
-    ggplot2::coord_flip(ylim = limits) +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(), #size = 11
-      legend.title = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
   # Add title
   if (title == TRUE) {
     title <- trim_label(prefix)
   } else if (title == FALSE) {
     title <- NULL
   }
-  if (!is.null(title)) {
-    pl <- pl + ggplot2::ggtitle(label = title)
-  }
 
-  # Add base
+  # Get base
   base_n <- nrow(data)
-  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n, "; multiple responses possible"))
+  result <- .attr_transfer(result, data, "missings")
 
-  # Convert to vlkr_plot
-  pl <- .attr_transfer(pl, data, "missings")
-  .to_vlkr_plot(pl)
+  # Plot
+  .plot_lines_items(
+    result,
+    scale = scale,
+    title = title,
+    limits = limits,
+    base = paste0("n=", base_n, "; multiple responses possible")
+
+  )
 }
 
 #' Scatter plot of correlations between multiple items
@@ -1705,13 +1619,15 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
 #' @keywords internal
 #'
 #' @param data Dataframe with the columns item, value.
-#' @param title The plot title as character or NULL.
+#' @param scale Passed to the label scale function.
 #' @param base The plot base as character or NULL.
+#' @param limits The scale limits.
+#' @param title The plot title as character or NULL.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-.plot_lines_items <- function(data, base = NULL, limits = NULL, title = NULL) {
+.plot_lines_items <- function(data, scale = NULL, base = NULL, limits = NULL, title = NULL) {
 
-  pl <- result %>%
+  pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(
       x = .data$item,
       y = .data$value,
@@ -1724,14 +1640,44 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
     ggplot2::geom_line(alpha = VLKR_LINE_ALPHA) +
     ggplot2::geom_point(size=3, shape=18)
 
-  # Add scales, labels and theming
+  # Set scale
+  if (!is.null(scale)) {
+    if (length(scale) > 0) {
+      pl <- pl +
+        ggplot2::scale_y_continuous(labels = ~ label_scale(., scale))
+    } else {
+      pl <- pl +
+        ggplot2::scale_y_continuous()
+    }
+  } else {
+    # scale is NULL
+    pl <- pl +
+      ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100))
+  }
+
+  # Add scales
   pl <- pl +
-    ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100)) +
     ggplot2::scale_x_discrete(
       labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)),
       limits=rev
-    ) +
-    ggplot2::coord_flip(ylim = c(0,1)) +
+      ) +
+    ggplot2::scale_color_manual(
+      values = vlkr_colors_discrete(length(unique(data$.cross))),
+      labels = function(x) wrap_label(x, width = dplyr::coalesce(getOption("vlkr.wrap.legend"), VLKR_PLOT_LEGENDWRAP))
+    )
+
+  # Limits
+  if (!is.null(limits)){
+      pl <- pl +
+        ggplot2::coord_flip(ylim = limits)
+  }
+  else
+    pl <- pl +
+    ggplot2::coord_flip(ylim = c(0,1))
+
+
+  # Add theme
+  pl <- pl +
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
@@ -1743,30 +1689,19 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
     )
 
   # Add title
-  if (title == TRUE) {
-    title <- trim_label(prefix)
-  } else if (title == FALSE) {
-    title <- NULL
-  }
   if (!is.null(title)) {
     pl <- pl + ggplot2::ggtitle(label = title)
   }
 
   # Add base
-  base_n <- nrow(data)
-  base_labels <- paste0(base_labels, collapse=", ")
-  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n,
-                                            "; multiple responses possible",
-                                            "; values=", base_labels))
+  if (!is.null(base)) {
+    pl <- pl + ggplot2::labs(caption = base)
+  }
 
   # Convert to vlkr_plot
   pl <- .attr_transfer(pl, data, "missings")
   .to_vlkr_plot(pl)
 
-  # Add base
-  if (!is.null(base)) {
-    pl <- pl + ggplot2::labs(caption = base)
-  }
 }
 
 
