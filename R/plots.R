@@ -704,8 +704,8 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
   # Result p
   result <- result %>%
     dplyr::group_by(dplyr::across(tidyselect::all_of(c("item",".cross")))) %>%
-    dplyr::mutate(p = (.data$n / sum(.data$n))) %>%
-    dplyr::mutate(p = ifelse(is.na(.data$p), 0, .data$p))
+    dplyr::mutate(value = (.data$n / sum(.data$n))) %>%
+    dplyr::mutate(value = ifelse(is.na(.data$value), 0, .data$value))
 
   result <- dplyr::filter(result, .data$.category == TRUE)
 
@@ -734,7 +734,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
   pl <- result %>%
       ggplot2::ggplot(ggplot2::aes(
       x = .data$item,
-      y = .data$p,
+      y = .data$value,
       color = .data$.cross,
       group = .data$.cross
     )
@@ -1334,7 +1334,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
         dplyr::select(!!sym(col), {{ cols }}) %>%
         skim_metrics() %>%
         dplyr::ungroup() %>%
-        dplyr::select(item = "skim_variable", group = !!sym(col), "numeric.mean") %>%
+        dplyr::select(item = "skim_variable", .cross = !!sym(col), value = "numeric.mean") %>%
         tidyr::drop_na()
     }
   ) %>%
@@ -1368,9 +1368,9 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
   pl <- result %>%
     ggplot2::ggplot(ggplot2::aes(
       .data$item,
-      y = .data$numeric.mean,
-      color = .data$group,
-      group=.data$group)
+      y = .data$value,
+      color = .data$.cross,
+      group=.data$.cross)
     ) +
     ggplot2::geom_line() +
     ggplot2::geom_point(size=3, shape=18)
@@ -1397,7 +1397,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
       limits = rev
     ) +
     ggplot2::scale_color_manual(
-      values = vlkr_colors_discrete(length(unique(result$group))),
+      values = vlkr_colors_discrete(length(unique(result$.cross))),
       labels = function(x) wrap_label(x, width = 40)
       #guide = ggplot2::guide_legend(reverse = TRUE)
     ) +
@@ -1687,6 +1687,76 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
   pl <- .attr_transfer(pl, data, "missings")
   .to_vlkr_plot(pl, maxlab=maxlab)
 }
+
+#' Helper function: plot grouped line chart
+#'
+#' @keywords internal
+#'
+#' @param data Dataframe with the columns item, value.
+#' @param title The plot title as character or NULL.
+#' @param base The plot base as character or NULL.
+#' @return A ggplot object.
+#' @importFrom rlang .data
+.plot_lines_items <- function(data, base = NULL, limits = NULL, title = NULL) {
+
+  pl <- result %>%
+    ggplot2::ggplot(ggplot2::aes(
+      x = .data$item,
+      y = .data$value,
+      color = .data$.cross,
+      group = .data$.cross
+    )
+    ) +
+    # TODO: improve geom_line for overlapping lines?
+    # -> If two lines are exactly the same
+    ggplot2::geom_line(alpha = VLKR_LINE_ALPHA) +
+    ggplot2::geom_point(size=3, shape=18)
+
+  # Add scales, labels and theming
+  pl <- pl +
+    ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100)) +
+    ggplot2::scale_x_discrete(
+      labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)),
+      limits=rev
+    ) +
+    ggplot2::coord_flip(ylim = c(0,1)) +
+    ggplot2::theme(
+      axis.title.x = ggplot2::element_blank(),
+      axis.title.y = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_text(), #size = 11
+      legend.title = ggplot2::element_blank(),
+      plot.caption = ggplot2::element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position = "plot"
+    )
+
+  # Add title
+  if (title == TRUE) {
+    title <- trim_label(prefix)
+  } else if (title == FALSE) {
+    title <- NULL
+  }
+  if (!is.null(title)) {
+    pl <- pl + ggplot2::ggtitle(label = title)
+  }
+
+  # Add base
+  base_n <- nrow(data)
+  base_labels <- paste0(base_labels, collapse=", ")
+  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n,
+                                            "; multiple responses possible",
+                                            "; values=", base_labels))
+
+  # Convert to vlkr_plot
+  pl <- .attr_transfer(pl, data, "missings")
+  .to_vlkr_plot(pl)
+
+  # Add base
+  if (!is.null(base)) {
+    pl <- pl + ggplot2::labs(caption = base)
+  }
+}
+
 
 #' Get the maximum density value in a density plot
 #'
