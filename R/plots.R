@@ -1569,7 +1569,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   }
 
   # 5. Calculate correlation
-  result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
 
   # Remove common item prefix
   prefix1 <- get_prefix(result$item1)

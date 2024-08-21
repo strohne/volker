@@ -90,17 +90,20 @@ plot_metrics(data, starts_with("cg_adoption_"))
 # Filter out one group, too few cases in the sample
 data %>% 
   filter(sd_gender != "divers") %>% 
-  plot_metrics(starts_with("cg_adoption_"), sd_gender, labels = F)
+  plot_metrics(starts_with("cg_adoption_"), sd_gender)
 ```
 
-## 5. Correlation of multiple items with one metric variable
+## Correlations 
+
+### 1. Correlation of multiple items with one metric variable
 ```{r}
-plot_metrics(data, starts_with("use_") , sd_age, metric=T, labels = F)
+plot_metrics(data, starts_with("use_"), sd_age, metric=T)
+
 ```
 
-### 6. Correlation of multiple items
+### 2. Correlation of multiple items by multiple items
 ```{r}
-# TODO: Fix heading level ("## 5. Correlation of multiple items" one level down)
-plot_metrics(data, starts_with("cg_adoption_social"), starts_with("cg_adoption_"), numbers=T, labels =F )
+
+plot_metrics(data, starts_with("cg_adoption_social"), starts_with("cg_adoption_"), numbers=T)
 
 ```
