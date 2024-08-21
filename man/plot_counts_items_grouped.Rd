@@ -56,11 +56,4 @@ plot_counts_items_grouped(
 )
 
 }
-\keyword{100%}
-\keyword{@JJ}
-\keyword{LIMITIS:}
-\keyword{SET}
-\keyword{TODO:}
-\keyword{force}
 \keyword{internal}
-\keyword{to}
