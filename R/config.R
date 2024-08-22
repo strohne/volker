@@ -70,3 +70,10 @@ VLKR_PLOT_TITLEROWS <- 2
 VLKR_PLOT_LABELWRAP <- 40
 VLKR_PLOT_LEGENDWRAP <- 20
 VLKR_PLOT_SCALEWRAP <- 10
+
+
+#' Element text size
+#'
+#' @keywords internal
+VLKR_TEXT_AXIS <- 11
+

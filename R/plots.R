@@ -1271,7 +1271,7 @@ plot_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, box = F
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, ci = F, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ cross }})
@@ -1355,6 +1355,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
   # Plot
   .plot_lines(
     result,
+    ci = ci,
     scale = scale,
     title = title,
     limits = limits,
@@ -1372,9 +1373,6 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column to correlate.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
-#' @param limits The scale limits, a list with x and y components, e.g. \code{list(x=c(0,100), y=c(20,100))}.
-#'               Set NULL to extract limits from the labels.
-#' @param log Whether to plot log scales.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1389,7 +1387,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 #'
 #'@export
 #'@importFrom rlang .data
-plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE,  negative = FALSE, method = "pearson", limits = NULL, log = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, negative = FALSE, method = "pearson", title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -1408,8 +1406,13 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE,  negative = FA
     data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
   }
 
-  # 5. Calculate correlation
-  result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
+  # Calculate correlations
+  method_choice <- ifelse(method == "spearman", "spearman", "Pearson's r")
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method_choice, labels = labels)
+
+  # Add method column
+  result <- result %>%
+    dplyr::mutate(correlation_method = method_choice)
 
   # Remove common item prefix
   prefix1 <- get_prefix(result$item1)
@@ -1420,17 +1423,26 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE,  negative = FA
     item1 = trim_prefix(.data$item1, prefix1)
   )
 
-  method <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
+  # Adjust result for plot
+  if (method == "spearman") {
+    result <- result %>%
+      dplyr::rename(item = "item1",
+                    .cross = "item2",
+                    value = "Spearman's rho"
+      )
+  }
 
-  # Adjust result
-  result <- result %>%
-    dplyr::rename(item = "item1",
-                  .cross = "item2",
-                  value = !!sym(method),
-                  low = "ci low",
-                  high = "ci high")
+  else {
+    result <- result %>%
+      dplyr::rename(item = "item1",
+                    .cross = "item2",
+                    value = "Pearson's r",
+                    low = "ci low",
+                    high = "ci high"
+     )
+  }
 
-  # Get limits
+  # Get scale and limits
   method_range <- range(result$value, na.rm = TRUE)
 
   if (all(method_range >= 0 & method_range <= 1)) {
@@ -1438,6 +1450,8 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE,  negative = FA
   } else {
     limits <- c(-1, 1)
   }
+
+  scale <- limits
 
   # Add title
   if (title == TRUE) {
@@ -1456,22 +1470,13 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE,  negative = FA
   # Missings
   result <- .attr_transfer(result, data, "missings")
 
-  # pl <- result %>%
-  #   ggplot2::ggplot(ggplot2::aes(y=.data$item, x=.data$value, group=1)) +
-  #   ggplot2::geom_errorbar(
-  #   ggplot2::aes(xmin = .data$low, xmax = .data$high),
-  #   orientation ="y",
-  #   width=0.2,
-  #   #linewidth=1,
-  #   colour = VLKR_COLOR_CI) +
-  #   ggplot2::geom_point(colour = "black")
-  #
-  # return(pl)
-
   .plot_lines(
     result,
+    ci = ci,
+    scale = scale,
     title = title,
     limits = limits,
+    method = TRUE,
     base = paste0("n=", base_n)
   )
 
@@ -1542,7 +1547,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   method_range <- range(result[[method]], na.rm = TRUE)
 
   # Plot
-  pl <- ggplot2::ggplot(result, ggplot2::aes(y = item1,x=  item2, fill = !!sym(method))) +
+  pl <- ggplot2::ggplot(result, ggplot2::aes(y = item1, x = item2, fill = !!sym(method))) +
     ggplot2::geom_tile()
 
   if (all(method_range >= 0 & method_range <= 1)) {
@@ -1676,7 +1681,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(),
+      axis.text = ggplot2::element_text(size = VLKR_TEXT_X_AXIS),
       legend.title = ggplot2::element_blank(),
       plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
@@ -1809,7 +1814,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(),
+      axis.text = ggplot2::element_text(size = VLKR_TEXT_X_AXIS),
       legend.title = ggplot2::element_blank(),
       plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
@@ -1859,12 +1864,15 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #'
 #' @param data Dataframe with the columns item, value.
 #' @param scale Passed to the label scale function.
+#' @param ci Whether to plot confidence intervals.
+#'           For now only supported for correlation coefficents.
+#' @param method Depict method on legend if provided.
 #' @param base The plot base as character or NULL.
 #' @param limits The scale limits.
 #' @param title The plot title as character or NULL.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-.plot_lines <- function(data, scale = NULL, base = NULL, limits = NULL, title = NULL) {
+.plot_lines <- function(data, scale = NULL, ci = FALSE, method = FALSE, base = NULL, limits = NULL, title = NULL) {
 
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(
@@ -1874,10 +1882,33 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       group = .data$.cross
     )
     ) +
-    # TODO: improve geom_line for overlapping lines?
-    # -> If two lines are exactly the same
-    ggplot2::geom_line(alpha = VLKR_LINE_ALPHA) +
     ggplot2::geom_point(size=3, shape=18)
+
+  if (method) {
+    pl <- data %>%
+      ggplot2::ggplot(ggplot2::aes(
+        x = .data$item,
+        y = .data$value,
+        color = .data$correlation_method
+      )
+      ) +
+      ggplot2::geom_point(size=3, shape=18)
+
+  }
+
+  if (!ci && !method) {
+    pl <- pl +
+      ggplot2::geom_line(alpha = VLKR_LINE_ALPHA)
+  }
+
+  if (ci) {
+    pl <- pl +
+      ggplot2::geom_errorbar(
+        ggplot2::aes(ymin = .data$low, ymax = .data$high),
+        orientation ="x",
+        width=0.2,
+        colour = VLKR_COLOR_CI)
+  }
 
   # Set scale
   if (!is.null(scale)) {
@@ -1920,7 +1951,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(), #size = 11
+      axis.text = ggplot2::element_text(size = VLKR_TEXT_AXIS),
       legend.title = ggplot2::element_blank(),
       plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
