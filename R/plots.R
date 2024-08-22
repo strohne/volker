@@ -888,16 +888,8 @@ plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALS
   base_n <- data %>% nrow()
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
-  # Plot styling
-  pl <- pl +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y=ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
+  # Add theme
+  pl <- add_theme(pl, text_y = FALSE)
 
   # Pass row number and label length to the knit_plot() function
   # TODO: Don't set rows manually
@@ -1111,20 +1103,14 @@ plot_metrics_one_cor <- function(data, col, cross, negative = FALSE, limits = NU
       ggplot2::coord_cartesian(xlim = limits$x, ylim = limits$y)
   }
 
-
   # Set axis labels
   if (labels) {
     pl <- pl +
       ggplot2::labs(x = labs[1], y = labs[2])
   }
 
-  # Add theming
-  pl <- pl +
-    ggplot2::theme(
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
+  # Add theme
+  pl <- add_theme(pl, title_x = TRUE, title_y = TRUE)
 
   # Add title
   if (title == TRUE) {
@@ -1593,18 +1579,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     pl <- pl + ggplot2::ggtitle(label = title)
   }
 
-  # Add theming
-  pl <- pl +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(), #size = 11
-      #legend.title = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
   # Wrap labels
   pl <- pl +
     ggplot2::scale_y_discrete(labels = scales::label_wrap(40)) +
@@ -1616,6 +1590,9 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   # Add base
   base_n <- nrow(data)
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
+
+  # Add theme
+  pl <- add_theme(pl)
 
   # Convert to vlkr_plot
   pl <- .attr_transfer(pl, data, "missings")
@@ -1675,18 +1652,8 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)),
       limits = rev
     ) +
-
     ggplot2::ylab("Share in percent") +
-    ggplot2::coord_flip() +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text = ggplot2::element_text(size = VLKR_TEXT_X_AXIS),
-      legend.title = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
+    ggplot2::coord_flip()
 
   if (all(data$item == "TRUE")) {
     pl <- pl +
@@ -1732,11 +1699,13 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     pl <- pl + ggplot2::ggtitle(label = title)
   }
 
-
   # Add base
   if (!is.null(base)) {
     pl <- pl + ggplot2::labs(caption = base)
   }
+
+  # Add theme
+  pl <- add_theme(pl)
 
   # Convert to vlkr_plot
   attr(pl, "missings") <- data_missings
@@ -1809,18 +1778,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       limits = rev
     )
 
-  # Add theming
-  pl <- pl +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text = ggplot2::element_text(size = VLKR_TEXT_X_AXIS),
-      legend.title = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
   #
   #   if (!is.null(numbers)) {
   #     pl <- pl +
@@ -1844,6 +1801,9 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   if (!is.null(base)) {
     pl <- pl + ggplot2::labs(caption = base)
   }
+
+  # Add theme
+  pl <- add_theme(pl)
 
   # Maximum label length
   maxlab  <- data %>%
@@ -1945,19 +1905,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     pl <- pl +
     ggplot2::coord_flip(ylim = c(0,1))
 
-
-  # Add theme
-  pl <- pl +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text = ggplot2::element_text(size = VLKR_TEXT_AXIS),
-      legend.title = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
   # Add title
   if (!is.null(title)) {
     pl <- pl + ggplot2::ggtitle(label = title)
@@ -1967,6 +1914,9 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   if (!is.null(base)) {
     pl <- pl + ggplot2::labs(caption = base)
   }
+
+  # Add theme
+  pl <- add_theme(pl)
 
   # Convert to vlkr_plot
   pl <- .attr_transfer(pl, data, "missings")
@@ -2169,6 +2119,54 @@ print.vlkr_plt <- function(x, ...) {
 #' @export
 plot.vlkr_plt <- print.vlkr_plt
 
+#' Apply standard theme for volker plots
+#'
+#' Set text axis size
+#'
+#' @keywords internal
+#'
+#' @param pl The volker plot.
+#' @param text_x Whether to plot text on x-axis.
+#' @param text_y Whether to plot text on y-axis.
+#' @return A custom theme.
+#'
+add_theme <- function(pl, text_x = TRUE, text_y = TRUE, title_x = FALSE, title_y = FALSE) {
+
+  if (text_x) {
+    text_x_size <- ggplot2::element_text(size = VLKR_TEXT_X_AXIS)
+  } else {
+    text_x_size <- ggplot2::element_blank()
+  }
+
+  if (text_y) {
+    text_y_size <- ggplot2::element_text(size = VLKR_TEXT_Y_AXIS)
+  } else {
+    text_y_size <- ggplot2::element_blank()
+  }
+
+  if (title_x) {
+    title_x_size <- ggplot2::element_text(size = VLKR_TEXT_X_AXIS)
+  } else {
+    title_x_size <- ggplot2::element_blank()
+  }
+
+  if (title_y) {
+    title_y_size <- ggplot2::element_text(size = VLKR_TEXT_Y_AXIS)
+  } else {
+    title_y_size <- ggplot2::element_blank()
+  }
+
+  pl + ggplot2::theme(
+    axis.title.x = title_x_size,
+    axis.title.y = title_y_size,
+    axis.text.x = text_x_size,
+    axis.text.y = text_y_size,
+    legend.title = ggplot2::element_blank(),
+    plot.caption = ggplot2::element_text(size = VLKR_TEXT_CAPTION, hjust = 0),
+    plot.title.position = "plot",
+    plot.caption.position = "plot"
+  )
+}
 
 #' Define a default theme for volker plots
 #'

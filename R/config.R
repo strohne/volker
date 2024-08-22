@@ -75,5 +75,7 @@ VLKR_PLOT_SCALEWRAP <- 10
 #' Element text size
 #'
 #' @keywords internal
-VLKR_TEXT_AXIS <- 11
+VLKR_TEXT_X_AXIS <- 11
+VLKR_TEXT_Y_AXIS <- 11
+VLKR_TEXT_CAPTION <- 8
 
