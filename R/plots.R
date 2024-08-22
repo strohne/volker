@@ -859,7 +859,7 @@ plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALS
       ggplot2::aes(x= .data$x, y = .data$y),
       data = mean_data,
       size=4,
-      shape=18,
+      shape=VLKR_POINT,
       color = "black"
     )
 
@@ -1842,7 +1842,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       group = .data$.cross
     )
     ) +
-    ggplot2::geom_point(size=3, shape=18)
+    ggplot2::geom_point(size=3, shape=VLKR_POINT)
 
   if (method) {
     pl <- data %>%
@@ -1852,7 +1852,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
         color = .data$correlation_method
       )
       ) +
-      ggplot2::geom_point(size=3, shape=18)
+      ggplot2::geom_point(size=3, shape=VLKR_COR_POINT)
 
   }
 

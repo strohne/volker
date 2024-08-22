@@ -79,3 +79,9 @@ VLKR_TEXT_X_AXIS <- 11
 VLKR_TEXT_Y_AXIS <- 11
 VLKR_TEXT_CAPTION <- 8
 
+#' Shapes
+#'
+#' @keywords internal
+VLKR_COR_POINT <- 19
+VLKR_POINT <- 18
+
