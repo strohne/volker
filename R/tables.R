@@ -812,6 +812,19 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   result <- dplyr::filter(result, .data$.category == TRUE) %>%
     dplyr::select(-tidyselect::any_of(".category"))
 
+  # Get item labels
+  if (labels) {
+    result <- labs_replace(
+      result, "item",
+      codebook(data, {{ cols }}),
+      "item_name", "item_label"
+    )}
+
+
+  # Remove common item prefix
+  prefix <- get_prefix(result$item, trim=T)
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
+
   # Result n
   result_n <- result %>%
     dplyr::select(-tidyselect::any_of("p"), -tidyselect::any_of("total_p")) %>%
@@ -857,18 +870,6 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   } else {
     result <- result_n
   }
-
-  # Get item labels
-  if (labels) {
-    result <- labs_replace(
-      result, "item",
-      codebook(data, {{ cols }}),
-      "item_name", "item_label"
-    )}
-
-   # Remove common item prefix
-  prefix <- get_prefix(result$item, trim=T)
-  result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
 
   # Rename first columns
   if (prefix == "") {
