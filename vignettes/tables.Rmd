@@ -32,21 +32,15 @@ tab_counts(data, sd_gender)
 ```
 
 ### 2. Two variables: Cross table of innovator type by gender
-
 ```{r}
-tab_counts(data, adopter, sd_gender)
+tab_counts(data, adopter, sd_gender, prop="cols")
 ```
 
-
 ### 3. Two variables: One categorical and one metric
-
 ```{r}
-
 # TODO: redirect to tab_metrics(data, sd_age, adopter) 
 #tab_counts(data, adopter, sd_age, metric=T)
 ```
-
-
 
 ### 4. Multiple items: Frequency table of adoption factors
 ```{r}
@@ -56,65 +50,64 @@ tab_counts(data, starts_with("cg_adoption_"))
 
 ### 5. Multiple grouped items: Frequency table of adoption factors grouped by gender
 ```{r}
-tab_counts(data, starts_with("cg_adoption_"), sd_gender, 
-           category = c("agree", "strongly agree"))
+tab_counts(
+  data, starts_with("cg_adoption_"), sd_gender, 
+  category = c("agree", "strongly agree")
+)
 ```
 
 ### 6. Multiple categorical items and one metric variable
 ```{r}
+
 # TODO
 #data |> 
 #  tidyr::pivot_longer(starts_with("use_")) |> 
 #  tab_metrics(value, name)
-  
-tab_counts(data, starts_with("use_"), sd_age)
+# tab_counts(data, starts_with("use_"), sd_age)
 
 ```
 
-
 ## Distributions of metric variables
 
-### 1. Distribution table for one metric variable: Age
+### 7. Distribution table for one metric variable: Age
 ```{r}
 tab_metrics(data, sd_age)
 ```
 
-### 2. Group comparison of a metric variable: Age by gender
+### 8. Group comparison of a metric variable: Age by gender
 
 ```{r}
 tab_metrics(data, sd_age, sd_gender)
 ```
 
-### 3. Distribution table for multiple metric items: Adoption factors
+### 9. Correlation of two single variables
+```{r}
+tab_metrics(data, use_private, use_work, metric=T, labels=F)
+```
+
+### 10. Distribution table for multiple metric items: Adoption factors
 ```{r}
 tab_metrics(data, starts_with("cg_adoption_"))
 ```
 
 
-### 4. Compare means of multiple items: Adoption factors by gender
+### 11. Compare means of multiple items: Adoption factors by gender
 ```{r}
 tab_metrics(data, starts_with("cg_adoption_"), sd_gender)
 ```
 
+### 12. Correlation of items with one single variable
+
+```{r}
+tab_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric=T)
+```
+
 ## Correlations
-
-### Correlation of two single variables
-
-```{r}
-tab_metrics(data, use_private, use_work, metric=T, labels=F)
-```
-
-### Correlation of items with one single variable
-
-```{r}
-tab_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric=T, digits=2)
-```
-
 
 ### Correlation of items
 
 ```{r}
-tab_metrics(data, starts_with("cg_adoption_adv"), metric=T, starts_with("cg_adoption_adv"), labels=F)
+tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric=T, labels=F)
 ```
 
 ### Correlation of different item groups
@@ -122,5 +115,3 @@ tab_metrics(data, starts_with("cg_adoption_adv"), metric=T, starts_with("cg_adop
 ```{r}
 tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"), metric=T, digits=2)
 ```
-
-

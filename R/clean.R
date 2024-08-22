@@ -79,7 +79,7 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
       data,
       dplyr::across(
         tidyselect::where(~ is.factor(.)),
-        ~ replace(., . %in% remove.na.levels, NA)
+        ~ factor(replace(., . %in% remove.na.levels, NA),setdiff(levels(.), remove.na.levels))
       )
     )
   }
@@ -207,36 +207,44 @@ data_rm_negatives <- function(data, cols) {
 }
 
 #' Get a formatted baseline for removed zero, negative, and missing cases
+#' and include focus category information if present
 #'
 #' @keywords internal
 #'
-#' @param obj An object with the missings attribute.
-#' @return A formatted message or NULL if the missings attribute is not present.
+#' @param obj An object with the missings and focus attributes.
+#' @return A formatted message or NULL if missings and focus attributes are not present.
 get_baseline <- function(obj) {
+  baseline <- c()
+
+  # Focus categories
+  focus <- attr(obj, "focus", exact=TRUE)
+  if (!is.null(focus)) {
+    baseline <- c(baseline, paste0("Frequencies based on values: ", paste(focus, collapse=", "), "."))
+  }
+
+  # Missings
   missings <- attr(obj, "missings", exact=TRUE)
   if (!is.null(missings)) {
-    baseline <- c()
     cols <- c()
-
+    baseline_missing <- c()
     if (!is.null(missings$na)) {
-      baseline <- c(baseline, paste0(missings$na$n," missing"))
-      cols <- c(cols, missings$na$cols)
+      baseline_missing <- c(baseline_missing, paste0(missings$na$n," missing"))
     }
 
     if (!is.null(missings$zero)) {
-      baseline <- c(baseline, paste0(missings$zero$n," zero"))
-      cols <- c(cols, missings$zero$cols)
+      baseline_missing <- c(baseline_missing, paste0(missings$zero$n," zero"))
     }
 
     if (!is.null(missings$negative)) {
-      baseline <- c(baseline, paste0(missings$negative$n," negative"))
-      cols <- c(cols, missings$negative$cols)
+      baseline_missing <- c(baseline_missing, paste0(missings$negative$n," negative"))
     }
 
-    baseline <- paste0(
-      paste0(baseline, collapse=", "),
-      " case(s) ommited."
-    )
+    baseline <- c(baseline, paste0(paste0(baseline_missing, collapse=", "), " case(s) omitted."))
+  }
+
+  # Assemble baseline
+  if (length(baseline) > 0) {
+    baseline = paste0(baseline, collapse=" ")
   } else {
     baseline <- NULL
   }

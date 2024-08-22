@@ -60,23 +60,22 @@
     Output
       
       
-      |Item                                                                      |     total|   female|     male|  diverse|
-      |:-------------------------------------------------------------------------|---------:|--------:|--------:|--------:|
-      |Expectations: ChatGPT has clear advantages compared to similar offerings. |  51% (49)| 57% (21)| 46% (27)| 100% (1)|
-      |Expectations: Using ChatGPT brings financial benefits.                    |  27% (26)|  22% (8)| 31% (18)|   0% (0)|
-      |Expectations: Using ChatGPT is advantageous in many tasks.                |  63% (61)| 68% (25)| 59% (35)| 100% (1)|
-      |Expectations: Compared to other systems, using ChatGPT is more fun.       |  54% (52)| 59% (22)| 51% (30)|   0% (0)|
-      |Expectations: Much can go wrong when using ChatGPT.                       |  35% (34)| 32% (12)| 37% (22)|   0% (0)|
-      |Expectations: There are legal issues with using ChatGPT.                  |  30% (29)|  22% (8)| 36% (21)|   0% (0)|
-      |Expectations: The security of user data is not guaranteed with ChatGPT.   |  33% (32)|  24% (9)| 39% (23)|   0% (0)|
-      |Expectations: Using ChatGPT could bring personal disadvantages.           |  25% (24)|  16% (6)| 29% (17)| 100% (1)|
-      |Expectations: In my environment, using ChatGPT is standard.               |  21% (20)|  14% (5)| 24% (14)| 100% (1)|
-      |Expectations: Almost everyone in my environment uses ChatGPT.             |  16% (16)|  16% (6)|  15% (9)| 100% (1)|
-      |Expectations: Not using ChatGPT is considered being an outsider.          |  12% (12)|   3% (1)| 17% (10)| 100% (1)|
-      |Expectations: Using ChatGPT brings me recognition from my environment.    |  20% (19)|  16% (6)| 22% (13)|   0% (0)|
-      |total                                                                     | 100% (97)| 38% (37)| 61% (59)|   1% (1)|
+      |Expectations                                                |    total|   female|     male|  diverse|
+      |:-----------------------------------------------------------|--------:|--------:|--------:|--------:|
+      |ChatGPT has clear advantages compared to similar offerings. | 51% (49)| 57% (21)| 46% (27)| 100% (1)|
+      |Using ChatGPT brings financial benefits.                    | 27% (26)|  22% (8)| 31% (18)|   0% (0)|
+      |Using ChatGPT is advantageous in many tasks.                | 63% (61)| 68% (25)| 59% (35)| 100% (1)|
+      |Compared to other systems, using ChatGPT is more fun.       | 54% (52)| 59% (22)| 51% (30)|   0% (0)|
+      |Much can go wrong when using ChatGPT.                       | 35% (34)| 32% (12)| 37% (22)|   0% (0)|
+      |There are legal issues with using ChatGPT.                  | 30% (29)|  22% (8)| 36% (21)|   0% (0)|
+      |The security of user data is not guaranteed with ChatGPT.   | 33% (32)|  24% (9)| 39% (23)|   0% (0)|
+      |Using ChatGPT could bring personal disadvantages.           | 25% (24)|  16% (6)| 29% (17)| 100% (1)|
+      |In my environment, using ChatGPT is standard.               | 21% (20)|  14% (5)| 24% (14)| 100% (1)|
+      |Almost everyone in my environment uses ChatGPT.             | 16% (16)|  16% (6)|  15% (9)| 100% (1)|
+      |Not using ChatGPT is considered being an outsider.          | 12% (12)|   3% (1)| 17% (10)| 100% (1)|
+      |Using ChatGPT brings me recognition from my environment.    | 20% (19)|  16% (6)| 22% (13)|   0% (0)|
       
-      Frequencies based on values: agree, strongly agree. 4 missing case(s) omitted.
+      Frequencies based on categories: agree, strongly agree. 4 missing case(s) omitted.
       
 
 # Distribution table for age

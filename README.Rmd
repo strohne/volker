@@ -39,11 +39,11 @@ library(volker)
 # Load example data from the package
 data <- volker::chatgpt
 
-# Create your first plot, counting answers to an item battery
-plot_counts(data, starts_with("cg_adoption_social"))
+# Create your first table and plot, counting answers to an item battery
+report_counts(data, starts_with("cg_adoption_social"))
 
-# Create your first table, summarising the item battery
-tab_metrics(data, starts_with("cg_adoption_social"))
+# Create your first table and plot, reporting mean values of the item battery
+report_metrics(data, starts_with("cg_adoption_social"))
 ```
 
 See further examples in `vignette("introduction", package="volker")`.
@@ -59,10 +59,14 @@ datasets. It handles standard cases with a handful of functions.
 Basically you select one of the following functions and throw your data
 in:
 
+- **Categorical variables**: `report_counts()`
+- **Metric variables**: `report_metrics()`
+
+The report functions combine tables, plots and, optionally, effect size calculations. To request only one of those outputs, directly use the repsective function:
+
 - **Charts**: `plot_metrics()` and `plot_counts()`\
 - **Tables**: `tab_metrics()` and `tab_counts()`\
-- **Tests**: `effect_metrics()` and `effect_counts()`\
-- **Reports**: `report_metrics()` and `report_counts()`
+- **Effects**: `effect_metrics()` and `effect_counts()`\
 
 Which one is best?
 That depends on your objective:
@@ -183,7 +187,7 @@ For handling metric variables and their correlations, set the `metric`-parameter
 | 2      | tab_counts_one_grouped     |             | table  | counts   | one       | grouped     |
 | 3      | tab_counts_one_cor          | not yet     | table  | counts   | one       | correlated  |
 | 4      | tab_counts_items           |             | table  | counts   | multiple |             |
-| 5      | tab_counts_items_grouped    | not yet     | table  | counts   | multiple | grouped     |
+| 5      | tab_counts_items_grouped    |            | table  | counts   | multiple | grouped     |
 | 6      | tab_counts_items_cor        | not yet     | table  | counts   | multiple | correlated  |
 | 7      | tab_metrics_one            |             | table  | metrics | one       |             |
 | 8      | tab_metrics_one_grouped    |             | table  | metrics | one       | grouped    |
@@ -191,23 +195,32 @@ For handling metric variables and their correlations, set the `metric`-parameter
 | 10     | tab_metrics_items            |             | table  | metrics | multiple |             |
 | 11     | tab_metrics_items_grouped   |             | table  | metrics | multiple | grouped     |
 | 12     | tab_metrics_items_cor       |             | table  | metrics | multiple | correlated  |
-| 13     | plot_counts_one              |             | plot   | counts   | one       |             |
-| 14     | plot_counts_one_grouped    |             | plot   | counts   | one       | grouped     |
-| 15     | plot_counts_one_cor         | not yet     | plot   | counts   | one       | correlated |
-| 16     | plot_counts_items          |             | plot   | counts   | multiple |             |
-| 17     | plot_counts_items_grouped  |      | plot   | counts   | multiple | grouped    |
-| 18     | plot_counts_items_cor       | not yet     | plot   | counts   | multiple | correlated |
-| 19     | plot_metrics_one           |             | plot   | metrics | one       |             |
-| 20     | plot_metrics_one_grouped   |             | plot   | metrics | one       | grouped    |
-| 21     | plot_metrics_one_cor        |      | plot   | metrics | one       | correlated |
-| 22     | plot_metrics_items          |             | plot   | metrics | multiple |             |
-| 23     | plot_metrics_items_grouped |             | plot   | metrics | multiple | grouped    |
-| 24     | plot_metrics_items_cor      | not yet      | plot   | metrics | multiple | correlated |
+
+
+| \#     | function                     | implemented | output | scale    | columns  | crossings  |
+|--------|------------------------------|-------------|--------|----------|-----------|-------------|
+| 1     | plot_counts_one              |             | plot   | counts   | one       |             |
+| 2     | plot_counts_one_grouped    |             | plot   | counts   | one       | grouped     |
+| 3     | plot_counts_one_cor         | not yet     | plot   | counts   | one       | correlated |
+| 4     | plot_counts_items          |             | plot   | counts   | multiple |             |
+| 5     | plot_counts_items_grouped  |      | plot   | counts   | multiple | grouped    |
+| 6     | plot_counts_items_cor       | not yet     | plot   | counts   | multiple | correlated |
+| 7     | plot_metrics_one           |             | plot   | metrics | one       |             |
+| 8     | plot_metrics_one_grouped   |             | plot   | metrics | one       | grouped    |
+| 9     | plot_metrics_one_cor        |      | plot   | metrics | one       | correlated |
+| 10    | plot_metrics_items          |             | plot   | metrics | multiple |             |
+| 11    | plot_metrics_items_grouped |             | plot   | metrics | multiple | grouped    |
+| 12    | plot_metrics_items_cor      | not yet      | plot   | metrics | multiple | correlated |
 
 
 ## Effect sizes and statistical tests
 
-You can calculate effect sizes and conduct basic statistical tests using  `effect_counts()` and `effect_metrics()`. Effect calculation is included in the reports if you request it by the effect-parameter of `report_counts()` or `report_metrics()`. 
+You can calculate effect sizes and conduct basic statistical tests using  `effect_counts()` and `effect_metrics()`. Effect calculation is included in the reports if you request it by the effect-parameter, for example:
+
+```
+report_counts(data, adopter, sd_gender, prop="cols", effect=TRUE)
+```
+
 
 **A word of warning:** Statistics is the world of uncertainty. All procedures require mindful interpretation. Counting stars might evoke illusions.
 

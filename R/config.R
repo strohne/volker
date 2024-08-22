@@ -7,7 +7,7 @@
 #' Override with \code{options(vlkr.na.levels=c("Not answered"))}.
 #'
 #' @keywords internal
-VLKR_NA_LEVELS <- c("[NA] nicht beantwortet", "[NA] keine Angabe")
+VLKR_NA_LEVELS <- c("[NA] nicht beantwortet", "[NA] keine Angabe", "[no answer]")
 
 #' Numbers to remove from vectors
 #'
@@ -51,6 +51,7 @@ VLKR_SMALL_DIGITS <- 2
 
 VLKR_LOWPERCENT <- 5
 VLKR_SCATTER_ALPHA <- 0.3
+VLKR_LINE_ALPHA <- 0.6
 
 VLKR_PLOT_DPI <- 192
 VLKR_PLOT_SCALE <- 96
@@ -58,4 +59,14 @@ VLKR_PLOT_WIDTH <- 910
 VLKR_PLOT_PXPERLINE <- 15
 VLKR_PLOT_OFFSETROWS <- 5
 VLKR_PLOT_TITLEROWS <- 2
+
+#' Wrapping threshold
+#'
+#' Override with \code{options(vlkr.wrap.labels=20)}.
+#' Override with \code{options(vlkr.wrap.legend=10)}.
+#' Override with \code{options(vlkr.wrap.scale=10)}.
+#'
+#' @keywords internal
 VLKR_PLOT_LABELWRAP <- 40
+VLKR_PLOT_LEGENDWRAP <- 20
+VLKR_PLOT_SCALEWRAP <- 10

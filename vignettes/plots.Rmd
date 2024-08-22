@@ -35,57 +35,69 @@ plot_counts(data, sd_gender)
 ```
 
 ### 2. Two variables: Stacked frequency plot of innovator type by gender
-
 ```{r}
 # The prop parameter grows bars to 100%
 # The numbers parameter adds percentages to the bars
 
-plot_counts(data, adopter, sd_gender, prop = "rows", number="p")
+plot_counts(data, adopter, sd_gender, prop = "cols", number="p")
 ```
 
+### 3. Group probabilities by a metric variable
+```{r}
+# TODO
+# plot_metrics(data, sd_gender, sd_age)
+```
 
-### 3. Multiple items: Frequency plot for adoption factors
+### 4. Multiple items: Frequency plot for adoption factors
 ```{r, fig.height=6}
 # The numbers parameter adds percentages to the bars
 plot_counts(data, starts_with("cg_adoption_"), numbers = "p")
-
 ```
 
-
-### 4. Multiple items: Frequency plot for adoption factors grouped by adopter category
+### 5. Multiple items: Frequency plot for adoption factors grouped by adopter category
 ```{r, fig.height=6}
 
-# # TODO: Coding style: fix whitespace in function call
-# plot_counts_items_grouped(
-#   data, starts_with("cg_adoption_"), adopter,   category=c(4,5),
-#   numbers = "n"
-# )
+options(vlkr.wrap.labels=30)
+options(vlkr.wrap.legend=10)
+
+plot_counts(
+  data, starts_with("cg_adoption_"), adopter,
+  category=c("agree", "strongly agree")
+)
 
 ```
 
+### 6. Group probabilities of multiply items by a metric variable
+```{r}
+# TODO
+# plot_counts(data, starts_with("use_"), sd_age)
+```
 
 ## Metric distributions
 
-### 1. Distribution for one metric variable: Age
+### 7. Distribution for one metric variable: Age
 ```{r}
 plot_metrics(data, sd_age)
 ```
 
-
-### 2. Distribution by a grouping variable
+### 8. Distribution by a grouping variable
 ```{r}
 plot_metrics(data, sd_age, sd_gender, bars="box")
 ```
 
+### 9. Correlation of two metric variables
+```{r}
+plot_metrics(data, use_private, sd_age, metric=TRUE)
+```
 
-### 3. Distribution of multiple metric items: Adoption factors
+### 10. Distribution of multiple metric items: Adoption factors
 ```{r, fig.height=6}
 # Note that negative values are omitted,
 # you can change the behavior with the negative-parameter
 plot_metrics(data, starts_with("cg_adoption_"))
 ```
 
-### 4. Group comparison of multiple metric items: Adoption factors by gender
+### 11. Group comparison of multiple metric items: Adoption factors by gender
 ```{r, fig.height=6}
 # Filter out one group, too few cases in the sample
 data %>% 
@@ -93,17 +105,10 @@ data %>%
   plot_metrics(starts_with("cg_adoption_"), sd_gender)
 ```
 
-## Correlations 
+### 12. Correlation of items with one single variable
 
-### 1. Correlation of multiple items with one metric variable
 ```{r}
-plot_metrics(data, starts_with("use_"), sd_age, metric=T)
-
-```
-
-### 2. Correlation of multiple items by multiple items
-```{r}
-
-plot_metrics(data, starts_with("cg_adoption_social"), starts_with("cg_adoption_"), numbers=T)
-
+#TODO
+#plot_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric=T)
+>>>>>>> devel
 ```

@@ -220,7 +220,13 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
   }
 
   if (percent) {
-    result <- dplyr::mutate(result, dplyr::across(tidyselect::any_of(c("p","ci low","ci high")), ~ paste0(round(. * 100, 0), "%")))
+    result <- dplyr::mutate(
+      result,
+      dplyr::across(
+        tidyselect::any_of(c("p","ci low","ci high")),
+        ~ paste0(round(. * 100, 0), "%")
+      )
+    )
   }
 
 
@@ -280,8 +286,16 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
   # 3. Remove missings
   data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
 
+  # 4. Get labels for cross variable
+  if (labels) {
+    data <- labs_replace(
+      data, {{ cross }},
+      codebook(data, {{ cross }}),
+      "value_name", "value_label"
+    )}
+
   #
-  # 4. Count
+  # 5. Count
   #
   grouped <- data %>%
     dplyr::count({{ col }}, {{ cross }}) %>%
@@ -643,19 +657,232 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 
 #' Compare the values in multiple items by a grouping column
 #'
-#' \strong{Not yet implemented. The future will come.}
-#'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
-#' @param cols The item columns that hold the values to summarize.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
+#' @param category Summarizing multiple items (the cols parameter) by group requires a focus category.
+#'                By default, for logical column types, only TRUE values are counted.
+#'                For other column types, the first category is counted.
+#'                Accepts both character and numeric vectors to override default counting behavior.
+#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
+#' @param values The values to output: n (frequency) or p (percentage) or both (the default).
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
-#' @return A volker tibble.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
+#' @return A ggplot object.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#' tab_counts_items_grouped(
+#'   data, starts_with("cg_adoption_"), adopter,
+#'   category=c("agree", "strongly agree")
+#' )
+#'
+#' @export
 #' @importFrom rlang .data
-tab_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent = TRUE, values = c("n", "p"), title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ cols }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
+
+  # 4. Calculate data
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  cols_names <- colnames(dplyr::select(data, tidyselect::all_of(cols_eval)))
+
+  cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
+  cross_names <- colnames(dplyr::select(data, tidyselect::all_of(cross_eval)))
+
+  # total row n
+  total_row_n <- data %>%
+    dplyr::group_by({{ cross }}) %>%
+    dplyr::count() %>%
+    dplyr::summarise(n = sum(.data$n)) %>%
+    dplyr::ungroup() %>%
+    tidyr::pivot_wider(
+      names_from = {{ cross }},
+      values_from = "n",
+      values_fill = list(n = 0)
+    ) %>%
+    dplyr::mutate(total = rowSums(dplyr::across(tidyselect::everything()))) %>%
+    dplyr::mutate(item = "total")
+
+  # total_row_p
+  total_row_p <- total_row_n %>%
+    dplyr::mutate(dplyr::across(-tidyselect::any_of("item"), ~ . / .data$total))
+
+  # Pivot
+  result <- data %>%
+    labs_clear({{ cols }}) %>%
+    tidyr::pivot_longer(
+      {{ cols }},
+      names_to = "item",
+      values_to = ".value_name"
+    )
+
+  # Add label column for category
+  codebook_df <- codebook(data, {{ cols }})
+
+  result <- result %>%
+    dplyr::mutate(
+      .value_label = ifelse(
+        .data$.value_name %in% codebook_df$value_name,
+        codebook_df$value_label[match(.data$.value_name, codebook_df$value_name)],
+        as.character(.data$.value_name)
+      )
+    )
+
+  #  Set labels: cross variable
+  if (labels) {
+    result <- labs_replace(
+      result, {{ cross }},
+      codebook(data, {{ cross }}),
+      "value_name", "value_label"
+    )
+  }
+
+  # Focus TRUE category or the first category
+  if (is.null(category)) {
+    value_names <- unique(as.character(result$.value_name))
+    if ((length(value_names) == 2) && ("TRUE" %in% value_names)) {
+      base_category <- "TRUE"
+    } else {
+      base_category <- value_names[1]
+    }
+  } else {
+    base_category <- as.character(category)
+
+    if (
+      !all(
+        (base_category %in% as.character(result$.value_name)) |
+        (base_category %in% result$.value_label)
+      )
+    ) {
+      stop("One or more specified categories do not exist in the data.")
+    }
+  }
+
+  # Get category labels if names are provided (e.g. for numeric values)
+  base_labels <- base_category
+  if (is.null(category) || all(base_labels %in% result$.value_name)) {
+    base_labels <- codebook_df %>%
+      dplyr::filter(.data$value_name %in% base_category) %>%
+      dplyr::pull(.data$value_label) %>%
+      unique()
+  }
+
+  # Recode
+  result <- result %>%
+    mutate(.category = (.data$.value_name %in% base_category) | (.data$.value_label %in% base_category))
+
+  # Count
+  result <- result %>%
+    dplyr::mutate(.cross = as.factor({{ cross }})) %>%
+    dplyr::mutate(.category = as.factor(.data$.category)) %>%
+    dplyr::count(dplyr::across(tidyselect::all_of(c("item", ".cross", ".category")))) %>%
+    tidyr::complete(.data$item, .data$.cross, .data$.category, fill=list(n=0))
+
+  # Total
+  total <- result %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of(c("item",".category")))) %>%
+    dplyr::summarise(total_n = sum(.data$n)) %>%
+    dplyr::mutate(total_p = .data$total_n / sum(.data$total_n))
+
+  # Group and percent
+  result <- result %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of(c("item",".cross"))))%>%
+    dplyr::mutate(p = (.data$n / sum(.data$n))) %>%
+    dplyr::mutate(p = ifelse(is.na(.data$p), 0, .data$p)) %>%
+    dplyr::ungroup() %>%
+    dplyr::left_join(total, by = c("item", ".category"))
+
+  # Filter category
+  result <- dplyr::filter(result, .data$.category == TRUE) %>%
+    dplyr::select(-tidyselect::any_of(".category"))
+
+  # Result n
+  result_n <- result %>%
+    dplyr::select(-tidyselect::any_of("p"), -tidyselect::any_of("total_p")) %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
+    tidyr::pivot_wider(
+      names_from = ".cross",
+      values_from = "n",
+      values_fill = list(n = 0)) %>%
+    dplyr::rename(total = "total_n")
+
+  # Add total row n
+  result_n <- dplyr::bind_rows(result_n, total_row_n)
+
+  # Result p
+  result_p <- result %>%
+    dplyr::select(-tidyselect::any_of("n"), -tidyselect::any_of("total_n")) %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
+    tidyr::pivot_wider(
+      names_from = ".cross",
+      values_from = "p",
+      values_fill = list(n = 0)) %>%
+    dplyr::rename(total = "total_p")
+
+  # Add total row
+  result_p <- dplyr::bind_rows(result_p, total_row_p)
+
+  # # Factor result
+  # result <- result %>%
+  #   dplyr::mutate(value = as.factor(.data$value)) %>%
+  #   dplyr::mutate(item = factor(.data$item, levels=cols_names)) |>
+  #   dplyr::arrange(.data$item)
+
+  # Add % sign
+  if (percent) {
+    result_p <- dplyr::mutate(result_p, dplyr::across(tidyselect::where(is.numeric), ~ paste0(round(. * 100, 0), "%")))
+  }
+
+  # Combine n and p if requested
+  if (("n" %in% values) && ("p" %in% values)) {
+    result <- zip_tables(result_p, result_n, brackets = TRUE, newline = FALSE)
+  } else if ("p" %in% values) {
+    result <- result_p
+  } else {
+    result <- result_n
+  }
+
+  # Get item labels
+  if (labels) {
+    result <- labs_replace(
+      result, "item",
+      codebook(data, {{ cols }}),
+      "item_name", "item_label"
+    )}
+
+   # Remove common item prefix
+  prefix <- get_prefix(result$item, trim=T)
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
+
+  # Rename first columns
+  if (prefix == "") {
+    prefix <- "Item"
+  }
+
+  colnames(result)[1] <- prefix
+
+  # Add baseline
+  attr(result, "focus") <- base_labels
+  result <- .attr_transfer(result, data, "missings")
+
+  .to_vlkr_tab(result)
+
 }
 
 #' Correlate the values in multiple items
