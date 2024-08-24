@@ -22,13 +22,16 @@ codebook <- function(data, cols) {
     data <- dplyr::select(data, {{ cols }})
   }
 
-  # Replace empty classes with NA
-  item_classes <- sapply(data, attr, "class", simplify = FALSE)
+  # Get column classes
+  #item_classes <- sapply(data, attr, "class", simplify = FALSE)
+  item_classes <- sapply(data, class, simplify = FALSE)
   item_classes <- ifelse(sapply(item_classes, is.null), NA, item_classes)
 
+  # Get column comments
   item_comments <- sapply(data, attr, "comment", simplify = FALSE)
   item_comments <- ifelse(sapply(item_comments, is.null), NA, item_comments)
 
+  # Construct item label and value label dataframe
   labels <- dplyr::tibble(
     item_name = colnames(data),
     item_class = item_classes,
@@ -44,6 +47,7 @@ codebook <- function(data, cols) {
 
 
   if ("value_label_id" %in% colnames(labels)) {
+
     # Get items with codes
     labels_codes <- labels %>%
       dplyr::rename(value_name = tidyselect::all_of("value_label_id")) %>%
@@ -52,15 +56,22 @@ codebook <- function(data, cols) {
       dplyr::mutate(value_label = as.character(.data$value_label)) %>%
       dplyr::select(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label", "value_name", "value_label")))
 
+    # Get factor levels
     labels_levels <- labels %>%
       # dplyr::rename(value_name = value_label_id) %>%
       dplyr::filter(.data$value_label_id == "levels") %>%
       dplyr::select(tidyselect::all_of(c("item_group", "item_class", "item_name", "item_label", "value_label"))) |>
       tidyr::unnest_longer(tidyselect::all_of("value_label")) %>%
-      dplyr::mutate(value_label = as.character(.data$value_label))
+      dplyr::group_by(dplyr::across(tidyselect::all_of(c("item_group", "item_class", "item_name", "item_label")))) |>
+      dplyr::mutate(
+      #  value_name = as.character(dplyr::row_number()),
+        value_name = as.character(.data$value_label),
+        value_label = as.character(.data$value_label),
+      ) |>
+      dplyr::ungroup()
 
 
-    # Combine items without codes and items with codes
+    # Combine items without codes or levels and items with codes or levels
     labels <- labels %>%
       dplyr::distinct(dplyr::across(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label")))) %>%
       dplyr::anti_join(labels_codes, by = "item_name") %>%

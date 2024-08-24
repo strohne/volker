@@ -1,0 +1,117 @@
+
+---
+title: "Table variations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Table variations}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo = TRUE)
+
+library(dplyr)
+library(volker)
+
+ds <- volker::chatgpt
+
+```
+
+```{css, echo=FALSE}
+table {margin-left:0 !important;}
+```
+
+
+# The codebook function
+
+Labels used in plots and tables are stored in the comment attribute of the variable. 
+You can inspect all labels using the `codebook()`-function:
+
+```{r}
+codebook(ds)
+```
+
+
+To conveniently manage all labels of a dataset, 
+you can save the result of `codebook()` to an Excel file,
+change the labels manually in a copy of the Excel file, 
+and finally call `labs_apply()` with your revised codebook.
+
+```{r, eval = FALSE}
+
+library(readxl)
+library(writexl)
+
+# Save codebook to a file
+codes <- codebook(ds)
+write_xlsx(codes,"codebook.xlsx")
+
+# Load and apply a codebook from a file
+codes <- read_xlsx("codebook_revised.xlsx")
+ds <- labs_apply(codebook)
+
+```
+
+
+# Change labels of items
+
+You can set column labels with `labs_apply()` by providing a tibble 
+with item names in the first column and item labels in the second column.
+
+The tribble function is a convenient way to construct the label tibble.
+
+```{r}
+newlabels <- tribble(
+  ~name, ~label,
+  "cg_adoption_advantage_01", "Allgemeine Vorteile",
+  "cg_adoption_advantage_02", "Finanzielle Vorteile",
+  "cg_adoption_advantage_03", "Vorteile bei der Arbeit",
+  "cg_adoption_advantage_04", "Macht mehr Spaß"
+)
+
+ds %>%
+  labs_apply(newlabels) %>%
+  tab_metrics_items(starts_with("cg_adoption_advantage_"))
+
+
+```
+
+
+# Change labels of values
+
+Data values usally come in two forms: 
+
+- Uncoded: Character values and factor values as well as metric values 
+  such as the age of a person can be analyzed and reported without further labeling. 
+  The values in the dataset speak for themselves.
+- Coded: Sometimes data values are numerically coded, for example from 1=disagree to 5 =agree. 
+  The values need to be labeled for reporting and interpretation.
+
+To label coded values, construct a tibble with the columns
+value_name and value_label to `labs_apply()`. 
+Tell the function the values in which columns should be changed 
+and set the values-Parameer to TRUE.
+
+```{r}
+
+ds |> 
+  labs_apply(
+    tribble(
+      ~value_name, ~value_label,
+      1, "Stimme überhaupt nicht zu",
+      2, "Stimme nicht zu",
+      3, "Unentschieden",
+      4, "Stimme zu",
+      5, "Stimm voll und ganz zu"
+    ), 
+    cols=starts_with("cg_adoption"),
+    values=TRUE
+  ) |> 
+  plot_metrics(starts_with("cg_adoption"))
+
+
+```
+
