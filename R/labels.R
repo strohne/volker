@@ -45,10 +45,20 @@ codebook <- function(data, cols) {
     dplyr::select(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label", "value_label"))) %>%
     tidyr::unnest_longer(tidyselect::all_of("value_label"), keep_empty = TRUE)
 
-
   if ("value_label_id" %in% colnames(labels)) {
 
-    # Get items with codes
+    # Get items with a labels attribute
+    labels_attr <- labels %>%
+      # dplyr::rename(value_name = value_label_id) %>%
+      dplyr::filter(.data$value_label_id == "labels") %>%
+      dplyr::select(tidyselect::all_of(c("item_group", "item_class", "item_name", "item_label", "value_label"))) |>
+      tidyr::unnest_longer(tidyselect::all_of("value_label"), indices_to = "value_name", values_to = "value_label") |>
+      dplyr::mutate(
+        value_name = as.character(.data$value_name),
+        value_label = as.character(.data$value_label)
+      )
+
+    # Get items with numeric or boolean codes
     labels_codes <- labels %>%
       dplyr::rename(value_name = tidyselect::all_of("value_label_id")) %>%
       # dplyr::filter(!(value_name %in% c("comment", "class","levels","tzone"))) %>%
@@ -74,10 +84,18 @@ codebook <- function(data, cols) {
     # Combine items without codes or levels and items with codes or levels
     labels <- labels %>%
       dplyr::distinct(dplyr::across(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label")))) %>%
-      dplyr::anti_join(labels_codes, by = "item_name") %>%
-      dplyr::bind_rows(labels_codes) %>%
       dplyr::anti_join(labels_levels, by = "item_name") %>%
-      dplyr::bind_rows(labels_levels)
+      dplyr::bind_rows(labels_levels) |>
+      dplyr::anti_join(labels_codes, by = "item_name") %>%
+      dplyr::bind_rows(labels_codes) |>
+      dplyr::anti_join(labels_attr, by = "item_name") %>%
+      dplyr::bind_rows(labels_attr) |>
+      dplyr::select(
+        tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label")),
+        tidyselect::all_of("value_name"),
+        tidyselect::all_of("value_label")
+      )
+
   } else {
     labels$value_name <- NA
   }
@@ -282,13 +300,14 @@ labs_apply <- function(data, codes = NULL, cols = NULL, items = TRUE, values = T
     ("value_label" %in% colnames(codes))
 
   if (values) {
-    if (!rlang::quo_is_symbol(rlang::enquo(cols)) || missing(cols) || is.null(cols)) {
-      cols <- data |>
-        colnames()
-    } else {
-      cols <- dplyr::select(data, {{ cols }}) |>
-        colnames()
+    cols_expr <- rlang::enquo(cols)
+    if (rlang::quo_is_null(cols_expr)) {
+      cols <- colnames(data)
     }
+    else {
+      cols <- colnames(dplyr::select(data, {{ cols }}))
+    }
+
 
     for (col in cols) {
       value_rows <- codes
@@ -321,23 +340,29 @@ labs_apply <- function(data, codes = NULL, cols = NULL, items = TRUE, values = T
               " are present in the codebook. The old levels were kept.")
             )
           } else {
-            # Save column label
-            col_attrs <- attributes(data[[col]])
-
             # Reorder levels
-            data[[col]] <- factor(data[[col]], levels=value_levels)
-
-            # Restore column label
-            col_attrs$levels <- value_levels
-            attributes(data[[col]]) <- col_attrs
+            data[[col]] <- .factor_with_attr(data[[col]], levels=value_levels)
           }
         }
-        # Item labeling
+
         else {
+          label_attr <- list()
           for (vr in c(1:nrow(value_rows))) {
             value_name <- value_rows$value_name[vr]
             value_label <- value_rows$value_label[vr]
-            attr(data[[col]], as.character(value_name)) <- value_label
+
+            # Numeric or boolean values
+            if (grepl("^-?[0-9TF]+$", value_name)) {
+              attr(data[[col]], as.character(value_name)) <- value_label
+            } else {
+              label_attr[[as.character(value_name)]] <- value_label
+            }
+          }
+
+          if (length(label_attr) > 0) {
+            attr(data[[col]], "labels") <- label_attr
+          } else {
+            attr(data[[col]], "labels") <- NULL
           }
         }
       }

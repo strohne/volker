@@ -11,7 +11,9 @@ data <- volker::data_clean(data)
 
 # Get labels
 test_that("Labels are retrieved", {
-  expect_snapshot(volker::codebook(data),cran= TRUE)
+  volker::codebook(data) |>
+    print(n=Inf) |>
+    expect_snapshot(cran= TRUE)
 })
 
 # What happens when labels are empty?
@@ -106,4 +108,40 @@ test_that("A common prefix is removed from labels", {
     dplyr::pull(item_label) |>
     trim_prefix() |>
     expect_snapshot(cran= TRUE)
+})
+
+# Labeling coded numeric values
+test_that("Numeric values are relabeled", {
+
+  data %>%
+    labs_apply(
+      cols=starts_with("cg_adoption_advantage"),
+      values = list(
+        "1" = "Stimme überhaupt nicht zu",
+        "2" = "Stimme nicht zu",
+        "3" = "Unentschieden",
+        "4" = "Stimme zu",
+        "5" =  "Stimme voll und ganz zu"
+      )
+    ) %>%
+    tab_counts(starts_with("cg_adoption_advantage")) |>
+    expect_snapshot(cran= TRUE)
+
+})
+
+# Labeling uncoded factor values
+test_that("Factor values are relabeled", {
+
+  data %>%
+    labs_apply(
+      cols=sd_gender,
+      values = list(
+        "female" = "Weiblich",
+        "male" = "Männlich",
+        "diverse" = "Divers"
+      )
+    ) |>
+    tab_counts(sd_gender)  |>
+    expect_snapshot(cran= TRUE)
+
 })
