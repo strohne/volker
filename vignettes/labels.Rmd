@@ -58,8 +58,26 @@ ds <- labs_apply(codebook)
 
 # Change labels of items
 
-You can set column labels with `labs_apply()` by providing a tibble 
-with item names in the first column and item labels in the second column.
+You can set column labels by providing a named list to the items-parameter of `labs_apply()`:
+
+
+```{r}
+ds %>%
+  labs_apply(
+    items = list(
+      "cg_adoption_advantage_01" = "Allgemeine Vorteile",
+      "cg_adoption_advantage_02" = "Finanzielle Vorteile",
+      "cg_adoption_advantage_03" = "Vorteile bei der Arbeit",
+      "cg_adoption_advantage_04" = "Macht mehr Spaß"
+    )
+  ) %>% 
+  tab_metrics(starts_with("cg_adoption_advantage_"))
+
+```
+
+
+Alternatively you can use a dataframe in the codebook format.
+In this case, provide a tibble with item names in the first column and item labels in the second column.
 
 The tribble function is a convenient way to construct the label tibble.
 
@@ -74,7 +92,7 @@ newlabels <- tribble(
 
 ds %>%
   labs_apply(newlabels) %>%
-  tab_metrics_items(starts_with("cg_adoption_advantage_"))
+  tab_metrics(starts_with("cg_adoption_advantage_"))
 
 
 ```
@@ -90,10 +108,35 @@ Data values usally come in two forms:
 - Coded: Sometimes data values are numerically coded, for example from 1=disagree to 5 =agree. 
   The values need to be labeled for reporting and interpretation.
 
-To label coded values, construct a tibble with the columns
-value_name and value_label to `labs_apply()`. 
-Tell the function the values in which columns should be changed 
-and set the values-Parameer to TRUE.
+Since labels and values are identical for uncoded values, you need to change them directly in the dataframe, for example
+using Tidyverse functions. 
+
+Labels for coded values can be adjusted by providing a named list to the values-parameter of `labs_apply()`. 
+In addition, select the columns where value labels should be changed:
+
+
+```{r}
+ds %>%
+  labs_apply(
+    cols=starts_with("cg_adoption"),  
+    values = list(
+      "1" = "Stimme überhaupt nicht zu",
+      "2" = "Stimme nicht zu",
+      "3" = "Unentschieden",
+      "4" = "Stimme zu",
+      "5" =  "Stimme voll und ganz zu"
+    ) 
+  ) %>% 
+  plot_metrics(starts_with("cg_adoption"))
+
+```
+
+
+
+Alternatively, you can construct a tibble in codebook format,
+with the columns value_name and value_label. 
+Tell `labs_apply()` in which columns value labels should be changed 
+and set the values-parameter to TRUE.
 
 ```{r}
 
@@ -105,13 +148,12 @@ ds |>
       2, "Stimme nicht zu",
       3, "Unentschieden",
       4, "Stimme zu",
-      5, "Stimm voll und ganz zu"
+      5, "Stimme voll und ganz zu"
     ), 
     cols=starts_with("cg_adoption"),
     values=TRUE
   ) |> 
   plot_metrics(starts_with("cg_adoption"))
-
 
 ```
 

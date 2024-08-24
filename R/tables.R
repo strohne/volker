@@ -186,9 +186,9 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
   if (clean) {
     data <- data_clean(data)
   }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, {{ col }})
+  #
+  # # 3. Remove missings
+  # data <- data_rm_missings(data, {{ col }})
 
   # 4. Count
   result <- data %>%
@@ -216,8 +216,9 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
     result <- labs_replace(result, {{ col }}, codebook(data, {{ col }}))
     label <- get_title(data, {{ col }})
     result <- dplyr::rename(result, {{ label }} := {{ col }})
-
   }
+
+
 
   if (percent) {
     result <- dplyr::mutate(

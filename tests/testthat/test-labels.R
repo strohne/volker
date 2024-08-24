@@ -10,12 +10,12 @@ data <- volker::chatgpt
 data <- volker::data_clean(data)
 
 # Get labels
-test_that("Labels", {
+test_that("Labels are retrieved", {
   expect_snapshot(volker::codebook(data),cran= TRUE)
 })
 
 # What happens when labels are empty?
-test_that("missing labels", {
+test_that("Missing labels make no trouble", {
   data %>%
     dplyr::select(starts_with("cg_adoption")) %>%
     volker::labs_clear() %>%
@@ -42,6 +42,7 @@ test_that("Store and clear the codebook", {
     volker::labs_store() %>%
     volker::labs_clear() %>%
     codebook() %>%
+    print(n=Inf) |>
     expect_snapshot(cran= TRUE)
 })
 
@@ -52,6 +53,7 @@ test_that("Store, clear and restore the codebook", {
     volker::labs_clear() %>%
     volker::labs_restore() %>%
     codebook() %>%
+    print(n=Inf) |>
     expect_snapshot(cran= TRUE)
 })
 

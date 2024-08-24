@@ -142,8 +142,6 @@ labs_store <- function(data) {
 #'
 #' @param data A data frame.
 #' @param cols A tidyselect column selection.
-#' @param values If TRUE (default), restores value labels in addition to item labels.
-#'              Item labels correspond to columns, value labels to values in the columns.
 #' @return A data frame.
 #' @examples
 #' library(dplyr)
@@ -155,36 +153,58 @@ labs_store <- function(data) {
 #'   labs_restore() |>
 #'   tab_metrics(sd_age)
 #' @export
-labs_restore <- function(data, cols = NULL, values = TRUE) {
+labs_restore <- function(data, cols = NULL) {
 
   codes <- attr(data,"codebook")
 
   if (is.data.frame(codes)) {
-    data <- labs_apply(data, codes, {{ cols }}, values)
+    data <- labs_apply(data, codes, {{ cols }}, items = TRUE, values = TRUE)
   } else  {
     warning("No codebook found in the attributes.")
   }
   data
 }
 
-#' Set variable labels by setting their comment attributes
+#' Set column and value labels
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' @param data A tibble.
+#' You can either provide a data frame in \link{codebook} format to the codes-parameter
+#' or provide named lists to the items- or values-parameter.
+#'
+#' When working with a codebook in the codes-parameter:
+#'
+#' - Change column labels by providing the columns item_name and item_label in the codebook.
+#'   Set the items-parameter to TRUE (the default setting).
+#' - Change value labels by providing the columns value_name and value_label in the codebook.
+#'   To tell which columns should be changed, you can either use the item_name column in the codebook
+#'   or use the cols-parameter.
+#'   For factor values, the levels and their order are retrieved from the value_label column.
+#'   For coded values, labels are retrieved from both the columns value_name and value_label.
+#'
+#' When working with lists in the items- or values-parameter:
+#'
+#' - Change column labels by providing a named list to the items-parameter. The list contains labels named by the columns.
+#'   Set the parameters codes and cols to NULL (their default value).
+#' - Change value labels by providing a named list to the values-parameter. The list contains labels named by the values.
+#'   Provide the column selection in the cols-parameter.
+#'   Set the codes-parameter to NULL (its default value).
+#'
+#' @param data A tibble containing the dataset.
 #' @param codes A tibble in \link{codebook} format.
-#'              To set column labels, use item_name and item_label columns.
 #' @param cols A tidy column selection. Set to NULL (default) to apply to all columns
 #'             found in the codebook.
 #'             Restricting the columns is helpful when you  want to set value labels.
 #'             In this case, provide a tibble with value_name and value_label columns
 #'             and specify the columns that should be modified.
-#' @param values If TRUE (default), sets value labels.
-#'               - For factors: Factor levels and order are retrieved
-#'                 from the value_label column.
-#'               - For item values: they are retrieved from both the columns
-#'                 value_name and value_label in your codebook.
-#' @return A tibble with new labels.
+#' @param items If TRUE, column labels will be retrieved from the codes (the default).
+#'              If FALSE, no column labels will be changed.
+#'              Alternatively, a named list of column names with their labels.
+#' @param values If TRUE, value labels will be retrieved from the codes (default).
+#'               If FALSE, no value labels will be changed.
+#'               Alternatively, a named list of value names with their labels.
+#'               In this case, use the cols-Parameter to define which columns should be changed.
+#' @return A tibble containing the dataset with new labels.
 #' @examples
 #' library(tibble)
 #' library(volker)
@@ -202,12 +222,35 @@ labs_restore <- function(data, cols = NULL, values = TRUE) {
 #'    tab_metrics(starts_with("cg_adoption_advantage_"))
 #' @importFrom rlang .data
 #' @export
-labs_apply <- function(data, codes, cols = NULL, values = TRUE) {
+labs_apply <- function(data, codes = NULL, cols = NULL, items = TRUE, values = TRUE) {
+
+  # Convert lists to data frames
+  if (is.list(items)) {
+
+    codes <- data.frame(
+        item_name = names(items),
+        item_label = unlist(items, use.names = FALSE),
+        stringsAsFactors = FALSE
+      )
+
+    items = TRUE
+  }
+
+  else if (is.list(values)) {
+    codes <- data.frame(
+      value_name = names(values),
+      value_label = unlist(values, use.names = FALSE),
+      stringsAsFactors = FALSE
+    )
+
+    values = TRUE
+  }
 
   # Check
   if ((nrow(codes) ==0)) {
     return (data)
   }
+
 
   # Fix column names
   if (!"item_name" %in% colnames(codes) && (colnames(codes)[1] != "value_name")) {
@@ -217,15 +260,11 @@ labs_apply <- function(data, codes, cols = NULL, values = TRUE) {
     colnames(codes)[2] <- "item_label"
   }
 
-  # Can only set item or value labels if present in the codebook
-  items <- ("item_name" %in% colnames(codes)) &&
+  # Set column labels (= comment attributes)
+  items <- items &&
+    ("item_name" %in% colnames(codes)) &&
     ("item_label" %in% colnames(codes))
 
-  values <- values &&
-    ("value_name" %in% colnames(codes)) &&
-    ("value_label" %in% colnames(codes))
-
-  # Set column labels (= comment attributes)
   if (items) {
     lastitem <- ""
     for (no in c(1:nrow(codes))) {
@@ -237,8 +276,11 @@ labs_apply <- function(data, codes, cols = NULL, values = TRUE) {
     }
   }
 
-
   # Set value labels
+  values <- values &&
+    ("value_name" %in% colnames(codes)) &&
+    ("value_label" %in% colnames(codes))
+
   if (values) {
     if (!rlang::quo_is_symbol(rlang::enquo(cols)) || missing(cols) || is.null(cols)) {
       cols <- data |>
@@ -270,8 +312,8 @@ labs_apply <- function(data, codes, cols = NULL, values = TRUE) {
 
         # Factor order
         if (value_factor) {
-          value_levels <- unique(value_rows$value_label)
-          current_levels <- unique(data[[col]])
+          value_levels <- unique(value_rows$value_name)
+          current_levels <- stats::na.omit(unique(data[[col]]))
 
           if (length(setdiff(current_levels, value_levels)) > 0) {
             warning(paste0(
@@ -279,7 +321,15 @@ labs_apply <- function(data, codes, cols = NULL, values = TRUE) {
               " are present in the codebook. The old levels were kept.")
             )
           } else {
+            # Save column label
+            col_attrs <- attributes(data[[col]])
+
+            # Reorder levels
             data[[col]] <- factor(data[[col]], levels=value_levels)
+
+            # Restore column label
+            col_attrs$levels <- value_levels
+            attributes(data[[col]]) <- col_attrs
           }
         }
         # Item labeling
