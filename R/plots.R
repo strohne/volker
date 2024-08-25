@@ -1463,7 +1463,7 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, negative = FAL
     title = title,
     limits = limits,
     method = TRUE,
-    base = paste0("n=", base_n)
+    base = paste0("n=", base_n, "; method=", method_choice)
   )
 
 }
@@ -1853,7 +1853,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       )
       ) +
       ggplot2::geom_point(size=3, shape=VLKR_COR_POINT)
-
   }
 
   if (!ci && !method) {
@@ -1917,6 +1916,12 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 
   # Add theme
   pl <- add_theme(pl)
+
+  if (method) {
+    pl <- pl + ggplot2::theme(
+      legend.position = "none"
+    )
+  }
 
   # Convert to vlkr_plot
   pl <- .attr_transfer(pl, data, "missings")
@@ -2130,7 +2135,7 @@ plot.vlkr_plt <- print.vlkr_plt
 #' @param text_y Whether to plot text on y-axis.
 #' @return A custom theme.
 #'
-add_theme <- function(pl, text_x = TRUE, text_y = TRUE, title_x = FALSE, title_y = FALSE) {
+add_theme <- function(pl, text_x = TRUE, text_y = TRUE, title_x = FALSE, title_y = FALSE, legend = TRUE) {
 
   if (text_x) {
     text_x_size <- ggplot2::element_text(size = VLKR_TEXT_X_AXIS)
