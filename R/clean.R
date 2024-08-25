@@ -228,6 +228,12 @@ get_baseline <- function(obj) {
     baseline <- c(baseline, paste0("Reversed items: ", paste(reversed, collapse=", "), "."))
   }
 
+  # Split
+  split <- attr(obj, "split", exact=TRUE)
+  if (!is.null(split)) {
+    baseline <- c(baseline, paste0(split, "."))
+  }
+
   # Missings
   missings <- attr(obj, "missings", exact=TRUE)
   if (!is.null(missings)) {

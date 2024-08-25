@@ -28,20 +28,20 @@ data <- volker::chatgpt
 ```
 
 
-| \#     | function                     | implemented | output | scale    | columns  | crossings  |
-|--------|------------------------------|-------------|--------|----------|-----------|-------------|
-| 1     | plot_counts_one              |             | plot   | counts   | one       |             |
-| 2     | plot_counts_one_grouped    |             | plot   | counts   | one       | grouped     |
-| 3     | plot_counts_one_cor         | not yet     | plot   | counts   | one       | correlated |
-| 4     | plot_counts_items          |             | plot   | counts   | multiple |             |
-| 5     | plot_counts_items_grouped  |      | plot   | counts   | multiple | grouped    |
-| 6     | plot_counts_items_cor       | not yet     | plot   | counts   | multiple | correlated |
-| 7     | plot_metrics_one           |             | plot   | metrics | one       |             |
-| 8     | plot_metrics_one_grouped   |             | plot   | metrics | one       | grouped    |
-| 9     | plot_metrics_one_cor        |      | plot   | metrics | one       | correlated |
-| 10    | plot_metrics_items          |             | plot   | metrics | multiple |             |
-| 11    | plot_metrics_items_grouped |             | plot   | metrics | multiple | grouped    |
-| 12    | plot_metrics_items_cor      | not yet      | plot   | metrics | multiple | correlated |
+| \#     | function                  | implemented | output | scale    | columns  | crossings  |
+|--------|---------------------------|-------------|--------|----------|----------|------------|
+| 1     | plot_counts_one            |             | plot   | counts   | one      |            |
+| 2     | plot_counts_one_grouped    |             | plot   | counts   | one      | grouped    |
+| 3     | plot_counts_one_cor        |             | plot   | counts   | one      | correlated |
+| 4     | plot_counts_items          |             | plot   | counts   | multiple |            |
+| 5     | plot_counts_items_grouped  |             | plot   | counts   | multiple | grouped    |
+| 6     | plot_counts_items_cor      |             | plot   | counts   | multiple | correlated |
+| 7     | plot_metrics_one           |             | plot   | metrics  | one      |            |
+| 8     | plot_metrics_one_grouped   |             | plot   | metrics  | one      | grouped    |
+| 9     | plot_metrics_one_cor       |             | plot   | metrics  | one      | correlated |
+| 10    | plot_metrics_items         |             | plot   | metrics  | multiple |            |
+| 11    | plot_metrics_items_grouped |             | plot   | metrics  | multiple | grouped    |
+| 12    | plot_metrics_items_cor     | not yet     | plot   | metrics  | multiple | correlated |
 
 
 ## Frequencies of categorical variables
@@ -59,10 +59,9 @@ plot_counts(data, sd_gender)
 plot_counts(data, adopter, sd_gender, prop = "cols", number="p")
 ```
 
-### 3. Group probabilities by a metric variable
+### 3. Group comparison of a metric variable
 ```{r}
-# TODO
-# plot_metrics(data, sd_gender, sd_age)
+plot_counts(data, sd_gender, sd_age, metric = TRUE)
 ```
 
 ### 4. Multiple items: Frequency plot for adoption factors
@@ -86,8 +85,10 @@ plot_counts(
 
 ### 6. Group probabilities of multiply items by a metric variable
 ```{r}
-# TODO
-# plot_counts(data, starts_with("use_"), sd_age)
+plot_counts(
+  data, starts_with("cg_adoption_"), sd_age, metric = TRUE,
+  category=c("agree", "strongly agree")
+)
 ```
 
 

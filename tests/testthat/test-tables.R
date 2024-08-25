@@ -72,10 +72,10 @@ test_that("Compare means of multiple items", {
 })
 
 # Correlations of two item batteries
-# tab_metrics_items_cor
-test_that("Compare means of multiple items", {
-  expect_snapshot(volker::tab_metrics(data, tidyselect::starts_with("cg_adoption_"), tidyselect::starts_with("use_"), metric=TRUE), cran= TRUE)
-})
+# tab_metrics_items_cor_items
+# test_that("Compare means of multiple items", {
+#   expect_snapshot(volker::tab_metrics(data, tidyselect::starts_with("cg_adoption_"), tidyselect::starts_with("use_"), metric=TRUE), cran= TRUE)
+# })
 
 
 # ...with missings

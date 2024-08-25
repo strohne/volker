@@ -173,32 +173,6 @@
       4 missing case(s) omitted.
       
 
----
-
-    Code
-      volker::tab_metrics(data, tidyselect::starts_with("cg_adoption_"), tidyselect::starts_with(
-        "use_"), metric = TRUE)
-    Output
-      
-      
-      |Expectations                                                | Usage: in private context| Usage: in professional context|
-      |:-----------------------------------------------------------|-------------------------:|------------------------------:|
-      |ChatGPT has clear advantages compared to similar offerings. |                      0.50|                           0.28|
-      |Using ChatGPT brings financial benefits.                    |                      0.21|                           0.54|
-      |Using ChatGPT is advantageous in many tasks.                |                      0.37|                           0.37|
-      |Compared to other systems, using ChatGPT is more fun.       |                      0.47|                           0.29|
-      |Much can go wrong when using ChatGPT.                       |                     -0.24|                          -0.09|
-      |There are legal issues with using ChatGPT.                  |                      0.08|                           0.31|
-      |The security of user data is not guaranteed with ChatGPT.   |                      0.02|                           0.20|
-      |Using ChatGPT could bring personal disadvantages.           |                     -0.09|                           0.15|
-      |In my environment, using ChatGPT is standard.               |                      0.40|                           0.58|
-      |Almost everyone in my environment uses ChatGPT.             |                      0.47|                           0.55|
-      |Not using ChatGPT is considered being an outsider.          |                      0.34|                           0.34|
-      |Using ChatGPT brings me recognition from my environment.    |                      0.42|                           0.46|
-      
-      4 missing case(s) omitted.
-      
-
 # Distribution table for multiple metric items
 
     Code

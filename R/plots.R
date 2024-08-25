@@ -52,7 +52,7 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
   is_metric <- metric != FALSE
 
   # Single variables
-  if (!is_items && !(is_grouped || is_multi)) {
+  if (!is_items && !is_grouped && !is_multi) {
     plot_counts_one(data, {{ cols }}, ...)
   }
   else if (!is_items && is_grouped && !is_metric) {
@@ -64,7 +64,7 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
   }
 
   # Items
-  else if (is_items && !(is_grouped || is_multi)) {
+  else if (is_items && !is_grouped && !is_multi) {
     plot_counts_items(data, {{ cols }} , ...)
   }
   else if (is_items && is_grouped && !is_metric) {
@@ -135,7 +135,7 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
   is_metric <- metric != FALSE
 
   # Single variables
-  if (!is_items && !(is_grouped ||is_multi) && !is_metric) {
+  if (!is_items && !is_grouped && !is_multi) {
     plot_metrics_one(data, {{ cols }}, ...)
   }
   else if (!is_items && is_grouped && !is_metric) {
@@ -146,13 +146,13 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
   }
 
   # Items
-  else if (is_items && !(is_grouped || is_multi) && !is_metric) {
+  else if (is_items && !is_grouped && !is_multi) {
     plot_metrics_items(data, {{ cols }} , ...)
   }
   else if (is_items && is_grouped && !is_metric) {
     plot_metrics_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
-  else if (is_items && (is_grouped || is_multi) && is_metric) {
+  else if (is_items && is_grouped && is_metric) {
     plot_metrics_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
 
@@ -237,7 +237,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 
   # Item labels
   result <- result |>
-    dplyr::mutate( "{{ col }}" := as.factor({{ col }}))
+    dplyr::mutate("{{ col }}" := as.factor({{ col }}))
 
   if (labels) {
     result <- labs_replace(result, {{ col }}, codebook(data, {{ col }}))
@@ -420,24 +420,71 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
   )
 }
 
-#' Plot correlation of categories with one metric column
-#'
-#' \strong{Not yet implemented. The future will come.}
+#' Plot frequences cross tabulated with a metric column that will be split into groups
 #'
 #' @keywords internal
 #'
 #' @param data A tibble.
 #' @param col The column holding factor values.
-#' @param cross The metric column
+#' @param cross A metric column that will be split into groups at the median.
+#' @param ordered The values of the cross column can be nominal (0), ordered ascending (1), or descending (-1).
+#'                By default (NULL), the ordering is automatically detected.
+#'                An appropriate color scale should be chosen depending on the ordering.
+#'                For unordered values, colors from VLKR_FILLDISCRETE are used.
+#'                For ordered values, shades of the VLKR_FILLGRADIENT option are used.
+#' @param category The value FALSE will force to plot all categories.
+#'                  A character value will focus a selected category.
+#'                  When NULL, in case of boolean values, only the TRUE category is plotted.
+#' @param prop The basis of percent calculation: "total" (the default), "rows" or "cols".
+#'             Plotting row or column percentages results in stacked bars that add up to 100%.
+#'             Whether you set rows or cols determines which variable is in the legend (fill color)
+#'             and which on the vertical scale.
+#' @param limits The scale limits, autoscaled by default.
+#'               Set to \code{c(0,100)} to make a 100 % plot.
+#' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_counts_one_cor(data, adopter, sd_age)
+#'
+#' @export
 #' @importFrom rlang .data
-plot_counts_one_cor <- function(data, col, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+plot_counts_one_cor <- function(data, col, cross, category = NULL, prop = "total", limits = NULL, ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ col }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+
+  # 4. Split into groups
+  data <- .tab_split(data, {{ cross }}, labels = labels)
+
+  # 5. Output
+  result <- plot_counts_one_grouped(
+    data, {{ col }}, {{ cross }},
+    category = category, prop = prop, limits = limits, ordered = ordered, numbers = numbers, title = title, labels = labels, clean = clean,
+    ...
+  )
+
+  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data[[rlang::as_string(rlang::ensym(cross))]], "split")
+
+  result
 }
 
 #' Output frequencies for multiple variables
@@ -753,23 +800,69 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
 }
 
 
-#' Correlate categorical items with a metric column
-#'
-#' \strong{Not yet implemented. The future will come.}
+#' Plot percent shares of multiple items compared by a metric variable split into groups
 #'
 #' @keywords internal
 #'
+#'
 #' @param data A tibble containing item measures.
-#' @param cols The item columns that hold the values to summarize.
-#' @param cross The column holding metric values to correlate.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross A metric column that will be split into groups at the median.
+#' @param category Summarizing multiple items (the cols parameter) by group requires a focus category.
+#'                By default, for logical column types, only TRUE values are counted.
+#'                For other column types, the first category is counted.
+#'                To override the default behavior, provide a vector of values in the dataset or labels from the codebook.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_counts_items_cor(
+#'   data, starts_with("cg_adoption_"), sd_age,
+#'   category=c("agree","strongly agree")
+#' )
+#'
+#' plot_counts_items_cor(
+#'   data, starts_with("cg_adoption_"), sd_age,
+#'   category=c(4,5)
+#' )
+#'
+#' @export
 #' @importFrom rlang .data
-plot_counts_items_cor <- function(data, cols, cross, title = TRUE, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+plot_counts_items_cor <- function(data, cols, cross, category = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ cols }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
+
+  # 4. Split into groups
+  data <- .tab_split(data, {{ cross }}, labels = labels)
+
+  # 5. Output
+  result <- plot_counts_items_grouped(
+    data, {{ cols }}, {{ cross }},
+    category = category, title = title, labels = labels, clean = clean,
+    ...
+  )
+
+  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data[[rlang::as_string(rlang::ensym(cross))]], "split")
+
+  result
 }
 
 #' Output a density plot for a single metric variable

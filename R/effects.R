@@ -51,7 +51,7 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
   is_metric <- metric != FALSE
 
   # Single variables
-  if (!is_items && !(is_grouped ||is_multi) && !is_metric) {
+  if (!is_items && !is_grouped && !is_multi) {
     effect_counts_one(data, {{ cols }}, ...)
   }
   else if (!is_items && is_grouped && !is_metric) {
@@ -62,13 +62,13 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
   }
 
   # Items
-  else if (is_items && !(is_grouped || is_multi) && !is_metric) {
+  else if (is_items && !is_grouped && !is_multi) {
     effect_counts_items(data, {{ cols }} , ...)
   }
   else if (is_items && is_grouped && !is_metric) {
     effect_counts_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
-  else if (is_items && (is_grouped || is_multi) && is_metric) {
+  else if (is_items && is_grouped && is_metric) {
     effect_counts_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
   # Not found
@@ -906,8 +906,7 @@ effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method
 
   # 5. Calculate npmi
 
-# Calculate marginal probabilities
-
+  # Calculate marginal probabilities
   result <- data %>%
     dplyr::count({{ col }}, {{ cross }}) %>%
     #tidyr::complete({{ col }}, {{ cross }}, fill=list(n=0)) |>

@@ -25,20 +25,20 @@ table {margin-left:0 !important;}
 ```
 
 
-| \#     | function                     | implemented | output | scale    | columns  | crossings  |
-|--------|------------------------------|-------------|--------|----------|-----------|-------------|
-| 1      | tab_counts_one               |             | table  | counts   | one       |             |
-| 2      | tab_counts_one_grouped     |             | table  | counts   | one       | grouped     |
-| 3      | tab_counts_one_cor          | not yet     | table  | counts   | one       | correlated  |
-| 4      | tab_counts_items           |             | table  | counts   | multiple |             |
-| 5      | tab_counts_items_grouped    |            | table  | counts   | multiple | grouped     |
-| 6      | tab_counts_items_cor        | not yet     | table  | counts   | multiple | correlated  |
-| 7      | tab_metrics_one            |             | table  | metrics | one       |             |
-| 8      | tab_metrics_one_grouped    |             | table  | metrics | one       | grouped    |
-| 9      | tab_metrics_one_cor         |      | table  | metrics | one       | correlated |
-| 10     | tab_metrics_items            |             | table  | metrics | multiple |             |
-| 11     | tab_metrics_items_grouped   |             | table  | metrics | multiple | grouped     |
-| 12     | tab_metrics_items_cor       |             | table  | metrics | multiple | correlated  |
+| \#     | function                  | implemented | output | scale    | columns   | crossings   |
+|--------|---------------------------|-------------|--------|----------|-----------|-------------|
+| 1      | tab_counts_one            |             | table  | counts   | one       |             |
+| 2      | tab_counts_one_grouped    |             | table  | counts   | one       | grouped     |
+| 3      | tab_counts_one_cor        |             | table  | counts   | one       | correlated  |
+| 4      | tab_counts_items          |             | table  | counts   | multiple  |             |
+| 5      | tab_counts_items_grouped  |             | table  | counts   | multiple  | grouped     |
+| 6      | tab_counts_items_cor      |             | table  | counts   | multiple  | correlated  |
+| 7      | tab_metrics_one           |             | table  | metrics  | one       |             |
+| 8      | tab_metrics_one_grouped   |             | table  | metrics  | one       | grouped     |
+| 9      | tab_metrics_one_cor       |             | table  | metrics  | one       | correlated  |
+| 10     | tab_metrics_items         |             | table  | metrics  | multiple  |             |
+| 11     | tab_metrics_items_grouped |             | table  | metrics  | multiple  | grouped     |
+| 12     | tab_metrics_items_cor     |             | table  | metrics  | multiple  | correlated  |
 
 
 ## Frequencies of categorical variables
@@ -55,32 +55,15 @@ tab_counts(data, adopter, sd_gender, prop="cols")
 ```
 
 
-### 3. Two variables: One categorical and one metric
+### 3. Two variables: One categorical and one metric variable split at the median
 ```{r}
-# TODO: redirect to tab_metrics(data, sd_age, adopter) 
-#tab_counts(data, adopter, sd_age, metric=T)
+tab_counts(data, adopter, sd_age, metric=T)
 ```
 
 ### 4. Multiple items: Frequency table of adoption factors
 ```{r}
 tab_counts(data, starts_with("cg_adoption_"))
 ```
-
-### 5. Multiple grouped items: Frequency table of adoption factors grouped by gender
-```{r}
-tab_counts(data, starts_with("cg_adoption_"), sd_gender, 
-           category = c("agree", "strongly agree"))
-```
-
-### 6. Multiple categorical items and one metric variable
-```{r}
-# by now... 
-tab_counts(data, starts_with("use_"), sd_age, metric = T)
-# equals.. 
-tab_metrics(data, starts_with("use_"), sd_age, metric = T)
-
-```
-
 
 ### 5. Multiple grouped items: Frequency table of adoption factors grouped by gender
 ```{r}
@@ -93,11 +76,14 @@ tab_counts(
 ### 6. Multiple categorical items and one metric variable
 ```{r}
 
-# TODO
-#data |> 
-#  tidyr::pivot_longer(starts_with("use_")) |> 
-#  tab_metrics(value, name)
-# tab_counts(data, starts_with("use_"), sd_age)
+# TODO: total row breaks labeling
+
+tab_counts(
+  data, starts_with("cg_adoption_"), sd_age, metric = TRUE,
+  category = c("agree", "strongly agree"),
+#  labels=FALSE
+)
+
 
 ```
 
@@ -138,16 +124,33 @@ tab_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric=T)
 
 ## Correlations
 
-### Correlation of items
+### Correlation of metric items with metric items
 
 ```{r}
-tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric=T, labels=F)
+# TODO
+#tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric = TRUE)
 ```
 
-### Correlation of different item groups
+### Correlation of metric items with categorical items
 
 ```{r}
-tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"), metric=T, digits=2)
+# TODO
+# tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+```
+
+
+### Correlation of categorical items with metric items
+
+```{r}
+# TODO
+#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric = TRUE)
+```
+
+### Correlation of categorical items with categorical items
+
+```{r}
+# TODO
+#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 ```
 
 
