@@ -293,7 +293,7 @@ clean-parameter how to disable automatic residual removal.
 
 ## Customization
 
-You can change plot colors using the theme_vlkr()-function:
+You can change plot colors using the `theme_vlkr()`-function:
 
 ``` r
 theme_set(
@@ -472,11 +472,12 @@ install the latest development version:
 
 ## Roadmap
 
-| Version | Features          | Status           |
-|---------|-------------------|------------------|
-| 1.0     | Descriptives      | work in progress |
-| 2.0     | Regression tables | work in progress |
-| 3.0     | Topic modeling    | work in progress |
+| Version | Features           | Status           |
+|---------|--------------------|------------------|
+| 1.0     | Descriptives       | 80% done         |
+| 2.0     | Effects            | 50% done         |
+| 3.0     | Factors & clusters | work in progress |
+| 4.0     | Text analysis      | work in progress |
 
 ## Similar packages
 
