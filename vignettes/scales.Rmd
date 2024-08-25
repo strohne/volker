@@ -1,9 +1,9 @@
 
 ---
-title: "Scales, labels, and index calculation"
+title: "Scales and index calculation"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Scales, labels, and index calculation}
+  %\VignetteIndexEntry{Scales and index calculation}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -24,25 +24,8 @@ data <- volker::chatgpt
 
 ```{css, echo=FALSE}
 table {margin-left:0 !important;}
-```
-
-# Column selection
-
-**A single variable**
-```{r}
-tab_counts(data, use_private)
-```
-
-
-**A list of variables**
-```{r}
-tab_counts(data, c(use_private, use_work))
-```
-
-
-**Variables matched by a pattern**
-```{r}
-tab_counts(data, starts_with("use_"))
+h4 {margin-left:0 !important;}
+h5 {font-size:100% !important; color: #444 !important;}
 ```
 
 
@@ -54,66 +37,58 @@ for each case.
 
 Reliability and number of items are calculated with `psych::alpha()`
 and stored as column attribute named "psych.alpha". The reliability values 
-are printed by `tab_metrics()`.
+are printed by `tab_metrics()`, see the items and alpha values in the following output.
 
-**Add a single index**
+## Add a single index
 ```{r}
+
 data %>%
-  idx_add(starts_with("cg_adoption_")) %>%
-  tab_metrics(idx_cg_adoption)
+  idx_add(
+    starts_with("cg_adoption_advantage"),
+    newcol = "idx_advantage"
+  ) %>%
+  report_metrics(idx_advantage)
+
+  
 ```
 
-**Compare the index values by group**
+
+## Compare the index values by group
+
+Note: If you don't name the index column explicitly,
+it is derived from the common prefix of all selected items.
+
 ```{r}
 data %>%
-  idx_add(starts_with("cg_adoption_")) %>%
-  tab_metrics(idx_cg_adoption, adopter)
+  idx_add(starts_with("cg_adoption_advantage")) %>%
+  report_metrics(idx_cg_adoption_advantage_0, adopter)
 ```
 
-**Add multiple indizes and summarize them**
+## Reverse items
+
+When measuring positive and negative items on the same scale,
+reverse them before calculating the index.
+
+```{r}
+
+data %>%
+  idx_add(
+    starts_with("cg_adoption_"), 
+    reverse = starts_with("cg_adoption_fearofuse_")
+  ) %>%  
+  report_metrics(idx_cg_adoption)
+  
+```
+
+
+## Add multiple indizes
 ```{r}
 data %>%
   idx_add(starts_with("cg_adoption_")) %>%
   idx_add(starts_with("cg_adoption_advantage")) %>%
   idx_add(starts_with("cg_adoption_fearofuse")) %>%
   idx_add(starts_with("cg_adoption_social")) %>%
-  tab_metrics(starts_with("idx_cg_adoption"))
-```
-
-
-# Set custom item labels
-
-Item labels are stored in the comment attribute of an item variable. 
-You can set custom or new labels with `labs_apply()` by providing a tibble 
-with item names in the first column
-and item labels in the second column.
-
-```{r}
-newlabels <- tribble(
-  ~item_name, ~item_label,
-  "cg_adoption_advantage_01", "Allgemeine Vorteile",
-  "cg_adoption_advantage_02", "Finanzielle Vorteile",
-  "cg_adoption_advantage_03", "Vorteile bei der Arbeit",
-  "cg_adoption_advantage_04", "Macht mehr Spaß"
-)
-
-data %>%
-  labs_apply(newlabels) %>%
-  tab_metrics(starts_with("cg_adoption_advantage_"))
-```
-
-You can remove all labels with `labs_clear()` to get a plain dataset.
-
-```{r}
-data %>%
-  labs_clear(everything()) %>%
-  tab_counts(starts_with("cg_adoption_advantage_"))
-```
-
-With the labels parameter, you achieve a similar result.
-
-```{r}
-data %>%
-  tab_counts(starts_with("cg_adoption_advantage_"), labels= FALSE)
+  
+  report_metrics(starts_with("idx_cg_adoption"))
 ```
 

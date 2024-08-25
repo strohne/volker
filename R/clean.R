@@ -222,6 +222,12 @@ get_baseline <- function(obj) {
     baseline <- c(baseline, paste0("Frequencies based on values: ", paste(focus, collapse=", "), "."))
   }
 
+  # Reversed items
+  reversed <- attr(obj, "reversed", exact=TRUE)
+  if (!is.null(reversed)) {
+    baseline <- c(baseline, paste0("Reversed items: ", paste(reversed, collapse=", "), "."))
+  }
+
   # Missings
   missings <- attr(obj, "missings", exact=TRUE)
   if (!is.null(missings)) {

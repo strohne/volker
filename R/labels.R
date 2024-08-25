@@ -550,6 +550,13 @@ get_title <- function(data, cols, default=NULL) {
 
 #' Get the numeric range from the labels
 #'
+#' Gets the range of all values in the selected columns
+#' by the first successful of the following methods:
+#'
+#' - Inspect the limits column attribute.
+#' - Lookup the value names in the codebook.
+#' - Calculate the range from all values in the columns.
+#'
 #' @keywords internal
 #'
 #' @param data The labeled data frame.
