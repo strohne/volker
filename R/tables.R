@@ -829,7 +829,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     dplyr::mutate(.cross = {{ cross }})
 
   #
-  # Count ----
+  # Count
   #
 
   grouped <- pivoted %>%
@@ -910,7 +910,10 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     result_p <- dplyr::mutate(result_p, dplyr::across(tidyselect::where(is.numeric), ~ paste0(round(. * 100, 0), "%")))
   }
 
+  #
   # Combine n and p if requested
+  #
+
   if (("n" %in% values) && ("p" %in% values)) {
     result <- zip_tables(result_p, result_n, brackets = TRUE, newline = FALSE)
   } else if ("p" %in% values) {
@@ -918,7 +921,6 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   } else {
     result <- result_n
   }
-
 
   # Remove common item prefix
   prefix <- get_prefix(result$item, trim=T)
@@ -1651,7 +1653,7 @@ tab_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = 
 .tab_split <- function(data, col, labels = TRUE) {
   cross_name <- rlang::as_string(rlang::ensym(col))
   cross_label <- ifelse(labels, get_title(data, {{ col }}), cross_name)
-  cross_median <- median(data[[cross_name]], na.rm = TRUE)
+  cross_median <- stats::median(data[[cross_name]], na.rm = TRUE)
 
   cross_levels <- as.list(paste0(c("Low ", "High "), cross_label))
   names(cross_levels) <- paste0(c("low: ", "high: "), cross_name)

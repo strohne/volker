@@ -175,7 +175,7 @@ ds |>
 You can remove all labels with `labs_clear()` to get a plain dataset.
 
 ```{r}
-data %>%
+ds %>%
   labs_clear(everything()) %>%
   tab_counts(starts_with("cg_adoption_advantage_"))
 ```
@@ -183,7 +183,7 @@ data %>%
 With the labels parameter, you achieve a similar result.
 
 ```{r}
-data %>%
+ds %>%
   tab_counts(starts_with("cg_adoption_advantage_"), labels= FALSE)
 ```
 

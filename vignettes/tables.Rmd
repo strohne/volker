@@ -81,7 +81,6 @@ tab_counts(
   category = c("agree", "strongly agree")
 )
 
-
 ```
 
 ## Distributions of metric variables

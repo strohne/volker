@@ -2,16 +2,34 @@
 % Please edit documentation in R/tables.R
 \name{tab_counts_one_cor}
 \alias{tab_counts_one_cor}
-\title{Correlate categorical groups with one metric column}
+\title{Count values by a metric column that will be split into groups}
 \usage{
-tab_counts_one_cor(data, cols, cross, clean = TRUE, ...)
+tab_counts_one_cor(
+  data,
+  col,
+  cross,
+  prop = "total",
+  percent = TRUE,
+  values = c("n", "p"),
+  labels = TRUE,
+  clean = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{A tibble.}
 
-\item{cols}{The item columns that hold the values to summarize.}
+\item{col}{The column holding factor values.}
 
-\item{cross}{The column to correlate.}
+\item{cross}{The metric column that will be split into groups at the median.}
+
+\item{prop}{The basis of percent calculation: "total" (the default), "cols", or "rows".}
+
+\item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
+
+\item{values}{The values to output: n (frequency) or p (percentage) or both (the default).}
+
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
@@ -21,6 +39,13 @@ tab_counts_one_cor(data, cols, cross, clean = TRUE, ...)
 A volker tibble.
 }
 \description{
-\strong{Not yet implemented. The future will come.}
+Count values by a metric column that will be split into groups
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+tab_counts_one_cor(data, adopter, sd_age)
+
 }
 \keyword{internal}
