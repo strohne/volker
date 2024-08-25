@@ -76,12 +76,9 @@ tab_counts(
 ### 6. Multiple categorical items and one metric variable
 ```{r}
 
-# TODO: total row breaks labeling
-
 tab_counts(
   data, starts_with("cg_adoption_"), sd_age, metric = TRUE,
-  category = c("agree", "strongly agree"),
-#  labels=FALSE
+  category = c("agree", "strongly agree")
 )
 
 
