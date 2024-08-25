@@ -460,15 +460,17 @@ labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_
   codes <- dplyr::rename(codes,.to = !!col_to)
 
   # Store levels
-  before <- data |>
+  before_levels <- data |>
     dplyr::distinct(!!col) |>
     dplyr::arrange(!!col) |>
-    dplyr::mutate(!!col := as.character(!! col)) |>
+    dplyr::mutate(!!col := as.character(!!col)) |>
     dplyr::rename(.from = !!col)
 
+  # Store title
+  before_comment <- attr(data[[as_name(col)]], "comment", exact = TRUE)
 
   codes <- codes %>%
-    dplyr::filter(as.character(.data$.from) %in% before$.from) |>
+    dplyr::filter(as.character(.data$.from) %in% before_levels$.from) |>
     dplyr::distinct(dplyr::across(tidyselect::all_of(c(".from", ".to")))) %>%
     stats::na.omit()
 
@@ -477,8 +479,8 @@ labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_
 
     # If any values were missing in the codes, add them
     # and order as before.
-    if  (!na.missing && !all((before$.from %in% codes$.from))) {
-      codes <- before |>
+    if  (!na.missing && !all((before_levels$.from %in% codes$.from))) {
+      codes <- before_levels |>
         dplyr::left_join(codes, by=".from") |>
         dplyr::mutate(.to = dplyr::coalesce(.data$.to, .data$.from))
     }
@@ -491,6 +493,9 @@ labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_
 
     data <- dplyr::mutate(data, !!col := factor(!!col, levels=codes$.to))
     data <- dplyr::select(data, -tidyselect::all_of(c(".from", ".to")))
+
+    # Restore title
+    attr(data[[as_name(col)]], "comment") <- before_comment
   }
 
   data

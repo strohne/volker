@@ -88,6 +88,30 @@ test_that("Item values are kept even if they are not in the codebook", {
     expect_snapshot(cran= TRUE)
 })
 
+
+# Replace item values and keep the comment
+test_that("The column title is kept when values are replaced", {
+
+  df <- tibble(
+      values = c("A", "B", "C")
+    ) |>
+    labs_apply(tibble(
+      item_name = c("values"),
+      item_label = c("VALS")
+    ))
+
+  codes <- tibble(
+    value_name = c("A", "B", "C"),
+    value_label = c("1", "2", "3")
+  )
+
+  df <- volker:::labs_replace(df, values, codes, col_from="value_name", col_to="value_label")
+
+  tab_counts(df, values)  |>
+    expect_snapshot(cran = TRUE)
+
+})
+
 # Get prefix from labels
 test_that("A common prefix is removed from labels", {
 

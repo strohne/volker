@@ -288,6 +288,20 @@
       4     4 4           
       5     5 almost daily
 
+# The column title is kept when values are replaced
+
+    Code
+      tab_counts(df, values)
+    Output
+      
+      
+      |VALS  |  n|    p|
+      |:-----|--:|----:|
+      |1     |  1|  33%|
+      |2     |  1|  33%|
+      |3     |  1|  33%|
+      |total |  3| 100%|
+
 # A common prefix is removed from labels
 
     Code
