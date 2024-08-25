@@ -30,7 +30,7 @@ data_clean <- function(data, plan = "sosci", ...) {
 #'   (comes from SoSci and prevents combining vectors)
 #' - Recode residual factor values to NA (e.g. "[NA] nicht beantwortet")
 #' - Recode residual numeric values to NA (e.g. -9)
-#' - Add whitespace after slashes to better label breaks
+#' - Add whitespace after slashes to improve label breaks
 #'
 #' @keywords internal
 #'
@@ -141,11 +141,11 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
 #' @return Data frame.
 data_rm_missings <- function(data, cols) {
 
-  cases <- sum(is.na(dplyr::select(data, {{ cols }})))
+  data_clean <- tidyr::drop_na(data, {{ cols }})
+  cases <-  nrow(data) - nrow(data_clean)
 
   if (cases > 0) {
-    data <- tidyr::drop_na(data, {{ cols }})
-
+    data <- data_clean
     colnames <- rlang::as_label(rlang::enquo(cols))
     data <- .attr_insert(data, "missings", "na", list("cols" = colnames, "n"=cases))
   }
@@ -162,16 +162,17 @@ data_rm_missings <- function(data, cols) {
 #' @return Data frame.
 data_rm_zeros <- function(data, cols) {
 
-  cases <- sum(dplyr::select(data, {{ cols }}) == 0)
+  data_clean <- data |>
+    labs_store() |>
+    dplyr::mutate(dplyr::across({{ cols }}, ~ dplyr::if_else(. == 0, NA, .))) |>
+    labs_restore() |>
+    tidyr::drop_na({{ cols }})
+
+
+  cases <-  nrow(data) - nrow(data_clean)
 
   if (cases > 0) {
-    data <- data |>
-      labs_store() |>
-      dplyr::mutate(dplyr::across({{ cols }}, ~ dplyr::if_else(. == 0, NA, .))) |>
-      labs_restore()
-
-    data <- tidyr::drop_na(data, {{ cols }})
-
+    data <- data_clean
     colnames <- rlang::as_label(rlang::enquo(cols))
     data <- .attr_insert(data, "missings", "zero", list("cols" = colnames, "n"=cases))
   }
@@ -188,16 +189,16 @@ data_rm_zeros <- function(data, cols) {
 #' @return Data frame
 data_rm_negatives <- function(data, cols) {
 
-    cases <- sum(dplyr::select(data, {{ cols }}) < 0, na.rm=TRUE)
+  data_clean <- data |>
+    labs_store() |>
+    dplyr::mutate(dplyr::across({{ cols }}, ~ ifelse(. < 0, NA, .))) |>
+    labs_restore() |>
+    tidyr::drop_na({{ cols }})
+
+    cases <-  nrow(data) - nrow(data_clean)
 
     if (cases > 0) {
-      data <- data |>
-        labs_store() |>
-        dplyr::mutate(dplyr::across({{ cols }}, ~ ifelse(. < 0, NA, .))) |>
-        labs_restore()
-
-      data <- tidyr::drop_na(data, {{ cols }})
-
+      data <- data_clean
       colnames <- rlang::as_label(rlang::enquo(cols))
       data <- .attr_insert(data, "missings", "negative", list("cols" = colnames, "n"=cases))
     }

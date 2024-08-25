@@ -49,7 +49,7 @@
       |Not using ChatGPT is considered being an outsider.          |          46% (45)| 27% (26)| 14% (14)|   7% (7)|         5% (5)| 100% (97)|
       |Using ChatGPT brings me recognition from my environment.    |          33% (32)| 27% (26)| 21% (20)| 13% (13)|         6% (6)| 100% (97)|
       
-      5 missing case(s) ommited.
+      4 missing case(s) ommited.
       
 
 # Distribution table for age
@@ -117,7 +117,7 @@
       |Not using ChatGPT is considered being an outsider.          | 2.0 (1.2)| 1.8 (1.0)| 2.1 (1.3)| 4.0 (NA)|
       |Using ChatGPT brings me recognition from my environment.    | 2.3 (1.2)| 2.4 (1.2)| 2.3 (1.3)| 3.0 (NA)|
       
-      5 missing case(s) ommited.
+      4 missing case(s) ommited.
       
 
 ---
@@ -143,7 +143,7 @@
       |Not using ChatGPT is considered being an outsider.          |  0.09|
       |Using ChatGPT brings me recognition from my environment.    | -0.02|
       
-      5 missing case(s) ommited.
+      4 missing case(s) ommited.
       
 
 ---
@@ -169,7 +169,7 @@
       |Not using ChatGPT is considered being an outsider.          |                      0.34|                           0.34|
       |Using ChatGPT brings me recognition from my environment.    |                      0.42|                           0.46|
       
-      5 missing case(s) ommited.
+      4 missing case(s) ommited.
       
 
 # Distribution table for multiple metric items
@@ -194,7 +194,7 @@
       |Not using ChatGPT is considered being an outsider.          |   1|  1|      2|  3|   5|  2.0| 1.2| 97|
       |Using ChatGPT brings me recognition from my environment.    |   1|  1|      2|  3|   5|  2.3| 1.2| 97|
       
-      5 missing case(s) ommited.
+      4 missing case(s) ommited.
       
 
 # missing values make no trouble
@@ -219,7 +219,7 @@
       |social_03    | 2.0 (1.2)| 4.0 (NA)| 1.8 (1.0)| 2.1 (1.3)|
       |social_04    | 2.3 (1.2)| 3.0 (NA)| 2.4 (1.2)| 2.3 (1.3)|
       
-      41 missing case(s) ommited.
+      7 missing case(s) ommited.
       
 
 # Correlation of items
@@ -245,7 +245,7 @@
       |Not using ChatGPT is considered being an outsider.          |                                                        0.16|                                     0.36|                                         0.13|                                                  0.20|                                  0.10|                                       0.33|                                                      0.29|                                              0.25|                                          0.48|                                            0.58|                                               1.00|                                                     0.56|
       |Using ChatGPT brings me recognition from my environment.    |                                                        0.27|                                     0.40|                                         0.31|                                                  0.36|                                 -0.07|                                       0.30|                                                      0.10|                                              0.14|                                          0.57|                                            0.54|                                               0.56|                                                     1.00|
       
-      5 missing case(s) ommited.
+      4 missing case(s) ommited.
       
 
 # Item order is kept

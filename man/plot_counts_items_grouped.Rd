@@ -4,17 +4,49 @@
 \alias{plot_counts_items_grouped}
 \title{Plot frequencies of multiple items compared by groups}
 \usage{
-plot_counts_items_grouped(data, cols, cross, title = TRUE, clean = TRUE, ...)
+plot_counts_items_grouped(
+  data,
+  cols,
+  cross,
+  category = NULL,
+  prop = "total",
+  ordered = NULL,
+  numbers = NULL,
+  title = TRUE,
+  labels = TRUE,
+  clean = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{A tibble containing item measures.}
 
-\item{cols}{The item columns that hold the values to summarize.}
+\item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
 \item{cross}{The column holding groups to compare.}
 
+\item{category}{Summarizing multiple items (the cols parameter) by group requires a focus category.
+By default, for logical column types, only TRUE values are counted.
+For other column types, the first category is counted.
+Provide a character vector with focus categories to override the default behavior.}
+
+\item{prop}{The basis of percent calculation: "total" (the default), "rows" or "cols".
+Plotting row or column percentages results in stacked bars that add up to 100\%.
+Whether you set rows or cols determines which variable is in the legend (fill color)
+and which on the vertical scale.}
+
+\item{ordered}{Values in the cross column can be nominal (0) or ordered ascending (1) descending (-1).
+By default (NULL), the ordering is automatically detected.
+An appropriate color scale should be choosen depending on the ordering.
+For unordered values, colors from VLKR_FILLDISCRETE are used.
+For ordered values, shades of the VLKR_FILLGRADIENT option are used.}
+
+\item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
+
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}
+
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
@@ -24,6 +56,15 @@ Disable the title with FALSE or provide a custom title as character value.}
 A ggplot object.
 }
 \description{
-\strong{Not yet implemented. The future will come.}
+Plot frequencies of multiple items compared by groups
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+plot_counts_items_grouped(
+  data, starts_with("cg_adoption_"), adopter,
+  category=c(4,5), numbers = "n", prop="rows"
+)
+
 }
 \keyword{internal}

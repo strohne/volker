@@ -29,13 +29,13 @@
     Output
       
       
-      |Term                                              | estimate| conf.low| conf.high| std.error|     t|     p| stars|
-      |:-------------------------------------------------|--------:|--------:|---------:|---------:|-----:|-----:|-----:|
-      |(Intercept)                                       |    36.60|    29.55|     43.65|      3.55| 10.30| 0.000|   ***|
-      |I try new offers immediately (Reference)          |         |         |          |          |      |      |      |
-      |I try new offers rather quickly                   |     4.21|    -3.64|     12.06|      3.95|  1.06| 0.290|      |
-      |I wait until offers establish themselves          |     1.17|    -7.97|     10.32|      4.61|  0.25| 0.800|      |
-      |I only use new offers when I have no other choice |    19.40|    -8.81|     47.61|     14.21|  1.36| 0.175|      |
+      |Term                                              | estimate| ci low| ci high| standard error|     t|     p| stars|
+      |:-------------------------------------------------|--------:|------:|-------:|--------------:|-----:|-----:|-----:|
+      |(Intercept)                                       |    36.60|  29.55|   43.65|           3.55| 10.30| 0.000|   ***|
+      |I try new offers immediately (Reference)          |         |       |        |               |      |      |      |
+      |I try new offers rather quickly                   |     4.21|  -3.64|   12.06|           3.95|  1.06| 0.290|      |
+      |I wait until offers establish themselves          |     1.17|  -7.97|   10.32|           4.61|  0.25| 0.800|      |
+      |I only use new offers when I have no other choice |    19.40|  -8.81|   47.61|          14.21|  1.36| 0.175|      |
       
       
       |Statistic                     | value|
@@ -58,8 +58,8 @@
       |:-----------|-----:|
       |n           |   101|
       |Pearson's r | -0.19|
-      |ci.low      | -0.37|
-      |ci.high     |  0.01|
+      |ci low      | -0.37|
+      |ci high     |  0.01|
       |df          |    99|
       |t           | -1.88|
       |p           | 0.063|
@@ -102,7 +102,7 @@
     Output
       
       
-      |Item 1                  |                  Item 2|   n| Pearson's r| ci.low| ci.high| df|    t|     p| stars|
+      |Item 1                  |                  Item 2|   n| Pearson's r| ci low| ci high| df|    t|     p| stars|
       |:-----------------------|-----------------------:|---:|-----------:|------:|-------:|--:|----:|-----:|-----:|
       |in private context      | in professional context| 101|        0.37|   0.19|    0.53| 99| 4.00| 0.000|   ***|
       |in professional context |      in private context| 101|        0.37|   0.19|    0.53| 99| 4.00| 0.000|   ***|
@@ -114,7 +114,7 @@
     Output
       
       
-      |Item 1                  |                  Item 2|   n| Pearson's r| ci.low| ci.high| df|    t|     p| stars|
+      |Item 1                  |                  Item 2|   n| Pearson's r| ci low| ci high| df|    t|     p| stars|
       |:-----------------------|-----------------------:|---:|-----------:|------:|-------:|--:|----:|-----:|-----:|
       |in private context      | in professional context| 101|        0.37|   0.19|    0.53| 99| 4.00| 0.000|   ***|
       |in professional context |      in private context| 101|        0.37|   0.19|    0.53| 99| 4.00| 0.000|   ***|
@@ -127,7 +127,7 @@
     Output
       
       
-      |Item 1                                                                    | Item 2|  n| Pearson's r| ci.low| ci.high| df|     t|     p| stars|
+      |Item 1                                                                    | Item 2|  n| Pearson's r| ci low| ci high| df|     t|     p| stars|
       |:-------------------------------------------------------------------------|------:|--:|-----------:|------:|-------:|--:|-----:|-----:|-----:|
       |Expectations: ChatGPT has clear advantages compared to similar offerings. |    Age| 97|       -0.12|  -0.32|    0.08| 95| -1.22| 0.227|      |
       |Expectations: Using ChatGPT brings financial benefits.                    |    Age| 97|       -0.13|  -0.32|    0.07| 95| -1.29| 0.200|      |
@@ -142,7 +142,7 @@
       |Expectations: Not using ChatGPT is considered being an outsider.          |    Age| 97|        0.09|  -0.11|    0.28| 95|  0.87| 0.387|      |
       |Expectations: Using ChatGPT brings me recognition from my environment.    |    Age| 97|       -0.02|  -0.22|    0.18| 95| -0.22| 0.823|      |
       
-      5 missing case(s) ommited.
+      4 missing case(s) ommited.
       
 
 # effect_metrics_items with spearman
@@ -165,7 +165,7 @@
     Output
       
       
-      |Item 1                                                      |                                                      Item 2|  n| Pearson's r| ci.low| ci.high| df|     t|     p| stars|
+      |Item 1                                                      |                                                      Item 2|  n| Pearson's r| ci low| ci high| df|     t|     p| stars|
       |:-----------------------------------------------------------|-----------------------------------------------------------:|--:|-----------:|------:|-------:|--:|-----:|-----:|-----:|
       |ChatGPT has clear advantages compared to similar offerings. | ChatGPT has clear advantages compared to similar offerings.| 97|        1.00|   1.00|    1.00| 95|   Inf| 0.000|   ***|
       |ChatGPT has clear advantages compared to similar offerings. |                    Using ChatGPT brings financial benefits.| 97|        0.37|   0.19|    0.53| 95|  3.91| 0.000|   ***|
@@ -312,7 +312,7 @@
       |Using ChatGPT brings me recognition from my environment.    |          Not using ChatGPT is considered being an outsider.| 97|        0.56|   0.40|    0.68| 95|  6.53| 0.000|   ***|
       |Using ChatGPT brings me recognition from my environment.    |    Using ChatGPT brings me recognition from my environment.| 97|        1.00|   1.00|    1.00| 95|   Inf| 0.000|   ***|
       
-      5 missing case(s) ommited.
+      4 missing case(s) ommited.
       
 
 # effect_metrics_items_cor with two batteries
@@ -323,7 +323,7 @@
     Output
       
       
-      |Item 1                                                                    |                         Item 2|  n| Pearson's r| ci.low| ci.high| df|     t|     p| stars|
+      |Item 1                                                                    |                         Item 2|  n| Pearson's r| ci low| ci high| df|     t|     p| stars|
       |:-------------------------------------------------------------------------|------------------------------:|--:|-----------:|------:|-------:|--:|-----:|-----:|-----:|
       |Expectations: ChatGPT has clear advantages compared to similar offerings. |      Usage: in private context| 97|        0.50|   0.33|    0.63| 95|  5.60| 0.000|   ***|
       |Expectations: ChatGPT has clear advantages compared to similar offerings. | Usage: in professional context| 97|        0.28|   0.09|    0.46| 95|  2.86| 0.005|    **|
@@ -350,6 +350,6 @@
       |Expectations: Using ChatGPT brings me recognition from my environment.    |      Usage: in private context| 97|        0.42|   0.24|    0.57| 95|  4.52| 0.000|   ***|
       |Expectations: Using ChatGPT brings me recognition from my environment.    | Usage: in professional context| 97|        0.46|   0.28|    0.60| 95|  4.99| 0.000|   ***|
       
-      5 missing case(s) ommited.
+      4 missing case(s) ommited.
       
 

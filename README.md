@@ -8,6 +8,7 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/strohne/volker/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/strohne/volker/actions/workflows/R-CMD-check.yaml)
+[![codecov](https://codecov.io/github/strohne/volker/graph/badge.svg?token=WVCXTR5VGZ)](https://codecov.io/github/strohne/volker)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/volker)](https://CRAN.R-project.org/package=volker)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/strohne/volker/feature_binder?labpath=vignettes%2Fintroduction.ipynb)
@@ -102,8 +103,8 @@ Which one is best? That depends on your objective:
 </td>
 </tr>
 <tr>
-<td>
-<strong style="display: block;transform: rotate(-90deg);">One
+<td style="vertical-align:middle">
+<strong style="display: inline-block;transform: rotate(-90deg);">One
 variable</strong>
 </td>
 <td valign="top">
@@ -114,8 +115,8 @@ variable</strong>
 </td>
 </tr>
 <tr>
-<td>
-<strong style="display: block;transform: rotate(-90deg);">Group
+<td style="vertical-align:middle">
+<strong style="display: inline-block;transform: rotate(-90deg);">Group
 comparison </strong>
 </td>
 <td valign="top">
@@ -126,8 +127,8 @@ comparison </strong>
 </td>
 </tr>
 <tr>
-<td>
-<strong style="display: block;transform: rotate(-90deg);">Multiple
+<td style="vertical-align:middle">
+<strong style="display: inline-block;transform: rotate(-90deg);">Multiple
 items</strong>
 </td>
 <td valign="top">
@@ -188,7 +189,7 @@ yet.)
 | 14  | plot_counts_one_grouped    |             | plot   | counts  | one      | grouped    |
 | 15  | plot_counts_one_cor        | not yet     | plot   | counts  | one      | correlated |
 | 16  | plot_counts_items          |             | plot   | counts  | multiple |            |
-| 17  | plot_counts_items_grouped  | not yet     | plot   | counts  | multiple | grouped    |
+| 17  | plot_counts_items_grouped  |             | plot   | counts  | multiple | grouped    |
 | 18  | plot_counts_items_cor      | not yet     | plot   | counts  | multiple | correlated |
 | 19  | plot_metrics_one           |             | plot   | metrics | one      |            |
 | 20  | plot_metrics_one_grouped   |             | plot   | metrics | one      | grouped    |
@@ -302,10 +303,10 @@ the specific function.
 - **negative**: In surveys, negative values such as -9 or -2 are often
   used to mark missing values or residual answers (“I don’t know”).
   Therefore, all metric tables and plots remove negative values before
-  calculation distribution parameters such as the mean. Set negative to
-  TRUE for including those values. Be aware that the cleaning plan may
-  remove some negative values as well and make sure disable cleaning of
-  negative numbers where necessary.
+  calculating distribution parameters such as the mean. Set negative to
+  TRUE for including those values. Be aware that the cleaning plan (see
+  the clean-parameter) may remove some negative values as well. Make
+  sure to disable cleaning of negative numbers where necessary.
 - **ordered**: Sometimes categories have an order, from low to high or
   from few to many. It helps visual inspections to plot ordered values
   with shaded colors instead of arbitrary colors. For frequency plots,
@@ -319,7 +320,7 @@ the specific function.
   plan that, for example, recodes residual factor values such as “\[NA\]
   nicht beantwortet” to missings. See the help for further details or
   disable data cleaning if you don’t like it. For example, to disable
-  removing of negative residual values, call
+  removing the negative residual values, call
   `options(vlkr.na.numbers=FALSE)`.
 
 ### Calculations
@@ -465,7 +466,8 @@ statistics and data representation using RStudio and R Markdown.
 
 Other packages with high-level reporting functions:  
 - <https://github.com/joon-e/tidycomm>  
-- <https://github.com/kassambara/rstatix>
+- <https://github.com/kassambara/rstatix>  
+- <https://github.com/easystats/easystats>
 
 ## Authors and citation
 

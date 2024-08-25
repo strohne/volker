@@ -576,21 +576,186 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 
 #' Plot frequencies of multiple items compared by groups
 #'
-#' \strong{Not yet implemented. The future will come.}
-#'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
-#' @param cols The item columns that hold the values to summarize.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
+#' @param category Summarizing multiple items (the cols parameter) by group requires a focus category.
+#'                 By default, for logical column types, only TRUE values are counted.
+#'                 For other column types, the first category is counted.
+#'                 Provide a character vector with focus categories to override the default behavior.
+#' @param prop The basis of percent calculation: "total" (the default), "rows" or "cols".
+#'             Plotting row or column percentages results in stacked bars that add up to 100%.
+#'             Whether you set rows or cols determines which variable is in the legend (fill color)
+#'             and which on the vertical scale.
+#' @param ordered Values in the cross column can be nominal (0) or ordered ascending (1) descending (-1).
+#'                By default (NULL), the ordering is automatically detected.
+#'                An appropriate color scale should be choosen depending on the ordering.
+#'                For unordered values, colors from VLKR_FILLDISCRETE are used.
+#'                For ordered values, shades of the VLKR_FILLGRADIENT option are used.
+#' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#' plot_counts_items_grouped(
+#'   data, starts_with("cg_adoption_"), adopter,
+#'   category=c(4,5), numbers = "n", prop="rows"
+#' )
+#'
+#' @export
 #' @importFrom rlang .data
-plot_counts_items_grouped <- function(data, cols, cross, title = TRUE, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+plot_counts_items_grouped <- function(data, cols, cross, category = NULL, prop = "total", ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ cols }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # # Swap columns
+  # if (prop == "cols") {
+  #   cols <- rlang::enquo(cols)
+  #   cross <- rlang::enquo(cross)
+  #   cols_temp <- cols
+  #   cols <- cross
+  #   cross <- cols_temp
+  #   #stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
+  # }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
+
+  # 4. Calculate data
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  cols_names <- colnames(dplyr::select(data, tidyselect::all_of(cols_eval)))
+
+  cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
+  cross_names <- colnames(dplyr::select(data, tidyselect::all_of(cross_eval)))
+
+  # Pivot
+  result <- data %>%
+    labs_clear({{ cols }}) %>%
+    tidyr::pivot_longer(
+      {{ cols }},
+      names_to = "item",
+      values_to = ".category"
+    )
+
+  # Focus TRUE category or the first category
+  base_category <-  NULL
+  if (is.null(category)) {
+    categories <- result$.category |> unique() |> as.character()
+    if ((length(categories) == 2) && ("TRUE" %in% categories)) {
+      category <- "TRUE"
+    } else {
+      category <- categories[1]
+      base_category <- category
+    }
+    categories <- NULL
+  } else {
+    base_category <- category
+  }
+
+  result <- dplyr::filter(result, .data$.category %in% category)
+
+  # Counts
+  result <- result %>%
+    dplyr::mutate(value = as.factor({{ cross }})) %>%
+    dplyr::count(dplyr::across(tidyselect::all_of(c("item", "value"))))
+
+  # Percentages
+  if ((prop == "rows") || (prop == "cols")) {
+    result <- result %>%
+      dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
+      dplyr::mutate(p = (.data$n / sum(.data$n)) * 100) %>%
+      dplyr::ungroup()
+
+  } else {
+    result <- result %>%
+      dplyr::mutate(p = (.data$n / sum(.data$n)) * 100)
+  }
+
+  result <- result %>%
+    dplyr::mutate(value = as.factor(.data$value)) %>%
+    dplyr::mutate(item = factor(.data$item, levels=cols_names)) |>
+    dplyr::arrange(.data$item)
+
+
+  # 4. Set labels
+  # TODO: make dry
+  scale <-dplyr::coalesce(ordered, get_direction(data, {{ cross }}))
+  categories <- dplyr::pull(data, {{ cross }}) |> unique() |> as.character()
+  lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
+
+  if (labels) {
+    result <- labs_replace(result, "value", codebook(data, {{ cross }}))
+    result <- labs_replace(result, "item", codebook(data, {{ cols }}), "item_name", "item_label")
+  }
+
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item))
+
+  #return(result)
+  # Select numbers to print on the bars
+  # ...omit the last category in scales, omit small bars
+  result <- result %>%
+    dplyr::mutate(
+      .values = dplyr::case_when(
+        (scale != 0) & (lastcategory == .data$value) ~ "",
+        .data$p < VLKR_LOWPERCENT ~ "",
+        all(numbers == "n") ~ as.character(.data$n),
+        all(numbers == "p") ~ paste0(round(.data$p, 0), "%"),
+        TRUE ~ paste0(.data$n, "\n", round(.data$p, 0), "%")
+      )
+    )
+
+  # Get title
+  if (title == TRUE) {
+    title <- get_title(data, {{ cols }})
+  } else if (title == FALSE) {
+    title <- NULL
+  }
+
+  # Get base
+  base_n <- nrow(data)
+  base <- paste0("n=", base_n, "; multiple responses possible")
+  if (!is.null(base_category)) {
+
+    if (labels) {
+      category_labels <- codebook(data, {{ cols }}) |>
+        dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) |>
+        dplyr::filter(.data$value_name %in% base_category) |>
+        dplyr::pull(.data$value_label)
+
+      if (length(category_labels) == length(base_category)) {
+        base_category <- category_labels
+      }
+    }
+
+    base_category <- paste0(base_category, collapse=", ")
+    base <- paste0(base,"; values=", base_category)
+  }
+
+
+  result <- .attr_transfer(result, data, "missings")
+
+  .plot_bars(
+    result,
+    category = NULL,
+    scale = scale,
+    numbers = numbers,
+    base = base,
+    title = title
+  )
 }
 
 #' Correlate categorical items with a metric column

@@ -4,12 +4,14 @@
 \alias{get_title}
 \title{Get a common title for a column selection}
 \usage{
-get_title(data, cols)
+get_title(data, cols, default = NULL)
 }
 \arguments{
 \item{data}{A tibble.}
 
 \item{cols}{A tidy column selection.}
+
+\item{default}{A character string used in case not prefix is found}
 }
 \value{
 A character string.

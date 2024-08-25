@@ -3,7 +3,7 @@
 \docType{data}
 \name{chatgpt}
 \alias{chatgpt}
-\title{ChatGPT Adoption Dataset CG-GE-APR22}
+\title{ChatGPT Adoption Dataset CG-GE-APR23}
 \format{
 \subsection{\code{chatgpt}}{
 
