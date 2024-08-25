@@ -51,7 +51,7 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
   is_metric <- metric != FALSE
 
   # Single variables
-  if (!is_items && !(is_grouped ||is_multi) && !is_metric) {
+  if (!is_items && !is_grouped && !is_multi) {
     effect_counts_one(data, {{ cols }}, ...)
   }
   else if (!is_items && is_grouped && !is_metric) {
@@ -62,13 +62,13 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
   }
 
   # Items
-  else if (is_items && !(is_grouped || is_multi) && !is_metric) {
+  else if (is_items && !is_grouped && !is_multi) {
     effect_counts_items(data, {{ cols }} , ...)
   }
   else if (is_items && is_grouped && !is_metric) {
     effect_counts_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
-  else if (is_items && (is_grouped || is_multi) && is_metric) {
+  else if (is_items && is_grouped && is_metric) {
     effect_counts_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
   # Not found
@@ -252,9 +252,7 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   .to_vlkr_tab(result, caption=fit$method)
 }
 
-#' Output test statistics and effect size for categories correlated with a metric column
-#'
-#' \strong{Not yet implemented. The future will come.}
+#' Output test statistics and effect size from a logistic regression of one metric predictor
 #'
 #' @keywords internal
 #'
@@ -265,8 +263,93 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-effect_counts_one_cor <- function(data, col, cross, clean = TRUE, ...) {
+effect_counts_one_cor <- function(data, col, cross, clean = TRUE, labels = TRUE, ...) {
+
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+  return()
+
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ col }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+
+  # 4. Get cross variables names
+  if (labels) {
+    data <- labs_replace(
+      data, {{ cross }},
+      codebook(data, {{ cross }}),
+      "value_name", "value_label"
+    )}
+
+  # Calculate logistic regression
+  result <- list()
+  lm_data <- dplyr::select(data, av = {{ col }}, uv = {{ cross }})
+
+  fit <- stats::glm(av ~ uv, data = lm_data, family = "binomial")
+
+  # Regression parameters
+  lm_params <- broom::tidy(fit, conf.int = TRUE)
+
+#   lm_params <- tidy_lm_levels(fit)
+#   lm_params <- lm_params |>
+#     dplyr::mutate(
+#       Term = .data$term,
+#       stars = get_stars(.data$p.value),
+#       estimate = sprintf("%.2f",round(.data$estimate,2)),
+#       "ci low" = sprintf("%.2f",round(.data$conf.low,2)),
+#       "ci high" = sprintf("%.2f",round(.data$conf.high,2)),
+#       "standard error" = sprintf("%.2f",round(.data$std.error,2)),
+#       t = sprintf("%.2f", round(.data$statistic,2)),
+#       p = sprintf("%.3f",round(.data$p.value,3))
+#     ) |>
+#     dplyr::mutate(dplyr::across(tidyselect::all_of(
+#       c("estimate","ci low", "ci high" , "standard error","t","p")
+#     ), function(x) ifelse(x == "NA","",x))) |>
+#     dplyr::select(tidyselect::all_of(c(
+#       "Term","estimate","ci low","ci high","standard error","t","p","stars"
+#     )))
+
+  # Regression model statistics
+  lm_model <- broom::glance(fit)
+
+  # |>
+  #   dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), function(x) as.character(round(x,2)))) |>
+  #   dplyr::mutate(stars = get_stars(.data$p.value)) |>
+  #   tidyr::pivot_longer(
+  #     tidyselect::everything(),
+  #     names_to="Statistic",
+  #     values_to="value"
+  #   ) |>
+  #   labs_replace("Statistic", tibble::tibble(
+  #     value_name=c(
+  #       "adj.r.squared", "df", "df.residual", "statistic", "p.value", "stars"
+  #     ),
+  #     value_label=c(
+  #       "Adjusted R squared", "Degrees of freedom", "Residuals' degrees of freedom",
+  #       "F", "p", "stars"
+  #     )
+  #   ), na.missing = TRUE) |>
+  #   stats::na.omit() |>
+  #   dplyr::arrange(.data$Statistic)
+
+
+  result <- c(
+    result,
+    list(.to_vlkr_tab(lm_params, digits=2)),
+    list(.to_vlkr_tab(lm_model, digits=2))
+  )
+
+
+  result <- .attr_transfer(result, data, "missings")
+  .to_vlkr_list(result)
 }
 
 #' Test whether shares differ
@@ -815,6 +898,60 @@ effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method
 
   result
 }
+
+#' Calculate nmpi
+#'
+#' @keywords internal
+#'
+#' @param data A tibble.
+#' @param col The column holding factor values.
+#' @param cross The column to correlate.
+#' @param smoothing Add pseudocount. Calculate the pseudocount based on the number of trials
+#'        to apply Laplace's rule of succession.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
+#' @return A volker tibble.
+#' @importFrom rlang .data
+.effect_npmi <- function(data, col, cross, labels = TRUE, clean = TRUE, smoothing = 0, ...) {
+
+  cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
+  cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
+
+  # 5. Calculate npmi
+
+  # Calculate marginal probabilities
+  result <- data %>%
+    dplyr::count({{ col }}, {{ cross }}) %>%
+    #tidyr::complete({{ col }}, {{ cross }}, fill=list(n=0)) |>
+
+    dplyr::group_by({{ col }}) %>%
+    dplyr::mutate(.total_x = sum(.data$n)) %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by({{ cross }}) %>%
+    dplyr::mutate(.total_y = sum(.data$n)) %>%
+    dplyr::ungroup() %>%
+
+    # Calculate joint probablities
+    dplyr::mutate(
+      .total = sum(.data$n),
+      p_xy = (.data$n + smoothing) / (.data$.total + dplyr::n_distinct({{ col }}) * smoothing + dplyr::n_distinct({{ cross }}) *  smoothing),
+      p_x = (.data$.total_x + smoothing) / (.data$.total + (dplyr::n_distinct({{ col }}) * smoothing)),
+      p_y = (.data$.total_y + smoothing) / (.data$.total + dplyr::n_distinct({{ cross }}) * smoothing),
+
+      ratio = .data$p_xy / (.data$p_x * .data$p_y),
+      pmi = dplyr::case_when(
+        .data$p_xy == 0 ~ -Inf,
+        TRUE ~ log2(.data$ratio)
+      ),
+      npmi = dplyr::case_when(
+        .data$p_xy == 0 ~ -1,
+        TRUE ~ .data$pmi / -log2(.data$p_xy)
+      )
+    )
+
+    result
+  }
 
 #' Tidy lm results, replace categorical parameter names by their levels and add the reference level
 #'

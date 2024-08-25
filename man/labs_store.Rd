@@ -13,11 +13,11 @@ labs_store(data)
 A data frame.
 }
 \description{
-You can restore the labels after mutate operations by calling
-\link{labs_restore}.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \details{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+You can restore the labels after mutate operations by calling
+\link{labs_restore}.
 }
 \examples{
 library(dplyr)

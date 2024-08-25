@@ -2,22 +2,62 @@
 % Please edit documentation in R/tables.R
 \name{tab_counts_items_cor}
 \alias{tab_counts_items_cor}
-\title{Correlate the values in multiple items}
+\title{Compare the values in multiple items by a metric column that will be split into groups}
 \usage{
-tab_counts_items_cor(data, cols, cross, clean = TRUE, ...)
+tab_counts_items_cor(
+  data,
+  cols,
+  cross,
+  category = NULL,
+  split = NULL,
+  percent = TRUE,
+  values = c("n", "p"),
+  title = TRUE,
+  labels = TRUE,
+  clean = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{A tibble containing item measures.}
 
-\item{cols}{The source columns.}
+\item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
-\item{cross}{The target columns or NULL to calculate correlations within the source columns.}
+\item{cross}{A metric column that will be split into groups at the median value.}
+
+\item{category}{Summarizing multiple items (the cols parameter) by group requires a focus category.
+By default, for logical column types, only TRUE values are counted.
+For other column types, the first category is counted.
+Accepts both character and numeric vectors to override default counting behavior.}
+
+\item{split}{Not implemented yet.}
+
+\item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
+
+\item{values}{The values to output: n (frequency) or p (percentage) or both (the default).}
+
+\item{title}{If TRUE (default) shows a plot title derived from the column labels.
+Disable the title with FALSE or provide a custom title as character value.}
+
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
-\item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
+}
+\value{
+A ggplot object.
 }
 \description{
-\strong{Not yet implemented. The future will come.}
+Compare the values in multiple items by a metric column that will be split into groups
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+tab_counts_items_cor(
+  data, starts_with("cg_adoption_"), sd_age,
+  category=c("agree", "strongly agree")
+)
+
 }
 \keyword{internal}

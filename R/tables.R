@@ -53,19 +53,25 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
   is_metric <- metric != FALSE
 
   # Single variables
-  if (!is_items && !(is_grouped || is_multi)) {
+  if (!is_items && !is_grouped && !is_multi) {
     tab_counts_one(data, {{ cols }}, ...)
   }
   else if (!is_items && is_grouped && !is_metric) {
     tab_counts_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
+  else if (!is_items && is_grouped && is_metric) {
+    tab_counts_one_cor(data, {{ cols }}, {{ cross }}, ...)
+  }
 
   # Items
-  else if (is_items && !(is_grouped ||is_multi)) {
+  else if (is_items && !is_grouped && !is_multi) {
     tab_counts_items(data, {{ cols }} , ...)
   }
-  else if (is_items && is_grouped &&  !is_metric) {
+  else if (is_items && is_grouped && !is_metric ) {
     tab_counts_items_grouped(data, {{ cols }}, {{ cross }},  ...)
+  }
+  else if (is_items && is_grouped && is_metric) {
+    tab_counts_items_cor(data, {{ cols }}, {{ cross }}, ...)
   }
 
   # Not found
@@ -128,7 +134,7 @@ tab_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
   is_metric <- metric != FALSE
 
   # Single variables
-  if (!is_items && !(is_grouped ||is_multi)) {
+  if (!is_items && !is_grouped && !is_multi) {
     tab_metrics_one(data, {{ cols }}, ...)
   }
   else if (!is_items && is_grouped && !is_metric) {
@@ -140,13 +146,13 @@ tab_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
   }
 
   # Items
-  else if (is_items && !(is_grouped || is_multi) && !is_metric) {
+  else if (is_items && !is_grouped  && !is_multi) {
     tab_metrics_items(data, {{ cols }} , ...)
   }
   else if (is_items && is_grouped && !is_metric) {
     tab_metrics_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
-  else if (is_items && (is_grouped || is_multi) && is_metric) {
+  else if (is_items && is_grouped && is_metric) {
     tab_metrics_items_cor(data, {{ cols }}, {{ cross }}, ...)
   }
 
@@ -289,7 +295,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
   data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
 
 
-  # 5. Get labels for values
+  # 4. Get labels for values
   if (labels) {
     data <- labs_replace(
       data, {{ cross }},
@@ -304,9 +310,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
     )
   }
 
-  #
-  # 4. Count
-  #
+  # 5. Count
   grouped <- data %>%
     dplyr::count({{ col }}, {{ cross }}) %>%
     dplyr::mutate(
@@ -315,7 +319,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
     )
 
   #
-  # 2. N
+  # 6. N
   #
   rows_n <- grouped %>%
     dplyr::select({{ col }}, {{ cross }}, "n") %>%
@@ -367,7 +371,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
     )
 
   #
-  # 3. P
+  # 7. P
   #
   if (prop == "cols") {
     rows_p <- grouped %>%
@@ -435,7 +439,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
   }
 
 
-  # Zip
+  # 8. Zip
   if (("n" %in% values) && ("p" %in% values)) {
     result <- zip_tables(result_p, result_n, brackets = TRUE)
   } else if ("p" %in% values) {
@@ -444,7 +448,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
     result <- result_n
   }
 
-  # Get item label from the attributes
+  # 9. Get item label from the attributes
   if (labels) {
       title <- get_title(data, {{ col }})
       result <- dplyr::rename(result, {{ title }} := {{ col }})
@@ -455,22 +459,60 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
 }
 
 
-#' Correlate categorical groups with one metric column
-#'
-#' \strong{Not yet implemented. The future will come.}
+#' Count values by a metric column that will be split into groups
 #'
 #' @keywords internal
 #'
 #' @param data A tibble.
-#' @param cols The item columns that hold the values to summarize.
-#' @param cross The column to correlate.
+#' @param col The column holding factor values.
+#' @param cross The metric column that will be split into groups at the median.
+#' @param prop The basis of percent calculation: "total" (the default), "cols", or "rows".
+#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
+#' @param values The values to output: n (frequency) or p (percentage) or both (the default).
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @return A volker tibble.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' tab_counts_one_cor(data, adopter, sd_age)
+#'
 #' @importFrom rlang .data
-tab_counts_one_cor <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+#' @export
+tab_counts_one_cor <- function(data, col, cross, prop = "total", percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
+
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ col }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+
+  # 4. Split into groups
+  data <- .tab_split(data, {{ cross }}, labels = labels)
+
+  # 5. Output
+  result <- tab_counts_one_grouped(
+    data, {{ col }}, {{ cross }},
+    prop = prop, percent = percent, values = values, labels = labels, clean = clean,
+    ...
+  )
+
+  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data[[rlang::as_string(rlang::ensym(cross))]], "split")
+
+  result
+
 }
+
 
 #' Output frequencies for multiple variables
 #'
@@ -687,6 +729,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 #' @export
 #' @importFrom rlang .data
 tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent = TRUE, values = c("n", "p"), title = TRUE, labels = TRUE, clean = TRUE, ...) {
+
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -700,44 +743,39 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   # 3. Remove missings
   data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
 
-  # 4. Calculate data
+  # 4. Evaluate columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cols_names <- colnames(dplyr::select(data, tidyselect::all_of(cols_eval)))
 
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   cross_names <- colnames(dplyr::select(data, tidyselect::all_of(cross_eval)))
 
-  # total row n
-  total_row_n <- data %>%
-    dplyr::group_by({{ cross }}) %>%
-    dplyr::count() %>%
-    dplyr::summarise(n = sum(.data$n)) %>%
-    dplyr::ungroup() %>%
-    tidyr::pivot_wider(
-      names_from = {{ cross }},
-      values_from = "n",
-      values_fill = list(n = 0)
-    ) %>%
-    dplyr::mutate(total = rowSums(dplyr::across(tidyselect::everything()))) %>%
-    dplyr::mutate(item = "total")
-
-  # total_row_p
-  total_row_p <- total_row_n %>%
-    dplyr::mutate(dplyr::across(-tidyselect::any_of("item"), ~ . / .data$total))
-
-  # Pivot
-  result <- data %>%
+  # 5. Pivot
+  pivoted <- data %>%
     labs_clear({{ cols }}) %>%
     tidyr::pivot_longer(
       {{ cols }},
       names_to = "item",
       values_to = ".value_name"
-    )
+    ) |>
 
-  # Add label column for category
+    dplyr::mutate(item = factor(.data$item, levels=cols_names)) |>
+    dplyr::arrange(.data$item)
+
+  # Get item labels
+  if (labels) {
+    pivoted <- labs_replace(
+      pivoted, "item",
+      codebook(data, {{ cols }}),
+      "item_name", "item_label"
+    )
+  }
+
+
+  # Add item value labels
   codebook_df <- codebook(data, {{ cols }})
 
-  result <- result %>%
+  pivoted <- pivoted %>%
     dplyr::mutate(
       .value_label = ifelse(
         .data$.value_name %in% codebook_df$value_name,
@@ -746,10 +784,10 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
       )
     )
 
-  #  Set labels: cross variable
+  #  Set cross variable value labels
   if (labels) {
-    result <- labs_replace(
-      result, {{ cross }},
+    pivoted <- labs_replace(
+      pivoted, {{ cross }},
       codebook(data, {{ cross }}),
       "value_name", "value_label"
     )
@@ -757,7 +795,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 
   # Focus TRUE category or the first category
   if (is.null(category)) {
-    value_names <- unique(as.character(result$.value_name))
+    value_names <- unique(as.character(pivoted$.value_name))
     if ((length(value_names) == 2) && ("TRUE" %in% value_names)) {
       base_category <- "TRUE"
     } else {
@@ -768,8 +806,8 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 
     if (
       !all(
-        (base_category %in% as.character(result$.value_name)) |
-        (base_category %in% result$.value_label)
+        (base_category %in% as.character(pivoted$.value_name)) |
+        (base_category %in% pivoted$.value_label)
       )
     ) {
       stop("One or more specified categories do not exist in the data.")
@@ -778,7 +816,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 
   # Get category labels if names are provided (e.g. for numeric values)
   base_labels <- base_category
-  if (is.null(category) || all(base_labels %in% result$.value_name)) {
+  if (is.null(category) || all(base_labels %in% pivoted$.value_name)) {
     base_labels <- codebook_df %>%
       dplyr::filter(.data$value_name %in% base_category) %>%
       dplyr::pull(.data$value_label) %>%
@@ -786,85 +824,95 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   }
 
   # Recode
-  result <- result %>%
-    mutate(.category = (.data$.value_name %in% base_category) | (.data$.value_label %in% base_category))
+  pivoted <- pivoted %>%
+    mutate(.category = (.data$.value_name %in% base_category) | (.data$.value_label %in% base_category)) |>
+    dplyr::mutate(.cross = {{ cross }})
 
+  #
   # Count
-  result <- result %>%
-    dplyr::mutate(.cross = as.factor({{ cross }})) %>%
-    dplyr::mutate(.category = as.factor(.data$.category)) %>%
+  #
+
+  grouped <- pivoted %>%
+
+    # Count
     dplyr::count(dplyr::across(tidyselect::all_of(c("item", ".cross", ".category")))) %>%
-    tidyr::complete(.data$item, .data$.cross, .data$.category, fill=list(n=0))
+    tidyr::complete(.data$item, .data$.cross, .data$.category, fill=list(n=0)) |>
 
-  # Total
-  total <- result %>%
-    dplyr::group_by(dplyr::across(tidyselect::all_of(c("item",".category")))) %>%
-    dplyr::summarise(total_n = sum(.data$n)) %>%
-    dplyr::mutate(total_p = .data$total_n / sum(.data$total_n))
-
-  # Group and percent
-  result <- result %>%
+    # Percent
     dplyr::group_by(dplyr::across(tidyselect::all_of(c("item",".cross"))))%>%
     dplyr::mutate(p = (.data$n / sum(.data$n))) %>%
     dplyr::mutate(p = ifelse(is.na(.data$p), 0, .data$p)) %>%
-    dplyr::ungroup() %>%
-    dplyr::left_join(total, by = c("item", ".category"))
+    dplyr::ungroup() |>
 
-  # Filter category
-  result <- dplyr::filter(result, .data$.category == TRUE) %>%
+
+    # Filter category
+    dplyr::filter(.data$.category == TRUE) %>%
     dplyr::select(-tidyselect::any_of(".category"))
 
-  # Get item labels
-  if (labels) {
-    result <- labs_replace(
-      result, "item",
-      codebook(data, {{ cols }}),
-      "item_name", "item_label"
-    )}
+  totals <- pivoted %>%
+
+    # Count
+    dplyr::count(dplyr::across(tidyselect::all_of(c("item", ".category")))) %>%
+    tidyr::complete(.data$item, .data$.category, fill=list(n=0)) |>
+
+    # Percent
+    dplyr::group_by(dplyr::across(tidyselect::all_of(c("item"))))%>%
+    dplyr::mutate(p = (.data$n / sum(.data$n))) %>%
+    dplyr::mutate(p = ifelse(is.na(.data$p), 0, .data$p)) %>%
+    dplyr::ungroup() |>
 
 
-  # Remove common item prefix
-  prefix <- get_prefix(result$item, trim=T)
-  result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
+    # Filter category
+    dplyr::filter(.data$.category == TRUE) %>%
+    dplyr::select(-tidyselect::any_of(".category"))
 
-  # Result n
-  result_n <- result %>%
-    dplyr::select(-tidyselect::any_of("p"), -tidyselect::any_of("total_p")) %>%
-    dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
+
+  #
+  # N
+  #
+
+  rows_n <- grouped %>%
+    dplyr::select(tidyselect::all_of(c("item", ".cross", "n"))) %>%
     tidyr::pivot_wider(
       names_from = ".cross",
       values_from = "n",
-      values_fill = list(n = 0)) %>%
-    dplyr::rename(total = "total_n")
+      values_fill = list(n = 0)
+    )
 
-  # Add total row n
-  result_n <- dplyr::bind_rows(result_n, total_row_n)
+  totals_n <- totals |>
+    dplyr::select(tidyselect::all_of(c("item", "n"))) %>%
+    dplyr::rename(total = "n")
 
-  # Result p
-  result_p <- result %>%
-    dplyr::select(-tidyselect::any_of("n"), -tidyselect::any_of("total_n")) %>%
-    dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
+  result_n <- dplyr::left_join(totals_n, rows_n, by = "item")
+
+  #
+  # P
+  #
+
+  rows_p <- grouped %>%
+    dplyr::select(tidyselect::all_of(c("item", ".cross", "p"))) %>%
     tidyr::pivot_wider(
       names_from = ".cross",
       values_from = "p",
-      values_fill = list(n = 0)) %>%
-    dplyr::rename(total = "total_p")
+      values_fill = list(p = 0)
+    )
 
-  # Add total row
-  result_p <- dplyr::bind_rows(result_p, total_row_p)
+  totals_p <- totals |>
+    dplyr::select(tidyselect::all_of(c("item", "p"))) %>%
+    dplyr::rename(total = "p")
 
-  # # Factor result
-  # result <- result %>%
-  #   dplyr::mutate(value = as.factor(.data$value)) %>%
-  #   dplyr::mutate(item = factor(.data$item, levels=cols_names)) |>
-  #   dplyr::arrange(.data$item)
+  result_p <- dplyr::left_join(totals_p, rows_p, by = "item")
+
 
   # Add % sign
   if (percent) {
     result_p <- dplyr::mutate(result_p, dplyr::across(tidyselect::where(is.numeric), ~ paste0(round(. * 100, 0), "%")))
   }
 
+  #
   # Combine n and p if requested
+  #
+
   if (("n" %in% values) && ("p" %in% values)) {
     result <- zip_tables(result_p, result_n, brackets = TRUE, newline = FALSE)
   } else if ("p" %in% values) {
@@ -873,12 +921,12 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     result <- result_n
   }
 
-  # Rename first columns
-  if (prefix == "") {
-    prefix <- "Item"
-  }
+  # Remove common item prefix
+  prefix <- get_prefix(result$item, trim=T)
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
 
-  colnames(result)[1] <- prefix
+  # Rename first columns
+  colnames(result)[1] <- ifelse(prefix == "", "Item", prefix)
 
   # Add baseline
   attr(result, "focus") <- base_labels
@@ -888,20 +936,62 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 
 }
 
-#' Correlate the values in multiple items
+#' Compare the values in multiple items by a metric column that will be split into groups
 #'
-#' \strong{Not yet implemented. The future will come.}
 #'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
-#' @param cols The source columns.
-#' @param cross The target columns or NULL to calculate correlations within the source columns.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross A metric column that will be split into groups at the median value.
+#' @param category Summarizing multiple items (the cols parameter) by group requires a focus category.
+#'                By default, for logical column types, only TRUE values are counted.
+#'                For other column types, the first category is counted.
+#'                Accepts both character and numeric vectors to override default counting behavior.
+#' @param split Not implemented yet.
+#' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
+#' @param values The values to output: n (frequency) or p (percentage) or both (the default).
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
-#' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
+#' @return A ggplot object.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#' tab_counts_items_cor(
+#'   data, starts_with("cg_adoption_"), sd_age,
+#'   category=c("agree", "strongly agree")
+#' )
+#'
+#' @export
 #' @importFrom rlang .data
-tab_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NULL, percent = TRUE, values = c("n", "p"), title = TRUE, labels = TRUE, clean = TRUE, ...) {
+
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ cols }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
+
+  # 4. Split into groups
+  data <- .tab_split(data, {{ cross }}, labels = labels)
+
+  # 5. Output
+  result <- tab_counts_items_grouped(data, {{ cols }}, {{ cross }}, category = category, percent = percent, values = values, title = title, labels = labels, clean = clean, ...)
+
+  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data[[rlang::as_string(rlang::ensym(cross))]], "split")
+
+  result
 }
 
 #' Output a five point summary table for the values in multiple columns
@@ -1558,6 +1648,25 @@ tab_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = 
   result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits = digits, caption = title)
 }
+
+.tab_split <- function(data, col, labels = TRUE) {
+  cross_name <- rlang::as_string(rlang::ensym(col))
+  cross_label <- ifelse(labels, get_title(data, {{ col }}), cross_name)
+  cross_median <- stats::median(data[[cross_name]], na.rm = TRUE)
+
+  cross_levels <- as.list(paste0(c("Low ", "High "), cross_label))
+  names(cross_levels) <- paste0(c("low: ", "high: "), cross_name)
+
+  data <- data |>
+    mutate("{{ col }}" := ifelse({{ col }} < cross_median, names(cross_levels)[1], names(cross_levels)[2])) |>
+    labs_apply(cols = {{ col }}, values = cross_levels)
+
+  attr(data[[ cross_name ]], "split") <- paste0(cross_label, " split at median ", round(cross_median, 1))
+
+  data
+
+}
+
 
 #' Add vlkr_tbl class
 #'

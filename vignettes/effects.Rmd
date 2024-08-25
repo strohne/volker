@@ -22,29 +22,57 @@ library(volker)
 ```{r}
 
 # Load data 
-ds <- volker::chatgpt
+data <- volker::chatgpt
 ```
 
-| \#      | function                      | implemented | effect size    | confidence intervals                                | significance test |
+| \#      | function                      | implemented | effect size    | confidence intervals                      | significance test |
 |---------|-------------------------------|-------------|----------------|-------------------------------------------|-------------------|
-| 1       | effect_counts_one            | not yet     | | | |
-| 2       | effect_counts_one_grouped    |             | Cramér's V | proportions | Chi squared |
-| 3       | effect_counts_one_cor        | not yet     | | | |
-| 4       | effect_counts_items          | not yet     | | | |
-| 5       | effect_counts_items_grouped  | not yet     | | | |
-| 6       | effect_counts_items_cor      | not yet     | | | |
-| 7       | effect_metrics_one           | not yet     | | | |
-| 8       | effect_metrics_one_grouped   |             | R squared | means | t-test |
-| 9       | effect_metrics_one_cor       |             | Pearson's r, Spearman's rho | correlation  | t-test             |
-| 10      | effect_metrics_items         |             | R squared | means | t-test             
-| 11      | effect_metrics_items_grouped | not yet     |  |  | |
-| 12      | effect_metrics_items_cor     |             | Pearson's r, Spearman's rho | correlation | t-test|
+| 1       | effect_counts_one            | not yet      |                |                                           |                   |
+| 2       | effect_counts_one_grouped    |              | Cramér's V     | proportions                               | Chi squared       |
+| 3       | effect_counts_one_cor        | not yet      |                |                                           |                   |
+| 4       | effect_counts_items          | not yet      |                |                                           |                   |
+| 5       | effect_counts_items_grouped  | not yet      |                |                                           |                   |
+| 6       | effect_counts_items_cor      | not yet      |                |                                           |                   |
+| 7       | effect_metrics_one           | not yet      |                |                                           |                   |
+| 8       | effect_metrics_one_grouped   |              | R squared      | means                                     | t-test            |
+| 9       | effect_metrics_one_cor       |              | Pearson's r, Spearman's rho | correlation                  | t-test            |
+| 10      | effect_metrics_items         |              | R squared      | means                                     | t-test            | 
+| 11      | effect_metrics_items_grouped | not yet      |                |                                           |                   |
+| 12      | effect_metrics_items_cor     |              | Pearson's r, Spearman's rho | correlation                  | t-test            |
 
 
+# 2. Cross table
 ```{r}
+effect_counts(data, adopter, sd_gender)
+```
 
-effect_counts(ds, adopter, sd_gender)
-effect_metrics(ds, sd_age, adopter)
-effect_metrics(ds, sd_age, use_private, metric=T)
-effect_metrics(ds, sd_age, use_private, metric=T)
+
+# 2. Logistic regression with one metric predictor
+```{r}
+effect_counts(data, adopter, sd_age, metric = TRUE)
+```
+
+
+
+# 8. T-test / ANOVA
+```{r}
+effect_metrics(data, sd_age, adopter)
+```
+
+
+# 9. Correlation test
+```{r}
+effect_metrics(data, sd_age, use_private, metric=T)
+```
+
+
+# 10. Correlation within items
+```{r}
+effect_metrics(data, starts_with("cg_adoption"))
+```
+
+
+# 12. Correlation between items and one variable
+```{r}
+effect_metrics(data, starts_with("cg_adoption"), sd_age, metric = TRUE)
 ```
