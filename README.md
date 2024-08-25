@@ -17,17 +17,19 @@ High-level functions for tabulating, charting and reporting survey data.
 
 ## Getting started
 
-    # Install the package (see below), then load it
-    library(volker)
+``` r
+# Install the package (see below), then load it
+library(volker)
 
-    # Load example data from the package
-    data <- volker::chatgpt
+# Load example data from the package
+data <- volker::chatgpt
 
-    # Create your first table and plot, counting answers to an item battery
-    report_counts(data, starts_with("cg_adoption_social"))
+# Create your first table and plot, counting answers to an item battery
+report_counts(data, starts_with("cg_adoption_social"))
 
-    # Create your first table and plot, reporting mean values of the item battery
-    report_metrics(data, starts_with("cg_adoption_social"))
+# Create your first table and plot, reporting mean values of the item battery
+report_metrics(data, starts_with("cg_adoption_social"))
+```
 
 See further examples in `vignette("introduction", package="volker")`.
 
@@ -47,7 +49,7 @@ in:
 
 The report functions combine tables, plots and, optionally, effect size
 calculations. To request only one of those outputs, directly use the
-repsective function:
+respective function:
 
 - **Charts**: `plot_metrics()` and `plot_counts()`  
 - **Tables**: `tab_metrics()` and `tab_counts()`  
@@ -81,9 +83,7 @@ Which one is best? That depends on your objective:
   single variable, but the variables are all measured with the same
   scale (e.g. 1 = not at all to 5 = fully applies). To summarise
   multiple items send a column selection to the functions by using
-  tidyselect mechanisms such as `starts_with()`. Indexes are
-  automatically calculated by the `report`-functions or can be
-  explicitly created using `idx_add()`.
+  tidyselect mechanisms such as `starts_with()`.
 
 - *Markdown or data frame?*  
   All table functions return data frames that can be processed further.
@@ -147,63 +147,28 @@ items</strong>
 
 <br>
 
-All functions take a data frame as their first argument, followed by
-column selections, and optionally a grouping column. Examples:
+All functions take a data frame as their first argument, followed by a
+column selection, and optionally a grouping column. Reproduce the
+examples above:
 
-Examples:
-
-- One metric variable: `tab_metrics(data, sd_age)`  
-- One categorical variable: `tab_counts(data, sd_gender)`  
-- Grouped metric variable: `tab_metrics(data, sd_age, sd_gender)`  
-- Grouped categorical variable: `tab_counts(data, adopter, sd_gender)`  
+- One metric variable: `report_metrics(data, sd_age)`  
+- One categorical variable: `report_counts(data, sd_gender)`  
+- Grouped metric variable: `report_metrics(data, sd_age, sd_gender)`  
+- Grouped categorical variable:
+  `report_counts(data, adopter, sd_gender)`  
 - Multiple metric variables:
-  `tab_metrics(data, starts_with("cg_adoption"))`  
+  `report_metrics(data, starts_with("cg_adoption"))`  
 - Multiple categorical variables:
-  `tab_counts(data, starts_with("cg_adoption"))`
+  `report_counts(data, starts_with("cg_adoption"))`
 
-**Hint**: replace `tab_` by `plot_` to reproduce the examples above.
-You’ll find different table, plot and report types in the
-`vignette("introduction", package="volker")`. For further options to
-customize the results, see the builtin function help (F1 key).
+The column selections determine which type of output is generated. In
+the second parameter (after the dataset), you can either provide a
+single column or a selection of multiple items. To compare groups,
+provide an additional categorical column in the third parameter. To
+calculate correlations, provide a metric column in the third parameter
+and set the `metric`-parameter to `TRUE`.
 
-After deciding whether to plot or tabulate, and whether to handle metric
-or counted data, the column selections determine which of the following
-methods are called under the hood. When you provide two sets of columns
-in the first two parameters, data is crossed. By default, the second
-parameter is handled as a categorical variable, resulting in grouped
-tables and plots. For handling metric variables and their correlations,
-set the `metric`-parameter to `TRUE`. (Note: Some are not implemented
-yet.)
-
-| \#  | function                  | implemented | output | scale   | columns  | crossings  |
-|-----|---------------------------|-------------|--------|---------|----------|------------|
-| 1   | tab_counts_one            |             | table  | counts  | one      |            |
-| 2   | tab_counts_one_grouped    |             | table  | counts  | one      | grouped    |
-| 3   | tab_counts_one_cor        | not yet     | table  | counts  | one      | correlated |
-| 4   | tab_counts_items          |             | table  | counts  | multiple |            |
-| 5   | tab_counts_items_grouped  |             | table  | counts  | multiple | grouped    |
-| 6   | tab_counts_items_cor      | not yet     | table  | counts  | multiple | correlated |
-| 7   | tab_metrics_one           |             | table  | metrics | one      |            |
-| 8   | tab_metrics_one_grouped   |             | table  | metrics | one      | grouped    |
-| 9   | tab_metrics_one_cor       |             | table  | metrics | one      | correlated |
-| 10  | tab_metrics_items         |             | table  | metrics | multiple |            |
-| 11  | tab_metrics_items_grouped |             | table  | metrics | multiple | grouped    |
-| 12  | tab_metrics_items_cor     |             | table  | metrics | multiple | correlated |
-
-| \#  | function                   | implemented | output | scale   | columns  | crossings  |
-|-----|----------------------------|-------------|--------|---------|----------|------------|
-| 1   | plot_counts_one            |             | plot   | counts  | one      |            |
-| 2   | plot_counts_one_grouped    |             | plot   | counts  | one      | grouped    |
-| 3   | plot_counts_one_cor        | not yet     | plot   | counts  | one      | correlated |
-| 4   | plot_counts_items          |             | plot   | counts  | multiple |            |
-| 5   | plot_counts_items_grouped  |             | plot   | counts  | multiple | grouped    |
-| 6   | plot_counts_items_cor      | not yet     | plot   | counts  | multiple | correlated |
-| 7   | plot_metrics_one           |             | plot   | metrics | one      |            |
-| 8   | plot_metrics_one_grouped   |             | plot   | metrics | one      | grouped    |
-| 9   | plot_metrics_one_cor       |             | plot   | metrics | one      | correlated |
-| 10  | plot_metrics_items         |             | plot   | metrics | multiple |            |
-| 11  | plot_metrics_items_grouped |             | plot   | metrics | multiple | grouped    |
-| 12  | plot_metrics_items_cor     | not yet     | plot   | metrics | multiple | correlated |
+Note: Some column combinations are not implemented yet.
 
 ## Effect sizes and statistical tests
 
@@ -211,26 +176,13 @@ You can calculate effect sizes and conduct basic statistical tests using
 `effect_counts()` and `effect_metrics()`. Effect calculation is included
 in the reports if you request it by the effect-parameter, for example:
 
-    report_counts(data, adopter, sd_gender, prop="cols", effect=TRUE)
+``` r
+report_counts(data, adopter, sd_gender, prop="cols", effect=TRUE)
+```
 
 **A word of warning:** Statistics is the world of uncertainty. All
 procedures require mindful interpretation. Counting stars might evoke
 illusions.
-
-| \#  | function                     | implemented | effect size                 | confidence intervals | significance test |
-|-----|------------------------------|-------------|-----------------------------|----------------------|-------------------|
-| 1   | effect_counts_one            | not yet     |                             |                      |                   |
-| 2   | effect_counts_one_grouped    |             | Cramér’s V                  | proportions          | Chi squared       |
-| 3   | effect_counts_one_cor        | not yet     |                             |                      |                   |
-| 4   | effect_counts_items          | not yet     |                             |                      |                   |
-| 5   | effect_counts_items_grouped  | not yet     |                             |                      |                   |
-| 6   | effect_counts_items_cor      | not yet     |                             |                      |                   |
-| 7   | effect_metrics_one           | not yet     |                             |                      |                   |
-| 8   | effect_metrics_one_grouped   |             | R squared                   | means                | t-test            |
-| 9   | effect_metrics_one_cor       |             | Pearson’s r, Spearman’s rho | correlation          | t-test            |
-| 10  | effect_metrics_items         |             | R squared                   | means                | t-test            |
-| 11  | effect_metrics_items_grouped | not yet     |                             |                      |                   |
-| 12  | effect_metrics_items_cor     |             | Pearson’s r, Spearman’s rho | correlation          | t-test            |
 
 ## Where do all the labels go?
 
@@ -238,35 +190,81 @@ One of the strongest package features is labeling. You know the pain.
 Labels are stored in the column attributes. Inspect current labels of
 columns and values by the `codebook()`-function:
 
-    codebook(data)
+``` r
+codebook(data)
+```
 
 This results in a table with item names, item values, value names and
-value labels. The same table format can be used to manually set labels
-with `labs_apply()`:
+value labels.
 
-    newlabels <- tribble(
-      ~item_name,                 ~item_label,
-      "cg_adoption_advantage_01", "Allgemeine Vorteile",
-      "cg_adoption_advantage_02", "Finanzielle Vorteile",
-      "cg_adoption_advantage_03", "Vorteile bei der Arbeit",
-      "cg_adoption_advantage_04", "Macht mehr Spaß"
+You can set specific column labels by providing a named list to the
+items-parameter of `labs_apply()`:
+
+``` r
+data %>%
+  labs_apply(
+    items = list(
+      "cg_adoption_advantage_01" = "Allgemeine Vorteile",
+      "cg_adoption_advantage_02" = "Finanzielle Vorteile",
+      "cg_adoption_advantage_03" = "Vorteile bei der Arbeit",
+      "cg_adoption_advantage_04" = "Macht mehr Spaß"
     )
+  ) %>% 
+  tab_metrics(starts_with("cg_adoption_advantage_"))
+```
 
-    data %>%
-      labs_apply(newlabels) %>%
-      tab_metrics(starts_with("cg_adoption_advantage_"))
+Labels for values inside a column can be adjusted by providing a named
+list to the values-parameter of `labs_apply()`. In addition, select the
+columns where value labels should be changed:
+
+``` r
+
+data %>%
+  labs_apply(
+    cols=starts_with("cg_adoption"),  
+    values = list(
+      "1" = "Stimme überhaupt nicht zu",
+      "2" = "Stimme nicht zu",
+      "3" = "Unentschieden",
+      "4" = "Stimme zu",
+      "5" =  "Stimme voll und ganz zu"
+    ) 
+  ) %>% 
+  plot_metrics(starts_with("cg_adoption"))
+```
+
+To conveniently manage all labels of a dataset, save the result of
+`codebook()` to an Excel file, change the labels manually in a copy of
+the Excel file, and finally call `labs_apply()` with your revised
+codebook.
+
+``` r
+
+library(readxl)
+library(writexl)
+
+# Save codebook to a file
+codes <- codebook(data)
+write_xlsx(codes,"codebook.xlsx")
+
+# Load and apply a codebook from a file
+codes <- read_xlsx("codebook_revised.xlsx")
+data <- labs_apply(data, codebook)
+```
 
 Be aware that some data operations such as `mutate()` from the tidyverse
 loose labels on their way. In this case, store the labels (in the
 codebook attribute of the data frame) before the operation and restore
 them afterwards:
 
-    data %>%
-      labs_store() %>%
-      mutate(sd_age = 2024 - sd_age) %>% 
-      labs_restore() %>% 
-      
-      tab_metrics(sd_age)
+``` r
+data %>%
+  labs_store() %>%
+  mutate(sd_age = 2024 - sd_age) %>% 
+  labs_restore() %>% 
+  
+  tab_metrics(sd_age)
+```
 
 ## SoSci Survey integration
 
@@ -275,13 +273,15 @@ Survey](https://www.soscisurvey.de/). Sidenote for techies: Labels are
 stored in the column attributes. That’s why you can directly throw in
 labeled data from the SoSci Survey API:
 
-    library(volker)
+``` r
+library(volker)
 
-    # Get your API link from SoSci Survey with settings "Daten als CSV für R abrufen"
-    eval(parse("https://www.soscisurvey.de/YOURPROJECT/?act=YOURKEY&rScript", encoding="UTF-8"))
+# Get your API link from SoSci Survey with settings "Daten als CSV für R abrufen"
+eval(parse("https://www.soscisurvey.de/YOURPROJECT/?act=YOURKEY&rScript", encoding="UTF-8"))
 
-    # Generate reportings
-    report_counts(ds, A002)
+# Generate reportings
+report_counts(ds, A002)
+```
 
 For best results, use sensible prefixes and captions for your SoSci
 questions. The labels come directly from your questionnaire.
@@ -295,12 +295,14 @@ clean-parameter how to disable automatic residual removal.
 
 You can change plot colors using the theme_vlkr()-function:
 
-    theme_set(
-      theme_vlkr(
-        base_fill = c("#F0983A","#3ABEF0","#95EF39","#E35FF5","#7A9B59"),
-        base_gradient = c("#FAE2C4","#F0983A")
-      )
-    )
+``` r
+theme_set(
+  theme_vlkr(
+    base_fill = c("#F0983A","#3ABEF0","#95EF39","#E35FF5","#7A9B59"),
+    base_gradient = c("#FAE2C4","#F0983A")
+  )
+)
+```
 
 Plot and table functions share a number of parameters that can be used
 to customize the outputs. Lookup the available parameters in the help of
@@ -394,7 +396,9 @@ the specific function.
 
 As with all other packages you’ll have to install the package first.
 
-    install.packages("strohne/volker")
+``` r
+install.packages("strohne/volker")
+```
 
 You can try alternative versions:
 
@@ -402,33 +406,43 @@ You can try alternative versions:
   may include features not yet published on CRAN (if asked, skip the
   updates):
 
-      if (!require(remotes)) { install.packages("remotes") }
-      remotes::install_github("strohne/volker", build_vignettes = TRUE)
+  ``` r
+  if (!require(remotes)) { install.packages("remotes") }
+  remotes::install_github("strohne/volker", build_vignettes = TRUE)
+  ```
 
 - In case you are adventurous, try the latest experimental development
   version which lives in the devel branch (if asked, skip the updates):
 
-      if (!require(remotes)) { install.packages("remotes") }
-      remotes::install_github("strohne/volker", ref="devel", upgrade="never", build_vignettes = TRUE)
+  ``` r
+  if (!require(remotes)) { install.packages("remotes") }
+  remotes::install_github("strohne/volker", ref="devel", upgrade="never", build_vignettes = TRUE)
+  ```
 
 - The beta version used in the statistics course in winter 2023/24 at
   the University of Münster can be installed using remotes from the beta
   branch (if asked, skip the updates):
 
-      if (!require(remotes)) { install.packages("remotes") }
-      remotes::install_github("strohne/volker", ref="beta", upgrade="never")
+  ``` r
+  if (!require(remotes)) { install.packages("remotes") }
+  remotes::install_github("strohne/volker", ref="beta", upgrade="never")
+  ```
 
 **2. After installing the package, load it:**
 
-    library(volker)
+``` r
+library(volker)
+```
 
 **3. Finally, use it:**
 
-    # Example data
-    data <- volker::chatgpt
+``` r
+# Example data
+data <- volker::chatgpt
 
-    # Example table
-    tab_metrics(data, sd_age, sd_gender)
+# Example table
+tab_metrics(data, sd_age, sd_gender)
+```
 
 ## Special features
 

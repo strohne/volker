@@ -224,20 +224,34 @@ labs_restore <- function(data, cols = NULL) {
 #'               In this case, use the cols-Parameter to define which columns should be changed.
 #' @return A tibble containing the dataset with new labels.
 #' @examples
-#' library(tibble)
 #' library(volker)
 #'
-#' newlabels <- tribble(
-#'   ~item_name,                 ~item_label,
-#'  "cg_adoption_advantage_01", "Allgemeine Vorteile",
-#'  "cg_adoption_advantage_02", "Finanzielle Vorteile",
-#'  "cg_adoption_advantage_03", "Vorteile bei der Arbeit",
-#'  "cg_adoption_advantage_04", "Macht mehr Spaß"
-#'  )
+#' # Set column labels using the items-parameter
+#' volker::chatgpt %>%
+#'   labs_apply(
+#'    items = list(
+#'      "cg_adoption_advantage_01" = "Allgemeine Vorteile",
+#'      "cg_adoption_advantage_02" = "Finanzielle Vorteile",
+#'      "cg_adoption_advantage_03" = "Vorteile bei der Arbeit",
+#'      "cg_adoption_advantage_04" = "Macht mehr Spaß"
+#'    )
+#'  ) %>%
+#'  tab_metrics(starts_with("cg_adoption_advantage_"))
 #'
+#' # Set value labels using the values-parameter
 #'  volker::chatgpt %>%
-#'    labs_apply(newlabels) %>%
-#'    tab_metrics(starts_with("cg_adoption_advantage_"))
+#'    labs_apply(
+#'      cols=starts_with("cg_adoption"),
+#'      values = list(
+#'        "1" = "Stimme überhaupt nicht zu",
+#'        "2" = "Stimme nicht zu",
+#'        "3" = "Unentschieden",
+#'        "4" = "Stimme zu",
+#'        "5" =  "Stimme voll und ganz zu"
+#'      )
+#'    ) %>%
+#'    plot_metrics(starts_with("cg_adoption"))
+#'
 #' @importFrom rlang .data
 #' @export
 labs_apply <- function(data, codes = NULL, cols = NULL, items = TRUE, values = TRUE) {
