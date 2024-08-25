@@ -24,6 +24,23 @@ data <- volker::chatgpt
 table {margin-left:0 !important;}
 ```
 
+
+| \#     | function                     | implemented | output | scale    | columns  | crossings  |
+|--------|------------------------------|-------------|--------|----------|-----------|-------------|
+| 1      | tab_counts_one               |             | table  | counts   | one       |             |
+| 2      | tab_counts_one_grouped     |             | table  | counts   | one       | grouped     |
+| 3      | tab_counts_one_cor          | not yet     | table  | counts   | one       | correlated  |
+| 4      | tab_counts_items           |             | table  | counts   | multiple |             |
+| 5      | tab_counts_items_grouped    |            | table  | counts   | multiple | grouped     |
+| 6      | tab_counts_items_cor        | not yet     | table  | counts   | multiple | correlated  |
+| 7      | tab_metrics_one            |             | table  | metrics | one       |             |
+| 8      | tab_metrics_one_grouped    |             | table  | metrics | one       | grouped    |
+| 9      | tab_metrics_one_cor         |      | table  | metrics | one       | correlated |
+| 10     | tab_metrics_items            |             | table  | metrics | multiple |             |
+| 11     | tab_metrics_items_grouped   |             | table  | metrics | multiple | grouped     |
+| 12     | tab_metrics_items_cor       |             | table  | metrics | multiple | correlated  |
+
+
 ## Frequencies of categorical variables
 
 ### 1. One variable: Frequency table of gender

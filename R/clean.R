@@ -79,7 +79,7 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
       data,
       dplyr::across(
         tidyselect::where(~ is.factor(.)),
-        ~ factor(replace(., . %in% remove.na.levels, NA),setdiff(levels(.), remove.na.levels))
+        ~ .factor_with_attr(replace(., . %in% remove.na.levels, NA),setdiff(levels(.), remove.na.levels))
       )
     )
   }
@@ -220,6 +220,12 @@ get_baseline <- function(obj) {
   focus <- attr(obj, "focus", exact=TRUE)
   if (!is.null(focus)) {
     baseline <- c(baseline, paste0("Frequencies based on values: ", paste(focus, collapse=", "), "."))
+  }
+
+  # Reversed items
+  reversed <- attr(obj, "reversed", exact=TRUE)
+  if (!is.null(reversed)) {
+    baseline <- c(baseline, paste0("Reversed items: ", paste(reversed, collapse=", "), "."))
   }
 
   # Missings

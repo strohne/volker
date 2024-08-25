@@ -187,6 +187,7 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
     data <- data_clean(data)
   }
 
+
   # 3. Remove missings
   data <- data_rm_missings(data, {{ col }})
 
@@ -211,13 +212,14 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
       dplyr::select(-tidyselect::all_of(c(".test")))
   }
 
-    # Get variable caption from the attributes
+  # Get variable caption from the attributes
   if (labels) {
     result <- labs_replace(result, {{ col }}, codebook(data, {{ col }}))
     label <- get_title(data, {{ col }})
     result <- dplyr::rename(result, {{ label }} := {{ col }})
-
   }
+
+
 
   if (percent) {
     result <- dplyr::mutate(
@@ -286,16 +288,24 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
   # 3. Remove missings
   data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
 
-  # 4. Get labels for cross variable
+
+  # 5. Get labels for values
   if (labels) {
     data <- labs_replace(
       data, {{ cross }},
       codebook(data, {{ cross }}),
       "value_name", "value_label"
-    )}
+    )
+
+    data <- labs_replace(
+      data, {{ col }},
+      codebook(data, {{ col }}),
+      "value_name", "value_label"
+    )
+  }
 
   #
-  # 5. Count
+  # 4. Count
   #
   grouped <- data %>%
     dplyr::count({{ col }}, {{ cross }}) %>%
@@ -436,16 +446,8 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
 
   # Get item label from the attributes
   if (labels) {
-    codes <- data %>%
-      codebook({{ col }}) %>%
-      dplyr::distinct(dplyr::across(tidyselect::all_of(c("item_name", "item_label")))) %>%
-      stats::na.omit()
-
-    if (nrow(codes) > 0) {
-      label <- codes$item_label[1]
-      result <- result %>%
-        dplyr::rename({{ label }} := {{ col }})
-    }
+      title <- get_title(data, {{ col }})
+      result <- dplyr::rename(result, {{ title }} := {{ col }})
   }
 
   result <- .attr_transfer(result, data, "missings")

@@ -25,6 +25,22 @@ library(volker)
 ds <- volker::chatgpt
 ```
 
+| \#      | function                      | implemented | effect size    | confidence intervals                                | significance test |
+|---------|-------------------------------|-------------|----------------|-------------------------------------------|-------------------|
+| 1       | effect_counts_one            | not yet     | | | |
+| 2       | effect_counts_one_grouped    |             | Cramér's V | proportions | Chi squared |
+| 3       | effect_counts_one_cor        | not yet     | | | |
+| 4       | effect_counts_items          | not yet     | | | |
+| 5       | effect_counts_items_grouped  | not yet     | | | |
+| 6       | effect_counts_items_cor      | not yet     | | | |
+| 7       | effect_metrics_one           | not yet     | | | |
+| 8       | effect_metrics_one_grouped   |             | R squared | means | t-test |
+| 9       | effect_metrics_one_cor       |             | Pearson's r, Spearman's rho | correlation  | t-test             |
+| 10      | effect_metrics_items         |             | R squared | means | t-test             
+| 11      | effect_metrics_items_grouped | not yet     |  |  | |
+| 12      | effect_metrics_items_cor     |             | Pearson's r, Spearman's rho | correlation | t-test|
+
+
 ```{r}
 
 effect_counts(ds, adopter, sd_gender)
