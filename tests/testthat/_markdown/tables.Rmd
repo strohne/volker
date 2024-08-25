@@ -116,7 +116,7 @@ data %>%
   
   labs_store() %>% 
   labs_clear() %>% 
-  labs_restore(values= TRUE) %>% 
+  labs_restore() %>% 
   
   tab_counts_items(starts_with("cg_adoption_advantage_"))
 

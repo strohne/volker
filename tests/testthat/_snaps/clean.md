@@ -34,3 +34,10 @@
       2     2
       3    -9
 
+# Baseline is extracted
+
+    Code
+      get_baseline(result)
+    Output
+      [1] "Frequencies based on values: agree, strongly agree. 4 missing case(s) omitted."
+

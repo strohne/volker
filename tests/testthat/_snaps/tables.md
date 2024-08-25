@@ -49,7 +49,34 @@
       |Not using ChatGPT is considered being an outsider.          |          46% (45)| 27% (26)| 14% (14)|   7% (7)|         5% (5)| 100% (97)|
       |Using ChatGPT brings me recognition from my environment.    |          33% (32)| 27% (26)| 21% (20)| 13% (13)|         6% (6)| 100% (97)|
       
-      4 missing case(s) ommited.
+      4 missing case(s) omitted.
+      
+
+# Frequency table for multiple categorical variables by grouping variable
+
+    Code
+      volker::tab_counts(data, tidyselect::starts_with("cg_adoption_"), sd_gender,
+      category = c("agree", "strongly agree"))
+    Output
+      
+      
+      |Item                                                                      |     total|   female|     male|  diverse|
+      |:-------------------------------------------------------------------------|---------:|--------:|--------:|--------:|
+      |Expectations: ChatGPT has clear advantages compared to similar offerings. |  51% (49)| 57% (21)| 46% (27)| 100% (1)|
+      |Expectations: Using ChatGPT brings financial benefits.                    |  27% (26)|  22% (8)| 31% (18)|   0% (0)|
+      |Expectations: Using ChatGPT is advantageous in many tasks.                |  63% (61)| 68% (25)| 59% (35)| 100% (1)|
+      |Expectations: Compared to other systems, using ChatGPT is more fun.       |  54% (52)| 59% (22)| 51% (30)|   0% (0)|
+      |Expectations: Much can go wrong when using ChatGPT.                       |  35% (34)| 32% (12)| 37% (22)|   0% (0)|
+      |Expectations: There are legal issues with using ChatGPT.                  |  30% (29)|  22% (8)| 36% (21)|   0% (0)|
+      |Expectations: The security of user data is not guaranteed with ChatGPT.   |  33% (32)|  24% (9)| 39% (23)|   0% (0)|
+      |Expectations: Using ChatGPT could bring personal disadvantages.           |  25% (24)|  16% (6)| 29% (17)| 100% (1)|
+      |Expectations: In my environment, using ChatGPT is standard.               |  21% (20)|  14% (5)| 24% (14)| 100% (1)|
+      |Expectations: Almost everyone in my environment uses ChatGPT.             |  16% (16)|  16% (6)|  15% (9)| 100% (1)|
+      |Expectations: Not using ChatGPT is considered being an outsider.          |  12% (12)|   3% (1)| 17% (10)| 100% (1)|
+      |Expectations: Using ChatGPT brings me recognition from my environment.    |  20% (19)|  16% (6)| 22% (13)|   0% (0)|
+      |total                                                                     | 100% (97)| 38% (37)| 61% (59)|   1% (1)|
+      
+      Frequencies based on values: agree, strongly agree. 4 missing case(s) omitted.
       
 
 # Distribution table for age
@@ -117,7 +144,7 @@
       |Not using ChatGPT is considered being an outsider.          | 2.0 (1.2)| 1.8 (1.0)| 2.1 (1.3)| 4.0 (NA)|
       |Using ChatGPT brings me recognition from my environment.    | 2.3 (1.2)| 2.4 (1.2)| 2.3 (1.3)| 3.0 (NA)|
       
-      4 missing case(s) ommited.
+      4 missing case(s) omitted.
       
 
 ---
@@ -143,7 +170,7 @@
       |Not using ChatGPT is considered being an outsider.          |  0.09|
       |Using ChatGPT brings me recognition from my environment.    | -0.02|
       
-      4 missing case(s) ommited.
+      4 missing case(s) omitted.
       
 
 ---
@@ -169,7 +196,7 @@
       |Not using ChatGPT is considered being an outsider.          |                      0.34|                           0.34|
       |Using ChatGPT brings me recognition from my environment.    |                      0.42|                           0.46|
       
-      4 missing case(s) ommited.
+      4 missing case(s) omitted.
       
 
 # Distribution table for multiple metric items
@@ -194,7 +221,7 @@
       |Not using ChatGPT is considered being an outsider.          |   1|  1|      2|  3|   5|  2.0| 1.2| 97|
       |Using ChatGPT brings me recognition from my environment.    |   1|  1|      2|  3|   5|  2.3| 1.2| 97|
       
-      4 missing case(s) ommited.
+      4 missing case(s) omitted.
       
 
 # missing values make no trouble
@@ -219,7 +246,7 @@
       |social_03    | 2.0 (1.2)| 4.0 (NA)| 1.8 (1.0)| 2.1 (1.3)|
       |social_04    | 2.3 (1.2)| 3.0 (NA)| 2.4 (1.2)| 2.3 (1.3)|
       
-      7 missing case(s) ommited.
+      7 missing case(s) omitted.
       
 
 # Correlation of items
@@ -245,7 +272,7 @@
       |Not using ChatGPT is considered being an outsider.          |                                                        0.16|                                     0.36|                                         0.13|                                                  0.20|                                  0.10|                                       0.33|                                                      0.29|                                              0.25|                                          0.48|                                            0.58|                                               1.00|                                                     0.56|
       |Using ChatGPT brings me recognition from my environment.    |                                                        0.27|                                     0.40|                                         0.31|                                                  0.36|                                 -0.07|                                       0.30|                                                      0.10|                                              0.14|                                          0.57|                                            0.54|                                               0.56|                                                     1.00|
       
-      4 missing case(s) ommited.
+      4 missing case(s) omitted.
       
 
 # Item order is kept

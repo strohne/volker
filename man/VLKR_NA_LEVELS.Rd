@@ -5,7 +5,7 @@
 \alias{VLKR_NA_LEVELS}
 \title{Levels to remove from factors}
 \format{
-An object of class \code{character} of length 2.
+An object of class \code{character} of length 3.
 }
 \usage{
 VLKR_NA_LEVELS

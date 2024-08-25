@@ -193,6 +193,7 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
     data <- data_clean(data)
   }
 
+
   # 3. Remove missings
   data <- data_rm_missings(data, {{ col }})
 
@@ -222,11 +223,18 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
     result <- labs_replace(result, {{ col }}, codebook(data, {{ col }}))
     label <- get_title(data, {{ col }})
     result <- dplyr::rename(result, {{ label }} := {{ col }})
-
   }
 
+
+
   if (percent) {
-    result <- dplyr::mutate(result, dplyr::across(tidyselect::any_of(c("p","ci low","ci high")), ~ paste0(round(. * 100, 0), "%")))
+    result <- dplyr::mutate(
+      result,
+      dplyr::across(
+        tidyselect::any_of(c("p","ci low","ci high")),
+        ~ paste0(round(. * 100, 0), "%")
+      )
+    )
   }
 
 
@@ -285,6 +293,22 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
 
   # 3. Remove missings
   data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
+
+
+  # 5. Get labels for values
+  if (labels) {
+    data <- labs_replace(
+      data, {{ cross }},
+      codebook(data, {{ cross }}),
+      "value_name", "value_label"
+    )
+
+    data <- labs_replace(
+      data, {{ col }},
+      codebook(data, {{ col }}),
+      "value_name", "value_label"
+    )
+  }
 
   #
   # 4. Count
@@ -428,16 +452,8 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
 
   # Get item label from the attributes
   if (labels) {
-    codes <- data %>%
-      codebook({{ col }}) %>%
-      dplyr::distinct(dplyr::across(tidyselect::all_of(c("item_name", "item_label")))) %>%
-      stats::na.omit()
-
-    if (nrow(codes) > 0) {
-      label <- codes$item_label[1]
-      result <- result %>%
-        dplyr::rename({{ label }} := {{ col }})
-    }
+      title <- get_title(data, {{ col }})
+      result <- dplyr::rename(result, {{ title }} := {{ col }})
   }
 
   result <- .attr_transfer(result, data, "missings")
@@ -758,6 +774,23 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   cross_names <- colnames(dplyr::select(data, tidyselect::all_of(cross_eval)))
 
+  # total row n
+  total_row_n <- data %>%
+    dplyr::group_by({{ cross }}) %>%
+    dplyr::count() %>%
+    dplyr::summarise(n = sum(.data$n)) %>%
+    dplyr::ungroup() %>%
+    tidyr::pivot_wider(
+      names_from = {{ cross }},
+      values_from = "n",
+      values_fill = list(n = 0)
+    ) %>%
+    dplyr::mutate(total = rowSums(dplyr::across(tidyselect::everything()))) %>%
+    dplyr::mutate(item = "total")
+
+  # total_row_p
+  total_row_p <- total_row_n %>%
+    dplyr::mutate(dplyr::across(-tidyselect::any_of("item"), ~ . / .data$total))
 
   # Pivot
   result <- data %>%
@@ -765,61 +798,65 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
     tidyr::pivot_longer(
       {{ cols }},
       names_to = "item",
-      values_to = ".category"
+      values_to = ".value_name"
     )
 
   # Add label column for category
-
   codebook_df <- codebook(data, {{ cols }})
 
   result <- result %>%
     dplyr::mutate(
-      .category_label = ifelse(
-        .data$.category %in% codebook_df$value_name,
-        codebook_df$value_label[match(.data$.category, codebook_df$value_name)],
-        as.character(.data$.category)
+      .value_label = ifelse(
+        .data$.value_name %in% codebook_df$value_name,
+        codebook_df$value_label[match(.data$.value_name, codebook_df$value_name)],
+        as.character(.data$.value_name)
       )
     )
 
   #  Set labels: cross variable
   # TODO: @Jakob: implement in tab_counts_grouped as well?
+
   if (labels) {
     result <- labs_replace(
       result, {{ cross }},
       codebook(data, {{ cross }}),
       "value_name", "value_label"
-    )}
+    )
+  }
 
   # Focus TRUE category or the first category
   if (is.null(category)) {
-    categories <- unique(as.character(result$.category))
-    if ((length(categories) == 2) && ("TRUE" %in% categories)) {
+    value_names <- unique(as.character(result$.value_name))
+    if ((length(value_names) == 2) && ("TRUE" %in% value_names)) {
       base_category <- "TRUE"
     } else {
-      base_category <- categories[1]
+      base_category <- value_names[1]
     }
-
   } else {
-    base_category <- if (is.numeric(category)) as.character(category) else category
+    base_category <- as.character(category)
 
-    numeric_categories <- unique(as.character(result$.category))
-    label_categories <- unique(result$.category_label)
-
-    if (!all(base_category %in% numeric_categories | base_category %in% label_categories)) {
+    if (
+      !all(
+        (base_category %in% as.character(result$.value_name)) |
+        (base_category %in% result$.value_label)
+      )
+    ) {
       stop("One or more specified categories do not exist in the data.")
     }
   }
 
-  # Get category labels if numeric
-  if (is.null(category) || is.numeric(category)) {
-    category_labels <- result$.category_label[match(base_category, result$.category)]
-  } else {
-    category_labels <- base_category
+  # Get category labels if names are provided (e.g. for numeric values)
+  base_labels <- base_category
+  if (is.null(category) || all(base_labels %in% result$.value_name)) {
+    base_labels <- codebook_df %>%
+      dplyr::filter(.data$value_name %in% base_category) %>%
+      dplyr::pull(.data$value_label) %>%
+      unique()
   }
 
   # Recode
   result <- result %>%
-    mutate(.category = (.data$.category %in% base_category | .data$.category_label %in% base_category))
+    mutate(.category = (.data$.value_name %in% base_category) | (.data$.value_label %in% base_category))
 
   # Count
   result <- result %>%
@@ -844,27 +881,33 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 
   # Filter category
   result <- dplyr::filter(result, .data$.category == TRUE) %>%
-    dplyr::select(-.data$.category)
+    dplyr::select(-tidyselect::any_of(".category"))
 
   # Result n
   result_n <- result %>%
-    dplyr::select(-.data$p, -.data$total_p) %>%
+    dplyr::select(-tidyselect::any_of("p"), -tidyselect::any_of("total_p")) %>%
     dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
     tidyr::pivot_wider(
-      names_from = .data$.cross,
-      values_from = .data$n,
+      names_from = ".cross",
+      values_from = "n",
       values_fill = list(n = 0)) %>%
     dplyr::rename(total = "total_n")
 
+  # Add total row n
+  result_n <- dplyr::bind_rows(result_n, total_row_n)
+
   # Result p
   result_p <- result %>%
-    dplyr::select(-.data$n, -.data$total_n) %>%
+    dplyr::select(-tidyselect::any_of("n"), -tidyselect::any_of("total_n")) %>%
     dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
     tidyr::pivot_wider(
-      names_from = .data$.cross,
-      values_from = .data$p,
+      names_from = ".cross",
+      values_from = "p",
       values_fill = list(n = 0)) %>%
     dplyr::rename(total = "total_p")
+
+  # Add total row
+  result_p <- dplyr::bind_rows(result_p, total_row_p)
 
   # # Factor result
   # result <- result %>%
@@ -894,11 +937,6 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
       "item_name", "item_label"
     )}
 
-  # TODO: @Jakob: Improve message? How?
-  # Message
-  category_labels <- paste0(category_labels, collapse=", ")
-  message("Percentage shares reflecting values for: ", category_labels)
-
   # Remove common item prefix
   prefix <- get_prefix(result$item, trim=T)
   result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
@@ -910,6 +948,8 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 
   colnames(result)[1] <- prefix
 
+  # Add baseline
+  attr(result, "focus") <- base_labels
   result <- .attr_transfer(result, data, "missings")
 
   .to_vlkr_tab(result)

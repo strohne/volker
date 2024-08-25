@@ -574,27 +574,19 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
   )
 }
 
-#' Plot frequencies of multiple items compared by groups
+
+#' Plot percent shares of multiple items compared by groups
 #'
 #' @keywords internal
+#'
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
 #' @param category Summarizing multiple items (the cols parameter) by group requires a focus category.
-#'                 By default, for logical column types, only TRUE values are counted.
-#'                 For other column types, the first category is counted.
-#'                 Provide a character vector with focus categories to override the default behavior.
-#' @param prop The basis of percent calculation: "total" (the default), "rows" or "cols".
-#'             Plotting row or column percentages results in stacked bars that add up to 100%.
-#'             Whether you set rows or cols determines which variable is in the legend (fill color)
-#'             and which on the vertical scale.
-#' @param ordered Values in the cross column can be nominal (0) or ordered ascending (1) descending (-1).
-#'                By default (NULL), the ordering is automatically detected.
-#'                An appropriate color scale should be choosen depending on the ordering.
-#'                For unordered values, colors from VLKR_FILLDISCRETE are used.
-#'                For ordered values, shades of the VLKR_FILLGRADIENT option are used.
-#' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
+#'                By default, for logical column types, only TRUE values are counted.
+#'                For other column types, the first category is counted.
+#'                To override the default behavior, provide a vector of values in the dataset or labels from the codebook.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -606,12 +598,17 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #' data <- volker::chatgpt
 #' plot_counts_items_grouped(
 #'   data, starts_with("cg_adoption_"), adopter,
-#'   category=c(4,5), numbers = "n", prop="rows"
+#'   category=c("agree","strongly agree")
+#' )
+#'
+#' plot_counts_items_grouped(
+#'   data, starts_with("cg_adoption_"), adopter,
+#'   category=c(4,5)
 #' )
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_items_grouped <- function(data, cols, cross, category = NULL, prop = "total", ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -621,16 +618,6 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, prop =
   if (clean) {
     data <- data_clean(data)
   }
-
-  # # Swap columns
-  # if (prop == "cols") {
-  #   cols <- rlang::enquo(cols)
-  #   cross <- rlang::enquo(cross)
-  #   cols_temp <- cols
-  #   cols <- cross
-  #   cross <- cols_temp
-  #   #stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
-  # }
 
   # 3. Remove missings
   data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
@@ -648,115 +635,123 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, prop =
     tidyr::pivot_longer(
       {{ cols }},
       names_to = "item",
-      values_to = ".category"
+      values_to = ".value_name"
     )
 
-  # Focus TRUE category or the first category
-  base_category <-  NULL
-  if (is.null(category)) {
-    categories <- result$.category |> unique() |> as.character()
-    if ((length(categories) == 2) && ("TRUE" %in% categories)) {
-      category <- "TRUE"
-    } else {
-      category <- categories[1]
-      base_category <- category
-    }
-    categories <- NULL
-  } else {
-    base_category <- category
-  }
+  # Add label column for category
+  codebook_df <- codebook(data, {{ cols }})
 
-  result <- dplyr::filter(result, .data$.category %in% category)
-
-  # Counts
-  result <- result %>%
-    dplyr::mutate(value = as.factor({{ cross }})) %>%
-    dplyr::count(dplyr::across(tidyselect::all_of(c("item", "value"))))
-
-  # Percentages
-  if ((prop == "rows") || (prop == "cols")) {
-    result <- result %>%
-      dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
-      dplyr::mutate(p = (.data$n / sum(.data$n)) * 100) %>%
-      dplyr::ungroup()
-
-  } else {
-    result <- result %>%
-      dplyr::mutate(p = (.data$n / sum(.data$n)) * 100)
-  }
-
-  result <- result %>%
-    dplyr::mutate(value = as.factor(.data$value)) %>%
-    dplyr::mutate(item = factor(.data$item, levels=cols_names)) |>
-    dplyr::arrange(.data$item)
-
-
-  # 4. Set labels
-  # TODO: make dry
-  scale <-dplyr::coalesce(ordered, get_direction(data, {{ cross }}))
-  categories <- dplyr::pull(data, {{ cross }}) |> unique() |> as.character()
-  lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
-
-  if (labels) {
-    result <- labs_replace(result, "value", codebook(data, {{ cross }}))
-    result <- labs_replace(result, "item", codebook(data, {{ cols }}), "item_name", "item_label")
-  }
-
-  result <- dplyr::mutate(result, item = trim_prefix(.data$item))
-
-  #return(result)
-  # Select numbers to print on the bars
-  # ...omit the last category in scales, omit small bars
   result <- result %>%
     dplyr::mutate(
-      .values = dplyr::case_when(
-        (scale != 0) & (lastcategory == .data$value) ~ "",
-        .data$p < VLKR_LOWPERCENT ~ "",
-        all(numbers == "n") ~ as.character(.data$n),
-        all(numbers == "p") ~ paste0(round(.data$p, 0), "%"),
-        TRUE ~ paste0(.data$n, "\n", round(.data$p, 0), "%")
+      .value_label = ifelse(
+        .data$.value_name %in% codebook_df$value_name,
+        codebook_df$value_label[match(.data$.value_name, codebook_df$value_name)],
+        as.character(.data$.value_name)
       )
     )
 
-  # Get title
+  #  Set labels: cross variable
+  if (labels) {
+    result <- labs_replace(
+      result, {{ cross }},
+      codebook(data, {{ cross }}),
+      "value_name", "value_label"
+    )
+  }
+
+  # Focus TRUE category or the first category
+  if (is.null(category)) {
+    value_names <- unique(as.character(result$.value_name))
+    if ((length(value_names) == 2) && ("TRUE" %in% value_names)) {
+      base_category <- "TRUE"
+    } else {
+      base_category <- value_names[1]
+    }
+  } else {
+    base_category <- as.character(category)
+
+    if (
+      !all(
+        (base_category %in% as.character(result$.value_name)) |
+        (base_category %in% result$.value_label)
+      )
+    ) {
+      stop("One or more specified categories do not exist in the data.")
+    }
+  }
+
+  # Get category labels if names are provided (e.g. for numeric values)
+  base_labels <- base_category
+  if (is.null(category) || all(base_labels %in% result$.value_name)) {
+    base_labels <- codebook_df %>%
+      dplyr::filter(.data$value_name %in% base_category) %>%
+      dplyr::pull(.data$value_label) %>%
+      unique()
+  }
+
+  # Recode
+  result <- result %>%
+    mutate(.category = (.data$.value_name %in% base_category) | (.data$.value_label %in% base_category))
+
+  # Count
+  result <- result %>%
+    dplyr::mutate(.cross = as.factor({{ cross }})) %>%
+    dplyr::mutate(.category = as.factor(.data$.category)) %>%
+    dplyr::count(dplyr::across(tidyselect::all_of(c("item", ".cross", ".category")))) %>%
+    tidyr::complete(.data$item, .data$.cross, .data$.category, fill=list(n=0))
+
+  # Result p
+  result <- result %>%
+    dplyr::group_by(dplyr::across(tidyselect::all_of(c("item",".cross")))) %>%
+    dplyr::mutate(value = (.data$n / sum(.data$n))) %>%
+    dplyr::mutate(value = ifelse(is.na(.data$value), 0, .data$value))
+
+  result <- dplyr::filter(result, .data$.category == TRUE)
+
+  # Factor result
+  result <- result %>%
+    dplyr::mutate(.cross = as.factor(.data$.cross)) %>%
+    dplyr::mutate(item = factor(.data$item, levels=cols_names))
+
+  # Replace item labels
+  if (labels) {
+    result <- labs_replace(
+      result, "item",
+      codebook(data, {{ cols }}),
+      "item_name", "item_label"
+    )
+  }
+
+  # Remove common item prefix
+  prefix <- get_prefix(result$item, trim=TRUE)
+  result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix)) %>%
+            dplyr::ungroup()
+
+  # Order item levels
+  result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
+
+  # Add title
   if (title == TRUE) {
-    title <- get_title(data, {{ cols }})
+    title <- trim_label(prefix)
   } else if (title == FALSE) {
     title <- NULL
   }
 
   # Get base
   base_n <- nrow(data)
-  base <- paste0("n=", base_n, "; multiple responses possible")
-  if (!is.null(base_category)) {
-
-    if (labels) {
-      category_labels <- codebook(data, {{ cols }}) |>
-        dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) |>
-        dplyr::filter(.data$value_name %in% base_category) |>
-        dplyr::pull(.data$value_label)
-
-      if (length(category_labels) == length(base_category)) {
-        base_category <- category_labels
-      }
-    }
-
-    base_category <- paste0(base_category, collapse=", ")
-    base <- paste0(base,"; values=", base_category)
-  }
-
-
+  base_labels <- paste0(base_labels, collapse=", ")
   result <- .attr_transfer(result, data, "missings")
 
-  .plot_bars(
-    result,
-    category = NULL,
-    scale = scale,
-    numbers = numbers,
-    base = base,
-    title = title
+  # Plot
+  .plot_lines(
+  result,
+  title = title,
+  base = paste0("n=", base_n,
+                "; multiple responses possible",
+                "; values=", base_labels)
   )
 }
+
 
 #' Correlate categorical items with a metric column
 #'
@@ -999,7 +994,7 @@ plot_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FA
 
 
   # Plot
-  .plot_lines(
+  .plot_summary(
     data,
     scale = scale,
     ci = ci,
@@ -1238,7 +1233,7 @@ plot_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, box = F
   # Add base
   base_n <- nrow(data)
   result <- .attr_transfer(result, data, "missings")
-  .plot_lines(
+  .plot_summary(
     result,
     ci = ci,
     box = box,
@@ -1291,7 +1286,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
     data <- data_rm_negatives(data, {{ cols }})
   }
 
-  # 4. Calculate
+  # 5. Calculate
   # Get positions of group cols
   cross <- tidyselect::eval_select(expr = rlang::enquo(cross), data = data)
 
@@ -1307,7 +1302,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
         dplyr::select(!!sym(col), {{ cols }}) %>%
         skim_metrics() %>%
         dplyr::ungroup() %>%
-        dplyr::select(item = "skim_variable", group = !!sym(col), "numeric.mean") %>%
+        dplyr::select(item = "skim_variable", .cross = !!sym(col), value = "numeric.mean") %>%
         tidyr::drop_na()
     }
   ) %>%
@@ -1315,6 +1310,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
       dplyr::bind_rows
     )
 
+  # Get limits
   if (is.null(limits)) {
     limits <- get_limits(data, {{ cols }})
   }
@@ -1335,19 +1331,6 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
   # Order item levels
   result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
 
-  # print(result)
-  # class(result) <- setdiff(class(result),"skim_df")
-
-  pl <- result %>%
-    ggplot2::ggplot(ggplot2::aes(
-      .data$item,
-      y = .data$numeric.mean,
-      color = .data$group,
-      group=.data$group)
-    ) +
-    ggplot2::geom_line() +
-    ggplot2::geom_point(size=3, shape=18)
-
   # Set the scale
   # TODO: get from attributes
   scale <- data %>%
@@ -1355,53 +1338,26 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
     dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label")))) %>%
     prepare_scale()
 
-  if (length(scale) > 0) {
-    pl <- pl +
-      ggplot2::scale_y_continuous(labels = ~ label_scale(., scale) )
-  } else {
-    pl <- pl +
-      ggplot2::scale_y_continuous()
-  }
-
-  # Add scales, labels and theming
-  pl <- pl +
-    ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
-    ggplot2::scale_color_manual(
-      values = vlkr_colors_discrete(length(unique(result$group))),
-      labels = function(x) wrap_label(x, width = 40)
-      #guide = ggplot2::guide_legend(reverse = TRUE)
-    ) +
-    #ggplot2::scale_color_discrete(labels = function(x) stringr::str_wrap(x, width = 40)) +
-
-    ggplot2::ylab("Mean values") +
-    ggplot2::coord_flip(ylim = limits) +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(), #size = 11
-      legend.title = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
   # Add title
   if (title == TRUE) {
     title <- trim_label(prefix)
   } else if (title == FALSE) {
     title <- NULL
   }
-  if (!is.null(title)) {
-    pl <- pl + ggplot2::ggtitle(label = title)
-  }
 
-  # Add base
+  # Get base
   base_n <- nrow(data)
-  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n, "; multiple responses possible"))
+  result <- .attr_transfer(result, data, "missings")
 
-  # Convert to vlkr_plot
-  pl <- .attr_transfer(pl, data, "missings")
-  .to_vlkr_plot(pl)
+  # Plot
+  .plot_lines(
+    result,
+    scale = scale,
+    title = title,
+    limits = limits,
+    base = paste0("n=", base_n, "; multiple responses possible")
+
+  )
 }
 
 #' Scatter plot of correlations between multiple items
@@ -1471,7 +1427,10 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
 
   pl <- pl +
     ggplot2::scale_y_continuous(labels = scales::percent, limits=limits) +
-    ggplot2::scale_x_discrete(labels = scales::label_wrap(40), limits = rev) +
+    ggplot2::scale_x_discrete(
+      labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)),
+      limits = rev
+    ) +
 
     ggplot2::ylab("Share in percent") +
     ggplot2::coord_flip() +
@@ -1541,7 +1500,7 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
 }
 
 
-#' Helper function: plot grouped line chart
+#' Helper function: plot grouped line chart by summarising values
 #'
 #' @keywords internal
 #'
@@ -1553,7 +1512,7 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
 #' @param base The plot base as character or NULL.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-.plot_lines <- function(data, ci = FALSE, scale = NULL, base = NULL, box = FALSE, limits = NULL, title = NULL) {
+.plot_summary <- function(data, ci = FALSE, scale = NULL, base = NULL, box = FALSE, limits = NULL, title = NULL) {
 
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(y=.data$item, x=.data$value, group=1))
@@ -1601,7 +1560,10 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
   }
 
   pl <- pl +
-    ggplot2::scale_y_discrete(labels = scales::label_wrap(40), limits = rev)
+    ggplot2::scale_y_discrete(
+      labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)),
+      limits = rev
+    )
 
   # Add theming
   pl <- pl +
@@ -1651,6 +1613,97 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
   pl <- .attr_transfer(pl, data, "missings")
   .to_vlkr_plot(pl, maxlab=maxlab)
 }
+
+#' Helper function: plot grouped line chart
+#'
+#' @keywords internal
+#'
+#' @param data Dataframe with the columns item, value.
+#' @param scale Passed to the label scale function.
+#' @param base The plot base as character or NULL.
+#' @param limits The scale limits.
+#' @param title The plot title as character or NULL.
+#' @return A ggplot object.
+#' @importFrom rlang .data
+.plot_lines <- function(data, scale = NULL, base = NULL, limits = NULL, title = NULL) {
+
+  pl <- data %>%
+    ggplot2::ggplot(ggplot2::aes(
+      x = .data$item,
+      y = .data$value,
+      color = .data$.cross,
+      group = .data$.cross
+    )
+    ) +
+    # TODO: improve geom_line for overlapping lines?
+    # -> If two lines are exactly the same
+    ggplot2::geom_line(alpha = VLKR_LINE_ALPHA) +
+    ggplot2::geom_point(size=3, shape=18)
+
+  # Set scale
+  if (!is.null(scale)) {
+    if (length(scale) > 0) {
+      pl <- pl +
+        ggplot2::scale_y_continuous(labels = ~ label_scale(., scale))
+    } else {
+      pl <- pl +
+        ggplot2::scale_y_continuous()
+    }
+  } else {
+    # scale is NULL
+    pl <- pl +
+      ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100))
+  }
+
+  # Add scales
+  pl <- pl +
+    ggplot2::scale_x_discrete(
+      labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)),
+      limits=rev
+      ) +
+    ggplot2::scale_color_manual(
+      values = vlkr_colors_discrete(length(unique(data$.cross))),
+      labels = function(x) wrap_label(x, width = dplyr::coalesce(getOption("vlkr.wrap.legend"), VLKR_PLOT_LEGENDWRAP))
+    )
+
+  # Limits
+  if (!is.null(limits)){
+      pl <- pl +
+        ggplot2::coord_flip(ylim = limits)
+  }
+  else
+    pl <- pl +
+    ggplot2::coord_flip(ylim = c(0,1))
+
+
+  # Add theme
+  pl <- pl +
+    ggplot2::theme(
+      axis.title.x = ggplot2::element_blank(),
+      axis.title.y = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_text(), #size = 11
+      legend.title = ggplot2::element_blank(),
+      plot.caption = ggplot2::element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position = "plot"
+    )
+
+  # Add title
+  if (!is.null(title)) {
+    pl <- pl + ggplot2::ggtitle(label = title)
+  }
+
+  # Add base
+  if (!is.null(base)) {
+    pl <- pl + ggplot2::labs(caption = base)
+  }
+
+  # Convert to vlkr_plot
+  pl <- .attr_transfer(pl, data, "missings")
+  .to_vlkr_plot(pl)
+
+}
+
 
 #' Get the maximum density value in a density plot
 #'
@@ -1768,7 +1821,8 @@ knit_plot <- function(pl) {
     }
 
     rows <- plot_options[["rows"]]
-    lines_wrap <- dplyr::coalesce(plot_options[["labwrap"]], VLKR_PLOT_LABELWRAP)
+
+    lines_wrap <- dplyr::coalesce(plot_options[["labwrap"]], getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)
     lines_perrow <- (dplyr::coalesce(plot_options[["maxlab"]], 1) %/% lines_wrap) + 2
 
     fig_height <- (rows * lines_perrow * px_perline) + px_offset

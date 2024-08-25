@@ -26,6 +26,12 @@ test_that("Frequency table for multiple categorical variables", {
   expect_snapshot(volker::tab_counts(data, tidyselect::starts_with("cg_adoption_")), cran= TRUE)
 })
 
+# Frequency table for multiple categorical variables grouped
+# tab_counts_items_grouped
+test_that("Frequency table for multiple categorical variables by grouping variable", {
+  expect_snapshot(volker::tab_counts(data, tidyselect::starts_with("cg_adoption_"), sd_gender,
+                                     category = c("agree", "strongly agree")), cran= TRUE)
+})
 
 # Distribution table for age
 # tab_metrics_one

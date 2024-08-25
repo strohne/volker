@@ -2,15 +2,14 @@
 % Please edit documentation in R/labels.R
 \name{labs_apply}
 \alias{labs_apply}
-\title{Set variable labels by setting their comment attributes}
+\title{Set column and value labels}
 \usage{
-labs_apply(data, codes, cols = NULL, values = TRUE)
+labs_apply(data, codes = NULL, cols = NULL, items = TRUE, values = TRUE)
 }
 \arguments{
-\item{data}{A tibble.}
+\item{data}{A tibble containing the dataset.}
 
-\item{codes}{A tibble in \link{codebook} format.
-To set column labels, use item_name and item_label columns.}
+\item{codes}{A tibble in \link{codebook} format.}
 
 \item{cols}{A tidy column selection. Set to NULL (default) to apply to all columns
 found in the codebook.
@@ -18,31 +17,72 @@ Restricting the columns is helpful when you  want to set value labels.
 In this case, provide a tibble with value_name and value_label columns
 and specify the columns that should be modified.}
 
-\item{values}{If TRUE (default), sets value labels.
-- For factors: Factor levels and order are retrieved
-from the value_label column.
-- For item values: they are retrieved from both the columns
-value_name and value_label in your codebook.}
+\item{items}{If TRUE, column labels will be retrieved from the codes (the default).
+If FALSE, no column labels will be changed.
+Alternatively, a named list of column names with their labels.}
+
+\item{values}{If TRUE, value labels will be retrieved from the codes (default).
+If FALSE, no value labels will be changed.
+Alternatively, a named list of value names with their labels.
+In this case, use the cols-Parameter to define which columns should be changed.}
 }
 \value{
-A tibble with new labels.
+A tibble containing the dataset with new labels.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
+\details{
+You can either provide a data frame in \link{codebook} format to the codes-parameter
+or provide named lists to the items- or values-parameter.
+
+When working with a codebook in the codes-parameter:
+\itemize{
+\item Change column labels by providing the columns item_name and item_label in the codebook.
+Set the items-parameter to TRUE (the default setting).
+\item Change value labels by providing the columns value_name and value_label in the codebook.
+To tell which columns should be changed, you can either use the item_name column in the codebook
+or use the cols-parameter.
+For factor values, the levels and their order are retrieved from the value_label column.
+For coded values, labels are retrieved from both the columns value_name and value_label.
+}
+
+When working with lists in the items- or values-parameter:
+\itemize{
+\item Change column labels by providing a named list to the items-parameter. The list contains labels named by the columns.
+Set the parameters codes and cols to NULL (their default value).
+\item Change value labels by providing a named list to the values-parameter. The list contains labels named by the values.
+Provide the column selection in the cols-parameter.
+Set the codes-parameter to NULL (its default value).
+}
+}
 \examples{
-library(tibble)
 library(volker)
 
-newlabels <- tribble(
-  ~item_name,                 ~item_label,
- "cg_adoption_advantage_01", "Allgemeine Vorteile",
- "cg_adoption_advantage_02", "Finanzielle Vorteile",
- "cg_adoption_advantage_03", "Vorteile bei der Arbeit",
- "cg_adoption_advantage_04", "Macht mehr Spaß"
- )
+# Set column labels using the items-parameter
+volker::chatgpt \%>\%
+  labs_apply(
+   items = list(
+     "cg_adoption_advantage_01" = "Allgemeine Vorteile",
+     "cg_adoption_advantage_02" = "Finanzielle Vorteile",
+     "cg_adoption_advantage_03" = "Vorteile bei der Arbeit",
+     "cg_adoption_advantage_04" = "Macht mehr Spaß"
+   )
+ ) \%>\%
+ tab_metrics(starts_with("cg_adoption_advantage_"))
 
+# Set value labels using the values-parameter
  volker::chatgpt \%>\%
-   labs_apply(newlabels) \%>\%
-   tab_metrics(starts_with("cg_adoption_advantage_"))
+   labs_apply(
+     cols=starts_with("cg_adoption"),
+     values = list(
+       "1" = "Stimme überhaupt nicht zu",
+       "2" = "Stimme nicht zu",
+       "3" = "Unentschieden",
+       "4" = "Stimme zu",
+       "5" =  "Stimme voll und ganz zu"
+     )
+   ) \%>\%
+   plot_metrics(starts_with("cg_adoption"))
+
 }
