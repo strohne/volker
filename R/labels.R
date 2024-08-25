@@ -128,10 +128,10 @@ codebook <- function(data, cols) {
 
 #' Get the current codebook and store it in the codebook attribute.
 #'
+#' `r lifecycle::badge("experimental")`
+#'
 #' You can restore the labels after mutate operations by calling
 #' \link{labs_restore}.
-#'
-#' `r lifecycle::badge("experimental")`
 #'
 #' @param data A data frame.
 #' @return A data frame.
