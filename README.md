@@ -428,22 +428,6 @@ You can try alternative versions:
   remotes::install_github("strohne/volker", ref="beta", upgrade="never")
   ```
 
-**2. After installing the package, load it:**
-
-``` r
-library(volker)
-```
-
-**3. Finally, use it:**
-
-``` r
-# Example data
-data <- volker::chatgpt
-
-# Example table
-tab_metrics(data, sd_age, sd_gender)
-```
-
 ## Special features
 
 - Simple tables, simple plots, simple reports.  
