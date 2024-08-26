@@ -9,8 +9,7 @@
 \arguments{
 \item{data}{Dataframe with the columns item, value, and .cross}
 
-\item{ci}{Whether to plot confidence intervals.
-For now only supported for correlation coefficients. Default is TRUE.}
+\item{ci}{Whether to plot confidence intervals. Provide the columns low and high in data.}
 
 \item{base}{The plot base as character or NULL.}
 

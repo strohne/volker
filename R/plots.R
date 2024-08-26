@@ -1443,7 +1443,9 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, ci =
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column to correlate.
+#' @param ci Whether to plot confidence intervals of the correlation coefficent.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param method The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1458,7 +1460,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, ci =
 #'
 #'@export
 #'@importFrom rlang .data
-plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, negative = FALSE, method = "pearson", title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, ci = TRUE, method = "pearson", title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -1549,8 +1551,8 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, negative = FAL
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
-#' @param method The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.
 #' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param method The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.
 #' @param numbers Controls whether to display correlation coefficients on the plot.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
@@ -1566,7 +1568,7 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, negative = FAL
 #'
 #'@export
 #'@importFrom rlang .data
-plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", negative = FALSE, numbers = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, method = "pearson", numbers = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -1976,8 +1978,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #' @keywords internal
 #'
 #' @param data Dataframe with the columns item, value, and .cross
-#' @param ci Whether to plot confidence intervals.
-#'           For now only supported for correlation coefficients. Default is TRUE.
+#' @param ci Whether to plot confidence intervals. Provide the columns low and high in data.
 #' @param base The plot base as character or NULL.
 #' @param limits The scale limits.
 #' @param title The plot title as character or NULL.

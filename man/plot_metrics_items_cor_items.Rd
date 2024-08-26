@@ -8,8 +8,8 @@ plot_metrics_items_cor_items(
   data,
   cols,
   cross,
-  method = "pearson",
   negative = FALSE,
+  method = "pearson",
   numbers = FALSE,
   title = TRUE,
   labels = TRUE,
@@ -24,9 +24,9 @@ plot_metrics_items_cor_items(
 
 \item{cross}{Tidyselect item variables to correlate (e.g. starts_with...).}
 
-\item{method}{The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.}
-
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
+
+\item{method}{The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.}
 
 \item{numbers}{Controls whether to display correlation coefficients on the plot.}
 

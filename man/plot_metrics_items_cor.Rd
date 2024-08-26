@@ -8,8 +8,8 @@ plot_metrics_items_cor(
   data,
   cols,
   cross,
-  ci = FALSE,
   negative = FALSE,
+  ci = TRUE,
   method = "pearson",
   title = TRUE,
   labels = TRUE,
@@ -25,6 +25,10 @@ plot_metrics_items_cor(
 \item{cross}{The column to correlate.}
 
 \item{negative}{If FALSE (default), negative values are recoded as missing values.}
+
+\item{ci}{Whether to plot confidence intervals of the correlation coefficent.}
+
+\item{method}{The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}
