@@ -1704,7 +1704,7 @@ tab_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = 
 #'
 #' @param df Data frame.
 #' @return Formatted  table produced by \link{kable}.
-knit_table <- function(df, ...) {
+.knit_table <- function(df, ...) {
   options(knitr.kable.NA = '')
 
   digits <- attr(df, "digits", exact = TRUE)
@@ -1738,7 +1738,7 @@ knit_table <- function(df, ...) {
   if (knitr::is_html_output()) {
     # Replace \n by <br>
     df <- df %>%
-      dplyr::mutate(dplyr::across(dplyr::where(is.character), knit_prepare)) %>%
+      dplyr::mutate(dplyr::across(dplyr::where(is.character), .knit_prepare)) %>%
       knitr::kable(
         "html",
         escape = FALSE,
@@ -1765,7 +1765,7 @@ knit_table <- function(df, ...) {
       )
   } else {
     df <- df %>%
-      dplyr::mutate(dplyr::across(dplyr::where(is.character), knit_prepare, "\\n")) %>%
+      dplyr::mutate(dplyr::across(dplyr::where(is.character), .knit_prepare, "\\n")) %>%
       knitr::kable(
         align = c("l", rep("r", ncol(df) - 1)),
         digits = digits,
@@ -1788,7 +1788,7 @@ knit_table <- function(df, ...) {
 #' @param x Markdown text.
 #' @param breaks Break replace text
 #' @return Markdown text with line breaks and escaped special characters.
-knit_prepare <- function(x, breaks = "<br>") {
+.knit_prepare <- function(x, breaks = "<br>") {
   x <- gsub("\n", breaks, x, fixed=TRUE)
   x <- gsub("*", "\\*", x, fixed=TRUE)
   x
@@ -1810,7 +1810,7 @@ knit_prepare <- function(x, breaks = "<br>") {
 #'
 #' @export
 print.vlkr_tbl <- function(x, ...) {
-  x <- knit_table(x)
+  x <- .knit_table(x)
   baseline <- attr(x, "baseline", exact=TRUE)
 
   if (!is.null(knitr::pandoc_to())) {

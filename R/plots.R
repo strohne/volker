@@ -1869,6 +1869,21 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
   pl
 }
 
+#' Get plot size and resolution for the current output format from the config
+#'
+#' @return A list with the elements
+.get_plot_resolution <- function() {
+  default <- dplyr::coalesce(getOption("vlkr.plot.resolution"), VLKR_PLOT_RESOLUTION)
+
+  fig_resolution <- default[[1]]
+  format <- ifelse(knitr::is_html_output(), 'html', knitr::pandoc_to())
+  if (!is.null(default[[format]])) {
+    fig_resolution <- default[[format]]
+  }
+
+  fig_resolution
+}
+
 #' Knit volker plots
 #'
 #' Automatically calculates the plot height from
@@ -1888,26 +1903,20 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
 #'           and provide information about the number of vertical items (rows)
 #'           and the maximum.
 #' @return Character string containing a html image tag, including the base64 encoded image.
-knit_plot <- function(pl) {
+.knit_plot <- function(pl) {
   # Get knitr and volkr chunk options
   chunk_options <- knitr::opts_chunk$get()
   plot_options <- attr(pl, "vlkr_options")
   baseline <- attr(pl, "baseline", exact=TRUE)
 
-  fig_width <- chunk_options$fig.width * 72
-  fig_height <- chunk_options$fig.height * 72
-
-  # Get resolution settings
+  # Get size and resolution settings
   # TODO: make configurable
-  fig_resolution <- VLKR_PLOT_RESOLUTION[[1]]
-  format <- ifelse(knitr::is_html_output(), 'html', knitr::pandoc_to())
-  if (!is.null(VLKR_PLOT_RESOLUTION[[format]])) {
-    fig_resolution <- VLKR_PLOT_RESOLUTION[[format]]
-  }
+  fig_resolution <- .get_plot_resolution()
 
   fig_dpi <- fig_resolution$dpi
   fig_scale <- fig_resolution$scale
-
+  fig_width <- chunk_options$fig.width * fig_resolution$dpi # *72
+  fig_height <- chunk_options$fig.height * fig_resolution$dpi # *72
 
   # TODO: GET PAGE WIDTH FROM SOMEWHERE
   # page_width <- dplyr::coalesce(chunk_options$page.width, 1)
@@ -1965,6 +1974,7 @@ knit_plot <- function(pl) {
 }
 
 
+
 #' Printing method for volker plots
 #'
 #' @keywords internal
@@ -2008,7 +2018,7 @@ print.vlkr_plt <- function(x, ...) {
 #' @method knit_print vlkr_plt
 #' @export
 knit_print.vlkr_plt <- function(x, ...) {
-  x <- knit_plot(x)
+  x <- .knit_plot(x)
   knitr::asis_output(x)
 }
 

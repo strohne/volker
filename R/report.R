@@ -359,9 +359,9 @@ print.vlkr_list <- function(x, ...) {
     # Objects
     else {
       if (inherits(obj, "vlkr_tbl")) {
-        newchunk <- knit_table(obj)
+        newchunk <- .knit_table(obj)
       } else if (inherits(obj, "vlkr_plt")) {
-        newchunk <- knit_plot(obj)
+        newchunk <- .knit_plot(obj)
 
       } else if (is.character(obj)) {
         newchunk <- obj

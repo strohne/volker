@@ -18,6 +18,8 @@ VLKR_NA_NUMERIC <- c(-9)
 
 #' Fill colors
 #'
+#' Override with \code{options(vlkr.discrete.fill=list(c("purple")))}.
+#'
 #' @keywords internal
 VLKR_FILLDISCRETE <- list(
   c("darkcyan"),
@@ -27,6 +29,8 @@ VLKR_FILLDISCRETE <- list(
 )
 
 #' Gradient colors
+#'
+#' Override with \code{options(vlkr.gradient.fill=list(c("white","black")))}.
 #'
 #' @keywords internal
 VLKR_FILLGRADIENT <- c("#e5f7ff", "#96dfde", "#008b8b", "#006363", "#001212")
@@ -46,6 +50,7 @@ VLKR_LINE_ALPHA <- 0.6
 
 #' Resolution settings for plots
 #'
+#' Override with \code{options(vlkr.plot.resolution=list(html = list(dpi = 192, scale = 2, width = 910, pxperline = 15)))}.
 #' Add a key for each output format when knitting a document.
 #'
 #' @keywords internal

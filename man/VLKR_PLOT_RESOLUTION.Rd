@@ -11,6 +11,7 @@ An object of class \code{list} of length 2.
 VLKR_PLOT_RESOLUTION
 }
 \description{
+Override with \code{options(vlkr.plot.resolution=list(html = list(dpi = 192, scale = 2, width = 910, pxperline = 15)))}.
 Add a key for each output format when knitting a document.
 }
 \keyword{internal}

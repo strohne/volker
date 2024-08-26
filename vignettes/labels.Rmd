@@ -11,7 +11,7 @@ editor_options:
 ---
 
 ```{r include=FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo = TRUE, fig.width = 7, fig.height = 5)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", echo = TRUE)
 
 library(dplyr)
 library(volker)

@@ -11,6 +11,6 @@ An object of class \code{character} of length 5.
 VLKR_FILLGRADIENT
 }
 \description{
-Gradient colors
+Override with \code{options(vlkr.gradient.fill=list(c("white","black")))}.
 }
 \keyword{internal}
