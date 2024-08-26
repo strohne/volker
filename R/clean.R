@@ -1,3 +1,51 @@
+#' Prepare data for calculation
+#'
+#' Clean data, check column selection, remove missing and negatives.
+#'
+#' @keywords internal
+#'
+#' @param data Data frame.
+#' @param cols The first column(s) selection.
+#' @param cross The second column(s) selection.
+#' @param negative Whether to remove negatives.
+#' @param clean Whether to clean data using \link{data_clean}.
+#'
+#' @return Cleaned data frame.
+#' @examples
+#' ds <- volker::chatgpt
+#' ds <- data_prepare(ds, sd_age, sd_gender)
+#' #@export
+#'
+data_prepare <- function(data, cols, cross, negative = TRUE, clean = TRUE) {
+
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ cols }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
+
+  # 4. Remove negatives
+  if (negative) {
+    data <- data_rm_negatives(data, {{ cols }})
+  }
+
+  data
+}
+
+
+
+
+
+
+
+
 #' Prepare dataframe for tabs, plots, and index operations
 #'
 #' The tibble remembers whether it was already cleaned and
