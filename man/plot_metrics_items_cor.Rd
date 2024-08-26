@@ -39,7 +39,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 A ggplot object.
 }
 \description{
-TODO: ADD CI PARAM AFTER MERGE WITH FEATURE ITEMS_GROUPED
+Multiple items correlated with one metric variable
 }
 \examples{
 library(volker)

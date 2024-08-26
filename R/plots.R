@@ -155,7 +155,7 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
   else if (is_items && is_grouped && is_metric) {
     plot_metrics_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
-  else if (is_items && !is_grouped && is_multi && !is_metric) {
+  else if (is_items && !is_grouped && is_multi && is_metric) {
     plot_metrics_items_cor_items(data, {{ cols }}, {{ cross }},  ...)
   }
 
@@ -1428,7 +1428,6 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, ci =
   # Plot
   .plot_lines(
     result,
-    ci = ci,
     scale = scale,
     title = title,
     limits = limits,
@@ -1439,7 +1438,6 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, ci =
 
 #' Multiple items correlated with one metric variable
 #'
-#' TODO: ADD CI PARAM AFTER MERGE WITH FEATURE ITEMS_GROUPED
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
@@ -1480,12 +1478,8 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, negative = FAL
   }
 
   # Calculate correlations
-  method_choice <- ifelse(method == "spearman", "spearman", "Pearson's r")
-  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method_choice, labels = labels)
-
-  # Add method column
-  result <- result %>%
-    dplyr::mutate(correlation_method = method_choice)
+  method <- ifelse(method == "spearman", "spearman", "Pearson's r")
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
 
   # Remove common item prefix
   prefix1 <- get_prefix(result$item1)
@@ -1497,25 +1491,22 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, negative = FAL
   )
 
   # Adjust result for plot
-  if (method == "spearman") {
+  result <- result %>%
+    dplyr::mutate(.cross = method) %>%
+    dplyr::rename(
+      item = "item1",
+      item2 = "item2",
+      value = ifelse(method == "spearman", "Spearman's rho", "Pearson's r")
+    )
+
+  if (method == "Pearson's r") {
     result <- result %>%
-      dplyr::rename(item = "item1",
-                    .cross = "item2",
-                    value = "Spearman's rho"
+      dplyr::rename(low = "ci low",
+                    high = "ci high"
       )
   }
 
-  else {
-    result <- result %>%
-      dplyr::rename(item = "item1",
-                    .cross = "item2",
-                    value = "Pearson's r",
-                    low = "ci low",
-                    high = "ci high"
-     )
-  }
-
-  # Get scale and limits
+  # Get limits
   method_range <- range(result$value, na.rm = TRUE)
 
   if (all(method_range >= 0 & method_range <= 1)) {
@@ -1523,8 +1514,6 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, negative = FAL
   } else {
     limits <- c(-1, 1)
   }
-
-  scale <- limits
 
   # Add title
   if (title == TRUE) {
@@ -1543,24 +1532,19 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, negative = FAL
   # Missings
   result <- .attr_transfer(result, data, "missings")
 
-  .plot_lines(
+  .plot_cor(
     result,
     ci = ci,
-    scale = scale,
     title = title,
     limits = limits,
-    method = TRUE,
-    base = paste0("n=", base_n, "; method=", method_choice)
+    base = paste0("n=", base_n)
   )
 
 }
 
 #' Heatmap for correlations between multiple items
 #'
-#'
-#' TODO: plot_metrics_items_cor (für eine cross-Variable) implementieren und die Weiche in plot_metrics einbauen
-#' TODO: Hilfe aktualisieren
-#'
+#' @keywords internal
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
@@ -1582,7 +1566,6 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, negative = FAL
 #'
 #'@export
 #'@importFrom rlang .data
-#'
 plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", negative = FALSE, numbers = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
@@ -1616,7 +1599,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   )
 
   method <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
-
   method_range <- range(result[[method]], na.rm = TRUE)
 
   # Plot
@@ -1631,16 +1613,11 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 
   } else {
 
-    # # range -1 to 1
-    # pl <- pl + ggplot2::scale_fill_gradient2(
-    #   low = VLKR_LOW, high = VLKR_HIGH,
-    #   mid = VLKR_MID, midpoint = 0,
-    #   limits = c(-1, 1))
+    # range -1 to 1
     pl <- pl + ggplot2::scale_fill_gradientn(
       colors = vlkr_colors_polarized(),
       limits = c(-1,1)
     )
-
   }
 
   if (numbers) {
@@ -1652,9 +1629,10 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       ggplot2::scale_color_gradientn(
         colors = VLKR_COLORPOLARIZED,
         limits = c(-1,1),
-        guide=FALSE
+        guide = "none"
       )
   }
+
   # Add labels
   if (labels)
     pl <- pl + ggplot2::labs(
@@ -1676,11 +1654,16 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     pl <- pl + ggplot2::ggtitle(label = title)
   }
 
-  # Wrap labels
+  # Wrap labels and adjust text size
   pl <- pl +
     ggplot2::scale_y_discrete(labels = scales::label_wrap(40)) +
-    #ggplot2::scale_x_discrete(labels = scales::label_wrap(40)) +
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = get_angle(result$item1), hjust = 1) ) +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(
+        angle = get_angle(result$item1),
+        hjust = 1,
+        size = ggplot2::theme_get()$axis.text.y$size
+      )
+    ) +
     ggplot2::scale_x_discrete(labels = trunc_labels()) +
     ggplot2::coord_fixed()
 
@@ -1741,7 +1724,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   }
 
   pl <- pl +
-    ggplot2::scale_y_continuous(labels = scales::percent, limits=limits) +
+    ggplot2::scale_y_continuous(labels = scales::percent, limits = limits) +
     ggplot2::scale_x_discrete(
       labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)),
       limits = rev
@@ -1912,15 +1895,12 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #'
 #' @param data Dataframe with the columns item, value, and .cross
 #' @param scale Passed to the label scale function.
-#' @param ci Whether to plot confidence intervals.
-#'           For now only supported for correlation coefficents.
-#' @param method Depict method on legend if provided.
 #' @param base The plot base as character or NULL.
 #' @param limits The scale limits.
 #' @param title The plot title as character or NULL.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-.plot_lines <- function(data, scale = NULL, ci = FALSE, method = FALSE, base = NULL, limits = NULL, title = NULL) {
+.plot_lines <- function(data, scale = NULL, base = NULL, limits = NULL, title = NULL) {
 
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(
@@ -1930,32 +1910,8 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       group = .data$.cross
     )
     ) +
-    ggplot2::geom_point(size=3, shape=VLKR_POINT)
-
-  if (method) {
-    pl <- data %>%
-      ggplot2::ggplot(ggplot2::aes(
-        x = .data$item,
-        y = .data$value,
-        color = .data$correlation_method
-      )
-      ) +
-      ggplot2::geom_point(size=3, shape=VLKR_COR_POINT)
-  }
-
-  if (!ci && !method) {
-    pl <- pl +
-      ggplot2::geom_line(alpha = VLKR_LINE_ALPHA)
-  }
-
-  if (ci) {
-    pl <- pl +
-      ggplot2::geom_errorbar(
-        ggplot2::aes(ymin = .data$low, ymax = .data$high),
-        orientation ="x",
-        width=0.2,
-        colour = VLKR_COLOR_CI)
-  }
+    ggplot2::geom_point(size=3, shape=VLKR_POINT) +
+    ggplot2::geom_line(alpha = VLKR_LINE_ALPHA)
 
   # Set scale
   if (!is.null(scale)) {
@@ -2002,15 +1958,76 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     pl <- pl + ggplot2::labs(caption = base)
   }
 
-  if (method) {
-    pl <- pl + ggplot2::theme(
-      legend.position = "none"
+  # Convert to vlkr_plot
+  pl <- .attr_transfer(pl, data, "missings")
+  .to_vlkr_plot(pl)
+
+}
+
+
+#' Helper function: plot cor and regression outputs
+#'
+#' @keywords internal
+#'
+#' @param data Dataframe with the columns item, value, and .cross
+#' @param ci Whether to plot confidence intervals.
+#'           For now only supported for correlation coefficients. Default is TRUE.
+#' @param base The plot base as character or NULL.
+#' @param limits The scale limits.
+#' @param title The plot title as character or NULL.
+#' @return A ggplot object.
+#' @importFrom rlang .data
+.plot_cor <- function(data, ci = TRUE, base = NULL, limits = NULL, title = NULL) {
+
+  pl <- data %>%
+    ggplot2::ggplot(ggplot2::aes(
+      x = .data$item,
+      y = .data$value,
+      color = .data$.cross,
+      group = .data$.cross
     )
+  ) +
+    ggplot2::geom_point(
+      size=3,
+      shape=VLKR_COR_POINT,
+      color = vlkr_colors_discrete(1)
+      )
+
+  if (ci) {
+    pl <- pl +
+      ggplot2::geom_errorbar(
+        ggplot2::aes(ymin = .data$low, ymax = .data$high),
+        orientation ="x",
+        width=0.2,
+        colour = VLKR_COLOR_CI)
+  }
+
+  # Limits
+  if (!is.null(limits)){
+    pl <- pl +
+      ggplot2::coord_flip(ylim = limits)
+  }
+
+  # Add title
+  if (!is.null(title)) {
+    pl <- pl + ggplot2::ggtitle(label = title)
+  }
+
+  # Omit legend and add value to x-axis
+  y_label <- unique(data$.cross)
+
+  pl <- pl +
+    ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(y = y_label)
+
+  # Add base
+  if (!is.null(base)) {
+    pl <- pl + ggplot2::labs(caption = base)
   }
 
   # Convert to vlkr_plot
   pl <- .attr_transfer(pl, data, "missings")
-  .to_vlkr_plot(pl)
+  .to_vlkr_plot(pl, theme_options = list(axis.title.x = TRUE))
 
 }
 

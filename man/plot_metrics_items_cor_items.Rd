@@ -43,8 +43,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 A ggplot object.
 }
 \description{
-TODO: plot_metrics_items_cor (für eine cross-Variable) implementieren und die Weiche in plot_metrics einbauen
-TODO: Hilfe aktualisieren
+Heatmap for correlations between multiple items
 }
 \examples{
 library(volker)
@@ -53,3 +52,4 @@ data <- volker::chatgpt
 plot_metrics_items_cor_items(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 
 }
+\keyword{internal}
