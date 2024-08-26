@@ -1872,16 +1872,23 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
 #' Get plot size and resolution for the current output format from the config
 #'
 #' @return A list with the elements
-.get_plot_resolution <- function() {
-  default <- dplyr::coalesce(getOption("vlkr.plot.resolution"), VLKR_PLOT_RESOLUTION)
+.get_fig_settings <- function() {
+  default <- dplyr::coalesce(getOption("vlkr.fig.settings"), VLKR_FIG_SETTINGS)
+  result <- default[[1]]
 
-  fig_resolution <- default[[1]]
+  # Select by format
   format <- ifelse(knitr::is_html_output(), 'html', knitr::pandoc_to())
   if (!is.null(default[[format]])) {
-    fig_resolution <- default[[format]]
+    result <- default[[format]]
   }
 
-  fig_resolution
+  # Override width with chunk options
+  chunk_options <- knitr::opts_current$get()
+  if (!is.null(chunk_options$vlkr.fig.width)) {
+     result$width <- as.numeric(chunk_options$vlkr.fig.width)
+  }
+
+  result
 }
 
 #' Knit volker plots
@@ -1904,41 +1911,32 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
 #'           and the maximum.
 #' @return Character string containing a html image tag, including the base64 encoded image.
 .knit_plot <- function(pl) {
-  # Get knitr and volkr chunk options
-  chunk_options <- knitr::opts_chunk$get()
-  plot_options <- attr(pl, "vlkr_options")
-  baseline <- attr(pl, "baseline", exact=TRUE)
+
+  # Get plot options
+  plot_options <- attr(pl, "vlkr_options", exact = TRUE)
+  baseline <- attr(pl, "baseline", exact = TRUE)
 
   # Get size and resolution settings
-  # TODO: make configurable
-  fig_resolution <- .get_plot_resolution()
-
-  fig_dpi <- fig_resolution$dpi
-  fig_scale <- fig_resolution$scale
-  fig_width <- chunk_options$fig.width * fig_resolution$dpi # *72
-  fig_height <- chunk_options$fig.height * fig_resolution$dpi # *72
-
-  # TODO: GET PAGE WIDTH FROM SOMEWHERE
-  # page_width <- dplyr::coalesce(chunk_options$page.width, 1)
+  fig_settings <- .get_fig_settings()
+  fig_dpi <- fig_settings$dpi
+  fig_scale <- fig_settings$scale
+  fig_width <- fig_settings$width
 
   # Calculate plot height
-  if (!is.null(plot_options[["rows"]])) {
-    fig_width <- fig_resolution$width
-    px_perline <- fig_resolution$pxperline
+  rows <- dplyr::coalesce(plot_options[["rows"]], 10)
+  px_perline <- fig_settings$pxperline
 
-    # Buffer above and below the diagram
-    px_offset <- VLKR_PLOT_OFFSETROWS * px_perline
-    if (!is.null(pl$labels$title)) {
-      px_offset <- px_offset + VLKR_PLOT_TITLEROWS * px_perline
-    }
-
-    rows <- plot_options[["rows"]]
-
-    lines_wrap <- dplyr::coalesce(plot_options[["labwrap"]], getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)
-    lines_perrow <- (dplyr::coalesce(plot_options[["maxlab"]], 1) %/% lines_wrap) + 2
-
-    fig_height <- (rows * lines_perrow * px_perline) + px_offset
+  # Buffer above and below the diagram
+  px_offset <- VLKR_PLOT_OFFSETROWS * px_perline
+  if (!is.null(pl$labels$title)) {
+    px_offset <- px_offset + VLKR_PLOT_TITLEROWS * px_perline
   }
+
+  lines_wrap <- dplyr::coalesce(plot_options[["labwrap"]], getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)
+  lines_perrow <- (dplyr::coalesce(plot_options[["maxlab"]], 1) %/% lines_wrap) + 2
+
+  fig_height <- (rows * lines_perrow * px_perline) + px_offset
+
 
   # if (length(dev.list()) > 0) {
   #   dev.off()

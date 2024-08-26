@@ -50,11 +50,12 @@ VLKR_LINE_ALPHA <- 0.6
 
 #' Resolution settings for plots
 #'
-#' Override with \code{options(vlkr.plot.resolution=list(html = list(dpi = 192, scale = 2, width = 910, pxperline = 15)))}.
+#' Override with \code{options(vlkr.fig.settings=list(html = list(dpi = 192, scale = 2, width = 910, pxperline = 15)))}.
 #' Add a key for each output format when knitting a document.
+#' You can override the width by setting vlkr.fig.width in the chunk options.
 #'
 #' @keywords internal
-VLKR_PLOT_RESOLUTION <- list(
+VLKR_FIG_SETTINGS <- list(
   html = list(dpi = 192, scale = 2, width = 910, pxperline = 15),
 
   # Results in 16,51 cm width at 300 dpi
