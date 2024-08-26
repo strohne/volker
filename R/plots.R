@@ -1602,7 +1602,13 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   method_range <- range(result[[method]], na.rm = TRUE)
 
   # Plot
-  pl <- ggplot2::ggplot(result, ggplot2::aes(y = item1, x = item2, fill = !!sym(method))) +
+  pl <- result %>%
+    ggplot2::ggplot(ggplot2::aes(
+      y = .data$item1,
+      x = .data$item2,
+      fill = !!sym(method)
+      )
+    ) +
     ggplot2::geom_tile()
 
   if (all(method_range >= 0 & method_range <= 1)) {
@@ -2083,7 +2089,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     if (isTRUE(theme_options)) {
       theme_options <- list()
     }
-    theme_options <- modifyList(list(axis.text.x = TRUE, axis.text.y = TRUE, axis.title.x = FALSE, axis.title.y = FALSE), theme_options)
+    theme_options <- utils::modifyList(list(axis.text.x = TRUE, axis.text.y = TRUE, axis.title.x = FALSE, axis.title.y = FALSE), theme_options)
 
 
     if (isFALSE(theme_options$axis.title.x)) {
