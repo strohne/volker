@@ -4,12 +4,12 @@
 \alias{.knit_prepare}
 \title{Prepare markdown content for table rendering}
 \usage{
-.knit_prepare(x, breaks = "<br>")
+.knit_prepare(x, wrap = FALSE)
 }
 \arguments{
 \item{x}{Markdown text.}
 
-\item{breaks}{Break replace text}
+\item{wrap}{Wrap text after the given number of characters.}
 }
 \value{
 Markdown text with line breaks and escaped special characters.

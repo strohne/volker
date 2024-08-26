@@ -1753,19 +1753,21 @@ tab_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = 
       )
   } else if (knitr::is_latex_output()) {
     df <- df %>%
-      dplyr::mutate_all(kableExtra::linebreak) %>%
+      dplyr::mutate(dplyr::across(dplyr::where(is.character), ~ .knit_prepare(., wrap = VLKR_PLOT_LABELWRAP))) %>%
       knitr::kable(
         "latex",
-        booktabs = TRUE,
+        #booktabs = TRUE,
         escape = FALSE,
-        align = c("l", rep("r", ncol(df) - 1)),
+        #align = c("l", rep("r", ncol(df) - 1)),
         digits = digits,
+        col.names = .knit_prepare(colnames(df), wrap = VLKR_PLOT_LEGENDWRAP),
         #format.args = numberformat,
         ...
       )
+
   } else if (!is.null(knitr::pandoc_to())) {
     df <- df %>%
-      dplyr::mutate(dplyr::across(dplyr::where(is.character), ~ .knit_prepare(., "\\n"))) %>%
+      dplyr::mutate(dplyr::across(dplyr::where(is.character), .knit_prepare)) %>%
       knitr::kable(
         align = c("l", rep("r", ncol(df) - 1)),
         digits = digits,
@@ -1793,11 +1795,28 @@ tab_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = 
 #' @keywords internal
 #'
 #' @param x Markdown text.
-#' @param breaks Break replace text
+#' @param wrap Wrap text after the given number of characters.
 #' @return Markdown text with line breaks and escaped special characters.
-.knit_prepare <- function(x, breaks = "<br>") {
-  x <- gsub("\n", breaks, x, fixed=TRUE)
+.knit_prepare <- function(x, wrap = FALSE) {
+
+  if (knitr::is_html_output()) {
+    x <- gsub("\n", "<br>", x, fixed=TRUE)
+  } else {
+    x <- gsub("\n", " ", x, fixed=TRUE)
+  }
+
   x <- gsub("*", "\\*", x, fixed=TRUE)
+
+  if (knitr::is_latex_output()){
+    x <- gsub("%", "\\%", x, fixed=TRUE)
+    x <- gsub("&", "\\&", x, fixed=TRUE)
+    x <- gsub("$", "\\$", x, fixed=TRUE)
+    x <- gsub("_", "\\_", x, fixed=TRUE)
+
+    if (is.numeric(wrap)) {
+      x <- kableExtra::linebreak(wrap_label(x, wrap))
+    }
+  }
   x
 }
 
