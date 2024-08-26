@@ -1763,9 +1763,16 @@ tab_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = 
         #format.args = numberformat,
         ...
       )
+  } else if (!is.null(knitr::pandoc_to())) {
+    df <- df %>%
+      dplyr::mutate(dplyr::across(dplyr::where(is.character), ~ .knit_prepare(., "\\n"))) %>%
+      knitr::kable(
+        align = c("l", rep("r", ncol(df) - 1)),
+        digits = digits,
+        ...
+      )
   } else {
     df <- df %>%
-      dplyr::mutate(dplyr::across(dplyr::where(is.character), .knit_prepare, "\\n")) %>%
       knitr::kable(
         align = c("l", rep("r", ncol(df) - 1)),
         digits = digits,
