@@ -1910,7 +1910,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #'
 #' @keywords internal
 #'
-#' @param data Dataframe with the columns item, value.
+#' @param data Dataframe with the columns item, value, and .cross
 #' @param scale Passed to the label scale function.
 #' @param ci Whether to plot confidence intervals.
 #'           For now only supported for correlation coefficents.
