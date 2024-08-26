@@ -84,7 +84,7 @@ plot_counts(
 ```
 
 ### 6. Group probabilities of multiply items by a metric variable
-```{r}
+```{r, fig.height=5}
 plot_counts(
   data, starts_with("cg_adoption_"), sd_age, metric = TRUE,
   category=c("agree", "strongly agree")
@@ -129,4 +129,39 @@ data %>%
 # For now confidence intervals only supported for pearsons r 
 plot_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric=T, 
              method="pearson", ci=T)
+```
+
+## Correlations
+
+### Correlation of metric items with metric items
+
+```{r, fig.width=6, fig.height=6}
+
+plot_metrics_items_cor_items(
+  data, starts_with("cg_adoption"), starts_with("cg_adoption"), metric = TRUE,
+  numbers = TRUE
+)
+
+```
+
+### Correlation of metric items with categorical items
+
+```{r}
+# TODO
+# tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+```
+
+
+### Correlation of categorical items with metric items
+
+```{r}
+# TODO
+#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric = TRUE)
+```
+
+### Correlation of categorical items with categorical items
+
+```{r}
+# TODO
+#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 ```

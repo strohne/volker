@@ -4,12 +4,25 @@
 \alias{.plot_lines}
 \title{Helper function: plot grouped line chart}
 \usage{
-.plot_lines(data, scale = NULL, base = NULL, limits = NULL, title = NULL)
+.plot_lines(
+  data,
+  scale = NULL,
+  ci = FALSE,
+  method = FALSE,
+  base = NULL,
+  limits = NULL,
+  title = NULL
+)
 }
 \arguments{
 \item{data}{Dataframe with the columns item, value.}
 
 \item{scale}{Passed to the label scale function.}
+
+\item{ci}{Whether to plot confidence intervals.
+For now only supported for correlation coefficents.}
+
+\item{method}{Depict method on legend if provided.}
 
 \item{base}{The plot base as character or NULL.}
 

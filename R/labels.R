@@ -857,7 +857,7 @@ trunc_labels <- function(max_length = 20) {
 #' @param labels Vector of labels to check.
 #' @param threshold Length threshold beyond which the angle is applied.
 #'                  Default is 20.
-#' @parm angle The angle to apply if any label exceeds the threshold.
+#' @param angle The angle to apply if any label exceeds the threshold.
 #'            Default is 45.
 #'
 #' @return A single angle value.

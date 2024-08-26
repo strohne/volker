@@ -981,13 +981,10 @@ plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALS
   base_n <- data %>% nrow()
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
-  # Add theme
-  pl <- add_theme(pl, text_y = FALSE)
-
   # Pass row number and label length to the knit_plot() function
   # TODO: Don't set rows manually
   pl <- .attr_transfer(pl, data, "missings")
-  .to_vlkr_plot(pl, rows=4)
+  .to_vlkr_plot(pl, rows=4, theme_options = list(axis.text.y = FALSE))
 }
 
 #' Output averages for multiple variables
@@ -1202,9 +1199,6 @@ plot_metrics_one_cor <- function(data, col, cross, negative = FALSE, limits = NU
       ggplot2::labs(x = labs[1], y = labs[2])
   }
 
-  # Add theme
-  pl <- add_theme(pl, title_x = TRUE, title_y = TRUE)
-
   # Add title
   if (title == TRUE) {
     title <- trim_label(prefix)
@@ -1221,7 +1215,7 @@ plot_metrics_one_cor <- function(data, col, cross, negative = FALSE, limits = NU
 
   # Convert to vlkr_plot
   pl <- .attr_transfer(pl, data, "missings")
-  .to_vlkr_plot(pl, rows=15)
+  .to_vlkr_plot(pl, rows=15,  theme_options = list(axis.title.x = TRUE, axis.title.y = TRUE))
 }
 
 #' Output averages for multiple variables
@@ -1589,7 +1583,7 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, negative = FAL
 #'@export
 #'@importFrom rlang .data
 #'
-plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", negative = FALSE, numbers = F, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", negative = FALSE, numbers = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -1632,24 +1626,34 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   if (all(method_range >= 0 & method_range <= 1)) {
     # range 0 to 1
     pl <- pl + ggplot2::scale_fill_gradientn(
-      colors = VLKR_FILLGRADIENT,
+      colors = vlkr_colors_sequential(),
       limits = c(0,1))
 
   } else {
 
-    # range -1 to 1
-    pl <- pl + ggplot2::scale_fill_gradient2(
-      low = VLKR_LOW, high = VLKR_HIGH,
-      mid = VLKR_MID, midpoint = 0,
-      limits = c(-1, 1))
+    # # range -1 to 1
+    # pl <- pl + ggplot2::scale_fill_gradient2(
+    #   low = VLKR_LOW, high = VLKR_HIGH,
+    #   mid = VLKR_MID, midpoint = 0,
+    #   limits = c(-1, 1))
+    pl <- pl + ggplot2::scale_fill_gradientn(
+      colors = vlkr_colors_polarized(),
+      limits = c(-1,1)
+    )
+
   }
 
   if (numbers) {
-    pl <- pl + ggplot2::geom_text(
-      ggplot2::aes(label = !!sym(method)),
-      size = 3,
-      color = ifelse(result[[method]] < 0,
-                     VLKR_NEGATIVE, VLKR_POSITIVE))
+    pl <- pl +
+      ggplot2::geom_text(
+        ggplot2::aes(label = !!sym(method), color = !!sym(method)),
+        size = 3,
+      ) +
+      ggplot2::scale_color_gradientn(
+        colors = VLKR_COLORPOLARIZED,
+        limits = c(-1,1),
+        guide=FALSE
+      )
   }
   # Add labels
   if (labels)
@@ -1683,9 +1687,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   # Add base
   base_n <- nrow(data)
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
-
-  # Add theme
-  pl <- add_theme(pl)
 
   # Convert to vlkr_plot
   pl <- .attr_transfer(pl, data, "missings")
@@ -1797,9 +1798,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     pl <- pl + ggplot2::labs(caption = base)
   }
 
-  # Add theme
-  pl <- add_theme(pl)
-
   # Convert to vlkr_plot
   attr(pl, "missings") <- data_missings
   .to_vlkr_plot(pl)
@@ -1894,9 +1892,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   if (!is.null(base)) {
     pl <- pl + ggplot2::labs(caption = base)
   }
-
-  # Add theme
-  pl <- add_theme(pl)
 
   # Maximum label length
   maxlab  <- data %>%
@@ -2007,9 +2002,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     pl <- pl + ggplot2::labs(caption = base)
   }
 
-  # Add theme
-  pl <- add_theme(pl)
-
   if (method) {
     pl <- pl + ggplot2::theme(
       legend.position = "none"
@@ -2051,9 +2043,48 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #' @param maxlab The character length of the longest label to be plotted. Will be automatically determined when NULL.
 #'               on the vertical axis.
 #' @param baseline Whether to print a message about removed values.
+#' @param theme_options Enable or disable axis titles and text, by providing a list with any of the elements
+#'                      axis.text.x, axis.text.y, axis.title.x, axis.title.y set to TRUE or FALSE.
 #' @return A ggplot object with vlkr_plt class.
-.to_vlkr_plot <- function(pl, rows = NULL, maxlab = NULL, baseline = TRUE) {
+.to_vlkr_plot <- function(pl, rows = NULL, maxlab = NULL, baseline = TRUE, theme_options = TRUE) {
+
+  # Add vlkr_plt class
   class(pl) <- c("vlkr_plt", class(pl))
+
+  # Apply standard theme
+  if (!is.null(theme_options)) {
+
+    theme_args <- list(
+      legend.title = ggplot2::element_blank(),
+      plot.caption = ggplot2::element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position = "plot"
+    )
+
+
+    # TODO: simplify
+    if (isTRUE(theme_options)) {
+      theme_options <- list()
+    }
+    theme_options <- modifyList(list(axis.text.x = TRUE, axis.text.y = TRUE, axis.title.x = FALSE, axis.title.y = FALSE), theme_options)
+
+
+    if (isFALSE(theme_options$axis.title.x)) {
+      theme_args$axis.title.x <-  ggplot2::element_blank()
+    }
+    if (isFALSE(theme_options$axis.title.y)) {
+      theme_args$axis.title.y <-  ggplot2::element_blank()
+    }
+    if (isFALSE(theme_options$axis.text.x)) {
+      theme_args$axis.text.x <-  ggplot2::element_blank()
+    }
+    if (isFALSE(theme_options$axis.text.y)) {
+      theme_args$axis.text.y <-  ggplot2::element_blank()
+    }
+
+    pl <- pl + do.call(ggplot2::theme, theme_args)
+
+  }
 
   # Calculate rows and label lengths
   plot_data <- ggplot2::ggplot_build(pl)
@@ -2217,55 +2248,6 @@ print.vlkr_plt <- function(x, ...) {
 #' @export
 plot.vlkr_plt <- print.vlkr_plt
 
-#' Apply standard theme for volker plots
-#'
-#' Set text axis size
-#'
-#' @keywords internal
-#'
-#' @param pl The volker plot.
-#' @param text_x Whether to plot text on x-axis.
-#' @param text_y Whether to plot text on y-axis.
-#' @return A custom theme.
-#'
-add_theme <- function(pl, text_x = TRUE, text_y = TRUE, title_x = FALSE, title_y = FALSE, legend = TRUE) {
-
-  if (text_x) {
-    text_x_size <- ggplot2::element_text(size = VLKR_TEXT_X_AXIS)
-  } else {
-    text_x_size <- ggplot2::element_blank()
-  }
-
-  if (text_y) {
-    text_y_size <- ggplot2::element_text(size = VLKR_TEXT_Y_AXIS)
-  } else {
-    text_y_size <- ggplot2::element_blank()
-  }
-
-  if (title_x) {
-    title_x_size <- ggplot2::element_text(size = VLKR_TEXT_X_AXIS)
-  } else {
-    title_x_size <- ggplot2::element_blank()
-  }
-
-  if (title_y) {
-    title_y_size <- ggplot2::element_text(size = VLKR_TEXT_Y_AXIS)
-  } else {
-    title_y_size <- ggplot2::element_blank()
-  }
-
-  pl + ggplot2::theme(
-    axis.title.x = title_x_size,
-    axis.title.y = title_y_size,
-    axis.text.x = text_x_size,
-    axis.text.y = text_y_size,
-    legend.title = ggplot2::element_blank(),
-    plot.caption = ggplot2::element_text(size = VLKR_TEXT_CAPTION, hjust = 0),
-    plot.title.position = "plot",
-    plot.caption.position = "plot"
-  )
-}
-
 #' Define a default theme for volker plots
 #'
 #' Set ggplot colors, sizes and layout parameters.
@@ -2357,18 +2339,41 @@ vlkr_colors_discrete <- function(n) {
 #'
 #' @keywords internal
 #'
-#' @param n Number of colors.
+#' @param n Number of colors or NULL to get the raw colors from the config
 #' @return A vector of colors.
-vlkr_colors_sequential <- function(n) {
+vlkr_colors_sequential <- function(n = NULL) {
   colors <- getOption("vlkr.gradient.fill")
   if (is.null(colors)) {
     colors <- VLKR_FILLGRADIENT
   }
 
 
-  colors <- scales::gradient_n_pal(colors)(
-    seq(0,1,length.out=n)
-  )
+  if (!is.null(n)) {
+    colors <- scales::gradient_n_pal(colors)(
+      seq(0,1,length.out=n)
+    )
+  }
   colors
 }
 
+#' Get colors for polarized scales
+#'
+#' Creates a gradient scale based on VLKR_FILLPOLARIZED.
+#'
+#' @keywords internal
+#'
+#' @param n Number of colors or NULL to get the raw colors from the config
+#' @return A vector of colors.
+vlkr_colors_polarized <- function(n = NULL) {
+  colors <- getOption("vlkr.polarized.fill")
+  if (is.null(colors)) {
+    colors <- VLKR_FILLPOLARIZED
+  }
+
+  if (!is.null(n)) {
+    colors <- scales::gradient_n_pal(colors)(
+      seq(0,1,length.out=n)
+    )
+  }
+  colors
+}

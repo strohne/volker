@@ -38,12 +38,8 @@ VLKR_COLOR_CI <- "#222222"
 #' Polarized colors
 #'
 #' @keywords internal
-VLKR_NEGATIVE <- "#E6AB02"
-VLKR_POSITIVE <- "white"
-VLKR_NEUTRAL <- "#FFFFFF"
-VLKR_LOW <- "#D95F02"
-VLKR_MID <- "white"
-VLKR_HIGH <- "#66A61E"
+VLKR_FILLPOLARIZED <- c("#B34E00", "#D95F02", "#FFFFFF", "#66A61E","#3B660A")
+VLKR_COLORPOLARIZED <- c("#FFFFFF")
 
 # Thresholds
 VLKR_NORMAL_DIGITS <- 1
@@ -71,13 +67,6 @@ VLKR_PLOT_LABELWRAP <- 40
 VLKR_PLOT_LEGENDWRAP <- 20
 VLKR_PLOT_SCALEWRAP <- 10
 
-
-#' Element text size
-#'
-#' @keywords internal
-VLKR_TEXT_X_AXIS <- 11
-VLKR_TEXT_Y_AXIS <- 11
-VLKR_TEXT_CAPTION <- 8
 
 #' Shapes
 #'
