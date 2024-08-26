@@ -56,7 +56,7 @@ VLKR_LINE_ALPHA <- 0.6
 #'
 #' @keywords internal
 VLKR_FIG_SETTINGS <- list(
-  html = list(dpi = 192, scale = 2, width = 910, pxperline = 15),
+  html = list(dpi = 2 * 96, scale = 1.7, width = 910, pxperline = 15),
 
   # Results in 16,51 cm width at 300 dpi
   docx = list(dpi = 300, scale = 3, width = 650, pxperline = 15)

@@ -1871,9 +1871,9 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
 
 #' Get plot size and resolution for the current output format from the config
 #'
-#' @return A list with the elements
+#' @return A list with figure settings
 .get_fig_settings <- function() {
-  default <- dplyr::coalesce(getOption("vlkr.fig.settings"), VLKR_FIG_SETTINGS)
+  default <-modifyList(VLKR_FIG_SETTINGS, getOption("vlkr.fig.settings", list()))
   result <- default[[1]]
 
   # Select by format

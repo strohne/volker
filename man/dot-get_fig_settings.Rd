@@ -7,7 +7,7 @@
 .get_fig_settings()
 }
 \value{
-A list with the elements
+A list with figure settings
 }
 \description{
 Get plot size and resolution for the current output format from the config
