@@ -1896,16 +1896,26 @@ knit_plot <- function(pl) {
 
   fig_width <- chunk_options$fig.width * 72
   fig_height <- chunk_options$fig.height * 72
-  fig_dpi <- VLKR_PLOT_DPI
-  fig_scale <- fig_dpi / VLKR_PLOT_SCALE
+
+  # Get resolution settings
+  # TODO: make configurable
+  fig_resolution <- VLKR_PLOT_RESOLUTION[[1]]
+  format <- ifelse(knitr::is_html_output(), 'html', knitr::pandoc_to())
+  if (!is.null(VLKR_PLOT_RESOLUTION[[format]])) {
+    fig_resolution <- VLKR_PLOT_RESOLUTION[[format]]
+  }
+
+  fig_dpi <- fig_resolution$dpi
+  fig_scale <- fig_resolution$scale
+
 
   # TODO: GET PAGE WIDTH FROM SOMEWHERE
   # page_width <- dplyr::coalesce(chunk_options$page.width, 1)
 
   # Calculate plot height
   if (!is.null(plot_options[["rows"]])) {
-    fig_width <- VLKR_PLOT_WIDTH # TODO: make configurable
-    px_perline <- VLKR_PLOT_PXPERLINE # TODO: make configurable
+    fig_width <- fig_resolution$width
+    px_perline <- fig_resolution$pxperline
 
     # Buffer above and below the diagram
     px_offset <- VLKR_PLOT_OFFSETROWS * px_perline
@@ -1941,8 +1951,12 @@ knit_plot <- function(pl) {
   ))
   #dev.off()
 
-  base64_string <- base64enc::base64encode(pngfile)
-  result <- paste0('<img src="data:image/png;base64,', base64_string, '" width="100%">')
+  if (knitr::is_html_output()) {
+    base64_string <- base64enc::base64encode(pngfile)
+    result <- paste0('<img src="data:image/png;base64,', base64_string, '" width="100%">')
+  } else {
+    result <- paste0('![](', pngfile,')<!-- -->')
+  }
 
   if (!is.null(baseline)) {
     attr(result, "baseline") <- baseline
@@ -1968,22 +1982,34 @@ knit_plot <- function(pl) {
 #' @export
 print.vlkr_plt <- function(x, ...) {
 
-  if (knitr::is_html_output()) {
-
-    # TODO: leads to endless recursion
-    # x <- knit_plot(x)
-    # x <- knitr::asis_output(x)
-    # knitr::knit_print(x)
-
-    NextMethod()
-  } else {
-    NextMethod()
-  }
-
   baseline <- attr(x, "baseline", exact = TRUE)
+  NextMethod()
+
   if (!is.null(baseline)) {
     message(paste0("In the plot, ", baseline))
   }
+}
+
+#' Printing method for volker plots when knitting
+#'
+#' @keywords internal
+#'
+#' @param x The volker plot.
+#' @param ... Further parameters passed to print().
+#' @return Knitr asis output
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' pl <- plot_metrics(data, sd_age)
+#' print(pl)
+#'
+#' @importFrom knitr knit_print
+#' @method knit_print vlkr_plt
+#' @export
+knit_print.vlkr_plt <- function(x, ...) {
+  x <- knit_plot(x)
+  knitr::asis_output(x)
 }
 
 #' @rdname print.vlkr_plt

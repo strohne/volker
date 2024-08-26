@@ -85,11 +85,11 @@ by setting the close-parameter to `FALSE` and adding a new header
 on the fifth level (5 x # followed by the tab name). Close your new tabsheet with
 `#### {-}` (4 x #). See the example Markdown behind this vignette.
 
-### Adoption types
+#### Adoption types
 
 ```{r}
 data %>% 
-  filter(sd_gender != "divers") %>% 
+  filter(sd_gender != "diverse") %>% 
   report_counts(adopter, sd_gender, prop="rows", title= FALSE, close= FALSE)
 ```
 

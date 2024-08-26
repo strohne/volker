@@ -1765,7 +1765,12 @@ knit_table <- function(df, ...) {
       )
   } else {
     df <- df %>%
-      knitr::kable("pipe", align = c("l", rep("r", ncol(df) - 1)), digits = digits, ...)
+      dplyr::mutate(dplyr::across(dplyr::where(is.character), knit_prepare, "\\n")) %>%
+      knitr::kable(
+        align = c("l", rep("r", ncol(df) - 1)),
+        digits = digits,
+        ...
+      )
   }
 
   if (!is.null(baseline)) {
@@ -1781,9 +1786,10 @@ knit_table <- function(df, ...) {
 #' @keywords internal
 #'
 #' @param x Markdown text.
+#' @param breaks Break replace text
 #' @return Markdown text with line breaks and escaped special characters.
-knit_prepare <- function(x) {
-  x <- gsub("\n", "<br>", x, fixed=TRUE)
+knit_prepare <- function(x, breaks = "<br>") {
+  x <- gsub("\n", breaks, x, fixed=TRUE)
   x <- gsub("*", "\\*", x, fixed=TRUE)
   x
 }
@@ -1807,12 +1813,13 @@ print.vlkr_tbl <- function(x, ...) {
   x <- knit_table(x)
   baseline <- attr(x, "baseline", exact=TRUE)
 
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
 
     if (!is.null(baseline)) {
       x <- paste0(x,"  \n  ", baseline)
     }
 
+    x <- paste0(x, collapse= "\n")
     knitr::knit_print(knitr::asis_output(x))
 
   } else {

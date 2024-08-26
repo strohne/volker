@@ -46,7 +46,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
   chunks <- list()
 
   # Add title
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
     if (!is.character(title) && (title == TRUE)) {
       title <- get_title(data, {{ cols }})
     } else if (!is.character(title)) {
@@ -143,7 +143,7 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
   chunks <- list()
 
   # Add title
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
     if (!is.character(title) && (title == TRUE)) {
       title <- get_title(data, {{ cols }})
     } else if (!is.character(title)) {
@@ -280,7 +280,7 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 #'
 #' @export
 print.vlkr_list <- function(x, ...) {
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
     x %>%
       unlist() %>%
       paste0(collapse = "\n") %>%
@@ -333,7 +333,8 @@ print.vlkr_list <- function(x, ...) {
 #' @return A volker report object.
 .add_to_vlkr_rprt <- function(obj, chunks, tab = NULL) {
 
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
+  #if (knitr::is_html_output()) {
     # Tab
     if (!is.null(tab)) {
       tab <- paste0("\n##### ", tab, "  \n")
@@ -405,7 +406,7 @@ print.vlkr_list <- function(x, ...) {
 #'
 #' @export
 print.vlkr_rprt <- function(x, ...) {
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
     x %>%
       unlist() %>%
       paste0(collapse = "\n") %>%

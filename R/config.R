@@ -43,10 +43,19 @@ VLKR_LOWPERCENT <- 5
 VLKR_SCATTER_ALPHA <- 0.3
 VLKR_LINE_ALPHA <- 0.6
 
-VLKR_PLOT_DPI <- 192
-VLKR_PLOT_SCALE <- 96
-VLKR_PLOT_WIDTH <- 910
-VLKR_PLOT_PXPERLINE <- 15
+
+#' Resolution settings for plots
+#'
+#' Add a key for each output format when knitting a document.
+#'
+#' @keywords internal
+VLKR_PLOT_RESOLUTION <- list(
+  html = list(dpi = 192, scale = 2, width = 910, pxperline = 15),
+
+  # Results in 16,51 cm width at 300 dpi
+  docx = list(dpi = 300, scale = 3, width = 650, pxperline = 15)
+)
+
 VLKR_PLOT_OFFSETROWS <- 5
 VLKR_PLOT_TITLEROWS <- 2
 
