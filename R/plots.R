@@ -952,7 +952,7 @@ plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALS
       ggplot2::aes(x= .data$x, y = .data$y),
       data = mean_data,
       size=4,
-      shape=VLKR_POINT,
+      shape=VLKR_POINT_MEAN_SHAPE,
       color = "black"
     )
 
@@ -1171,7 +1171,7 @@ plot_metrics_one_cor <- function(data, col, cross, negative = FALSE, limits = NU
       x=.data[[col1]],
       y=.data[[col2]],)
     ) +
-    ggplot2::geom_point(size=3, alpha=VLKR_SCATTER_ALPHA)
+    ggplot2::geom_point(size=VLKR_POINT_SIZE, alpha=VLKR_POINT_ALPHA)
 
   # Scale and limits
   if (log == TRUE) {
@@ -1344,7 +1344,7 @@ plot_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, box = F
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, ci = F, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Check parameters
   check_is_dataframe(data)
   check_has_column(data, {{ cross }})
@@ -1740,11 +1740,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, me
     ggplot2::ylab("Share in percent") +
     ggplot2::coord_flip()
 
-  if (all(data$item == "TRUE")) {
-    pl <- pl +
-      ggplot2::theme(axis.text.y = ggplot2::element_blank())
-  }
-
   # Select scales:
   # - Simplify binary plots
   # - Generate a color scale for ordinal scales by vlkr_colors_sequential()
@@ -1791,7 +1786,8 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, me
 
   # Convert to vlkr_plot
   attr(pl, "missings") <- data_missings
-  .to_vlkr_plot(pl)
+
+  .to_vlkr_plot(pl, theme_options = list(axis.text.y = !all(data$item == "TRUE")))
 }
 
 
@@ -1918,7 +1914,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, me
       group = .data$.cross
     )
     ) +
-    ggplot2::geom_point(size=3, shape=VLKR_POINT) +
+    ggplot2::geom_point(size=VLKR_POINT_SIZE, shape=VLKR_POINT_MEAN_SHAPE) +
     ggplot2::geom_line(alpha = VLKR_LINE_ALPHA)
 
   # Set scale
@@ -1995,8 +1991,8 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, me
     )
   ) +
     ggplot2::geom_point(
-      size=3,
-      shape=VLKR_COR_POINT,
+      size=VLKR_POINT_SIZE,
+      shape=VLKR_POINT_COR_SHAPE,
       color = vlkr_colors_discrete(1)
       )
 
@@ -2069,6 +2065,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, me
 #' @param baseline Whether to print a message about removed values.
 #' @param theme_options Enable or disable axis titles and text, by providing a list with any of the elements
 #'                      axis.text.x, axis.text.y, axis.title.x, axis.title.y set to TRUE or FALSE.
+#'                      By default, titles (=scale labels) are disabled and text (= the tick labels) are enabled.
 #' @return A ggplot object with vlkr_plt class.
 .to_vlkr_plot <- function(pl, rows = NULL, maxlab = NULL, baseline = TRUE, theme_options = TRUE) {
 

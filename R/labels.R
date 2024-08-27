@@ -838,7 +838,6 @@ label_scale <- function(x, scale) {
 #' @keywords internal
 #'
 #' @param max_length Specifies max_length, default is 20.
-#'
 #' @return A function that truncates labels to the max_length,
 #'        appending "..." if shortened.
 trunc_labels <- function(max_length = 20) {
@@ -859,7 +858,6 @@ trunc_labels <- function(max_length = 20) {
 #'                  Default is 20.
 #' @param angle The angle to apply if any label exceeds the threshold.
 #'            Default is 45.
-#'
 #' @return A single angle value.
 get_angle <- function(labels, threshold = 20, angle = 45) {
   # Check if any label exceeds the threshold and return the angle accordingly

@@ -45,15 +45,6 @@ VLKR_COLOR_CI <- "#222222"
 VLKR_FILLPOLARIZED <- c("#B34E00", "#D95F02", "#FFFFFF", "#66A61E","#3B660A")
 VLKR_COLORPOLARIZED <- c("#FFFFFF")
 
-# Thresholds
-VLKR_NORMAL_DIGITS <- 1
-VLKR_SMALL_DIGITS <- 2
-
-VLKR_LOWPERCENT <- 5
-VLKR_SCATTER_ALPHA <- 0.3
-VLKR_LINE_ALPHA <- 0.6
-
-
 #' Resolution settings for plots
 #'
 #' Override with \code{options(vlkr.fig.settings=list(html = list(dpi = 192, scale = 2, width = 910, pxperline = 15)))}.
@@ -82,10 +73,21 @@ VLKR_PLOT_LABELWRAP <- 40
 VLKR_PLOT_LEGENDWRAP <- 20
 VLKR_PLOT_SCALEWRAP <- 10
 
+#' Output thresholds
+#'
+#' @keywords internal
+VLKR_NORMAL_DIGITS <- 1
+VLKR_SMALL_DIGITS <- 2
+VLKR_LOWPERCENT <- 5
 
 #' Shapes
 #'
 #' @keywords internal
-VLKR_COR_POINT <- 19
-VLKR_POINT <- 18
+VLKR_POINT_MEAN_SHAPE <- 18
+VLKR_POINT_COR_SHAPE <- 19
 
+#' Alpha values
+#'
+#' @keywords internal
+VLKR_POINT_ALPHA <- 0.3
+VLKR_LINE_ALPHA <- 0.6
