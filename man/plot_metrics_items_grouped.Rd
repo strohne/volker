@@ -9,7 +9,6 @@ plot_metrics_items_grouped(
   cols,
   cross,
   negative = FALSE,
-  ci = F,
   limits = NULL,
   title = TRUE,
   labels = TRUE,

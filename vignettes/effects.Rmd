@@ -47,9 +47,11 @@ effect_counts(data, adopter, sd_gender)
 ```
 
 
-# 2. Logistic regression with one metric predictor
+# 3. Logistic regression with one metric predictor
 ```{r}
-effect_counts(data, adopter, sd_age, metric = TRUE)
+
+# TODO
+# effect_counts(data, adopter, sd_age, metric = TRUE)
 ```
 
 

@@ -24,7 +24,8 @@ on the vertical axis.}
 \item{baseline}{Whether to print a message about removed values.}
 
 \item{theme_options}{Enable or disable axis titles and text, by providing a list with any of the elements
-axis.text.x, axis.text.y, axis.title.x, axis.title.y set to TRUE or FALSE.}
+axis.text.x, axis.text.y, axis.title.x, axis.title.y set to TRUE or FALSE.
+By default, titles (=scale labels) are disabled and text (= the tick labels) are enabled.}
 }
 \value{
 A ggplot object with vlkr_plt class.
