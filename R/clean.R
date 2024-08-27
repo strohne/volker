@@ -5,8 +5,8 @@
 #' @keywords internal
 #'
 #' @param data Data frame.
-#' @param cols The first column(s) selection.
-#' @param cross The second column(s) selection.
+#' @param cols The first column selection.
+#' @param cross The second column selection.
 #' @param negative Whether to remove negatives.
 #' @param clean Whether to clean data using \link{data_clean}.
 #'
@@ -14,7 +14,8 @@
 #' @examples
 #' ds <- volker::chatgpt
 #' ds <- data_prepare(ds, sd_age, sd_gender)
-#' #@export
+#'
+#' @export
 #'
 data_prepare <- function(data, cols, cross, negative = TRUE, clean = TRUE) {
 
