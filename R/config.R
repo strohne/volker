@@ -91,3 +91,8 @@ VLKR_POINT_COR_SHAPE <- 19
 #' @keywords internal
 VLKR_POINT_ALPHA <- 0.3
 VLKR_LINE_ALPHA <- 0.6
+
+#' Sizes
+#'
+#' @keywords internal
+VLKR_POINT_SIZE <-  3

@@ -127,8 +127,7 @@ data %>%
 ### 12. Correlation of items with one single variable
 ```{r}
 # For now confidence intervals only supported for pearsons r 
-plot_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric = TRUE, 
-             method = "pearson", ci = TRUE)
+plot_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric = TRUE)
 ```
 
 ## Correlations
