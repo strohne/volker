@@ -18,6 +18,8 @@ VLKR_NA_NUMERIC <- c(-9)
 
 #' Fill colors
 #'
+#' Override with \code{options(vlkr.discrete.fill=list(c("purple")))}.
+#'
 #' @keywords internal
 VLKR_FILLDISCRETE <- list(
   c("darkcyan"),
@@ -28,6 +30,8 @@ VLKR_FILLDISCRETE <- list(
 
 #' Gradient colors
 #'
+#' Override with \code{options(vlkr.gradient.fill=list(c("white","black")))}.
+#'
 #' @keywords internal
 VLKR_FILLGRADIENT <- c("#e5f7ff", "#96dfde", "#008b8b", "#006363", "#001212")
 
@@ -35,18 +39,26 @@ VLKR_COLOR_BOX_BACKGROUND <- "#aaaaaa"
 VLKR_COLOR_BOX_FOREGROUND <- "#222222"
 VLKR_COLOR_CI <- "#222222"
 
-# Thresholds
-VLKR_NORMAL_DIGITS <- 1
-VLKR_SMALL_DIGITS <- 2
+#' Polarized colors
+#'
+#' @keywords internal
+VLKR_FILLPOLARIZED <- c("#B34E00", "#D95F02", "#FFFFFF", "#66A61E","#3B660A")
+VLKR_COLORPOLARIZED <- c("#FFFFFF")
 
-VLKR_LOWPERCENT <- 5
-VLKR_SCATTER_ALPHA <- 0.3
-VLKR_LINE_ALPHA <- 0.6
+#' Resolution settings for plots
+#'
+#' Override with \code{options(vlkr.fig.settings=list(html = list(dpi = 192, scale = 2, width = 910, pxperline = 15)))}.
+#' Add a key for each output format when knitting a document.
+#' You can override the width by setting vlkr.fig.width in the chunk options.
+#'
+#' @keywords internal
+VLKR_FIG_SETTINGS <- list(
+  html = list(dpi = 2 * 96, scale = 1.7, width = 910, pxperline = 15),
 
-VLKR_PLOT_DPI <- 192
-VLKR_PLOT_SCALE <- 96
-VLKR_PLOT_WIDTH <- 910
-VLKR_PLOT_PXPERLINE <- 15
+  # Results in 16,51 cm width at 300 dpi
+  docx = list(dpi = 300, scale = 3, width = 650, pxperline = 15)
+)
+
 VLKR_PLOT_OFFSETROWS <- 5
 VLKR_PLOT_TITLEROWS <- 2
 
@@ -60,3 +72,27 @@ VLKR_PLOT_TITLEROWS <- 2
 VLKR_PLOT_LABELWRAP <- 40
 VLKR_PLOT_LEGENDWRAP <- 20
 VLKR_PLOT_SCALEWRAP <- 10
+
+#' Output thresholds
+#'
+#' @keywords internal
+VLKR_NORMAL_DIGITS <- 1
+VLKR_SMALL_DIGITS <- 2
+VLKR_LOWPERCENT <- 5
+
+#' Shapes
+#'
+#' @keywords internal
+VLKR_POINT_MEAN_SHAPE <- 18
+VLKR_POINT_COR_SHAPE <- 19
+
+#' Alpha values
+#'
+#' @keywords internal
+VLKR_POINT_ALPHA <- 0.3
+VLKR_LINE_ALPHA <- 0.6
+
+#' Sizes
+#'
+#' @keywords internal
+VLKR_POINT_SIZE <-  3

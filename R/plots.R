@@ -155,6 +155,9 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
   else if (is_items && is_grouped && is_metric) {
     plot_metrics_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
+  else if (is_items && !is_grouped && is_multi && is_metric) {
+    plot_metrics_items_cor_items(data, {{ cols }}, {{ cross }},  ...)
+  }
 
   # Not found
   else {
@@ -949,7 +952,7 @@ plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALS
       ggplot2::aes(x= .data$x, y = .data$y),
       data = mean_data,
       size=4,
-      shape=18,
+      shape=VLKR_POINT_MEAN_SHAPE,
       color = "black"
     )
 
@@ -978,21 +981,10 @@ plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALS
   base_n <- data %>% nrow()
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
-  # Plot styling
-  pl <- pl +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y=ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
   # Pass row number and label length to the knit_plot() function
   # TODO: Don't set rows manually
   pl <- .attr_transfer(pl, data, "missings")
-  .to_vlkr_plot(pl, rows=4)
+  .to_vlkr_plot(pl, rows=4, theme_options = list(axis.text.y = FALSE))
 }
 
 #' Output averages for multiple variables
@@ -1179,7 +1171,7 @@ plot_metrics_one_cor <- function(data, col, cross, negative = FALSE, limits = NU
       x=.data[[col1]],
       y=.data[[col2]],)
     ) +
-    ggplot2::geom_point(size=3, alpha=VLKR_SCATTER_ALPHA)
+    ggplot2::geom_point(size=VLKR_POINT_SIZE, alpha=VLKR_POINT_ALPHA)
 
   # Scale and limits
   if (log == TRUE) {
@@ -1201,20 +1193,11 @@ plot_metrics_one_cor <- function(data, col, cross, negative = FALSE, limits = NU
       ggplot2::coord_cartesian(xlim = limits$x, ylim = limits$y)
   }
 
-
   # Set axis labels
   if (labels) {
     pl <- pl +
       ggplot2::labs(x = labs[1], y = labs[2])
   }
-
-  # Add theming
-  pl <- pl +
-    ggplot2::theme(
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
 
   # Add title
   if (title == TRUE) {
@@ -1232,7 +1215,7 @@ plot_metrics_one_cor <- function(data, col, cross, negative = FALSE, limits = NU
 
   # Convert to vlkr_plot
   pl <- .attr_transfer(pl, data, "missings")
-  .to_vlkr_plot(pl, rows=15)
+  .to_vlkr_plot(pl, rows=15,  theme_options = list(axis.title.x = TRUE, axis.title.y = TRUE))
 }
 
 #' Output averages for multiple variables
@@ -1453,25 +1436,269 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
   )
 }
 
-#' Scatter plot of correlations between multiple items
-#'
-#' \strong{Not yet implemented. The future will come.}
+#' Multiple items correlated with one metric variable
 #'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
-#' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
+#' @param cross The column to correlate.
+#' @param ci Whether to plot confidence intervals of the correlation coefficent.
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param method The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @return A ggplot object.
-#' @importFrom rlang .data
-plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_metrics_items_cor(data, starts_with("use_"), sd_age)
+#'
+#'@export
+#'@importFrom rlang .data
+plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, ci = TRUE, method = "pearson", title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ cols }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
+
+  # 4. Remove negatives
+  if (!negative) {
+    data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
+  }
+
+  # Calculate correlations
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
+
+  # Remove common item prefix
+  prefix1 <- get_prefix(result$item1)
+  prefix2 <- get_title(data, {{ cross }})
+
+  result <- dplyr::mutate(
+    result,
+    item1 = trim_prefix(.data$item1, prefix1)
+  )
+
+  # Adjust result for plot
+  if (method == "pearson") {
+
+    value_label <- "Pearson's r"
+
+    result <- result %>%
+      dplyr::rename(
+        item = "item1",
+        item2 = "item2",
+        value = "Pearson's r",
+        low = "ci low",
+        high = "ci high"
+      )
+
+
+  } else if (method == "spearman") {
+
+    value_label <- "Spearman's rho"
+
+    result <- result %>%
+      dplyr::rename(
+        item = "item1",
+        item2 = "item2",
+        value = "Spearman's rho",
+      )
+  } else {
+    stop("The selected method is not available.")
+  }
+
+
+  # Get limits
+  method_range <- range(result$value, na.rm = TRUE)
+
+  if (all(method_range >= 0 & method_range <= 1)) {
+    limits <- c(0, 1)
+  } else {
+    limits <- c(-1, 1)
+  }
+
+  # Add title
+  if (title == TRUE) {
+    if (prefix1 != prefix2) {
+      title <- paste0(prefix1, " - ", prefix2)
+    } else {
+      title <- prefix1
+    }
+  } else if (title == FALSE) {
+    title <- NULL
+  }
+
+  # Add base
+  base_n <- nrow(data)
+
+  # Missings
+  result <- .attr_transfer(result, data, "missings")
+
+  .plot_cor(
+    result,
+    ci = ci,
+    limits = limits,
+    base = paste0("n=", base_n),
+    title = title,
+    label = value_label
+  )
+
 }
+
+#' Heatmap for correlations between multiple items
+#'
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
+#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param method The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.
+#' @param numbers Controls whether to display correlation coefficients on the plot.
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
+#' @return A ggplot object.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_metrics_items_cor_items(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+#'
+#'@export
+#'@importFrom rlang .data
+plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, method = "pearson", numbers = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks
+  check_is_dataframe(data)
+  check_has_column(data, {{ cols }})
+  check_has_column(data, {{ cross }})
+
+  # 2. Clean
+  if (clean) {
+    data <- data_clean(data)
+  }
+
+  # 3. Remove missings
+  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
+
+  # 4. Remove negatives
+  if (!negative) {
+    data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
+  }
+
+  # 5. Calculate correlation
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
+
+  # Remove common item prefix
+  prefix1 <- get_prefix(result$item1)
+  prefix2 <- get_prefix(result$item2)
+
+  result <- dplyr::mutate(
+    result,
+    item1 = trim_prefix(.data$item1, prefix1),
+    item2 = trim_prefix(.data$item2, prefix2)
+  )
+
+  method <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
+  method_range <- range(result[[method]], na.rm = TRUE)
+
+  # Plot
+  pl <- result %>%
+    ggplot2::ggplot(ggplot2::aes(
+      y = .data$item1,
+      x = .data$item2,
+      fill = !!sym(method)
+      )
+    ) +
+    ggplot2::geom_tile()
+
+  if (all(method_range >= 0 & method_range <= 1)) {
+    # range 0 to 1
+    pl <- pl + ggplot2::scale_fill_gradientn(
+      colors = vlkr_colors_sequential(),
+      limits = c(0,1))
+
+  } else {
+
+    # range -1 to 1
+    pl <- pl + ggplot2::scale_fill_gradientn(
+      colors = vlkr_colors_polarized(),
+      limits = c(-1,1)
+    )
+  }
+
+  if (numbers) {
+    pl <- pl +
+      ggplot2::geom_text(
+        ggplot2::aes(label = !!sym(method), color = !!sym(method)),
+        size = 3,
+      ) +
+      ggplot2::scale_color_gradientn(
+        colors = VLKR_COLORPOLARIZED,
+        limits = c(-1,1),
+        guide = "none"
+      )
+  }
+
+  # Add labels
+  if (labels)
+    pl <- pl + ggplot2::labs(
+      x = prefix1,
+      y = prefix2)
+
+  # Add title
+  if (title == TRUE) {
+    if (prefix1 != prefix2) {
+      title <- paste0(prefix1, " - ", prefix2)
+    } else {
+      title <- prefix1
+    }
+  } else if (title == FALSE) {
+    title <- NULL
+  }
+
+  if (!is.null(title)) {
+    pl <- pl + ggplot2::ggtitle(label = title)
+  }
+
+  # Wrap labels and adjust text size
+  pl <- pl +
+    ggplot2::scale_y_discrete(labels = scales::label_wrap(40)) +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(
+        angle = get_angle(result$item1),
+        hjust = 1,
+        size = ggplot2::theme_get()$axis.text.y$size
+      )
+    ) +
+    ggplot2::scale_x_discrete(labels = trunc_labels()) +
+    ggplot2::coord_fixed()
+
+  # Add base
+  base_n <- nrow(data)
+  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
+
+  # Convert to vlkr_plot
+  pl <- .attr_transfer(pl, data, "missings")
+  .to_vlkr_plot(pl)
+
+}
+
 
 #' Helper function: plot grouped bar chart
 #'
@@ -1519,28 +1746,13 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
   }
 
   pl <- pl +
-    ggplot2::scale_y_continuous(labels = scales::percent, limits=limits) +
+    ggplot2::scale_y_continuous(labels = scales::percent, limits = limits) +
     ggplot2::scale_x_discrete(
       labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)),
       limits = rev
     ) +
-
     ggplot2::ylab("Share in percent") +
-    ggplot2::coord_flip() +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(),
-      legend.title = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
-  if (all(data$item == "TRUE")) {
-    pl <- pl +
-      ggplot2::theme(axis.text.y = ggplot2::element_blank())
-  }
+    ggplot2::coord_flip()
 
   # Select scales:
   # - Simplify binary plots
@@ -1581,7 +1793,6 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
     pl <- pl + ggplot2::ggtitle(label = title)
   }
 
-
   # Add base
   if (!is.null(base)) {
     pl <- pl + ggplot2::labs(caption = base)
@@ -1589,7 +1800,8 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
 
   # Convert to vlkr_plot
   attr(pl, "missings") <- data_missings
-  .to_vlkr_plot(pl)
+
+  .to_vlkr_plot(pl, theme_options = list(axis.text.y = !all(data$item == "TRUE")))
 }
 
 
@@ -1658,18 +1870,6 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
       limits = rev
     )
 
-  # Add theming
-  pl <- pl +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(),
-      legend.title = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
   #
   #   if (!is.null(numbers)) {
   #     pl <- pl +
@@ -1711,7 +1911,7 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
 #'
 #' @keywords internal
 #'
-#' @param data Dataframe with the columns item, value.
+#' @param data Dataframe with the columns item, value, and .cross
 #' @param scale Passed to the label scale function.
 #' @param base The plot base as character or NULL.
 #' @param limits The scale limits.
@@ -1728,10 +1928,8 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
       group = .data$.cross
     )
     ) +
-    # TODO: improve geom_line for overlapping lines?
-    # -> If two lines are exactly the same
-    ggplot2::geom_line(alpha = VLKR_LINE_ALPHA) +
-    ggplot2::geom_point(size=3, shape=18)
+    ggplot2::geom_point(size=VLKR_POINT_SIZE, shape=VLKR_POINT_MEAN_SHAPE) +
+    ggplot2::geom_line(alpha = VLKR_LINE_ALPHA)
 
   # Set scale
   if (!is.null(scale)) {
@@ -1768,19 +1966,6 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
     pl <- pl +
     ggplot2::coord_flip(ylim = c(0,1))
 
-
-  # Add theme
-  pl <- pl +
-    ggplot2::theme(
-      axis.title.x = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(), #size = 11
-      legend.title = ggplot2::element_blank(),
-      plot.caption = ggplot2::element_text(hjust = 0),
-      plot.title.position = "plot",
-      plot.caption.position = "plot"
-    )
-
   # Add title
   if (!is.null(title)) {
     pl <- pl + ggplot2::ggtitle(label = title)
@@ -1794,6 +1979,69 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
   # Convert to vlkr_plot
   pl <- .attr_transfer(pl, data, "missings")
   .to_vlkr_plot(pl)
+
+}
+
+
+#' Helper function: plot cor and regression outputs
+#'
+#' @keywords internal
+#'
+#' @param data Dataframe with the columns item and value.
+#'             To plot errorbars, add the columns low and high and set the ci-paramater to TRUE.
+#' @param ci Whether to plot confidence intervals. Provide the columns low and high in data.
+#' @param base The plot base as character or NULL.
+#' @param limits The scale limits.
+#' @param title The plot title as character or NULL.
+#' @param label The y axis label.
+#' @return A ggplot object.
+#' @importFrom rlang .data
+.plot_cor <- function(data, ci = TRUE, base = NULL, limits = NULL, title = NULL, label = NULL) {
+
+  pl <- data %>%
+    ggplot2::ggplot(ggplot2::aes(
+      x = .data$item,
+      y = .data$value
+    )
+  ) +
+    ggplot2::geom_point(
+      size=VLKR_POINT_SIZE,
+      shape=VLKR_POINT_COR_SHAPE,
+      color = vlkr_colors_discrete(1)
+      )
+
+  if (ci && ("low" %in% colnames(data)) && ("low" %in% colnames(data))) {
+    pl <- pl +
+      ggplot2::geom_errorbar(
+        ggplot2::aes(ymin = .data$low, ymax = .data$high),
+        orientation ="x",
+        width=0.2,
+        colour = VLKR_COLOR_CI)
+  }
+
+  # Limits
+  if (!is.null(limits)){
+    pl <- pl +
+      ggplot2::coord_flip(ylim = limits)
+  }
+
+  # Add title
+  if (!is.null(title)) {
+    pl <- pl + ggplot2::ggtitle(label = title)
+  }
+
+  pl <- pl +
+    ggplot2::theme(legend.position = "none") +
+    ggplot2::labs(y = label)
+
+  # Add base
+  if (!is.null(base)) {
+    pl <- pl + ggplot2::labs(caption = base)
+  }
+
+  # Convert to vlkr_plot
+  pl <- .attr_transfer(pl, data, "missings")
+  .to_vlkr_plot(pl, theme_options = list(axis.title.x = TRUE))
 
 }
 
@@ -1826,9 +2074,49 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
 #' @param maxlab The character length of the longest label to be plotted. Will be automatically determined when NULL.
 #'               on the vertical axis.
 #' @param baseline Whether to print a message about removed values.
+#' @param theme_options Enable or disable axis titles and text, by providing a list with any of the elements
+#'                      axis.text.x, axis.text.y, axis.title.x, axis.title.y set to TRUE or FALSE.
+#'                      By default, titles (=scale labels) are disabled and text (= the tick labels) are enabled.
 #' @return A ggplot object with vlkr_plt class.
-.to_vlkr_plot <- function(pl, rows = NULL, maxlab = NULL, baseline = TRUE) {
+.to_vlkr_plot <- function(pl, rows = NULL, maxlab = NULL, baseline = TRUE, theme_options = TRUE) {
+
+  # Add vlkr_plt class
   class(pl) <- c("vlkr_plt", class(pl))
+
+  # Apply standard theme
+  if (!is.null(theme_options)) {
+
+    theme_args <- list(
+      legend.title = ggplot2::element_blank(),
+      plot.caption = ggplot2::element_text(hjust = 0),
+      plot.title.position = "plot",
+      plot.caption.position = "plot"
+    )
+
+
+    # TODO: simplify
+    if (isTRUE(theme_options)) {
+      theme_options <- list()
+    }
+    theme_options <- utils::modifyList(list(axis.text.x = TRUE, axis.text.y = TRUE, axis.title.x = FALSE, axis.title.y = FALSE), theme_options)
+
+
+    if (isFALSE(theme_options$axis.title.x)) {
+      theme_args$axis.title.x <-  ggplot2::element_blank()
+    }
+    if (isFALSE(theme_options$axis.title.y)) {
+      theme_args$axis.title.y <-  ggplot2::element_blank()
+    }
+    if (isFALSE(theme_options$axis.text.x)) {
+      theme_args$axis.text.x <-  ggplot2::element_blank()
+    }
+    if (isFALSE(theme_options$axis.text.y)) {
+      theme_args$axis.text.y <-  ggplot2::element_blank()
+    }
+
+    pl <- pl + do.call(ggplot2::theme, theme_args)
+
+  }
 
   # Calculate rows and label lengths
   plot_data <- ggplot2::ggplot_build(pl)
@@ -1869,6 +2157,28 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
   pl
 }
 
+#' Get plot size and resolution for the current output format from the config
+#'
+#' @return A list with figure settings
+.get_fig_settings <- function() {
+  default <-modifyList(VLKR_FIG_SETTINGS, getOption("vlkr.fig.settings", list()))
+  result <- default[[1]]
+
+  # Select by format
+  format <- ifelse(knitr::is_html_output(), 'html', knitr::pandoc_to())
+  if (!is.null(default[[format]])) {
+    result <- default[[format]]
+  }
+
+  # Override width with chunk options
+  chunk_options <- knitr::opts_current$get()
+  if (!is.null(chunk_options$vlkr.fig.width)) {
+     result$width <- as.numeric(chunk_options$vlkr.fig.width)
+  }
+
+  result
+}
+
 #' Knit volker plots
 #'
 #' Automatically calculates the plot height from
@@ -1888,38 +2198,33 @@ plot_metrics_items_cor <- function(data, cols, cross, title = TRUE, labels = TRU
 #'           and provide information about the number of vertical items (rows)
 #'           and the maximum.
 #' @return Character string containing a html image tag, including the base64 encoded image.
-knit_plot <- function(pl) {
-  # Get knitr and volkr chunk options
-  chunk_options <- knitr::opts_chunk$get()
-  plot_options <- attr(pl, "vlkr_options")
-  baseline <- attr(pl, "baseline", exact=TRUE)
+.knit_plot <- function(pl) {
 
-  fig_width <- chunk_options$fig.width * 72
-  fig_height <- chunk_options$fig.height * 72
-  fig_dpi <- VLKR_PLOT_DPI
-  fig_scale <- fig_dpi / VLKR_PLOT_SCALE
+  # Get plot options
+  plot_options <- attr(pl, "vlkr_options", exact = TRUE)
+  baseline <- attr(pl, "baseline", exact = TRUE)
 
-  # TODO: GET PAGE WIDTH FROM SOMEWHERE
-  # page_width <- dplyr::coalesce(chunk_options$page.width, 1)
+  # Get size and resolution settings
+  fig_settings <- .get_fig_settings()
+  fig_dpi <- fig_settings$dpi
+  fig_scale <- fig_settings$scale
+  fig_width <- fig_settings$width
 
   # Calculate plot height
-  if (!is.null(plot_options[["rows"]])) {
-    fig_width <- VLKR_PLOT_WIDTH # TODO: make configurable
-    px_perline <- VLKR_PLOT_PXPERLINE # TODO: make configurable
+  rows <- dplyr::coalesce(plot_options[["rows"]], 10)
+  px_perline <- fig_settings$pxperline
 
-    # Buffer above and below the diagram
-    px_offset <- VLKR_PLOT_OFFSETROWS * px_perline
-    if (!is.null(pl$labels$title)) {
-      px_offset <- px_offset + VLKR_PLOT_TITLEROWS * px_perline
-    }
-
-    rows <- plot_options[["rows"]]
-
-    lines_wrap <- dplyr::coalesce(plot_options[["labwrap"]], getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)
-    lines_perrow <- (dplyr::coalesce(plot_options[["maxlab"]], 1) %/% lines_wrap) + 2
-
-    fig_height <- (rows * lines_perrow * px_perline) + px_offset
+  # Buffer above and below the diagram
+  px_offset <- VLKR_PLOT_OFFSETROWS * px_perline
+  if (!is.null(pl$labels$title)) {
+    px_offset <- px_offset + VLKR_PLOT_TITLEROWS * px_perline
   }
+
+  lines_wrap <- dplyr::coalesce(plot_options[["labwrap"]], getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)
+  lines_perrow <- (dplyr::coalesce(plot_options[["maxlab"]], 1) %/% lines_wrap) + 2
+
+  fig_height <- (rows * lines_perrow * px_perline) + px_offset
+
 
   # if (length(dev.list()) > 0) {
   #   dev.off()
@@ -1941,14 +2246,19 @@ knit_plot <- function(pl) {
   ))
   #dev.off()
 
-  base64_string <- base64enc::base64encode(pngfile)
-  result <- paste0('<img src="data:image/png;base64,', base64_string, '" width="100%">')
+  if (knitr::is_html_output()) {
+    base64_string <- base64enc::base64encode(pngfile)
+    result <- paste0('<img src="data:image/png;base64,', base64_string, '" width="100%">')
+  } else {
+    result <- paste0('![](', pngfile,')<!-- -->')
+  }
 
   if (!is.null(baseline)) {
     attr(result, "baseline") <- baseline
   }
   result
 }
+
 
 
 #' Printing method for volker plots
@@ -1968,22 +2278,34 @@ knit_plot <- function(pl) {
 #' @export
 print.vlkr_plt <- function(x, ...) {
 
-  if (knitr::is_html_output()) {
-
-    # TODO: leads to endless recursion
-    # x <- knit_plot(x)
-    # x <- knitr::asis_output(x)
-    # knitr::knit_print(x)
-
-    NextMethod()
-  } else {
-    NextMethod()
-  }
-
   baseline <- attr(x, "baseline", exact = TRUE)
+  NextMethod()
+
   if (!is.null(baseline)) {
     message(paste0("In the plot, ", baseline))
   }
+}
+
+#' Printing method for volker plots when knitting
+#'
+#' @keywords internal
+#'
+#' @param x The volker plot.
+#' @param ... Further parameters passed to print().
+#' @return Knitr asis output
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' pl <- plot_metrics(data, sd_age)
+#' print(pl)
+#'
+#' @importFrom knitr knit_print
+#' @method knit_print vlkr_plt
+#' @export
+knit_print.vlkr_plt <- function(x, ...) {
+  x <- .knit_plot(x)
+  knitr::asis_output(x)
 }
 
 #' @rdname print.vlkr_plt
@@ -1991,7 +2313,6 @@ print.vlkr_plt <- function(x, ...) {
 #' @keywords internal
 #' @export
 plot.vlkr_plt <- print.vlkr_plt
-
 
 #' Define a default theme for volker plots
 #'
@@ -2084,17 +2405,41 @@ vlkr_colors_discrete <- function(n) {
 #'
 #' @keywords internal
 #'
-#' @param n Number of colors.
+#' @param n Number of colors or NULL to get the raw colors from the config
 #' @return A vector of colors.
-vlkr_colors_sequential <- function(n) {
+vlkr_colors_sequential <- function(n = NULL) {
   colors <- getOption("vlkr.gradient.fill")
   if (is.null(colors)) {
     colors <- VLKR_FILLGRADIENT
   }
 
 
-  colors <- scales::gradient_n_pal(colors)(
-    seq(0,1,length.out=n)
-  )
+  if (!is.null(n)) {
+    colors <- scales::gradient_n_pal(colors)(
+      seq(0,1,length.out=n)
+    )
+  }
+  colors
+}
+
+#' Get colors for polarized scales
+#'
+#' Creates a gradient scale based on VLKR_FILLPOLARIZED.
+#'
+#' @keywords internal
+#'
+#' @param n Number of colors or NULL to get the raw colors from the config
+#' @return A vector of colors.
+vlkr_colors_polarized <- function(n = NULL) {
+  colors <- getOption("vlkr.polarized.fill")
+  if (is.null(colors)) {
+    colors <- VLKR_FILLPOLARIZED
+  }
+
+  if (!is.null(n)) {
+    colors <- scales::gradient_n_pal(colors)(
+      seq(0,1,length.out=n)
+    )
+  }
   colors
 }

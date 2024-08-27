@@ -10,7 +10,7 @@ editor_options:
 ---
 
 ```{r include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = TRUE, fig.width = 7)
+knitr::opts_chunk$set(echo = FALSE, warning = TRUE, vlkr.fig.width=700)
 
 library(ggplot2)
 library(volker)
@@ -70,7 +70,7 @@ data |>
 ```
 
 ### plot_counts_items
-```{r, fig.height=5}
+```{r}
 plot_counts(data, starts_with("cg_adoption_"), numbers = "p")
 ```
 
@@ -101,12 +101,12 @@ plot_metrics(data, sd_age, use_work, metric=TRUE)
 
 
 ### plot_metrics_items
-```{r, fig.height=5}
+```{r}
 plot_metrics(data, starts_with("cg_adoption_"))
 ```
 
 ### plot_metrics_items_grouped
-```{r, fig.height=5}
+```{r}
 plot_metrics(data, starts_with("cg_adoption_"), sd_gender)
 ```
 
