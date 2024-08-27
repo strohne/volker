@@ -10,10 +10,7 @@ editor_options:
 ---
 
 ```{r include=FALSE}
-knitr::opts_chunk$set(
-  echo = F,
-  knitr.table.format = "html"
-)
+knitr::opts_chunk$set(echo = F)
 
 library(tidyverse)
 library(volker)
