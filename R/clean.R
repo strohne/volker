@@ -12,17 +12,22 @@
 #'
 #' @return Cleaned data frame.
 #' @examples
-#' ds <- volker::chatgpt
-#' ds <- data_prepare(ds, sd_age, sd_gender)
+#' data <- volker::chatgpt
+#' data_prepare(data, sd_age, sd_gender)
 #'
 #' @export
 #'
-data_prepare <- function(data, cols, cross, negative = TRUE, clean = TRUE) {
-
+data_prepare <- function(data, cols, cross, negative = TRUE, clean = TRUE, metric_cross = FALSE) {
   # 1. Checks
   check_is_dataframe(data)
-  check_has_column(data, {{ cols }})
-  check_has_column(data, {{ cross }})
+
+  if (!missing(cols)) {
+    check_has_column(data, {{ cols }})
+  }
+
+  if (!missing(cross)) {
+      check_has_column(data, {{ cols }}, {{ cross }})
+  }
 
   # 2. Clean
   if (clean) {
@@ -30,22 +35,22 @@ data_prepare <- function(data, cols, cross, negative = TRUE, clean = TRUE) {
   }
 
   # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
+  if (!missing(cross)) {
+    data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
+  } else {
+    data <- data_rm_missings(data, {{ cols }})
+  }
 
   # 4. Remove negatives
-  if (negative) {
+  if (!negative) {
     data <- data_rm_negatives(data, {{ cols }})
+    if (metric_cross) {
+      data <- data_rm_negatives(data, {{ cross }})
+    }
   }
 
   data
 }
-
-
-
-
-
-
-
 
 #' Prepare dataframe for tabs, plots, and index operations
 #'

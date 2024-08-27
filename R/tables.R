@@ -184,27 +184,17 @@ tab_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 #' @importFrom rlang .data
 #' @export
 tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, clean = clean, negative = FALSE)
 
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, {{ col }})
-
-  # 4. Count
+  # 2. Count
   result <- data %>%
     dplyr::count({{ col }}) %>%
     tidyr::drop_na() %>%
     dplyr::mutate("{{ col }}" := as.character({{ col }})) %>%
     dplyr::mutate(p = .data$n / sum(.data$n))
 
-  # 5. Confidence intervals
+  # 3. Confidence intervals
   # TODO: option to select from prop.test or binom.test
   if (ci) {
     n_total <- sum(result$n)
@@ -225,8 +215,6 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
     result <- dplyr::rename(result, {{ label }} := {{ col }})
   }
 
-
-
   if (percent) {
     result <- dplyr::mutate(
       result,
@@ -236,7 +224,6 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
       )
     )
   }
-
 
   # totals
   result_total <- tibble::tibble(
@@ -281,21 +268,10 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
 #' @importFrom rlang .data
 #' @export
 tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ cross }})
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = FALSE)
 
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-
-
-  # 4. Get labels for values
+  # 2. Get labels for values
   if (labels) {
     data <- labs_replace(
       data, {{ cross }},
@@ -310,7 +286,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
     )
   }
 
-  # 5. Count
+  # 3. Count
   grouped <- data %>%
     dplyr::count({{ col }}, {{ cross }}) %>%
     dplyr::mutate(
@@ -319,7 +295,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
     )
 
   #
-  # 6. N
+  # 4. N
   #
   rows_n <- grouped %>%
     dplyr::select({{ col }}, {{ cross }}, "n") %>%
@@ -371,7 +347,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
     )
 
   #
-  # 7. P
+  # 5. P
   #
   if (prop == "cols") {
     rows_p <- grouped %>%
@@ -439,7 +415,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
   }
 
 
-  # 8. Zip
+  # 6. Zip
   if (("n" %in% values) && ("p" %in% values)) {
     result <- zip_tables(result_p, result_n, brackets = TRUE)
   } else if ("p" %in% values) {
@@ -448,7 +424,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
     result <- result_n
   }
 
-  # 9. Get item label from the attributes
+  # 7. Get item label from the attributes
   if (labels) {
       title <- get_title(data, {{ col }})
       result <- dplyr::rename(result, {{ title }} := {{ col }})
@@ -482,24 +458,13 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
 #' @importFrom rlang .data
 #' @export
 tab_counts_one_cor <- function(data, col, cross, prop = "total", percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = FALSE)
 
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ cross }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-
-  # 4. Split into groups
+  # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)
 
-  # 5. Output
+  # 3. Output
   result <- tab_counts_one_grouped(
     data, {{ col }}, {{ cross }},
     prop = prop, percent = percent, values = values, labels = labels, clean = clean,
@@ -536,19 +501,10 @@ tab_counts_one_cor <- function(data, col, cross, prop = "total", percent = TRUE,
 #' @export
 #' @importFrom rlang .data
 tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ cols }})
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, clean = clean, negative = FALSE)
 
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, {{ cols }})
-
-  # 4. Calculate n and p
+  # 2. Calculate n and p
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cols_names <- colnames(dplyr::select(data, tidyselect::all_of(cols_eval)))
 
@@ -662,7 +618,6 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
     colnames(result_ci)[1] <- prefix
   }
 
-
   # Replace category labels
   if (labels) {
     labels_categories <- data %>%
@@ -729,28 +684,17 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 #' @export
 #' @importFrom rlang .data
 tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent = TRUE, values = c("n", "p"), title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = FALSE)
 
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ cols }})
-  check_has_column(data, {{ cross }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
-
-  # 4. Evaluate columns
+  # 2. Evaluate columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cols_names <- colnames(dplyr::select(data, tidyselect::all_of(cols_eval)))
 
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
   cross_names <- colnames(dplyr::select(data, tidyselect::all_of(cross_eval)))
 
-  # 5. Pivot
+  # 3. Pivot
   pivoted <- data %>%
     labs_clear({{ cols }}) %>%
     tidyr::pivot_longer(
@@ -968,24 +912,13 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 #' @export
 #' @importFrom rlang .data
 tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NULL, percent = TRUE, values = c("n", "p"), title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = FALSE, metric_cross = TRUE)
 
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ cols }})
-  check_has_column(data, {{ cross }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
-
-  # 4. Split into groups
+  # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)
 
-  # 5. Output
+  # 3. Output
   result <- tab_counts_items_grouped(data, {{ cols }}, {{ cross }}, category = category, percent = percent, values = values, title = title, labels = labels, clean = clean, ...)
 
   result <- .attr_transfer(result, data, "missings")
@@ -1016,24 +949,10 @@ tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NUL
 #' @export
 #' @importFrom rlang .data
 tab_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
-  # 1. Check
-  check_is_dataframe(data)
-  check_has_column(data, {{col}})
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, clean = clean, negative = negative)
 
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, {{ col }})
-
-  # 4. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, {{ col }})
-  }
-
-  # Calculate values
+  # 2. Calculate values
   result <- data %>%
     skim_metrics({{ col }}) %>%
     dplyr::rename_with(function(x) sub("numeric.", "", x, fixed = TRUE))
@@ -1066,7 +985,7 @@ tab_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, digits = 1,
   #     alpha = "numeric.alpha"
   #   )
 
-  # Remove items and alpha if not and index
+  # 3. Remove items and alpha if not and index
   if (all(is.na(result$items)) || all(is.na(result$alpha))) {
     result$items <- NULL
     result$alpha <- NULL
@@ -1086,7 +1005,7 @@ tab_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, digits = 1,
     tidyr::pivot_longer(-tidyselect::all_of("item")) %>%
     dplyr::select(-tidyselect::all_of("item"), {{ col }} := "name", "value")
 
-  # Get item label from the attributes
+  # 4. Get item label from the attributes
   if (labels) {
     label <- get_title(data, {{ col }})
     result <- dplyr::rename(result, {{ label }} := {{ col }})
@@ -1119,25 +1038,10 @@ tab_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, digits = 1,
 #' @export
 #' @importFrom rlang .data
 tab_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ cross }})
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative)
 
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data,  {{ col }})
-  }
-
-  # 4. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-
-  # 5. Calculate values
+  # 2. Calculate values
   result_grouped <- data %>%
     dplyr::group_by({{ cross }}) %>%
     skim_metrics({{ col }}) %>%
@@ -1235,29 +1139,14 @@ tab_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FAL
 #' @export
 #' @importFrom rlang .data
 tab_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pearson", ci = FALSE, digits = 2, labels = TRUE, clean = TRUE, ...) {
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ cross }})
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative, metric_cross = TRUE)
 
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-
-  # 4. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, c({{ col }}, {{ cross }}))
-  }
-
-  # 5. Get columns
+  # 2. Get columns
   cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
-  # Calculate correlation
+  # 3. Calculate correlation
   method <- ifelse(method == "spearman", "spearman", "pearson")
   result <- .effect_correlations(data, {{ col }}, {{ cross}}, method = method, labels = labels)
 
@@ -1272,7 +1161,7 @@ tab_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pe
 
   result <- dplyr::select(result, tidyselect::all_of(values))
 
-  # Remove common item prefix
+  # 4. Remove common item prefix
   prefix <- get_prefix(c(result$item1, result$item2))
   result <- dplyr::mutate(result, item1 = trim_prefix(.data$item1, prefix))
   result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix))
@@ -1287,7 +1176,6 @@ tab_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pe
   result <- result %>%
     dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
     dplyr::rename("Item 2" = tidyselect::all_of("item2"))
-
 
   result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits = digits, caption = title)
@@ -1315,24 +1203,10 @@ tab_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pe
 #' @export
 #' @importFrom rlang .data
 tab_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ cols }})
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, clean = clean, negative = negative)
 
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, {{ cols }})
-
-  # 4. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, {{ cols }})
-  }
-
-  # 5. Calculate
+  # 2. Calculate
   result <- data %>%
     dplyr::select({{ cols }}) |>
     skim_metrics() |>
@@ -1350,7 +1224,7 @@ tab_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, digits =
     )
   }
 
-  # Remove items and alpha if not and index
+  # 3. Remove items and alpha if not and index
   if (all(is.na(result$items)) || all(is.na(result$alpha))) {
     result$items <- NULL
     result$alpha <- NULL
@@ -1360,7 +1234,7 @@ tab_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, digits =
       dplyr::mutate(dplyr::across(tidyselect::all_of("alpha"), ~ as.character(round(., 2))))
   }
 
-  # Get item labels from the attributes
+  # 4. Get item labels from the attributes
   if (labels) {
     result <- labs_replace(
       result, "item",
@@ -1373,13 +1247,13 @@ tab_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, digits =
       dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label"))))
   }
 
-  # Remove common item prefix and title
+  # 5. Remove common item prefix and title
   # TODO: remove common postfix
   prefix <- get_prefix(result$item, trim=TRUE)
   result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
 
 
-  # Rename first column
+  # 6. Rename first column
   if (prefix != "") {
     colnames(result)[1] <- prefix
   } else {
@@ -1413,23 +1287,8 @@ tab_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, digits =
 #' @export
 #' @importFrom rlang .data
 tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digits = 1, values = c("m", "sd"), labels = TRUE, clean = TRUE, ...) {
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ cols }})
-  check_has_column(data, {{ cross }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
-
-  # 4. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, {{ cols }})
-  }
+  # Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative)
 
   # Get positions of group cols
   cross <- tidyselect::eval_select(expr = enquo(cross), data = data)
@@ -1530,7 +1389,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
     dplyr::rename(item = tidyselect::all_of("skim_variable"))
 
 
-  # Zip
+  # 7. Zip
   if (("m" %in% values) && ("sd" %in% values)) {
     # TODO: What about the resulting data frame, should it really contain rounded values?
     #       Maybe let zipping and rounding to the print function and return a list of data frames instead
@@ -1594,23 +1453,8 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #' @importFrom rlang .data
 #' @export
 tab_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = "pearson", digits = 2, labels = TRUE, clean = TRUE, ...) {
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ cols }})
-  check_has_column(data, {{ cross }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
-
-  # 4. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
-  }
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative, metric_cross = TRUE)
 
   # 5. Calculate correlation
   result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
@@ -1649,6 +1493,17 @@ tab_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = 
   .to_vlkr_tab(result, digits = digits, caption = title)
 }
 
+#' Split a metric column into categorical based on median
+#'
+#' @keywords internal
+#'
+#' @param data A data frame containing the column to be split.
+#' @param col The column to split.
+#' @param labels Logical; if `TRUE` (default), use custom labels for the split categories based
+#' on the column title. If `FALSE`, use the column name directly.
+#'
+#' @return A data frame with the specified column converted into categorical labels based on its median value.
+#' The split threshold (median) is stored as an attribute of the column.
 .tab_split <- function(data, col, labels = TRUE) {
   cross_name <- rlang::as_string(rlang::ensym(col))
   cross_label <- ifelse(labels, get_title(data, {{ col }}), cross_name)

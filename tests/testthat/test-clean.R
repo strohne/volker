@@ -8,9 +8,30 @@ library(volker)
 # Load and recode data
 data <- volker::chatgpt
 
+# Data_prepare
+test_data <- tibble::tibble(var1 = c(1, 2, -1, -9),
+                            var2 = c(4, 5, -3, -9))
+
+test_that("data_prepare works correctly", {
+  # Test 1: Cleaning, removing missings and negatives without metric_cross
+  data_prepare(test_data, var1, var2, negative = FALSE, clean = TRUE) %>%
+  expect_snapshot(cran = TRUE)
+
+  # Test 2: Without cleaning but removing missings and negatives
+  data_prepare(test_data, var1, var2, negative = FALSE, clean = FALSE) %>%
+  expect_snapshot(cran = TRUE)
+
+  # Test 3: With metric_cross enabled
+  data_prepare(test_data, var1, var2, negative = FALSE, clean = TRUE, metric_cross = TRUE) %>%
+  expect_snapshot(cran = TRUE)
+
+  # Test 4: With negatives kept
+  data_prepare(test_data, var1, var2, negative = TRUE, clean = TRUE) %>%
+  expect_snapshot(cran = TRUE)
+})
 
 # Remove residual negative values
-test_that("Residual negatives values are removes", {
+test_that("Residual negatives values are removed", {
 
   tibble::tibble(var1 = c(1,2,-1,-9)) |>
     data_clean() |>

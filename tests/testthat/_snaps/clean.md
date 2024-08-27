@@ -1,4 +1,49 @@
-# Residual negatives values are removes
+# data_prepare works correctly
+
+    Code
+      .
+    Output
+      # A tibble: 2 x 2
+         var1  var2
+        <dbl> <dbl>
+      1     1     4
+      2     2     5
+
+---
+
+    Code
+      .
+    Output
+      # A tibble: 2 x 2
+         var1  var2
+        <dbl> <dbl>
+      1     1     4
+      2     2     5
+
+---
+
+    Code
+      .
+    Output
+      # A tibble: 2 x 2
+         var1  var2
+        <dbl> <dbl>
+      1     1     4
+      2     2     5
+
+---
+
+    Code
+      .
+    Output
+      # A tibble: 3 x 2
+         var1  var2
+        <dbl> <dbl>
+      1     1     4
+      2     2     5
+      3    -1    -3
+
+# Residual negatives values are removed
 
     Code
       data_clean(tibble::tibble(var1 = c(1, 2, -1, -9)))
