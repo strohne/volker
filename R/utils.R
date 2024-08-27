@@ -10,7 +10,7 @@
 #' @param brackets Whether to set the secondary values in brackets (default: FALSE).
 #' @return A combined data frame.
 zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
-  newline <- newline && (knitr::is_html_output() || knitr::is_latex_output())
+  newline <- newline && !is.null(knitr::pandoc_to())
   sep <- ifelse(newline, "\n", " ")
 
   if (brackets) {

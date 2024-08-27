@@ -80,7 +80,7 @@ tab_counts(ds, starts_with("use_"))
 tab_metrics(ds, sd_age)
 ```
 
-```{r fig.width=6, fig.height=8}
+```{r}
 
 # Multiple metric items
 tab_metrics(ds, starts_with("cg_adoption_"))

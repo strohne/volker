@@ -37,6 +37,8 @@ Don’t miss the template feature: Within RStudio, create a new Markdown
 document, select `From template`, choose and finally knit the **volkeR
 Report**! It’s a blueprint for your own tidy reports.
 
+<img src="man/figures/report_example.png" alt="Example report" width="600">
+
 ## Concept
 
 The volkeR package is made for creating quick and easy overviews about
@@ -427,22 +429,6 @@ You can try alternative versions:
   if (!require(remotes)) { install.packages("remotes") }
   remotes::install_github("strohne/volker", ref="beta", upgrade="never")
   ```
-
-**2. After installing the package, load it:**
-
-``` r
-library(volker)
-```
-
-**3. Finally, use it:**
-
-``` r
-# Example data
-data <- volker::chatgpt
-
-# Example table
-tab_metrics(data, sd_age, sd_gender)
-```
 
 ## Special features
 

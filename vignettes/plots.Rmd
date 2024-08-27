@@ -11,10 +11,7 @@ editor_options:
 ---
 
 ```{r include=FALSE}
-knitr::opts_chunk$set(
-   echo = TRUE,
-   fig.width=7
-)
+knitr::opts_chunk$set(echo = TRUE)
 
 library(dplyr)
 library(ggplot2)
@@ -43,6 +40,10 @@ data <- volker::chatgpt
 | 11    | plot_metrics_items_grouped |             | plot   | metrics  | multiple | grouped    |
 | 12    | plot_metrics_items_cor     | not yet     | plot   | metrics  | multiple | correlated |
 
+```{r echo=TRUE}
+knitr::opts_chunk$get()
+```
+
 
 ## Frequencies of categorical variables
 
@@ -65,13 +66,13 @@ plot_counts(data, sd_gender, sd_age, metric = TRUE)
 ```
 
 ### 4. Multiple items: Frequency plot for adoption factors
-```{r, fig.height=6}
+```{r}
 # The numbers parameter adds percentages to the bars
 plot_counts(data, starts_with("cg_adoption_"), numbers = "p")
 ```
 
 ### 5. Multiple items: Frequency plot for adoption factors grouped by adopter category
-```{r, fig.height=6}
+```{r}
 
 options(vlkr.wrap.labels=30)
 options(vlkr.wrap.legend=10)
@@ -109,14 +110,14 @@ plot_metrics(data, use_private, sd_age, metric = TRUE)
 ```
 
 ### 10. Distribution of multiple metric items: Adoption factors
-```{r, fig.height=6}
+```{r}
 # Note that negative values are omitted,
 # you can change the behavior with the negative-parameter
 plot_metrics(data, starts_with("cg_adoption_"))
 ```
 
 ### 11. Group comparison of multiple metric items: Adoption factors by gender
-```{r, fig.height=6}
+```{r}
 # Filter out one group, too few cases in the sample
 data %>% 
   filter(sd_gender != "divers") %>% 

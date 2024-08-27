@@ -46,7 +46,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
   chunks <- list()
 
   # Add title
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
     if (!is.character(title) && (title == TRUE)) {
       title <- get_title(data, {{ cols }})
     } else if (!is.character(title)) {
@@ -143,7 +143,7 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
   chunks <- list()
 
   # Add title
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
     if (!is.character(title) && (title == TRUE)) {
       title <- get_title(data, {{ cols }})
     } else if (!is.character(title)) {
@@ -280,7 +280,7 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 #'
 #' @export
 print.vlkr_list <- function(x, ...) {
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
     x %>%
       unlist() %>%
       paste0(collapse = "\n") %>%
@@ -333,7 +333,8 @@ print.vlkr_list <- function(x, ...) {
 #' @return A volker report object.
 .add_to_vlkr_rprt <- function(obj, chunks, tab = NULL) {
 
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
+  #if (knitr::is_html_output()) {
     # Tab
     if (!is.null(tab)) {
       tab <- paste0("\n##### ", tab, "  \n")
@@ -358,9 +359,9 @@ print.vlkr_list <- function(x, ...) {
     # Objects
     else {
       if (inherits(obj, "vlkr_tbl")) {
-        newchunk <- knit_table(obj)
+        newchunk <- .knit_table(obj)
       } else if (inherits(obj, "vlkr_plt")) {
-        newchunk <- knit_plot(obj)
+        newchunk <- .knit_plot(obj)
 
       } else if (is.character(obj)) {
         newchunk <- obj
@@ -405,7 +406,7 @@ print.vlkr_list <- function(x, ...) {
 #'
 #' @export
 print.vlkr_rprt <- function(x, ...) {
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
     x %>%
       unlist() %>%
       paste0(collapse = "\n") %>%
@@ -449,3 +450,30 @@ html_report <- function(...) {
   )
 }
 
+#' Volker style PDF document format
+#'
+#' Based on the standard theme, tweaks tex headers.
+#' To use the format, in the header of your Markdown document,
+#' set `output: volker::pdf_report`.
+#'
+#' @param ... Additional arguments passed to pdf_document.
+#' @return R Markdown output format.
+#' @examples
+#' \dontrun{
+#' # Add `volker::pdf_report` to the output options of your Markdown document:
+#' #
+#' # ```
+#' # ---
+#' # title: "How to create reports?"
+#' # output: volker::pdf_report
+#' # ---
+#' # ```
+#' }
+#' @export
+pdf_report <- function(...) {
+  headerfile <-  system.file("extdata/header.tex", package = "volker")
+  rmarkdown::pdf_document(
+    includes = rmarkdown::includes(in_header=headerfile),
+    ...
+  )
+}

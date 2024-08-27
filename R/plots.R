@@ -2149,6 +2149,28 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, me
   pl
 }
 
+#' Get plot size and resolution for the current output format from the config
+#'
+#' @return A list with figure settings
+.get_fig_settings <- function() {
+  default <-modifyList(VLKR_FIG_SETTINGS, getOption("vlkr.fig.settings", list()))
+  result <- default[[1]]
+
+  # Select by format
+  format <- ifelse(knitr::is_html_output(), 'html', knitr::pandoc_to())
+  if (!is.null(default[[format]])) {
+    result <- default[[format]]
+  }
+
+  # Override width with chunk options
+  chunk_options <- knitr::opts_current$get()
+  if (!is.null(chunk_options$vlkr.fig.width)) {
+     result$width <- as.numeric(chunk_options$vlkr.fig.width)
+  }
+
+  result
+}
+
 #' Knit volker plots
 #'
 #' Automatically calculates the plot height from
@@ -2168,38 +2190,33 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, me
 #'           and provide information about the number of vertical items (rows)
 #'           and the maximum.
 #' @return Character string containing a html image tag, including the base64 encoded image.
-knit_plot <- function(pl) {
-  # Get knitr and volkr chunk options
-  chunk_options <- knitr::opts_chunk$get()
-  plot_options <- attr(pl, "vlkr_options")
-  baseline <- attr(pl, "baseline", exact=TRUE)
+.knit_plot <- function(pl) {
 
-  fig_width <- chunk_options$fig.width * 72
-  fig_height <- chunk_options$fig.height * 72
-  fig_dpi <- VLKR_PLOT_DPI
-  fig_scale <- fig_dpi / VLKR_PLOT_SCALE
+  # Get plot options
+  plot_options <- attr(pl, "vlkr_options", exact = TRUE)
+  baseline <- attr(pl, "baseline", exact = TRUE)
 
-  # TODO: GET PAGE WIDTH FROM SOMEWHERE
-  # page_width <- dplyr::coalesce(chunk_options$page.width, 1)
+  # Get size and resolution settings
+  fig_settings <- .get_fig_settings()
+  fig_dpi <- fig_settings$dpi
+  fig_scale <- fig_settings$scale
+  fig_width <- fig_settings$width
 
   # Calculate plot height
-  if (!is.null(plot_options[["rows"]])) {
-    fig_width <- VLKR_PLOT_WIDTH # TODO: make configurable
-    px_perline <- VLKR_PLOT_PXPERLINE # TODO: make configurable
+  rows <- dplyr::coalesce(plot_options[["rows"]], 10)
+  px_perline <- fig_settings$pxperline
 
-    # Buffer above and below the diagram
-    px_offset <- VLKR_PLOT_OFFSETROWS * px_perline
-    if (!is.null(pl$labels$title)) {
-      px_offset <- px_offset + VLKR_PLOT_TITLEROWS * px_perline
-    }
-
-    rows <- plot_options[["rows"]]
-
-    lines_wrap <- dplyr::coalesce(plot_options[["labwrap"]], getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)
-    lines_perrow <- (dplyr::coalesce(plot_options[["maxlab"]], 1) %/% lines_wrap) + 2
-
-    fig_height <- (rows * lines_perrow * px_perline) + px_offset
+  # Buffer above and below the diagram
+  px_offset <- VLKR_PLOT_OFFSETROWS * px_perline
+  if (!is.null(pl$labels$title)) {
+    px_offset <- px_offset + VLKR_PLOT_TITLEROWS * px_perline
   }
+
+  lines_wrap <- dplyr::coalesce(plot_options[["labwrap"]], getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)
+  lines_perrow <- (dplyr::coalesce(plot_options[["maxlab"]], 1) %/% lines_wrap) + 2
+
+  fig_height <- (rows * lines_perrow * px_perline) + px_offset
+
 
   # if (length(dev.list()) > 0) {
   #   dev.off()
@@ -2221,14 +2238,19 @@ knit_plot <- function(pl) {
   ))
   #dev.off()
 
-  base64_string <- base64enc::base64encode(pngfile)
-  result <- paste0('<img src="data:image/png;base64,', base64_string, '" width="100%">')
+  if (knitr::is_html_output()) {
+    base64_string <- base64enc::base64encode(pngfile)
+    result <- paste0('<img src="data:image/png;base64,', base64_string, '" width="100%">')
+  } else {
+    result <- paste0('![](', pngfile,')<!-- -->')
+  }
 
   if (!is.null(baseline)) {
     attr(result, "baseline") <- baseline
   }
   result
 }
+
 
 
 #' Printing method for volker plots
@@ -2248,22 +2270,34 @@ knit_plot <- function(pl) {
 #' @export
 print.vlkr_plt <- function(x, ...) {
 
-  if (knitr::is_html_output()) {
-
-    # TODO: leads to endless recursion
-    # x <- knit_plot(x)
-    # x <- knitr::asis_output(x)
-    # knitr::knit_print(x)
-
-    NextMethod()
-  } else {
-    NextMethod()
-  }
-
   baseline <- attr(x, "baseline", exact = TRUE)
+  NextMethod()
+
   if (!is.null(baseline)) {
     message(paste0("In the plot, ", baseline))
   }
+}
+
+#' Printing method for volker plots when knitting
+#'
+#' @keywords internal
+#'
+#' @param x The volker plot.
+#' @param ... Further parameters passed to print().
+#' @return Knitr asis output
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' pl <- plot_metrics(data, sd_age)
+#' print(pl)
+#'
+#' @importFrom knitr knit_print
+#' @method knit_print vlkr_plt
+#' @export
+knit_print.vlkr_plt <- function(x, ...) {
+  x <- .knit_plot(x)
+  knitr::asis_output(x)
 }
 
 #' @rdname print.vlkr_plt

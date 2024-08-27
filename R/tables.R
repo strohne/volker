@@ -1703,7 +1703,7 @@ tab_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = 
 #'
 #' @param df Data frame.
 #' @return Formatted  table produced by \link{kable}.
-knit_table <- function(df, ...) {
+.knit_table <- function(df, ...) {
   options(knitr.kable.NA = '')
 
   digits <- attr(df, "digits", exact = TRUE)
@@ -1737,7 +1737,7 @@ knit_table <- function(df, ...) {
   if (knitr::is_html_output()) {
     # Replace \n by <br>
     df <- df %>%
-      dplyr::mutate(dplyr::across(dplyr::where(is.character), knit_prepare)) %>%
+      dplyr::mutate(dplyr::across(dplyr::where(is.character), .knit_prepare)) %>%
       knitr::kable(
         "html",
         escape = FALSE,
@@ -1752,19 +1752,33 @@ knit_table <- function(df, ...) {
       )
   } else if (knitr::is_latex_output()) {
     df <- df %>%
-      dplyr::mutate_all(kableExtra::linebreak) %>%
+      dplyr::mutate(dplyr::across(dplyr::where(is.character), ~ .knit_prepare(., wrap = VLKR_PLOT_LABELWRAP))) %>%
       knitr::kable(
         "latex",
-        booktabs = TRUE,
+        #booktabs = TRUE,
         escape = FALSE,
+        #align = c("l", rep("r", ncol(df) - 1)),
+        digits = digits,
+        col.names = .knit_prepare(colnames(df), wrap = VLKR_PLOT_LEGENDWRAP),
+        #format.args = numberformat,
+        ...
+      )
+
+  } else if (!is.null(knitr::pandoc_to())) {
+    df <- df %>%
+      dplyr::mutate(dplyr::across(dplyr::where(is.character), .knit_prepare)) %>%
+      knitr::kable(
         align = c("l", rep("r", ncol(df) - 1)),
         digits = digits,
-        #format.args = numberformat,
         ...
       )
   } else {
     df <- df %>%
-      knitr::kable("pipe", align = c("l", rep("r", ncol(df) - 1)), digits = digits, ...)
+      knitr::kable(
+        align = c("l", rep("r", ncol(df) - 1)),
+        digits = digits,
+        ...
+      )
   }
 
   if (!is.null(baseline)) {
@@ -1780,10 +1794,28 @@ knit_table <- function(df, ...) {
 #' @keywords internal
 #'
 #' @param x Markdown text.
+#' @param wrap Wrap text after the given number of characters.
 #' @return Markdown text with line breaks and escaped special characters.
-knit_prepare <- function(x) {
-  x <- gsub("\n", "<br>", x, fixed=TRUE)
+.knit_prepare <- function(x, wrap = FALSE) {
+
+  if (knitr::is_html_output()) {
+    x <- gsub("\n", "<br>", x, fixed=TRUE)
+  } else {
+    x <- gsub("\n", " ", x, fixed=TRUE)
+  }
+
   x <- gsub("*", "\\*", x, fixed=TRUE)
+
+  if (knitr::is_latex_output()){
+    x <- gsub("%", "\\%", x, fixed=TRUE)
+    x <- gsub("&", "\\&", x, fixed=TRUE)
+    x <- gsub("$", "\\$", x, fixed=TRUE)
+    x <- gsub("_", "\\_", x, fixed=TRUE)
+
+    if (is.numeric(wrap)) {
+      x <- kableExtra::linebreak(wrap_label(x, wrap))
+    }
+  }
   x
 }
 
@@ -1803,15 +1835,16 @@ knit_prepare <- function(x) {
 #'
 #' @export
 print.vlkr_tbl <- function(x, ...) {
-  x <- knit_table(x)
+  x <- .knit_table(x)
   baseline <- attr(x, "baseline", exact=TRUE)
 
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
 
     if (!is.null(baseline)) {
       x <- paste0(x,"  \n  ", baseline)
     }
 
+    x <- paste0(x, collapse= "\n")
     knitr::knit_print(knitr::asis_output(x))
 
   } else {
