@@ -25,20 +25,20 @@ data <- volker::chatgpt
 ```
 
 
-| \#     | function                  | implemented | output | scale    | columns  | crossings  |
-|--------|---------------------------|-------------|--------|----------|----------|------------|
-| 1     | plot_counts_one            |             | plot   | counts   | one      |            |
-| 2     | plot_counts_one_grouped    |             | plot   | counts   | one      | grouped    |
-| 3     | plot_counts_one_cor        |             | plot   | counts   | one      | correlated |
-| 4     | plot_counts_items          |             | plot   | counts   | multiple |            |
-| 5     | plot_counts_items_grouped  |             | plot   | counts   | multiple | grouped    |
-| 6     | plot_counts_items_cor      |             | plot   | counts   | multiple | correlated |
-| 7     | plot_metrics_one           |             | plot   | metrics  | one      |            |
-| 8     | plot_metrics_one_grouped   |             | plot   | metrics  | one      | grouped    |
-| 9     | plot_metrics_one_cor       |             | plot   | metrics  | one      | correlated |
-| 10    | plot_metrics_items         |             | plot   | metrics  | multiple |            |
-| 11    | plot_metrics_items_grouped |             | plot   | metrics  | multiple | grouped    |
-| 12    | plot_metrics_items_cor     | not yet     | plot   | metrics  | multiple | correlated |
+| \#     | function                  | output | scale    | columns  | crossings  |
+|--------|---------------------------|--------|----------|----------|------------|
+| 1     | plot_counts_one            | plot   | counts   | one      |            |
+| 2     | plot_counts_one_grouped    | plot   | counts   | one      | grouped    |
+| 3     | plot_counts_one_cor        | plot   | counts   | one      | correlated |
+| 4     | plot_counts_items          | plot   | counts   | multiple |            |
+| 5     | plot_counts_items_grouped  | plot   | counts   | multiple | grouped    |
+| 6     | plot_counts_items_cor      | plot   | counts   | multiple | correlated |
+| 7     | plot_metrics_one           | plot   | metrics  | one      |            |
+| 8     | plot_metrics_one_grouped   | plot   | metrics  | one      | grouped    |
+| 9     | plot_metrics_one_cor       | plot   | metrics  | one      | correlated |
+| 10    | plot_metrics_items         | plot   | metrics  | multiple |            |
+| 11    | plot_metrics_items_grouped | plot   | metrics  | multiple | grouped    |
+| 12    | plot_metrics_items_cor     | plot   | metrics  | multiple | correlated |
 
 ```{r echo=TRUE}
 knitr::opts_chunk$get()
