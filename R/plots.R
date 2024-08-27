@@ -1480,7 +1480,6 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, ci = TRU
   }
 
   # Calculate correlations
-  method <- ifelse(method == "spearman", "spearman", "Pearson's r")
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
 
   # Remove common item prefix
@@ -1493,20 +1492,34 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, ci = TRU
   )
 
   # Adjust result for plot
-  result <- result %>%
-    dplyr::mutate(.cross = method) %>%
-    dplyr::rename(
-      item = "item1",
-      item2 = "item2",
-      value = ifelse(method == "spearman", "Spearman's rho", "Pearson's r")
-    )
+  if (method == "pearson") {
 
-  if (method == "Pearson's r") {
+    value_label <- "Pearson's r"
+
     result <- result %>%
-      dplyr::rename(low = "ci low",
-                    high = "ci high"
+      dplyr::rename(
+        item = "item1",
+        item2 = "item2",
+        value = "Pearson's r",
+        low = "ci low",
+        high = "ci high"
       )
+
+
+  } else if (method == "spearman") {
+
+    value_label <- "Spearman's rho"
+
+    result <- result %>%
+      dplyr::rename(
+        item = "item1",
+        item2 = "item2",
+        value = "Spearman's rho",
+      )
+  } else {
+    stop("The selected method is not available.")
   }
+
 
   # Get limits
   method_range <- range(result$value, na.rm = TRUE)
@@ -1537,9 +1550,10 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, ci = TRU
   .plot_cor(
     result,
     ci = ci,
-    title = title,
     limits = limits,
-    base = paste0("n=", base_n)
+    base = paste0("n=", base_n),
+    title = title,
+    label = value_label
   )
 
 }
@@ -1973,21 +1987,21 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, me
 #'
 #' @keywords internal
 #'
-#' @param data Dataframe with the columns item, value, and .cross
+#' @param data Dataframe with the columns item and value.
+#'             To plot errorbars, add the columns low and high and set the ci-paramater to TRUE.
 #' @param ci Whether to plot confidence intervals. Provide the columns low and high in data.
 #' @param base The plot base as character or NULL.
 #' @param limits The scale limits.
 #' @param title The plot title as character or NULL.
+#' @param label The y axis label.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-.plot_cor <- function(data, ci = TRUE, base = NULL, limits = NULL, title = NULL) {
+.plot_cor <- function(data, ci = TRUE, base = NULL, limits = NULL, title = NULL, label = NULL) {
 
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(
       x = .data$item,
-      y = .data$value,
-      color = .data$.cross,
-      group = .data$.cross
+      y = .data$value
     )
   ) +
     ggplot2::geom_point(
@@ -1996,7 +2010,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, me
       color = vlkr_colors_discrete(1)
       )
 
-  if (ci) {
+  if (ci && ("low" %in% colnames(data)) && ("low" %in% colnames(data))) {
     pl <- pl +
       ggplot2::geom_errorbar(
         ggplot2::aes(ymin = .data$low, ymax = .data$high),
@@ -2016,12 +2030,9 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, me
     pl <- pl + ggplot2::ggtitle(label = title)
   }
 
-  # Omit legend and add value to x-axis
-  y_label <- unique(data$.cross)
-
   pl <- pl +
     ggplot2::theme(legend.position = "none") +
-    ggplot2::labs(y = y_label)
+    ggplot2::labs(y = label)
 
   # Add base
   if (!is.null(base)) {
