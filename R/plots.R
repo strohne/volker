@@ -1614,20 +1614,20 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, me
     item2 = trim_prefix(.data$item2, prefix2)
   )
 
-  method <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
-  method_range <- range(result[[method]], na.rm = TRUE)
+  value_col <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
+  value_range <- range(result[[value_col]], na.rm = TRUE)
 
   # Plot
   pl <- result %>%
     ggplot2::ggplot(ggplot2::aes(
       y = .data$item1,
       x = .data$item2,
-      fill = !!sym(method)
+      fill = !!sym(value_col)
       )
     ) +
     ggplot2::geom_tile()
 
-  if (all(method_range >= 0 & method_range <= 1)) {
+  if (all(value_range >= 0 & value_range <= 1)) {
     # range 0 to 1
     pl <- pl + ggplot2::scale_fill_gradientn(
       colors = vlkr_colors_sequential(),
@@ -1645,7 +1645,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, me
   if (numbers) {
     pl <- pl +
       ggplot2::geom_text(
-        ggplot2::aes(label = !!sym(method), color = !!sym(method)),
+        ggplot2::aes(label = !!sym(value_col), color = !!sym(value_col)),
         size = 3,
       ) +
       ggplot2::scale_color_gradientn(
@@ -1678,12 +1678,15 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, me
 
   # Wrap labels and adjust text size
   pl <- pl +
-    ggplot2::scale_y_discrete(labels = scales::label_wrap(40)) +
+    ggplot2::scale_y_discrete(
+      labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP))
+    ) +
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(
         angle = get_angle(result$item1),
         hjust = 1,
-        size = ggplot2::theme_get()$axis.text.y$size
+        size = ggplot2::theme_get()$axis.text.y$size,
+        color = ggplot2::theme_get()$axis.text.y$color
       )
     ) +
     ggplot2::scale_x_discrete(labels = trunc_labels()) +
@@ -1695,7 +1698,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, me
 
   # Convert to vlkr_plot
   pl <- .attr_transfer(pl, data, "missings")
-  .to_vlkr_plot(pl)
+  .to_vlkr_plot(pl, rows = dplyr::n_distinct(result$item1) + 3)
 
 }
 
