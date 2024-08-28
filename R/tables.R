@@ -185,7 +185,7 @@ tab_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 #' @export
 tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, clean = clean, negative = FALSE)
+  data <- data_prepare(data, {{ col }}, clean = clean)
 
   # 2. Count
   result <- data %>%
@@ -269,7 +269,7 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
 #' @export
 tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = FALSE)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
   # 2. Get labels for values
   if (labels) {
@@ -459,7 +459,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
 #' @export
 tab_counts_one_cor <- function(data, col, cross, prop = "total", percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = FALSE)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
   # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)
@@ -502,7 +502,7 @@ tab_counts_one_cor <- function(data, col, cross, prop = "total", percent = TRUE,
 #' @importFrom rlang .data
 tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, clean = clean, negative = FALSE)
+  data <- data_prepare(data, {{ cols }}, clean = clean)
 
   # 2. Calculate n and p
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -685,7 +685,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 #' @importFrom rlang .data
 tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent = TRUE, values = c("n", "p"), title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = FALSE)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
   # 2. Evaluate columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -913,7 +913,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 #' @importFrom rlang .data
 tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NULL, percent = TRUE, values = c("n", "p"), title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = FALSE, metric_cross = TRUE)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, metric_cross = TRUE)
 
   # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)
