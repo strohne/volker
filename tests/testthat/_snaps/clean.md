@@ -14,11 +14,12 @@
     Code
       .
     Output
-      # A tibble: 2 x 2
+      # A tibble: 3 x 2
          var1  var2
         <dbl> <dbl>
       1     1     4
       2     2     5
+      3     5    -9
 
 ---
 

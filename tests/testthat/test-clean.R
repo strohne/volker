@@ -9,7 +9,7 @@ library(volker)
 data <- volker::chatgpt
 
 # Data_prepare
-test_data <- tibble::tibble(var1 = c(1, 2, -1, -9),
+test_data <- tibble::tibble(var1 = c(1, 2, -1, 5),
                             var2 = c(4, 5, -3, -9))
 
 test_that("data_prepare works correctly", {
@@ -28,6 +28,21 @@ test_that("data_prepare works correctly", {
   # Test 4: With negatives kept
   data_prepare(test_data, var1, var2, negative = TRUE, clean = TRUE) %>%
   expect_snapshot(cran = TRUE)
+})
+
+# Attributes
+test_that("attribute is not added", {
+
+  prepared_data <- data_prepare(test_data, var1, var2, negative = TRUE, clean = FALSE)
+  expect_true(is.null(attr(prepared_data, "missings")))
+
+})
+
+test_that("attribute is added", {
+
+  prepared_data <- data_prepare(test_data, var1, var2, negative = FALSE, clean = TRUE)
+  expect_true(!is.null(attr(prepared_data, "missings")))
+
 })
 
 # Remove residual negative values
