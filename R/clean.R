@@ -1,15 +1,12 @@
 #' Prepare data for calculation
 #'
-#' Clean data, check column selection, remove missing and negatives.
+#' Clean data, check column selection, remove cases with missing values
 #'
 #' @keywords internal
 #'
 #' @param data Data frame to be prepared.
 #' @param cols The first column selection.
 #' @param cross The second column selection.
-#' @param rm.missings Whether to remove cases with missing values (default TRUE).
-#' @param rm.negatives Whether to remove negatives in all columns (TRUE),
-#'                     no columns (FALSE), or only the columns in the cols parameter ("cols").
 #' @param clean Whether to clean data using \link{data_clean}.
 #'
 #' @return Prepared data frame.
@@ -19,7 +16,7 @@
 #'
 #' @export
 #'
-data_prepare <- function(data, cols, cross, rm.missings = TRUE, rm.negatives = FALSE, clean = TRUE) {
+data_prepare <- function(data, cols, cross, clean = TRUE) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -30,28 +27,27 @@ data_prepare <- function(data, cols, cross, rm.missings = TRUE, rm.negatives = F
 
   # 2. Apply cleaning plan
   if (clean) {
-    data <- data_clean(data)
+    data <- data_clean(data, clean)
   }
 
   # 3. Remove missings
-  if (isTRUE(rm.missings)) {
-    if (!missing(cross)) {
-      data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
-    } else {
-      data <- data_rm_missings(data, {{ cols }})
-    }
+  if (!missing(cross)) {
+    data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
+  } else {
+    data <- data_rm_missings(data, {{ cols }})
   }
 
-  # 4. Remove negatives
-  if (isTRUE(rm.negatives) & !missing(cross)) {
-    data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
-  }
-  else if (isTRUE(rm.negatives) & missing(cross)) {
-    data <- data_rm_negatives(data, {{ cols }})
-  }
-  else if (rm.negatives == "cols") {
-    data <- data_rm_negatives(data, {{ cols }})
-  }
+
+  # # 4. Remove negatives
+  # if (isTRUE(rm.negatives) & !missing(cross)) {
+  #   data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
+  # }
+  # else if (isTRUE(rm.negatives) & missing(cross)) {
+  #   data <- data_rm_negatives(data, {{ cols }})
+  # }
+  # else if (rm.negatives == "cols") {
+  #   data <- data_rm_negatives(data, {{ cols }})
+  # }
 
   data
 }
@@ -79,6 +75,10 @@ data_clean <- function(data, plan = "sosci", ...) {
   # Prepare only once
   if ("vlkr_df" %in% class(data)) {
     return (data)
+  }
+
+  if (isTRUE(plan)) {
+    plan <- "sosci"
   }
 
   if (plan == "sosci") {
@@ -138,6 +138,7 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
   }
 
   # Remove residual numbers such as -9
+  # (but only if they are listed in the attributes of a column)
   if (remove.na.numbers != FALSE) {
     data <- data_rm_na_numbers(data, remove.na.numbers)
   }
@@ -284,8 +285,9 @@ data_rm_na_levels <- function(data, na.levels = TRUE) {
 #' @param na.numbers Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}.
 #'                   You can also define residual values by setting the global option vlkr.na.numbers
 #'                   (e.g. `options(vlkr.na.numbers=c(-9))`).
+#' @param check.labels Whether to only remove NA numbers that are listed in the attributes of a column.
 #' @return Data frame
-data_rm_na_numbers <- function(data, na.numbers = TRUE) {
+data_rm_na_numbers <- function(data, na.numbers = TRUE, check.labels = TRUE) {
   if (is.logical(na.numbers)) {
     na.numbers <- getOption("vlkr.na.numbers")
     if (is.null(na.numbers)) {
@@ -295,15 +297,19 @@ data_rm_na_numbers <- function(data, na.numbers = TRUE) {
     }
   }
 
-  dplyr::mutate(
-    data,
-    dplyr::across(
-      dplyr::where(is.numeric),
-      ~ dplyr::if_else(. %in% na.numbers, NA, .)
+  data %>%
+    dplyr::mutate(
+      dplyr::across(
+        dplyr::where(is.numeric),
+        ~ dplyr::if_else(
+            . %in% na.numbers &
+            (!check.labels | (as.character(.) %in% names(attributes(.)))),
+          NA,
+          .
+        )
+      )
     )
-  )
 }
-
 
 #' Get a formatted baseline for removed zero, negative, and missing cases
 #' and include focus category information if present

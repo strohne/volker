@@ -7,7 +7,6 @@
 tab_metrics_one(
   data,
   col,
-  negative = FALSE,
   ci = FALSE,
   digits = 1,
   labels = TRUE,
@@ -19,8 +18,6 @@ tab_metrics_one(
 \item{data}{A tibble.}
 
 \item{col}{The columns holding metric values.}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{ci}{Whether to calculate 95\% confidence intervals of the mean.}
 

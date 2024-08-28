@@ -288,10 +288,10 @@ report_counts(ds, A002)
 For best results, use sensible prefixes and captions for your SoSci
 questions. The labels come directly from your questionnaire.
 
-*Please note:* The values `-9` and `[NA] nicht beantwortet` are
-automatically recoded to missing values within all plot, tab, effect,
-and report functions. See the negatives-Parameter and the
-clean-parameter how to disable automatic residual removal.
+*Please note:* The values `-9`, `-2`, `-1` and `[NA] nicht beantwortet`
+are automatically recoded to missing values within all plot, tab,
+effect, and report functions. See the clean-parameter help how to
+disable automatic residual removal.
 
 ## Customization
 
@@ -312,13 +312,6 @@ the specific function.
 
 ### Data preparation
 
-- **negative**: In surveys, negative values such as -9 or -2 are often
-  used to mark missing values or residual answers (“I don’t know”).
-  Therefore, all metric tables and plots remove negative values before
-  calculating distribution parameters such as the mean. Set negative to
-  TRUE for including those values. Be aware that the cleaning plan (see
-  the clean-parameter) may remove some negative values as well. Make
-  sure to disable cleaning of negative numbers where necessary.
 - **ordered**: Sometimes categories have an order, from low to high or
   from few to many. It helps visual inspections to plot ordered values
   with shaded colors instead of arbitrary colors. For frequency plots,
@@ -330,10 +323,12 @@ the specific function.
   the TRUE category.
 - **clean** Before all calculations, the dataset goes through a cleaning
   plan that, for example, recodes residual factor values such as “\[NA\]
-  nicht beantwortet” to missings. See the help for further details or
-  disable data cleaning if you don’t like it. For example, to disable
-  removing the negative residual values, call
-  `options(vlkr.na.numbers=FALSE)`.
+  nicht beantwortet” to missings. In surveys, negative values such as -9
+  or -2 are often used to mark missing values or residual answers (“I
+  don’t know”). See the help for further details or disable data
+  cleaning if you don’t like it. For example, to disable removing the
+  negative residual values, call `options(vlkr.na.numbers=FALSE)` and
+  `options(vlkr.na.levels=FALSE)`.
 
 ### Calculations
 

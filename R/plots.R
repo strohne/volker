@@ -809,7 +809,6 @@ plot_counts_items_cor <- function(data, cols, cross, category = NULL, title = TR
 #'
 #' @param data A tibble.
 #' @param col The column holding metric values.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param ci Whether to plot the confidence interval.
 #' @param box Whether to add a boxplot.
 #' @param limits The scale limits. Set NULL to extract limits from the label.
@@ -827,9 +826,9 @@ plot_counts_items_cor <- function(data, cols, cross, category = NULL, title = TR
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, rm.negatives = !negative, clean = clean)
+  data <- data_prepare(data, {{ col }}, clean = clean)
 
   # Extract the maximum density value
   max_density <- .density_mode(data, {{ col }})
@@ -914,7 +913,6 @@ plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALS
 #' @param data A tibble.
 #' @param col The column holding metric values.
 #' @param cross The column holding groups to compare.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param ci Whether to add error bars with 95% confidence intervals.
 #' @param box Whether to add boxplots.
 #' @param limits The scale limits. Set NULL to extract limits from the labels.
@@ -932,9 +930,9 @@ plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALS
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, rm.negatives = ifelse(negative, FALSE, "cols"), clean = clean)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
   # Add n to labels
   # if (!is.null(numbers) && any(numbers == "n")) {
@@ -1002,7 +1000,6 @@ plot_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FA
 #' @param data A tibble.
 #' @param col The first column holding metric values.
 #' @param cross The second column holding metric values.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param limits The scale limits, a list with x and y components, e.g. \code{list(x=c(0,100), y=c(20,100))}.
 #'               Set NULL to extract limits from the labels.
 #' @param log Whether to plot log scales.
@@ -1020,9 +1017,9 @@ plot_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FA
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one_cor <- function(data, col, cross, negative = FALSE, limits = NULL, log = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one_cor <- function(data, col, cross, limits = NULL, log = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, rm.negatives = !negative, clean = clean)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
   # 2. Remove 0 values in log plots
   if (log) {
@@ -1111,7 +1108,6 @@ plot_metrics_one_cor <- function(data, col, cross, negative = FALSE, limits = NU
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param ci Whether to plot the 95% confidence interval of the mean.
 #' @param box Whether to add boxplots.
 #' @param limits The scale limits. Set NULL to extract limits from the labels. NOT IMPLEMENTED YET.
@@ -1128,9 +1124,9 @@ plot_metrics_one_cor <- function(data, col, cross, negative = FALSE, limits = NU
 #' plot_metrics_items(data, starts_with("cg_adoption_"))
 #'
 #' @export
-plot_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, clean = clean, rm.negatives = !negative)
+  data <- data_prepare(data, {{ cols }}, clean = clean)
 
   # 2. Pivot items
   result <- data %>%
@@ -1201,7 +1197,6 @@ plot_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, box = F
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param limits The scale limits. Set NULL to extract limits from the labels.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
@@ -1217,9 +1212,9 @@ plot_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, box = F
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, rm.negatives = ifelse(negative, FALSE, "cols"), clean = clean)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
   # 2. Calculate
   # Get positions of group cols
@@ -1303,7 +1298,6 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column to correlate.
 #' @param ci Whether to plot confidence intervals of the correlation coefficent.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param method The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
@@ -1319,9 +1313,9 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 #'
 #'@export
 #'@importFrom rlang .data
-plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, ci = TRUE, method = "pearson", title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor <- function(data, cols, cross, ci = TRUE, method = "pearson", title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, rm.negatives = !negative, clean = clean)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
@@ -1409,7 +1403,6 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, ci = TRU
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param method The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.
 #' @param numbers Controls whether to display correlation coefficients on the plot.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
@@ -1426,9 +1419,9 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, ci = TRU
 #'
 #'@export
 #'@importFrom rlang .data
-plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, method = "pearson", numbers = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", numbers = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, rm.negatives = !negative, clean = clean)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
   # 2. Calculate correlation
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)

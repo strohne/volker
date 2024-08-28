@@ -35,6 +35,16 @@ library(volker)
 #write_csv2(codes_de,"data-raw/codes_de.csv", na="")
 
 chatgpt_en <- read_csv2("data-raw/data/chatgpt_en.csv", na="")
+chatgpt_en$sd_gender <- factor(chatgpt_en$sd_gender, levels=c("female","male","diverse","[no answer]"))
+chatgpt_en$adopter <- factor(chatgpt_en$adopter, levels = c(
+  "I try new offers immediately",
+  "I try new offers rather quickly",
+  "I wait until offers establish themselves",
+  "I only use new offers when I have no other choice",
+  "[no answer]"
+))
+
+
 
 codes_en <- read_csv2("data-raw/data/codes_en.csv", na="",col_types = "c")
 chatgpt_en <- labs_apply(chatgpt_en, codes_en)
@@ -59,5 +69,5 @@ nonascii <- chatgpt_en |>
 stopifnot(nrow(nonascii) == 0)
 
 # Use
-# chatgpt <- chatgpt_en
-# usethis::use_data(chatgpt, overwrite = TRUE)
+#chatgpt <- chatgpt_en
+#usethis::use_data(chatgpt, overwrite = TRUE)

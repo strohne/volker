@@ -14,6 +14,7 @@ test_that("Frequency table", {
   expect_snapshot(volker::tab_counts(data, sd_gender), cran= TRUE)
 })
 
+
 # Cross table of categorical variables
 # tab_counts_one_grouped
 test_that("Cross table of categorical variables", {
@@ -81,9 +82,11 @@ test_that("Compare means of multiple items", {
 # ...with missings
 test_that("missing values make no trouble", {
   data %>%
+#    volker::labs_store() |>
     dplyr::bind_rows(tibble::tibble(sd_gender = c("X", "X", "X"))) %>%
+#    volker::labs_restore() |>
     volker::tab_metrics_items_grouped(tidyselect::starts_with("cg_adoption_"), sd_gender) %>%
-    expect_snapshot(cran= TRUE)
+    expect_snapshot(cran = TRUE)
 })
 
 # Correlation of items

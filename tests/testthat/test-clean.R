@@ -11,36 +11,27 @@ data <- volker::chatgpt
 # Data_prepare
 test_data <- tibble::tibble(
   var1 = c(1, 2, -1, 5),
-  var2 = c(4, -3, -3, -9)
+  var2 = c(-2, -3, -3, -9)
 )
 
-test_that("Data preparation removes what is to be removed and nothing else", {
-  # Test 1: Clean, removing missings and negatives, but don't touch negatives in the cross column
-  data_prepare(test_data, var1, var2, rm.negatives = "cols", clean = TRUE) %>%
-  expect_snapshot(cran = TRUE)
+attr(test_data$var1, "-1") <- "RESIDUAL VALUE"
+attr(test_data$var2, "-3") <- "NOT A RESIDUAL VALUE" # NOT in VLKR_NA_NUMERIC, should not be removed
 
-  # Test 2: Without cleaning but removing missings and negatives
-  data_prepare(test_data, var1, var2, rm.negatives = "cols", clean = FALSE) %>%
-  expect_snapshot(cran = TRUE)
-
-  # Test 3: Only remove from cols
-  data_prepare(test_data, var1, var2, rm.negatives = TRUE, clean = TRUE) %>%
-  expect_snapshot(cran = TRUE)
-
-  # Test 4: With negatives kept
-  data_prepare(test_data, var1, var2, rm.negatives = FALSE, clean = TRUE) %>%
-  expect_snapshot(cran = TRUE)
-})
+#attr(test_data$var2, "-9") <- "RESIDUAL VALUE"
 
 # Attributes
-test_that("missings attribute is not added", {
-  prepared_data <- data_prepare(test_data, var1, var2, rm.negatives = FALSE, clean = FALSE)
+test_that("No values are recoded to missings", {
+  prepared_data <- data_prepare(test_data, var1, var2, clean = FALSE)
+  expect_snapshot(prepared_data, cran = TRUE)
+
   expect_true(is.null(attr(prepared_data, "missings")))
 
 })
 
-test_that("missings attribute is added", {
-  prepared_data <- data_prepare(test_data, var1, var2, rm.negatives = TRUE, clean = TRUE)
+test_that("Residual values are recoded to missings", {
+  prepared_data <- data_prepare(test_data, var1, var2, clean = TRUE)
+  expect_snapshot(prepared_data, cran = TRUE)
+
   expect_true(!is.null(attr(prepared_data, "missings")))
 
 })
@@ -69,7 +60,7 @@ test_that("Negatives are kept", {
   tibble::tibble(var1 = c(1,2,-9)) |>
     data_clean() |>
     expect_snapshot(cran= TRUE)
-  options("vlkr.na.numbers"=c(-9))
+  options("vlkr.na.numbers"= VLKR_NA_NUMERIC)
 })
 
 # Get baseline

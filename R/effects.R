@@ -407,7 +407,6 @@ effect_metrics_one <- function(data, col, clean = T, ... ) {
 #' @param data A tibble.
 #' @param col The column holding metric values.
 #' @param cross The column holding groups to compare.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param method A character vector of methods, e.g. c("t.test","lm").
 #'              Supported methods are t.test (only valid if the cross column contains two levels)
 #'              and lm (regression results).
@@ -423,9 +422,9 @@ effect_metrics_one <- function(data, col, clean = T, ... ) {
 #'
 #' @export
 #' @importFrom rlang .data
-effect_metrics_one_grouped <- function(data, col, cross, negative = FALSE, method = "lm", labels = TRUE, clean = TRUE, ...) {
+effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, rm.negatives = ifelse(negative, FALSE, "cols"), clean = clean)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
   # 2. Calculate
   result <- list()
@@ -554,7 +553,6 @@ effect_metrics_one_grouped <- function(data, col, cross, negative = FALSE, metho
 #' @param data A tibble.
 #' @param col The column holding metric values.
 #' @param cross The column holding metric values to correlate.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
@@ -568,9 +566,9 @@ effect_metrics_one_grouped <- function(data, col, cross, negative = FALSE, metho
 #'
 #' @export
 #' @importFrom rlang .data
-effect_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pearson", labels = TRUE, clean = TRUE, ...) {
+effect_metrics_one_cor <- function(data, col, cross, method = "pearson", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, rm.negatives = !negative, clean = clean)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
   # 2. Calculate
   result <- .effect_correlations(data, {{ col }}, {{ cross}}, method=method, labels = labels)
@@ -612,7 +610,6 @@ effect_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = 
 #'
 #' @param data A tibble containing item measures.
 #' @param cols The column holding metric values.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
@@ -627,9 +624,9 @@ effect_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = 
 #'
 #' @importFrom rlang .data
 #' @export
-effect_metrics_items <- function(data, cols, negative = FALSE, method = "pearson", labels = TRUE, clean = TRUE, ...) {
+effect_metrics_items <- function(data, cols, method = "pearson", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, rm.negatives = !negative, clean = clean)
+  data <- data_prepare(data, {{ cols }}, clean = clean)
 
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cols }}, method = method, labels = labels)
@@ -687,7 +684,6 @@ effect_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
@@ -702,9 +698,9 @@ effect_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = "pearson", labels = TRUE, clean = TRUE, ...) {
+effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, rm.negatives = !negative, clean = clean)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)

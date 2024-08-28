@@ -564,7 +564,7 @@ get_title <- function(data, cols, default=NULL) {
 #' @param negative Whether to include negative values.
 #' @return A list or NULL.
 #' @importFrom rlang .data
-get_limits <- function(data, cols, negative = FALSE) {
+get_limits <- function(data, cols, negative = TRUE) {
 
   # First, try to get limits from the column attributes
   values <- data %>%
@@ -573,9 +573,18 @@ get_limits <- function(data, cols, negative = FALSE) {
     unlist()
 
   # Second, try to get limits from the column labels
+
+  na.numbers <- getOption("vlkr.na.numbers")
+  if (is.null(na.numbers)) {
+    na.numbers <- VLKR_NA_NUMERIC
+  } else if (all(na.numbers == FALSE)) {
+    na.numbers <- c()
+  }
+
   if (is.null(values)) {
     values <- codebook(data, {{ cols }}) %>%
       dplyr::distinct(dplyr::across(tidyselect::all_of("value_name"))) %>%
+      filter(!(.data$value_name %in% na.numbers)) |>
       dplyr::pull(.data$value_name)
     values <- suppressWarnings(as.numeric(values))
   }
