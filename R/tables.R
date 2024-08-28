@@ -913,7 +913,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 #' @importFrom rlang .data
 tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NULL, percent = TRUE, values = c("n", "p"), title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, metric_cross = TRUE)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
   # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)
@@ -1039,7 +1039,7 @@ tab_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, digits = 1,
 #' @importFrom rlang .data
 tab_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative, rm_neg_cols = TRUE)
 
   # 2. Calculate values
   result_grouped <- data %>%
@@ -1140,7 +1140,7 @@ tab_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FAL
 #' @importFrom rlang .data
 tab_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pearson", ci = FALSE, digits = 2, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative, metric_cross = TRUE)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative)
 
   # 2. Get columns
   cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
@@ -1288,7 +1288,7 @@ tab_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, digits =
 #' @importFrom rlang .data
 tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digits = 1, values = c("m", "sd"), labels = TRUE, clean = TRUE, ...) {
   # Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative, rm_neg_cols = TRUE)
 
   # Get positions of group cols
   cross <- tidyselect::eval_select(expr = enquo(cross), data = data)
@@ -1454,9 +1454,9 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #' @export
 tab_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = "pearson", digits = 2, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative, metric_cross = TRUE)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative)
 
-  # 5. Calculate correlation
+  # 2. Calculate correlation
   result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
 
   # Remove common item prefix

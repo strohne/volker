@@ -17,16 +17,13 @@
 #'
 #' @export
 #'
-data_prepare <- function(data, cols, cross, negative = TRUE, clean = TRUE, metric_cross = FALSE) {
+data_prepare <- function(data, cols, cross, negative = TRUE, clean = TRUE, rm_neg_cols = FALSE) {
   # 1. Checks
   check_is_dataframe(data)
-
-  if (!missing(cols)) {
-    check_has_column(data, {{ cols }})
-  }
+  check_has_column(data, {{ cols }})
 
   if (!missing(cross)) {
-      check_has_column(data, {{ cols }}, {{ cross }})
+      check_has_column(data, {{ cross }})
   }
 
   # 2. Clean
@@ -43,9 +40,12 @@ data_prepare <- function(data, cols, cross, negative = TRUE, clean = TRUE, metri
 
   # 4. Remove negatives
   if (!negative) {
-    data <- data_rm_negatives(data, {{ cols }})
-    if (metric_cross) {
-      data <- data_rm_negatives(data, {{ cross }})
+    if (missing(cross)) {
+      data <- data_rm_negatives(data, {{ cols }})
+    } else if (rm_neg_cols && !missing(cross)) {
+      data <- data_rm_negatives(data, {{ cols }})
+    } else {
+      data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
     }
   }
 

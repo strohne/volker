@@ -10,7 +10,7 @@ data <- volker::chatgpt
 
 # Data_prepare
 test_data <- tibble::tibble(var1 = c(1, 2, -1, 5),
-                            var2 = c(4, 5, -3, -9))
+                            var2 = c(4, -3, -3, -9))
 
 test_that("data_prepare works correctly", {
   # Test 1: Cleaning, removing missings and negatives without metric_cross
@@ -21,8 +21,8 @@ test_that("data_prepare works correctly", {
   data_prepare(test_data, var1, var2, negative = FALSE, clean = FALSE) %>%
   expect_snapshot(cran = TRUE)
 
-  # Test 3: With metric_cross enabled
-  data_prepare(test_data, var1, var2, negative = FALSE, clean = TRUE, metric_cross = TRUE) %>%
+  # Test 3: Only remove from cols
+  data_prepare(test_data, var1, var2, negative = FALSE, clean = TRUE, rm_neg_cols = TRUE) %>%
   expect_snapshot(cran = TRUE)
 
   # Test 4: With negatives kept

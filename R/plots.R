@@ -195,26 +195,16 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
 #' @importFrom rlang .data
 #' @export
 plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, clean = clean)
 
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, {{ col }})
-
-  # 4. Data
+  # 2. Data
   # Count data
   result <- data %>%
     dplyr::count({{ col }}) %>%
     dplyr::mutate(p = (.data$n / sum(.data$n)) * 100)
 
-  # 5. Confidence intervals
+  # 3. Confidence intervals
   if (ci) {
     n_total <- sum(result$n)
     result <- result |>
@@ -227,7 +217,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
       dplyr::select(-tidyselect::all_of(c(".test")))
   }
 
-  # Numbers
+  # 4. Numbers
   result <- result %>%
     dplyr::mutate(
       .values = dplyr::case_when(
@@ -238,7 +228,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
       )
     )
 
-  # Item labels
+  # 5. Item labels
   result <- result |>
     dplyr::mutate("{{ col }}" := as.factor({{ col }}))
 
@@ -246,7 +236,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
     result <- labs_replace(result, {{ col }}, codebook(data, {{ col }}))
   }
 
-  # Detect the scale (whether the categories are binary and direction)
+  # 6. Detect the scale (whether the categories are binary and direction)
   # TODO: make dry
   if (!is.null(category)) {
     result <- dplyr::filter(result, as.character({{ col }}) == as.character(category))
@@ -260,14 +250,14 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
   result <- dplyr::mutate(result, value = factor("TRUE"))
   category = "TRUE"
 
-  # Title
+  # 7. Title
   if (title == TRUE) {
     title <- get_title(data, {{ col }})
   } else if (title == FALSE) {
     title <- NULL
   }
 
-  # Base
+  # 8. Base
   base_n <- nrow(data)
   result <- .attr_transfer(result, data, "missings")
 
@@ -320,18 +310,10 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #' @export
 #' @importFrom rlang .data
 plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "total", limits = NULL, ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ cross }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # Swap columns
+  # 2. Swap columns
   if (prop == "cols") {
     col <- rlang::enquo(col)
     cross <- rlang::enquo(cross)
@@ -341,18 +323,13 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
     #stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
   }
 
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-
-  # 4. Calculate data
+  # 3. Calculate data
   result <- data %>%
     dplyr::count({{ col }}, {{ cross }})
-
 
   # 4. Set labels
   # data <- data |>
   #   dplyr::mutate(data, "{{ col_group }}" := as.factor({{ col_group }}))
-
 
   result <- result %>%
     dplyr::mutate(item = factor({{ col }})) |>
@@ -460,24 +437,13 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
 #' @export
 #' @importFrom rlang .data
 plot_counts_one_cor <- function(data, col, cross, category = NULL, prop = "total", limits = NULL, ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, metric_cross = TRUE)
 
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ cross }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-
-  # 4. Split into groups
+  # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)
 
-  # 5. Output
+  # 3. Output
   result <- plot_counts_one_grouped(
     data, {{ col }}, {{ cross }},
     category = category, prop = prop, limits = limits, ordered = ordered, numbers = numbers, title = title, labels = labels, clean = clean,
