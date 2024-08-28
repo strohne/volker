@@ -10,10 +10,7 @@ editor_options:
 ---
 
 ```{r include=FALSE}
-knitr::opts_chunk$set(
-  echo = F,
-  knitr.table.format = "html"
-)
+knitr::opts_chunk$set(echo = F)
 
 library(tidyverse)
 library(volker)
@@ -47,9 +44,11 @@ effect_counts(data, adopter, sd_gender)
 ```
 
 
-# 2. Logistic regression with one metric predictor
+# 3. Logistic regression with one metric predictor
 ```{r}
-effect_counts(data, adopter, sd_age, metric = TRUE)
+
+# TODO
+# effect_counts(data, adopter, sd_age, metric = TRUE)
 ```
 
 

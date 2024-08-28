@@ -1607,14 +1607,17 @@ tab_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = 
       )
   } else if (knitr::is_latex_output()) {
     df <- df %>%
-      dplyr::mutate(dplyr::across(dplyr::where(is.character), ~ .knit_prepare(., wrap = VLKR_PLOT_LABELWRAP))) %>%
+      dplyr::mutate(dplyr::across(
+        dplyr::where(is.character),
+        ~ .knit_prepare(., wrap = dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP))
+      )) %>%
       knitr::kable(
         "latex",
         #booktabs = TRUE,
         escape = FALSE,
         #align = c("l", rep("r", ncol(df) - 1)),
         digits = digits,
-        col.names = .knit_prepare(colnames(df), wrap = VLKR_PLOT_LEGENDWRAP),
+        col.names = .knit_prepare(colnames(df), wrap = dplyr::coalesce(getOption("vlkr.wrap.legend"), VLKR_PLOT_LEGENDWRAP)),
         #format.args = numberformat,
         ...
       )

@@ -281,16 +281,38 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 #' @export
 print.vlkr_list <- function(x, ...) {
   if (!is.null(knitr::pandoc_to())) {
-    x %>%
+
+    output <- list()
+    for (part in x) {
+
+      caption <- attr(part, "caption", exact=TRUE)
+      if (!is.null(caption)) {
+        caption <- paste0("\n###### ", caption, "  \n")
+        output <- append(output, caption)
+      }
+
+
+      if (inherits(part, "vlkr_tbl")) {
+        output <- append(output, .knit_table(part))
+      } else if (inherits(obj, "vlkr_plt")) {
+        output <- append(output, .knit_plot(part))
+      } else if (is.character(part)) {
+        output <- append(output, part)
+      } else {
+        warning("Could not determine the volker list item type")
+      }
+    }
+
+    baseline <- attr(x, "baseline", exact=TRUE)
+    if (!is.null(baseline)) {
+      output <- append(output, baseline)
+    }
+
+    output |>
       unlist() %>%
       paste0(collapse = "\n") %>%
       knitr::asis_output() %>%
       knitr::knit_print()
-
-    baseline <- attr(x, "baseline", exact=TRUE)
-    if (!is.null(baseline)) {
-      knitr::knit_print(baseline)
-    }
 
   } else {
     for (part in x) {

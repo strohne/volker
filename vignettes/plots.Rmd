@@ -40,10 +40,6 @@ data <- volker::chatgpt
 | 11    | plot_metrics_items_grouped | plot   | metrics  | multiple | grouped    |
 | 12    | plot_metrics_items_cor     | plot   | metrics  | multiple | correlated |
 
-```{r echo=TRUE}
-knitr::opts_chunk$get()
-```
-
 
 ## Frequencies of categorical variables
 
