@@ -202,22 +202,10 @@ effect_counts_one <- function(data, col, labels = TRUE, clean = TRUE, ...) {
 #' @importFrom rlang .data
 #' @export
 effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ cross }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-
-
-  # 4. Prepare data
+  # 2. Prepare data
   contingency <- data %>%
     dplyr::count({{ col }}, {{ cross }}) %>%
     tidyr::pivot_wider(
@@ -228,8 +216,7 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
     dplyr::select(-1) %>%
     as.matrix()
 
-
-  # 5. Chi-squared test and Cramer's V
+  # 3. Chi-squared test and Cramer's V
   exact <- any(contingency < 5)
   fit <- stats::chisq.test(contingency,simulate.p.value = exact)
 
@@ -237,7 +224,7 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   cells <- min(dim(contingency)[1], dim(contingency)[1]) - 1
   cramer_v <- round(fit$statistic / (n * sqrt(cells)), 2)
 
-  # 6. Prepare output
+  # 4. Prepare output
   result <- tibble::tribble(
     ~Statistic, ~Value,
     "Number of cases", as.character(n),
@@ -267,21 +254,10 @@ effect_counts_one_cor <- function(data, col, cross, clean = TRUE, labels = TRUE,
 
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
   return()
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ cross }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-
-  # 4. Get cross variables names
+  # 2. Get cross variables names
   if (labels) {
     data <- labs_replace(
       data, {{ cross }},
@@ -448,26 +424,10 @@ effect_metrics_one <- function(data, col, clean = T, ... ) {
 #' @export
 #' @importFrom rlang .data
 effect_metrics_one_grouped <- function(data, col, cross, negative = FALSE, method = "lm", labels = TRUE, clean = TRUE, ...) {
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ cross }})
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative, rm_neg_cols = TRUE)
 
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-
-  # 4. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, {{ col }})
-  }
-
-  # 5. Calculate
+  # 2. Calculate
   result <- list()
   lm_data <- dplyr::select(data, av = {{ col }}, uv = {{ cross }})
 
@@ -609,26 +569,10 @@ effect_metrics_one_grouped <- function(data, col, cross, negative = FALSE, metho
 #' @export
 #' @importFrom rlang .data
 effect_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pearson", labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative)
 
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ cross }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-
-  # 4. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, c({{ col }}, {{ cross }}))
-  }
-
-  # 5. Calculate
+  # 2. Calculate
   result <- .effect_correlations(data, {{ col }}, {{ cross}}, method=method, labels = labels)
 
   # Remove common item prefix
@@ -684,25 +628,10 @@ effect_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = 
 #' @importFrom rlang .data
 #' @export
 effect_metrics_items <- function(data, cols, negative = FALSE, method = "pearson", labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, clean = clean, negative = negative)
 
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ cols }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, {{ cols }})
-
-  # 4. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, {{ cols }})
-  }
-
-  # 6. Calculate correlations
+  # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cols }}, method = method, labels = labels)
   result <- dplyr::filter(result, .data$item1 != .data$item2)
 
@@ -774,25 +703,10 @@ effect_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
 #' @export
 #' @importFrom rlang .data
 effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = "pearson", labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative)
 
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ cols }})
-  check_has_column(data, {{ cross }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
-
-  # 4. Remove negatives
-  if (! negative) {
-    data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
-  }
-
+  # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
 
   # Remove common item prefix
@@ -806,7 +720,6 @@ effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method
   } else {
     title <- prefix
   }
-
 
   result <- result %>%
     dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
