@@ -4,14 +4,14 @@
 #'
 #' @keywords internal
 #'
-#' @param data Data frame.
+#' @param data Data frame to be prepared.
 #' @param cols The first column selection.
 #' @param cross The second column selection.
 #' @param negative Whether to remove negatives.
 #' @param clean Whether to clean data using \link{data_clean}.
-#' @param rm_neg_cols Only clean cols (first column selection). Applicable if cross is grouping variable.
+#' @param rm_neg_cols if TRUE and cross is specified, negative values will be removed only from the cols.
 #'
-#' @return Cleaned data frame.
+#' @return Prepared data frame.
 #' @examples
 #' data <- volker::chatgpt
 #' data_prepare(data, sd_age, sd_gender)
