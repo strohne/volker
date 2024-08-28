@@ -5,7 +5,7 @@
 \alias{VLKR_NA_NUMERIC}
 \title{Numbers to remove from vectors}
 \format{
-An object of class \code{numeric} of length 1.
+An object of class \code{numeric} of length 3.
 }
 \usage{
 VLKR_NA_NUMERIC

@@ -14,7 +14,7 @@ VLKR_NA_LEVELS <- c("[NA] nicht beantwortet", "[NA] keine Angabe", "[no answer]"
 #' Override with \code{options(vlkr.na.numbers=c(-2,-9))}.
 #'
 #' @keywords internal
-VLKR_NA_NUMERIC <- c(-9)
+VLKR_NA_NUMERIC <- c(-9, -2, -1)
 
 #' Fill colors
 #'

@@ -7,9 +7,10 @@
 #' @param data Data frame to be prepared.
 #' @param cols The first column selection.
 #' @param cross The second column selection.
-#' @param negative Whether to remove negatives.
+#' @param rm.missings Whether to remove cases with missing values (default TRUE).
+#' @param rm.negatives Whether to remove negatives in all columns (TRUE),
+#'                     no columns (FALSE), or only the columns in the cols parameter ("cols").
 #' @param clean Whether to clean data using \link{data_clean}.
-#' @param rm_neg_cols if TRUE and cross is specified, negative values will be removed only from the cols.
 #'
 #' @return Prepared data frame.
 #' @examples
@@ -18,7 +19,7 @@
 #'
 #' @export
 #'
-data_prepare <- function(data, cols, cross, negative = TRUE, clean = TRUE, rm_neg_cols = FALSE) {
+data_prepare <- function(data, cols, cross, rm.missings = TRUE, rm.negatives = FALSE, clean = TRUE) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -27,36 +28,41 @@ data_prepare <- function(data, cols, cross, negative = TRUE, clean = TRUE, rm_ne
       check_has_column(data, {{ cross }})
   }
 
-  # 2. Clean
+  # 2. Apply cleaning plan
   if (clean) {
     data <- data_clean(data)
   }
 
   # 3. Remove missings
-  if (!missing(cross)) {
-    data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
-  } else {
-    data <- data_rm_missings(data, {{ cols }})
+  if (isTRUE(rm.missings)) {
+    if (!missing(cross)) {
+      data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
+    } else {
+      data <- data_rm_missings(data, {{ cols }})
+    }
   }
 
   # 4. Remove negatives
-  if (!negative) {
-    if (missing(cross)) {
-      data <- data_rm_negatives(data, {{ cols }})
-    } else if (rm_neg_cols && !missing(cross)) {
-      data <- data_rm_negatives(data, {{ cols }})
-    } else {
-      data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
-    }
+  if (isTRUE(rm.negatives) & !missing(cross)) {
+    data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
+  }
+  else if (isTRUE(rm.negatives) & missing(cross)) {
+    data <- data_rm_negatives(data, {{ cols }})
+  }
+  else if (rm.negatives == "cols") {
+    data <- data_rm_negatives(data, {{ cols }})
   }
 
   data
 }
 
-#' Prepare dataframe for tabs, plots, and index operations
+#' Prepare dataframe for the analysis
+#'
+#' Depending on the selected cleaning plan, for example,
+#' recodes residual values to NA.
 #'
 #' The tibble remembers whether it was already cleaned and
-#' the cleaning plan is only performed once in the first call.
+#' the cleaning plan is only applyed once in the first call.
 #'
 #' @keywords internal
 #'
@@ -69,16 +75,20 @@ data_prepare <- function(data, cols, cross, negative = TRUE, clean = TRUE, rm_ne
 #' ds <- data_clean(ds)
 #' @export
 data_clean <- function(data, plan = "sosci", ...) {
+
+  # Prepare only once
+  if ("vlkr_df" %in% class(data)) {
+    return (data)
+  }
+
   if (plan == "sosci") {
     data <- data_clean_sosci(data,...)
   }
-  data
+
+  .to_vlkr_df(data)
 }
 
 #' Prepare data originating from SoSci Survey
-#'
-#' The tibble remembers whether it was already prepared and
-#' the operations are only performed once in the first call.
 #'
 #' Prepares SoSci Survey data:
 #' - Remove the avector class from all columns
@@ -86,6 +96,9 @@ data_clean <- function(data, plan = "sosci", ...) {
 #' - Recode residual factor values to NA (e.g. "[NA] nicht beantwortet")
 #' - Recode residual numeric values to NA (e.g. -9)
 #' - Add whitespace after slashes to improve label breaks
+#'
+#' The tibble remembers whether it was already prepared and
+#' the operations are only performed once in the first call.
 #'
 #' @keywords internal
 #'
@@ -121,42 +134,12 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
 
   # Remove residual levels such as "[NA] nicht beantwortet"
   if (remove.na.levels != FALSE) {
-    if (is.logical(remove.na.levels)) {
-      remove.na.levels <- getOption("vlkr.na.levels")
-      if (is.null(remove.na.levels)) {
-        remove.na.levels <- VLKR_NA_LEVELS
-      } else if (all(remove.na.levels == FALSE)) {
-        remove.na.levels <- c()
-      }
-    }
-
-    data <- dplyr::mutate(
-      data,
-      dplyr::across(
-        tidyselect::where(~ is.factor(.)),
-        ~ .factor_with_attr(replace(., . %in% remove.na.levels, NA),setdiff(levels(.), remove.na.levels))
-      )
-    )
+    data <- data_rm_na_levels(data, remove.na.levels)
   }
 
   # Remove residual numbers such as -9
   if (remove.na.numbers != FALSE) {
-    if (is.logical(remove.na.numbers)) {
-      remove.na.numbers <- getOption("vlkr.na.numbers")
-      if (is.null(remove.na.numbers)) {
-        remove.na.numbers <- VLKR_NA_NUMERIC
-      } else if (all(remove.na.numbers == FALSE)) {
-        remove.na.numbers <- c()
-      }
-    }
-
-    data <- dplyr::mutate(
-      data,
-      dplyr::across(
-        dplyr::where(is.numeric),
-        ~ dplyr::if_else(. %in% remove.na.numbers, NA, .)
-      )
-    )
+    data <- data_rm_na_numbers(data, remove.na.numbers)
   }
 
   # Add whitespace for better breaks
@@ -196,11 +179,11 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
 #' @return Data frame.
 data_rm_missings <- function(data, cols) {
 
-  data_clean <- tidyr::drop_na(data, {{ cols }})
-  cases <-  nrow(data) - nrow(data_clean)
+  cleaned <- tidyr::drop_na(data, {{ cols }})
+  cases <-  nrow(data) - nrow(cleaned)
 
   if (cases > 0) {
-    data <- data_clean
+    data <- cleaned
     colnames <- rlang::as_label(rlang::enquo(cols))
     data <- .attr_insert(data, "missings", "na", list("cols" = colnames, "n"=cases))
   }
@@ -217,17 +200,17 @@ data_rm_missings <- function(data, cols) {
 #' @return Data frame.
 data_rm_zeros <- function(data, cols) {
 
-  data_clean <- data |>
+  cleaned <- data |>
     labs_store() |>
     dplyr::mutate(dplyr::across({{ cols }}, ~ dplyr::if_else(. == 0, NA, .))) |>
     labs_restore() |>
     tidyr::drop_na({{ cols }})
 
 
-  cases <-  nrow(data) - nrow(data_clean)
+  cases <-  nrow(data) - nrow(cleaned)
 
   if (cases > 0) {
-    data <- data_clean
+    data <- cleaned
     colnames <- rlang::as_label(rlang::enquo(cols))
     data <- .attr_insert(data, "missings", "zero", list("cols" = colnames, "n"=cases))
   }
@@ -248,6 +231,7 @@ data_rm_negatives <- function(data, cols) {
     labs_store() |>
     dplyr::mutate(dplyr::across({{ cols }}, ~ ifelse(. < 0, NA, .))) |>
     labs_restore() |>
+    #TODO: only drop rows that had negatives, not all missings
     tidyr::drop_na({{ cols }})
 
     cases <-  nrow(data) - nrow(data_clean)
@@ -260,6 +244,66 @@ data_rm_negatives <- function(data, cols) {
 
     data
 }
+
+
+#' Remove NA levels
+#'
+#' @keywords internal
+#'
+#' @param data Data frame
+#' @param na.levels Residual values to remove from factor columns.
+#'                  Either a character vector with residual values or TRUE to use defaults in \link{VLKR_NA_LEVELS}.
+#'                  You can define default residual levels by setting the global option vlkr.na.levels
+#'                  (e.g. `options(vlkr.na.levels=c("Not answered"))`).
+#' @return Data frame
+data_rm_na_levels <- function(data, na.levels = TRUE) {
+  if (is.logical(na.levels)) {
+    na.levels <- getOption("vlkr.na.levels")
+    if (is.null(na.levels)) {
+      na.levels <- VLKR_NA_LEVELS
+    } else if (all(na.levels == FALSE)) {
+      na.levels <- c()
+    }
+  }
+
+  dplyr::mutate(
+    data,
+    dplyr::across(
+      tidyselect::where(~ is.factor(.)),
+      ~ .factor_with_attr(replace(., . %in% na.levels, NA),setdiff(levels(.), na.levels))
+    )
+  )
+
+}
+
+#' Remove NA numbers
+#'
+#' @keywords internal
+#'
+#' @param data Data frame
+#' @param na.numbers Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}.
+#'                   You can also define residual values by setting the global option vlkr.na.numbers
+#'                   (e.g. `options(vlkr.na.numbers=c(-9))`).
+#' @return Data frame
+data_rm_na_numbers <- function(data, na.numbers = TRUE) {
+  if (is.logical(na.numbers)) {
+    na.numbers <- getOption("vlkr.na.numbers")
+    if (is.null(na.numbers)) {
+      na.numbers <- VLKR_NA_NUMERIC
+    } else if (all(na.numbers == FALSE)) {
+      na.numbers <- c()
+    }
+  }
+
+  dplyr::mutate(
+    data,
+    dplyr::across(
+      dplyr::where(is.numeric),
+      ~ dplyr::if_else(. %in% na.numbers, NA, .)
+    )
+  )
+}
+
 
 #' Get a formatted baseline for removed zero, negative, and missing cases
 #' and include focus category information if present

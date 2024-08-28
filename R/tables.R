@@ -950,7 +950,7 @@ tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NUL
 #' @importFrom rlang .data
 tab_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, clean = clean, negative = negative)
+  data <- data_prepare(data, {{ col }}, rm.negatives = !negative, clean = clean)
 
   # 2. Calculate values
   result <- data %>%
@@ -1039,7 +1039,7 @@ tab_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, digits = 1,
 #' @importFrom rlang .data
 tab_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative, rm_neg_cols = TRUE)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, rm.negatives = ifelse(negative, FALSE, "cols"), clean = clean)
 
   # 2. Calculate values
   result_grouped <- data %>%
@@ -1140,7 +1140,7 @@ tab_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FAL
 #' @importFrom rlang .data
 tab_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pearson", ci = FALSE, digits = 2, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, rm.negatives = !negative, clean = clean)
 
   # 2. Get columns
   cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
@@ -1204,7 +1204,7 @@ tab_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pe
 #' @importFrom rlang .data
 tab_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, clean = clean, negative = negative)
+  data <- data_prepare(data, {{ cols }}, rm.negatives = !negative, clean = clean)
 
   # 2. Calculate
   result <- data %>%
@@ -1288,7 +1288,7 @@ tab_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, digits =
 #' @importFrom rlang .data
 tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digits = 1, values = c("m", "sd"), labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative, rm_neg_cols = TRUE)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, rm.negatives = ifelse(negative, FALSE, "cols"), clean = clean)
 
   # Get positions of group cols
   cross <- tidyselect::eval_select(expr = enquo(cross), data = data)
@@ -1454,7 +1454,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #' @export
 tab_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = "pearson", digits = 2, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, rm.negatives = !negative, clean = clean)
 
   # 2. Calculate correlation
   result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
@@ -1500,10 +1500,10 @@ tab_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = 
 #' @param data A data frame containing the column to be split.
 #' @param col The column to split.
 #' @param labels Logical; if `TRUE` (default), use custom labels for the split categories based
-#' on the column title. If `FALSE`, use the column name directly.
+#'               on the column title. If `FALSE`, use the column name directly.
 #'
 #' @return A data frame with the specified column converted into categorical labels based on its median value.
-#' The split threshold (median) is stored as an attribute of the column.
+#'         The split threshold (median) is stored as an attribute of the column.
 .tab_split <- function(data, col, labels = TRUE) {
   cross_name <- rlang::as_string(rlang::ensym(col))
   cross_label <- ifelse(labels, get_title(data, {{ col }}), cross_name)

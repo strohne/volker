@@ -8,9 +8,9 @@ data_prepare(
   data,
   cols,
   cross,
-  negative = TRUE,
-  clean = TRUE,
-  rm_neg_cols = FALSE
+  rm.missings = TRUE,
+  rm.negatives = FALSE,
+  clean = TRUE
 )
 }
 \arguments{
@@ -20,11 +20,12 @@ data_prepare(
 
 \item{cross}{The second column selection.}
 
-\item{negative}{Whether to remove negatives.}
+\item{rm.missings}{Whether to remove cases with missing values (default TRUE).}
+
+\item{rm.negatives}{Whether to remove negatives in all columns (TRUE),
+no columns (FALSE), or only the columns in the cols parameter ("cols").}
 
 \item{clean}{Whether to clean data using \link{data_clean}.}
-
-\item{rm_neg_cols}{if TRUE and cross is specified, negative values will be removed only from the cols.}
 }
 \value{
 Prepared data frame.

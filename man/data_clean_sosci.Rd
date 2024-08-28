@@ -30,10 +30,6 @@ You can also define or disable residual values by setting the global option vlkr
 Data frame with vlkr_df class (the class is used to prevent double preparation).
 }
 \description{
-The tibble remembers whether it was already prepared and
-the operations are only performed once in the first call.
-}
-\details{
 Prepares SoSci Survey data:
 \itemize{
 \item Remove the avector class from all columns
@@ -42,6 +38,10 @@ Prepares SoSci Survey data:
 \item Recode residual numeric values to NA (e.g. -9)
 \item Add whitespace after slashes to improve label breaks
 }
+}
+\details{
+The tibble remembers whether it was already prepared and
+the operations are only performed once in the first call.
 }
 \examples{
 ds <- volker::chatgpt

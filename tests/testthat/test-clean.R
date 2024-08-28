@@ -9,46 +9,46 @@ library(volker)
 data <- volker::chatgpt
 
 # Data_prepare
-test_data <- tibble::tibble(var1 = c(1, 2, -1, 5),
-                            var2 = c(4, -3, -3, -9))
+test_data <- tibble::tibble(
+  var1 = c(1, 2, -1, 5),
+  var2 = c(4, -3, -3, -9)
+)
 
-test_that("data_prepare works correctly", {
-  # Test 1: Cleaning, removing missings and negatives without metric_cross
-  data_prepare(test_data, var1, var2, negative = FALSE, clean = TRUE) %>%
+test_that("Data preparation removes what is to be removed and nothing else", {
+  # Test 1: Clean, removing missings and negatives, but don't touch negatives in the cross column
+  data_prepare(test_data, var1, var2, rm.negatives = "cols", clean = TRUE) %>%
   expect_snapshot(cran = TRUE)
 
   # Test 2: Without cleaning but removing missings and negatives
-  data_prepare(test_data, var1, var2, negative = FALSE, clean = FALSE) %>%
+  data_prepare(test_data, var1, var2, rm.negatives = "cols", clean = FALSE) %>%
   expect_snapshot(cran = TRUE)
 
   # Test 3: Only remove from cols
-  data_prepare(test_data, var1, var2, negative = FALSE, clean = TRUE, rm_neg_cols = TRUE) %>%
+  data_prepare(test_data, var1, var2, rm.negatives = TRUE, clean = TRUE) %>%
   expect_snapshot(cran = TRUE)
 
   # Test 4: With negatives kept
-  data_prepare(test_data, var1, var2, negative = TRUE, clean = TRUE) %>%
+  data_prepare(test_data, var1, var2, rm.negatives = FALSE, clean = TRUE) %>%
   expect_snapshot(cran = TRUE)
 })
 
 # Attributes
-test_that("attribute is not added", {
-
-  prepared_data <- data_prepare(test_data, var1, var2, negative = TRUE, clean = FALSE)
+test_that("missings attribute is not added", {
+  prepared_data <- data_prepare(test_data, var1, var2, rm.negatives = FALSE, clean = FALSE)
   expect_true(is.null(attr(prepared_data, "missings")))
 
 })
 
-test_that("attribute is added", {
-
-  prepared_data <- data_prepare(test_data, var1, var2, negative = FALSE, clean = TRUE)
+test_that("missings attribute is added", {
+  prepared_data <- data_prepare(test_data, var1, var2, rm.negatives = TRUE, clean = TRUE)
   expect_true(!is.null(attr(prepared_data, "missings")))
 
 })
 
 # Remove residual negative values
-test_that("Residual negatives values are removed", {
+test_that("Residual negative values are removed", {
 
-  tibble::tibble(var1 = c(1,2,-1,-9)) |>
+  tibble::tibble(var1 = c(1, 2, -1, -9, -50)) |>
     data_clean() |>
     expect_snapshot(cran= TRUE)
 

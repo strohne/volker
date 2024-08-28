@@ -829,7 +829,7 @@ plot_counts_items_cor <- function(data, cols, cross, category = NULL, title = TR
 #' @importFrom rlang .data
 plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, clean = clean, negative = negative)
+  data <- data_prepare(data, {{ col }}, rm.negatives = !negative, clean = clean)
 
   # Extract the maximum density value
   max_density <- .density_mode(data, {{ col }})
@@ -934,7 +934,7 @@ plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALS
 #' @importFrom rlang .data
 plot_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative, rm_neg_cols = TRUE)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, rm.negatives = ifelse(negative, FALSE, "cols"), clean = clean)
 
   # Add n to labels
   # if (!is.null(numbers) && any(numbers == "n")) {
@@ -1022,7 +1022,7 @@ plot_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FA
 #' @importFrom rlang .data
 plot_metrics_one_cor <- function(data, col, cross, negative = FALSE, limits = NULL, log = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, rm.negatives = !negative, clean = clean)
 
   # 2. Remove 0 values in log plots
   if (log) {
@@ -1130,7 +1130,7 @@ plot_metrics_one_cor <- function(data, col, cross, negative = FALSE, limits = NU
 #' @export
 plot_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, clean = clean, negative = negative)
+  data <- data_prepare(data, {{ cols }}, clean = clean, rm.negatives = !negative)
 
   # 2. Pivot items
   result <- data %>%
@@ -1219,7 +1219,7 @@ plot_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, box = F
 #' @importFrom rlang .data
 plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative, rm_neg_cols = TRUE)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, rm.negatives = ifelse(negative, FALSE, "cols"), clean = clean)
 
   # 2. Calculate
   # Get positions of group cols
@@ -1321,7 +1321,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 #'@importFrom rlang .data
 plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, ci = TRUE, method = "pearson", title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, rm.negatives = !negative, clean = clean)
 
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
@@ -1428,7 +1428,7 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, ci = TRU
 #'@importFrom rlang .data
 plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, method = "pearson", numbers = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, rm.negatives = !negative, clean = clean)
 
   # 2. Calculate correlation
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)

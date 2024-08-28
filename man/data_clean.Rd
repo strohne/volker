@@ -2,7 +2,7 @@
 % Please edit documentation in R/clean.R
 \name{data_clean}
 \alias{data_clean}
-\title{Prepare dataframe for tabs, plots, and index operations}
+\title{Prepare dataframe for the analysis}
 \usage{
 data_clean(data, plan = "sosci", ...)
 }
@@ -17,8 +17,12 @@ data_clean(data, plan = "sosci", ...)
 Cleaned data frame with vlkr_df class.
 }
 \description{
+Depending on the selected cleaning plan, for example,
+recodes residual values to NA.
+}
+\details{
 The tibble remembers whether it was already cleaned and
-the cleaning plan is only performed once in the first call.
+the cleaning plan is only applyed once in the first call.
 }
 \examples{
 ds <- volker::chatgpt

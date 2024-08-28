@@ -425,7 +425,7 @@ effect_metrics_one <- function(data, col, clean = T, ... ) {
 #' @importFrom rlang .data
 effect_metrics_one_grouped <- function(data, col, cross, negative = FALSE, method = "lm", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative, rm_neg_cols = TRUE)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, rm.negatives = ifelse(negative, FALSE, "cols"), clean = clean)
 
   # 2. Calculate
   result <- list()
@@ -570,7 +570,7 @@ effect_metrics_one_grouped <- function(data, col, cross, negative = FALSE, metho
 #' @importFrom rlang .data
 effect_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pearson", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, rm.negatives = !negative, clean = clean)
 
   # 2. Calculate
   result <- .effect_correlations(data, {{ col }}, {{ cross}}, method=method, labels = labels)
@@ -629,7 +629,7 @@ effect_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = 
 #' @export
 effect_metrics_items <- function(data, cols, negative = FALSE, method = "pearson", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, clean = clean, negative = negative)
+  data <- data_prepare(data, {{ cols }}, rm.negatives = !negative, clean = clean)
 
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cols }}, method = method, labels = labels)
@@ -704,7 +704,7 @@ effect_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
 #' @importFrom rlang .data
 effect_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = "pearson", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, rm.negatives = !negative, clean = clean)
 
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
