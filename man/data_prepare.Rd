@@ -10,11 +10,11 @@ data_prepare(
   cross,
   negative = TRUE,
   clean = TRUE,
-  metric_cross = FALSE
+  rm_neg_cols = FALSE
 )
 }
 \arguments{
-\item{data}{Data frame.}
+\item{data}{Data frame to be prepared.}
 
 \item{cols}{The first column selection.}
 
@@ -23,9 +23,11 @@ data_prepare(
 \item{negative}{Whether to remove negatives.}
 
 \item{clean}{Whether to clean data using \link{data_clean}.}
+
+\item{rm_neg_cols}{if TRUE and cross is specified, negative values will be removed only from the cols.}
 }
 \value{
-Cleaned data frame.
+Prepared data frame.
 }
 \description{
 Clean data, check column selection, remove missing and negatives.
