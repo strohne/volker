@@ -9,6 +9,7 @@
 #' @param cross The second column selection.
 #' @param negative Whether to remove negatives.
 #' @param clean Whether to clean data using \link{data_clean}.
+#' @param rm_neg_cols Only clean cols (first column selection). Applicable if cross is grouping variable.
 #'
 #' @return Cleaned data frame.
 #' @examples
