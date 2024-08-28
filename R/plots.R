@@ -438,7 +438,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
 #' @importFrom rlang .data
 plot_counts_one_cor <- function(data, col, cross, category = NULL, prop = "total", limits = NULL, ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, metric_cross = TRUE)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
   # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)
@@ -489,19 +489,10 @@ plot_counts_one_cor <- function(data, col, cross, category = NULL, prop = "total
 #' @export
 #' @importFrom rlang .data
 plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = FALSE, limits = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  # 1. Check parameters
-  check_is_dataframe(data)
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, clean = clean)
 
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}))
-
-  # 4. Calculate data
-
+  # 2. Calculate data
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cols_names <- colnames(dplyr::select(data, tidyselect::all_of(cols_eval)))
 
@@ -590,7 +581,6 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
   )
 }
 
-
 #' Plot percent shares of multiple items compared by groups
 #'
 #' @keywords internal
@@ -625,20 +615,10 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #' @export
 #' @importFrom rlang .data
 plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ cols }})
-  check_has_column(data, {{ cross }})
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
-
-  # 4. Calculate data
+  # 2. Calculate data
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cols_names <- colnames(dplyr::select(data, tidyselect::all_of(cols_eval)))
 
@@ -804,24 +784,13 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
 #' @export
 #' @importFrom rlang .data
 plot_counts_items_cor <- function(data, cols, cross, category = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ cols }})
-  check_has_column(data, {{ cross }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
-
-  # 4. Split into groups
+  # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)
 
-  # 5. Output
+  # 3. Output
   result <- plot_counts_items_grouped(
     data, {{ cols }}, {{ cross }},
     category = category, title = title, labels = labels, clean = clean,
@@ -859,23 +828,8 @@ plot_counts_items_cor <- function(data, cols, cross, category = NULL, title = TR
 #' @export
 #' @importFrom rlang .data
 plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-
-  # 1. Check parameters
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, {{ col }})
-
-  # 4. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, {{ col }})
-  }
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, clean = clean, negative = negative)
 
   # Extract the maximum density value
   max_density <- .density_mode(data, {{ col }})
@@ -979,26 +933,10 @@ plot_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, box = FALS
 #' @export
 #' @importFrom rlang .data
 plot_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative, rm_neg_cols = TRUE)
 
-  # 1. Check parameters
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ cross }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-
-  # 4. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, {{ col }})
-  }
-
-  # 5. Add n to labels
+  # Add n to labels
   # if (!is.null(numbers) && any(numbers == "n")) {
   #
   #   categories_n <- data |>
@@ -1083,34 +1021,17 @@ plot_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FA
 #' @export
 #' @importFrom rlang .data
 plot_metrics_one_cor <- function(data, col, cross, negative = FALSE, limits = NULL, log = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean, negative = negative)
 
-  # 1. Check parameters
-  check_is_dataframe(data)
-  check_has_column(data, {{ col }})
-  check_has_column(data, {{ cross }})
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ col }}, {{ cross }}))
-
-  # 4. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, c({{ col }}, {{ cross}}))
-  }
-
-  # 5. Remove 0 values in log plots
+  # 2. Remove 0 values in log plots
   if (log) {
     data <- data_rm_zeros(data, c({{ col }}, {{ cross }}))
   }
 
-  # 6. Get column positions
+  # 3. Get column positions
   cols_eval <- tidyselect::eval_select(expr = rlang::enquo(col), data = data)
   cross_eval <- tidyselect::eval_select(expr = rlang::enquo(cross), data = data)
-
 
   # Get first cols
   col1 <- colnames(data)[cols_eval[1]]
@@ -1208,24 +1129,10 @@ plot_metrics_one_cor <- function(data, col, cross, negative = FALSE, limits = NU
 #'
 #' @export
 plot_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  # 1. Check parameters
-  check_is_dataframe(data)
-  check_has_column(data, {{ cols }})
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, clean = clean, negative = negative)
 
-  # 2. Clean
-   if (clean) {
-    data <- data_clean(data)
-   }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}))
-
-  # 4. Remove missings
-  if (!negative) {
-    data <- data_rm_negatives(data, c({{ cols }}))
-  }
-
-  # 5. Pivot items
+  # 2. Pivot items
   result <- data %>%
     labs_clear({{ cols }}) %>%
     tidyr::pivot_longer(
@@ -1311,24 +1218,10 @@ plot_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, box = F
 #' @export
 #' @importFrom rlang .data
 plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  # 1. Check parameters
-  check_is_dataframe(data)
-  check_has_column(data, {{ cross }})
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative, rm_neg_cols = TRUE)
 
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
-
-  # 4. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, {{ cols }})
-  }
-
-  # 5. Calculate
+  # 2. Calculate
   # Get positions of group cols
   cross <- tidyselect::eval_select(expr = rlang::enquo(cross), data = data)
 
@@ -1427,25 +1320,10 @@ plot_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, limi
 #'@export
 #'@importFrom rlang .data
 plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, ci = TRUE, method = "pearson", title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ cols }})
-  check_has_column(data, {{ cross }})
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative)
 
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
-
-  # 4. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
-  }
-
-  # Calculate correlations
+  # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
 
   # Remove common item prefix
@@ -1549,25 +1427,10 @@ plot_metrics_items_cor <- function(data, cols, cross, negative = FALSE, ci = TRU
 #'@export
 #'@importFrom rlang .data
 plot_metrics_items_cor_items <- function(data, cols, cross, negative = FALSE, method = "pearson", numbers = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  # 1. Checks
-  check_is_dataframe(data)
-  check_has_column(data, {{ cols }})
-  check_has_column(data, {{ cross }})
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean, negative = negative)
 
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
-
-  # 4. Remove negatives
-  if (!negative) {
-    data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
-  }
-
-  # 5. Calculate correlation
+  # 2. Calculate correlation
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
 
   # Remove common item prefix
