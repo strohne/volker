@@ -4,10 +4,18 @@
 \alias{.plot_cor}
 \title{Helper function: plot cor and regression outputs}
 \usage{
-.plot_cor(data, ci = TRUE, base = NULL, limits = NULL, title = NULL)
+.plot_cor(
+  data,
+  ci = TRUE,
+  base = NULL,
+  limits = NULL,
+  title = NULL,
+  label = NULL
+)
 }
 \arguments{
-\item{data}{Dataframe with the columns item, value, and .cross}
+\item{data}{Dataframe with the columns item and value.
+To plot errorbars, add the columns low and high and set the ci-paramater to TRUE.}
 
 \item{ci}{Whether to plot confidence intervals. Provide the columns low and high in data.}
 
@@ -16,6 +24,8 @@
 \item{limits}{The scale limits.}
 
 \item{title}{The plot title as character or NULL.}
+
+\item{label}{The y axis label.}
 }
 \value{
 A ggplot object.
