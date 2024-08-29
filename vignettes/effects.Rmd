@@ -55,7 +55,7 @@ effect_counts(data, adopter, sd_gender)
 ```{r}
 
 # TODO
-# effect_counts(data, adopter, sd_age, metric = TRUE)
+effect_counts(data, adopter, sd_age, metric = TRUE)
 ```
 
 # 7. Normality test for one metric variable

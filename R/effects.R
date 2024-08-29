@@ -297,81 +297,54 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 #' @return A volker tibble.
 #' @importFrom rlang .data
 effect_counts_one_cor <- function(data, col, cross, clean = TRUE, labels = TRUE, ...) {
-
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
-  return()
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
-  # 2. Get cross variables names
-  if (labels) {
-    data <- labs_replace(
-      data, {{ cross }},
-      codebook(data, {{ cross }}),
-      "value_name", "value_label"
-    )}
+  # # 2. Get cross variables names
+  # if (labels) {
+  #   data <- labs_replace(
+  #     data, {{ cross }},
+  #     codebook(data, {{ cross }}),
+  #     "value_name", "value_label"
+  #   )}
 
   # Calculate logistic regression
   result <- list()
   lm_data <- dplyr::select(data, av = {{ col }}, uv = {{ cross }})
 
-  fit <- stats::glm(av ~ uv, data = lm_data, family = "binomial")
+  # NOTE: glm only works for fitting models where the dependent variable has two categories.
+  #fit <- stats::glm(av ~ uv, data = lm_data, family = "binomial")
+
+  fit <- nnet::multinom(av ~ uv, data = lm_data)
 
   # Regression parameters
-  lm_params <- broom::tidy(fit, conf.int = TRUE)
+  lm_params <- broom::tidy(fit, conf.int = TRUE, exponentiate = TRUE)
 
-#   lm_params <- tidy_lm_levels(fit)
-#   lm_params <- lm_params |>
-#     dplyr::mutate(
-#       Term = .data$term,
-#       stars = get_stars(.data$p.value),
-#       estimate = sprintf("%.2f",round(.data$estimate,2)),
-#       "ci low" = sprintf("%.2f",round(.data$conf.low,2)),
-#       "ci high" = sprintf("%.2f",round(.data$conf.high,2)),
-#       "standard error" = sprintf("%.2f",round(.data$std.error,2)),
-#       t = sprintf("%.2f", round(.data$statistic,2)),
-#       p = sprintf("%.3f",round(.data$p.value,3))
-#     ) |>
-#     dplyr::mutate(dplyr::across(tidyselect::all_of(
-#       c("estimate","ci low", "ci high" , "standard error","t","p")
-#     ), function(x) ifelse(x == "NA","",x))) |>
-#     dplyr::select(tidyselect::all_of(c(
-#       "Term","estimate","ci low","ci high","standard error","t","p","stars"
-#     )))
+  result <- lm_params |>
+    dplyr::mutate(
+      Term = .data$y.level,
+      stars = get_stars(.data$p.value),
+      estimate = sprintf("%.2f",round(.data$estimate,2)),
+      "ci low" = sprintf("%.2f",round(.data$conf.low,2)),
+      "ci high" = sprintf("%.2f",round(.data$conf.high,2)),
+      "standard error" = sprintf("%.2f",round(.data$std.error,2)),
+      t = sprintf("%.2f", round(.data$statistic,2)),
+      p = sprintf("%.3f",round(.data$p.value,3))
+    ) |>
+    dplyr::mutate(dplyr::across(tidyselect::all_of(
+      c("estimate","ci low", "ci high" , "standard error","t","p")
+    ), function(x) ifelse(x == "NA","",x))) |>
+    dplyr::select(tidyselect::all_of(c(
+      "Term","estimate","ci low","ci high","standard error","t","p","stars"
+    )))
 
-  # Regression model statistics
-  lm_model <- broom::glance(fit)
-
-  # |>
-  #   dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), function(x) as.character(round(x,2)))) |>
-  #   dplyr::mutate(stars = get_stars(.data$p.value)) |>
-  #   tidyr::pivot_longer(
-  #     tidyselect::everything(),
-  #     names_to="Statistic",
-  #     values_to="value"
-  #   ) |>
-  #   labs_replace("Statistic", tibble::tibble(
-  #     value_name=c(
-  #       "adj.r.squared", "df", "df.residual", "statistic", "p.value", "stars"
-  #     ),
-  #     value_label=c(
-  #       "Adjusted R squared", "Degrees of freedom", "Residuals' degrees of freedom",
-  #       "F", "p", "stars"
-  #     )
-  #   ), na.missing = TRUE) |>
-  #   stats::na.omit() |>
-  #   dplyr::arrange(.data$Statistic)
-
-
-  result <- c(
-    result,
-    list(.to_vlkr_tab(lm_params, digits=2)),
-    list(.to_vlkr_tab(lm_model, digits=2))
-  )
-
+  # result <- c(
+  #   list(.to_vlkr_tab(lm_params, digits=2)),
+  #   list(.to_vlkr_tab(lm_model, digits=2))
+  # )
 
   result <- .attr_transfer(result, data, "missings")
-  .to_vlkr_list(result)
+  .to_vlkr_tab(result)
 }
 
 #' Test whether shares differ
@@ -761,9 +734,21 @@ effect_metrics_items <- function(data, cols, method = "pearson", labels = TRUE, 
 #' @importFrom rlang .data
 effect_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+
+  # 2. Pivot
+  data <- data %>%
+    tidyr::pivot_longer(
+    cols = {{ cols }},
+    names_to = "item",
+    values_to = "value")
+
+  results <- data %>%
+    dplyr::group_by(item)
+
+return(results)
 }
-
-
 
 #' Output correlation coefficients for items
 #'
