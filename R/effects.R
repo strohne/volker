@@ -173,7 +173,9 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
 #' @return A volker tibble.
 #' @importFrom rlang .data
 effect_counts_one <- function(data, col, labels = TRUE, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+  #warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+
+
 }
 
 
@@ -391,11 +393,48 @@ effect_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
 #' @param data A tibble.
 #' @param col The column holding metric values.
 #' @param clean Prepare data by \link{data_clean}.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-effect_metrics_one <- function(data, col, clean = T, ... ) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+effect_metrics_one <- function(data, col, labels = TRUE, clean = T, ... ) {
+  #warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, clean = clean)
+
+  stats <- dplyr::select(data, av = {{ col }})
+  stats_shapiro <- stats::shapiro.test(stats$av)
+
+  stats_shapiro <- tibble::tibble(
+    "statistic" = c("W-statistic", "p-value", "normality"),
+    "value" = c(
+      sprintf("%.2f", round(stats_shapiro$statistic, 2)),
+      sprintf("%.3f", round(stats_shapiro$p.value, 3)),
+      ifelse(stats_shapiro$p.value > 0.05, "normal", "not normal")
+    )
+  )
+
+  stats_skew <- psych::describe(stats$av)
+
+  # 3. Calculate skewness
+  stats <- tibble::tibble(
+    "metric" = c("skewness", "kurtosis"),
+    "value" = c(sprintf("%.2f", round(stats_skew$skew, 2)), sprintf("%.2f", round(stats_skew$kurtosis, 2)))
+  )
+
+  # 4. Get item label from the attributes
+  if (labels) {
+    label <- get_title(data, {{ col }})
+    stats <- dplyr::rename(stats, {{ label }} := "metric")
+  }
+
+  result <- c(
+    list(.to_vlkr_tab(stats, digits=2)),
+    list(.to_vlkr_tab(stats_shapiro, digits=2))
+  )
+
+  result <- .attr_transfer(result, data, "missings")
+  .to_vlkr_list(result)
 }
 
 #' Output a regression table with estimates and macro statistics
