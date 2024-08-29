@@ -8,7 +8,6 @@ tab_metrics_one_grouped(
   data,
   col,
   cross,
-  negative = FALSE,
   ci = FALSE,
   digits = 1,
   labels = TRUE,
@@ -22,8 +21,6 @@ tab_metrics_one_grouped(
 \item{col}{The column holding metric values.}
 
 \item{cross}{The column holding groups to compare.}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{ci}{Whether to output 95\% confidence intervals.}
 

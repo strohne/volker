@@ -7,7 +7,6 @@
 plot_metrics_items(
   data,
   cols,
-  negative = FALSE,
   ci = FALSE,
   box = FALSE,
   limits = NULL,
@@ -21,8 +20,6 @@ plot_metrics_items(
 \item{data}{A tibble containing item measures.}
 
 \item{cols}{Tidyselect item variables (e.g. starts_with...).}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{ci}{Whether to plot the 95\% confidence interval of the mean.}
 

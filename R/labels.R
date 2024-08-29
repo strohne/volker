@@ -515,6 +515,45 @@ labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_
   data
 }
 
+#' Add missing residual labels in numeric columns that have at least one labeled value
+#'
+#' @keywords internal
+#'
+#' @param data A tibble
+#' @return A tibble with added value labels
+labs_impute <- function(data) {
+
+  na.numbers <- cfg_get_na_numbers()
+  if (length(na.numbers) < 1) {
+    return(data)
+  }
+
+  codes <- data |>
+    codebook() |>
+    dplyr::filter(.data$item_class == "numeric") |>
+    dplyr::filter(!is.na(.data$value_name))
+
+  for (col in unique(codes$item_name)) {
+
+    # Get numeric values from the codebook
+    vals_codebook <- codes$value_name[codes$item_name == col]
+    vals_codebook <- na.omit(suppressWarnings(as.numeric(unique(vals_codebook))))
+
+    # Get residual values from the dataset
+    vals_data <- na.omit(suppressWarnings(as.numeric(unique(data[[col]]))))
+    vals_data <- vals_data[vals_data %in% na.numbers]
+
+    if (length(vals_data > 0)) {
+      vals_missing <- setdiff(vals_data, vals_codebook)
+      for (val in vals_missing) {
+        attr(data[[col]], as.character(val)) <- as.character(val)
+      }
+    }
+  }
+
+  data
+}
+
 #' Get a common title for a column selection
 #'
 #' @keywords internal
@@ -564,7 +603,7 @@ get_title <- function(data, cols, default=NULL) {
 #' @param negative Whether to include negative values.
 #' @return A list or NULL.
 #' @importFrom rlang .data
-get_limits <- function(data, cols, negative = FALSE) {
+get_limits <- function(data, cols, negative = TRUE) {
 
   # First, try to get limits from the column attributes
   values <- data %>%
@@ -573,9 +612,12 @@ get_limits <- function(data, cols, negative = FALSE) {
     unlist()
 
   # Second, try to get limits from the column labels
+  na.numbers <- cfg_get_na_numbers()
+
   if (is.null(values)) {
     values <- codebook(data, {{ cols }}) %>%
       dplyr::distinct(dplyr::across(tidyselect::all_of("value_name"))) %>%
+      filter(!(.data$value_name %in% na.numbers)) |>
       dplyr::pull(.data$value_name)
     values <- suppressWarnings(as.numeric(values))
   }
@@ -732,7 +774,8 @@ wrap_label <- function(x, width = 40) {
   }
 
   # Wrap at word boundaries
-  words <- unlist(strsplit(as.character(x), " "))
+  words <- unlist(strsplit(as.character(x), VLKR_WRAP_SEPARATOR, perl = TRUE))
+
   wrapped <- ""
   line <- ""
 
@@ -748,7 +791,25 @@ wrap_label <- function(x, width = 40) {
       }
     }
   }
-  paste(wrapped, line, sep = "\n")
+  trimws(paste(wrapped, line, sep = "\n"))
+}
+
+
+#' Truncate labels
+#'
+#' Truncate labels that exceed a specified maximum length.
+#' TODO: don't return function, use lambda expression in scale_x_discrete call
+#'
+#' @keywords internal
+#'
+#' @param max_length Specifies max_length, default is 20.
+#' @return A function that truncates labels to the max_length,
+#'        appending "..." if shortened.
+trunc_labels <- function(max_length = 20) {
+  function(labels) {
+
+    ifelse(nchar(labels) > max_length, paste0(substr(labels, 1, max_length), "..."), labels)
+  }
 }
 
 #' Remove trailing zeros and trailing or leading
@@ -831,21 +892,7 @@ label_scale <- function(x, scale) {
 }
 
 
-#' Truncate labels
-#'
-#' Truncate labels that exceed a specified maximum length.
-#'
-#' @keywords internal
-#'
-#' @param max_length Specifies max_length, default is 20.
-#' @return A function that truncates labels to the max_length,
-#'        appending "..." if shortened.
-trunc_labels <- function(max_length = 20) {
-  function(labels) {
 
-    ifelse(nchar(labels) > max_length, paste0(substr(labels, 1, max_length), "..."), labels)
-  }
-}
 
 #' Angle labels
 #'

@@ -8,7 +8,6 @@ plot_metrics_items_cor(
   data,
   cols,
   cross,
-  negative = FALSE,
   ci = TRUE,
   method = "pearson",
   title = TRUE,
@@ -23,8 +22,6 @@ plot_metrics_items_cor(
 \item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
 \item{cross}{The column to correlate.}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{ci}{Whether to plot confidence intervals of the correlation coefficent.}
 

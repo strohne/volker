@@ -4,7 +4,7 @@
 \alias{get_limits}
 \title{Get the numeric range from the labels}
 \usage{
-get_limits(data, cols, negative = FALSE)
+get_limits(data, cols, negative = TRUE)
 }
 \arguments{
 \item{data}{The labeled data frame.}

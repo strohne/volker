@@ -933,7 +933,6 @@ tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NUL
 #'
 #' @param data A tibble.
 #' @param col The columns holding metric values.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param ci Whether to calculate 95% confidence intervals of the mean.
 #' @param digits The number of digits to print.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -948,9 +947,9 @@ tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NUL
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_one <- function(data, col, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, rm.negatives = !negative, clean = clean)
+  data <- data_prepare(data, {{ col }}, clean = clean)
 
   # 2. Calculate values
   result <- data %>%
@@ -1022,7 +1021,6 @@ tab_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, digits = 1,
 #' @param data A tibble.
 #' @param col The column holding metric values.
 #' @param cross The column holding groups to compare.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param ci Whether to output 95% confidence intervals.
 #' @param digits The number of digits to print.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1037,9 +1035,9 @@ tab_metrics_one <- function(data, col, negative = FALSE, ci = FALSE, digits = 1,
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, rm.negatives = ifelse(negative, FALSE, "cols"), clean = clean)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
   # 2. Calculate values
   result_grouped <- data %>%
@@ -1122,7 +1120,6 @@ tab_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FAL
 #' @param data A tibble.
 #' @param col The first column holding metric values.
 #' @param cross The second column holding metric values.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho
 #' @param ci Whether to output confidence intervals
 #' @param digits The number of digits to print.
@@ -1138,9 +1135,9 @@ tab_metrics_one_grouped <- function(data, col, cross, negative = FALSE, ci = FAL
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pearson", ci = FALSE, digits = 2, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE, digits = 2, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, rm.negatives = !negative, clean = clean)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
   # 2. Get columns
   cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
@@ -1187,7 +1184,6 @@ tab_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pe
 #'
 #' @param data A tibble.
 #' @param cols The columns holding metric values.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param ci Whether to compute confidence intervals of the mean.
 #' @param digits The number of digits to print.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1202,9 +1198,9 @@ tab_metrics_one_cor <- function(data, col, cross, negative = FALSE, method = "pe
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_items <- function(data, cols, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, rm.negatives = !negative, clean = clean)
+  data <- data_prepare(data, {{ cols }}, clean = clean)
 
   # 2. Calculate
   result <- data %>%
@@ -1241,7 +1237,7 @@ tab_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, digits =
       codebook(data, {{ cols }}),
       "item_name", "item_label"
     )
-    attr(result, "limits") <- get_limits(data, {{ cols }}, negative)
+    attr(result, "limits") <- get_limits(data, {{ cols }})
 
     attr(result, "scale") <- codebook(data, {{ cols }}) %>%
       dplyr::distinct(dplyr::across(tidyselect::all_of(c("value_name", "value_label"))))
@@ -1271,7 +1267,6 @@ tab_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, digits =
 #' @param data A tibble.
 #' @param cols The item columns that hold the values to summarize.
 #' @param cross The column holding groups to compare.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param digits The number of digits to print.
 #' @param values The output metrics, mean (m), the standard deviation (sd) or both (the default).
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1286,9 +1281,9 @@ tab_metrics_items <- function(data, cols, negative = FALSE, ci = FALSE, digits =
 #'
 #' @export
 #' @importFrom rlang .data
-tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digits = 1, values = c("m", "sd"), labels = TRUE, clean = TRUE, ...) {
+tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c("m", "sd"), labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, rm.negatives = ifelse(negative, FALSE, "cols"), clean = clean)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
   # Get positions of group cols
   cross <- tidyselect::eval_select(expr = enquo(cross), data = data)
@@ -1437,7 +1432,6 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #' @param data A tibble.
 #' @param cols The source columns.
 #' @param cross The target columns or NULL to calculate correlations within the source columns.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho.
 #' @param digits The number of digits to print.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1452,9 +1446,9 @@ tab_metrics_items_grouped <- function(data, cols, cross, negative = FALSE, digit
 #'
 #' @importFrom rlang .data
 #' @export
-tab_metrics_items_cor <- function(data, cols, cross, negative = FALSE, method = "pearson", digits = 2, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", digits = 2, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, rm.negatives = !negative, clean = clean)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
   # 2. Calculate correlation
   result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)

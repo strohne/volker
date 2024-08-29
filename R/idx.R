@@ -16,7 +16,6 @@
 #'                two items "I feel bad about this" and "I like it",
 #'                both coded with 1=not at all to 5=fully agree,
 #'                you need to reverse one of them to make the codings compatible.
-#' @param negative If FALSE (default), negative values are recoded as missing values.
 #' @param clean Prepare data by \link{data_clean}.
 #' @return The input tibble with an additional column that contains the index values.
 #'         The column contains the result of the alpha calculation in the attribute named "psych.alpha".
@@ -25,7 +24,7 @@
 #' volker::idx_add(ds, starts_with("cg_adoption"))
 #' @export
 #' @importFrom rlang .data
-idx_add <- function(data, cols, newcol = NULL, reverse = NULL, negative = FALSE, clean = TRUE) {
+idx_add <- function(data, cols, newcol = NULL, reverse = NULL, clean = TRUE) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -37,12 +36,6 @@ idx_add <- function(data, cols, newcol = NULL, reverse = NULL, negative = FALSE,
 
   # 3. Remove missings
   data <- data_rm_missings(data, {{ cols }})
-
-  # 4. Remove negative values
-  if (!negative) {
-    data <- data_rm_negatives(data, {{ cols }})
-  }
-
 
   # Select columns
   idx <- data %>%
@@ -67,7 +60,7 @@ idx_add <- function(data, cols, newcol = NULL, reverse = NULL, negative = FALSE,
   newlabel <- paste0("Index: ", prefix)
 
   # Get the limits
-  limits <- get_limits(data, {{ cols }}, negative)
+  limits <- get_limits(data, {{ cols }})
 
   # Reverse items
   #cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = idx)

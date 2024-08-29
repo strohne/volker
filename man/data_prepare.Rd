@@ -4,14 +4,7 @@
 \alias{data_prepare}
 \title{Prepare data for calculation}
 \usage{
-data_prepare(
-  data,
-  cols,
-  cross,
-  rm.missings = TRUE,
-  rm.negatives = FALSE,
-  clean = TRUE
-)
+data_prepare(data, cols, cross, clean = TRUE)
 }
 \arguments{
 \item{data}{Data frame to be prepared.}
@@ -20,18 +13,13 @@ data_prepare(
 
 \item{cross}{The second column selection.}
 
-\item{rm.missings}{Whether to remove cases with missing values (default TRUE).}
-
-\item{rm.negatives}{Whether to remove negatives in all columns (TRUE),
-no columns (FALSE), or only the columns in the cols parameter ("cols").}
-
 \item{clean}{Whether to clean data using \link{data_clean}.}
 }
 \value{
 Prepared data frame.
 }
 \description{
-Clean data, check column selection, remove missing and negatives.
+Clean data, check column selection, remove cases with missing values
 }
 \examples{
 data <- volker::chatgpt

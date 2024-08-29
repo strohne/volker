@@ -7,7 +7,6 @@
 effect_metrics_items(
   data,
   cols,
-  negative = FALSE,
   method = "pearson",
   labels = TRUE,
   clean = TRUE,
@@ -18,8 +17,6 @@ effect_metrics_items(
 \item{data}{A tibble containing item measures.}
 
 \item{cols}{The column holding metric values.}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{method}{The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.}
 

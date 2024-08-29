@@ -1,46 +1,25 @@
-# Data preparation removes what is to be removed and nothing else
+# No values are recoded to missings
 
     Code
-      .
+      prepared_data
     Output
-      # A tibble: 2 x 2
+      # A tibble: 4 x 2
          var1  var2
         <dbl> <dbl>
-      1     1     4
+      1     1    -2
       2     2    -3
+      3    -1    -3
+      4     5    -9
 
----
+# Residual values are recoded to missings
 
     Code
-      .
-    Output
-      # A tibble: 3 x 2
-         var1  var2
-        <dbl> <dbl>
-      1     1     4
-      2     2    -3
-      3     5    -9
-
----
-
-    Code
-      .
+      prepared_data
     Output
       # A tibble: 1 x 2
          var1  var2
         <dbl> <dbl>
-      1     1     4
-
----
-
-    Code
-      .
-    Output
-      # A tibble: 2 x 2
-         var1  var2
-        <dbl> <dbl>
-      1     1     4
-      2     2    -3
+      1     2    -3
 
 # Residual negative values are removed
 
@@ -52,8 +31,8 @@
         <dbl>
       1     1
       2     2
-      3    NA
-      4    NA
+      3    -1
+      4    -9
       5   -50
 
 # All negatives are removed

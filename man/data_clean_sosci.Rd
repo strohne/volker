@@ -4,12 +4,7 @@
 \alias{data_clean_sosci}
 \title{Prepare data originating from SoSci Survey}
 \usage{
-data_clean_sosci(
-  data,
-  remove.na.levels = TRUE,
-  remove.na.numbers = TRUE,
-  add.whitespace = TRUE
-)
+data_clean_sosci(data, remove.na.levels = TRUE, remove.na.numbers = TRUE)
 }
 \arguments{
 \item{data}{Data frame}
@@ -20,11 +15,9 @@ You can also define or disable residual levels by setting the global option vlkr
 (e.g. \code{options(vlkr.na.levels=c("Not answered"))} or to disable \code{options(vlkr.na.levels=FALSE)}).}
 
 \item{remove.na.numbers}{Remove residual values from numeric columns.
-Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}.
+Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMBERS}.
 You can also define or disable residual values by setting the global option vlkr.na.numbers
 (e.g. \code{options(vlkr.na.numbers=c(-2,-9))} or to disable \code{options(vlkr.na.numbers=FALSE)}).}
-
-\item{add.whitespace}{Add whitespace after slashes for improved label breaks.}
 }
 \value{
 Data frame with vlkr_df class (the class is used to prevent double preparation).
@@ -36,7 +29,6 @@ Prepares SoSci Survey data:
 (comes from SoSci and prevents combining vectors)
 \item Recode residual factor values to NA (e.g. "\link{NA} nicht beantwortet")
 \item Recode residual numeric values to NA (e.g. -9)
-\item Add whitespace after slashes to improve label breaks
 }
 }
 \details{

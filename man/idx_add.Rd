@@ -4,14 +4,7 @@
 \alias{idx_add}
 \title{Calculate the mean value of multiple items}
 \usage{
-idx_add(
-  data,
-  cols,
-  newcol = NULL,
-  reverse = NULL,
-  negative = FALSE,
-  clean = TRUE
-)
+idx_add(data, cols, newcol = NULL, reverse = NULL, clean = TRUE)
 }
 \arguments{
 \item{data}{A dataframe.}
@@ -27,8 +20,6 @@ For example, if you want to calculate an index of the
 two items "I feel bad about this" and "I like it",
 both coded with 1=not at all to 5=fully agree,
 you need to reverse one of them to make the codings compatible.}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 }
