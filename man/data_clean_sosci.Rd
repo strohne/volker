@@ -4,12 +4,7 @@
 \alias{data_clean_sosci}
 \title{Prepare data originating from SoSci Survey}
 \usage{
-data_clean_sosci(
-  data,
-  remove.na.levels = TRUE,
-  remove.na.numbers = TRUE,
-  add.whitespace = TRUE
-)
+data_clean_sosci(data, remove.na.levels = TRUE, remove.na.numbers = TRUE)
 }
 \arguments{
 \item{data}{Data frame}
@@ -23,8 +18,6 @@ You can also define or disable residual levels by setting the global option vlkr
 Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}.
 You can also define or disable residual values by setting the global option vlkr.na.numbers
 (e.g. \code{options(vlkr.na.numbers=c(-2,-9))} or to disable \code{options(vlkr.na.numbers=FALSE)}).}
-
-\item{add.whitespace}{Add whitespace after slashes for improved label breaks.}
 }
 \value{
 Data frame with vlkr_df class (the class is used to prevent double preparation).

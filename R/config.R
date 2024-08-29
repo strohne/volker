@@ -73,6 +73,11 @@ VLKR_PLOT_LABELWRAP <- 40
 VLKR_PLOT_LEGENDWRAP <- 20
 VLKR_PLOT_SCALEWRAP <- 10
 
+#' Word wrap separators
+#'
+#' @keywords internal
+VLKR_WRAP_SEPARATOR <- " |(?<=[/\\\\])"
+
 #' Output thresholds
 #'
 #' @keywords internal

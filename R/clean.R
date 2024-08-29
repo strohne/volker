@@ -111,13 +111,12 @@ data_clean <- function(data, plan = "sosci", ...) {
 #'                      Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}.
 #'                      You can also define or disable residual values by setting the global option vlkr.na.numbers
 #'                      (e.g. `options(vlkr.na.numbers=c(-2,-9))` or to disable `options(vlkr.na.numbers=FALSE)`).
-#' @param add.whitespace Add whitespace after slashes for improved label breaks.
 #' @return Data frame with vlkr_df class (the class is used to prevent double preparation).
 #' @examples
 #' ds <- volker::chatgpt
 #' ds <- data_clean_sosci(ds)
 #' @export
-data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = TRUE, add.whitespace = FALSE) {
+data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = TRUE) {
 
   # Prepare only once
   if ("vlkr_df" %in% class(data)) {
@@ -141,29 +140,6 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
   # (but only if they are listed in the attributes of a column)
   if (remove.na.numbers != FALSE) {
     data <- data_rm_na_numbers(data, remove.na.numbers)
-  }
-
-  # Add whitespace for better breaks
-  # TODO: Auch im Codebook, sonst "Check your levels: Not all factor levels of..."
-  if (add.whitespace) {
-    data <- dplyr::mutate(
-      data,
-      dplyr::across(
-        tidyselect::where(is.character),
-        function(x) gsub("/", "/\u200B", x, fixed = TRUE)
-      )
-    )
-
-    data <- dplyr::mutate(
-      data,
-      dplyr::across(
-        tidyselect::where(is.factor),
-        function(x) {
-          levels(x) <- gsub("/","/\u200B", levels(x), fixed=T)
-          return (x)
-        }
-      )
-    )
   }
 
   # Restore codebook

@@ -169,3 +169,11 @@ test_that("Factor values are relabeled", {
     expect_snapshot(cran= TRUE)
 
 })
+
+# Label wrapping
+test_that("Labels are wrapped at whitespace and slashes", {
+
+  volker:::wrap_label("Super long/short label\\s", width=3) |>
+    expect_snapshot_value(cran= TRUE)
+
+})

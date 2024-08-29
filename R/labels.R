@@ -741,7 +741,8 @@ wrap_label <- function(x, width = 40) {
   }
 
   # Wrap at word boundaries
-  words <- unlist(strsplit(as.character(x), " "))
+  words <- unlist(strsplit(as.character(x), VLKR_WRAP_SEPARATOR, perl = TRUE))
+
   wrapped <- ""
   line <- ""
 
@@ -757,7 +758,7 @@ wrap_label <- function(x, width = 40) {
       }
     }
   }
-  paste(wrapped, line, sep = "\n")
+  trimws(paste(wrapped, line, sep = "\n"))
 }
 
 #' Remove trailing zeros and trailing or leading
