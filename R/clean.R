@@ -117,7 +117,7 @@ data_clean <- function(data, plan = "sosci", ...) {
 #' ds <- volker::chatgpt
 #' ds <- data_clean_sosci(ds)
 #' @export
-data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = TRUE, add.whitespace = TRUE) {
+data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = TRUE, add.whitespace = FALSE) {
 
   # Prepare only once
   if ("vlkr_df" %in% class(data)) {
@@ -144,6 +144,7 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
   }
 
   # Add whitespace for better breaks
+  # TODO: Auch im Codebook, sonst "Check your levels: Not all factor levels of..."
   if (add.whitespace) {
     data <- dplyr::mutate(
       data,
