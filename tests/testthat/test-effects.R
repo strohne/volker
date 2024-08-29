@@ -10,6 +10,17 @@ data <- volker::chatgpt
 
 
 # Categorical
+test_that("effect_counts_one", {
+
+  expect_snapshot(
+    data |>
+      dplyr::filter(sd_gender != "diverse") |>
+      volker::effect_counts(sd_gender),
+    cran= TRUE
+  )
+
+})
+
 test_that("effect_counts_one_grouped", {
 
   expect_snapshot(

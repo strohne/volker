@@ -37,6 +37,13 @@ data <- volker::chatgpt
 | 11      | effect_metrics_items_grouped | not yet      |                |                                           |                   |
 | 12      | effect_metrics_items_cor     |              | Pearson's r, Spearman's rho | correlation                  | t-test            |
 
+# 1. Chi-squared test for given probabilites 
+```{r}
+data <- data %>%  
+  filter(sd_gender != "diverse")
+
+effect_counts(data, sd_gender)
+```
 
 # 2. Cross table
 ```{r}

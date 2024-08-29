@@ -1,3 +1,18 @@
+# effect_counts_one
+
+    Code
+      volker::effect_counts(dplyr::filter(data, sd_gender != "diverse"), sd_gender)
+    Output
+      
+      
+      |Chi-Square Goodness-of-Fit |  value|
+      |:--------------------------|------:|
+      |Chi-squared                |   4.00|
+      |p value                    |  0.046|
+      |stars                      |      *|
+      |observed                   | 40, 60|
+      |expected                   | 50, 50|
+
 # effect_counts_one_grouped
 
     Code
@@ -31,7 +46,7 @@
       |Shapiro-Wilk normality test |      value|
       |:---------------------------|----------:|
       |W-statistic                 |       0.96|
-      |p-value                     |      0.002|
+      |p value                     |      0.002|
       |stars                       |         **|
       |normality                   | not normal|
 

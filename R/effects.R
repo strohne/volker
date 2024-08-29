@@ -159,23 +159,67 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
 }
 
 
-#' Test whether the shares differ from homogeneity
+#' Test homogeneity of category shares
 #'
-#' \strong{Not yet implemented. The future will come.}
-#'
+#' TODO: @JJ remove expected param and only assuming uniform?
 #' @keywords internal
 #'
 #' @param data A tibble.
 #' @param col The column holding factor values.
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
-#' @param clean Prepare data by \link{data_clean}.
+#' @param clean Prepare data by \link{data_clean}
+#' @param expected Numeric vector of expected proportions for each category in `col`.
+#'                 If NULL, assumes a uniform distribution across categories.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#' data <- data %>%
+#'    filter(sd_gender != "diverse")
+#'
+#' effect_counts_one(data, sd_gender, expected = c(0.3, 0.7))
+#'
+#' @export
 #' @importFrom rlang .data
-effect_counts_one <- function(data, col, labels = TRUE, clean = TRUE, ...) {
-  #warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+effect_counts_one <- function(data, col, clean = TRUE, expected = NULL, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ col }}, clean = clean)
 
+  # 2. Count observed
+  observed <- data %>%
+    dplyr::count({{ col }}) %>%
+    dplyr::arrange({{ col }}) %>%
+    dplyr::pull(n)
 
+  # 3. Handling expected
+  if (!is.null(expected)) {
+    num_categories <- dplyr::n_distinct(data %>% dplyr::pull({{col}}))
+    if (length(expected) != num_categories) {
+      stop("Length of expected proportions does not match the number of categories.")
+    }
+    expected <- sum(observed) * expected
+  } else {
+    expected <- rep(sum(observed) / length(observed), length(observed))
+  }
+
+  #expected <- rep(sum(observed) / length(observed), length(observed))
+
+  # 4. Perform Chi-Square Goodness-of-Fit Test
+  fit <- stats::chisq.test(x = observed, p = expected / sum(expected))
+
+  result <- tibble::tibble(
+    "Chi-Square Goodness-of-Fit" = c("Chi-squared", "p value", "stars", "observed","expected"),
+    "value" = c(
+    sprintf("%.2f", round(fit$statistic, 2)),
+    sprintf("%.3f", round(fit$p.value, 3)),
+    get_stars(fit$p.value),
+    toString(observed),
+    toString(expected)
+  )
+  )
+
+  result <- .attr_transfer(result, data, "missings")
+  .to_vlkr_tab(result, caption=fit$method)
 }
 
 
@@ -412,7 +456,7 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = T, ... ) {
   stats_shapiro <- stats::shapiro.test(stats$av)
 
   stats_shapiro <- tibble::tibble(
-    "Shapiro-Wilk normality test" = c("W-statistic", "p-value","stars","normality"),
+    "Shapiro-Wilk normality test" = c("W-statistic", "p value","stars","normality"),
     "value" = c(
       sprintf("%.2f", round(stats_shapiro$statistic, 2)),
       sprintf("%.3f", round(stats_shapiro$p.value, 3)),
