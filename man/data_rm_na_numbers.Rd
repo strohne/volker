@@ -9,7 +9,7 @@ data_rm_na_numbers(data, na.numbers = TRUE, check.labels = TRUE)
 \arguments{
 \item{data}{Data frame}
 
-\item{na.numbers}{Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}.
+\item{na.numbers}{Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMBERS}.
 You can also define residual values by setting the global option vlkr.na.numbers
 (e.g. \code{options(vlkr.na.numbers=c(-9))}).}
 

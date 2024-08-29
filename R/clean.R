@@ -95,7 +95,6 @@ data_clean <- function(data, plan = "sosci", ...) {
 #'   (comes from SoSci and prevents combining vectors)
 #' - Recode residual factor values to NA (e.g. "[NA] nicht beantwortet")
 #' - Recode residual numeric values to NA (e.g. -9)
-#' - Add whitespace after slashes to improve label breaks
 #'
 #' The tibble remembers whether it was already prepared and
 #' the operations are only performed once in the first call.
@@ -108,7 +107,7 @@ data_clean <- function(data, plan = "sosci", ...) {
 #'                      You can also define or disable residual levels by setting the global option vlkr.na.levels
 #'                      (e.g. `options(vlkr.na.levels=c("Not answered"))` or to disable `options(vlkr.na.levels=FALSE)`).
 #' @param remove.na.numbers Remove residual values from numeric columns.
-#'                      Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}.
+#'                      Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMBERS}.
 #'                      You can also define or disable residual values by setting the global option vlkr.na.numbers
 #'                      (e.g. `options(vlkr.na.numbers=c(-2,-9))` or to disable `options(vlkr.na.numbers=FALSE)`).
 #' @return Data frame with vlkr_df class (the class is used to prevent double preparation).
@@ -127,6 +126,9 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
   for (i in c(1:ncol(data))) {
     class(data[[i]]) <- setdiff(class(data[[i]]), "avector")
   }
+
+  # Add missing residual labels to numeric columns that have at least one label
+  data <- labs_impute(data)
 
   # Store codebook before mutate operations
   data <- labs_store(data)
@@ -259,19 +261,14 @@ data_rm_na_levels <- function(data, na.levels = TRUE) {
 #' @keywords internal
 #'
 #' @param data Data frame
-#' @param na.numbers Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}.
+#' @param na.numbers Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMBERS}.
 #'                   You can also define residual values by setting the global option vlkr.na.numbers
 #'                   (e.g. `options(vlkr.na.numbers=c(-9))`).
 #' @param check.labels Whether to only remove NA numbers that are listed in the attributes of a column.
 #' @return Data frame
 data_rm_na_numbers <- function(data, na.numbers = TRUE, check.labels = TRUE) {
   if (is.logical(na.numbers)) {
-    na.numbers <- getOption("vlkr.na.numbers")
-    if (is.null(na.numbers)) {
-      na.numbers <- VLKR_NA_NUMERIC
-    } else if (all(na.numbers == FALSE)) {
-      na.numbers <- c()
-    }
+    na.numbers <- cfg_get_na_numbers()
   }
 
   data %>%

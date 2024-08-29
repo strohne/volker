@@ -15,7 +15,7 @@ You can also define or disable residual levels by setting the global option vlkr
 (e.g. \code{options(vlkr.na.levels=c("Not answered"))} or to disable \code{options(vlkr.na.levels=FALSE)}).}
 
 \item{remove.na.numbers}{Remove residual values from numeric columns.
-Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMERIC}.
+Either a numeric vector with residual values or TRUE to use defaults in \link{VLKR_NA_NUMBERS}.
 You can also define or disable residual values by setting the global option vlkr.na.numbers
 (e.g. \code{options(vlkr.na.numbers=c(-2,-9))} or to disable \code{options(vlkr.na.numbers=FALSE)}).}
 }
@@ -29,7 +29,6 @@ Prepares SoSci Survey data:
 (comes from SoSci and prevents combining vectors)
 \item Recode residual factor values to NA (e.g. "\link{NA} nicht beantwortet")
 \item Recode residual numeric values to NA (e.g. -9)
-\item Add whitespace after slashes to improve label breaks
 }
 }
 \details{

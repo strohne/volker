@@ -357,3 +357,7 @@
       |Divers   |   1|   1%|
       |total    | 101| 100%|
 
+# Labels are wrapped at whitespace and slashes
+
+    "Super\nlong/\nshort\nlabel\\\ns"
+

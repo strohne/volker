@@ -15,5 +15,6 @@ appending "..." if shortened.
 }
 \description{
 Truncate labels that exceed a specified maximum length.
+TODO: don't return function, use lambda expression in scale_x_discrete call
 }
 \keyword{internal}

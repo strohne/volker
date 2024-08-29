@@ -16,12 +16,10 @@
     Code
       prepared_data
     Output
-      # A tibble: 3 x 2
+      # A tibble: 1 x 2
          var1  var2
         <dbl> <dbl>
-      1     1    -2
-      2     2    -3
-      3     5    -9
+      1     2    -3
 
 # Residual negative values are removed
 

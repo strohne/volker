@@ -14,7 +14,24 @@ VLKR_NA_LEVELS <- c("[NA] nicht beantwortet", "[NA] keine Angabe", "[no answer]"
 #' Override with \code{options(vlkr.na.numbers=c(-2,-9))}.
 #'
 #' @keywords internal
-VLKR_NA_NUMERIC <- c(-9, -2, -1)
+VLKR_NA_NUMBERS <- c(-9, -2, -1)
+
+#' Get configured na numbers
+#'
+#' Retrieves values either from the option or from the constant.
+#'
+#' @keywords internal
+#' return A vector with numbers that should be treated as NAs
+cfg_get_na_numbers <- function() {
+  na.numbers <- getOption("vlkr.na.numbers")
+  if (is.null(na.numbers)) {
+    na.numbers <- VLKR_NA_NUMBERS
+  } else if (all(na.numbers == FALSE)) {
+    na.numbers <- c()
+  }
+  na.numbers
+}
+
 
 #' Fill colors
 #'
