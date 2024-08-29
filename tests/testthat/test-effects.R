@@ -14,8 +14,8 @@ test_that("effect_counts_one_grouped", {
 
   expect_snapshot(
     data |>
-      filter(sd_gender != "diverse") |>
-      mutate(sd_age = ifelse(sd_age >40,"+40","-40")) |>
+      dplyr::filter(sd_gender != "diverse") |>
+      dplyr::mutate(sd_age = ifelse(sd_age >40,"+40","-40")) |>
       volker::effect_counts(sd_gender, sd_age),
     cran= TRUE
   )
@@ -27,6 +27,11 @@ data |>
   volker::effect_metrics(sd_age, sd_gender)
 
 # Metric
+
+test_that("effect_metrics_one", {
+  expect_snapshot(volker::effect_metrics(data, sd_age), cran= TRUE)
+})
+
 test_that("effect_metrics_one_grouped", {
   expect_snapshot(volker::effect_metrics(data, sd_age, adopter), cran= TRUE)
 })

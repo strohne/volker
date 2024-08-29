@@ -1,15 +1,8 @@
 # effect_counts_one_grouped
 
     Code
-      volker::effect_counts(mutate(filter(data, sd_gender != "diverse"), sd_age = ifelse(
-        sd_age > 40, "+40", "-40")), sd_gender, sd_age)
-    Condition
-      Warning:
-      Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
-      i Please use `"n"` instead of `.data$n`
-      Warning:
-      Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
-      i Please use `"n"` instead of `.data$n`
+      volker::effect_counts(dplyr::mutate(dplyr::filter(data, sd_gender != "diverse"),
+      sd_age = ifelse(sd_age > 40, "+40", "-40")), sd_gender, sd_age)
     Output
       
       
@@ -21,6 +14,26 @@
       |Chi-squared        |  0.20|
       |p value            | 0.651|
       |stars              |      |
+
+# effect_metrics_one
+
+    Code
+      volker::effect_metrics(data, sd_age)
+    Output
+      
+      
+      |Age      | value|
+      |:--------|-----:|
+      |skewness |  0.25|
+      |kurtosis | -0.98|
+      
+      
+      |Shapiro-Wilk normality test |      value|
+      |:---------------------------|----------:|
+      |W-statistic                 |       0.96|
+      |p-value                     |      0.002|
+      |stars                       |         **|
+      |normality                   | not normal|
 
 # effect_metrics_one_grouped
 

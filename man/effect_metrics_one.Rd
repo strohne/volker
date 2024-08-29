@@ -4,12 +4,14 @@
 \alias{effect_metrics_one}
 \title{Test whether the mean is different from zero}
 \usage{
-effect_metrics_one(data, col, clean = T, ...)
+effect_metrics_one(data, col, labels = TRUE, clean = T, ...)
 }
 \arguments{
 \item{data}{A tibble.}
 
 \item{col}{The column holding metric values.}
+
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
@@ -19,6 +21,13 @@ effect_metrics_one(data, col, clean = T, ...)
 A volker tibble.
 }
 \description{
-\strong{Not yet implemented. The future will come.}
+Test whether the mean is different from zero
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+effect_metrics_one(data, sd_age)
+
 }
 \keyword{internal}

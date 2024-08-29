@@ -212,7 +212,7 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
     dplyr::count({{ col }}, {{ cross }}) %>%
     tidyr::pivot_wider(
       names_from = {{ cross }},
-      values_from = .data$n,
+      values_from = "n",
       values_fill = 0) %>%
     as.data.frame() %>%
     dplyr::select(-1) %>%
@@ -386,7 +386,6 @@ effect_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
 
 #' Test whether the mean is different from zero
 #'
-#' \strong{Not yet implemented. The future will come.}
 #'
 #' @keywords internal
 #'
@@ -396,27 +395,34 @@ effect_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
 #' @return A volker tibble.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' effect_metrics_one(data, sd_age)
+#'
+#' @export
 #' @importFrom rlang .data
 effect_metrics_one <- function(data, col, labels = TRUE, clean = T, ... ) {
-  #warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, clean = clean)
 
+  # 2. Normality test
   stats <- dplyr::select(data, av = {{ col }})
   stats_shapiro <- stats::shapiro.test(stats$av)
 
   stats_shapiro <- tibble::tibble(
-    "statistic" = c("W-statistic", "p-value", "normality"),
+    "Shapiro-Wilk normality test" = c("W-statistic", "p-value","stars","normality"),
     "value" = c(
       sprintf("%.2f", round(stats_shapiro$statistic, 2)),
       sprintf("%.3f", round(stats_shapiro$p.value, 3)),
+      get_stars(stats_shapiro$p.value),
       ifelse(stats_shapiro$p.value > 0.05, "normal", "not normal")
     )
   )
 
+  # 3. Skewness and kurtosis
   stats_skew <- psych::describe(stats$av)
-
-  # 3. Calculate skewness
   stats <- tibble::tibble(
     "metric" = c("skewness", "kurtosis"),
     "value" = c(sprintf("%.2f", round(stats_skew$skew, 2)), sprintf("%.2f", round(stats_skew$kurtosis, 2)))
@@ -428,6 +434,7 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = T, ... ) {
     stats <- dplyr::rename(stats, {{ label }} := "metric")
   }
 
+  # 5. Results
   result <- c(
     list(.to_vlkr_tab(stats, digits=2)),
     list(.to_vlkr_tab(stats_shapiro, digits=2))

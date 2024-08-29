@@ -51,6 +51,10 @@ effect_counts(data, adopter, sd_gender)
 # effect_counts(data, adopter, sd_age, metric = TRUE)
 ```
 
+# 7. Normality test for one metric variable
+```{r}
+effect_metrics(data, sd_age)
+```
 
 
 # 8. T-test / ANOVA
