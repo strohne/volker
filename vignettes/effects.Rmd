@@ -75,10 +75,16 @@ effect_metrics(data, sd_age, adopter)
 effect_metrics(data, sd_age, use_private, metric=T)
 ```
 
-
 # 10. Correlation within items
 ```{r}
 effect_metrics(data, starts_with("cg_adoption"))
+```
+
+
+# 11. Analysis of variance 
+```{r}
+# TODO: CHECK 
+x <- effect_metrics(data, starts_with("cg_adoption_"), adopter)
 ```
 
 

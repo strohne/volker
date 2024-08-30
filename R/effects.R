@@ -722,32 +722,82 @@ effect_metrics_items <- function(data, cols, method = "pearson", labels = TRUE, 
 #' Output confidence intervals of group means, F-Statistics and effect size (Eta^2)
 #'
 #' \strong{Not yet implemented. The future will come.}
+#' TODO: @JJ Check calculation
 #'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-effect_metrics_items_grouped <- function(data, cols, cross, clean = T, ...) {
+effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
   # 2. Pivot
-  data <- data %>%
+  lm_data <- data %>%
+    dplyr::rename(uv = {{ cross }})
+
+  lm_data <- lm_data %>%
     tidyr::pivot_longer(
     cols = {{ cols }},
     names_to = "item",
-    values_to = "value")
+    values_to = "value") %>%
+    group_by(item)
 
-  results <- data %>%
-    dplyr::group_by(item)
+  # 3. Linear model
+  lm <- lm_data %>%
+    dplyr::summarise(
+      model = list(lm(value ~ uv))
+    )
 
-return(results)
+  result <- lm %>%
+    dplyr::mutate(
+      tidy_model = purrr::map(model, broom::tidy),
+      eta_sq = purrr::map(model, ~ effectsize::eta_squared(anova(.x), verbose = FALSE)),
+      f_statistic = purrr::map_dbl(model, ~ round(summary(.x)$fstatistic[1], 2)),
+      p_value = purrr::map_dbl(model, ~ round(summary(.x)$coefficients[2, 4], 2)),
+      stars = purrr::map_chr(.data$model,~ get_stars(summary(.x)$coefficients[2, 4])),
+      group_means = purrr::map(model, ~ {
+        pred <- predict(.x, newdata = data.frame(uv = unique(lm_data$uv)), interval = "confidence")
+        tibble::tibble(
+          uv = unique(lm_data$uv),
+          mean = sprintf("%.1f (%.1f, %.1f)",
+                         pred[, "fit"], pred[, "lwr"], pred[, "upr"])
+        )
+      })
+    ) %>%
+  tidyr::unnest(cols = c(tidy_model, eta_sq, group_means)) %>%
+  dplyr::select(tidyselect::all_of(c("item", "uv", "mean", "F" = "f_statistic",
+                                     "p" ="p_value","stars", "Eta squared" = "Eta2")))
+
+   # Wide format
+   result <- result %>%
+     tidyr::pivot_wider(
+      names_from = "uv",
+      values_from = "mean"
+  )
+
+   # Get variable caption from the attributes
+   if (labels) {
+     result <- labs_replace(result, "item", codebook(data, {{ cols }}), col_from="item_name", col_to="item_label")
+     prefix <- get_prefix(result$item)
+     result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
+   }
+
+   # Rename first column
+   if (prefix != "") {
+     colnames(result)[1] <- prefix
+   } else {
+     result <- dplyr::rename(result, Item = tidyselect::all_of("item"))
+   }
+
+   .to_vlkr_tab(result)
 }
 
 #' Output correlation coefficients for items
