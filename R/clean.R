@@ -49,6 +49,10 @@ data_prepare <- function(data, cols, cross, clean = TRUE) {
   #   data <- data_rm_negatives(data, {{ cols }})
   # }
 
+  if (nrow(data) == 0) {
+     message("The dataset is empty, check your values.")
+  }
+
   data
 }
 
