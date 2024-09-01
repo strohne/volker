@@ -128,27 +128,27 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cross_eval)== 1
   is_multi <- length(cross_eval) > 1
-  is_cor <- metric != FALSE
+  is_metric <- metric != FALSE
 
   # Single variables
-  if (!is_items && !is_grouped && !is_multi && !is_cor) {
+  if (!is_items && !is_grouped && !is_multi) {
     effect_metrics_one(data, {{ cols }}, ...)
   }
-  else if (!is_items && is_grouped && !is_cor) {
+  else if (!is_items && is_grouped && !is_metric) {
     effect_metrics_one_grouped(data, {{ cols }}, {{ cross }}, ...)
   }
-  else if (!is_items && is_grouped && is_cor) {
+  else if (!is_items && is_grouped && is_metric) {
     effect_metrics_one_cor(data, {{ cols }}, {{ cross }}, ...)
   }
 
   # Items
-  else if (is_items && !is_grouped && !is_multi && !is_cor) {
+  else if (is_items && !is_grouped && !is_multi) {
     effect_metrics_items(data, {{ cols }} , ...)
   }
-  else if (is_items && is_grouped && !is_cor) {
+  else if (is_items && is_grouped && !is_metric) {
     effect_metrics_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
-  else if (is_items && (is_grouped || is_multi) && is_cor) {
+  else if (is_items && (is_grouped || is_multi) && is_metric) {
     effect_metrics_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
   # Not found
@@ -185,13 +185,13 @@ effect_counts_one <- function(data, col, clean = TRUE, expected = NULL, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, clean = clean)
 
-  # 2. Count observed
+  # 2. Observed
   observed <- data %>%
     dplyr::count({{ col }}) %>%
     dplyr::arrange({{ col }}) %>%
-    dplyr::pull(n)
+    dplyr::pull(.data$n)
 
-  # 3. Handling expected
+  # 3.Expected
   if (!is.null(expected)) {
     num_categories <- dplyr::n_distinct(data %>% dplyr::pull({{col}}))
     if (length(expected) != num_categories) {
@@ -295,6 +295,13 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' effect_counts_one_cor(data, adopter, sd_age, metric = TRUE)
+#'
+#' @export
 #' @importFrom rlang .data
 effect_counts_one_cor <- function(data, col, cross, clean = TRUE, labels = TRUE, ...) {
   # 1. Checks, clean, remove missings
@@ -359,9 +366,60 @@ effect_counts_one_cor <- function(data, col, cross, clean = TRUE, labels = TRUE,
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return  A volker tibble.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' effect_counts_items(data, starts_with("cg_adoption_adv"))
+#'
+#' @export
 #' @importFrom rlang .data
 effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, clean = clean)
+
+  # 2. Count
+  result <- data %>%
+    labs_clear({{ cols }}) %>%
+    tidyr::pivot_longer(
+      {{ cols }},
+      names_to = "item",
+      values_to = ".value",
+      values_drop_na = TRUE
+    ) %>%
+    dplyr::group_by(.data$item, .data$.value) %>%
+    dplyr::count() %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(.data$item)
+
+  # Chi-square goodness-of-fit test for each item
+  result <- result %>%
+    dplyr::group_by(.data$item) %>%
+    dplyr::mutate(
+      "Chi-squared" = stats::chisq.test(.data$n)$statistic,
+      "p value" = stats::chisq.test(.data$n)$p.value,
+      "stars" = get_stars(stats::chisq.test(.data$n)$p.value)
+    ) %>%
+    dplyr::distinct(.data$item, .keep_all = TRUE) %>%
+    dplyr::select(-tidyselect::all_of(c(".value", "n")))
+
+  # Get variable caption from the attributes
+  if (labels) {
+    result <- labs_replace(result, "item", codebook(data, {{ cols }}), col_from="item_name", col_to="item_label")
+    prefix <- get_prefix(result$item)
+    result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
+  }
+
+  # Rename first column
+  if (prefix != "") {
+    colnames(result)[1] <- prefix
+  } else {
+    result <- dplyr::rename(result, Item = tidyselect::all_of("item"))
+  }
+
+  # Result
+  result <- .attr_transfer(result, data, "missings")
+  .to_vlkr_tab(result)
 }
 
 
@@ -401,7 +459,7 @@ effect_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
 }
 
 
-#' Test whether the mean is different from zero
+#' Test whether distribution is normal
 #'
 #'
 #' @keywords internal
@@ -625,7 +683,7 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' effect_metrics_one_cor(data, sd_age, use_private)
+#' effect_metrics_one_cor(data, sd_age, use_private, metric = TRUE)
 #'
 #' @export
 #' @importFrom rlang .data
@@ -733,9 +791,15 @@ effect_metrics_items <- function(data, cols, method = "pearson", labels = TRUE, 
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
 #' @return A volker tibble.
+#' @examples
+#' library(volker)
+#'
+#' data <- volker::chatgpt
+#' effect_metrics(data, starts_with("cg_adoption_"), adopter)
+#'
+#' @export
 #' @importFrom rlang .data
 effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
@@ -748,7 +812,7 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
     cols = {{ cols }},
     names_to = "item",
     values_to = "value") %>%
-    group_by(item)
+    dplyr::group_by(.data$item)
 
   # 3. Linear model
   lm <- lm_data %>%
@@ -758,21 +822,23 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
 
   result <- lm %>%
     dplyr::mutate(
-      tidy_model = purrr::map(model, broom::tidy),
-      eta_sq = purrr::map(model, ~ effectsize::eta_squared(anova(.x), verbose = FALSE)),
-      f_statistic = purrr::map_dbl(model, ~ round(summary(.x)$fstatistic[1], 2)),
-      p_value = purrr::map_dbl(model, ~ round(summary(.x)$coefficients[2, 4], 2)),
+      tidy_model = purrr::map(.data$model, broom::tidy),
+      eta_sq = purrr::map(.data$model, ~ effectsize::eta_squared(anova(.x), verbose = FALSE)),
+      f_statistic = purrr::map_dbl(.data$model, ~ round(summary(.x)$fstatistic[1], 2)),
+      p_value = purrr::map_dbl(.data$model, ~ round(summary(.x)$coefficients[2, 4], 2)),
       stars = purrr::map_chr(.data$model,~ get_stars(summary(.x)$coefficients[2, 4])),
-      group_means = purrr::map(model, ~ {
+      group_means = purrr::map(.data$model, ~ {
         pred <- predict(.x, newdata = data.frame(uv = unique(lm_data$uv)), interval = "confidence")
         tibble::tibble(
           uv = unique(lm_data$uv),
           mean = sprintf("%.1f (%.1f, %.1f)",
-                         pred[, "fit"], pred[, "lwr"], pred[, "upr"])
+                         pred[, "fit"],
+                         pred[, "lwr"],
+                         pred[, "upr"])
         )
       })
     ) %>%
-  tidyr::unnest(cols = c(tidy_model, eta_sq, group_means)) %>%
+  tidyr::unnest(cols = c(.data$tidy_model, .data$eta_sq, .data$group_means)) %>%
   dplyr::select(tidyselect::all_of(c("item", "uv", "mean", "F" = "f_statistic",
                                      "p" ="p_value","stars", "Eta squared" = "Eta2")))
 
@@ -797,6 +863,7 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
      result <- dplyr::rename(result, Item = tidyselect::all_of("item"))
    }
 
+   result <- .attr_transfer(result, data, "missings")
    .to_vlkr_tab(result)
 }
 

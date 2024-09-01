@@ -39,7 +39,7 @@ The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}
 library(volker)
 data <- volker::chatgpt
 
-effect_metrics_one_cor(data, sd_age, use_private)
+effect_metrics_one_cor(data, sd_age, use_private, metric = TRUE)
 
 }
 \keyword{internal}

@@ -37,7 +37,7 @@ report_counts(data, sd_gender, ci=TRUE)
 
 ```{r}
 data %>% 
-  filter(sd_gender != "divers") %>% 
+  filter(sd_gender != "diverse") %>% 
   report_counts(adopter, sd_gender, prop="rows", ci=TRUE, effect=TRUE)
 ```
 
@@ -45,7 +45,7 @@ data %>%
 ```{r}
 
 data %>% 
-  filter(sd_gender != "divers") %>% 
+  filter(sd_gender != "diverse") %>% 
   report_counts(starts_with("cg_adoption_"), index=TRUE, ci=TRUE, effect=TRUE)
 
 ```
@@ -54,7 +54,7 @@ data %>%
 # Group comparisons of an index
 ```{r}
 data %>% 
-  filter(sd_gender != "divers") %>% 
+  dplyr::filter(sd_gender != "diverse") %>% 
   report_metrics(starts_with("cg_adoption_"), sd_gender, index=TRUE, ci=TRUE, effect=TRUE)
 
 ```
@@ -65,7 +65,7 @@ data %>%
 
 ```{r}
 data %>% 
-  filter(sd_gender != "divers") %>% 
+  filter(sd_gender != "diverse") %>% 
   report_counts(adopter, sd_gender, prop="rows", title= FALSE, close= FALSE)
 ```
 

@@ -1121,7 +1121,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, digits = 1, la
 #' @param col The first column holding metric values.
 #' @param cross The second column holding metric values.
 #' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho
-#' @param ci Whether to output confidence intervals
+#' @param ci Whether to output confidence intervals.
 #' @param digits The number of digits to print.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
