@@ -22,29 +22,26 @@ library(volker)
 data <- volker::chatgpt
 ```
 
-| \#      | function                      | implemented | effect size    | confidence intervals                      | significance test |
-|---------|-------------------------------|-------------|----------------|-------------------------------------------|-------------------|
-| 1       | effect_counts_one            | not yet      |                |                                           |                   |
-| 2       | effect_counts_one_grouped    |              | Cramér's V     | proportions                               | Chi squared       |
-| 3       | effect_counts_one_cor        | not yet      |                |                                           |                   |
-| 4       | effect_counts_items          | not yet      |                |                                           |                   |
-| 5       | effect_counts_items_grouped  | not yet      |                |                                           |                   |
-| 6       | effect_counts_items_cor      | not yet      |                |                                           |                   |
-| 7       | effect_metrics_one           | not yet      |                |                                           |                   |
-| 8       | effect_metrics_one_grouped   |              | R squared      | means                                     | t-test            |
-| 9       | effect_metrics_one_cor       |              | Pearson's r, Spearman's rho | correlation                  | t-test            |
-| 10      | effect_metrics_items         |              | R squared      | means                                     | t-test            | 
-| 11      | effect_metrics_items_grouped | not yet      |                |                                           |                   |
-| 12      | effect_metrics_items_cor     |              | Pearson's r, Spearman's rho | correlation                  | t-test            |
+| \#      | function                     | implemented | effect calculations                                                   |
+|---------|------------------------------|-------------|-----------------------------------------------------------------------|
+| 1       | effect_counts_one            | not yet     | Compare to equality. Gini Coefficient, Goodness of fit, ci of proportions |
+| 2       | effect_counts_one_grouped    |             | Cramér's V, Chi squared, ci of proportions                            |
+| 3       | effect_counts_one_cor        | not yet     | D (Logistic Regression)                                               |
+| 4       | effect_counts_items          | not yet     | Cramér's V between all items                                          |
+| 5       | effect_counts_items_grouped  | not yet     | Cramér's V between items and grouping variable                        |
+| 6       | effect_counts_items_cor      | not yet     | D between each item an the correlation variable (Logistic Regression) |
+| 7       | effect_metrics_one           | not yet     | Compare to normality. Shapiro-Wilk-Normality-test                     |
+| 8       | effect_metrics_one_grouped   |             | R squared, t-test, ci of means                                        |
+| 9       | effect_metrics_one_cor       |             | Pearson's r, Spearman's rho, t-test                                   |
+| 10      | effect_metrics_items         |             | R squared, ci of means, t-test                                        | 
+| 11      | effect_metrics_items_grouped | not yet     | R squared between each item and the grouping variable                 |
+| 12      | effect_metrics_items_cor     |             | Pearson's r, Spearman's rho, t-test                                   |
 
-# 1. Chi-squared test for given probabilites 
+# 1. Inequality of counts (Chi-squared test for equal distribution, Gini-coefficient)
 ```{r}
-# TODO: Without given probabilites? Assuming homogenity? 
-
-data <- data %>%  
-  filter(sd_gender != "diverse")
-
-effect_counts(data, sd_gender)
+data %>%  
+  filter(sd_gender != "diverse") |> 
+  effect_counts(sd_gender)
 ```
 
 # 2. Cross table
@@ -57,6 +54,7 @@ effect_counts(data, adopter, sd_gender)
 # TODO: better way? ; add macro statistics ; make clean ; remove new package...? 
 effect_counts(data, adopter, sd_age, metric = TRUE)
 ```
+
 
 # 4. Chi-square goodness-of-fit test for each item
 ```{r}

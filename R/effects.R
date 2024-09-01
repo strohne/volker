@@ -192,31 +192,25 @@ effect_counts_one <- function(data, col, clean = TRUE, expected = NULL, ...) {
     dplyr::pull(.data$n)
 
   # 3.Expected
-  if (!is.null(expected)) {
-    num_categories <- dplyr::n_distinct(data %>% dplyr::pull({{col}}))
-    if (length(expected) != num_categories) {
-      stop("Length of expected proportions does not match the number of categories.")
-    }
-    expected <- sum(observed) * expected
-  } else {
-    expected <- rep(sum(observed) / length(observed), length(observed))
-  }
-
-  #expected <- rep(sum(observed) / length(observed), length(observed))
+  expected <- rep(sum(observed) / length(observed), length(observed))
 
   # 4. Perform Chi-Square Goodness-of-Fit Test
   fit <- stats::chisq.test(x = observed, p = expected / sum(expected))
 
-  result <- tibble::tibble(
-    "Chi-Square Goodness-of-Fit" = c("Chi-squared", "p value", "stars", "observed","expected"),
-    "value" = c(
-    sprintf("%.2f", round(fit$statistic, 2)),
-    sprintf("%.3f", round(fit$p.value, 3)),
-    get_stars(fit$p.value),
-    toString(observed),
-    toString(expected)
+  # To list
+  result <- list(
+    "Gini" = sprintf("%.2f", get_gini(observed)),
+    "Chi-squared" = sprintf("%.2f", round(fit$statistic, 2)),
+    "p value" = sprintf("%.3f", round(fit$p.value, 3)),
+    "stars" = get_stars(fit$p.value)
   )
-  )
+
+  # To tibble
+  result <- result |>
+    tibble::enframe(
+      name = "Chi-Square Goodness-of-Fit",
+      value = "value"
+    )
 
   result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, caption=fit$method)
@@ -326,6 +320,7 @@ effect_counts_one_cor <- function(data, col, cross, clean = TRUE, labels = TRUE,
 
   # Regression parameters
   lm_params <- broom::tidy(fit, conf.int = TRUE, exponentiate = TRUE)
+
 
   result <- lm_params |>
     dplyr::mutate(
@@ -1099,6 +1094,26 @@ tidy_lm_levels <- function(fit) {
   )
 
   lm_tidy
+}
+
+#' Calculate the Gini coefficient
+#'
+#' @keywords internal
+#'
+#' @param x A vector of counts or other values
+#' @return The gini coefficient
+get_gini <- function(x) {
+
+  library(ineq)
+
+  x <- sort(x)
+  n <- length(x)
+
+  gini <- sum(x * c(1:n))
+  gini <- 2 * gini/sum(x) - (n + 1)
+  gini <- gini/n
+
+  return(gini)
 }
 
 
