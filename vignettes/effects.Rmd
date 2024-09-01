@@ -39,6 +39,8 @@ data <- volker::chatgpt
 
 # 1. Chi-squared test for given probabilites 
 ```{r}
+# TODO: Without given probabilites? Assuming homogenity? 
+
 data <- data %>%  
   filter(sd_gender != "diverse")
 
@@ -50,25 +52,28 @@ effect_counts(data, sd_gender)
 effect_counts(data, adopter, sd_gender)
 ```
 
-
 # 3. Logistic regression with one metric predictor
 ```{r}
-
-# TODO
+# TODO: better way? ; add macro statistics ; make clean ; remove new package...? 
 effect_counts(data, adopter, sd_age, metric = TRUE)
+```
+
+# 4. Chi-square goodness-of-fit test for each item
+```{r}
+# TODO: good method? 
+effect_counts(data, starts_with("cg_adoption_advantage"))
 ```
 
 # 7. Normality test for one metric variable
 ```{r}
+# TODO: test wheter mean is different from zero? 
 effect_metrics(data, sd_age)
 ```
-
 
 # 8. T-test / ANOVA
 ```{r}
 effect_metrics(data, sd_age, adopter)
 ```
-
 
 # 9. Correlation test
 ```{r}
@@ -80,13 +85,11 @@ effect_metrics(data, sd_age, use_private, metric=T)
 effect_metrics(data, starts_with("cg_adoption"))
 ```
 
-
 # 11. Analysis of variance 
 ```{r}
-# TODO: CHECK 
-x <- effect_metrics(data, starts_with("cg_adoption_"), adopter)
+# TODO: Check calculation 
+effect_metrics(data, starts_with("cg_adoption_"), adopter)
 ```
-
 
 # 12. Correlation between items and one variable
 ```{r}
