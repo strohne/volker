@@ -802,14 +802,13 @@ wrap_label <- function(x, width = 40) {
 #'
 #' @keywords internal
 #'
+#' @param x A character vector.
 #' @param max_length Specifies max_length, default is 20.
 #' @return A function that truncates labels to the max_length,
 #'        appending "..." if shortened.
-trunc_labels <- function(max_length = 20) {
-  function(labels) {
+trunc_labels <- function(x, max_length = 20) {
 
-    ifelse(nchar(labels) > max_length, paste0(substr(labels, 1, max_length), "..."), labels)
-  }
+  ifelse(nchar(x) > max_length, paste0(substr(x, 1, max_length), "..."), x)
 }
 
 #' Remove trailing zeros and trailing or leading

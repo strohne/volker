@@ -151,6 +151,9 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
   else if (is_items && (is_grouped || is_multi) && is_metric) {
     effect_metrics_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
+  else if (is_items && !is_grouped && is_multi && is_metric) {
+    plot_metrics_items_cor_items(data, {{ cols }}, {{ cross }},  ...)
+  }
   # Not found
   else {
     stop("Check your parameters: the column selection is not yet supported by volker functions.")
@@ -686,8 +689,8 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", labels 
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
-  # 2. Calculate
-  result <- .effect_correlations(data, {{ col }}, {{ cross}}, method=method, labels = labels)
+  # 2. Calculate correlation
+  result <- .effect_correlations(data, {{ col }}, {{ cross}}, method = method, labels = labels)
 
   # Remove common item prefix
   prefix <- get_prefix(c(result$item1, result$item2))
@@ -748,10 +751,15 @@ effect_metrics_items <- function(data, cols, method = "pearson", labels = TRUE, 
   result <- .effect_correlations(data, {{ cols }}, {{ cols }}, method = method, labels = labels)
   result <- dplyr::filter(result, .data$item1 != .data$item2)
 
-  # Remove common item prefix
+  # 3. Remove common item prefix
   prefix <- get_prefix(c(result$item1, result$item2))
   result <- dplyr::mutate(result, item1 = trim_prefix(.data$item1, prefix))
   result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix))
+
+  # Truncate labels
+  result <- result %>%
+    dplyr::mutate(item1 = trunc_labels(item1, max_length = 10),
+                  item2 = trunc_labels(item2, max_length = 10))
 
   if (prefix == "") {
     prefix <- "Item"
@@ -768,14 +776,13 @@ effect_metrics_items <- function(data, cols, method = "pearson", labels = TRUE, 
   }
 
   result <- .attr_transfer(result, data, "missings")
-  .to_vlkr_tab(result, digits= 2, caption=title)
+  .to_vlkr_tab(result, digits=2, caption = title)
 }
 
 
 #' Output confidence intervals of group means, F-Statistics and effect size (Eta^2)
 #'
 #' \strong{Not yet implemented. The future will come.}
-#' TODO: @JJ Check calculation
 #'
 #' @keywords internal
 #'
@@ -826,7 +833,7 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
         pred <- predict(.x, newdata = data.frame(uv = unique(lm_data$uv)), interval = "confidence")
         tibble::tibble(
           uv = unique(lm_data$uv),
-          mean = sprintf("%.1f (%.1f, %.1f)",
+          mean = sprintf("%.1f [%.1f, %.1f]",
                          pred[, "fit"],
                          pred[, "lwr"],
                          pred[, "upr"])
@@ -834,8 +841,11 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
       })
     ) %>%
   tidyr::unnest(cols = c(.data$tidy_model, .data$eta_sq, .data$group_means)) %>%
+  dplyr::mutate("eta" = purrr::map(.data$Eta2, ~ round(sqrt(.), 2)),
+                "Eta squared" = purrr::map_dbl(.data$Eta2, ~ round(., 2))) %>%
   dplyr::select(tidyselect::all_of(c("item", "uv", "mean", "F" = "f_statistic",
-                                     "p" ="p_value","stars", "Eta squared" = "Eta2")))
+                                     "p" = "p_value","stars","eta", "Eta squared")))
+
 
    # Wide format
    result <- result %>%
@@ -862,7 +872,7 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
    .to_vlkr_tab(result)
 }
 
-#' Output correlation coefficients for items
+#' Output correlation coefficients for items and one metric variable
 #'
 #' The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}}.
 #'
@@ -870,7 +880,7 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
-#' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
+#' @param cross The column holding metric values to correlate.
 #' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
@@ -880,8 +890,7 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' effect_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use_"))
-#'
+#' effect_metrics_items_cor(data, starts_with("cg_adoption_adv"), sd_age)
 #'
 #' @export
 #' @importFrom rlang .data
@@ -892,25 +901,70 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labe
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
 
-  # Remove common item prefix
-  prefix <- get_prefix(c(result$item1, result$item2))
-  result <- dplyr::mutate(result, item1 = trim_prefix(.data$item1, prefix))
-  result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix))
-
-  prefix <- ifelse(prefix == "", "Item", prefix)
-  if (prefix == "") {
-    title <- NULL
+  # 3. Get variable caption from the attributes
+  if (labels) {
+    result <- labs_replace(result, "item1", codebook(data, {{ cols }}), col_from="item_name", col_to="item_label")
+    prefix <- get_prefix(result$item1)
+    result <- result %>%
+      dplyr::mutate(item1 = trim_prefix(.data$item1, prefix)) |>
+      dplyr::rename("Item 2" = tidyselect::all_of("item2"))
   } else {
-    title <- prefix
+    result <- result %>%
+      dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
+      dplyr::rename("Item 2" = tidyselect::all_of("item2"))
   }
 
-  result <- result %>%
-    dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
-    dplyr::rename("Item 2" = tidyselect::all_of("item2"))
+  result <- .attr_transfer(result, data, "missings")
+  .to_vlkr_tab(result, digits = 2)
+}
+
+
+#' Output correlation coefficients for items and items
+#'
+#' The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}}.
+#'
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross Tidyselect item variables (e.g. starts_with...).
+#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
+#' @return A volker table containing correlations.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' effect_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use"))
+#'
+#' @export
+#' @importFrom rlang .data
+effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+
+  # 2. Calculate correlations
+  result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
+
+  # 3. Get variable caption from the attributes
+  if (labels) {
+    result <- labs_replace(result, "item1", codebook(data, {{ cols }}), col_from="item_name", col_to="item_label")
+    prefix <- get_prefix(result$item1)
+    result <- result %>%
+      dplyr::mutate(item1 = trim_prefix(.data$item1, prefix)) |>
+      dplyr::rename("Item 2" = tidyselect::all_of("item2"))
+  } else {
+    result <- result %>%
+      dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
+      dplyr::rename("Item 2" = tidyselect::all_of("item2"))
+  }
 
   result <- .attr_transfer(result, data, "missings")
-  .to_vlkr_tab(result, digits= 2, caption=title)
+  .to_vlkr_tab(result, digits = 2)
 }
+
 
 #' Test whether correlations are different from zero
 #'
@@ -969,6 +1023,7 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labe
       dplyr::mutate(
         n = nrow(data),
         "Pearson's r" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate),2)),
+        "R-squared" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate^2),2)),
         "ci low" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[1]),2)),
         "ci high" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[2]),2)),
         df = purrr::map_int(.data$.test, function(x) as.numeric(x$parameter)),
@@ -979,7 +1034,7 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labe
       dplyr::mutate(t = ifelse(.data$x_name == .data$y_name, "Inf", t)) |>
       dplyr::select(
         item1 = "x_name", item2 = "y_name",
-        "n","Pearson's r", "ci low", "ci high","df","t","p","stars"
+        "n","Pearson's r", "ci low", "ci high","df","t","p","stars", "R-squared"
       )
   }
 

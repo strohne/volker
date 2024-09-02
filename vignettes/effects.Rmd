@@ -55,7 +55,6 @@ effect_counts(data, adopter, sd_gender)
 effect_counts(data, adopter, sd_age, metric = TRUE)
 ```
 
-
 # 4. Chi-square goodness-of-fit test for each item
 ```{r}
 # TODO: good method? 
@@ -64,32 +63,46 @@ effect_counts(data, starts_with("cg_adoption_advantage"))
 
 # 7. Normality test for one metric variable
 ```{r}
-# TODO: test wheter mean is different from zero? 
 effect_metrics(data, sd_age)
 ```
 
 # 8. T-test / ANOVA
 ```{r}
+# Add standardized beta coefficents: but not that easy to implement and 
+# interpret, because its categorical data?  
 effect_metrics(data, sd_age, adopter)
+fit <- stats::lm(sd_age ~ adopter, data = data)
 ```
 
 # 9. Correlation test
 ```{r}
+# Done: added R-squared. Future: implement lm logic instead of effect_correlations? 
 effect_metrics(data, sd_age, use_private, metric=T)
 ```
 
 # 10. Correlation within items
 ```{r}
+# Done: truncate labels
 effect_metrics(data, starts_with("cg_adoption"))
 ```
 
 # 11. Analysis of variance 
 ```{r}
-# TODO: Check calculation 
+# Done: Brackets of confidence intervals, add eta 
 effect_metrics(data, starts_with("cg_adoption_"), adopter)
 ```
 
 # 12. Correlation between items and one variable
 ```{r}
+# Done: fix label = F, add prefix in title column.. 
+# Maybe todo: remove "item2"? 
 effect_metrics(data, starts_with("cg_adoption"), sd_age, metric = TRUE)
+```
+
+# 13. Correlation items with items 
+```{r}
+# equivalent to plot_metrics_items_cor_items?  
+effect_metrics(data, starts_with("cg_adoption"), starts_with("use_"), metric = TRUE)
+
+plot_metrics(data, starts_with("cg_adoption"), starts_with("use_"), metric = TRUE)
 ```
