@@ -24,18 +24,18 @@ data <- volker::chatgpt
 
 | \#      | function                     | implemented | effect calculations                                                   |
 |---------|------------------------------|-------------|-----------------------------------------------------------------------|
-| 1       | effect_counts_one            | not yet     | Compare to equality. Gini Coefficient, Goodness of fit, ci of proportions |
-| 2       | effect_counts_one_grouped    |             | Cramér's V, Chi squared, ci of proportions                            |
-| 3       | effect_counts_one_cor        | not yet     | D (Logistic Regression)                                               |
-| 4       | effect_counts_items          | not yet     | Cramér's V between all items                                          |
-| 5       | effect_counts_items_grouped  | not yet     | Cramér's V between items and grouping variable                        |
-| 6       | effect_counts_items_cor      | not yet     | D between each item an the correlation variable (Logistic Regression) |
-| 7       | effect_metrics_one           | not yet     | Compare to normality. Shapiro-Wilk-Normality-test                     |
-| 8       | effect_metrics_one_grouped   |             | R squared, t-test, ci of means                                        |
-| 9       | effect_metrics_one_cor       |             | Pearson's r, Spearman's rho, t-test                                   |
-| 10      | effect_metrics_items         |             | R squared, ci of means, t-test                                        | 
-| 11      | effect_metrics_items_grouped | not yet     | R squared between each item and the grouping variable                 |
-| 12      | effect_metrics_items_cor     |             | Pearson's r, Spearman's rho, t-test                                   |
+| 1       | effect_counts_one            | not yet     | Compare to equality (Gini Coefficient, Goodness of fit) |
+| 2       | effect_counts_one_grouped    |             | Contingency of two variables (Cramér's V, Chi squared) |
+| 3       | effect_counts_one_cor        | not yet     | Explained variance (Pseudo-R-squared of logistic regression) |
+| 4       | effect_counts_items          | not yet     | Contingency between each of the items (Cramér's V) |
+| 5       | effect_counts_items_grouped  | not yet     | Contingency between each item and the grouping variable (Cramér's V) |
+| 6       | effect_counts_items_cor      | not yet     | Explained variance of each item by the metric variable (Pseudo-R-squared of logistic regression) |
+| 7       | effect_metrics_one           | not yet     | Compare to normality (Shapiro-Wilk-Normality-test) |
+| 8       | effect_metrics_one_grouped   |             | Explained variance (R squared, t-test) |
+| 9       | effect_metrics_one_cor       |             | Correlation (Pearson's r, Spearman's rho, t-test) |
+| 10      | effect_metrics_items         |             | Correlation between items (Pearsons'r, R squared, t-test) | 
+| 11      | effect_metrics_items_grouped | not yet     | Explained variance of each item by the grouping variable (R squared) |
+| 12      | effect_metrics_items_cor     |             | Correlation between each item and the correlation variable (Pearson's r, Spearman's rho, t-test) |
 
 # 1. Inequality of counts (Chi-squared test for equal distribution, Gini-coefficient)
 ```{r}
