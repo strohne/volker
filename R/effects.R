@@ -148,11 +148,11 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
   else if (is_items && is_grouped && !is_metric) {
     effect_metrics_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
-  else if (is_items && (is_grouped || is_multi) && is_metric) {
+  else if (is_items && is_grouped && is_metric) {
     effect_metrics_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
   else if (is_items && !is_grouped && is_multi && is_metric) {
-    plot_metrics_items_cor_items(data, {{ cols }}, {{ cross }},  ...)
+    effect_metrics_items_cor_items(data, {{ cols }}, {{ cross }},  ...)
   }
   # Not found
   else {
@@ -194,7 +194,7 @@ effect_counts_one <- function(data, col, clean = TRUE, expected = NULL, ...) {
     dplyr::arrange({{ col }}) %>%
     dplyr::pull(.data$n)
 
-  # 3.Expected
+  # 3. Expected
   expected <- rep(sum(observed) / length(observed), length(observed))
 
   # 4. Perform Chi-Square Goodness-of-Fit Test
@@ -692,7 +692,8 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", labels 
   # 2. Calculate correlation
   result <- .effect_correlations(data, {{ col }}, {{ cross}}, method = method, labels = labels)
 
-  # Remove common item prefix
+  # 3. Labeling
+  # Remove common prefix
   prefix <- get_prefix(c(result$item1, result$item2))
   result <- dplyr::mutate(result, item1 = trim_prefix(.data$item1, prefix))
   result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix))
@@ -721,9 +722,8 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", labels 
   .to_vlkr_tab(result, digits= 2, caption=title)
 }
 
-#' Output effect size and test statistics for paired samples
+#' Output skewness, kurtosis and w-statistic for each item
 #'
-#' The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}}.
 #'
 #' @keywords internal
 #'
@@ -747,19 +747,41 @@ effect_metrics_items <- function(data, cols, method = "pearson", labels = TRUE, 
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, clean = clean)
 
-  # 2. Calculate correlations
-  result <- .effect_correlations(data, {{ cols }}, {{ cols }}, method = method, labels = labels)
-  result <- dplyr::filter(result, .data$item1 != .data$item2)
+  # 2. Count
+  result <- data %>%
+    labs_clear({{ cols }}) %>%
+    tidyr::pivot_longer(
+      {{ cols }},
+      names_to = "item",
+      values_to = ".value",
+      values_drop_na = TRUE
+    ) %>%
+    dplyr::group_by(.data$item, .data$.value) %>%
+    dplyr::count() %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(.data$item)
 
-  # 3. Remove common item prefix
-  prefix <- get_prefix(c(result$item1, result$item2))
+  #  2. Normality test for each item
+  result <- result %>%
+    dplyr::group_by(.data$item) %>%
+    dplyr::mutate(
+      "w-statistic" = round(stats::shapiro.test(.data$n)$statistic,2),
+      "p value" = round(stats::shapiro.test(.data$n)$p.value,2),
+      "stars" = get_stars(stats::shapiro.test(.data$n)$p.value)
+    ) %>%
+    dplyr::distinct(.data$item, .keep_all = TRUE) %>%
+    dplyr::select(-tidyselect::all_of(c(".value", "n")))
+
   result <- dplyr::mutate(result, item1 = trim_prefix(.data$item1, prefix))
   result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix))
 
-  # Truncate labels
-  result <- result %>%
-    dplyr::mutate(item1 = trunc_labels(item1, max_length = 10),
-                  item2 = trunc_labels(item2, max_length = 10))
+  # Truncate labels in console
+  if (interactive()) {
+    result <- result %>%
+      dplyr::mutate(item1 = trunc_labels(item1),
+                    item2 = trunc_labels(item2))
+  } else
+    result
 
   if (prefix == "") {
     prefix <- "Item"
@@ -828,37 +850,31 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
       eta_sq = purrr::map(.data$model, ~ effectsize::eta_squared(anova(.x), verbose = FALSE)),
       f_statistic = purrr::map_dbl(.data$model, ~ round(summary(.x)$fstatistic[1], 2)),
       p_value = purrr::map_dbl(.data$model, ~ round(summary(.x)$coefficients[2, 4], 2)),
-      stars = purrr::map_chr(.data$model,~ get_stars(summary(.x)$coefficients[2, 4])),
-      group_means = purrr::map(.data$model, ~ {
-        pred <- predict(.x, newdata = data.frame(uv = unique(lm_data$uv)), interval = "confidence")
-        tibble::tibble(
-          uv = unique(lm_data$uv),
-          mean = sprintf("%.1f [%.1f, %.1f]",
-                         pred[, "fit"],
-                         pred[, "lwr"],
-                         pred[, "upr"])
-        )
-      })
-    ) %>%
-  tidyr::unnest(cols = c(.data$tidy_model, .data$eta_sq, .data$group_means)) %>%
-  dplyr::mutate("eta" = purrr::map(.data$Eta2, ~ round(sqrt(.), 2)),
+      stars = purrr::map_chr(.data$model,~ get_stars(summary(.x)$coefficients[2, 4]))
+      ) %>%
+  tidyr::unnest(cols = c(.data$tidy_model, .data$eta_sq)) %>%
+  dplyr::mutate("Eta" = purrr::map_dbl(.data$Eta2, ~ round(sqrt(.), 2)),
                 "Eta squared" = purrr::map_dbl(.data$Eta2, ~ round(., 2))) %>%
-  dplyr::select(tidyselect::all_of(c("item", "uv", "mean", "F" = "f_statistic",
-                                     "p" = "p_value","stars","eta", "Eta squared")))
+  dplyr::select(tidyselect::all_of(c("item", "F" = "f_statistic",
+                                     "p" = "p_value","stars",
+                                     "Eta", "Eta squared"))) %>%
+  dplyr::distinct(.data$item, .keep_all = TRUE)
 
 
-   # Wide format
-   result <- result %>%
-     tidyr::pivot_wider(
-      names_from = "uv",
-      values_from = "mean"
-  )
-
-   # Get variable caption from the attributes
+  # Get variable caption from the attributes
    if (labels) {
      result <- labs_replace(result, "item", codebook(data, {{ cols }}), col_from="item_name", col_to="item_label")
      prefix <- get_prefix(result$item)
      result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
+
+     # Truncate labels
+     if (interactive()) {
+       result <- result %>%
+         dplyr::mutate(
+           item = trunc_labels(item)
+         )
+     } else
+       result
    }
 
    # Rename first column
@@ -901,21 +917,42 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labe
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
 
-  # 3. Get variable caption from the attributes
-  if (labels) {
-    result <- labs_replace(result, "item1", codebook(data, {{ cols }}), col_from="item_name", col_to="item_label")
-    prefix <- get_prefix(result$item1)
-    result <- result %>%
-      dplyr::mutate(item1 = trim_prefix(.data$item1, prefix)) |>
-      dplyr::rename("Item 2" = tidyselect::all_of("item2"))
+  # 3. Labeling
+  prefix1 <- get_prefix(result$item1)
+  prefix2 <- get_prefix(result$item2)
+  result <- dplyr::mutate(result, item1 = trim_prefix(.data$item1, prefix1))
+  if (prefix1 == prefix2) {
+    result <- dplyr::mutate(result, item2 = trim_prefix(.data$item2, prefix2))
+    title <- prefix1
   } else {
-    result <- result %>%
-      dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
-      dplyr::rename("Item 2" = tidyselect::all_of("item2"))
+
+    if ((prefix1 != "") && (prefix2 != "")) {
+      title <- paste0(prefix1, " - ", prefix2)
+    } else {
+      title = ""
+    }
   }
 
+  if(title == "")  {
+    title <- NULL
+  }
+
+  # Truncate labels in console
+  if (interactive()) {
+    result <- result %>%
+      dplyr::mutate(
+        item1 = trunc_labels(item1)
+      )
+  } else
+    result
+
+  prefix1 <- ifelse(prefix1 == "", "Item", prefix1)
+  result <- result %>%
+    dplyr::rename({{ prefix1 }} := "item1",
+                  "Item 2" = tidyselect::all_of("item2"))
+
   result <- .attr_transfer(result, data, "missings")
-  .to_vlkr_tab(result, digits = 2)
+  .to_vlkr_tab(result, digits = 2, caption = title)
 }
 
 
@@ -948,17 +985,32 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
 
-  # 3. Get variable caption from the attributes
-  if (labels) {
-    result <- labs_replace(result, "item1", codebook(data, {{ cols }}), col_from="item_name", col_to="item_label")
-    prefix <- get_prefix(result$item1)
-    result <- result %>%
-      dplyr::mutate(item1 = trim_prefix(.data$item1, prefix)) |>
-      dplyr::rename("Item 2" = tidyselect::all_of("item2"))
-  } else {
-    result <- result %>%
-      dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
-      dplyr::rename("Item 2" = tidyselect::all_of("item2"))
+  # 3. Get labels from the attributes
+  result <- labs_replace(result, "item1", codebook(data, {{ cols }}), col_from="item_name", col_to="item_label")
+  prefix1 <- get_prefix(result$item1)
+  result <- labs_replace(result, "item2", codebook(data, {{ cols }}), col_from="item_name", col_to="item_label")
+  prefix2 <- get_prefix(result$item2)
+
+  result <- result %>%
+    dplyr::mutate(item1 = trim_prefix(.data$item1, prefix1)) |>
+    dplyr::mutate(item2 = trim_prefix(.data$item2, prefix2))
+
+  # Truncate labels in console
+  if (interactive()) {
+  result <- result %>%
+    dplyr::mutate(item1 = trunc_labels(item1),
+                  item2 = trunc_labels(item2))
+  } else
+    result
+
+  # Rename first column
+  if (prefix1 != "") {
+    colnames(result)[1] <- prefix1
+  }
+
+  # Rename second column
+  if (prefix2 != "") {
+    colnames(result)[2] <- prefix2
   }
 
   result <- .attr_transfer(result, data, "missings")
@@ -1023,7 +1075,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
       dplyr::mutate(
         n = nrow(data),
         "Pearson's r" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate),2)),
-        "R-squared" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate^2),2)),
+        "R squared" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate^2),2)),
         "ci low" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[1]),2)),
         "ci high" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[2]),2)),
         df = purrr::map_int(.data$.test, function(x) as.numeric(x$parameter)),
@@ -1034,7 +1086,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
       dplyr::mutate(t = ifelse(.data$x_name == .data$y_name, "Inf", t)) |>
       dplyr::select(
         item1 = "x_name", item2 = "y_name",
-        "n","Pearson's r", "ci low", "ci high","df","t","p","stars", "R-squared"
+        "n","Pearson's r", "ci low", "ci high","df","t","p","stars", "R squared"
       )
   }
 
