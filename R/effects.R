@@ -484,13 +484,14 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = T, ... ) {
   stats <- dplyr::select(data, av = {{ col }})
   stats_shapiro <- stats::shapiro.test(stats$av)
 
-  stats_shapiro <- tibble::tibble(
-    "Shapiro-Wilk normality test" = c("W-statistic", "p value","stars","normality"),
-    "value" = c(
-      sprintf("%.2f", round(stats_shapiro$statistic, 2)),
-      sprintf("%.3f", round(stats_shapiro$p.value, 3)),
-      get_stars(stats_shapiro$p.value),
-      ifelse(stats_shapiro$p.value > 0.05, "normal", "not normal")
+  stats_shapiro <- tibble::enframe(
+    name = "Shapiro-Wilk normality test",
+    value = "value",
+    x = list(
+      "W-statistic" = sprintf("%.2f", round(stats_shapiro$statistic, 2)),
+      "p value" = sprintf("%.3f", round(stats_shapiro$p.value, 3)),
+      "stars" = get_stars(stats_shapiro$p.value),
+      "normality" = ifelse(stats_shapiro$p.value > 0.05, "normal", "not normal")
     )
   )
 
@@ -1210,8 +1211,6 @@ tidy_lm_levels <- function(fit) {
 #' @param x A vector of counts or other values
 #' @return The gini coefficient
 get_gini <- function(x) {
-
-  library(ineq)
 
   x <- sort(x)
   n <- length(x)

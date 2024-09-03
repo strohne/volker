@@ -128,7 +128,7 @@ plot_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric = TRUE)
 
 ## Correlations
 
-### Correlation of metric items with metric items
+### a) Correlation of metric items with metric items
 
 ```{r}
 plot_metrics(
@@ -137,7 +137,7 @@ plot_metrics(
 )
 ```
 
-### Correlation of metric items with categorical items
+### b) Correlation of metric items with categorical items
 
 ```{r}
 # TODO
@@ -145,14 +145,14 @@ plot_metrics(
 ```
 
 
-### Correlation of categorical items with metric items
+### c) Correlation of categorical items with metric items
 
 ```{r}
 # TODO
 #tab_counts(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric = TRUE)
 ```
 
-### Correlation of categorical items with categorical items
+### d) Correlation of categorical items with categorical items
 
 ```{r}
 # TODO
