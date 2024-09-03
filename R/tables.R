@@ -153,7 +153,10 @@ tab_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
     tab_metrics_items_grouped(data, {{ cols }}, {{ cross }},  ...)
   }
   else if (is_items && is_grouped && is_metric) {
-    tab_metrics_items_cor(data, {{ cols }}, {{ cross }}, ...)
+    tab_metrics_items_cor(data, {{ cols }}, {{ cross }},  ...)
+  }
+  else if (is_items && !is_grouped && is_multi && is_metric) {
+    tab_metrics_items_cor_items(data, {{ cols }}, {{ cross }},  ...)
   }
 
   # Not found
@@ -210,8 +213,12 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
 
   # Get variable caption from the attributes
   if (labels) {
-    result <- labs_replace(result, {{ col }}, codebook(data, {{ col }}))
+    result <- labs_replace(
+      result, {{ col }},
+      codebook(data, {{ col }}))
+
     label <- get_title(data, {{ col }})
+
     result <- dplyr::rename(result, {{ label }} := {{ col }})
   }
 
@@ -1383,7 +1390,6 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
   result_sd <- dplyr::inner_join(total_sd, grouped_sd, by = "skim_variable") %>%
     dplyr::rename(item = tidyselect::all_of("skim_variable"))
 
-
   # 7. Zip
   if (("m" %in% values) && ("sd" %in% values)) {
     # TODO: What about the resulting data frame, should it really contain rounded values?
@@ -1422,7 +1428,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
 }
 
 
-#' Output a correlation table
+#' Output a correlation table for item battery and one metric variable
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
@@ -1442,7 +1448,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' tab_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+#' tab_metrics_items_cor(data, starts_with("cg_adoption_adv"), sd_age, metric = TRUE)
 #'
 #' @importFrom rlang .data
 #' @export
@@ -1485,6 +1491,62 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", digits 
 
   result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, digits = digits, caption = title)
+}
+
+#' Output a correlation table for item battery and item battery
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+
+#' @keywords internal
+#'
+#' @param data A tibble.
+#' @param cols The source columns.
+#' @param cross The target columns or NULL to calculate correlations within the source columns.
+#' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho.
+#' @param digits The number of digits to print.
+#' @param ci Whether to calculate 95% confidence intervals of the correlation coefficient.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
+#' @return A volker tibble.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' tab_metrics_items_cor_items(data, starts_with("cg_adoption_adv"), starts_with("use"), metric = TRUE)
+#'
+#' @importFrom rlang .data
+#' @export
+tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", digits = 2, labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+
+  # 2. Calculate correlations
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
+    dplyr::filter(item1 != item2) %>%
+    dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r")))
+
+  # 3. Labels
+  prefix1 <- get_prefix(result$item1)
+  prefix2 <- get_prefix(result$item2)
+
+  result <- result %>%
+    dplyr::mutate(item1 = trim_prefix(.data$item1, prefix1)) |>
+    dplyr::mutate(item2 = trim_prefix(.data$item2, prefix2))
+
+  # Rename first column
+  if (prefix1 != "") {
+    colnames(result)[1] <- prefix1
+  }
+
+  # Rename second column
+  if (prefix2 != "") {
+    colnames(result)[2] <- prefix2
+  }
+
+  result <- .attr_transfer(result, data, "missings")
+  .to_vlkr_tab(result, digits = 2)
 }
 
 #' Split a metric column into categorical based on median
