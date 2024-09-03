@@ -122,7 +122,11 @@ tab_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric=T)
 ### a) Correlation of metric items with metric items
 
 ```{r}
-# TODO
+tab_metrics(data, starts_with("cg_adoption_adv"), 
+            starts_with("use_"),
+            metric = TRUE, ci = T)
+
+# TODO: Manage correlation with same stem 
 tab_metrics(data, starts_with("cg_adoption_adv"), 
             starts_with("cg_adoption_adv"),
             metric = TRUE)

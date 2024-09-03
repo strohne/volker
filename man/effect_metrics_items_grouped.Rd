@@ -31,7 +31,6 @@ A volker tibble.
 }
 \description{
 \strong{Not yet implemented. The future will come.}
-TODO: @JJ Check calculation
 }
 \examples{
 library(volker)

@@ -4,9 +4,11 @@
 \alias{trunc_labels}
 \title{Truncate labels}
 \usage{
-trunc_labels(max_length = 20)
+trunc_labels(x, max_length = 20)
 }
 \arguments{
+\item{x}{A character vector.}
+
 \item{max_length}{Specifies max_length, default is 20.}
 }
 \value{

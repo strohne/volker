@@ -1518,16 +1518,24 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", digits 
 #'
 #' @importFrom rlang .data
 #' @export
-tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", digits = 2, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", digits = 2, ci = FALSE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
-    dplyr::filter(item1 != item2) %>%
     dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r")))
 
-  # 3. Labels
+  # 3. Ci
+  if(ci) {
+    result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
+      dplyr::select(tidyselect::all_of(c("item1", "item2", "r" = "Pearson's r", "ci_low" = "ci low", "ci_high" = "ci high"))) %>%
+      dplyr::mutate(
+        "Pearson's r" = paste0(r, " [", ci_low, ", ", ci_high, "]")) %>%
+      dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r")))
+  }
+
+  # 4. Labels
   prefix1 <- get_prefix(result$item1)
   prefix2 <- get_prefix(result$item2)
 
