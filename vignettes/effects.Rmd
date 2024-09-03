@@ -37,59 +37,114 @@ data <- volker::chatgpt
 | 11      | effect_metrics_items_grouped | not yet     | Explained variance of each item by the grouping variable (R squared) |
 | 12      | effect_metrics_items_cor     |             | Correlation between each item and the correlation variable (Pearson's r, Spearman's rho, t-test) |
 
-# 1. Inequality of counts (Chi-squared test for equal distribution, Gini-coefficient)
+# Categorical variables
+
+## 1. Inequality of counts (Chi-squared test for equal distribution, Gini-coefficient)
 ```{r}
 data %>%  
   filter(sd_gender != "diverse") |> 
   effect_counts(sd_gender)
 ```
 
-# 2. Cross table
+## 2. Cross table
 ```{r}
 effect_counts(data, adopter, sd_gender)
 ```
 
-# 3. Logistic regression with one metric predictor
+## 3. Logistic regression with one metric predictor
 ```{r}
 # TODO: better way? ; add macro statistics ; make clean ; remove new package...? 
 effect_counts(data, adopter, sd_age, metric = TRUE)
 ```
 
 
-# 4. Chi-square goodness-of-fit test for each item
+## 4. Chi-square goodness-of-fit test for each item
 ```{r}
-# TODO: good method? 
 effect_counts(data, starts_with("cg_adoption_advantage"))
 ```
 
-# 7. Normality test for one metric variable
+## 5. Cramers v and Chi-square-test for each item
 ```{r}
-# TODO: test wheter mean is different from zero? 
+# TODO
+#effect_counts(data, starts_with("cg_adoption_advantage"), sd_gender)
+```
+
+## 6. Explained variance of each item by the metric variable (Pseudo-R-squared of logistic regression) |
+```{r}
+# TODO
+#effect_counts(data, starts_with("cg_adoption_advantage"), sd_age)
+```
+
+# Metric variables
+
+## 7. Normality test for one metric variable
+```{r}
 effect_metrics(data, sd_age)
 ```
 
-# 8. T-test / ANOVA
+## 8. T-test / ANOVA
 ```{r}
 effect_metrics(data, sd_age, adopter)
 ```
 
-# 9. Correlation test
+## 9. Correlation test
 ```{r}
 effect_metrics(data, sd_age, use_private, metric=T)
 ```
 
-# 10. Correlation within items
+## 10. Distribution test for each item
 ```{r}
+
+# TODO: wie bei effect_counts_items() auch hier statt Korrelationsmatrix 
+#       skewness, kurtosis, W-Test-STatistiken für jedes ITem
 effect_metrics(data, starts_with("cg_adoption"))
 ```
 
-# 11. Analysis of variance 
+## 11. Analysis of variance 
 ```{r}
 # TODO: Check calculation 
+# TODO: Mittelwerte und ci raus, stattdessen in tab_metrics_items_grouped() einen ci-PArameter ergänzen, der statt sd dann ci (in eckigen Klammern) in den output zipped 
 effect_metrics(data, starts_with("cg_adoption_"), adopter)
 ```
 
-# 12. Correlation between items and one variable
+## 12. Correlation between items and one variable
 ```{r}
+
+# TODO: Spalte "Item 2" rausnehmen, stattdessen die Beschriftung "Item 1" ändern zu "Correlation with Age".
+#       Außerdem darauf achten, dass das Präfix ("Expectations") rausgenommen wird und vor die Beschriftung kommt.
+#       Also: "Expectations: Correlation with Age"
 effect_metrics(data, starts_with("cg_adoption"), sd_age, metric = TRUE)
+```
+
+# Correlations
+
+## a) Correlation of metric items with metric items
+
+```{r}
+effect_metrics(
+  data, starts_with("cg_adoption"), starts_with("cg_adoption"), 
+  metric = TRUE,
+)
+```
+
+## b) Correlation of metric items with categorical items
+
+```{r}
+# TODO
+# effect_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+```
+
+
+## c) Correlation of categorical items with metric items
+
+```{r}
+# TODO
+#effect_counts(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric = TRUE)
+```
+
+## d) Correlation of categorical items with categorical items
+
+```{r}
+# TODO
+#effect_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 ```
