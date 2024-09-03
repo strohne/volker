@@ -1104,8 +1104,6 @@ tidy_lm_levels <- function(fit) {
 #' @return The gini coefficient
 get_gini <- function(x) {
 
-  library(ineq)
-
   x <- sort(x)
   n <- length(x)
 
