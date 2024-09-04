@@ -68,3 +68,26 @@ check_has_column <- function(data, cols, msg = NULL) {
 
   TRUE
 }
+
+#' Check Validity of Correlation Method
+#'
+#' @param method A character string specifying the correlation method to check.
+#' @param stopit Whether to stop execution if method is invalid.
+#' @param msg A custom error message if the check fails.
+#' @return logical whether method is valid.
+check_method <- function(method, stopit = TRUE, msg = NULL) {
+
+  check <- tryCatch(
+    {
+      method %in% c("spearman", "pearson")
+    },
+    error = function(e) FALSE
+  )
+
+  if (!check && stopit) {
+    msg <- dplyr::coalesce(msg, "Check your params: Supported methods are 'spearman' or 'pearson'.")
+    stop(msg, call. = FALSE)
+  }
+
+  check
+}
