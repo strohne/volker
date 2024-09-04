@@ -1514,7 +1514,10 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", digits 
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' tab_metrics_items_cor_items(data, starts_with("cg_adoption_adv"), starts_with("use"), metric = TRUE)
+#' tab_metrics_items_cor_items(
+#' data, starts_with("cg_adoption_adv"),
+#' starts_with("use"), metric = TRUE
+#' )
 #'
 #' @importFrom rlang .data
 #' @export
@@ -1524,14 +1527,28 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
 
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
-    dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r")))
+    dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r"))) # %>%
+
+  # TODO: @JJ -
+  # # # Remove duplicates
+  # if (length(levels(result$item1)) == length(levels(result$item2)) && !all(result$item1 == result$item2))  {
+  #   result <- result %>%
+  #   dplyr::filter(.data$item1 != .data$item2)
+  # }
+
+  #  dplyr::mutate(
+  #   min = pmin(as.character(.data$item1), as.character(.data$item2)),
+  #   max = pmax(as.character(.data$item1), as.character(.data$item2))
+  # ) %>%
+  #   dplyr::distinct(min, max, .keep_all = TRUE) %>%
+  #   dplyr::select(-tidyselect::all_of(c("min", "max")))
 
   # 3. Ci
   if(ci) {
     result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
       dplyr::select(tidyselect::all_of(c("item1", "item2", "r" = "Pearson's r", "ci_low" = "ci low", "ci_high" = "ci high"))) %>%
       dplyr::mutate(
-        "Pearson's r" = paste0(r, " [", ci_low, ", ", ci_high, "]")) %>%
+        "Pearson's r" = paste0(.data$r, " [", .data$ci_low, ", ", .data$ci_high, "]")) %>%
       dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r")))
   }
 

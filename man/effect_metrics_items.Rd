@@ -2,7 +2,7 @@
 % Please edit documentation in R/effects.R
 \name{effect_metrics_items}
 \alias{effect_metrics_items}
-\title{Output effect size and test statistics for paired samples}
+\title{Output skewness, kurtosis and w-statistic for each item}
 \usage{
 effect_metrics_items(
   data,
@@ -30,7 +30,7 @@ effect_metrics_items(
 A volker table containing correlations.
 }
 \description{
-The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}}.
+Output skewness, kurtosis and w-statistic for each item
 }
 \examples{
 library(volker)
