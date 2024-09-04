@@ -105,7 +105,6 @@ tab_metrics(data, use_private, use_work, metric=T, labels=F)
 tab_metrics(data, starts_with("cg_adoption_"))
 ```
 
-
 ### 11. Compare means of multiple items: Adoption factors by gender
 ```{r}
 tab_metrics(data, starts_with("cg_adoption_"), sd_gender)
@@ -122,11 +121,18 @@ tab_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric=T)
 ### a) Correlation of metric items with metric items
 
 ```{r}
+
+# Done: implement function and ci param, ci in brackets if requested
+
+# TODO: Manage correlation with same stem (shorten output), remove duplicates 
+# idea: pmin pmax base r? condition if itembatteries are the same?  
+# implemented in function with todo and @jj 
+
 tab_metrics(data, starts_with("cg_adoption_adv"), 
             starts_with("use_"),
             metric = TRUE, ci = T)
 
-# TODO: Manage correlation with same stem 
+
 tab_metrics(data, starts_with("cg_adoption_adv"), 
             starts_with("cg_adoption_adv"),
             metric = TRUE)

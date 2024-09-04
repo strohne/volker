@@ -41,14 +41,14 @@ data <- volker::chatgpt
 
 ## 1. Inequality of counts (Chi-squared test for equal distribution, Gini-coefficient)
 ```{r}
-data %>%  
-  filter(sd_gender != "diverse") |> 
-  effect_counts(sd_gender)
+# data %>%  
+#   filter(sd_gender != "diverse") |> 
+#   effect_counts(sd_gender)
 ```
 
 ## 2. Cross table
 ```{r}
-effect_counts(data, adopter, sd_gender)
+#effect_counts(data, adopter, sd_gender)
 ```
 
 ## 3. Logistic regression with one metric predictor
@@ -99,9 +99,8 @@ effect_metrics(data, starts_with("cg_adoption"))
 
 ## 11. Analysis of variance 
 ```{r}
-# TODO: Mittelwerte und ci raus, stattdessen in tab_metrics_items_grouped() 
-# ci-PArameter ergänzen, der statt sd dann ci (in eckigen Klammern) in den output zipped 
-# Done: add eta, remove means from this output, implement in tab_metrics
+# Done: add eta, remove means from this output
+# TODO: implement ci param in tab_metrics_items_grouped 
 effect_metrics(data, starts_with("cg_adoption_"), adopter)
 ```
 
@@ -116,10 +115,18 @@ effect_metrics(data, starts_with("cg_adoption"), sd_age, metric = TRUE)
 ## a) Correlation of metric items with metric items
 
 ```{r}
+# TODO: Manage correlation with same stem (shorten output), remove duplicates 
+# See: tab_metrics_items_cor_items 
+
 effect_metrics(
   data, starts_with("cg_adoption_adv"), starts_with("use_"), 
   metric = TRUE
 )
+
+# effect_metrics(data, starts_with("cg_adoption_adv"), 
+#           starts_with("cg_adoption_adv"),
+#            metric = TRUE)
+
 ```
 
 ## b) Correlation of metric items with categorical items
