@@ -1146,11 +1146,14 @@ tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
-  # 2. Get columns
+  # 2. Check method
+  check_method(method)
+
+  # 3. Get columns
   cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
-  # 3. Calculate correlation
+  # 4. Calculate correlation
   method <- ifelse(method == "spearman", "spearman", "pearson")
   result <- .effect_correlations(data, {{ col }}, {{ cross}}, method = method, labels = labels)
 
@@ -1525,9 +1528,19 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
-  # 2. Calculate correlations
+  # 2. Check method
+  check_method(method)
+
+  # 3. Calculate correlations
+  if(method == "spearman") {
+    result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
+      dplyr::select(tidyselect::all_of(c("item1", "item2", "Spearman's rho")))
+  } else if (method == "pearson") {
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
-    dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r"))) # %>%
+    dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r")))
+  }
+
+  # %>%
 
   # TODO: @JJ -
   # # # Remove duplicates
@@ -1543,13 +1556,19 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
   #   dplyr::distinct(min, max, .keep_all = TRUE) %>%
   #   dplyr::select(-tidyselect::all_of(c("min", "max")))
 
-  # 3. Ci
-  if(ci) {
-    result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
-      dplyr::select(tidyselect::all_of(c("item1", "item2", "r" = "Pearson's r", "ci_low" = "ci low", "ci_high" = "ci high"))) %>%
-      dplyr::mutate(
-        "Pearson's r" = paste0(.data$r, " [", .data$ci_low, ", ", .data$ci_high, "]")) %>%
-      dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r")))
+  # 4. Ci for pearson
+  if (ci) {
+    if(method == "pearson") {
+      result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
+        dplyr::select(tidyselect::all_of(c("item1", "item2", "r" = "Pearson's r", "ci_low" = "ci low", "ci_high" = "ci high"))) %>%
+        dplyr::mutate(
+          "Pearson's r" = paste0(.data$r, " [", .data$ci_low, ", ", .data$ci_high, "]")) %>%
+        dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r")))
+
+    } else if (method == "spearman") {
+      result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
+        dplyr::select(tidyselect::all_of(c("item1", "item2", "Spearman's rho")))
+    }
   }
 
   # 4. Labels
