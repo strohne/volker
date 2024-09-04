@@ -956,6 +956,17 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
     dplyr::mutate(item1 = trim_prefix(.data$item1, prefix1)) |>
     dplyr::mutate(item2 = trim_prefix(.data$item2, prefix2))
 
+  # Truncate labels in
+  # TODO: shorten labels in console...
+  # probably implement in class vlkr.matrix?
+  # @JJ
+  # if (interactive()) {
+  #   result <- result %>%
+  #     dplyr::mutate(item1 = trunc_labels(item1),
+  #                   item2 = trunc_labels(item2))
+  # } else
+  #   result
+
   # Rename first column
   if (prefix1 != "") {
     colnames(result)[1] <- prefix1
@@ -987,11 +998,14 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
-
   # Calculate correlation
   #stats_cohen <- effectsize::cohens_d(lm_data$av, lm_data$uv, pooled_sd = stats_varequal)
 
+  # Check method
+  check_method(method)
+
   method <- ifelse(method == "spearman", "spearman", "pearson")
+
   result <- expand.grid(
     x = cols_eval, y = cross_eval, stringsAsFactors = FALSE
   ) %>%
