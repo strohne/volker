@@ -54,3 +54,15 @@ test_that("check_has_column", {
   expect_error(check_has_column(data, novalidcolumn), "The column selection is not valid, check your parameters.")
 
 })
+
+# Check method
+test_that("checkMethod works correctly", {
+
+  expect_true(check_method("spearman"))
+  expect_true(check_method("pearson"))
+
+  expect_false(check_method("kendall", stopit = FALSE))
+
+  expect_error(check_method("kendall"), "Check your params: Supported methods are 'spearman' or 'pearson'.")
+})
+

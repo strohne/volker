@@ -886,7 +886,9 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' effect_metrics_items_cor(data, starts_with("cg_adoption_adv"), sd_age)
+#' effect_metrics_items_cor(
+#' data, starts_with("cg_adoption_adv"), sd_age
+#' )
 #'
 #' @export
 #' @importFrom rlang .data

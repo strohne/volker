@@ -146,7 +146,32 @@
       4 missing case(s) omitted.
       
 
----
+# Distribution table for multiple metric items
+
+    Code
+      volker::tab_metrics(data, tidyselect::starts_with("cg_adoption_"))
+    Output
+      
+      
+      |Expectations                                                | min| q1| median| q3| max| mean|  sd|  n|
+      |:-----------------------------------------------------------|---:|--:|------:|--:|---:|----:|---:|--:|
+      |ChatGPT has clear advantages compared to similar offerings. |   1|  3|      4|  4|   5|  3.4| 1.0| 97|
+      |Using ChatGPT brings financial benefits.                    |   1|  2|      3|  4|   5|  2.7| 1.2| 97|
+      |Using ChatGPT is advantageous in many tasks.                |   1|  3|      4|  4|   5|  3.6| 1.1| 97|
+      |Compared to other systems, using ChatGPT is more fun.       |   1|  3|      4|  4|   5|  3.5| 1.0| 97|
+      |Much can go wrong when using ChatGPT.                       |   1|  2|      3|  4|   5|  3.1| 1.1| 97|
+      |There are legal issues with using ChatGPT.                  |   1|  2|      3|  4|   5|  3.1| 1.2| 97|
+      |The security of user data is not guaranteed with ChatGPT.   |   1|  3|      3|  4|   5|  3.2| 1.0| 97|
+      |Using ChatGPT could bring personal disadvantages.           |   1|  2|      3|  3|   5|  2.7| 1.1| 97|
+      |In my environment, using ChatGPT is standard.               |   1|  2|      2|  3|   5|  2.5| 1.1| 97|
+      |Almost everyone in my environment uses ChatGPT.             |   1|  1|      2|  3|   5|  2.4| 1.2| 97|
+      |Not using ChatGPT is considered being an outsider.          |   1|  1|      2|  3|   5|  2.0| 1.2| 97|
+      |Using ChatGPT brings me recognition from my environment.    |   1|  1|      2|  3|   5|  2.3| 1.2| 97|
+      
+      4 missing case(s) omitted.
+      
+
+# Correlations of an item battery with one variable
 
     Code
       volker::tab_metrics(data, tidyselect::starts_with("cg_adoption_"), sd_age,
@@ -172,27 +197,126 @@
       4 missing case(s) omitted.
       
 
-# Distribution table for multiple metric items
+# Correlations of an item battery with one variable and spearman
 
     Code
-      volker::tab_metrics(data, tidyselect::starts_with("cg_adoption_"))
+      volker::tab_metrics(data, tidyselect::starts_with("cg_adoption_"), sd_age,
+      metric = TRUE, method = "spearman")
     Output
       
       
-      |Expectations                                                | min| q1| median| q3| max| mean|  sd|  n|
-      |:-----------------------------------------------------------|---:|--:|------:|--:|---:|----:|---:|--:|
-      |ChatGPT has clear advantages compared to similar offerings. |   1|  3|      4|  4|   5|  3.4| 1.0| 97|
-      |Using ChatGPT brings financial benefits.                    |   1|  2|      3|  4|   5|  2.7| 1.2| 97|
-      |Using ChatGPT is advantageous in many tasks.                |   1|  3|      4|  4|   5|  3.6| 1.1| 97|
-      |Compared to other systems, using ChatGPT is more fun.       |   1|  3|      4|  4|   5|  3.5| 1.0| 97|
-      |Much can go wrong when using ChatGPT.                       |   1|  2|      3|  4|   5|  3.1| 1.1| 97|
-      |There are legal issues with using ChatGPT.                  |   1|  2|      3|  4|   5|  3.1| 1.2| 97|
-      |The security of user data is not guaranteed with ChatGPT.   |   1|  3|      3|  4|   5|  3.2| 1.0| 97|
-      |Using ChatGPT could bring personal disadvantages.           |   1|  2|      3|  3|   5|  2.7| 1.1| 97|
-      |In my environment, using ChatGPT is standard.               |   1|  2|      2|  3|   5|  2.5| 1.1| 97|
-      |Almost everyone in my environment uses ChatGPT.             |   1|  1|      2|  3|   5|  2.4| 1.2| 97|
-      |Not using ChatGPT is considered being an outsider.          |   1|  1|      2|  3|   5|  2.0| 1.2| 97|
-      |Using ChatGPT brings me recognition from my environment.    |   1|  1|      2|  3|   5|  2.3| 1.2| 97|
+      |Expectations                                                |   Age|
+      |:-----------------------------------------------------------|-----:|
+      |ChatGPT has clear advantages compared to similar offerings. | -0.14|
+      |Using ChatGPT brings financial benefits.                    | -0.14|
+      |Using ChatGPT is advantageous in many tasks.                | -0.13|
+      |Compared to other systems, using ChatGPT is more fun.       | -0.14|
+      |Much can go wrong when using ChatGPT.                       |  0.17|
+      |There are legal issues with using ChatGPT.                  |  0.26|
+      |The security of user data is not guaranteed with ChatGPT.   | -0.12|
+      |Using ChatGPT could bring personal disadvantages.           |  0.01|
+      |In my environment, using ChatGPT is standard.               | -0.16|
+      |Almost everyone in my environment uses ChatGPT.             | -0.07|
+      |Not using ChatGPT is considered being an outsider.          |  0.12|
+      |Using ChatGPT brings me recognition from my environment.    | -0.01|
+      
+      4 missing case(s) omitted.
+      
+
+# Correlate two item batteries
+
+    Code
+      volker::tab_metrics(data, tidyselect::starts_with("cg_adoption_"), tidyselect::starts_with(
+        "use_"), metric = TRUE)
+    Output
+      
+      
+      |Expectations                                                |                   Usage| Pearson's r|
+      |:-----------------------------------------------------------|-----------------------:|-----------:|
+      |ChatGPT has clear advantages compared to similar offerings. |      in private context|        0.50|
+      |ChatGPT has clear advantages compared to similar offerings. | in professional context|        0.28|
+      |Using ChatGPT brings financial benefits.                    |      in private context|        0.21|
+      |Using ChatGPT brings financial benefits.                    | in professional context|        0.54|
+      |Using ChatGPT is advantageous in many tasks.                |      in private context|        0.37|
+      |Using ChatGPT is advantageous in many tasks.                | in professional context|        0.37|
+      |Compared to other systems, using ChatGPT is more fun.       |      in private context|        0.47|
+      |Compared to other systems, using ChatGPT is more fun.       | in professional context|        0.29|
+      |Much can go wrong when using ChatGPT.                       |      in private context|       -0.24|
+      |Much can go wrong when using ChatGPT.                       | in professional context|       -0.09|
+      |There are legal issues with using ChatGPT.                  |      in private context|        0.08|
+      |There are legal issues with using ChatGPT.                  | in professional context|        0.31|
+      |The security of user data is not guaranteed with ChatGPT.   |      in private context|        0.02|
+      |The security of user data is not guaranteed with ChatGPT.   | in professional context|        0.20|
+      |Using ChatGPT could bring personal disadvantages.           |      in private context|       -0.09|
+      |Using ChatGPT could bring personal disadvantages.           | in professional context|        0.15|
+      |In my environment, using ChatGPT is standard.               |      in private context|        0.40|
+      |In my environment, using ChatGPT is standard.               | in professional context|        0.58|
+      |Almost everyone in my environment uses ChatGPT.             |      in private context|        0.47|
+      |Almost everyone in my environment uses ChatGPT.             | in professional context|        0.55|
+      |Not using ChatGPT is considered being an outsider.          |      in private context|        0.34|
+      |Not using ChatGPT is considered being an outsider.          | in professional context|        0.34|
+      |Using ChatGPT brings me recognition from my environment.    |      in private context|        0.42|
+      |Using ChatGPT brings me recognition from my environment.    | in professional context|        0.46|
+      
+      4 missing case(s) omitted.
+      
+
+# Correlate two item batteries with ci
+
+    Code
+      volker::tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"),
+      metric = TRUE, ci = T)
+    Output
+      
+      
+      |Expectations                                                |                   Usage|        Pearson's r|
+      |:-----------------------------------------------------------|-----------------------:|------------------:|
+      |ChatGPT has clear advantages compared to similar offerings. |      in private context|   0.5 [0.33, 0.63]|
+      |ChatGPT has clear advantages compared to similar offerings. | in professional context|  0.27 [0.07, 0.44]|
+      |Using ChatGPT brings financial benefits.                    |      in private context| 0.17 [-0.03, 0.36]|
+      |Using ChatGPT brings financial benefits.                    | in professional context|  0.53 [0.37, 0.66]|
+      |Using ChatGPT is advantageous in many tasks.                |      in private context|  0.34 [0.16, 0.51]|
+      |Using ChatGPT is advantageous in many tasks.                | in professional context|  0.35 [0.17, 0.51]|
+      |Compared to other systems, using ChatGPT is more fun.       |      in private context|   0.47 [0.3, 0.61]|
+      |Compared to other systems, using ChatGPT is more fun.       | in professional context|  0.27 [0.07, 0.44]|
+      
+      2 missing case(s) omitted.
+      
+
+# Correlate two item batteries with spearmn
+
+    Code
+      volker::tab_metrics(data, tidyselect::starts_with("cg_adoption_"), tidyselect::starts_with(
+        "use_"), metric = TRUE, method = "spearman", )
+    Output
+      
+      
+      |Expectations                                                |                   Usage| Spearman's rho|
+      |:-----------------------------------------------------------|-----------------------:|--------------:|
+      |ChatGPT has clear advantages compared to similar offerings. |      in private context|           0.47|
+      |ChatGPT has clear advantages compared to similar offerings. | in professional context|           0.24|
+      |Using ChatGPT brings financial benefits.                    |      in private context|           0.18|
+      |Using ChatGPT brings financial benefits.                    | in professional context|           0.53|
+      |Using ChatGPT is advantageous in many tasks.                |      in private context|           0.36|
+      |Using ChatGPT is advantageous in many tasks.                | in professional context|           0.33|
+      |Compared to other systems, using ChatGPT is more fun.       |      in private context|           0.44|
+      |Compared to other systems, using ChatGPT is more fun.       | in professional context|           0.30|
+      |Much can go wrong when using ChatGPT.                       |      in private context|          -0.24|
+      |Much can go wrong when using ChatGPT.                       | in professional context|          -0.09|
+      |There are legal issues with using ChatGPT.                  |      in private context|           0.04|
+      |There are legal issues with using ChatGPT.                  | in professional context|           0.30|
+      |The security of user data is not guaranteed with ChatGPT.   |      in private context|           0.01|
+      |The security of user data is not guaranteed with ChatGPT.   | in professional context|           0.19|
+      |Using ChatGPT could bring personal disadvantages.           |      in private context|          -0.16|
+      |Using ChatGPT could bring personal disadvantages.           | in professional context|           0.13|
+      |In my environment, using ChatGPT is standard.               |      in private context|           0.34|
+      |In my environment, using ChatGPT is standard.               | in professional context|           0.57|
+      |Almost everyone in my environment uses ChatGPT.             |      in private context|           0.42|
+      |Almost everyone in my environment uses ChatGPT.             | in professional context|           0.52|
+      |Not using ChatGPT is considered being an outsider.          |      in private context|           0.26|
+      |Not using ChatGPT is considered being an outsider.          | in professional context|           0.30|
+      |Using ChatGPT brings me recognition from my environment.    |      in private context|           0.36|
+      |Using ChatGPT brings me recognition from my environment.    | in professional context|           0.40|
       
       4 missing case(s) omitted.
       
@@ -220,32 +344,6 @@
       |social_04    | 2.3 (1.2)| 3.0 (NA)| 2.4 (1.2)| 2.3 (1.3)|
       
       3 missing case(s) omitted.
-      
-
-# Correlation of items
-
-    Code
-      volker::tab_metrics_items_cor(data, tidyselect::starts_with("cg_adoption_"),
-      tidyselect::starts_with("cg_adoption_"))
-    Output
-      
-      
-      |Expectations                                                | ChatGPT has clear advantages compared to similar offerings.| Using ChatGPT brings financial benefits.| Using ChatGPT is advantageous in many tasks.| Compared to other systems, using ChatGPT is more fun.| Much can go wrong when using ChatGPT.| There are legal issues with using ChatGPT.| The security of user data is not guaranteed with ChatGPT.| Using ChatGPT could bring personal disadvantages.| In my environment, using ChatGPT is standard.| Almost everyone in my environment uses ChatGPT.| Not using ChatGPT is considered being an outsider.| Using ChatGPT brings me recognition from my environment.|
-      |:-----------------------------------------------------------|-----------------------------------------------------------:|----------------------------------------:|--------------------------------------------:|-----------------------------------------------------:|-------------------------------------:|------------------------------------------:|---------------------------------------------------------:|-------------------------------------------------:|---------------------------------------------:|-----------------------------------------------:|--------------------------------------------------:|--------------------------------------------------------:|
-      |ChatGPT has clear advantages compared to similar offerings. |                                                        1.00|                                     0.37|                                         0.64|                                                  0.61|                                 -0.14|                                       0.19|                                                      0.07|                                              0.01|                                          0.21|                                            0.28|                                               0.16|                                                     0.27|
-      |Using ChatGPT brings financial benefits.                    |                                                        0.37|                                     1.00|                                         0.46|                                                  0.42|                                  0.02|                                       0.34|                                                      0.34|                                              0.22|                                          0.54|                                            0.50|                                               0.36|                                                     0.40|
-      |Using ChatGPT is advantageous in many tasks.                |                                                        0.64|                                     0.46|                                         1.00|                                                  0.47|                                 -0.11|                                       0.19|                                                      0.06|                                              0.09|                                          0.33|                                            0.34|                                               0.13|                                                     0.31|
-      |Compared to other systems, using ChatGPT is more fun.       |                                                        0.61|                                     0.42|                                         0.47|                                                  1.00|                                 -0.19|                                       0.17|                                                      0.14|                                             -0.07|                                          0.33|                                            0.26|                                               0.20|                                                     0.36|
-      |Much can go wrong when using ChatGPT.                       |                                                       -0.14|                                     0.02|                                        -0.11|                                                 -0.19|                                  1.00|                                       0.29|                                                      0.36|                                              0.48|                                         -0.19|                                            0.04|                                               0.10|                                                    -0.07|
-      |There are legal issues with using ChatGPT.                  |                                                        0.19|                                     0.34|                                         0.19|                                                  0.17|                                  0.29|                                       1.00|                                                      0.38|                                              0.28|                                          0.23|                                            0.22|                                               0.33|                                                     0.30|
-      |The security of user data is not guaranteed with ChatGPT.   |                                                        0.07|                                     0.34|                                         0.06|                                                  0.14|                                  0.36|                                       0.38|                                                      1.00|                                              0.39|                                          0.06|                                            0.20|                                               0.29|                                                     0.10|
-      |Using ChatGPT could bring personal disadvantages.           |                                                        0.01|                                     0.22|                                         0.09|                                                 -0.07|                                  0.48|                                       0.28|                                                      0.39|                                              1.00|                                          0.25|                                            0.22|                                               0.25|                                                     0.14|
-      |In my environment, using ChatGPT is standard.               |                                                        0.21|                                     0.54|                                         0.33|                                                  0.33|                                 -0.19|                                       0.23|                                                      0.06|                                              0.25|                                          1.00|                                            0.73|                                               0.48|                                                     0.57|
-      |Almost everyone in my environment uses ChatGPT.             |                                                        0.28|                                     0.50|                                         0.34|                                                  0.26|                                  0.04|                                       0.22|                                                      0.20|                                              0.22|                                          0.73|                                            1.00|                                               0.58|                                                     0.54|
-      |Not using ChatGPT is considered being an outsider.          |                                                        0.16|                                     0.36|                                         0.13|                                                  0.20|                                  0.10|                                       0.33|                                                      0.29|                                              0.25|                                          0.48|                                            0.58|                                               1.00|                                                     0.56|
-      |Using ChatGPT brings me recognition from my environment.    |                                                        0.27|                                     0.40|                                         0.31|                                                  0.36|                                 -0.07|                                       0.30|                                                      0.10|                                              0.14|                                          0.57|                                            0.54|                                               0.56|                                                     1.00|
-      
-      4 missing case(s) omitted.
       
 
 # Item order is kept
