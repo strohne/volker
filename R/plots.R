@@ -1354,10 +1354,7 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = TRUE, method = "pears
         item2 = "item2",
         value = "Spearman's rho",
       )
-  } else {
-    stop("The selected method is not available.")
   }
-
 
   # Get limits
   method_range <- range(result$value, na.rm = TRUE)
