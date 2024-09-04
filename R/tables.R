@@ -1562,10 +1562,7 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
   if (ci) {
     if(method == "pearson") {
       result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
-        dplyr::select(tidyselect::all_of(c("item1", "item2", "r" = "Pearson's r", "ci_low" = "ci low", "ci_high" = "ci high"))) %>%
-        dplyr::mutate(
-          "Pearson's r" = paste0(.data$r, " [", .data$ci_low, ", ", .data$ci_high, "]")) %>%
-        dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r")))
+        dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r", "ci low", "ci high")))
 
     } else if (method == "spearman") {
       result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%

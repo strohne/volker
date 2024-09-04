@@ -269,16 +269,16 @@
     Output
       
       
-      |Expectations                                                |                   Usage|        Pearson's r|
-      |:-----------------------------------------------------------|-----------------------:|------------------:|
-      |ChatGPT has clear advantages compared to similar offerings. |      in private context|   0.5 [0.33, 0.63]|
-      |ChatGPT has clear advantages compared to similar offerings. | in professional context|  0.27 [0.07, 0.44]|
-      |Using ChatGPT brings financial benefits.                    |      in private context| 0.17 [-0.03, 0.36]|
-      |Using ChatGPT brings financial benefits.                    | in professional context|  0.53 [0.37, 0.66]|
-      |Using ChatGPT is advantageous in many tasks.                |      in private context|  0.34 [0.16, 0.51]|
-      |Using ChatGPT is advantageous in many tasks.                | in professional context|  0.35 [0.17, 0.51]|
-      |Compared to other systems, using ChatGPT is more fun.       |      in private context|   0.47 [0.3, 0.61]|
-      |Compared to other systems, using ChatGPT is more fun.       | in professional context|  0.27 [0.07, 0.44]|
+      |Expectations                                                |                   Usage| Pearson's r| ci low| ci high|
+      |:-----------------------------------------------------------|-----------------------:|-----------:|------:|-------:|
+      |ChatGPT has clear advantages compared to similar offerings. |      in private context|        0.50|   0.33|    0.63|
+      |ChatGPT has clear advantages compared to similar offerings. | in professional context|        0.27|   0.07|    0.44|
+      |Using ChatGPT brings financial benefits.                    |      in private context|        0.17|  -0.03|    0.36|
+      |Using ChatGPT brings financial benefits.                    | in professional context|        0.53|   0.37|    0.66|
+      |Using ChatGPT is advantageous in many tasks.                |      in private context|        0.34|   0.16|    0.51|
+      |Using ChatGPT is advantageous in many tasks.                | in professional context|        0.35|   0.17|    0.51|
+      |Compared to other systems, using ChatGPT is more fun.       |      in private context|        0.47|   0.30|    0.61|
+      |Compared to other systems, using ChatGPT is more fun.       | in professional context|        0.27|   0.07|    0.44|
       
       2 missing case(s) omitted.
       

@@ -86,6 +86,7 @@ tab_counts(
 
 ### 7. Distribution table for one metric variable: Age
 ```{r}
+
 tab_metrics(data, sd_age)
 ```
 
