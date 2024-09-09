@@ -42,7 +42,9 @@ A volker tibble.
 library(volker)
 data <- volker::chatgpt
 
-tab_metrics_items_cor(data, starts_with("cg_adoption_adv"), sd_age, metric = TRUE)
+tab_metrics_items_cor(
+data, starts_with("cg_adoption_adv"),
+sd_age, metric = TRUE)
 
 }
 \keyword{internal}

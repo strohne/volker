@@ -69,23 +69,27 @@ check_has_column <- function(data, cols, msg = NULL) {
   TRUE
 }
 
-#' Check Validity of Correlation Method
+#' Check whether a parameter value is from a valid set
 #'
-#' @param method A character string specifying the correlation method to check.
-#' @param stopit Whether to stop execution if method is invalid.
+#' @param value A character value.
+#' @param allowed Allowed values.
+#' @param stopit Whether to stop execution if the value is invalid.
 #' @param msg A custom error message if the check fails.
 #' @return logical whether method is valid.
-check_method <- function(method, stopit = TRUE, msg = NULL) {
+check_is_param <- function(value, allowed, stopit = TRUE, msg = NULL) {
 
   check <- tryCatch(
     {
-      method %in% c("spearman", "pearson")
+      value %in% allowed
     },
     error = function(e) FALSE
   )
 
   if (!check && stopit) {
-    msg <- dplyr::coalesce(msg, "Check your params: Supported methods are 'spearman' or 'pearson'.")
+    msg <- dplyr::coalesce(
+      msg,
+      paste0("Check your parameters: The value '", value, "' is not supported. Supported values are ", paste0(allowed, collapse=", "), ".")
+    )
     stop(msg, call. = FALSE)
   }
 

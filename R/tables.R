@@ -1147,7 +1147,7 @@ tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE
   data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
   # 2. Check method
-  check_method(method)
+  check_is_param(method, c("spearman", "pearson"))
 
   # 3. Get columns
   cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
@@ -1531,7 +1531,7 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
   # 2. Check method
-  check_method(method)
+  check_is_param(method, c("spearman", "pearson"))
 
   # 3. Calculate correlations
   if(method == "spearman") {

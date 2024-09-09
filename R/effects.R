@@ -1004,7 +1004,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
   #stats_cohen <- effectsize::cohens_d(lm_data$av, lm_data$uv, pooled_sd = stats_varequal)
 
   # Check method
-  check_method(method)
+  check_is_param(method, c("spearman", "pearson"))
 
   method <- ifelse(method == "spearman", "spearman", "pearson")
 

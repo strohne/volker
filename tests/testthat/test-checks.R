@@ -55,14 +55,17 @@ test_that("check_has_column", {
 
 })
 
-# Check method
-test_that("checkMethod works correctly", {
+# Check check_is_param method
+test_that("Parameter checks work as expected", {
 
-  expect_true(check_method("spearman"))
-  expect_true(check_method("pearson"))
+  expect_true(check_is_param("spearman", c("spearman", "pearson")))
+  expect_true(check_is_param("pearson", c("spearman", "pearson")))
 
-  expect_false(check_method("kendall", stopit = FALSE))
+  expect_false(check_is_param("kendall", c("spearman", "pearson"), stopit = FALSE))
 
-  expect_error(check_method("kendall"), "Check your params: Supported methods are 'spearman' or 'pearson'.")
+  expect_error(
+    check_is_param("kendall", c("spearman", "pearson")),
+    "Error: Check your parameters: The value 'kendall' is not supported\\. Supported values are spearman, pearson\\."
+  )
 })
 

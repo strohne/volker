@@ -9,14 +9,12 @@ trunc_labels(x, max_length = 20)
 \arguments{
 \item{x}{A character vector.}
 
-\item{max_length}{Specifies max_length, default is 20.}
+\item{max_length}{Maximum length, default is 20. The ellipsis "..." is appended to shortened labels.}
 }
 \value{
-A function that truncates labels to the max_length,
-appending "..." if shortened.
+A character vector with truncated labels.
 }
 \description{
 Truncate labels that exceed a specified maximum length.
-TODO: don't return function, use lambda expression in scale_x_discrete call
 }
 \keyword{internal}

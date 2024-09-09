@@ -1400,7 +1400,7 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = TRUE, method = "pears
       dplyr::rename(
         item = "item1",
         item2 = "item2",
-        value = "Spearman's rho",
+        value = "Spearman's rho"
       )
   }
 
