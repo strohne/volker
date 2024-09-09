@@ -65,7 +65,7 @@ test_that("Parameter checks work as expected", {
 
   expect_error(
     check_is_param("kendall", c("spearman", "pearson")),
-    "Error: Check your parameters: The value 'kendall' is not supported\\. Supported values are spearman, pearson\\."
+    "Check your parameters: The value 'kendall' is not supported\\. Supported values are spearman, pearson\\."
   )
 })
 

@@ -41,24 +41,26 @@ data <- volker::chatgpt
 
 ## 1. Inequality of counts (Chi-squared test for equal distribution, Gini-coefficient)
 ```{r}
-# data %>%  
-#   filter(sd_gender != "diverse") |> 
-#   effect_counts(sd_gender)
+data %>%  
+ filter(sd_gender != "diverse") |> 
+ effect_counts(sd_gender)
 ```
 
 ## 2. Cross table
 ```{r}
-#effect_counts(data, adopter, sd_gender)
+effect_counts(data, adopter, sd_gender)
 ```
 
 ## 3. Logistic regression with one metric predictor
 ```{r}
 # TODO: better way? ; add macro statistics ; make clean ; remove new package...? 
-effect_counts(data, adopter, sd_age, metric = TRUE)
+#effect_counts(data, adopter, sd_age, metric = TRUE)
 ```
 
 ## 4. Chi-square goodness-of-fit test for each item
 ```{r}
+
+# TODO: Add Gini coefficient
 effect_counts(data, starts_with("cg_adoption_advantage"))
 ```
 
@@ -93,20 +95,17 @@ effect_metrics(data, sd_age, use_private, metric=T)
 
 ## 10. Distribution test for each item
 ```{r}
-# Done: shapiro and skewness/kurtosis for each item
 effect_metrics(data, starts_with("cg_adoption"))
 ```
 
 ## 11. Analysis of variance 
 ```{r}
-# Done: add eta, remove means from this output
 # TODO: implement ci param in tab_metrics_items_grouped 
 effect_metrics(data, starts_with("cg_adoption_"), adopter)
 ```
 
 ## 12. Correlation between items and one variable
 ```{r}
-# Done: remove column item 2, add prefix
 effect_metrics(data, starts_with("cg_adoption"), sd_age, metric = TRUE)
 ```
 
@@ -119,13 +118,10 @@ effect_metrics(data, starts_with("cg_adoption"), sd_age, metric = TRUE)
 # See: tab_metrics_items_cor_items
 
 effect_metrics(
-  data, starts_with("cg_adoption_adv"), starts_with("use_"),
+  data, starts_with("cg_adoption_adv"),
+  starts_with("cg_adoption_adv"),
   metric = TRUE
 )
-
-# effect_metrics(data, starts_with("cg_adoption_adv"), 
-#           starts_with("cg_adoption_adv"),
-#            metric = TRUE)
 
 ```
 

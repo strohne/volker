@@ -1154,7 +1154,6 @@ tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
   # 4. Calculate correlation
-  method <- ifelse(method == "spearman", "spearman", "pearson")
   result <- .effect_correlations(data, {{ col }}, {{ cross}}, method = method, labels = labels)
 
   if (method=="spearman") {
@@ -1452,8 +1451,11 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
 #' data <- volker::chatgpt
 #'
 #' tab_metrics_items_cor(
-#' data, starts_with("cg_adoption_adv"),
-#' sd_age, metric = TRUE)
+#'   data,
+#'   starts_with("cg_adoption_adv"),
+#'   sd_age,
+#'   metric = TRUE
+#' )
 #'
 #' @importFrom rlang .data
 #' @export
@@ -1537,7 +1539,9 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
   if(method == "spearman") {
     result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
       dplyr::select(tidyselect::all_of(c("item1", "item2", "Spearman's rho")))
-  } else if (method == "pearson") {
+  }
+
+  else if (method == "pearson") {
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
     dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r")))
   }

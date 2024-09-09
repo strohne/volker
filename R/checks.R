@@ -15,7 +15,7 @@ check_is_dataframe <- function(obj, msg = NULL, stopit = TRUE) {
     {
       is.data.frame(obj)
     },
-    error = function(e) FALSE
+    error = function(e) { FALSE }
   )
 
   if (!check && stopit) {
@@ -82,7 +82,7 @@ check_is_param <- function(value, allowed, stopit = TRUE, msg = NULL) {
     {
       value %in% allowed
     },
-    error = function(e) FALSE
+    error = function(e) { FALSE }
   )
 
   if (!check && stopit) {

@@ -185,6 +185,7 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
 #' @export
 #' @importFrom rlang .data
 effect_counts_one <- function(data, col, clean = TRUE, expected = NULL, ...) {
+
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, clean = clean)
 
@@ -751,20 +752,23 @@ effect_metrics_items <- function(data, cols, method = "pearson", labels = TRUE, 
 
   data <- dplyr::select(data, {{ cols }})
 
-  result <- purrr::imap(data, ~ {
-    shapiro <- stats::shapiro.test(.x)
-    stats <- psych::describe(.x)
+  result <- purrr::imap(
+    data,
+    \(.x, idx) {
+      shapiro <- stats::shapiro.test(.x)
+      stats <- psych::describe(.x)
 
-    tibble::tibble(
-      "Item" = .y,
-      "W-statistic" = sprintf("%.2f", round(shapiro$statistic,2)),
-      "p value" = sprintf("%.3f", round(shapiro$p.value, 3)),
-      "stars" = get_stars(shapiro$p.value),
-      "normality" = ifelse(shapiro$p.value > 0.05, "normal", "not normal"),
-      "skewness" = sprintf("%.2f", round(stats$skew, 2)),
-      "kurtosis" = sprintf("%.2f", round(stats$kurt, 2))
-    )
-  }) %>%
+      tibble::tibble(
+        "Item" = .y,
+        "W-statistic" = sprintf("%.2f", round(shapiro$statistic,2)),
+        "p value" = sprintf("%.3f", round(shapiro$p.value, 3)),
+        "stars" = get_stars(shapiro$p.value),
+        "normality" = ifelse(shapiro$p.value > 0.05, "normal", "not normal"),
+        "skewness" = sprintf("%.2f", round(stats$skew, 2)),
+        "kurtosis" = sprintf("%.2f", round(stats$kurt, 2))
+      )
+    }
+  ) %>%
     dplyr::bind_rows()
 
   # 3. Labels
@@ -772,12 +776,14 @@ effect_metrics_items <- function(data, cols, method = "pearson", labels = TRUE, 
     result <- labs_replace(
       result, "Item",
       codebook(data, {{ cols }}),
-      "item_name", "item_label")
+      "item_name", "item_label"
+    )
   }
 
   prefix <- get_prefix(result$Item)
   result <- dplyr::mutate(
-    result, Item = trim_prefix(.data$Item, prefix))
+    result, Item = trim_prefix(.data$Item, prefix)
+  )
 
   # Rename first column
   if (prefix != "") {
@@ -887,7 +893,7 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
 #' data <- volker::chatgpt
 #'
 #' effect_metrics_items_cor(
-#' data, starts_with("cg_adoption_adv"), sd_age
+#'   data, starts_with("cg_adoption_adv"), sd_age
 #' )
 #'
 #' @export
@@ -986,12 +992,14 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 
 #' Test whether correlations are different from zero
 #'
+#'
 #' @keywords internal
 #'
 #' @param data A tibble.
 #' @param cols The columns holding metric values.
 #' @param cross The columns holding metric values to correlate.
 #' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
+#'               The reported R square value is just squared Spearman's or Pearson's R.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @return A tibble with correlation results.
 #' @importFrom rlang .data
@@ -1005,8 +1013,6 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 
   # Check method
   check_is_param(method, c("spearman", "pearson"))
-
-  method <- ifelse(method == "spearman", "spearman", "pearson")
 
   result <- expand.grid(
     x = cols_eval, y = cross_eval, stringsAsFactors = FALSE
@@ -1030,13 +1036,14 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
       dplyr::mutate(
         n = nrow(data),
         "Spearman's rho" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate),2)),
+        "R squared" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate^2),2)),
         s = sprintf("%.2f", purrr::map_dbl(.data$.test, function(x) round(x$statistic,2))),
         stars = purrr::map_chr(.data$.test, function(x) get_stars(x$p.value)),
         p = sprintf("%.3f", purrr::map_dbl(.data$.test, function(x) round(x$p.value,3))),
         ) %>%
       dplyr::select(
         item1 = "x_name", item2 = "y_name",
-        "n","Spearman's rho","s","p","stars"
+        "R squared", "n","Spearman's rho","s","p","stars"
       )
 
   } else {
@@ -1055,7 +1062,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
       dplyr::mutate(t = ifelse(.data$x_name == .data$y_name, "Inf", t)) |>
       dplyr::select(
         item1 = "x_name", item2 = "y_name",
-        "n","Pearson's r", "ci low", "ci high","df","t","p","stars", "R squared"
+        "R squared", "n","Pearson's r", "ci low", "ci high","df","t","p","stars"
       )
   }
 
