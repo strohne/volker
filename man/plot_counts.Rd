@@ -44,10 +44,11 @@ Setting the metric-parameter to TRUE will call the appropriate functions for cor
 \item Two column selections: not yet implemented
 }
 
-Parameters that may be passed to specific functions:
+Parameters that may be passed to specific count functions:
 \itemize{
 \item \strong{ci}: Add confidence intervals to proportions.
-\item \strong{ordered}: Visualise the distribution by adding boxplots.
+\item \strong{ordered}: The values of the cross column can be nominal (0), ordered ascending (1), or ordered descending (-1).
+The colors are adjusted accordingly.
 \item \strong{category}: When you have multiple categories in a column, you can focus one of the categories to simplify the plots.
 By default, if a column has only TRUE and FALSE values, the outputs focus the TRUE category.
 \item \strong{prop}: For stacked bar charts, displaying row percentages instead of total percentages gives a direct visual comparison of groups.
@@ -58,7 +59,7 @@ Set to FALSE to suppress the title or provide a title of your choice as a charac
 \item \strong{labels}: Labels are extracted from the column attributes.
 Set to FALSE to output bare column names and values.
 \item \strong{numbers}: Set the numbers parameter to “n” (frequency), “p” (percentage) or c(“n”,“p”).
-To prevent cluttering and overlaps, numbers are only plotted on bars larger than 5\%
+To prevent cluttering and overlaps, numbers are only plotted on bars larger than 5\%.
 }
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

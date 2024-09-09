@@ -44,7 +44,7 @@ Setting the metric-parameter to TRUE will call the appropriate functions for cor
 \item Two metric column selections: see \link{plot_metrics_items_cor_items}
 }
 
-Parameters that may be passed to specific functions:
+Parameters that may be passed to specific metric functions:
 \itemize{
 \item \strong{ci}: Plot confidence intervals for means or correlation coefficients.
 \item \strong{box}: Visualise the distribution by adding boxplots.

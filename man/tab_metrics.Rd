@@ -44,7 +44,7 @@ Setting the metric-parameter to TRUE will call the appropriate functions for cor
 \item Two metric column selections: see \link{tab_metrics_items_cor_items}
 }
 
-Parameters that may be passed to specific functions:
+Parameters that may be passed to specific metric functions:
 \itemize{
 \item \strong{ci}: Add confidence intervals for means or correlation coefficients.
 \item \strong{values}: The output metrics, mean (m), the standard deviation (sd) or both (the default).

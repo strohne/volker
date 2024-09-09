@@ -15,20 +15,21 @@
 #' - Multiple columns and one metric column: see \link{plot_counts_items_cor}
 #' - Two column selections: not yet implemented
 #'
-#' Parameters that may be passed to specific functions:
+#' Parameters that may be passed to specific count functions:
 #' - **ci**: Add confidence intervals to proportions.
-#' - **ordered**: Visualise the distribution by adding boxplots.
+#' - **ordered**: The values of the cross column can be nominal (0), ordered ascending (1), or ordered descending (-1).
+#'                The colors are adjusted accordingly.
 #' - **category**: When you have multiple categories in a column, you can focus one of the categories to simplify the plots.
 #'                By default, if a column has only TRUE and FALSE values, the outputs focus the TRUE category.
 #' - **prop**: For stacked bar charts, displaying row percentages instead of total percentages gives a direct visual comparison of groups.
 #' - **limits**: The scale limits are automatically guessed by the package functions (work in progress).
-#'           Use the limits-parameter to manually fix any misleading graphs.
+#'              Use the limits-parameter to manually fix any misleading graphs.
 #' - **title**: All plots usually get a title derived from the column attributes or column names.
-#'          Set to FALSE to suppress the title or provide a title of your choice as a character value.
+#'              Set to FALSE to suppress the title or provide a title of your choice as a character value.
 #' - **labels**: Labels are extracted from the column attributes.
-#'          Set to FALSE to output bare column names and values.
+#'                Set to FALSE to output bare column names and values.
 #' - **numbers**: Set the numbers parameter to “n” (frequency), “p” (percentage) or c(“n”,“p”).
-#'                To prevent cluttering and overlaps, numbers are only plotted on bars larger than 5%
+#'                To prevent cluttering and overlaps, numbers are only plotted on bars larger than 5%.
 #'
 #'
 #' `r lifecycle::badge("experimental")`
@@ -116,7 +117,7 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 #' - Multiple columns and one metric column : see \link{plot_metrics_items_cor}
 #' - Two metric column selections: see \link{plot_metrics_items_cor_items}
 #'
-#' Parameters that may be passed to specific functions:
+#' Parameters that may be passed to specific metric functions:
 #' - **ci**: Plot confidence intervals for means or correlation coefficients.
 #' - **box**: Visualise the distribution by adding boxplots.
 #' - **log**: In scatter plots, you can use a logarithmic scale.
@@ -444,7 +445,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
   )
 }
 
-#' Plot frequences cross tabulated with a metric column that will be split into groups
+#' Plot frequencies cross tabulated with a metric column that will be split into groups
 #'
 #' @keywords internal
 #'

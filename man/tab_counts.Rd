@@ -44,7 +44,7 @@ Setting the metric-parameter to TRUE will call the appropriate functions for cor
 \item Two column selections: not yet implemented
 }
 
-Parameters that may be passed to specific functions:
+Parameters that may be passed to specific count functions:
 \itemize{
 \item \strong{ci}: Add confidence intervals to proportions.
 \item \strong{percent}: Frequency tables show percentages by default. Set to FALSE to get raw proportions.

@@ -15,7 +15,7 @@
 #' - Multiple columns and one metric column: see \link{tab_counts_items_cor}
 #' - Two column selections: not yet implemented
 #'
-#' Parameters that may be passed to specific functions:
+#' Parameters that may be passed to specific count functions:
 #' - **ci**: Add confidence intervals to proportions.
 #' - **percent**: Frequency tables show percentages by default. Set to FALSE to get raw proportions.
 #' - **prop**: For cross tables you can choose between total, row or column percentages.
@@ -110,7 +110,7 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
 #' - Multiple columns: see \link{tab_metrics_items_cor}
 #' - Two metric column selections: see \link{tab_metrics_items_cor_items}
 #'
-#' Parameters that may be passed to specific functions:
+#' Parameters that may be passed to specific metric functions:
 #' - **ci**: Add confidence intervals for means or correlation coefficients.
 #' - **values**: The output metrics, mean (m), the standard deviation (sd) or both (the default).
 #' - **digits**: Tables containing means and standard deviations by default round values to one digit.
