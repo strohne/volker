@@ -6,12 +6,24 @@
 #' - Multiple columns: see \link{tab_counts_items}
 #' - One column and one grouping column: see \link{tab_counts_one_grouped}
 #' - Multiple columns and one grouping column: see \link{tab_counts_items_grouped}
+#' - Multiple columns and multiple grouping columns: not yet implemented
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
-#' - One column and one metric column: see \link{tab_counts_one_cor} (not yet implemented)
-#' - Multiple columns and one metric column: see \link{tab_counts_items_cor} (not yet implemented)
+#' - One column and one metric column: see \link{tab_counts_one_cor}
+#' - Multiple columns and one metric column: see \link{tab_counts_items_cor}
+#' - Two column selections: not yet implemented
+#'
+#' Parameters that may be passed to specific functions:
+#' - **ci**: Add confidence intervals to proportions.
+#' - **percent**: Frequency tables show percentages by default. Set to FALSE to get raw proportions.
+#' - **prop**: For cross tables you can choose between total, row or column percentages.
+#' - **values**: The values to output: n (frequency) or p (percentage) or both (the default).
+#' - **category**: When you have multiple categories in a column, you can focus one of the categories to simplify the plots.
+#'                 By default, if a column has only TRUE and FALSE values, the outputs focus the TRUE category.
+#' - **labels**: Labels are extracted from the column attributes.
+#'              Set to FALSE to output bare column names and values.
 #'
 #'
 #' `r lifecycle::badge("experimental")`
@@ -89,12 +101,25 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
 #' - Multiple columns: see \link{tab_metrics_items}
 #' - One column and one grouping column: see \link{tab_metrics_one_grouped}
 #' - Multiple columns and one grouping column: see \link{tab_metrics_items_grouped}
+#' - Multiple columns and multiple grouping columns: not yet implemented
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
 #' - Two metric columns: see \link{tab_metrics_one_cor}
-#' - Multiple columns: see \link{tab_metrics_items_cor} (experimental)
+#' - Multiple columns: see \link{tab_metrics_items_cor}
+#' - Two metric column selections: see \link{tab_metrics_items_cor_items}
+#'
+#' Parameters that may be passed to specific functions:
+#' - **ci**: Add confidence intervals for means or correlation coefficients.
+#' - **values**: The output metrics, mean (m), the standard deviation (sd) or both (the default).
+#' - **digits**: Tables containing means and standard deviations by default round values to one digit.
+#'               Increase the number to show more digits
+#' - **method**: By default, correlations are calculated using Pearson’s R.
+#'               You can choose Spearman’s Rho with the methods-parameter.
+#' - **labels**: Labels are extracted from the column attributes.
+#'               Set to FALSE to output bare column names and values.
+#'
 #'
 #' `r lifecycle::badge("experimental")`
 #'
@@ -887,6 +912,27 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 
 }
 
+
+#' Correlation of categorical items with categorical items
+#'
+#' \strong{Not yet implemented. The future will come.}
+#' @keywords internal
+#'
+#'
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross Tidyselect item variables (e.g. starts_with...).
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
+#' @return A ggplot object.
+#' @importFrom rlang .data
+tab_counts_items_grouped_items <- function(data, cols, cross, category = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+}
+
 #' Compare the values in multiple items by a metric column that will be split into groups
 #'
 #'
@@ -933,6 +979,27 @@ tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NUL
 
   result
 }
+
+
+#' Correlation of categorical items with metric items
+#'
+#' \strong{Not yet implemented. The future will come.}
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross Tidyselect item variables (e.g. starts_with...).
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
+#' @return A ggplot object.
+#' @importFrom rlang .data
+tab_counts_items_cor_items <- function(data, cols, cross,  title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+}
+
 
 #' Output a five point summary table for the values in multiple columns
 #'
@@ -1429,6 +1496,24 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
   .to_vlkr_tab(result, digits= digits)
 }
 
+#' Correlation of metric items with categorical items
+#'
+#' \strong{Not yet implemented. The future will come.}
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross Tidyselect item variables (e.g. starts_with...)
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
+#' @return A ggplot object.
+#' @importFrom rlang .data
+tab_metrics_items_grouped_items <- function(data, cols, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+}
 
 #' Output a correlation table for item battery and one metric variable
 #'

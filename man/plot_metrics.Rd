@@ -33,13 +33,32 @@ The plot type depends on the number of selected columns:
 \item Multiple columns: see \link{plot_metrics_items}
 \item One column and one grouping column: see \link{plot_metrics_one_grouped}
 \item Multiple columns and one grouping column: see \link{plot_metrics_items_grouped}
+\item Multiple columns and multiple grouping columns: not yet implemented
 }
 
 By default, if you provide two column selections, the second column is treated as categorical.
 Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 \itemize{
 \item Two metric columns: see \link{plot_metrics_one_cor}
-\item Multiple columns: see \link{plot_metrics_items_cor} (not yet implemented)
+\item Multiple columns and one metric column : see \link{plot_metrics_items_cor}
+\item Two metric column selections: see \link{plot_metrics_items_cor_items}
+}
+
+Parameters that may be passed to specific functions:
+\itemize{
+\item \strong{ci}: Plot confidence intervals for means or correlation coefficients.
+\item \strong{box}: Visualise the distribution by adding boxplots.
+\item \strong{log}: In scatter plots, you can use a logarithmic scale.
+Be aware, that zero values will be omitted because their log value is undefined.
+\item \strong{method}: By default, correlations are calculated using Pearson’s R.
+You can choose Spearman’s Rho with the methods-parameter.
+\item \strong{limits}: The scale limits are automatically guessed by the package functions (work in progress).
+Use the limits-parameter to manually fix any misleading graphs.
+\item \strong{title}: All plots usually get a title derived from the column attributes or column names.
+Set to FALSE to suppress the title or provide a title of your choice as a character value.
+\item \strong{labels}: Labels are extracted from the column attributes.
+Set to FALSE to output bare column names and values.
+\item \strong{numbers}: Controls whether to display correlation coefficients on the plot.
 }
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

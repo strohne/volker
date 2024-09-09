@@ -32,14 +32,33 @@ The type of frequency plot depends on the number of selected columns:
 \item One column: see \link{plot_counts_one}
 \item Multiple columns: see \link{plot_counts_items}
 \item One column and one grouping column: see \link{plot_counts_one_grouped}
-\item Multiple columns and one grouping column: see \link{plot_counts_items_grouped} (not yet implemented)
+\item Multiple columns and one grouping column: see \link{plot_counts_items_grouped}
+\item Multiple columns and multiple grouping columns: not yet implemented
 }
 
 By default, if you provide two column selections, the second column is treated as categorical.
 Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 \itemize{
-\item One column and one metric column: see \link{plot_counts_one_cor} (not yet implemented)
-\item Multiple columns and one metric column: see \link{plot_counts_items_cor} (not yet implemented)
+\item One column and one metric column: see \link{plot_counts_one_cor}
+\item Multiple columns and one metric column: see \link{plot_counts_items_cor}
+\item Two column selections: not yet implemented
+}
+
+Parameters that may be passed to specific functions:
+\itemize{
+\item \strong{ci}: Add confidence intervals to proportions.
+\item \strong{ordered}: Visualise the distribution by adding boxplots.
+\item \strong{category}: When you have multiple categories in a column, you can focus one of the categories to simplify the plots.
+By default, if a column has only TRUE and FALSE values, the outputs focus the TRUE category.
+\item \strong{prop}: For stacked bar charts, displaying row percentages instead of total percentages gives a direct visual comparison of groups.
+\item \strong{limits}: The scale limits are automatically guessed by the package functions (work in progress).
+Use the limits-parameter to manually fix any misleading graphs.
+\item \strong{title}: All plots usually get a title derived from the column attributes or column names.
+Set to FALSE to suppress the title or provide a title of your choice as a character value.
+\item \strong{labels}: Labels are extracted from the column attributes.
+Set to FALSE to output bare column names and values.
+\item \strong{numbers}: Set the numbers parameter to “n” (frequency), “p” (percentage) or c(“n”,“p”).
+To prevent cluttering and overlaps, numbers are only plotted on bars larger than 5\%
 }
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

@@ -33,13 +33,27 @@ The table type depends on the number of selected columns:
 \item Multiple columns: see \link{tab_metrics_items}
 \item One column and one grouping column: see \link{tab_metrics_one_grouped}
 \item Multiple columns and one grouping column: see \link{tab_metrics_items_grouped}
+\item Multiple columns and multiple grouping columns: not yet implemented
 }
 
 By default, if you provide two column selections, the second column is treated as categorical.
 Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 \itemize{
 \item Two metric columns: see \link{tab_metrics_one_cor}
-\item Multiple columns: see \link{tab_metrics_items_cor} (experimental)
+\item Multiple columns: see \link{tab_metrics_items_cor}
+\item Two metric column selections: see \link{tab_metrics_items_cor_items}
+}
+
+Parameters that may be passed to specific functions:
+\itemize{
+\item \strong{ci}: Add confidence intervals for means or correlation coefficients.
+\item \strong{values}: The output metrics, mean (m), the standard deviation (sd) or both (the default).
+\item \strong{digits}: Tables containing means and standard deviations by default round values to one digit.
+Increase the number to show more digits
+\item \strong{method}: By default, correlations are calculated using Pearson’s R.
+You can choose Spearman’s Rho with the methods-parameter.
+\item \strong{labels}: Labels are extracted from the column attributes.
+Set to FALSE to output bare column names and values.
 }
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
