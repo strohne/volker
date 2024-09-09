@@ -29,17 +29,35 @@ A volker tibble.
 \description{
 The type of frequency table depends on the number of selected columns:
 \itemize{
-\item One column: see \link{tab_counts_one}
-\item Multiple columns: see \link{tab_counts_items}
-\item One column and one grouping column: see \link{tab_counts_one_grouped}
-\item Multiple columns and one grouping column: see \link{tab_counts_items_grouped}
+\item One categorical column: see \link{tab_counts_one}
+\item Multiple categorical columns: see \link{tab_counts_items}
+}
+
+Cross tabulations:
+\itemize{
+\item One categorical column and one grouping column: see \link{tab_counts_one_grouped}
+\item Multiple categorical columns and one grouping column: see \link{tab_counts_items_grouped}
+\item Multiple categorical columns and multiple grouping columns: see \link{tab_counts_items_grouped_items} (not yet implemented)
 }
 
 By default, if you provide two column selections, the second column is treated as categorical.
 Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 \itemize{
-\item One column and one metric column: see \link{tab_counts_one_cor} (not yet implemented)
-\item Multiple columns and one metric column: see \link{tab_counts_items_cor} (not yet implemented)
+\item One categorical column and one metric column: see \link{tab_counts_one_cor}
+\item Multiple categorical columns and one metric column: see \link{tab_counts_items_cor}
+\item Multiple categorical columns and multiple metric columns: \link{tab_counts_items_cor_items} (not yet implemented)
+}
+
+Parameters that may be passed to specific count functions:
+\itemize{
+\item \strong{ci}: Add confidence intervals to proportions.
+\item \strong{percent}: Frequency tables show percentages by default. Set to FALSE to get raw proportions.
+\item \strong{prop}: For cross tables you can choose between total, row or column percentages.
+\item \strong{values}: The values to output: n (frequency) or p (percentage) or both (the default).
+\item \strong{category}: When you have multiple categories in a column, you can focus one of the categories to simplify the plots.
+By default, if a column has only TRUE and FALSE values, the outputs focus the TRUE category.
+\item \strong{labels}: Labels are extracted from the column attributes.
+Set to FALSE to output bare column names and values.
 }
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

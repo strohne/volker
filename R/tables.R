@@ -2,16 +2,31 @@
 #'
 #' @description
 #' The type of frequency table depends on the number of selected columns:
-#' - One column: see \link{tab_counts_one}
-#' - Multiple columns: see \link{tab_counts_items}
-#' - One column and one grouping column: see \link{tab_counts_one_grouped}
-#' - Multiple columns and one grouping column: see \link{tab_counts_items_grouped}
+#' - One categorical column: see \link{tab_counts_one}
+#' - Multiple categorical columns: see \link{tab_counts_items}
+#'
+#' Cross tabulations:
+#'
+#' - One categorical column and one grouping column: see \link{tab_counts_one_grouped}
+#' - Multiple categorical columns and one grouping column: see \link{tab_counts_items_grouped}
+#' - Multiple categorical columns and multiple grouping columns: see \link{tab_counts_items_grouped_items} (not yet implemented)
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
-#' - One column and one metric column: see \link{tab_counts_one_cor} (not yet implemented)
-#' - Multiple columns and one metric column: see \link{tab_counts_items_cor} (not yet implemented)
+#' - One categorical column and one metric column: see \link{tab_counts_one_cor}
+#' - Multiple categorical columns and one metric column: see \link{tab_counts_items_cor}
+#' - Multiple categorical columns and multiple metric columns: \link{tab_counts_items_cor_items} (not yet implemented)
+#'
+#' Parameters that may be passed to specific count functions:
+#' - **ci**: Add confidence intervals to proportions.
+#' - **percent**: Frequency tables show percentages by default. Set to FALSE to get raw proportions.
+#' - **prop**: For cross tables you can choose between total, row or column percentages.
+#' - **values**: The values to output: n (frequency) or p (percentage) or both (the default).
+#' - **category**: When you have multiple categories in a column, you can focus one of the categories to simplify the plots.
+#'                 By default, if a column has only TRUE and FALSE values, the outputs focus the TRUE category.
+#' - **labels**: Labels are extracted from the column attributes.
+#'              Set to FALSE to output bare column names and values.
 #'
 #'
 #' `r lifecycle::badge("experimental")`
@@ -85,16 +100,32 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
 #'
 #' @description
 #' The table type depends on the number of selected columns:
-#' - One column: see \link{tab_metrics_one}
-#' - Multiple columns: see \link{tab_metrics_items}
-#' - One column and one grouping column: see \link{tab_metrics_one_grouped}
-#' - Multiple columns and one grouping column: see \link{tab_metrics_items_grouped}
+#' - One metric column: see \link{tab_metrics_one}
+#' - Multiple metric columns: see \link{tab_metrics_items}
+#'
+#' Group comparisons:
+#'
+#' - One metric column and one grouping column: see \link{tab_metrics_one_grouped}
+#' - Multiple metric columns and one grouping column: see \link{tab_metrics_items_grouped}
+#' - Multiple metric columns and multiple grouping columns: see \link{tab_metrics_items_grouped_items} (not yet implemented)
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
 #' - Two metric columns: see \link{tab_metrics_one_cor}
-#' - Multiple columns: see \link{tab_metrics_items_cor} (experimental)
+#' - Multiple metric columns and one metric column: see \link{tab_metrics_items_cor}
+#' - Two metric column selections: see \link{tab_metrics_items_cor_items}
+#'
+#' Parameters that may be passed to specific metric functions:
+#' - **ci**: Add confidence intervals for means or correlation coefficients.
+#' - **values**: The output metrics, mean (m), the standard deviation (sd) or both (the default).
+#' - **digits**: Tables containing means and standard deviations by default round values to one digit.
+#'               Increase the number to show more digits
+#' - **method**: By default, correlations are calculated using Pearson’s R.
+#'               You can choose Spearman’s Rho with the methods-parameter.
+#' - **labels**: Labels are extracted from the column attributes.
+#'               Set to FALSE to output bare column names and values.
+#'
 #'
 #' `r lifecycle::badge("experimental")`
 #'
@@ -679,7 +710,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
-#' @return A ggplot object.
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -887,6 +918,28 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 
 }
 
+
+#' Correlation of categorical items with categorical items
+#'
+#' \strong{Not yet implemented. The future will come.}
+#'
+#' @keywords internal
+#'
+#'
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross Tidyselect item variables (e.g. starts_with...).
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
+#' @return A volker tibble.
+#' @importFrom rlang .data
+tab_counts_items_grouped_items <- function(data, cols, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+}
+
 #' Compare the values in multiple items by a metric column that will be split into groups
 #'
 #'
@@ -907,7 +960,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
-#' @return A ggplot object.
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -933,6 +986,28 @@ tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NUL
 
   result
 }
+
+
+#' Correlation of categorical items with metric items
+#'
+#' \strong{Not yet implemented. The future will come.}
+#'
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross Tidyselect item variables (e.g. starts_with...).
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
+#' @return A volker tibble.
+#' @importFrom rlang .data
+tab_counts_items_cor_items <- function(data, cols, cross,  title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+}
+
 
 #' Output a five point summary table for the values in multiple columns
 #'
@@ -1133,7 +1208,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, digits = 1, la
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
-#' @return A volker tibble
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -1429,6 +1504,25 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
   .to_vlkr_tab(result, digits= digits)
 }
 
+#' Correlation of metric items with categorical items
+#'
+#' \strong{Not yet implemented. The future will come.}
+#'
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross Tidyselect item variables (e.g. starts_with...)
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
+#' @return A volker tibble.
+#' @importFrom rlang .data
+tab_metrics_items_grouped_items <- function(data, cols, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+}
 
 #' Output a correlation table for item battery and one metric variable
 #'
@@ -1522,8 +1616,10 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", digits 
 #' data <- volker::chatgpt
 #'
 #' tab_metrics_items_cor_items(
-#' data, starts_with("cg_adoption_adv"),
-#' starts_with("use"), metric = TRUE
+#'   data,
+#'   starts_with("cg_adoption_adv"),
+#'   starts_with("use"),
+#'   metric = TRUE
 #' )
 #'
 #' @importFrom rlang .data
@@ -1536,43 +1632,22 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
   check_is_param(method, c("spearman", "pearson"))
 
   # 3. Calculate correlations
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
+
+  result_cols <- c("item1", "item2")
+
   if(method == "spearman") {
-    result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
-      dplyr::select(tidyselect::all_of(c("item1", "item2", "Spearman's rho")))
+    result_cols <- c(result_cols, "Spearman's rho")
   }
-
   else if (method == "pearson") {
-  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
-    dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r")))
-  }
-
-  # %>%
-
-  # TODO: @JJ -
-  # # # Remove duplicates
-  # if (length(levels(result$item1)) == length(levels(result$item2)) && !all(result$item1 == result$item2))  {
-  #   result <- result %>%
-  #   dplyr::filter(.data$item1 != .data$item2)
-  # }
-
-  #  dplyr::mutate(
-  #   min = pmin(as.character(.data$item1), as.character(.data$item2)),
-  #   max = pmax(as.character(.data$item1), as.character(.data$item2))
-  # ) %>%
-  #   dplyr::distinct(min, max, .keep_all = TRUE) %>%
-  #   dplyr::select(-tidyselect::all_of(c("min", "max")))
-
-  # 4. Ci for pearson
-  if (ci) {
-    if(method == "pearson") {
-      result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
-        dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r", "ci low", "ci high")))
-
-    } else if (method == "spearman") {
-      result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
-        dplyr::select(tidyselect::all_of(c("item1", "item2", "Spearman's rho")))
+    result_cols <- c(result_cols, "Pearson's r")
+    if (ci) {
+      result_cols <- c(result_cols, "ci low", "ci high")
     }
   }
+
+
+  result <- dplyr::select(result, tidyselect::all_of(result_cols))
 
   # 4. Labels
   prefix1 <- get_prefix(result$item1)

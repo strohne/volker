@@ -29,17 +29,42 @@ A ggplot2 plot object.
 \description{
 The type of frequency plot depends on the number of selected columns:
 \itemize{
-\item One column: see \link{plot_counts_one}
-\item Multiple columns: see \link{plot_counts_items}
-\item One column and one grouping column: see \link{plot_counts_one_grouped}
-\item Multiple columns and one grouping column: see \link{plot_counts_items_grouped} (not yet implemented)
+\item One categorical column: see \link{plot_counts_one}
+\item Multiple categorical columns: see \link{plot_counts_items}
 }
 
-By default, if you provide two column selections, the second column is treated as categorical.
+Cross tabulations:
+\itemize{
+\item One categorical column and one grouping column: see \link{plot_counts_one_grouped}
+\item Multiple categorical columns and one grouping column: see \link{plot_counts_items_grouped}
+\item Two categorical column selections: see \link{plot_counts_items_grouped_items} (not yet implemented)
+}
+
+By default, if you provide two column selections, the second selection is treated as categorical.
 Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 \itemize{
-\item One column and one metric column: see \link{plot_counts_one_cor} (not yet implemented)
-\item Multiple columns and one metric column: see \link{plot_counts_items_cor} (not yet implemented)
+\item One categorical column and one metric column: see \link{plot_counts_one_cor}
+\item Multiple categorical columns and one metric column: see \link{plot_counts_items_cor}
+\item Multiple categorical columns and multiple metric columns: see \link{plot_counts_items_cor_items} (not yet implemented)
+}
+
+Parameters that may be passed to the count functions
+(see the respective function help):
+\itemize{
+\item \strong{ci}: Add confidence intervals to proportions.
+\item \strong{ordered}: The values of the cross column can be nominal (0), ordered ascending (1), or ordered descending (-1).
+The colors are adjusted accordingly.
+\item \strong{category}: When you have multiple categories in a column, you can focus one of the categories to simplify the plots.
+By default, if a column has only TRUE and FALSE values, the outputs focus the TRUE category.
+\item \strong{prop}: For stacked bar charts, displaying row percentages instead of total percentages gives a direct visual comparison of groups.
+\item \strong{limits}: The scale limits are automatically guessed by the package functions (work in progress).
+Use the limits-parameter to manually fix any misleading graphs.
+\item \strong{title}: All plots usually get a title derived from the column attributes or column names.
+Set to FALSE to suppress the title or provide a title of your choice as a character value.
+\item \strong{labels}: Labels are extracted from the column attributes.
+Set to FALSE to output bare column names and values.
+\item \strong{numbers}: Set the numbers parameter to “n” (frequency), “p” (percentage) or c(“n”,“p”).
+To prevent cluttering and overlaps, numbers are only plotted on bars larger than 5\%.
 }
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

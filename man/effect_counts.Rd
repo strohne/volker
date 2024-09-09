@@ -29,17 +29,23 @@ A volker tibble.
 \description{
 The type of effect size depends on the number of selected columns:
 \itemize{
-\item One column: see \link{effect_counts_one}
-\item Multiple columns: see \link{effect_counts_items}
-\item One column and one grouping column: see \link{effect_counts_one_grouped}
-\item Multiple columns and one grouping column: see \link{effect_counts_items_grouped} (not yet implemented)
+\item One categorical column: see \link{effect_counts_one}
+\item Multiple categorical columns: see \link{effect_counts_items}
+}
+
+Cross tabulations:
+\itemize{
+\item One categorical column and one grouping column: see \link{effect_counts_one_grouped}
+\item Multiple categorical columns and one grouping column: see \link{effect_counts_items_grouped} (not yet implemented)
+\item Multiple categorical columns and multiple grouping columns: \link{effect_counts_items_grouped_items} (not yet implemented)
 }
 
 By default, if you provide two column selections, the second column is treated as categorical.
 Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 \itemize{
-\item One column and one metric column: see \link{effect_counts_one_cor} (not yet implemented)
-\item Multiple columns and one metric column: see \link{effect_counts_items_cor} (not yet implemented)
+\item One categorical column and one metric column: see \link{effect_counts_one_cor} (not yet implemented)
+\item Multiple categorical columns and one metric column: see \link{effect_counts_items_cor} (not yet implemented)
+\item Multiple categorical columns and multiple metric columns:\link{effect_counts_items_cor_items} (not yet implemented)
 }
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

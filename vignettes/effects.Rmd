@@ -22,20 +22,24 @@ library(volker)
 data <- volker::chatgpt
 ```
 
-| \#      | function                     | implemented | effect calculations                                                   |
-|---------|------------------------------|-------------|-----------------------------------------------------------------------|
-| 1       | effect_counts_one            | not yet     | Compare to equality (Gini Coefficient, Goodness of fit) |
-| 2       | effect_counts_one_grouped    |             | Contingency of two variables (Cramér's V, Chi squared) |
-| 3       | effect_counts_one_cor        | not yet     | Explained variance (Pseudo-R-squared of logistic regression) |
-| 4       | effect_counts_items          | not yet     | Contingency between each of the items (Cramér's V) |
-| 5       | effect_counts_items_grouped  | not yet     | Contingency between each item and the grouping variable (Cramér's V) |
-| 6       | effect_counts_items_cor      | not yet     | Explained variance of each item by the metric variable (Pseudo-R-squared of logistic regression) |
-| 7       | effect_metrics_one           | not yet     | Compare to normality (Shapiro-Wilk-Normality-test) |
-| 8       | effect_metrics_one_grouped   |             | Explained variance (R squared, t-test) |
-| 9       | effect_metrics_one_cor       |             | Correlation (Pearson's r, Spearman's rho, t-test) |
-| 10      | effect_metrics_items         |             | Correlation between items (Pearsons'r, R squared, t-test) | 
-| 11      | effect_metrics_items_grouped | not yet     | Explained variance of each item by the grouping variable (R squared) |
-| 12      | effect_metrics_items_cor     |             | Correlation between each item and the correlation variable (Pearson's r, Spearman's rho, t-test) |
+| \# | function                           | implemented | effect calculations                                                                              |
+|----|------------------------------------|-------------|--------------------------------------------------------------------------------------------------|
+| 1  | effect_counts_one                  |             | Compare to equality (Gini Coefficient, Goodness of fit)                                          |
+| 2  | effect_counts_one_grouped          |             | Contingency of two variables (Cramér's V, Chi squared)                                           |
+| 3  | effect_counts_one_cor              | not yet     | Explained variance (Pseudo-R-squared of logistic regression)                                     |
+| 4  | effect_counts_items                |             | Compare each item to equality (Gini Coefficient, Goodness of fit)                                |
+| 5  | effect_counts_items_grouped        | not yet     | Cramer's V and Chi-square-test for each item                                                     |
+| 6  | effect_counts_items_grouped_items  | not yet     | Correlation of categorical items with categorical items                                          |
+| 7  | effect_counts_items_cor            | not yet     | Explained variance of each item by the metric variable (Pseudo-R-squared of logistic regression) |
+| 8  | effect_counts_items_cor_items      | not yet     | Correlation of categorical items with metric items                                               |
+| 9  | effect_metrics_one                 |             | Compare to normality (Shapiro-Wilk-Normality-test)                                               |
+| 10 | effect_metrics_one_grouped         |             | Explained variance (R squared, t-test)                                                           |
+| 11 | effect_metrics_one_cor             |             | Correlation (Pearson's r, Spearman's rho, t-test)                                                |
+| 12 | effect_metrics_items               |             | Distribution test for each item (Shapiro-Wilk-Normality-test)                                    |
+| 13 | effect_metrics_items_grouped       |             | Explained variance of each item by the grouping variable (R squared)                             |
+| 14 | effect_metrics_items_grouped_items | not yet     | Correlation of metric items with categorical items                                               |
+| 15 | effect_metrics_items_cor           |             | Correlation between each item and the correlation variable (Pearson's r, Spearman's rho, t-test) |
+| 16 | effect_metrics_items_cor_items     |             | Correlation between each item and other items (Pearson's r, Spearman's rho, t-test)              |
 
 # Categorical variables
 
@@ -53,14 +57,12 @@ effect_counts(data, adopter, sd_gender)
 
 ## 3. Logistic regression with one metric predictor
 ```{r}
-# TODO: better way? ; add macro statistics ; make clean ; remove new package...? 
+# TODO
 #effect_counts(data, adopter, sd_age, metric = TRUE)
 ```
 
 ## 4. Chi-square goodness-of-fit test for each item
 ```{r}
-
-# TODO: Add Gini coefficient
 effect_counts(data, starts_with("cg_adoption_advantage"))
 ```
 
@@ -70,52 +72,66 @@ effect_counts(data, starts_with("cg_adoption_advantage"))
 #effect_counts(data, starts_with("cg_adoption_advantage"), sd_gender)
 ```
 
-## 6. Explained variance of each item by the metric variable (Pseudo-R-squared of logistic regression) |
+## 6. Correlation of categorical items with categorical items
+```{r}
+# TODO
+#effect_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+
+```
+
+## 7. Explained variance of each item by the metric variable (Pseudo-R-squared of logistic regression) 
 ```{r}
 # TODO
 #effect_counts(data, starts_with("cg_adoption_advantage"), sd_age)
 ```
 
+## 8. Correlation of categorical items with metric items
+
+```{r}
+# TODO
+#effect_counts(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric = TRUE)
+```
+
 # Metric variables
 
-## 7. Normality test for one metric variable
+## 9. Normality test for one metric variable
 ```{r}
 effect_metrics(data, sd_age)
 ```
 
-## 8. T-test / ANOVA
+## 10. T-test / ANOVA
 ```{r}
 effect_metrics(data, sd_age, adopter)
 ```
 
-## 9. Correlation test
+## 11. Correlation test
 ```{r}
 effect_metrics(data, sd_age, use_private, metric=T)
 ```
 
-## 10. Distribution test for each item
+## 12. Distribution test for each item
 ```{r}
 effect_metrics(data, starts_with("cg_adoption"))
 ```
 
-## 11. Analysis of variance 
+## 13. Analysis of variance 
 ```{r}
-# TODO: implement ci param in tab_metrics_items_grouped 
 effect_metrics(data, starts_with("cg_adoption_"), adopter)
 ```
 
-## 12. Correlation between items and one variable
+## 14. Correlation of metric items with categorical items
+```{r}
+# TODO: 
+# effect_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+```
+
+## 15. Correlation between items and one variable
 ```{r}
 effect_metrics(data, starts_with("cg_adoption"), sd_age, metric = TRUE)
 ```
 
-# Correlations
-
-## a) Correlation of metric items with metric items
-
+## 16. Correlation of metric items with metric items
 ```{r}
-# TODO: Manage correlation with same stem (shorten output), remove duplicates, truncate labels (see @JJ in function)
-# See: tab_metrics_items_cor_items
 
 effect_metrics(
   data, starts_with("cg_adoption_adv"),
@@ -125,25 +141,6 @@ effect_metrics(
 
 ```
 
-## b) Correlation of metric items with categorical items
-
-```{r}
-# TODO
-# effect_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"))
-```
 
 
-## c) Correlation of categorical items with metric items
 
-```{r}
-# TODO
-#effect_counts(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric = TRUE)
-```
-
-## d) Correlation of categorical items with categorical items
-
-```{r}
-# TODO
-#effect_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
-
-```

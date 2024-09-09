@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{plot_counts_one_cor}
 \alias{plot_counts_one_cor}
-\title{Plot frequences cross tabulated with a metric column that will be split into groups}
+\title{Plot frequencies cross tabulated with a metric column that will be split into groups}
 \usage{
 plot_counts_one_cor(
   data,
@@ -59,7 +59,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 A ggplot object.
 }
 \description{
-Plot frequences cross tabulated with a metric column that will be split into groups
+Plot frequencies cross tabulated with a metric column that will be split into groups
 }
 \examples{
 library(volker)

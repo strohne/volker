@@ -36,7 +36,7 @@ tab_metrics_one_cor(
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }
 \value{
-A volker tibble
+A volker tibble.
 }
 \description{
 Correlate two columns
