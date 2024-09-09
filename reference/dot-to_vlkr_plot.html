@@ -39,7 +39,13 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.to_vlkr_plot</span><span class="op">(</span><span class="va">pl</span>, rows <span class="op">=</span> <span class="cn">NULL</span>, maxlab <span class="op">=</span> <span class="cn">NULL</span>, baseline <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.to_vlkr_plot</span><span class="op">(</span></span>
+<span>  <span class="va">pl</span>,</span>
+<span>  rows <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxlab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  theme_options <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -62,6 +68,12 @@ on the vertical axis.</p></dd>
 
 <dt id="arg-baseline">baseline<a class="anchor" aria-label="anchor" href="#arg-baseline"></a></dt>
 <dd><p>Whether to print a message about removed values.</p></dd>
+
+
+<dt id="arg-theme-options">theme_options<a class="anchor" aria-label="anchor" href="#arg-theme-options"></a></dt>
+<dd><p>Enable or disable axis titles and text, by providing a list with any of the elements
+axis.text.x, axis.text.y, axis.title.x, axis.title.y set to TRUE or FALSE.
+By default, titles (=scale labels) are disabled and text (= the tick labels) are enabled.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -68,6 +68,172 @@
 <style type="text/css">
 table {margin-left:0 !important;}
 </style>
+<table class="table">
+<colgroup>
+<col width="4%">
+<col width="33%">
+<col width="13%">
+<col width="11%">
+<col width="10%">
+<col width="14%">
+<col width="13%">
+</colgroup>
+<thead><tr class="header">
+<th>#</th>
+<th>function</th>
+<th>implemented</th>
+<th>col scale</th>
+<th>col count</th>
+<th>cross scale</th>
+<th>cross count</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>tab_counts_one</td>
+<td></td>
+<td>counts</td>
+<td>one</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>tab_counts_one_grouped</td>
+<td></td>
+<td>counts</td>
+<td>one</td>
+<td>counts</td>
+<td>one</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>tab_counts_one_cor</td>
+<td></td>
+<td>counts</td>
+<td>one</td>
+<td>metric</td>
+<td>one</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>tab_counts_items</td>
+<td></td>
+<td>counts</td>
+<td>multiple</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>tab_counts_items_grouped</td>
+<td></td>
+<td>counts</td>
+<td>multiple</td>
+<td>counts</td>
+<td>one</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>tab_counts_items_grouped_items</td>
+<td>not yet</td>
+<td>counts</td>
+<td>multiple</td>
+<td>counts</td>
+<td>multiple</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>tab_counts_items_cor</td>
+<td></td>
+<td>counts</td>
+<td>multiple</td>
+<td>metric</td>
+<td>one</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>tab_counts_items_cor_items</td>
+<td>not yet</td>
+<td>counts</td>
+<td>multiple</td>
+<td>metric</td>
+<td>multiple</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>tab_metrics_one</td>
+<td></td>
+<td>metric</td>
+<td>one</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>tab_metrics_one_grouped</td>
+<td></td>
+<td>metric</td>
+<td>one</td>
+<td>counts</td>
+<td>one</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>tab_metrics_one_cor</td>
+<td></td>
+<td>metric</td>
+<td>one</td>
+<td>metric</td>
+<td>one</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>tab_metrics_items</td>
+<td></td>
+<td>metric</td>
+<td>multiple</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td>tab_metrics_items_grouped</td>
+<td></td>
+<td>metric</td>
+<td>multiple</td>
+<td>counts</td>
+<td>one</td>
+</tr>
+<tr class="even">
+<td>14</td>
+<td>tab_metrics_items_grouped_items</td>
+<td>not yet</td>
+<td>metric</td>
+<td>multiple</td>
+<td>counts</td>
+<td>multiple</td>
+</tr>
+<tr class="odd">
+<td>15</td>
+<td>tab_metrics_items_cor</td>
+<td></td>
+<td>metric</td>
+<td>multiple</td>
+<td>metric</td>
+<td>one</td>
+</tr>
+<tr class="even">
+<td>16</td>
+<td>tab_metrics_items_cor_items</td>
+<td></td>
+<td>metric</td>
+<td>multiple</td>
+<td>metric</td>
+<td>multiple</td>
+</tr>
+</tbody>
+</table>
 <div class="section level2">
 <h2 id="frequencies-of-categorical-variables">Frequencies of categorical variables<a class="anchor" aria-label="anchor" href="#frequencies-of-categorical-variables"></a>
 </h2>
@@ -140,7 +306,7 @@ total
 <h3 id="two-variables-cross-table-of-innovator-type-by-gender">2. Two variables: Cross table of innovator type by gender<a class="anchor" aria-label="anchor" href="#two-variables-cross-table-of-innovator-type-by-gender"></a>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/tab_counts.html">tab_counts</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">adopter</span>, <span class="va">sd_gender</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/tab_counts.html">tab_counts</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">adopter</span>, <span class="va">sd_gender</span>, prop<span class="op">=</span><span class="st">"cols"</span><span class="op">)</span></span></code></pre></div>
 <table class="table table" style="width: auto !important; ">
 <thead><tr>
 <th style="text-align:left;">
@@ -168,13 +334,13 @@ I try new offers immediately
 15%<br>(15)
 </td>
 <td style="text-align:right;">
-2%<br>(2)
+5%<br>(2)
 </td>
 <td style="text-align:right;">
-12%<br>(12)
+20%<br>(12)
 </td>
 <td style="text-align:right;">
-1%<br>(1)
+100%<br>(1)
 </td>
 </tr>
 <tr>
@@ -185,10 +351,10 @@ I try new offers rather quickly
 62%<br>(63)
 </td>
 <td style="text-align:right;">
-25%<br>(25)
+62%<br>(25)
 </td>
 <td style="text-align:right;">
-38%<br>(38)
+63%<br>(38)
 </td>
 <td style="text-align:right;">
 0%<br>(0)
@@ -202,10 +368,10 @@ I wait until offers establish themselves
 22%<br>(22)
 </td>
 <td style="text-align:right;">
-13%<br>(13)
+32%<br>(13)
 </td>
 <td style="text-align:right;">
-9%<br>(9)
+15%<br>(9)
 </td>
 <td style="text-align:right;">
 0%<br>(0)
@@ -222,7 +388,7 @@ I only use new offers when I have no other choice
 0%<br>(0)
 </td>
 <td style="text-align:right;">
-1%<br>(1)
+2%<br>(1)
 </td>
 <td style="text-align:right;">
 0%<br>(0)
@@ -236,22 +402,118 @@ total
 100%<br>(101)
 </td>
 <td style="text-align:right;">
-40%<br>(40)
+100%<br>(40)
 </td>
 <td style="text-align:right;">
-59%<br>(60)
+100%<br>(60)
 </td>
 <td style="text-align:right;">
-1%<br>(1)
+100%<br>(1)
 </td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section level3">
-<h3 id="multiple-items-frequency-table-of-adoption-factors">3. Multiple items: Frequency table of adoption factors<a class="anchor" aria-label="anchor" href="#multiple-items-frequency-table-of-adoption-factors"></a>
+<h3 id="two-variables-one-categorical-and-one-metric-variable-split-at-the-median">3. Two variables: One categorical and one metric variable split at
+the median<a class="anchor" aria-label="anchor" href="#two-variables-one-categorical-and-one-metric-variable-split-at-the-median"></a>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/tab_counts.html">tab_counts</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">adopter</span>, <span class="va">sd_age</span>, metric<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code></pre></div>
+<table class="table table" style="width: auto !important; ">
+<thead><tr>
+<th style="text-align:left;">
+Innovator type
+</th>
+<th style="text-align:right;">
+total
+</th>
+<th style="text-align:right;">
+Low Age
+</th>
+<th style="text-align:right;">
+High Age
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+I try new offers immediately
+</td>
+<td style="text-align:right;">
+15%<br>(15)
+</td>
+<td style="text-align:right;">
+10%<br>(10)
+</td>
+<td style="text-align:right;">
+5%<br>(5)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+I try new offers rather quickly
+</td>
+<td style="text-align:right;">
+62%<br>(63)
+</td>
+<td style="text-align:right;">
+24%<br>(24)
+</td>
+<td style="text-align:right;">
+39%<br>(39)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+I wait until offers establish themselves
+</td>
+<td style="text-align:right;">
+22%<br>(22)
+</td>
+<td style="text-align:right;">
+12%<br>(12)
+</td>
+<td style="text-align:right;">
+10%<br>(10)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+I only use new offers when I have no other choice
+</td>
+<td style="text-align:right;">
+1%<br>(1)
+</td>
+<td style="text-align:right;">
+0%<br>(0)
+</td>
+<td style="text-align:right;">
+1%<br>(1)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:right;">
+100%<br>(101)
+</td>
+<td style="text-align:right;">
+46%<br>(46)
+</td>
+<td style="text-align:right;">
+54%<br>(55)
+</td>
+</tr>
+</tbody>
+</table>
+<p>Age split at median 38.</p>
+</div>
+<div class="section level3">
+<h3 id="multiple-items-frequency-table-of-adoption-factors">4. Multiple items: Frequency table of adoption factors<a class="anchor" aria-label="anchor" href="#multiple-items-frequency-table-of-adoption-factors"></a>
+</h3>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/tab_counts.html">tab_counts</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table table" style="width: auto !important; ">
 <thead><tr>
@@ -556,17 +818,467 @@ Using ChatGPT brings me recognition from my environment.
 </tr>
 </tbody>
 </table>
-<p>4 missing case(s) ommited.</p>
+<p>4 missing case(s) omitted.</p>
+</div>
+<div class="section level3">
+<h3 id="multiple-grouped-items-frequency-table-of-adoption-factors-grouped-by-gender">5. Multiple grouped items: Frequency table of adoption factors
+grouped by gender<a class="anchor" aria-label="anchor" href="#multiple-grouped-items-frequency-table-of-adoption-factors-grouped-by-gender"></a>
+</h3>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/tab_counts.html">tab_counts</a></span><span class="op">(</span></span>
+<span>  <span class="va">data</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_"</span><span class="op">)</span>, <span class="va">sd_gender</span>, </span>
+<span>  category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"agree"</span>, <span class="st">"strongly agree"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<table class="table table" style="width: auto !important; ">
+<thead><tr>
+<th style="text-align:left;">
+Expectations
+</th>
+<th style="text-align:right;">
+total
+</th>
+<th style="text-align:right;">
+female
+</th>
+<th style="text-align:right;">
+male
+</th>
+<th style="text-align:right;">
+diverse
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+ChatGPT has clear advantages compared to similar offerings.
+</td>
+<td style="text-align:right;">
+51% (49)
+</td>
+<td style="text-align:right;">
+57% (21)
+</td>
+<td style="text-align:right;">
+46% (27)
+</td>
+<td style="text-align:right;">
+100% (1)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT brings financial benefits.
+</td>
+<td style="text-align:right;">
+27% (26)
+</td>
+<td style="text-align:right;">
+22% (8)
+</td>
+<td style="text-align:right;">
+31% (18)
+</td>
+<td style="text-align:right;">
+0% (0)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT is advantageous in many tasks.
+</td>
+<td style="text-align:right;">
+63% (61)
+</td>
+<td style="text-align:right;">
+68% (25)
+</td>
+<td style="text-align:right;">
+59% (35)
+</td>
+<td style="text-align:right;">
+100% (1)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Compared to other systems, using ChatGPT is more fun.
+</td>
+<td style="text-align:right;">
+54% (52)
+</td>
+<td style="text-align:right;">
+59% (22)
+</td>
+<td style="text-align:right;">
+51% (30)
+</td>
+<td style="text-align:right;">
+0% (0)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Much can go wrong when using ChatGPT.
+</td>
+<td style="text-align:right;">
+35% (34)
+</td>
+<td style="text-align:right;">
+32% (12)
+</td>
+<td style="text-align:right;">
+37% (22)
+</td>
+<td style="text-align:right;">
+0% (0)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+There are legal issues with using ChatGPT.
+</td>
+<td style="text-align:right;">
+30% (29)
+</td>
+<td style="text-align:right;">
+22% (8)
+</td>
+<td style="text-align:right;">
+36% (21)
+</td>
+<td style="text-align:right;">
+0% (0)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+The security of user data is not guaranteed with ChatGPT.
+</td>
+<td style="text-align:right;">
+33% (32)
+</td>
+<td style="text-align:right;">
+24% (9)
+</td>
+<td style="text-align:right;">
+39% (23)
+</td>
+<td style="text-align:right;">
+0% (0)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT could bring personal disadvantages.
+</td>
+<td style="text-align:right;">
+25% (24)
+</td>
+<td style="text-align:right;">
+16% (6)
+</td>
+<td style="text-align:right;">
+29% (17)
+</td>
+<td style="text-align:right;">
+100% (1)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+In my environment, using ChatGPT is standard.
+</td>
+<td style="text-align:right;">
+21% (20)
+</td>
+<td style="text-align:right;">
+14% (5)
+</td>
+<td style="text-align:right;">
+24% (14)
+</td>
+<td style="text-align:right;">
+100% (1)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Almost everyone in my environment uses ChatGPT.
+</td>
+<td style="text-align:right;">
+16% (16)
+</td>
+<td style="text-align:right;">
+16% (6)
+</td>
+<td style="text-align:right;">
+15% (9)
+</td>
+<td style="text-align:right;">
+100% (1)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Not using ChatGPT is considered being an outsider.
+</td>
+<td style="text-align:right;">
+12% (12)
+</td>
+<td style="text-align:right;">
+3% (1)
+</td>
+<td style="text-align:right;">
+17% (10)
+</td>
+<td style="text-align:right;">
+100% (1)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT brings me recognition from my environment.
+</td>
+<td style="text-align:right;">
+20% (19)
+</td>
+<td style="text-align:right;">
+16% (6)
+</td>
+<td style="text-align:right;">
+22% (13)
+</td>
+<td style="text-align:right;">
+0% (0)
+</td>
+</tr>
+</tbody>
+</table>
+<p>Frequencies based on values: agree, strongly agree. 4 missing case(s)
+omitted.</p>
+</div>
+<div class="section level3">
+<h3 id="correlation-of-categorical-items-with-categorical-items">6. Correlation of categorical items with categorical items<a class="anchor" aria-label="anchor" href="#correlation-of-categorical-items-with-categorical-items"></a>
+</h3>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># TODO</span></span>
+<span><span class="co">#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="multiple-categorical-items-and-one-metric-variable">7. Multiple categorical items and one metric variable<a class="anchor" aria-label="anchor" href="#multiple-categorical-items-and-one-metric-variable"></a>
+</h3>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="../reference/tab_counts.html">tab_counts</a></span><span class="op">(</span></span>
+<span>  <span class="va">data</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_"</span><span class="op">)</span>, <span class="va">sd_age</span>, metric <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"agree"</span>, <span class="st">"strongly agree"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<table class="table table" style="width: auto !important; ">
+<thead><tr>
+<th style="text-align:left;">
+Expectations
+</th>
+<th style="text-align:right;">
+total
+</th>
+<th style="text-align:right;">
+Low Age
+</th>
+<th style="text-align:right;">
+High Age
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+ChatGPT has clear advantages compared to similar offerings.
+</td>
+<td style="text-align:right;">
+51% (49)
+</td>
+<td style="text-align:right;">
+58% (26)
+</td>
+<td style="text-align:right;">
+44% (23)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT brings financial benefits.
+</td>
+<td style="text-align:right;">
+27% (26)
+</td>
+<td style="text-align:right;">
+36% (16)
+</td>
+<td style="text-align:right;">
+19% (10)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT is advantageous in many tasks.
+</td>
+<td style="text-align:right;">
+63% (61)
+</td>
+<td style="text-align:right;">
+69% (31)
+</td>
+<td style="text-align:right;">
+58% (30)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Compared to other systems, using ChatGPT is more fun.
+</td>
+<td style="text-align:right;">
+54% (52)
+</td>
+<td style="text-align:right;">
+58% (26)
+</td>
+<td style="text-align:right;">
+50% (26)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Much can go wrong when using ChatGPT.
+</td>
+<td style="text-align:right;">
+35% (34)
+</td>
+<td style="text-align:right;">
+33% (15)
+</td>
+<td style="text-align:right;">
+37% (19)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+There are legal issues with using ChatGPT.
+</td>
+<td style="text-align:right;">
+30% (29)
+</td>
+<td style="text-align:right;">
+24% (11)
+</td>
+<td style="text-align:right;">
+35% (18)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+The security of user data is not guaranteed with ChatGPT.
+</td>
+<td style="text-align:right;">
+33% (32)
+</td>
+<td style="text-align:right;">
+42% (19)
+</td>
+<td style="text-align:right;">
+25% (13)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT could bring personal disadvantages.
+</td>
+<td style="text-align:right;">
+25% (24)
+</td>
+<td style="text-align:right;">
+29% (13)
+</td>
+<td style="text-align:right;">
+21% (11)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+In my environment, using ChatGPT is standard.
+</td>
+<td style="text-align:right;">
+21% (20)
+</td>
+<td style="text-align:right;">
+31% (14)
+</td>
+<td style="text-align:right;">
+12% (6)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Almost everyone in my environment uses ChatGPT.
+</td>
+<td style="text-align:right;">
+16% (16)
+</td>
+<td style="text-align:right;">
+20% (9)
+</td>
+<td style="text-align:right;">
+13% (7)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Not using ChatGPT is considered being an outsider.
+</td>
+<td style="text-align:right;">
+12% (12)
+</td>
+<td style="text-align:right;">
+18% (8)
+</td>
+<td style="text-align:right;">
+8% (4)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT brings me recognition from my environment.
+</td>
+<td style="text-align:right;">
+20% (19)
+</td>
+<td style="text-align:right;">
+24% (11)
+</td>
+<td style="text-align:right;">
+15% (8)
+</td>
+</tr>
+</tbody>
+</table>
+<p>Frequencies based on values: agree, strongly agree. Age split at
+median 38. 4 missing case(s) omitted.</p>
+</div>
+<div class="section level3">
+<h3 id="correlation-of-categorical-items-with-metric-items">8. Correlation of categorical items with metric items<a class="anchor" aria-label="anchor" href="#correlation-of-categorical-items-with-metric-items"></a>
+</h3>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># TODO</span></span>
+<span><span class="co">#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric = TRUE)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="distributions-of-metric-variables">Distributions of metric variables<a class="anchor" aria-label="anchor" href="#distributions-of-metric-variables"></a>
 </h2>
 <div class="section level3">
-<h3 id="distribution-table-for-one-metric-variable-age">1. Distribution table for one metric variable: Age<a class="anchor" aria-label="anchor" href="#distribution-table-for-one-metric-variable-age"></a>
+<h3 id="distribution-table-for-one-metric-variable-age">9. Distribution table for one metric variable: Age<a class="anchor" aria-label="anchor" href="#distribution-table-for-one-metric-variable-age"></a>
 </h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">sd_age</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="../reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">sd_age</span><span class="op">)</span></span></code></pre></div>
 <table class="table table" style="width: auto !important; ">
 <thead><tr>
 <th style="text-align:left;">
@@ -645,9 +1357,9 @@ n
 </table>
 </div>
 <div class="section level3">
-<h3 id="group-comparison-of-a-metric-variable-age-by-gender">2. Group comparison of a metric variable: Age by gender<a class="anchor" aria-label="anchor" href="#group-comparison-of-a-metric-variable-age-by-gender"></a>
+<h3 id="group-comparison-of-a-metric-variable-age-by-gender">10. Group comparison of a metric variable: Age by gender<a class="anchor" aria-label="anchor" href="#group-comparison-of-a-metric-variable-age-by-gender"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">sd_age</span>, <span class="va">sd_gender</span><span class="op">)</span></span></code></pre></div>
 <table class="table table" style="width: auto !important; ">
 <thead><tr>
@@ -799,10 +1511,46 @@ total
 </table>
 </div>
 <div class="section level3">
-<h3 id="distribution-table-for-multiple-metric-items-adoption-factors">3. Distribution table for multiple metric items: Adoption
+<h3 id="correlation-of-two-single-variables">11. Correlation of two single variables<a class="anchor" aria-label="anchor" href="#correlation-of-two-single-variables"></a>
+</h3>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">use_private</span>, <span class="va">use_work</span>, metric<span class="op">=</span><span class="cn">T</span>, labels<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+<table class="table table" style="width: auto !important; ">
+<thead><tr>
+<th style="text-align:left;">
+Item 1
+</th>
+<th style="text-align:right;">
+Item 2
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+Pearson’s r
+</th>
+</tr></thead>
+<tbody><tr>
+<td style="text-align:left;">
+private
+</td>
+<td style="text-align:right;">
+work
+</td>
+<td style="text-align:right;">
+101
+</td>
+<td style="text-align:right;">
+0.37
+</td>
+</tr></tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="distribution-table-for-multiple-metric-items-adoption-factors">12. Distribution table for multiple metric items: Adoption
 factors<a class="anchor" aria-label="anchor" href="#distribution-table-for-multiple-metric-items-adoption-factors"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table table" style="width: auto !important; ">
 <thead><tr>
@@ -1185,12 +1933,12 @@ Using ChatGPT brings me recognition from my environment.
 </tr>
 </tbody>
 </table>
-<p>4 missing case(s) ommited.</p>
+<p>4 missing case(s) omitted.</p>
 </div>
 <div class="section level3">
-<h3 id="compare-means-of-multiple-items-adoption-factors-by-gender">4. Compare means of multiple items: Adoption factors by gender<a class="anchor" aria-label="anchor" href="#compare-means-of-multiple-items-adoption-factors-by-gender"></a>
+<h3 id="compare-means-of-multiple-items-adoption-factors-by-gender">13. Compare means of multiple items: Adoption factors by gender<a class="anchor" aria-label="anchor" href="#compare-means-of-multiple-items-adoption-factors-by-gender"></a>
 </h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_"</span><span class="op">)</span>, <span class="va">sd_gender</span><span class="op">)</span></span></code></pre></div>
 <table class="table table" style="width: auto !important; ">
 <thead><tr>
@@ -1417,53 +2165,20 @@ Using ChatGPT brings me recognition from my environment.
 </tr>
 </tbody>
 </table>
-<p>4 missing case(s) ommited.</p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="correlations">Correlations<a class="anchor" aria-label="anchor" href="#correlations"></a>
-</h2>
-<div class="section level3">
-<h3 id="correlation-of-two-single-variables">Correlation of two single variables<a class="anchor" aria-label="anchor" href="#correlation-of-two-single-variables"></a>
-</h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">use_private</span>, <span class="va">use_work</span>, metric<span class="op">=</span><span class="cn">T</span>, labels<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code></pre></div>
-<table class="table table" style="width: auto !important; ">
-<thead><tr>
-<th style="text-align:left;">
-Item 1
-</th>
-<th style="text-align:right;">
-Item 2
-</th>
-<th style="text-align:right;">
-n
-</th>
-<th style="text-align:right;">
-Pearson’s r
-</th>
-</tr></thead>
-<tbody><tr>
-<td style="text-align:left;">
-private
-</td>
-<td style="text-align:right;">
-work
-</td>
-<td style="text-align:right;">
-101
-</td>
-<td style="text-align:right;">
-0.37
-</td>
-</tr></tbody>
-</table>
+<p>4 missing case(s) omitted.</p>
 </div>
 <div class="section level3">
-<h3 id="correlation-of-items-with-one-single-variable">Correlation of items with one single variable<a class="anchor" aria-label="anchor" href="#correlation-of-items-with-one-single-variable"></a>
+<h3 id="correlation-of-metric-items-with-categorical-items">14. Correlation of metric items with categorical items<a class="anchor" aria-label="anchor" href="#correlation-of-metric-items-with-categorical-items"></a>
 </h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_adv"</span><span class="op">)</span>, <span class="va">sd_age</span>, metric<span class="op">=</span><span class="cn">T</span>, digits<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># TODO</span></span>
+<span><span class="co"># tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"))</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="correlation-of-items-with-one-single-variable">15. Correlation of items with one single variable<a class="anchor" aria-label="anchor" href="#correlation-of-items-with-one-single-variable"></a>
+</h3>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_adv"</span><span class="op">)</span>, <span class="va">sd_age</span>, metric<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <table class="table table" style="width: auto !important; ">
 <thead><tr>
 <th style="text-align:left;">
@@ -1508,119 +2223,35 @@ Compared to other systems, using ChatGPT is more fun.
 </tr>
 </tbody>
 </table>
-<p>2 missing case(s) ommited.</p>
+<p>2 missing case(s) omitted.</p>
 </div>
 <div class="section level3">
-<h3 id="correlation-of-items">Correlation of items<a class="anchor" aria-label="anchor" href="#correlation-of-items"></a>
+<h3 id="correlation-of-metric-items-with-metric-items">16. Correlation of metric items with metric items<a class="anchor" aria-label="anchor" href="#correlation-of-metric-items-with-metric-items"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_adv"</span><span class="op">)</span>, metric<span class="op">=</span><span class="cn">T</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_adv"</span><span class="op">)</span>, labels<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code></pre></div>
-<table class="table table" style="width: auto !important; ">
-<thead><tr>
-<th style="text-align:left;">
-cg_adoption_advantage_0
-</th>
-<th style="text-align:right;">
-1
-</th>
-<th style="text-align:right;">
-2
-</th>
-<th style="text-align:right;">
-3
-</th>
-<th style="text-align:right;">
-4
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-1
-</td>
-<td style="text-align:right;">
-1.00
-</td>
-<td style="text-align:right;">
-0.36
-</td>
-<td style="text-align:right;">
-0.63
-</td>
-<td style="text-align:right;">
-0.61
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2
-</td>
-<td style="text-align:right;">
-0.36
-</td>
-<td style="text-align:right;">
-1.00
-</td>
-<td style="text-align:right;">
-0.47
-</td>
-<td style="text-align:right;">
-0.40
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3
-</td>
-<td style="text-align:right;">
-0.63
-</td>
-<td style="text-align:right;">
-0.47
-</td>
-<td style="text-align:right;">
-1.00
-</td>
-<td style="text-align:right;">
-0.46
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-4
-</td>
-<td style="text-align:right;">
-0.61
-</td>
-<td style="text-align:right;">
-0.40
-</td>
-<td style="text-align:right;">
-0.46
-</td>
-<td style="text-align:right;">
-1.00
-</td>
-</tr>
-</tbody>
-</table>
-<p>2 missing case(s) ommited.</p>
-</div>
-<div class="section level3">
-<h3 id="correlation-of-different-item-groups">Correlation of different item groups<a class="anchor" aria-label="anchor" href="#correlation-of-different-item-groups"></a>
-</h3>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_adv"</span><span class="op">)</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"use_"</span><span class="op">)</span>, metric<span class="op">=</span><span class="cn">T</span>, digits<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="../reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span></span>
+<span>  <span class="va">data</span>, </span>
+<span>  <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_adv"</span><span class="op">)</span>, </span>
+<span>  <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"use_"</span><span class="op">)</span>,</span>
+<span>  metric <span class="op">=</span> <span class="cn">TRUE</span>, ci <span class="op">=</span> <span class="cn">T</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <table class="table table" style="width: auto !important; ">
 <thead><tr>
 <th style="text-align:left;">
 Expectations
 </th>
 <th style="text-align:right;">
-Usage: in private context
+Usage
 </th>
 <th style="text-align:right;">
-Usage: in professional context
+Pearson’s r
+</th>
+<th style="text-align:right;">
+ci low
+</th>
+<th style="text-align:right;">
+ci high
 </th>
 </tr></thead>
 <tbody>
@@ -1629,10 +2260,33 @@ Usage: in professional context
 ChatGPT has clear advantages compared to similar offerings.
 </td>
 <td style="text-align:right;">
+in private context
+</td>
+<td style="text-align:right;">
 0.50
 </td>
 <td style="text-align:right;">
+0.33
+</td>
+<td style="text-align:right;">
+0.63
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ChatGPT has clear advantages compared to similar offerings.
+</td>
+<td style="text-align:right;">
+in professional context
+</td>
+<td style="text-align:right;">
 0.27
+</td>
+<td style="text-align:right;">
+0.07
+</td>
+<td style="text-align:right;">
+0.44
 </td>
 </tr>
 <tr>
@@ -1640,10 +2294,33 @@ ChatGPT has clear advantages compared to similar offerings.
 Using ChatGPT brings financial benefits.
 </td>
 <td style="text-align:right;">
+in private context
+</td>
+<td style="text-align:right;">
 0.17
 </td>
 <td style="text-align:right;">
+-0.03
+</td>
+<td style="text-align:right;">
+0.36
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT brings financial benefits.
+</td>
+<td style="text-align:right;">
+in professional context
+</td>
+<td style="text-align:right;">
 0.53
+</td>
+<td style="text-align:right;">
+0.37
+</td>
+<td style="text-align:right;">
+0.66
 </td>
 </tr>
 <tr>
@@ -1651,10 +2328,33 @@ Using ChatGPT brings financial benefits.
 Using ChatGPT is advantageous in many tasks.
 </td>
 <td style="text-align:right;">
+in private context
+</td>
+<td style="text-align:right;">
 0.34
 </td>
 <td style="text-align:right;">
+0.16
+</td>
+<td style="text-align:right;">
+0.51
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT is advantageous in many tasks.
+</td>
+<td style="text-align:right;">
+in professional context
+</td>
+<td style="text-align:right;">
 0.35
+</td>
+<td style="text-align:right;">
+0.17
+</td>
+<td style="text-align:right;">
+0.51
 </td>
 </tr>
 <tr>
@@ -1662,15 +2362,38 @@ Using ChatGPT is advantageous in many tasks.
 Compared to other systems, using ChatGPT is more fun.
 </td>
 <td style="text-align:right;">
+in private context
+</td>
+<td style="text-align:right;">
 0.47
+</td>
+<td style="text-align:right;">
+0.30
+</td>
+<td style="text-align:right;">
+0.61
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Compared to other systems, using ChatGPT is more fun.
+</td>
+<td style="text-align:right;">
+in professional context
 </td>
 <td style="text-align:right;">
 0.27
 </td>
+<td style="text-align:right;">
+0.07
+</td>
+<td style="text-align:right;">
+0.44
+</td>
 </tr>
 </tbody>
 </table>
-<p>2 missing case(s) ommited.</p>
+<p>2 missing case(s) omitted.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

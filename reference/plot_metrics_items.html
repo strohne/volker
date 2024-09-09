@@ -42,7 +42,6 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_metrics_items</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">cols</span>,</span>
-<span>  negative <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  ci <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  box <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  limits <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -63,10 +62,6 @@
 
 <dt id="arg-cols">cols<a class="anchor" aria-label="anchor" href="#arg-cols"></a></dt>
 <dd><p>Tidyselect item variables (e.g. starts_with...).</p></dd>
-
-
-<dt id="arg-negative">negative<a class="anchor" aria-label="anchor" href="#arg-negative"></a></dt>
-<dd><p>If FALSE (default), negative values are recoded as missing values.</p></dd>
 
 
 <dt id="arg-ci">ci<a class="anchor" aria-label="anchor" href="#arg-ci"></a></dt>
@@ -109,7 +104,7 @@ Disable the title with FALSE or provide a custom title as character value.</p></
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">volker</span><span class="fu">::</span><span class="va"><a href="chatgpt.html">chatgpt</a></span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">plot_metrics_items</span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> In the plot, 4 missing case(s) ommited.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> In the plot, 4 missing case(s) omitted.</span>
 <span class="r-plt img"><img src="plot_metrics_items-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

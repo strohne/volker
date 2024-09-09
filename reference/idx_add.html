@@ -39,7 +39,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">idx_add</span><span class="op">(</span><span class="va">data</span>, <span class="va">cols</span>, newcol <span class="op">=</span> <span class="cn">NULL</span>, negative <span class="op">=</span> <span class="cn">FALSE</span>, clean <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">idx_add</span><span class="op">(</span><span class="va">data</span>, <span class="va">cols</span>, newcol <span class="op">=</span> <span class="cn">NULL</span>, reverse <span class="op">=</span> <span class="cn">NULL</span>, clean <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -60,8 +60,12 @@ Set to NULL (default) to automatically build a name
 from the common column prefix, prefixed with "idx_".</p></dd>
 
 
-<dt id="arg-negative">negative<a class="anchor" aria-label="anchor" href="#arg-negative"></a></dt>
-<dd><p>If FALSE (default), negative values are recoded as missing values.</p></dd>
+<dt id="arg-reverse">reverse<a class="anchor" aria-label="anchor" href="#arg-reverse"></a></dt>
+<dd><p>A tidy selection of columns with reversed codings.
+For example, if you want to calculate an index of the
+two items "I feel bad about this" and "I like it",
+both coded with 1=not at all to 5=fully agree,
+you need to reverse one of them to make the codings compatible.</p></dd>
 
 
 <dt id="arg-clean">clean<a class="anchor" aria-label="anchor" href="#arg-clean"></a></dt>

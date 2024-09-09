@@ -65,24 +65,35 @@
 <div class="section level2">
 <h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Install the package (see below), then load it</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(volker)</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Load example data from the package</span></span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>data <span class="ot">&lt;-</span> volker<span class="sc">::</span>chatgpt</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co"># Create your first plot, counting answers to an item battery</span></span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="fu">plot_counts</span>(data, <span class="fu">starts_with</span>(<span class="st">"cg_adoption_social"</span>))</span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co"># Create your first table, summarising the item battery</span></span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="fu">tab_metrics</span>(data, <span class="fu">starts_with</span>(<span class="st">"cg_adoption_social"</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Install the package (see below), then load it</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/strohne/volker" class="external-link">volker</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Load example data from the package</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">volker</span><span class="fu">::</span><span class="va"><a href="reference/chatgpt.html">chatgpt</a></span></span>
+<span></span>
+<span><span class="co"># Create your first table and plot, counting answers to an item battery</span></span>
+<span><span class="fu"><a href="reference/report_counts.html">report_counts</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_social"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create your first table and plot, reporting mean values of the item battery</span></span>
+<span><span class="fu"><a href="reference/report_metrics.html">report_metrics</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_social"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>See further examples in <code><a href="articles/introduction.html">vignette("introduction", package="volker")</a></code>.</p>
 <p>Don’t miss the template feature: Within RStudio, create a new Markdown document, select <code>From template</code>, choose and finally knit the <strong>volkeR Report</strong>! It’s a blueprint for your own tidy reports.</p>
+<p><img src="reference/figures/report_example.png" alt="Example report" width="600"></p>
 </div>
 <div class="section level2">
 <h2 id="concept">Concept<a class="anchor" aria-label="anchor" href="#concept"></a>
 </h2>
 <p>The volkeR package is made for creating quick and easy overviews about datasets. It handles standard cases with a handful of functions. Basically you select one of the following functions and throw your data in:</p>
+<ul>
+<li>
+<strong>Categorical variables</strong>: <code><a href="reference/report_counts.html">report_counts()</a></code>
+</li>
+<li>
+<strong>Metric variables</strong>: <code><a href="reference/report_metrics.html">report_metrics()</a></code>
+</li>
+</ul>
+<p>The report functions combine tables, plots and, optionally, effect size calculations. To request only one of those outputs, directly use the respective function:</p>
 <ul>
 <li>
 <strong>Charts</strong>: <code><a href="reference/plot_metrics.html">plot_metrics()</a></code> and <code><a href="reference/plot_counts.html">plot_counts()</a></code><br>
@@ -91,10 +102,7 @@
 <strong>Tables</strong>: <code><a href="reference/tab_metrics.html">tab_metrics()</a></code> and <code><a href="reference/tab_counts.html">tab_counts()</a></code><br>
 </li>
 <li>
-<strong>Tests</strong>: <code><a href="reference/effect_metrics.html">effect_metrics()</a></code> and <code><a href="reference/effect_counts.html">effect_counts()</a></code><br>
-</li>
-<li>
-<strong>Reports</strong>: <code><a href="reference/report_metrics.html">report_metrics()</a></code> and <code><a href="reference/report_counts.html">report_counts()</a></code>
+<strong>Effects</strong>: <code><a href="reference/effect_metrics.html">effect_metrics()</a></code> and <code><a href="reference/effect_counts.html">effect_counts()</a></code>
 </li>
 </ul>
 <p>Which one is best? That depends on your objective:</p>
@@ -106,7 +114,7 @@ Categories can be counted, for metric variables distribution parameters such as 
 <li><p><em>Individual, grouped or correlated?</em><br>
 Groups can be compared (e.g., the average age by gender) or cross-tabulated (e.g. combinations of education level and gender) by providing a grouping column as third parameter of table, plot and report functions. To calculate correlations and show scatter plots, provide a metric column and set the metric-Paramter to TRUE. The effect-functions calculate effect sizes and statistical tests for group comparisons and correlations.</p></li>
 <li><p><em>One variable or item batteries?</em>.<br>
-Item batteries are often used in surveys. Each item results in a single variable, but the variables are all measured with the same scale (e.g. 1 = not at all to 5 = fully applies). To summarise multiple items send a column selection to the functions by using tidyselect mechanisms such as <code><a href="reference/starts_with.html">starts_with()</a></code>. Indexes are automatically calculated by the <code>report</code>-functions or can be explicitly created using <code><a href="reference/idx_add.html">idx_add()</a></code>.</p></li>
+Item batteries are often used in surveys. Each item results in a single variable, but the variables are all measured with the same scale (e.g. 1 = not at all to 5 = fully applies). To summarise multiple items send a column selection to the functions by using tidyselect mechanisms such as <code><a href="reference/starts_with.html">starts_with()</a></code>.</p></li>
 <li><p><em>Markdown or data frame?</em><br>
 All table functions return data frames that can be processed further. The tables have their own print function, so the output of all functions can be used directly in Markdown documents to display neatly formatted tables and plots. The <code>report</code>-functions create tidy interactive tabsheets to switch between plots, tables, and indexes.</p></li>
 </ul>
@@ -160,447 +168,125 @@ All table functions return data frames that can be processed further. The tables
 </tr>
 </tbody></table>
 <p><br></p>
-<p>All functions take a data frame as their first argument, followed by column selections, and optionally a grouping column. Examples:</p>
-<p>Examples:</p>
+<p>All functions take a data frame as their first argument, followed by a column selection, and optionally a grouping column. Reproduce the examples above:</p>
 <ul>
-<li>One metric variable: <code>tab_metrics(data, sd_age)</code><br>
+<li>One metric variable: <code>report_metrics(data, sd_age)</code><br>
 </li>
-<li>One categorical variable: <code>tab_counts(data, sd_gender)</code><br>
+<li>One categorical variable: <code>report_counts(data, sd_gender)</code><br>
 </li>
-<li>Grouped metric variable: <code>tab_metrics(data, sd_age, sd_gender)</code><br>
+<li>Grouped metric variable: <code>report_metrics(data, sd_age, sd_gender)</code><br>
 </li>
-<li>Grouped categorical variable: <code>tab_counts(data, adopter, sd_gender)</code><br>
+<li>Grouped categorical variable: <code>report_counts(data, adopter, sd_gender)</code><br>
 </li>
-<li>Multiple metric variables: <code>tab_metrics(data, starts_with("cg_adoption"))</code><br>
+<li>Multiple metric variables: <code>report_metrics(data, starts_with("cg_adoption"))</code><br>
 </li>
-<li>Multiple categorical variables: <code>tab_counts(data, starts_with("cg_adoption"))</code>
+<li>Multiple categorical variables: <code>report_counts(data, starts_with("cg_adoption"))</code>
 </li>
 </ul>
-<p><strong>Hint</strong>: replace <code>tab_</code> by <code>plot_</code> to reproduce the examples above. You’ll find different table, plot and report types in the <code><a href="articles/introduction.html">vignette("introduction", package="volker")</a></code>. For further options to customize the results, see the builtin function help (F1 key).</p>
-<p>After deciding whether to plot or tabulate, and whether to handle metric or counted data, the column selections determine which of the following methods are called under the hood. When you provide two sets of columns in the first two parameters, data is crossed. By default, the second parameter is handled as a categorical variable, resulting in grouped tables and plots. For handling metric variables and their correlations, set the <code>metric</code>-parameter to <code>TRUE</code>. (Note: Some are not implemented yet.)</p>
-<table class="table">
-<colgroup>
-<col width="5%">
-<col width="32%">
-<col width="15%">
-<col width="9%">
-<col width="10%">
-<col width="11%">
-<col width="14%">
-</colgroup>
-<thead><tr class="header">
-<th>#</th>
-<th>function</th>
-<th>implemented</th>
-<th>output</th>
-<th>scale</th>
-<th>columns</th>
-<th>crossings</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td>tab_counts_one</td>
-<td></td>
-<td>table</td>
-<td>counts</td>
-<td>one</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td>tab_counts_one_grouped</td>
-<td></td>
-<td>table</td>
-<td>counts</td>
-<td>one</td>
-<td>grouped</td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td>tab_counts_one_cor</td>
-<td>not yet</td>
-<td>table</td>
-<td>counts</td>
-<td>one</td>
-<td>correlated</td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td>tab_counts_items</td>
-<td></td>
-<td>table</td>
-<td>counts</td>
-<td>multiple</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td>tab_counts_items_grouped</td>
-<td>not yet</td>
-<td>table</td>
-<td>counts</td>
-<td>multiple</td>
-<td>grouped</td>
-</tr>
-<tr class="even">
-<td>6</td>
-<td>tab_counts_items_cor</td>
-<td>not yet</td>
-<td>table</td>
-<td>counts</td>
-<td>multiple</td>
-<td>correlated</td>
-</tr>
-<tr class="odd">
-<td>7</td>
-<td>tab_metrics_one</td>
-<td></td>
-<td>table</td>
-<td>metrics</td>
-<td>one</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>8</td>
-<td>tab_metrics_one_grouped</td>
-<td></td>
-<td>table</td>
-<td>metrics</td>
-<td>one</td>
-<td>grouped</td>
-</tr>
-<tr class="odd">
-<td>9</td>
-<td>tab_metrics_one_cor</td>
-<td></td>
-<td>table</td>
-<td>metrics</td>
-<td>one</td>
-<td>correlated</td>
-</tr>
-<tr class="even">
-<td>10</td>
-<td>tab_metrics_items</td>
-<td></td>
-<td>table</td>
-<td>metrics</td>
-<td>multiple</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>11</td>
-<td>tab_metrics_items_grouped</td>
-<td></td>
-<td>table</td>
-<td>metrics</td>
-<td>multiple</td>
-<td>grouped</td>
-</tr>
-<tr class="even">
-<td>12</td>
-<td>tab_metrics_items_cor</td>
-<td></td>
-<td>table</td>
-<td>metrics</td>
-<td>multiple</td>
-<td>correlated</td>
-</tr>
-<tr class="odd">
-<td>13</td>
-<td>plot_counts_one</td>
-<td></td>
-<td>plot</td>
-<td>counts</td>
-<td>one</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>14</td>
-<td>plot_counts_one_grouped</td>
-<td></td>
-<td>plot</td>
-<td>counts</td>
-<td>one</td>
-<td>grouped</td>
-</tr>
-<tr class="odd">
-<td>15</td>
-<td>plot_counts_one_cor</td>
-<td>not yet</td>
-<td>plot</td>
-<td>counts</td>
-<td>one</td>
-<td>correlated</td>
-</tr>
-<tr class="even">
-<td>16</td>
-<td>plot_counts_items</td>
-<td></td>
-<td>plot</td>
-<td>counts</td>
-<td>multiple</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>17</td>
-<td>plot_counts_items_grouped</td>
-<td></td>
-<td>plot</td>
-<td>counts</td>
-<td>multiple</td>
-<td>grouped</td>
-</tr>
-<tr class="even">
-<td>18</td>
-<td>plot_counts_items_cor</td>
-<td>not yet</td>
-<td>plot</td>
-<td>counts</td>
-<td>multiple</td>
-<td>correlated</td>
-</tr>
-<tr class="odd">
-<td>19</td>
-<td>plot_metrics_one</td>
-<td></td>
-<td>plot</td>
-<td>metrics</td>
-<td>one</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>20</td>
-<td>plot_metrics_one_grouped</td>
-<td></td>
-<td>plot</td>
-<td>metrics</td>
-<td>one</td>
-<td>grouped</td>
-</tr>
-<tr class="odd">
-<td>21</td>
-<td>plot_metrics_one_cor</td>
-<td></td>
-<td>plot</td>
-<td>metrics</td>
-<td>one</td>
-<td>correlated</td>
-</tr>
-<tr class="even">
-<td>22</td>
-<td>plot_metrics_items</td>
-<td></td>
-<td>plot</td>
-<td>metrics</td>
-<td>multiple</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>23</td>
-<td>plot_metrics_items_grouped</td>
-<td></td>
-<td>plot</td>
-<td>metrics</td>
-<td>multiple</td>
-<td>grouped</td>
-</tr>
-<tr class="even">
-<td>24</td>
-<td>plot_metrics_items_cor</td>
-<td></td>
-<td>plot</td>
-<td>metrics</td>
-<td>multiple</td>
-<td>correlated</td>
-</tr>
-</tbody>
-</table>
+<p>The column selections determine which type of output is generated. In the second parameter (after the dataset), you can either provide a single column or a selection of multiple items. To compare groups, provide an additional categorical column in the third parameter. To calculate correlations, provide a metric column in the third parameter and set the <code>metric</code>-parameter to <code>TRUE</code>.</p>
+<p>Note: Some column combinations are not implemented yet.</p>
 </div>
 <div class="section level2">
 <h2 id="effect-sizes-and-statistical-tests">Effect sizes and statistical tests<a class="anchor" aria-label="anchor" href="#effect-sizes-and-statistical-tests"></a>
 </h2>
-<p>You can calculate effect sizes and conduct basic statistical tests using <code><a href="reference/effect_counts.html">effect_counts()</a></code> and <code><a href="reference/effect_metrics.html">effect_metrics()</a></code>. Effect calculation is included in the reports if you request it by the effect-parameter of <code><a href="reference/report_counts.html">report_counts()</a></code> or <code><a href="reference/report_metrics.html">report_metrics()</a></code>.</p>
+<p>You can calculate effect sizes and conduct basic statistical tests using <code><a href="reference/effect_counts.html">effect_counts()</a></code> and <code><a href="reference/effect_metrics.html">effect_metrics()</a></code>. Effect calculation is included in the reports if you request it by the effect-parameter, for example:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/report_counts.html">report_counts</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">adopter</span>, <span class="va">sd_gender</span>, prop<span class="op">=</span><span class="st">"cols"</span>, effect<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><strong>A word of warning:</strong> Statistics is the world of uncertainty. All procedures require mindful interpretation. Counting stars might evoke illusions.</p>
-<table class="table">
-<colgroup>
-<col width="4%">
-<col width="25%">
-<col width="11%">
-<col width="24%">
-<col width="18%">
-<col width="16%">
-</colgroup>
-<thead><tr class="header">
-<th>#</th>
-<th>function</th>
-<th>implemented</th>
-<th>effect size</th>
-<th>confidence intervals</th>
-<th>significance test</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td>effect_counts_one</td>
-<td>not yet</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td>effect_counts_one_grouped</td>
-<td></td>
-<td>Cramér’s V</td>
-<td>proportions</td>
-<td>Chi squared</td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td>effect_counts_one_cor</td>
-<td>not yet</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td>effect_counts_items</td>
-<td>not yet</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td>effect_counts_items_grouped</td>
-<td>not yet</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>6</td>
-<td>effect_counts_items_cor</td>
-<td>not yet</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>7</td>
-<td>effect_metrics_one</td>
-<td>not yet</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>8</td>
-<td>effect_metrics_one_grouped</td>
-<td></td>
-<td>R squared</td>
-<td>means</td>
-<td>t-test</td>
-</tr>
-<tr class="odd">
-<td>9</td>
-<td>effect_metrics_one_cor</td>
-<td></td>
-<td>Pearson’s r, Spearman’s rho</td>
-<td>correlation</td>
-<td>t-test</td>
-</tr>
-<tr class="even">
-<td>10</td>
-<td>effect_metrics_items</td>
-<td></td>
-<td>R squared</td>
-<td>means</td>
-<td>t-test</td>
-</tr>
-<tr class="odd">
-<td>11</td>
-<td>effect_metrics_items_grouped</td>
-<td>not yet</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>12</td>
-<td>effect_metrics_items_cor</td>
-<td></td>
-<td>Pearson’s r, Spearman’s rho</td>
-<td>correlation</td>
-<td>t-test</td>
-</tr>
-</tbody>
-</table>
 </div>
 <div class="section level2">
 <h2 id="where-do-all-the-labels-go">Where do all the labels go?<a class="anchor" aria-label="anchor" href="#where-do-all-the-labels-go"></a>
 </h2>
 <p>One of the strongest package features is labeling. You know the pain. Labels are stored in the column attributes. Inspect current labels of columns and values by the <code><a href="reference/codebook.html">codebook()</a></code>-function:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">codebook</span>(data)</span></code></pre></div>
-<p>This results in a table with item names, item values, value names and value labels. The same table format can be used to manually set labels with <code><a href="reference/labs_apply.html">labs_apply()</a></code>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>newlabels <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="sc">~</span>item_name,                 <span class="sc">~</span>item_label,</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="st">"cg_adoption_advantage_01"</span>, <span class="st">"Allgemeine Vorteile"</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="st">"cg_adoption_advantage_02"</span>, <span class="st">"Finanzielle Vorteile"</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="st">"cg_adoption_advantage_03"</span>, <span class="st">"Vorteile bei der Arbeit"</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="st">"cg_adoption_advantage_04"</span>, <span class="st">"Macht mehr Spaß"</span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>)</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="fu">labs_apply</span>(newlabels) <span class="sc">%&gt;%</span></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="fu">tab_metrics</span>(<span class="fu">starts_with</span>(<span class="st">"cg_adoption_advantage_"</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/codebook.html">codebook</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div>
+<p>This results in a table with item names, item values, value names and value labels.</p>
+<p>You can set specific column labels by providing a named list to the items-parameter of <code><a href="reference/labs_apply.html">labs_apply()</a></code>:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/labs_apply.html">labs_apply</a></span><span class="op">(</span></span>
+<span>    items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="st">"cg_adoption_advantage_01"</span> <span class="op">=</span> <span class="st">"Allgemeine Vorteile"</span>,</span>
+<span>      <span class="st">"cg_adoption_advantage_02"</span> <span class="op">=</span> <span class="st">"Finanzielle Vorteile"</span>,</span>
+<span>      <span class="st">"cg_adoption_advantage_03"</span> <span class="op">=</span> <span class="st">"Vorteile bei der Arbeit"</span>,</span>
+<span>      <span class="st">"cg_adoption_advantage_04"</span> <span class="op">=</span> <span class="st">"Macht mehr Spaß"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="fu"><a href="reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_advantage_"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Labels for values inside a column can be adjusted by providing a named list to the values-parameter of <code><a href="reference/labs_apply.html">labs_apply()</a></code>. In addition, select the columns where value labels should be changed:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">data</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/labs_apply.html">labs_apply</a></span><span class="op">(</span></span>
+<span>    cols<span class="op">=</span><span class="fu"><a href="reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption"</span><span class="op">)</span>,  </span>
+<span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="st">"1"</span> <span class="op">=</span> <span class="st">"Stimme überhaupt nicht zu"</span>,</span>
+<span>      <span class="st">"2"</span> <span class="op">=</span> <span class="st">"Stimme nicht zu"</span>,</span>
+<span>      <span class="st">"3"</span> <span class="op">=</span> <span class="st">"Unentschieden"</span>,</span>
+<span>      <span class="st">"4"</span> <span class="op">=</span> <span class="st">"Stimme zu"</span>,</span>
+<span>      <span class="st">"5"</span> <span class="op">=</span>  <span class="st">"Stimme voll und ganz zu"</span></span>
+<span>    <span class="op">)</span> </span>
+<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="reference/plot_metrics.html">plot_metrics</a></span><span class="op">(</span><span class="fu"><a href="reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>To conveniently manage all labels of a dataset, save the result of <code><a href="reference/codebook.html">codebook()</a></code> to an Excel file, change the labels manually in a copy of the Excel file, and finally call <code><a href="reference/labs_apply.html">labs_apply()</a></code> with your revised codebook.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org" class="external-link">readxl</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/writexl/" class="external-link">writexl</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Save codebook to a file</span></span>
+<span><span class="va">codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/codebook.html">codebook</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="fu">write_xlsx</span><span class="op">(</span><span class="va">codes</span>,<span class="st">"codebook.xlsx"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Load and apply a codebook from a file</span></span>
+<span><span class="va">codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="st">"codebook_revised.xlsx"</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/labs_apply.html">labs_apply</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">codebook</span><span class="op">)</span></span></code></pre></div>
 <p>Be aware that some data operations such as <code><a href="reference/mutate.html">mutate()</a></code> from the tidyverse loose labels on their way. In this case, store the labels (in the codebook attribute of the data frame) before the operation and restore them afterwards:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">labs_store</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sd_age =</span> <span class="dv">2024</span> <span class="sc">-</span> sd_age) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="fu">labs_restore</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  </span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="fu">tab_metrics</span>(sd_age)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/labs_store.html">labs_store</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/mutate.html">mutate</a></span><span class="op">(</span>sd_age <span class="op">=</span> <span class="fl">2024</span> <span class="op">-</span> <span class="va">sd_age</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="reference/labs_restore.html">labs_restore</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  </span>
+<span>  <span class="fu"><a href="reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="va">sd_age</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="sosci-survey-integration">SoSci Survey integration<a class="anchor" aria-label="anchor" href="#sosci-survey-integration"></a>
 </h2>
 <p>The labeling mechanisms follow a technique used, for example, on <a href="https://www.soscisurvey.de/" class="external-link">SoSci Survey</a>. Sidenote for techies: Labels are stored in the column attributes. That’s why you can directly throw in labeled data from the SoSci Survey API:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">library</span>(volker)</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co"># Get your API link from SoSci Survey with settings "Daten als CSV für R abrufen"</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="fu">eval</span>(<span class="fu">parse</span>(<span class="st">"https://www.soscisurvey.de/YOURPROJECT/?act=YOURKEY&amp;rScript"</span>, <span class="at">encoding=</span><span class="st">"UTF-8"</span>))</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co"># Generate reportings</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="fu">report_counts</span>(ds, A002)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/strohne/volker" class="external-link">volker</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get your API link from SoSci Survey with settings "Daten als CSV für R abrufen"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/parse.html" class="external-link">parse</a></span><span class="op">(</span><span class="st">"https://www.soscisurvey.de/YOURPROJECT/?act=YOURKEY&amp;rScript"</span>, encoding<span class="op">=</span><span class="st">"UTF-8"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Generate reports</span></span>
+<span><span class="fu"><a href="reference/report_counts.html">report_counts</a></span><span class="op">(</span><span class="va">ds</span>, <span class="va">A002</span><span class="op">)</span></span></code></pre></div>
 <p>For best results, use sensible prefixes and captions for your SoSci questions. The labels come directly from your questionnaire.</p>
-<p><em>Please note:</em> The values <code>-9</code> and <code>[NA] nicht beantwortet</code> are automatically recoded to missing values within all plot, tab, effect, and report functions. See the negatives-Parameter and the clean-parameter how to disable automatic residual removal.</p>
+<p><em>Please note:</em> The values <code>-9</code>, <code>-2</code>, <code>-1</code> and <code>[NA] nicht beantwortet</code>, <code>[NA] keine Angabe</code>, <code>[no answer]</code> are automatically recoded to missing values within all plot, tab, effect, and report functions. See the clean-parameter help how to disable automatic residual removal.</p>
 </div>
 <div class="section level2">
 <h2 id="customization">Customization<a class="anchor" aria-label="anchor" href="#customization"></a>
 </h2>
-<p>You can change plot colors using the theme_vlkr()-function:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">theme_set</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">theme_vlkr</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>    <span class="at">base_fill =</span> <span class="fu">c</span>(<span class="st">"#F0983A"</span>,<span class="st">"#3ABEF0"</span>,<span class="st">"#95EF39"</span>,<span class="st">"#E35FF5"</span>,<span class="st">"#7A9B59"</span>),</span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    <span class="at">base_gradient =</span> <span class="fu">c</span>(<span class="st">"#FAE2C4"</span>,<span class="st">"#F0983A"</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  )</span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>)</span></code></pre></div>
+<p>You can change plot colors using the <code><a href="reference/theme_vlkr.html">theme_vlkr()</a></code>-function:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/theme_set.html">theme_set</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="reference/theme_vlkr.html">theme_vlkr</a></span><span class="op">(</span></span>
+<span>    base_fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#F0983A"</span>,<span class="st">"#3ABEF0"</span>,<span class="st">"#95EF39"</span>,<span class="st">"#E35FF5"</span>,<span class="st">"#7A9B59"</span><span class="op">)</span>,</span>
+<span>    base_gradient <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#FAE2C4"</span>,<span class="st">"#F0983A"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Plot and table functions share a number of parameters that can be used to customize the outputs. Lookup the available parameters in the help of the specific function.</p>
 <div class="section level3">
 <h3 id="data-preparation">Data preparation<a class="anchor" aria-label="anchor" href="#data-preparation"></a>
 </h3>
 <ul>
 <li>
-<strong>negative</strong>: In surveys, negative values such as -9 or -2 are often used to mark missing values or residual answers (“I don’t know”). Therefore, all metric tables and plots remove negative values before calculating distribution parameters such as the mean. Set negative to TRUE for including those values. Be aware that the cleaning plan (see the clean-parameter) may remove some negative values as well. Make sure to disable cleaning of negative numbers where necessary.</li>
-<li>
 <strong>ordered</strong>: Sometimes categories have an order, from low to high or from few to many. It helps visual inspections to plot ordered values with shaded colors instead of arbitrary colors. For frequency plots, you can inform the method about the desired order. By default the functions try to automatically detect a sensitive order.</li>
 <li>
 <strong>category</strong>: When you have multiple categories in a column, you can focus one of the categories to simplify the plots and tables. By default, if a column has only TRUE and FALSE values, the outputs focus the TRUE category.</li>
 <li>
-<strong>clean</strong> Before all calculations, the dataset goes through a cleaning plan that, for example, recodes residual factor values such as “[NA] nicht beantwortet” to missings. See the help for further details or disable data cleaning if you don’t like it. For example, to disable removing the negative residual values, call <code>options(vlkr.na.numbers=FALSE)</code>.</li>
+<strong>clean</strong> Before all calculations, the dataset goes through a cleaning plan that, for example, recodes residual factor values such as “[NA] nicht beantwortet” to missings. In surveys, negative values such as -9 or -2 are often used to mark missing values or residual answers (“I don’t know”). See the help for further details or disable data cleaning if you don’t like it. For example, to disable removing the negative residual values, call <code>options(vlkr.na.numbers=FALSE)</code> and <code>options(vlkr.na.levels=FALSE)</code>.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -612,9 +298,9 @@ All table functions return data frames that can be processed further. The tables
 <li>
 <strong>ci</strong>: Add confidence intervals to plot and table outputs.</li>
 <li>
-<strong>index</strong>: Indexes (=mean of multiple items) can be added using <code><a href="reference/idx_add.html">idx_add()</a></code> manually and are automatically calculated in report functions. Cronbach’s alpha is added to all table outputs.</li>
+<strong>index</strong>: Indexes (=mean of multiple items) can be added to a dataset using <code><a href="reference/idx_add.html">idx_add()</a></code> or, using the index-parameter, automatically be included in report functions. Cronbach’s alpha is added to all table outputs.</li>
 <li>
-<strong>effect</strong>: You are not sure whether the differences are statistical significant? One option is to look out for non overlapping confidence intervals. In addition, the effect option calculates effect sizes such as Cramer’s v or Cohen’s d and generates typical statistical tests such as Chi-squared tests and t-tests.</li>
+<strong>effect</strong>: You are not sure whether the differences are statistical significant? One option is to look out for non overlapping confidence intervals. In addition, the effect option calculates effect sizes such as Cramer’s v or R squared and generates typical statistical tests such as Chi-squared tests and t-tests.</li>
 <li>
 <strong>method</strong>: By default, correlations are calculated using Pearson’s R. You can choose Spearman’s Rho with the methods-parameter.</li>
 </ul>
@@ -661,33 +347,23 @@ All table functions return data frames that can be processed further. The tables
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>As with all other packages you’ll have to install the package first.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"strohne/volker"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"strohne/volker"</span><span class="op">)</span></span></code></pre></div>
 <p>You can try alternative versions:</p>
 <ul>
 <li>
 <p>If you want, install the main version from GitHub using remotes, which may include features not yet published on CRAN (if asked, skip the updates):</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(remotes)) { <span class="fu">install.packages</span>(<span class="st">"remotes"</span>) }</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"strohne/volker"</span>, <span class="at">build_vignettes =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span> <span class="op">}</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"strohne/volker"</span>, upgrade<span class="op">=</span><span class="st">"never"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </li>
 <li>
 <p>In case you are adventurous, try the latest experimental development version which lives in the devel branch (if asked, skip the updates):</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(remotes)) { <span class="fu">install.packages</span>(<span class="st">"remotes"</span>) }</span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"strohne/volker"</span>, <span class="at">ref=</span><span class="st">"devel"</span>, <span class="at">upgrade=</span><span class="st">"never"</span>, <span class="at">build_vignettes =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-</li>
-<li>
-<p>The beta version used in the statistics course in winter 2023/24 at the University of Münster can be installed using remotes from the beta branch (if asked, skip the updates):</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(remotes)) { <span class="fu">install.packages</span>(<span class="st">"remotes"</span>) }</span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"strohne/volker"</span>, <span class="at">ref=</span><span class="st">"beta"</span>, <span class="at">upgrade=</span><span class="st">"never"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span> <span class="op">}</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"strohne/volker"</span>, ref<span class="op">=</span><span class="st">"devel"</span>, upgrade<span class="op">=</span><span class="st">"never"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </li>
 </ul>
-<p><strong>2. After installing the package, load it:</strong></p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">library</span>(volker)</span></code></pre></div>
-<p><strong>3. Finally, use it:</strong></p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Example data</span></span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>data <span class="ot">&lt;-</span> volker<span class="sc">::</span>chatgpt</span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co"># Example table</span></span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="fu">tab_metrics</span>(data, sd_age, sd_gender)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="special-features">Special features<a class="anchor" aria-label="anchor" href="#special-features"></a>
@@ -725,16 +401,21 @@ All table functions return data frames that can be processed further. The tables
 <tr class="odd">
 <td>1.0</td>
 <td>Descriptives</td>
-<td>work in progress</td>
+<td>80% done</td>
 </tr>
 <tr class="even">
 <td>2.0</td>
-<td>Regression tables</td>
-<td>work in progress</td>
+<td>Effects</td>
+<td>50% done</td>
 </tr>
 <tr class="odd">
 <td>3.0</td>
-<td>Topic modeling</td>
+<td>Factors &amp; clusters</td>
+<td>work in progress</td>
+</tr>
+<tr class="even">
+<td>4.0</td>
+<td>Text analysis</td>
 <td>work in progress</td>
 </tr>
 </tbody>
@@ -758,7 +439,7 @@ Henrieke Kotthoff (University of Münster)</p>
 <p><strong>Contributers</strong><br>
 Chantal Gärtner (University of Münster)</p>
 <p><strong>Citation</strong><br>
-Jünger, J. &amp; Kotthoff, H. (2024). volker: High-level functions for tabulating, charting and reporting survey data. R package version 2.0.</p>
+Jünger, J. &amp; Kotthoff, H. (2024). volker: High-level functions for tabulating, charting and reporting survey data. R package version 2.1.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -801,7 +482,7 @@ Jünger, J. &amp; Kotthoff, H. (2024). volker: High-level functions for tabulati
 <ul class="list-unstyled">
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 <li><a href="https://github.com/strohne/volker/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/strohne/volker/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://codecov.io/github/strohne/volker" class="external-link"><img src="https://codecov.io/github/strohne/volker/graph/badge.svg?token=WVCXTR5VGZ" alt="codecov"></a></li>
+<li><a href="https://app.codecov.io/github/strohne/volker" class="external-link"><img src="https://codecov.io/github/strohne/volker/graph/badge.svg?token=WVCXTR5VGZ" alt="codecov"></a></li>
 <li><a href="https://CRAN.R-project.org/package=volker" class="external-link"><img src="https://www.r-pkg.org/badges/version/volker" alt="CRAN status"></a></li>
 </ul>
 </div>
