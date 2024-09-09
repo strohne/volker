@@ -2,7 +2,7 @@
 % Please edit documentation in R/effects.R
 \name{effect_metrics_items_cor_items}
 \alias{effect_metrics_items_cor_items}
-\title{Output correlation coefficients for items and items}
+\title{Output correlation coefficients for multiple items}
 \usage{
 effect_metrics_items_cor_items(
   data,
@@ -21,7 +21,7 @@ effect_metrics_items_cor_items(
 
 \item{cross}{Tidyselect item variables (e.g. starts_with...).}
 
-\item{method}{The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.}
+\item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

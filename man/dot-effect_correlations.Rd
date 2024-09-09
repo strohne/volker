@@ -13,7 +13,8 @@
 
 \item{cross}{The columns holding metric values to correlate.}
 
-\item{method}{The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.}
+\item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho.
+The reported R square value is just squared Spearman's or Pearson's R.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 }

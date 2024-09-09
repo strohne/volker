@@ -200,8 +200,8 @@ effect_counts_one <- function(data, col, clean = TRUE, ...) {
 
   # To tibble
   result <- list(
-    "Gini" = sprintf("%.2f", get_gini(observed)),
-    "Number of cases", as.character(sum(observed)),
+    "Gini coefficient" = sprintf("%.2f", get_gini(observed)),
+    "Number of cases" = as.character(sum(observed)),
     "Chi-squared" = sprintf("%.2f", round(fit$statistic, 2)),
     "p value" = sprintf("%.3f", round(fit$p.value, 3)),
     "stars" = get_stars(fit$p.value)

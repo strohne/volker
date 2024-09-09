@@ -4,7 +4,7 @@
 \alias{effect_counts_one}
 \title{Test homogeneity of category shares}
 \usage{
-effect_counts_one(data, col, clean = TRUE, expected = NULL, ...)
+effect_counts_one(data, col, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A tibble.}
@@ -13,24 +13,21 @@ effect_counts_one(data, col, clean = TRUE, expected = NULL, ...)
 
 \item{clean}{Prepare data by \link{data_clean}}
 
-\item{expected}{Numeric vector of expected proportions for each category in \code{col}.
-If NULL, assumes a uniform distribution across categories.}
-
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{effect_counts}.}
 }
 \value{
 A volker tibble.
 }
 \description{
-TODO: @JJ remove expected param and only assuming uniform?
+Performs a goodness-of-fit test and calculates the Gini coefficient.
+The goodness-of-fit-test is calculated using  \code{stats::\link[stats:chisq.test]{chisq.test}}.
 }
 \examples{
 library(volker)
 data <- volker::chatgpt
-data <- data \%>\%
-   filter(sd_gender != "diverse")
-
-effect_counts_one(data, sd_gender, expected = c(0.3, 0.7))
+data <- data |>
+  filter(sd_gender != "diverse") |>
+  effect_counts_one(sd_gender)
 
 }
 \keyword{internal}

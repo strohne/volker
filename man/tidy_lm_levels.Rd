@@ -7,7 +7,7 @@
 tidy_lm_levels(fit)
 }
 \arguments{
-\item{fit}{Result of a \link{lm} call.}
+\item{fit}{Result of a \code{stats::\link[lm]{lm}} call.}
 }
 \value{
 A tibble with regression parameters.
