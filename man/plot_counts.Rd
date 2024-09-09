@@ -37,7 +37,7 @@ Cross tabulations:
 \itemize{
 \item One categorical column and one grouping column: see \link{plot_counts_one_grouped}
 \item Multiple categorical columns and one grouping column: see \link{plot_counts_items_grouped}
-\item Two categorical column selections: not yet implemented
+\item Two categorical column selections: see \link{plot_counts_items_grouped_items} (not yet implemented)
 }
 
 By default, if you provide two column selections, the second selection is treated as categorical.
@@ -45,7 +45,7 @@ Setting the metric-parameter to TRUE will call the appropriate functions for cor
 \itemize{
 \item One categorical column and one metric column: see \link{plot_counts_one_cor}
 \item Multiple categorical columns and one metric column: see \link{plot_counts_items_cor}
-\item Multiple categorical columns and multiple metric columns: not yet implemented
+\item Multiple categorical columns and multiple metric columns: see \link{plot_counts_items_cor_items} (not yet implemented)
 }
 
 Parameters that may be passed to the count functions

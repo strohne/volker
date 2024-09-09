@@ -23,24 +23,24 @@ data <- volker::chatgpt
 table {margin-left:0 !important;}
 ```
 
-| \# | function                         | implemented | output | scale   | columns  | crossings  |
-|----|----------------------------------|-------------|--------|---------|----------|------------|
-| 1  | tab_counts_one                  |             | table   | counts  | one      |            |
-| 2  | tab_counts_one_grouped          |             | table   | counts  | one      | grouped    |
-| 3  | tab_counts_one_cor              |             | table   | counts  | one      | correlated |
-| 4  | tab_counts_items                |             | table   | counts  | multiple |            |
-| 5  | tab_counts_items_grouped        |             | table   | counts  | multiple | grouped    |
-| 6  | tab_counts_items_grouped_items  | not yet     | table   | counts  | multiple | grouped    |
-| 7  | tab_counts_items_cor            |             | table   | counts  | multiple | correlated |
-| 8  | tab_counts_items_cor_items      | not yet     | table   | counts  | multiple | correlated |
-| 9  | tab_metrics_one                 |             | table   | metrics | one      |            |
-| 10 | tab_metrics_one_grouped         |             | table   | metrics | one      | grouped    |
-| 11 | tab_metrics_one_cor             |             | table   | metrics | one      | correlated |
-| 12 | tab_metrics_items               |             | table   | metrics | multiple |            |
-| 13 | tab_metrics_items_grouped       |             | table   | metrics | multiple | grouped    |
-| 14 | tab_metrics_items_grouped_items | not yet     | table   | metrics | multiple | grouped    |
-| 15 | tab_metrics_items_cor           |             | table   | metrics | multiple | correlated |
-| 16 | tab_metrics_items_cor_items     |             | table   | metrics | multiple | correlated |
+| \# | function                        | implemented | col scale | col count | cross scale | cross count |
+|----|---------------------------------|-------------|-----------|----------|--------------|-------------|
+| 1  | tab_counts_one                  |             | counts    | one      |              |             |
+| 2  | tab_counts_one_grouped          |             | counts    | one      | counts       | one         |
+| 3  | tab_counts_one_cor              |             | counts    | one      | metric       | one         |
+| 4  | tab_counts_items                |             | counts    | multiple |              |             |
+| 5  | tab_counts_items_grouped        |             | counts    | multiple | counts       | one         |
+| 6  | tab_counts_items_grouped_items  | not yet     | counts    | multiple | counts       | multiple    |
+| 7  | tab_counts_items_cor            |             | counts    | multiple | metric       | one         |
+| 8  | tab_counts_items_cor_items      | not yet     | counts    | multiple | metric       | multiple    |
+| 9  | tab_metrics_one                 |             | metric    | one      |              |             |
+| 10 | tab_metrics_one_grouped         |             | metric    | one      | counts       | one         |
+| 11 | tab_metrics_one_cor             |             | metric    | one      | metric       | one         |
+| 12 | tab_metrics_items               |             | metric    | multiple |              |             |
+| 13 | tab_metrics_items_grouped       |             | metric    | multiple | counts       | one         |
+| 14 | tab_metrics_items_grouped_items | not yet     | metric    | multiple | counts       | multiple    |
+| 15 | tab_metrics_items_cor           |             | metric    | multiple | metric       | one         |
+| 16 | tab_metrics_items_cor_items     |             | metric    | multiple | metric       | multiple    |
 
 ## Frequencies of categorical variables
 
@@ -153,19 +153,12 @@ tab_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric=T)
 
 ```{r}
 
-# Done: implement function and ci param, ci in brackets if requested
+tab_metrics(
+  data, 
+  starts_with("cg_adoption_adv"), 
+  starts_with("use_"),
+  metric = TRUE, ci = T
+)
 
-# TODO: Manage correlation with same stem (shorten output), remove duplicates 
-# idea: pmin pmax base r? condition if itembatteries are the same?  
-# implemented in function with todo and @jj 
-
-tab_metrics(data, starts_with("cg_adoption_adv"), 
-            starts_with("use_"),
-            metric = TRUE, ci = T)
-
-
-# tab_metrics(data, starts_with("cg_adoption_adv"), 
-#             starts_with("cg_adoption_adv"),
-#             metric = TRUE)
 ```
 

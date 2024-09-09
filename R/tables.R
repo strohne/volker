@@ -9,14 +9,14 @@
 #'
 #' - One categorical column and one grouping column: see \link{tab_counts_one_grouped}
 #' - Multiple categorical columns and one grouping column: see \link{tab_counts_items_grouped}
-#' - Multiple categorical columns and multiple grouping columns: not yet implemented
+#' - Multiple categorical columns and multiple grouping columns: see \link{tab_counts_items_grouped_items} (not yet implemented)
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
 #' - One categorical column and one metric column: see \link{tab_counts_one_cor}
 #' - Multiple categorical columns and one metric column: see \link{tab_counts_items_cor}
-#' - Multiple categorical columns and multiple metric columns: not yet implemented
+#' - Multiple categorical columns and multiple metric columns: \link{tab_counts_items_cor_items} (not yet implemented)
 #'
 #' Parameters that may be passed to specific count functions:
 #' - **ci**: Add confidence intervals to proportions.
@@ -107,7 +107,7 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
 #'
 #' - One metric column and one grouping column: see \link{tab_metrics_one_grouped}
 #' - Multiple metric columns and one grouping column: see \link{tab_metrics_items_grouped}
-#' - Multiple metric columns and multiple grouping columns: not yet implemented
+#' - Multiple metric columns and multiple grouping columns: see \link{tab_metrics_items_grouped_items} (not yet implemented)
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
@@ -1632,43 +1632,22 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
   check_is_param(method, c("spearman", "pearson"))
 
   # 3. Calculate correlations
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
+
+  result_cols <- c("item1", "item2")
+
   if(method == "spearman") {
-    result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
-      dplyr::select(tidyselect::all_of(c("item1", "item2", "Spearman's rho")))
+    result_cols <- c(result_cols, "Spearman's rho")
   }
-
   else if (method == "pearson") {
-  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
-    dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r")))
-  }
-
-  # %>%
-
-  # TODO: @JJ -
-  # # # Remove duplicates
-  # if (length(levels(result$item1)) == length(levels(result$item2)) && !all(result$item1 == result$item2))  {
-  #   result <- result %>%
-  #   dplyr::filter(.data$item1 != .data$item2)
-  # }
-
-  #  dplyr::mutate(
-  #   min = pmin(as.character(.data$item1), as.character(.data$item2)),
-  #   max = pmax(as.character(.data$item1), as.character(.data$item2))
-  # ) %>%
-  #   dplyr::distinct(min, max, .keep_all = TRUE) %>%
-  #   dplyr::select(-tidyselect::all_of(c("min", "max")))
-
-  # 4. Ci for pearson
-  if (ci) {
-    if(method == "pearson") {
-      result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
-        dplyr::select(tidyselect::all_of(c("item1", "item2", "Pearson's r", "ci low", "ci high")))
-
-    } else if (method == "spearman") {
-      result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels) %>%
-        dplyr::select(tidyselect::all_of(c("item1", "item2", "Spearman's rho")))
+    result_cols <- c(result_cols, "Pearson's r")
+    if (ci) {
+      result_cols <- c(result_cols, "ci low", "ci high")
     }
   }
+
+
+  result <- dplyr::select(result, tidyselect::all_of(result_cols))
 
   # 4. Labels
   prefix1 <- get_prefix(result$item1)

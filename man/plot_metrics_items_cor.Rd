@@ -8,7 +8,7 @@ plot_metrics_items_cor(
   data,
   cols,
   cross,
-  ci = TRUE,
+  ci = FALSE,
   method = "pearson",
   title = TRUE,
   labels = TRUE,

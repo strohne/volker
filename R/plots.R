@@ -10,14 +10,14 @@
 #'
 #' - One categorical column and one grouping column: see \link{plot_counts_one_grouped}
 #' - Multiple categorical columns and one grouping column: see \link{plot_counts_items_grouped}
-#' - Two categorical column selections: not yet implemented
+#' - Two categorical column selections: see \link{plot_counts_items_grouped_items} (not yet implemented)
 #'
 #' By default, if you provide two column selections, the second selection is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
 #' - One categorical column and one metric column: see \link{plot_counts_one_cor}
 #' - Multiple categorical columns and one metric column: see \link{plot_counts_items_cor}
-#' - Multiple categorical columns and multiple metric columns: not yet implemented
+#' - Multiple categorical columns and multiple metric columns: see \link{plot_counts_items_cor_items} (not yet implemented)
 #'
 #' Parameters that may be passed to the count functions
 #' (see the respective function help):
@@ -116,7 +116,7 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 #'
 #' - One metric column and one grouping column: see \link{plot_metrics_one_grouped}
 #' - Multiple metric columns and one grouping column: see \link{plot_metrics_items_grouped}
-#' - Multiple metric columns and multiple grouping columns: not yet implemented
+#' - Multiple metric columns and multiple grouping columns: see \link{plot_metrics_items_grouped_items} (not yet implemented)
 #'
 #' By default, if you provide two column selections, the second selection is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
@@ -832,7 +832,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
 #' @importFrom rlang .data
 plot_counts_items_grouped_items <- function(data, cols, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
-  }
+}
 
 #' Plot percent shares of multiple items compared by a metric variable split into groups
 #'
@@ -1462,7 +1462,7 @@ plot_metrics_items_grouped_items <- function(data, cols, cross, title = TRUE, la
 #'
 #'@export
 #'@importFrom rlang .data
-plot_metrics_items_cor <- function(data, cols, cross, ci = TRUE, method = "pearson", title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, method = "pearson", title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 

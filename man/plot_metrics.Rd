@@ -37,7 +37,7 @@ Group comparisons:
 \itemize{
 \item One metric column and one grouping column: see \link{plot_metrics_one_grouped}
 \item Multiple metric columns and one grouping column: see \link{plot_metrics_items_grouped}
-\item Multiple metric columns and multiple grouping columns: not yet implemented
+\item Multiple metric columns and multiple grouping columns: see \link{plot_metrics_items_grouped_items} (not yet implemented)
 }
 
 By default, if you provide two column selections, the second selection is treated as categorical.

@@ -9,14 +9,14 @@
 #'
 #' - One categorical column and one grouping column: see \link{effect_counts_one_grouped}
 #' - Multiple categorical columns and one grouping column: see \link{effect_counts_items_grouped} (not yet implemented)
-#' - Multiple categorical columns and multiple grouping columns: not yet implemented
+#' - Multiple categorical columns and multiple grouping columns: \link{effect_counts_items_grouped_items} (not yet implemented)
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
 #' - One categorical column and one metric column: see \link{effect_counts_one_cor} (not yet implemented)
 #' - Multiple categorical columns and one metric column: see \link{effect_counts_items_cor} (not yet implemented)
-#' - Multiple categorical columns and multiple metric columns: not yet implemented
+#' - Multiple categorical columns and multiple metric columns:\link{effect_counts_items_cor_items} (not yet implemented)
 #'
 #' `r lifecycle::badge("experimental")`
 #'
@@ -350,7 +350,7 @@ effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
     dplyr::group_by(.data$item) %>%
     dplyr::summarize(
       "Gini" = sprintf("%.2f", get_gini(.data$n)),
-      "Number of cases", as.character(sum(data$n)),
+      "Number of cases" = as.character(sum(.data$n)),
       "Chi-squared" = stats::chisq.test(.data$n)$statistic,
       "p value" = stats::chisq.test(.data$n)$p.value,
       "stars" = get_stars(stats::chisq.test(.data$n)$p.value)
@@ -393,8 +393,24 @@ effect_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
+#' Effect size and test for comparing multiple variables by multiple grouping variables
+#'
+#' \strong{Not yet implemented. The future will come.}
+#'
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures and grouping variable.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross The columns holding groups to compare.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
+#' @return A volker tibble.
+#' @importFrom rlang .data
+effect_counts_items_grouped_items <- function(data, cols, cross, clean = TRUE, ...) {
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+}
 
-#' Correlate the values in multiple items and output effect sizes and tests
+#' Correlate the values in multiple items with one metric column and output effect sizes and tests
 #'
 #' \strong{Not yet implemented. The future will come.}
 #'
@@ -402,12 +418,30 @@ effect_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
-#' @param cross The target columns or NULL to calculate correlations within the source columns.
+#' @param cross The metric column.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
 effect_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+}
+
+
+#' Correlate the values in multiple items with multiple metric columns and output effect sizes and tests
+#'
+#' \strong{Not yet implemented. The future will come.}
+#'
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross The metric target columns.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
+#' @return A volker tibble.
+#' @importFrom rlang .data
+effect_counts_items_cor_items <- function(data, cols, cross, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
@@ -722,12 +756,12 @@ effect_metrics_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
 
       tibble::tibble(
         "Item" = .y,
+        "skewness" = sprintf("%.2f", round(stats$skew, 2)),
+        "kurtosis" = sprintf("%.2f", round(stats$kurt, 2)),
         "W-statistic" = sprintf("%.2f", round(shapiro$statistic,2)),
         "p value" = sprintf("%.3f", round(shapiro$p.value, 3)),
         "stars" = get_stars(shapiro$p.value),
-        "normality" = ifelse(shapiro$p.value > 0.05, "normal", "not normal"),
-        "skewness" = sprintf("%.2f", round(stats$skew, 2)),
-        "kurtosis" = sprintf("%.2f", round(stats$kurt, 2))
+        "normality" = ifelse(shapiro$p.value > 0.05, "normal", "not normal")
       )
     }
   ) %>%
@@ -836,6 +870,23 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
 
    result <- .attr_transfer(result, data, "missings")
    .to_vlkr_tab(result)
+}
+
+#' Compare groups for each item with multiple target items by calculating F-statistics and effect sizes
+#'
+#' \strong{Not yet implemented. The future will come.}
+#'
+#' @keywords internal
+#'
+#' @param data A tibble containing item measures.
+#' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param cross The grouping items.
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
+#' @return A volker tibble.
+#' @importFrom rlang .data
+effect_counts_items_grouped_items <- function(data, cols, cross, clean = TRUE, ...) {
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Output correlation coefficients for items and one metric variable
