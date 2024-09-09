@@ -8,7 +8,7 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/strohne/volker/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/strohne/volker/actions/workflows/R-CMD-check.yaml)
-[![codecov](https://codecov.io/github/strohne/volker/graph/badge.svg?token=WVCXTR5VGZ)](https://codecov.io/github/strohne/volker)
+[![codecov](https://codecov.io/github/strohne/volker/graph/badge.svg?token=WVCXTR5VGZ)](https://app.codecov.io/github/strohne/volker)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/volker)](https://CRAN.R-project.org/package=volker)
 <!-- badges: end -->
@@ -415,15 +415,6 @@ You can try alternative versions:
   ``` r
   if (!require(remotes)) { install.packages("remotes") }
   remotes::install_github("strohne/volker", ref="devel", upgrade="never", build_vignettes = TRUE)
-  ```
-
-- The beta version used in the statistics course in winter 2023/24 at
-  the University of Münster can be installed using remotes from the beta
-  branch (if asked, skip the updates):
-
-  ``` r
-  if (!require(remotes)) { install.packages("remotes") }
-  remotes::install_github("strohne/volker", ref="beta", upgrade="never")
   ```
 
 ## Special features
