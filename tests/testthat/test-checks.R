@@ -54,3 +54,18 @@ test_that("check_has_column", {
   expect_error(check_has_column(data, novalidcolumn), "The column selection is not valid, check your parameters.")
 
 })
+
+# Check check_is_param method
+test_that("Parameter checks work as expected", {
+
+  expect_true(check_is_param("spearman", c("spearman", "pearson")))
+  expect_true(check_is_param("pearson", c("spearman", "pearson")))
+
+  expect_false(check_is_param("kendall", c("spearman", "pearson"), stopit = FALSE))
+
+  expect_error(
+    check_is_param("kendall", c("spearman", "pearson")),
+    "Check your parameters: The value 'kendall' is not supported\\. Supported values are spearman, pearson\\."
+  )
+})
+

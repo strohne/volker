@@ -4,10 +4,10 @@
 \alias{vlkr_colors_sequential}
 \title{Get colors for sequential scales}
 \usage{
-vlkr_colors_sequential(n)
+vlkr_colors_sequential(n = NULL)
 }
 \arguments{
-\item{n}{Number of colors.}
+\item{n}{Number of colors or NULL to get the raw colors from the config}
 }
 \value{
 A vector of colors.

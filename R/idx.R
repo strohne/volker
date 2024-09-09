@@ -11,7 +11,11 @@
 #' @param newcol Name of the index as a character value.
 #'              Set to NULL (default) to automatically build a name
 #'              from the common column prefix, prefixed with "idx_".
-#' @param negative If FALSE (default), negative values are recoded as missing values.
+#' @param reverse A tidy selection of columns with reversed codings.
+#'                For example, if you want to calculate an index of the
+#'                two items "I feel bad about this" and "I like it",
+#'                both coded with 1=not at all to 5=fully agree,
+#'                you need to reverse one of them to make the codings compatible.
 #' @param clean Prepare data by \link{data_clean}.
 #' @return The input tibble with an additional column that contains the index values.
 #'         The column contains the result of the alpha calculation in the attribute named "psych.alpha".
@@ -20,7 +24,7 @@
 #' volker::idx_add(ds, starts_with("cg_adoption"))
 #' @export
 #' @importFrom rlang .data
-idx_add <- function(data, cols, newcol = NULL, negative = FALSE, clean = TRUE) {
+idx_add <- function(data, cols, newcol = NULL, reverse = NULL, clean = TRUE) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -30,19 +34,14 @@ idx_add <- function(data, cols, newcol = NULL, negative = FALSE, clean = TRUE) {
     data <- data_clean(data)
   }
 
-
-  # Remove missings
+  # 3. Remove missings
   data <- data_rm_missings(data, {{ cols }})
 
-  # Remove negative values
-  if (!negative) {
-    data <- data_rm_negatives(data, {{ cols }})
-  }
-
-
+  # Select columns
   idx <- data %>%
     dplyr::select({{ cols }})
 
+  # Determine column name
   prefix <- get_prefix(colnames(idx), FALSE, TRUE)
   if (is.null(newcol)) {
     newcol <- paste0("idx_", prefix)
@@ -60,15 +59,26 @@ idx_add <- function(data, cols, newcol = NULL, negative = FALSE, clean = TRUE) {
   }
   newlabel <- paste0("Index: ", prefix)
 
-  idx <- idx %>%
-    psych::alpha(check.keys = TRUE)
+  # Get the limits
+  limits <- get_limits(data, {{ cols }})
+
+  # Reverse items
+  #cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = idx)
+  rev_eval <- tidyselect::eval_select(expr = enquo(reverse), data = idx)
+  for (rev_col in rev_eval) {
+    idx[[rev_col]] <- (limits[2] - idx[[rev_col]]) + limits[1]
+  }
+
+  # Calculate the index
+  idx <- psych::alpha(idx, check.keys = FALSE, warnings = FALSE)
 
   data[[newcol]] <- idx$scores
   attr(data[[newcol]], "psych.alpha") <- idx
+  attr(data[[newcol]], "reversed") <- names(rev_eval)
   attr(data[[newcol]], "comment") <- newlabel
 
   # Add limits
-  attr(data[[newcol]], "limits") <- get_limits(data, {{ cols }}, negative)
+  attr(data[[newcol]], "limits") <- limits
 
   # Add scale
   attr(data[[newcol]], "scale") <- data %>%

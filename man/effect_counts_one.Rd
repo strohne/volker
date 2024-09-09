@@ -2,18 +2,19 @@
 % Please edit documentation in R/effects.R
 \name{effect_counts_one}
 \alias{effect_counts_one}
-\title{Test whether the shares differ from homogeneity}
+\title{Test homogeneity of category shares}
 \usage{
-effect_counts_one(data, col, labels = TRUE, clean = TRUE, ...)
+effect_counts_one(data, col, clean = TRUE, expected = NULL, ...)
 }
 \arguments{
 \item{data}{A tibble.}
 
 \item{col}{The column holding factor values.}
 
-\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
+\item{clean}{Prepare data by \link{data_clean}}
 
-\item{clean}{Prepare data by \link{data_clean}.}
+\item{expected}{Numeric vector of expected proportions for each category in \code{col}.
+If NULL, assumes a uniform distribution across categories.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{effect_counts}.}
 }
@@ -21,6 +22,15 @@ effect_counts_one(data, col, labels = TRUE, clean = TRUE, ...)
 A volker tibble.
 }
 \description{
-\strong{Not yet implemented. The future will come.}
+TODO: @JJ remove expected param and only assuming uniform?
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+data <- data \%>\%
+   filter(sd_gender != "diverse")
+
+effect_counts_one(data, sd_gender, expected = c(0.3, 0.7))
+
 }
 \keyword{internal}

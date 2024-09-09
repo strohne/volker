@@ -2,12 +2,14 @@
 % Please edit documentation in R/plots.R
 \name{plot_metrics_items_cor}
 \alias{plot_metrics_items_cor}
-\title{Scatter plot of correlations between multiple items}
+\title{Multiple items correlated with one metric variable}
 \usage{
 plot_metrics_items_cor(
   data,
   cols,
   cross,
+  ci = TRUE,
+  method = "pearson",
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -19,7 +21,11 @@ plot_metrics_items_cor(
 
 \item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
-\item{cross}{Tidyselect item variables to correlate (e.g. starts_with...).}
+\item{cross}{The column to correlate.}
+
+\item{ci}{Whether to plot confidence intervals of the correlation coefficent.}
+
+\item{method}{The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}
@@ -34,6 +40,13 @@ Disable the title with FALSE or provide a custom title as character value.}
 A ggplot object.
 }
 \description{
-\strong{Not yet implemented. The future will come.}
+Multiple items correlated with one metric variable
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+plot_metrics_items_cor(data, starts_with("use_"), sd_age)
+
 }
 \keyword{internal}

@@ -2,9 +2,9 @@
 % Please edit documentation in R/effects.R
 \name{effect_counts_one_cor}
 \alias{effect_counts_one_cor}
-\title{Output test statistics and effect size for categories correlated with a metric column}
+\title{Output test statistics and effect size from a logistic regression of one metric predictor}
 \usage{
-effect_counts_one_cor(data, col, cross, clean = TRUE, ...)
+effect_counts_one_cor(data, col, cross, clean = TRUE, labels = TRUE, ...)
 }
 \arguments{
 \item{data}{A tibble.}
@@ -21,6 +21,13 @@ effect_counts_one_cor(data, col, cross, clean = TRUE, ...)
 A volker tibble.
 }
 \description{
-\strong{Not yet implemented. The future will come.}
+Output test statistics and effect size from a logistic regression of one metric predictor
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+effect_counts_one_cor(data, adopter, sd_age, metric = TRUE)
+
 }
 \keyword{internal}

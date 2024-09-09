@@ -7,7 +7,6 @@
 plot_metrics_one(
   data,
   col,
-  negative = FALSE,
   ci = FALSE,
   box = FALSE,
   limits = NULL,
@@ -21,8 +20,6 @@ plot_metrics_one(
 \item{data}{A tibble.}
 
 \item{col}{The column holding metric values.}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{ci}{Whether to plot the confidence interval.}
 

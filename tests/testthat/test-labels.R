@@ -10,12 +10,14 @@ data <- volker::chatgpt
 data <- volker::data_clean(data)
 
 # Get labels
-test_that("Labels", {
-  expect_snapshot(volker::codebook(data),cran= TRUE)
+test_that("Labels are retrieved", {
+  volker::codebook(data) |>
+    print(n=Inf) |>
+    expect_snapshot(cran= TRUE)
 })
 
 # What happens when labels are empty?
-test_that("missing labels", {
+test_that("Missing labels make no trouble", {
   data %>%
     dplyr::select(starts_with("cg_adoption")) %>%
     volker::labs_clear() %>%
@@ -42,6 +44,7 @@ test_that("Store and clear the codebook", {
     volker::labs_store() %>%
     volker::labs_clear() %>%
     codebook() %>%
+    print(n=Inf) |>
     expect_snapshot(cran= TRUE)
 })
 
@@ -52,6 +55,7 @@ test_that("Store, clear and restore the codebook", {
     volker::labs_clear() %>%
     volker::labs_restore() %>%
     codebook() %>%
+    print(n=Inf) |>
     expect_snapshot(cran= TRUE)
 })
 
@@ -84,6 +88,30 @@ test_that("Item values are kept even if they are not in the codebook", {
     expect_snapshot(cran= TRUE)
 })
 
+
+# Replace item values and keep the comment
+test_that("The column title is kept when values are replaced", {
+
+  df <- tibble(
+      values = c("A", "B", "C")
+    ) |>
+    labs_apply(tibble(
+      item_name = c("values"),
+      item_label = c("VALS")
+    ))
+
+  codes <- tibble(
+    value_name = c("A", "B", "C"),
+    value_label = c("1", "2", "3")
+  )
+
+  df <- volker:::labs_replace(df, values, codes, col_from="value_name", col_to="value_label")
+
+  tab_counts(df, values)  |>
+    expect_snapshot(cran = TRUE)
+
+})
+
 # Get prefix from labels
 test_that("A common prefix is removed from labels", {
 
@@ -104,4 +132,83 @@ test_that("A common prefix is removed from labels", {
     dplyr::pull(item_label) |>
     trim_prefix() |>
     expect_snapshot(cran= TRUE)
+})
+
+# Labeling coded numeric values
+test_that("Numeric values are relabeled", {
+
+  data %>%
+    labs_apply(
+      cols=starts_with("cg_adoption_advantage"),
+      values = list(
+        "1" = "Stimme überhaupt nicht zu",
+        "2" = "Stimme nicht zu",
+        "3" = "Unentschieden",
+        "4" = "Stimme zu",
+        "5" =  "Stimme voll und ganz zu"
+      )
+    ) %>%
+    tab_counts(starts_with("cg_adoption_advantage")) |>
+    expect_snapshot(cran= TRUE)
+
+})
+
+
+
+# Labeling using a named vector equals labeling by a named list
+test_that("Numeric values are relabeled by a named vector", {
+
+  result_vector <- data %>%
+    labs_apply(
+      cols=starts_with("cg_adoption_advantage"),
+      values = c(
+        "1" = "Stimme überhaupt nicht zu",
+        "2" = "Stimme nicht zu",
+        "3" = "Unentschieden",
+        "4" = "Stimme zu",
+        "5" =  "Stimme voll und ganz zu"
+      )
+    ) %>%
+    tab_counts(cg_adoption_advantage_01)
+
+  result_list <- data %>%
+    labs_apply(
+      cols=starts_with("cg_adoption_advantage"),
+      values = list(
+        "1" = "Stimme überhaupt nicht zu",
+        "2" = "Stimme nicht zu",
+        "3" = "Unentschieden",
+        "4" = "Stimme zu",
+        "5" =  "Stimme voll und ganz zu"
+      )
+    ) %>%
+    tab_counts(cg_adoption_advantage_01)
+
+
+  expect_identical(result_list, result_vector)
+})
+
+# Labeling uncoded factor values
+test_that("Factor values are relabeled", {
+
+  data %>%
+    labs_apply(
+      cols=sd_gender,
+      values = list(
+        "female" = "Weiblich",
+        "male" = "Männlich",
+        "diverse" = "Divers"
+      )
+    ) |>
+    tab_counts(sd_gender)  |>
+    expect_snapshot(cran= TRUE)
+
+})
+
+# Label wrapping
+test_that("Labels are wrapped at whitespace and slashes", {
+
+  volker:::wrap_label("Super long/short label\\s", width=3) |>
+    expect_snapshot_value(cran= TRUE)
+
 })

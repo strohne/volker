@@ -11,90 +11,149 @@ editor_options:
 ---
 
 ```{r include=FALSE}
-knitr::opts_chunk$set(
-   echo = TRUE,
-   fig.width=7
-)
+knitr::opts_chunk$set(echo = TRUE)
 
 library(dplyr)
 library(ggplot2)
 library(volker)
-theme_set(theme_bw())
+
+theme_set(theme_vlkr())
 
 # Load data
 data <- volker::chatgpt
 
 ```
 
+
+| \#     | function                  | output | scale    | columns  | crossings  |
+|--------|---------------------------|--------|----------|----------|------------|
+| 1     | plot_counts_one            | plot   | counts   | one      |            |
+| 2     | plot_counts_one_grouped    | plot   | counts   | one      | grouped    |
+| 3     | plot_counts_one_cor        | plot   | counts   | one      | correlated |
+| 4     | plot_counts_items          | plot   | counts   | multiple |            |
+| 5     | plot_counts_items_grouped  | plot   | counts   | multiple | grouped    |
+| 6     | plot_counts_items_cor      | plot   | counts   | multiple | correlated |
+| 7     | plot_metrics_one           | plot   | metrics  | one      |            |
+| 8     | plot_metrics_one_grouped   | plot   | metrics  | one      | grouped    |
+| 9     | plot_metrics_one_cor       | plot   | metrics  | one      | correlated |
+| 10    | plot_metrics_items         | plot   | metrics  | multiple |            |
+| 11    | plot_metrics_items_grouped | plot   | metrics  | multiple | grouped    |
+| 12    | plot_metrics_items_cor     | plot   | metrics  | multiple | correlated |
+
+
 ## Frequencies of categorical variables
 
 ### 1. One variable: Frequency plot of Gender
 ```{r}
-theme_set(theme_vlkr())
 plot_counts(data, sd_gender)
 ```
 
 ### 2. Two variables: Stacked frequency plot of innovator type by gender
-
 ```{r}
 # The prop parameter grows bars to 100%
 # The numbers parameter adds percentages to the bars
 
-plot_counts(data, adopter, sd_gender, prop = "rows", number="p")
+plot_counts(data, adopter, sd_gender, prop = "cols", number = "p")
 ```
 
+### 3. Group comparison of a metric variable
+```{r}
+plot_counts(data, sd_gender, sd_age, metric = TRUE)
+```
 
-### 3. Multiple items: Frequency plot for adoption factors
-```{r, fig.height=6}
+### 4. Multiple items: Frequency plot for adoption factors
+```{r}
 # The numbers parameter adds percentages to the bars
 plot_counts(data, starts_with("cg_adoption_"), numbers = "p")
-
 ```
 
+### 5. Multiple items: Frequency plot for adoption factors grouped by adopter category
+```{r}
 
-### 4. Multiple items: Frequency plot for adoption factors grouped by adopter category
-```{r, fig.height=6}
+options(vlkr.wrap.labels=30)
+options(vlkr.wrap.legend=10)
 
-plot_counts_items_grouped(
-  data, starts_with("cg_adoption_"), adopter, category=c(4,5),
-  numbers = "n", prop="rows"
+plot_counts(
+  data, starts_with("cg_adoption_"), adopter,
+  category=c("agree", "strongly agree")
 )
 
 ```
 
+### 6. Group probabilities of multiply items by a metric variable
+```{r, fig.height=5}
+plot_counts(
+  data, starts_with("cg_adoption_"), sd_age, metric = TRUE,
+  category=c("agree", "strongly agree")
+)
+```
 
 ## Metric distributions
 
-### 1. Distribution for one metric variable: Age
+### 7. Distribution for one metric variable: Age
 ```{r}
 plot_metrics(data, sd_age)
 ```
 
-
-### 2. Distribution by a grouping variable
+### 8. Distribution by a grouping variable
 ```{r}
-plot_metrics(data, sd_age, sd_gender, bars="box")
+plot_metrics(data, sd_age, sd_gender, bars = "box")
 ```
 
+### 9. Correlation of two metric variables
+```{r}
+plot_metrics(data, use_private, sd_age, metric = TRUE)
+```
 
-### 3. Distribution of multiple metric items: Adoption factors
-```{r, fig.height=6}
+### 10. Distribution of multiple metric items: Adoption factors
+```{r}
 # Note that negative values are omitted,
 # you can change the behavior with the negative-parameter
 plot_metrics(data, starts_with("cg_adoption_"))
 ```
 
-### 4. Group comparison of multiple metric items: Adoption factors by gender
-```{r, fig.height=6}
+### 11. Group comparison of multiple metric items: Adoption factors by gender
+```{r}
 # Filter out one group, too few cases in the sample
 data %>% 
   filter(sd_gender != "divers") %>% 
   plot_metrics(starts_with("cg_adoption_"), sd_gender)
 ```
 
-## Correlations
+### 12. Correlation of items with one single variable
 ```{r}
-data |> 
-  plot_metrics(use_private, cols_cor = use_work)
+# For now confidence intervals only supported for pearsons r 
+plot_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric = TRUE)
 ```
 
+## Correlations
+
+### a) Correlation of metric items with metric items
+
+```{r}
+plot_metrics(
+  data, starts_with("cg_adoption"), starts_with("cg_adoption"), 
+  metric = TRUE, numbers = TRUE)
+```
+
+### b) Correlation of metric items with categorical items
+
+```{r}
+# TODO
+# tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+```
+
+
+### c) Correlation of categorical items with metric items
+
+```{r}
+# TODO
+#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric = TRUE)
+```
+
+### d) Correlation of categorical items with categorical items
+
+```{r}
+# TODO
+#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+```

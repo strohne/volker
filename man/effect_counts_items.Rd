@@ -23,4 +23,11 @@ A volker tibble.
 \description{
 \strong{Not yet implemented. The future will come.}
 }
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+effect_counts_items(data, starts_with("cg_adoption_adv"))
+
+}
 \keyword{internal}

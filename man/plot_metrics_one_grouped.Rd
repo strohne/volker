@@ -8,7 +8,6 @@ plot_metrics_one_grouped(
   data,
   col,
   cross,
-  negative = FALSE,
   ci = FALSE,
   box = FALSE,
   limits = NULL,
@@ -24,8 +23,6 @@ plot_metrics_one_grouped(
 \item{col}{The column holding metric values.}
 
 \item{cross}{The column holding groups to compare.}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{ci}{Whether to add error bars with 95\% confidence intervals.}
 

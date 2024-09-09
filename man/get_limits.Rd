@@ -4,7 +4,7 @@
 \alias{get_limits}
 \title{Get the numeric range from the labels}
 \usage{
-get_limits(data, cols, negative = FALSE)
+get_limits(data, cols, negative = TRUE)
 }
 \arguments{
 \item{data}{The labeled data frame.}
@@ -17,6 +17,14 @@ get_limits(data, cols, negative = FALSE)
 A list or NULL.
 }
 \description{
-Get the numeric range from the labels
+Gets the range of all values in the selected columns
+by the first successful of the following methods:
+}
+\details{
+\itemize{
+\item Inspect the limits column attribute.
+\item Lookup the value names in the codebook.
+\item Calculate the range from all values in the columns.
+}
 }
 \keyword{internal}

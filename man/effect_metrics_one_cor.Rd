@@ -8,7 +8,6 @@ effect_metrics_one_cor(
   data,
   col,
   cross,
-  negative = FALSE,
   method = "pearson",
   labels = TRUE,
   clean = TRUE,
@@ -21,8 +20,6 @@ effect_metrics_one_cor(
 \item{col}{The column holding metric values.}
 
 \item{cross}{The column holding metric values to correlate.}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{method}{The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.}
 
@@ -42,7 +39,7 @@ The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}
 library(volker)
 data <- volker::chatgpt
 
-effect_metrics_one_cor(data, sd_age, use_private)
+effect_metrics_one_cor(data, sd_age, use_private, metric = TRUE)
 
 }
 \keyword{internal}

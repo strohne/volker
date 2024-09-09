@@ -46,7 +46,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
   chunks <- list()
 
   # Add title
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
     if (!is.character(title) && (title == TRUE)) {
       title <- get_title(data, {{ cols }})
     } else if (!is.character(title)) {
@@ -143,7 +143,7 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
   chunks <- list()
 
   # Add title
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
     if (!is.character(title) && (title == TRUE)) {
       title <- get_title(data, {{ cols }})
     } else if (!is.character(title)) {
@@ -280,17 +280,39 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 #'
 #' @export
 print.vlkr_list <- function(x, ...) {
-  if (knitr::is_html_output()) {
-    x %>%
+  if (!is.null(knitr::pandoc_to())) {
+
+    output <- list()
+    for (part in x) {
+
+      caption <- attr(part, "caption", exact=TRUE)
+      if (!is.null(caption)) {
+        caption <- paste0("\n###### ", caption, "  \n")
+        output <- append(output, caption)
+      }
+
+
+      if (inherits(part, "vlkr_tbl")) {
+        output <- append(output, .knit_table(part))
+      } else if (inherits(obj, "vlkr_plt")) {
+        output <- append(output, .knit_plot(part))
+      } else if (is.character(part)) {
+        output <- append(output, part)
+      } else {
+        warning("Could not determine the volker list item type")
+      }
+    }
+
+    baseline <- attr(x, "baseline", exact=TRUE)
+    if (!is.null(baseline)) {
+      output <- append(output, baseline)
+    }
+
+    output |>
       unlist() %>%
       paste0(collapse = "\n") %>%
       knitr::asis_output() %>%
       knitr::knit_print()
-
-    baseline <- attr(x, "baseline", exact=TRUE)
-    if (!is.null(baseline)) {
-      knitr::knit_print(baseline)
-    }
 
   } else {
     for (part in x) {
@@ -333,7 +355,8 @@ print.vlkr_list <- function(x, ...) {
 #' @return A volker report object.
 .add_to_vlkr_rprt <- function(obj, chunks, tab = NULL) {
 
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
+  #if (knitr::is_html_output()) {
     # Tab
     if (!is.null(tab)) {
       tab <- paste0("\n##### ", tab, "  \n")
@@ -358,9 +381,9 @@ print.vlkr_list <- function(x, ...) {
     # Objects
     else {
       if (inherits(obj, "vlkr_tbl")) {
-        newchunk <- knit_table(obj)
+        newchunk <- .knit_table(obj)
       } else if (inherits(obj, "vlkr_plt")) {
-        newchunk <- knit_plot(obj)
+        newchunk <- .knit_plot(obj)
 
       } else if (is.character(obj)) {
         newchunk <- obj
@@ -405,7 +428,7 @@ print.vlkr_list <- function(x, ...) {
 #'
 #' @export
 print.vlkr_rprt <- function(x, ...) {
-  if (knitr::is_html_output()) {
+  if (!is.null(knitr::pandoc_to())) {
     x %>%
       unlist() %>%
       paste0(collapse = "\n") %>%
@@ -449,3 +472,30 @@ html_report <- function(...) {
   )
 }
 
+#' Volker style PDF document format
+#'
+#' Based on the standard theme, tweaks tex headers.
+#' To use the format, in the header of your Markdown document,
+#' set `output: volker::pdf_report`.
+#'
+#' @param ... Additional arguments passed to pdf_document.
+#' @return R Markdown output format.
+#' @examples
+#' \dontrun{
+#' # Add `volker::pdf_report` to the output options of your Markdown document:
+#' #
+#' # ```
+#' # ---
+#' # title: "How to create reports?"
+#' # output: volker::pdf_report
+#' # ---
+#' # ```
+#' }
+#' @export
+pdf_report <- function(...) {
+  headerfile <-  system.file("extdata/header.tex", package = "volker")
+  rmarkdown::pdf_document(
+    includes = rmarkdown::includes(in_header=headerfile),
+    ...
+  )
+}

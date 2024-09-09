@@ -1,4 +1,3 @@
-
 ---
 title: "Table variations"
 output: rmarkdown::html_vignette
@@ -24,75 +23,140 @@ data <- volker::chatgpt
 table {margin-left:0 !important;}
 ```
 
+
+| \#     | function                  | output | scale    | columns   | crossings   |
+|--------|---------------------------|--------|----------|-----------|-------------|
+| 1      | tab_counts_one            | table  | counts   | one       |             |
+| 2      | tab_counts_one_grouped    | table  | counts   | one       | grouped     |
+| 3      | tab_counts_one_cor        | table  | counts   | one       | correlated  |
+| 4      | tab_counts_items          | table  | counts   | multiple  |             |
+| 5      | tab_counts_items_grouped  | table  | counts   | multiple  | grouped     |
+| 6      | tab_counts_items_cor      | table  | counts   | multiple  | correlated  |
+| 7      | tab_metrics_one           | table  | metrics  | one       |             |
+| 8      | tab_metrics_one_grouped   | table  | metrics  | one       | grouped     |
+| 9      | tab_metrics_one_cor       | table  | metrics  | one       | correlated  |
+| 10     | tab_metrics_items         | table  | metrics  | multiple  |             |
+| 11     | tab_metrics_items_grouped | table  | metrics  | multiple  | grouped     |
+| 12     | tab_metrics_items_cor     | table  | metrics  | multiple  | correlated  |
+
+
 ## Frequencies of categorical variables
 
 ### 1. One variable: Frequency table of gender
+
 ```{r}
 tab_counts(data, sd_gender)
 ```
 
 ### 2. Two variables: Cross table of innovator type by gender
-
 ```{r}
-tab_counts(data, adopter, sd_gender)
+tab_counts(data, adopter, sd_gender, prop="cols")
 ```
 
 
-### 3. Multiple items: Frequency table of adoption factors
+### 3. Two variables: One categorical and one metric variable split at the median
+```{r}
+tab_counts(data, adopter, sd_age, metric=T)
+```
+
+### 4. Multiple items: Frequency table of adoption factors
 ```{r}
 tab_counts(data, starts_with("cg_adoption_"))
 ```
 
+### 5. Multiple grouped items: Frequency table of adoption factors grouped by gender
+```{r}
+tab_counts(
+  data, starts_with("cg_adoption_"), sd_gender, 
+  category = c("agree", "strongly agree")
+)
+```
+
+### 6. Multiple categorical items and one metric variable
+```{r}
+
+tab_counts(
+  data, starts_with("cg_adoption_"), sd_age, metric = TRUE,
+  category = c("agree", "strongly agree")
+)
+
+```
 
 ## Distributions of metric variables
 
-### 1. Distribution table for one metric variable: Age
+### 7. Distribution table for one metric variable: Age
 ```{r}
+
 tab_metrics(data, sd_age)
 ```
 
-### 2. Group comparison of a metric variable: Age by gender
+### 8. Group comparison of a metric variable: Age by gender
 
 ```{r}
 tab_metrics(data, sd_age, sd_gender)
 ```
 
-### 3. Distribution table for multiple metric items: Adoption factors
-```{r}
-tab_metrics(data, starts_with("cg_adoption_"))
-```
-
-
-### 4. Compare means of multiple items: Adoption factors by gender
-```{r}
-tab_metrics(data, starts_with("cg_adoption_"), sd_gender)
-```
-
-## Correlations
-
-### Correlation of two single variables
-
+### 9. Correlation of two single variables
 ```{r}
 tab_metrics(data, use_private, use_work, metric=T, labels=F)
 ```
 
-### Correlation of items with one single variable
+### 10. Distribution table for multiple metric items: Adoption factors
+```{r}
+tab_metrics(data, starts_with("cg_adoption_"))
+```
+
+### 11. Compare means of multiple items: Adoption factors by gender
+```{r}
+tab_metrics(data, starts_with("cg_adoption_"), sd_gender)
+```
+
+### 12. Correlation of items with one single variable
 
 ```{r}
-tab_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric=T, digits=2)
+tab_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric=T)
+```
+
+## Correlations
+
+### a) Correlation of metric items with metric items
+
+```{r}
+
+# Done: implement function and ci param, ci in brackets if requested
+
+# TODO: Manage correlation with same stem (shorten output), remove duplicates 
+# idea: pmin pmax base r? condition if itembatteries are the same?  
+# implemented in function with todo and @jj 
+
+tab_metrics(data, starts_with("cg_adoption_adv"), 
+            starts_with("use_"),
+            metric = TRUE, ci = T)
+
+
+# tab_metrics(data, starts_with("cg_adoption_adv"), 
+#             starts_with("cg_adoption_adv"),
+#             metric = TRUE)
+```
+
+### b) Correlation of metric items with categorical items
+
+```{r}
+# TODO
+# tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 ```
 
 
-### Correlation of items
+### c) Correlation of categorical items with metric items
 
 ```{r}
-tab_metrics(data, starts_with("cg_adoption_adv"), metric=T, starts_with("cg_adoption_adv"), labels=F)
+# TODO
+#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric = TRUE)
 ```
 
-### Correlation of different item groups
+### d) Correlation of categorical items with categorical items
 
 ```{r}
-tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"), metric=T, digits=2)
+# TODO
+#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 ```
-
-

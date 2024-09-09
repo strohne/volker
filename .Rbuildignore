@@ -12,6 +12,8 @@ vignettes/reports.Rmd
 vignettes/reports.html
 vignettes/scales.Rmd
 vignettes/scales.html
+vignettes/labels.Rmd
+vignettes/labels.html
 vignettes/effects.Rmd
 vignettes/effects.html
 vignettes/playground.Rmd

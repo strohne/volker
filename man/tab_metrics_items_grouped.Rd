@@ -8,7 +8,6 @@ tab_metrics_items_grouped(
   data,
   cols,
   cross,
-  negative = FALSE,
   digits = 1,
   values = c("m", "sd"),
   labels = TRUE,
@@ -22,8 +21,6 @@ tab_metrics_items_grouped(
 \item{cols}{The item columns that hold the values to summarize.}
 
 \item{cross}{The column holding groups to compare.}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{digits}{The number of digits to print.}
 

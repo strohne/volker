@@ -2,12 +2,11 @@
 % Please edit documentation in R/effects.R
 \name{effect_metrics_items}
 \alias{effect_metrics_items}
-\title{Output effect size and test statistics for paired samples}
+\title{Output skewness, kurtosis and w-statistic for each item}
 \usage{
 effect_metrics_items(
   data,
   cols,
-  negative = FALSE,
   method = "pearson",
   labels = TRUE,
   clean = TRUE,
@@ -18,8 +17,6 @@ effect_metrics_items(
 \item{data}{A tibble containing item measures.}
 
 \item{cols}{The column holding metric values.}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{method}{The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.}
 
@@ -33,7 +30,7 @@ effect_metrics_items(
 A volker table containing correlations.
 }
 \description{
-The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}}.
+Output skewness, kurtosis and w-statistic for each item
 }
 \examples{
 library(volker)

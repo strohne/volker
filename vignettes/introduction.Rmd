@@ -80,7 +80,7 @@ tab_counts(ds, starts_with("use_"))
 tab_metrics(ds, sd_age)
 ```
 
-```{r fig.width=6, fig.height=8}
+```{r}
 
 # Multiple metric items
 tab_metrics(ds, starts_with("cg_adoption_"))
@@ -241,26 +241,46 @@ codebook(ds)
 ```
 
 
-You can set custom or new labels with `labs_apply()` by providing a tibble 
-with item names in the first column and item labels in the second column.
+You can set specific column labels by providing a named list to the items-parameter of `labs_apply()`:
 
-```{r}
-newlabels <- tribble(
-  ~item_name, ~item_label,
-  "cg_adoption_advantage_01", "Allgemeine Vorteile",
-  "cg_adoption_advantage_02", "Finanzielle Vorteile",
-  "cg_adoption_advantage_03", "Vorteile bei der Arbeit",
-  "cg_adoption_advantage_04", "Macht mehr Spaß"
-)
 
+```{r, eval=FALSE}
 ds %>%
-  labs_apply(newlabels) %>%
-  tab_metrics_items(starts_with("cg_adoption_advantage_"))
-
+  labs_apply(
+    items = list(
+      "cg_adoption_advantage_01" = "Allgemeine Vorteile",
+      "cg_adoption_advantage_02" = "Finanzielle Vorteile",
+      "cg_adoption_advantage_03" = "Vorteile bei der Arbeit",
+      "cg_adoption_advantage_04" = "Macht mehr Spaß"
+    )
+  ) %>% 
+  tab_metrics(starts_with("cg_adoption_advantage_"))
 
 ```
 
-Alternatively, save the result of `codebook(ds)` to an Excel file,
+
+Labels for values inside a column can be adjusted by providing a named list to the values-parameter of `labs_apply()`. In addition, select the columns where value labels should be changed:
+
+
+```{r, eval=FALSE}
+
+ds %>%
+  labs_apply(
+    cols=starts_with("cg_adoption"),  
+    values = list(
+      "1" = "Stimme überhaupt nicht zu",
+      "2" = "Stimme nicht zu",
+      "3" = "Unentschieden",
+      "4" = "Stimme zu",
+      "5" =  "Stimme voll und ganz zu"
+    ) 
+  ) %>% 
+  plot_metrics(starts_with("cg_adoption"))
+
+```
+
+To conveniently manage all labels of a dataset, 
+save the result of `codebook()` to an Excel file,
 change the labels manually in a copy of the Excel file, 
 and finally call `labs_apply()` with your revised codebook.
 
@@ -269,12 +289,29 @@ and finally call `labs_apply()` with your revised codebook.
 library(readxl)
 library(writexl)
 
+# Save codebook to a file
 codes <- codebook(ds)
 write_xlsx(codes,"codebook.xlsx")
 
+# Load and apply a codebook from a file
 codes <- read_xlsx("codebook_revised.xlsx")
-ds <- labs_apply(codebook)
+ds <- labs_apply(ds, codebook)
 
+```
+
+
+Be aware that some data operations such as `mutate()` from the tidyverse
+loose labels on their way. In this case, store the labels (in the
+codebook attribute of the data frame) before the operation and restore
+them afterwards:
+
+```{r, eval=FALSE}
+ds %>%
+  labs_store() %>%
+  mutate(sd_age = 2024 - sd_age) %>% 
+  labs_restore() %>% 
+  
+  tab_metrics(sd_age)
 ```
 
 # Index calculation for item batteries

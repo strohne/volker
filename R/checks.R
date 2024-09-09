@@ -15,7 +15,7 @@ check_is_dataframe <- function(obj, msg = NULL, stopit = TRUE) {
     {
       is.data.frame(obj)
     },
-    error = function(e) FALSE
+    error = function(e) { FALSE }
   )
 
   if (!check && stopit) {
@@ -67,4 +67,31 @@ check_has_column <- function(data, cols, msg = NULL) {
   }
 
   TRUE
+}
+
+#' Check whether a parameter value is from a valid set
+#'
+#' @param value A character value.
+#' @param allowed Allowed values.
+#' @param stopit Whether to stop execution if the value is invalid.
+#' @param msg A custom error message if the check fails.
+#' @return logical whether method is valid.
+check_is_param <- function(value, allowed, stopit = TRUE, msg = NULL) {
+
+  check <- tryCatch(
+    {
+      value %in% allowed
+    },
+    error = function(e) { FALSE }
+  )
+
+  if (!check && stopit) {
+    msg <- dplyr::coalesce(
+      msg,
+      paste0("Check your parameters: The value '", value, "' is not supported. Supported values are ", paste0(allowed, collapse=", "), ".")
+    )
+    stop(msg, call. = FALSE)
+  }
+
+  check
 }

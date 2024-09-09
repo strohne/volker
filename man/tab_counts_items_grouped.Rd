@@ -4,23 +4,57 @@
 \alias{tab_counts_items_grouped}
 \title{Compare the values in multiple items by a grouping column}
 \usage{
-tab_counts_items_grouped(data, cols, cross, clean = TRUE, ...)
+tab_counts_items_grouped(
+  data,
+  cols,
+  cross,
+  category = NULL,
+  percent = TRUE,
+  values = c("n", "p"),
+  title = TRUE,
+  labels = TRUE,
+  clean = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{A tibble containing item measures.}
 
-\item{cols}{The item columns that hold the values to summarize.}
+\item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
 \item{cross}{The column holding groups to compare.}
 
+\item{category}{Summarizing multiple items (the cols parameter) by group requires a focus category.
+By default, for logical column types, only TRUE values are counted.
+For other column types, the first category is counted.
+Accepts both character and numeric vectors to override default counting behavior.}
+
+\item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
+
+\item{values}{The values to output: n (frequency) or p (percentage) or both (the default).}
+
+\item{title}{If TRUE (default) shows a plot title derived from the column labels.
+Disable the title with FALSE or provide a custom title as character value.}
+
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
+
 \item{clean}{Prepare data by \link{data_clean}.}
 
-\item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
+\item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }
 \value{
-A volker tibble.
+A ggplot object.
 }
 \description{
-\strong{Not yet implemented. The future will come.}
+Compare the values in multiple items by a grouping column
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+tab_counts_items_grouped(
+  data, starts_with("cg_adoption_"), adopter,
+  category=c("agree", "strongly agree")
+)
+
 }
 \keyword{internal}

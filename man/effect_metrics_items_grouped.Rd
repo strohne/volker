@@ -4,7 +4,14 @@
 \alias{effect_metrics_items_grouped}
 \title{Output confidence intervals of group means, F-Statistics and effect size (Eta^2)}
 \usage{
-effect_metrics_items_grouped(data, cols, cross, clean = T, ...)
+effect_metrics_items_grouped(
+  data,
+  cols,
+  cross,
+  labels = TRUE,
+  clean = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{A tibble containing item measures.}
@@ -12,6 +19,8 @@ effect_metrics_items_grouped(data, cols, cross, clean = T, ...)
 \item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
 \item{cross}{The column holding groups to compare.}
+
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
@@ -22,5 +31,12 @@ A volker tibble.
 }
 \description{
 \strong{Not yet implemented. The future will come.}
+}
+\examples{
+library(volker)
+
+data <- volker::chatgpt
+effect_metrics(data, starts_with("cg_adoption_"), adopter)
+
 }
 \keyword{internal}

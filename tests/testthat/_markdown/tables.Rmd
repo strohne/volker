@@ -34,11 +34,25 @@ tab_counts(data, sd_gender)
 tab_counts(data, adopter, sd_gender)
 ```
 
+### tab_counts_one_cor
+```{r}
+tab_counts(data, adopter, sd_age, metric = TRUE)
+```
+
 ### tab_counts_items
 ```{r}
 tab_counts(data, starts_with("cg_adoption_"))
 ```
 
+### tab_counts_items_grouped
+```{r}
+tab_counts(data, starts_with("cg_adoption_"), sd_gender)
+```
+
+### tab_counts_items_cor
+```{r}
+tab_counts(data, starts_with("cg_adoption_"), sd_age, metric = TRUE)
+```
 
 ## Metric variables
 
@@ -54,7 +68,7 @@ tab_metrics(data, sd_age, sd_gender)
 
 ### tab_metrics_one_cor
 ```{r}
-tab_metrics(data, sd_age, use_private, metric=TRUE)
+tab_metrics(data, sd_age, use_private, metric = TRUE)
 ```
 
 ### tab_metrics_items
@@ -70,7 +84,7 @@ tab_metrics(data, starts_with("cg_adoption_"), sd_gender)
 
 ### tab_metrics_items_cor
 ```{r}
-tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"), metric=TRUE)
+tab_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric = TRUE)
 ```
 
 # Scales
@@ -116,7 +130,7 @@ data %>%
   
   labs_store() %>% 
   labs_clear() %>% 
-  labs_restore(values= TRUE) %>% 
+  labs_restore() %>% 
   
   tab_counts_items(starts_with("cg_adoption_advantage_"))
 

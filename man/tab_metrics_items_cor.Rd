@@ -2,13 +2,12 @@
 % Please edit documentation in R/tables.R
 \name{tab_metrics_items_cor}
 \alias{tab_metrics_items_cor}
-\title{Output a correlation table}
+\title{Output a correlation table for item battery and one metric variable}
 \usage{
 tab_metrics_items_cor(
   data,
   cols,
   cross,
-  negative = FALSE,
   method = "pearson",
   digits = 2,
   labels = TRUE,
@@ -22,8 +21,6 @@ tab_metrics_items_cor(
 \item{cols}{The source columns.}
 
 \item{cross}{The target columns or NULL to calculate correlations within the source columns.}
-
-\item{negative}{If FALSE (default), negative values are recoded as missing values.}
 
 \item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho.}
 
@@ -45,7 +42,9 @@ A volker tibble.
 library(volker)
 data <- volker::chatgpt
 
-tab_metrics_items_cor(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+tab_metrics_items_cor(
+data, starts_with("cg_adoption_adv"),
+sd_age, metric = TRUE)
 
 }
 \keyword{internal}

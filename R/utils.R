@@ -10,7 +10,7 @@
 #' @param brackets Whether to set the secondary values in brackets (default: FALSE).
 #' @return A combined data frame.
 zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
-  newline <- newline && (knitr::is_html_output() || knitr::is_latex_output())
+  newline <- newline && !is.null(knitr::pandoc_to())
   sep <- ifelse(newline, "\n", " ")
 
   if (brackets) {
@@ -54,4 +54,26 @@ zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
 .attr_transfer <- function(to, from, key) {
   attr(to, key) <- attr(from, key, exact=TRUE)
   to
+}
+
+
+#' Create a factor vector and preserve all attributes
+#'
+#' @keywords internal
+#'
+#' @param x The source value, usually a character vector
+#' @param levels The new levels
+#' @return A factor vector with the new levels
+.factor_with_attr <- function(x, levels=NULL) {
+  # Save attributes
+  old <- attributes(x)
+
+  # Reorder levels
+  x <- factor(x, levels=levels)
+
+  # Restore column label
+  old$levels <- levels(x)
+  attributes(x) <- old
+
+  x
 }
