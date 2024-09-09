@@ -113,7 +113,7 @@ plot_metrics(data, sd_age)
 
 ### 10. Distribution by a grouping variable
 ```{r}
-plot_metrics(data, sd_age, sd_gender, bars = "box")
+plot_metrics(data, sd_age, sd_gender, box = TRUE)
 ```
 
 ### 11. Correlation of two metric variables
