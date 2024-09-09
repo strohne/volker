@@ -281,17 +281,17 @@ library(volker)
 # Get your API link from SoSci Survey with settings "Daten als CSV für R abrufen"
 eval(parse("https://www.soscisurvey.de/YOURPROJECT/?act=YOURKEY&rScript", encoding="UTF-8"))
 
-# Generate reportings
+# Generate reports
 report_counts(ds, A002)
 ```
 
 For best results, use sensible prefixes and captions for your SoSci
 questions. The labels come directly from your questionnaire.
 
-*Please note:* The values `-9`, `-2`, `-1` and `[NA] nicht beantwortet`
-are automatically recoded to missing values within all plot, tab,
-effect, and report functions. See the clean-parameter help how to
-disable automatic residual removal.
+*Please note:* The values `-9`, `-2`, `-1` and `[NA] nicht beantwortet`,
+`[NA] keine Angabe`, `[no answer]` are automatically recoded to missing
+values within all plot, tab, effect, and report functions. See the
+clean-parameter help how to disable automatic residual removal.
 
 ## Customization
 
@@ -338,13 +338,14 @@ the specific function.
   instead of total percentages gives a direct visual comparison of
   groups.
 - **ci**: Add confidence intervals to plot and table outputs.
-- **index**: Indexes (=mean of multiple items) can be added using
-  `idx_add()` manually and are automatically calculated in report
-  functions. Cronbach’s alpha is added to all table outputs.
+- **index**: Indexes (=mean of multiple items) can be added to a dataset
+  using `idx_add()` or, using the index-parameter, automatically be
+  included in report functions. Cronbach’s alpha is added to all table
+  outputs.
 - **effect**: You are not sure whether the differences are statistical
   significant? One option is to look out for non overlapping confidence
   intervals. In addition, the effect option calculates effect sizes such
-  as Cramer’s v or Cohen’s d and generates typical statistical tests
+  as Cramer’s v or R squared and generates typical statistical tests
   such as Chi-squared tests and t-tests.
 - **method**: By default, correlations are calculated using Pearson’s R.
   You can choose Spearman’s Rho with the methods-parameter.
@@ -405,7 +406,7 @@ You can try alternative versions:
 
   ``` r
   if (!require(remotes)) { install.packages("remotes") }
-  remotes::install_github("strohne/volker", build_vignettes = TRUE)
+  remotes::install_github("strohne/volker", upgrade="never", build_vignettes = TRUE)
   ```
 
 - In case you are adventurous, try the latest experimental development
@@ -483,4 +484,4 @@ Chantal Gärtner (University of Münster)
 
 **Citation**  
 Jünger, J. & Kotthoff, H. (2024). volker: High-level functions for
-tabulating, charting and reporting survey data. R package version 2.0.
+tabulating, charting and reporting survey data. R package version 2.1.

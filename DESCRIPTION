@@ -25,6 +25,7 @@ RoxygenNote: 7.3.2
 LazyData: true
 Imports:
     stats,
+    utils,
     rlang,
     lifecycle,
     tibble,

@@ -21,13 +21,6 @@ effect_counts_one_cor(data, col, cross, clean = TRUE, labels = TRUE, ...)
 A volker tibble.
 }
 \description{
-Output test statistics and effect size from a logistic regression of one metric predictor
-}
-\examples{
-library(volker)
-data <- volker::chatgpt
-
-effect_counts_one_cor(data, adopter, sd_age, metric = TRUE)
-
+\strong{Not yet implemented. The future will come.}
 }
 \keyword{internal}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/effects.R
 \name{effect_counts}
 \alias{effect_counts}
-\title{Output effect sizes for count data}
+\title{Output effect sizes and test statistics for count data}
 \usage{
 effect_counts(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...)
 }
@@ -29,8 +29,8 @@ A volker tibble.
 \description{
 The type of effect size depends on the number of selected columns:
 \itemize{
-\item One column: see \link{effect_counts_one} (not yet implemented)
-\item Multiple columns: see \link{effect_counts_items} (not yet implemented)
+\item One column: see \link{effect_counts_one}
+\item Multiple columns: see \link{effect_counts_items}
 \item One column and one grouping column: see \link{effect_counts_one_grouped}
 \item Multiple columns and one grouping column: see \link{effect_counts_items_grouped} (not yet implemented)
 }

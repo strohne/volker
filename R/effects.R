@@ -1,9 +1,9 @@
-#' Output effect sizes for count data
+#' Output effect sizes and test statistics for count data
 #'
 #' @description
 #' The type of effect size depends on the number of selected columns:
-#' - One column: see \link{effect_counts_one} (not yet implemented)
-#' - Multiple columns: see \link{effect_counts_items} (not yet implemented)
+#' - One column: see \link{effect_counts_one}
+#' - Multiple columns: see \link{effect_counts_items}
 #' - One column and one grouping column: see \link{effect_counts_one_grouped}
 #' - Multiple columns and one grouping column: see \link{effect_counts_items_grouped} (not yet implemented)
 #'
@@ -75,19 +75,18 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
   else {
     stop("Check your parameters: the column selection is not yet supported by volker functions.")
   }
-
 }
 
-#' Output effect sizes and regression model parameters
+#' Output effect sizes and test statistics for metric data
 #'
 #' @description
-#' The regression type depends on the number of selected columns:
-#' - One column: see \link{effect_metrics_one} (not yet implemented)
+#' The calculations depend on the number of selected columns:
+#' - One column: see \link{effect_metrics_one}
 #' - Multiple columns: see \link{effect_metrics_items}
 #' - One column and one grouping column: see \link{effect_metrics_one_grouped}
-#' - Multiple columns and one grouping column: see \link{effect_metrics_items_grouped} (not yet implemented)
+#' - Multiple columns and one grouping column: see \link{effect_metrics_items_grouped}
 #'
-#'By default, if you provide two column selections, the second column is treated as categorical.
+#' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
 #' - Two metric columns: see \link{effect_metrics_one_cor}
@@ -161,30 +160,28 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
 
 }
 
-
 #' Test homogeneity of category shares
 #'
-#' TODO: @JJ remove expected param and only assuming uniform?
+#' Performs a goodness-of-fit test and calculates the Gini coefficient.
+#' The goodness-of-fit-test is calculated using \code{stats::\link[stats:chisq.test]{chisq.test}}.
+#'
 #' @keywords internal
 #'
 #' @param data A tibble.
 #' @param col The column holding factor values.
 #' @param clean Prepare data by \link{data_clean}
-#' @param expected Numeric vector of expected proportions for each category in `col`.
-#'                 If NULL, assumes a uniform distribution across categories.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
-#' data <- data %>%
-#'    filter(sd_gender != "diverse")
-#'
-#' effect_counts_one(data, sd_gender, expected = c(0.3, 0.7))
+#' data <- data |>
+#'   filter(sd_gender != "diverse") |>
+#'   effect_counts_one(sd_gender)
 #'
 #' @export
 #' @importFrom rlang .data
-effect_counts_one <- function(data, col, clean = TRUE, expected = NULL, ...) {
+effect_counts_one <- function(data, col, clean = TRUE, ...) {
 
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, clean = clean)
@@ -201,23 +198,21 @@ effect_counts_one <- function(data, col, clean = TRUE, expected = NULL, ...) {
   # 4. Perform Chi-Square Goodness-of-Fit Test
   fit <- stats::chisq.test(x = observed, p = expected / sum(expected))
 
-  # To list
+  # To tibble
   result <- list(
-    "Gini" = sprintf("%.2f", get_gini(observed)),
+    "Gini coefficient" = sprintf("%.2f", get_gini(observed)),
+    "Number of cases" = as.character(sum(observed)),
     "Chi-squared" = sprintf("%.2f", round(fit$statistic, 2)),
     "p value" = sprintf("%.3f", round(fit$p.value, 3)),
     "stars" = get_stars(fit$p.value)
+  ) |>
+  tibble::enframe(
+    name = "Chi-Square Goodness-of-Fit",
+    value = "value"
   )
 
-  # To tibble
-  result <- result |>
-    tibble::enframe(
-      name = "Chi-Square Goodness-of-Fit",
-      value = "value"
-    )
-
   result <- .attr_transfer(result, data, "missings")
-  .to_vlkr_tab(result, caption=fit$method)
+  .to_vlkr_tab(result, caption = fit$method)
 }
 
 
@@ -262,7 +257,7 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 
   # 3. Chi-squared test and Cramer's V
   exact <- any(contingency < 5)
-  fit <- stats::chisq.test(contingency,simulate.p.value = exact)
+  fit <- stats::chisq.test(contingency, simulate.p.value = exact)
 
   n <- sum(contingency)
   cells <- min(dim(contingency)[1], dim(contingency)[1]) - 1
@@ -271,8 +266,8 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   # 4. Prepare output
   result <- tibble::tribble(
     ~Statistic, ~Value,
-    "Number of cases", as.character(n),
     "Cramer's V", sprintf("%.2f", round(cramer_v, 2)),
+    "Number of cases", as.character(n),
     "Degrees of freedom", as.character(fit$parameter),
     "Chi-squared", sprintf("%.2f", round(fit$statistic, 2)),
     "p value", sprintf("%.3f", round(fit$p.value, 3)),
@@ -285,6 +280,8 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 
 #' Output test statistics and effect size from a logistic regression of one metric predictor
 #'
+#' \strong{Not yet implemented. The future will come.}
+#'
 #' @keywords internal
 #'
 #' @param data A tibble.
@@ -293,69 +290,16 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble.
-#' @examples
-#' library(volker)
-#' data <- volker::chatgpt
-#'
-#' effect_counts_one_cor(data, adopter, sd_age, metric = TRUE)
-#'
-#' @export
 #' @importFrom rlang .data
 effect_counts_one_cor <- function(data, col, cross, clean = TRUE, labels = TRUE, ...) {
-  # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
-
-  # # 2. Get cross variables names
-  # if (labels) {
-  #   data <- labs_replace(
-  #     data, {{ cross }},
-  #     codebook(data, {{ cross }}),
-  #     "value_name", "value_label"
-  #   )}
-
-  # Calculate logistic regression
-  result <- list()
-  lm_data <- dplyr::select(data, av = {{ col }}, uv = {{ cross }})
-
-  # NOTE: glm only works for fitting models where the dependent variable has two categories.
-  #fit <- stats::glm(av ~ uv, data = lm_data, family = "binomial")
-
-  fit <- nnet::multinom(av ~ uv, data = lm_data)
-
-  # Regression parameters
-  lm_params <- broom::tidy(fit, conf.int = TRUE, exponentiate = TRUE)
-
-
-  result <- lm_params |>
-    dplyr::mutate(
-      Term = .data$y.level,
-      stars = get_stars(.data$p.value),
-      estimate = sprintf("%.2f",round(.data$estimate,2)),
-      "ci low" = sprintf("%.2f",round(.data$conf.low,2)),
-      "ci high" = sprintf("%.2f",round(.data$conf.high,2)),
-      "standard error" = sprintf("%.2f",round(.data$std.error,2)),
-      t = sprintf("%.2f", round(.data$statistic,2)),
-      p = sprintf("%.3f",round(.data$p.value,3))
-    ) |>
-    dplyr::mutate(dplyr::across(tidyselect::all_of(
-      c("estimate","ci low", "ci high" , "standard error","t","p")
-    ), function(x) ifelse(x == "NA","",x))) |>
-    dplyr::select(tidyselect::all_of(c(
-      "Term","estimate","ci low","ci high","standard error","t","p","stars"
-    )))
-
-  # result <- c(
-  #   list(.to_vlkr_tab(lm_params, digits=2)),
-  #   list(.to_vlkr_tab(lm_model, digits=2))
-  # )
-
-  result <- .attr_transfer(result, data, "missings")
-  .to_vlkr_tab(result)
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
-#' Test whether shares differ
+
+#' Test homogeneity of category shares for multiple items
 #'
-#' \strong{Not yet implemented. The future will come.}
+#' Performs a goodness-of-fit test and calculates the Gini coefficient for each item.
+#' The goodness-of-fit-test is calculated using  \code{stats::\link[stats:chisq.test]{chisq.test}}.
 #'
 #' @keywords internal
 #'
@@ -388,19 +332,18 @@ effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
     ) %>%
     dplyr::group_by(.data$item, .data$.value) %>%
     dplyr::count() %>%
-    dplyr::ungroup() %>%
-    dplyr::group_by(.data$item)
+    dplyr::ungroup()
 
   # Chi-square goodness-of-fit test for each item
   result <- result %>%
     dplyr::group_by(.data$item) %>%
-    dplyr::mutate(
+    dplyr::summarize(
+      "Gini" = sprintf("%.2f", get_gini(.data$n)),
+      "Number of cases", as.character(sum(data$n)),
       "Chi-squared" = stats::chisq.test(.data$n)$statistic,
       "p value" = stats::chisq.test(.data$n)$p.value,
       "stars" = get_stars(stats::chisq.test(.data$n)$p.value)
-    ) %>%
-    dplyr::distinct(.data$item, .keep_all = TRUE) %>%
-    dplyr::select(-tidyselect::all_of(c(".value", "n")))
+    )
 
   # Get variable caption from the attributes
   if (labels) {
@@ -435,7 +378,7 @@ effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-effect_counts_items_grouped <- function(data, cols, cross, clean = T, ...) {
+effect_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
@@ -453,13 +396,14 @@ effect_counts_items_grouped <- function(data, cols, cross, clean = T, ...) {
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-effect_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
+effect_counts_items_cor <- function(data, cols, cross, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 
-#' Test whether distribution is normal
+#' Test whether a distribution is normal
 #'
+#' The test is calculated using  \code{stats::\link[stats:shapiro.test]{shapiro.test}}.
 #'
 #' @keywords internal
 #'
@@ -477,7 +421,7 @@ effect_counts_items_cor <- function(data, cols, cross, clean = T, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-effect_metrics_one <- function(data, col, labels = TRUE, clean = T, ... ) {
+effect_metrics_one <- function(data, col, labels = TRUE, clean = TRUE, ... ) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, clean = clean)
 
@@ -500,8 +444,10 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = T, ... ) {
   stats_skew <- psych::describe(stats$av)
   stats <- tibble::tibble(
     "metric" = c("skewness", "kurtosis"),
-    "value" = c(sprintf("%.2f", round(stats_skew$skew, 2)),
-                sprintf("%.2f", round(stats_skew$kurtosis, 2)))
+    "value" = c(
+      sprintf("%.2f", round(stats_skew$skew, 2)),
+      sprintf("%.2f", round(stats_skew$kurtosis, 2))
+    )
   )
 
   # 4. Get item label from the attributes
@@ -522,7 +468,7 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = T, ... ) {
 
 #' Output a regression table with estimates and macro statistics
 #'
-#' The regression output comes from \code{stats::\link[stats:lm]{lm}}.
+#' The regression output comes from \code{stats::\link[stats::lm]{lm}}.
 #'
 #' @keywords internal
 #'
@@ -548,17 +494,22 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
+  check_is_param(method, c("lm", "t.test"))
+
   # 2. Calculate
   result <- list()
   lm_data <- dplyr::select(data, av = {{ col }}, uv = {{ cross }})
 
   # t.test
-  if (("t.test" %in% method) && (length(unique(lm_data$uv)) == 2)) {
+  if ("t.test" %in% method) {
+
+    if (length(unique(lm_data$uv)) != 2) {
+      stop("Check your parameters: the t.test method is only allowed for comparing two groups.")
+    }
 
     stats_shapiro <- stats::shapiro.test(lm_data$av)
     stats_levene <- car::leveneTest(lm_data$av, group = lm_data$uv)
     stats_varequal = stats_levene[["Pr(>F)"]][1] > 0.05
-    #stats_cohen <- get_cohensd(lm_data$av, lm_data$uv, pooled_sd = stats_varequal)
     stats_cohen <- effectsize::cohens_d(lm_data$av, lm_data$uv, pooled_sd = stats_varequal, paired=FALSE)
     stats_t <- stats::t.test(lm_data$av ~ lm_data$uv, var.equal = stats_varequal)
 
@@ -608,7 +559,7 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
 
 
   # Regression model
-  if ("lm" %in% method) {
+  else if ("lm" %in% method) {
     fit <- stats::lm(av ~ uv, data = lm_data)
 
     # Regression parameters
@@ -725,18 +676,18 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", labels 
   .to_vlkr_tab(result, digits= 2, caption=title)
 }
 
-#' Output skewness, kurtosis and w-statistic for each item
+#' Test whether a distribution is normal for each item
 #'
+#' The test is calculated using  \code{stats::\link[stats:shapiro.test]{shapiro.test}}.
 #'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
 #' @param cols The column holding metric values.
-#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
-#' @return A volker table containing correlations.
+#' @return A volker table containing item statistics
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -746,7 +697,7 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", labels 
 #'
 #' @importFrom rlang .data
 #' @export
-effect_metrics_items <- function(data, cols, method = "pearson", labels = TRUE, clean = TRUE, ...) {
+effect_metrics_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, clean = clean)
 
@@ -754,7 +705,7 @@ effect_metrics_items <- function(data, cols, method = "pearson", labels = TRUE, 
 
   result <- purrr::imap(
     data,
-    \(.x, idx) {
+    \(.x, .y) {
       shapiro <- stats::shapiro.test(.x)
       stats <- psych::describe(.x)
 
@@ -794,9 +745,7 @@ effect_metrics_items <- function(data, cols, method = "pearson", labels = TRUE, 
   .to_vlkr_tab(result)
 }
 
-#' Output confidence intervals of group means, F-Statistics and effect size (Eta^2)
-#'
-#' \strong{Not yet implemented. The future will come.}
+#' Compare groups for each item by calculating F-statistics and effect sizes
 #'
 #' @keywords internal
 #'
@@ -843,32 +792,36 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
       f_statistic = purrr::map_dbl(.data$model, ~ round(summary(.x)$fstatistic[1], 2)),
       p_value = purrr::map_dbl(.data$model, ~ round(summary(.x)$coefficients[2, 4], 2)),
       stars = purrr::map_chr(.data$model,~ get_stars(summary(.x)$coefficients[2, 4]))
-      ) %>%
-  tidyr::unnest(cols = c(.data$tidy_model, .data$eta_sq)) %>%
-  dplyr::mutate("Eta" = purrr::map_dbl(.data$Eta2, ~ round(sqrt(.), 2)),
-                "Eta squared" = purrr::map_dbl(.data$Eta2, ~ round(., 2))) %>%
-  dplyr::select(tidyselect::all_of(c("item", "F" = "f_statistic",
-                                     "p" = "p_value","stars",
-                                     "Eta", "Eta squared"))) %>%
-  dplyr::distinct(.data$item, .keep_all = TRUE)
+    ) %>%
+    tidyr::unnest(cols = c(.data$tidy_model, .data$eta_sq)) %>%
+    dplyr::mutate(
+      "Eta" = purrr::map_dbl(.data$Eta2, ~ round(sqrt(.), 2)),
+      "Eta squared" = purrr::map_dbl(.data$Eta2, ~ round(., 2))
+    ) %>%
+    dplyr::select(tidyselect::all_of(c(
+      "item", "F" = "f_statistic", "p" = "p_value",
+      "stars", "Eta", "Eta squared"
+    ))) %>%
+    dplyr::distinct(.data$item, .keep_all = TRUE)
 
   # 4. Labels
   if (labels) {
      result <- labs_replace(
        result, "item",
        codebook(data, {{ cols }}),
-       "item_name", "item_label")
+       "item_name", "item_label"
+     )
    }
 
   prefix <- get_prefix(result$item)
   result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
 
   # Rename first column
-   if (prefix != "") {
-     colnames(result)[1] <- prefix
-   } else {
-     result <- dplyr::rename(result, Item = tidyselect::all_of("item"))
-   }
+  if (prefix != "") {
+    colnames(result)[1] <- prefix
+  } else {
+    result <- dplyr::rename(result, Item = tidyselect::all_of("item"))
+  }
 
    result <- .attr_transfer(result, data, "missings")
    .to_vlkr_tab(result)
@@ -883,7 +836,7 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding metric values to correlate.
-#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
+#' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -910,8 +863,9 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labe
 
   if (labels) {
     prefix2 <- get_title(data, {{ cross }})
-  } else
+  } else {
     prefix2 <- rlang::as_string(rlang::ensym(cross))
+  }
 
   result <- result %>%
     dplyr::mutate(item1 = trim_prefix(.data$item1, prefix1)) %>%
@@ -927,7 +881,7 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labe
 }
 
 
-#' Output correlation coefficients for items and items
+#' Output correlation coefficients for multiple items
 #'
 #' The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}}.
 #'
@@ -936,7 +890,7 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labe
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables (e.g. starts_with...).
-#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
+#' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -945,7 +899,12 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labe
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' effect_metrics_items_cor_items(data, starts_with("cg_adoption_adv"), starts_with("use"), metric = TRUE)
+#' effect_metrics_items_cor_items(
+#'   data,
+#'   starts_with("cg_adoption_adv"),
+#'   starts_with("use"),
+#'   metric = TRUE
+#' )
 #'
 #' @export
 #' @importFrom rlang .data
@@ -964,16 +923,6 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
     dplyr::mutate(item1 = trim_prefix(.data$item1, prefix1)) |>
     dplyr::mutate(item2 = trim_prefix(.data$item2, prefix2))
 
-  # Truncate labels in
-  # TODO: shorten labels in console...
-  # probably implement in class vlkr.matrix?
-  # @JJ
-  # if (interactive()) {
-  #   result <- result %>%
-  #     dplyr::mutate(item1 = trunc_labels(item1),
-  #                   item2 = trunc_labels(item2))
-  # } else
-  #   result
 
   # Rename first column
   if (prefix1 != "") {
@@ -992,13 +941,12 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 
 #' Test whether correlations are different from zero
 #'
-#'
 #' @keywords internal
 #'
 #' @param data A tibble.
 #' @param cols The columns holding metric values.
 #' @param cross The columns holding metric values to correlate.
-#' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
+#' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho.
 #'               The reported R square value is just squared Spearman's or Pearson's R.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @return A tibble with correlation results.
@@ -1007,9 +955,6 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
-
-  # Calculate correlation
-  #stats_cohen <- effectsize::cohens_d(lm_data$av, lm_data$uv, pooled_sd = stats_varequal)
 
   # Check method
   check_is_param(method, c("spearman", "pearson"))
@@ -1096,7 +1041,6 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
   cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
-  # 5. Calculate npmi
 
   # Calculate marginal probabilities
   result <- data %>%
@@ -1135,7 +1079,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #'
 #' @keywords internal
 #'
-#' @param fit Result of a \link{lm} call.
+#' @param fit Result of a \code{stats::\link[stats::lm]{lm}} call.
 #' @author Created with the help of ChatGPT.
 #' @return A tibble with regression parameters.
 tidy_lm_levels <- function(fit) {
@@ -1211,58 +1155,6 @@ get_ci <- function(x, conf = 0.95) {
   error_margin <- stats::qt(conf + (1 - conf) / 2, df = n - 1) * se
   return(c(y = m, ymin = m - error_margin, ymax = m + error_margin))
 }
-
-#' Get Cohen's d for unpaired samples
-#'
-#' TODO: NOT FINISHED YET
-#'
-#' @keywords internal
-#'
-#' @param values A numeric vector.
-#' @param groups A vector indicating groups.
-#' @param conf The confidence interval.
-#' @param pooled Whether to pool variances.
-#' @return A list with the elements d (Cohen's d), ci low and ci high (its confidence interval).
-get_cohensd <- function(values, groups, conf=0.95, pooled = FALSE) {
-  levels <- unique(stats::na.omit(groups))
-  x <- stats::na.omit(values[groups == levels[1]])
-  y <- stats::na.omit(values[groups == levels[2]])
-
-  di <- mean(x) - mean(y)
-  var_x <- stats::var(x)
-  var_y <- stats::var(y)
-  s_x <- stats::sd(x)
-  s_y <- stats::sd(y)
-  n_x <- length(x)
-  n_y <- length(y)
-  n <- n_x + n_y
-
-  if (pooled) {
-    s <- sqrt(((n_x - 1) * var_x + (n_y - 1) * var_y) / (n_x + n_y - 2))
-    cohensd <- di / s
-    df <- n - 2
-    se <-  sqrt((n_x + n_y) / (n_x * n_y) + (cohensd^2) / (2 * df))
-  }
-  else {
-    #s <- sqrt((var_x + var_y)/2)
-    s <- sqrt((s_x^2 / n_x) + (s_y^2 / n_y))
-    cohensd <- di / s
-    # Welch-Satterthwaite equation
-    df <- ((var_x / n_x + var_y / n_y)^2) /
-      ((var_x / n_x)^2 / (n_x - 1) + (var_y / n_y)^2 / (n_y - 1))
-    se <- sqrt((var_x / n_x) + (var_y / n_y))
-    #se <-  sqrt((n_x + n_y) / (n_x * n_y) + (cohensd^2) / (2 * df))
-  }
-
-  t_critical <- stats::qt(1 - ((1-conf) / 2), df)
-
-  list(
-    d = cohensd,
-    "ci low" = cohensd - (t_critical * se),
-    "ci high" = cohensd + (t_critical * se)
-  )
-}
-
 
 #' Get significance stars from p values
 #'

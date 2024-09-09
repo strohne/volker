@@ -2,23 +2,14 @@
 % Please edit documentation in R/effects.R
 \name{effect_metrics_items}
 \alias{effect_metrics_items}
-\title{Output skewness, kurtosis and w-statistic for each item}
+\title{Test whether a distribution is normal for each item}
 \usage{
-effect_metrics_items(
-  data,
-  cols,
-  method = "pearson",
-  labels = TRUE,
-  clean = TRUE,
-  ...
-)
+effect_metrics_items(data, cols, labels = TRUE, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A tibble containing item measures.}
 
 \item{cols}{The column holding metric values.}
-
-\item{method}{The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
@@ -27,10 +18,10 @@ effect_metrics_items(
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.}
 }
 \value{
-A volker table containing correlations.
+A volker table containing item statistics
 }
 \description{
-Output skewness, kurtosis and w-statistic for each item
+The test is calculated using  \code{stats::\link[stats:shapiro.test]{shapiro.test}}.
 }
 \examples{
 library(volker)

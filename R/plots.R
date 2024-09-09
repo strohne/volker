@@ -2131,7 +2131,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #'
 #' @return A list with figure settings
 .get_fig_settings <- function() {
-  default <-modifyList(VLKR_FIG_SETTINGS, getOption("vlkr.fig.settings", list()))
+  default <- utils::modifyList(VLKR_FIG_SETTINGS, getOption("vlkr.fig.settings", list()))
   result <- default[[1]]
 
   # Select by format

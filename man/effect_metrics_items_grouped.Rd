@@ -2,7 +2,7 @@
 % Please edit documentation in R/effects.R
 \name{effect_metrics_items_grouped}
 \alias{effect_metrics_items_grouped}
-\title{Output confidence intervals of group means, F-Statistics and effect size (Eta^2)}
+\title{Compare groups for each item by calculating F-statistics and effect sizes}
 \usage{
 effect_metrics_items_grouped(
   data,
@@ -30,7 +30,7 @@ effect_metrics_items_grouped(
 A volker tibble.
 }
 \description{
-\strong{Not yet implemented. The future will come.}
+Compare groups for each item by calculating F-statistics and effect sizes
 }
 \examples{
 library(volker)
