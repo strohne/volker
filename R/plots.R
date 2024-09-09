@@ -198,6 +198,10 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, clean = clean)
 
+  if (nrow(data) == 0) {
+    return(NULL)
+  }
+
   # 2. Data
   # Count data
   result <- data %>%
@@ -312,6 +316,10 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "total", limits = NULL, ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
+
+  if (nrow(data) == 0) {
+    return(NULL)
+  }
 
   # 2. Swap columns
   if (prop == "cols") {
@@ -440,6 +448,10 @@ plot_counts_one_cor <- function(data, col, cross, category = NULL, prop = "total
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
+  if (nrow(data) == 0) {
+    return(NULL)
+  }
+
   # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)
 
@@ -491,6 +503,10 @@ plot_counts_one_cor <- function(data, col, cross, category = NULL, prop = "total
 plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = FALSE, limits = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, clean = clean)
+
+  if (nrow(data) == 0) {
+    return(NULL)
+  }
 
   # 2. Calculate data
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -617,6 +633,10 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+
+  if (nrow(data) == 0) {
+    return(NULL)
+  }
 
   # 2. Calculate data
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -787,6 +807,10 @@ plot_counts_items_cor <- function(data, cols, cross, category = NULL, title = TR
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
 
+  if (nrow(data) == 0) {
+    return(NULL)
+  }
+
   # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)
 
@@ -829,6 +853,10 @@ plot_counts_items_cor <- function(data, cols, cross, category = NULL, title = TR
 plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, clean = clean)
+
+  if (nrow(data) == 0) {
+    return(NULL)
+  }
 
   # Extract the maximum density value
   max_density <- .density_mode(data, {{ col }})
@@ -934,6 +962,10 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
 
+  if (nrow(data) == 0) {
+    return(NULL)
+  }
+
   # Add n to labels
   # if (!is.null(numbers) && any(numbers == "n")) {
   #
@@ -1020,6 +1052,10 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
 plot_metrics_one_cor <- function(data, col, cross, limits = NULL, log = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
+
+  if (nrow(data) == 0) {
+    return(NULL)
+  }
 
   # 2. Remove 0 values in log plots
   if (log) {
@@ -1128,6 +1164,10 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, clean = clean)
 
+  if (nrow(data) == 0) {
+    return(NULL)
+  }
+
   # 2. Pivot items
   result <- data %>%
     labs_clear({{ cols }}) %>%
@@ -1215,6 +1255,10 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
 plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+
+  if (nrow(data) == 0) {
+    return(NULL)
+  }
 
   # 2. Calculate
   # Get positions of group cols
@@ -1316,6 +1360,10 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, title =
 plot_metrics_items_cor <- function(data, cols, cross, ci = TRUE, method = "pearson", title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+
+  if (nrow(data) == 0) {
+    return(NULL)
+  }
 
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
@@ -1419,6 +1467,10 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = TRUE, method = "pears
 plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", numbers = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+
+  if (nrow(data) == 0) {
+    return(NULL)
+  }
 
   # 2. Calculate correlation
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)

@@ -257,6 +257,15 @@ labs_restore <- function(data, cols = NULL) {
 labs_apply <- function(data, codes = NULL, cols = NULL, items = TRUE, values = TRUE) {
 
   # Convert lists to data frames
+  if (!is.null(items) && is.vector(items) && !is.null(names(items))) {
+    items <- as.list(items)
+  }
+
+  if (!is.null(values) &&is.vector(values) && !is.null(names(values))) {
+    values <- as.list(values)
+  }
+
+
   if (is.list(items)) {
 
     codes <- data.frame(
@@ -279,7 +288,7 @@ labs_apply <- function(data, codes = NULL, cols = NULL, items = TRUE, values = T
   }
 
   # Check
-  if ((nrow(codes) ==0)) {
+  if (is.null(codes) || (nrow(codes) ==0)) {
     return (data)
   }
 

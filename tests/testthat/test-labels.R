@@ -153,6 +153,41 @@ test_that("Numeric values are relabeled", {
 
 })
 
+
+
+# Labeling using a named vector equals labeling by a named list
+test_that("Numeric values are relabeled by a named vector", {
+
+  result_vector <- data %>%
+    labs_apply(
+      cols=starts_with("cg_adoption_advantage"),
+      values = c(
+        "1" = "Stimme überhaupt nicht zu",
+        "2" = "Stimme nicht zu",
+        "3" = "Unentschieden",
+        "4" = "Stimme zu",
+        "5" =  "Stimme voll und ganz zu"
+      )
+    ) %>%
+    tab_counts(cg_adoption_advantage_01)
+
+  result_list <- data %>%
+    labs_apply(
+      cols=starts_with("cg_adoption_advantage"),
+      values = list(
+        "1" = "Stimme überhaupt nicht zu",
+        "2" = "Stimme nicht zu",
+        "3" = "Unentschieden",
+        "4" = "Stimme zu",
+        "5" =  "Stimme voll und ganz zu"
+      )
+    ) %>%
+    tab_counts(cg_adoption_advantage_01)
+
+
+  expect_identical(result_list, result_vector)
+})
+
 # Labeling uncoded factor values
 test_that("Factor values are relabeled", {
 

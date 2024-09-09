@@ -69,3 +69,14 @@ if (Sys.getenv("R_LOCALTESTS") == "1") {
   })
 
 }
+
+test_that("Empty plots are empty", {
+   test_data <- tibble(var1=c(NA))
+
+   plot_counts(test_data, var1) |>
+     expect_null()
+
+   plot_counts(test_data, var1) |>
+     expect_message("The dataset is empty, check your values.")
+
+})
