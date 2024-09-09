@@ -2,7 +2,7 @@
 % Please edit documentation in R/effects.R
 \name{effect_metrics}
 \alias{effect_metrics}
-\title{Output effect sizes and regression model parameters}
+\title{Output effect sizes and test statistics for metric data}
 \usage{
 effect_metrics(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...)
 }
@@ -27,12 +27,12 @@ Set metric to TRUE, to treat it as metric and calculate correlations.}
 A volker tibble.
 }
 \description{
-The regression type depends on the number of selected columns:
+The calculations depend on the number of selected columns:
 \itemize{
-\item One column: see \link{effect_metrics_one} (not yet implemented)
+\item One column: see \link{effect_metrics_one}
 \item Multiple columns: see \link{effect_metrics_items}
 \item One column and one grouping column: see \link{effect_metrics_one_grouped}
-\item Multiple columns and one grouping column: see \link{effect_metrics_items_grouped} (not yet implemented)
+\item Multiple columns and one grouping column: see \link{effect_metrics_items_grouped}
 }
 
 By default, if you provide two column selections, the second column is treated as categorical.

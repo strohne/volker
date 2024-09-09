@@ -4,7 +4,7 @@
 \alias{effect_counts_items_grouped}
 \title{Effect size and test for comparing multiple variables by a grouping variable}
 \usage{
-effect_counts_items_grouped(data, cols, cross, clean = T, ...)
+effect_counts_items_grouped(data, cols, cross, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A tibble containing item measures and grouping variable.}

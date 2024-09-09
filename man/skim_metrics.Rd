@@ -8,7 +8,7 @@ Returns a five point summary, mean and sd, items count and alpha for scales adde
 skim_metrics(data, ..., .data_name = NULL)
 }
 \value{
-A skimmer, see \link{skim_with}
+A skimmer, see \link[skimr]{skim_with}
 }
 \description{
 A reduced skimmer for metric variables

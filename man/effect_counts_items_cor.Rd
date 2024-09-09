@@ -4,7 +4,7 @@
 \alias{effect_counts_items_cor}
 \title{Correlate the values in multiple items and output effect sizes and tests}
 \usage{
-effect_counts_items_cor(data, cols, cross, clean = T, ...)
+effect_counts_items_cor(data, cols, cross, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A tibble containing item measures.}

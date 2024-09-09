@@ -546,10 +546,10 @@ labs_impute <- function(data) {
 
     # Get numeric values from the codebook
     vals_codebook <- codes$value_name[codes$item_name == col]
-    vals_codebook <- na.omit(suppressWarnings(as.numeric(unique(vals_codebook))))
+    vals_codebook <- stats::na.omit(suppressWarnings(as.numeric(unique(vals_codebook))))
 
     # Get residual values from the dataset
-    vals_data <- na.omit(suppressWarnings(as.numeric(unique(data[[col]]))))
+    vals_data <- stats::na.omit(suppressWarnings(as.numeric(unique(data[[col]]))))
     vals_data <- vals_data[vals_data %in% na.numbers]
 
     if (length(vals_data > 0)) {

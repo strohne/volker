@@ -1660,7 +1660,7 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
 #' @keywords internal
 #'
 #' @param df Data frame.
-#' @return Formatted  table produced by \link{kable}.
+#' @return Formatted  table produced by \link[knitr]{kable}.
 .knit_table <- function(df, ...) {
   options(knitr.kable.NA = '')
 

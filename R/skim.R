@@ -5,7 +5,7 @@
 #'
 #' @importFrom skimr skim_with
 #' @importFrom skimr sfl
-#' @return A skimmer, see \link{skim_with}
+#' @return A skimmer, see \link[skimr]{skim_with}
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt

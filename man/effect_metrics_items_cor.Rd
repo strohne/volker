@@ -21,7 +21,7 @@ effect_metrics_items_cor(
 
 \item{cross}{The column holding metric values to correlate.}
 
-\item{method}{The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.}
+\item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

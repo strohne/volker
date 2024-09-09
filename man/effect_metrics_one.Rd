@@ -2,9 +2,9 @@
 % Please edit documentation in R/effects.R
 \name{effect_metrics_one}
 \alias{effect_metrics_one}
-\title{Test whether distribution is normal}
+\title{Test whether a distribution is normal}
 \usage{
-effect_metrics_one(data, col, labels = TRUE, clean = T, ...)
+effect_metrics_one(data, col, labels = TRUE, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A tibble.}
@@ -21,7 +21,7 @@ effect_metrics_one(data, col, labels = TRUE, clean = T, ...)
 A volker tibble.
 }
 \description{
-Test whether distribution is normal
+The test is calculated using  \code{stats::\link[stats:shapiro.test]{shapiro.test}}.
 }
 \examples{
 library(volker)
