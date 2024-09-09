@@ -35,7 +35,7 @@ and lm (regression results).}
 A volker list object containing volker tables with the requested statistics.
 }
 \description{
-The regression output comes from \code{stats::\link[stats::lm]{lm}}.
+The regression output comes from \code{\link[stats:lm]{lm}}.
 }
 \examples{
 library(volker)

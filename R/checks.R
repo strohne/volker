@@ -71,6 +71,8 @@ check_has_column <- function(data, cols, msg = NULL) {
 
 #' Check whether a parameter value is from a valid set
 #'
+#' @keywords internal
+#'
 #' @param value A character value.
 #' @param allowed Allowed values.
 #' @param stopit Whether to stop execution if the value is invalid.

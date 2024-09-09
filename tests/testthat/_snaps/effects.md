@@ -136,10 +136,10 @@
     Output
       
       
-      |Usage                   | W-statistic| p value| stars|  normality| skewness| kurtosis|
-      |:-----------------------|-----------:|-------:|-----:|----------:|--------:|--------:|
-      |in private context      |        0.90|   0.000|   ***| not normal|     0.41|    -0.39|
-      |in professional context |        0.84|   0.000|   ***| not normal|     0.51|    -1.13|
+      |Usage                   | skewness| kurtosis| W-statistic| p value| stars|  normality|
+      |:-----------------------|--------:|--------:|-----------:|-------:|-----:|----------:|
+      |in private context      |     0.41|    -0.39|        0.90|   0.000|   ***| not normal|
+      |in professional context |     0.51|    -1.13|        0.84|   0.000|   ***| not normal|
 
 # effect_metrics_items_cor with one variable
 

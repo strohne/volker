@@ -1657,6 +1657,11 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
     dplyr::mutate(item1 = trim_prefix(.data$item1, prefix1)) |>
     dplyr::mutate(item2 = trim_prefix(.data$item2, prefix2))
 
+  if ((prefix1 == prefix2) && (prefix1 != "")) {
+    prefix1 <- paste0("Item 1: ", prefix1)
+    prefix2 <- paste0("Item 2: ", prefix2)
+  }
+
   # Rename first column
   if (prefix1 != "") {
     colnames(result)[1] <- prefix1
@@ -1735,7 +1740,7 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
 #' @keywords internal
 #'
 #' @param df Data frame.
-#' @return Formatted  table produced by \link[knitr]{kable}.
+#' @return Formatted  table produced by \link[knitr::kable]{kable}.
 .knit_table <- function(df, ...) {
   options(knitr.kable.NA = '')
 

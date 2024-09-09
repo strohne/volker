@@ -21,3 +21,4 @@ logical whether method is valid.
 \description{
 Check whether a parameter value is from a valid set
 }
+\keyword{internal}

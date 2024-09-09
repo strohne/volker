@@ -134,10 +134,11 @@ effect_metrics(data, starts_with("cg_adoption"), sd_age, metric = TRUE)
 ```{r}
 
 effect_metrics(
-  data, starts_with("cg_adoption_adv"),
+  data, 
+  starts_with("cg_adoption_adv"),
   starts_with("cg_adoption_adv"),
   metric = TRUE
-)
+) 
 
 ```
 

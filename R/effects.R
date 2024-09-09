@@ -513,7 +513,7 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = TRUE, ... ) {
 
 #' Output a regression table with estimates and macro statistics
 #'
-#' The regression output comes from \code{stats::\link[stats::lm]{lm}}.
+#' The regression output comes from \code{\link[stats:lm]{lm}}.
 #'
 #' @keywords internal
 #'
@@ -985,6 +985,10 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
     dplyr::mutate(item1 = trim_prefix(.data$item1, prefix1)) |>
     dplyr::mutate(item2 = trim_prefix(.data$item2, prefix2))
 
+  if ((prefix1 == prefix2) && (prefix1 != "")) {
+    prefix1 <- paste0("Item 1: ", prefix1)
+    prefix2 <- paste0("Item 2: ", prefix2)
+  }
 
   # Rename first column
   if (prefix1 != "") {
@@ -1141,7 +1145,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #'
 #' @keywords internal
 #'
-#' @param fit Result of a \code{stats::\link[stats::lm]{lm}} call.
+#' @param fit Result of a \code{\link[stats:lm]{lm}} call.
 #' @author Created with the help of ChatGPT.
 #' @return A tibble with regression parameters.
 tidy_lm_levels <- function(fit) {

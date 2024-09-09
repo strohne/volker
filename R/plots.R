@@ -2138,6 +2138,8 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 
 #' Get plot size and resolution for the current output format from the config
 #'
+#' @keywords internal
+#'
 #' @return A list with figure settings
 .get_fig_settings <- function() {
   default <- utils::modifyList(VLKR_FIG_SETTINGS, getOption("vlkr.fig.settings", list()))

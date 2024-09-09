@@ -45,6 +45,7 @@ reference:
 - contents:
   - theme_vlkr
   - html_report
+  - pdf_report
 
 - title: Data preparation
   desc: Functions for data preparation and calculation.

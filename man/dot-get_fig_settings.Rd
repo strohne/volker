@@ -12,3 +12,4 @@ A list with figure settings
 \description{
 Get plot size and resolution for the current output format from the config
 }
+\keyword{internal}
