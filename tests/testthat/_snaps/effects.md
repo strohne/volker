@@ -201,7 +201,7 @@
     Output
       
       
-      |Expectations                                                |                                                Expectations| R squared|  n| Pearson's r| ci low| ci high| df|     t|     p| stars|
+      |Item 1: Expectations                                        |                                        Item 2: Expectations| R squared|  n| Pearson's r| ci low| ci high| df|     t|     p| stars|
       |:-----------------------------------------------------------|-----------------------------------------------------------:|---------:|--:|-----------:|------:|-------:|--:|-----:|-----:|-----:|
       |ChatGPT has clear advantages compared to similar offerings. | ChatGPT has clear advantages compared to similar offerings.|      1.00| 97|        1.00|   1.00|    1.00| 95|   Inf| 0.000|   ***|
       |ChatGPT has clear advantages compared to similar offerings. |                    Using ChatGPT brings financial benefits.|      0.14| 97|        0.37|   0.19|    0.53| 95|  3.91| 0.000|   ***|
