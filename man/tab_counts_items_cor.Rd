@@ -46,7 +46,7 @@ Disable the title with FALSE or provide a custom title as character value.}
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{plot_counts}.}
 }
 \value{
-A ggplot object.
+A volker tibble.
 }
 \description{
 Compare the values in multiple items by a metric column that will be split into groups

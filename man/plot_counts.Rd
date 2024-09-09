@@ -29,22 +29,27 @@ A ggplot2 plot object.
 \description{
 The type of frequency plot depends on the number of selected columns:
 \itemize{
-\item One column: see \link{plot_counts_one}
-\item Multiple columns: see \link{plot_counts_items}
-\item One column and one grouping column: see \link{plot_counts_one_grouped}
-\item Multiple columns and one grouping column: see \link{plot_counts_items_grouped}
-\item Multiple columns and multiple grouping columns: not yet implemented
+\item One categorical column: see \link{plot_counts_one}
+\item Multiple categorical columns: see \link{plot_counts_items}
 }
 
-By default, if you provide two column selections, the second column is treated as categorical.
+Cross tabulations:
+\itemize{
+\item One categorical column and one grouping column: see \link{plot_counts_one_grouped}
+\item Multiple categorical columns and one grouping column: see \link{plot_counts_items_grouped}
+\item Two categorical column selections: not yet implemented
+}
+
+By default, if you provide two column selections, the second selection is treated as categorical.
 Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 \itemize{
-\item One column and one metric column: see \link{plot_counts_one_cor}
-\item Multiple columns and one metric column: see \link{plot_counts_items_cor}
-\item Two column selections: not yet implemented
+\item One categorical column and one metric column: see \link{plot_counts_one_cor}
+\item Multiple categorical columns and one metric column: see \link{plot_counts_items_cor}
+\item Multiple categorical columns and multiple metric columns: not yet implemented
 }
 
-Parameters that may be passed to specific count functions:
+Parameters that may be passed to the count functions
+(see the respective function help):
 \itemize{
 \item \strong{ci}: Add confidence intervals to proportions.
 \item \strong{ordered}: The values of the cross column can be nominal (0), ordered ascending (1), or ordered descending (-1).

@@ -2,20 +2,25 @@
 #'
 #' @description
 #' The type of frequency plot depends on the number of selected columns:
-#' - One column: see \link{plot_counts_one}
-#' - Multiple columns: see \link{plot_counts_items}
-#' - One column and one grouping column: see \link{plot_counts_one_grouped}
-#' - Multiple columns and one grouping column: see \link{plot_counts_items_grouped}
-#' - Multiple columns and multiple grouping columns: not yet implemented
 #'
-#' By default, if you provide two column selections, the second column is treated as categorical.
+#' - One categorical column: see \link{plot_counts_one}
+#' - Multiple categorical columns: see \link{plot_counts_items}
+#'
+#' Cross tabulations:
+#'
+#' - One categorical column and one grouping column: see \link{plot_counts_one_grouped}
+#' - Multiple categorical columns and one grouping column: see \link{plot_counts_items_grouped}
+#' - Two categorical column selections: not yet implemented
+#'
+#' By default, if you provide two column selections, the second selection is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
-#' - One column and one metric column: see \link{plot_counts_one_cor}
-#' - Multiple columns and one metric column: see \link{plot_counts_items_cor}
-#' - Two column selections: not yet implemented
+#' - One categorical column and one metric column: see \link{plot_counts_one_cor}
+#' - Multiple categorical columns and one metric column: see \link{plot_counts_items_cor}
+#' - Multiple categorical columns and multiple metric columns: not yet implemented
 #'
-#' Parameters that may be passed to specific count functions:
+#' Parameters that may be passed to the count functions
+#' (see the respective function help):
 #' - **ci**: Add confidence intervals to proportions.
 #' - **ordered**: The values of the cross column can be nominal (0), ordered ascending (1), or ordered descending (-1).
 #'                The colors are adjusted accordingly.
@@ -27,10 +32,9 @@
 #' - **title**: All plots usually get a title derived from the column attributes or column names.
 #'              Set to FALSE to suppress the title or provide a title of your choice as a character value.
 #' - **labels**: Labels are extracted from the column attributes.
-#'                Set to FALSE to output bare column names and values.
+#'               Set to FALSE to output bare column names and values.
 #' - **numbers**: Set the numbers parameter to “n” (frequency), “p” (percentage) or c(“n”,“p”).
 #'                To prevent cluttering and overlaps, numbers are only plotted on bars larger than 5%.
-#'
 #'
 #' `r lifecycle::badge("experimental")`
 #'
@@ -104,34 +108,38 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 #'
 #' @description
 #' The plot type depends on the number of selected columns:
-#' - One column: see \link{plot_metrics_one}
-#' - Multiple columns: see \link{plot_metrics_items}
-#' - One column and one grouping column: see \link{plot_metrics_one_grouped}
-#' - Multiple columns and one grouping column: see \link{plot_metrics_items_grouped}
-#' - Multiple columns and multiple grouping columns: not yet implemented
 #'
-#' By default, if you provide two column selections, the second column is treated as categorical.
+#' - One metric column: see \link{plot_metrics_one}
+#' - Multiple metric columns: see \link{plot_metrics_items}
+#'
+#' Group comparisons:
+#'
+#' - One metric column and one grouping column: see \link{plot_metrics_one_grouped}
+#' - Multiple metric columns and one grouping column: see \link{plot_metrics_items_grouped}
+#' - Multiple metric columns and multiple grouping columns: not yet implemented
+#'
+#' By default, if you provide two column selections, the second selection is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
 #' - Two metric columns: see \link{plot_metrics_one_cor}
-#' - Multiple columns and one metric column : see \link{plot_metrics_items_cor}
+#' - Multiple metric columns and one metric column : see \link{plot_metrics_items_cor}
 #' - Two metric column selections: see \link{plot_metrics_items_cor_items}
 #'
-#' Parameters that may be passed to specific metric functions:
+#' Parameters that may be passed to the metric functions
+#' (see the respective function help):
 #' - **ci**: Plot confidence intervals for means or correlation coefficients.
 #' - **box**: Visualise the distribution by adding boxplots.
 #' - **log**: In scatter plots, you can use a logarithmic scale.
-#'          Be aware, that zero values will be omitted because their log value is undefined.
+#'            Be aware, that zero values will be omitted because their log value is undefined.
 #' - **method**: By default, correlations are calculated using Pearson’s R.
-#'              You can choose Spearman’s Rho with the methods-parameter.
+#'               You can choose Spearman’s Rho with the methods-parameter.
 #' - **limits**: The scale limits are automatically guessed by the package functions (work in progress).
-#'           Use the limits-parameter to manually fix any misleading graphs.
+#'               Use the limits-parameter to manually fix any misleading graphs.
 #' - **title**: All plots usually get a title derived from the column attributes or column names.
-#'          Set to FALSE to suppress the title or provide a title of your choice as a character value.
+#'              Set to FALSE to suppress the title or provide a title of your choice as a character value.
 #' - **labels**: Labels are extracted from the column attributes.
-#'          Set to FALSE to output bare column names and values.
+#'               Set to FALSE to output bare column names and values.
 #' - **numbers**: Controls whether to display correlation coefficients on the plot.
-#'
 #'
 #' `r lifecycle::badge("experimental")`
 #'
@@ -809,8 +817,8 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
 #' Correlation of categorical items with categorical items
 #'
 #' \strong{Not yet implemented. The future will come.}
-#' @keywords internal
 #'
+#' @keywords internal
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
@@ -822,7 +830,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-plot_counts_items_grouped_items <- function(data, cols, cross, category = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_items_grouped_items <- function(data, cols, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
   }
 
@@ -887,6 +895,7 @@ plot_counts_items_cor <- function(data, cols, cross, category = NULL, title = TR
 #' Correlation of categorical items with metric items
 #'
 #' \strong{Not yet implemented. The future will come.}
+#'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
@@ -1413,12 +1422,12 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, title =
 #' Correlation of metric items with categorical items
 #'
 #' \strong{Not yet implemented. The future will come.}
+#'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables (e.g. starts_with...)
-#' @param limits The scale limits. Set NULL to extract limits from the labels.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1426,7 +1435,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, title =
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-plot_metrics_items_grouped_items <- function(data, cols, cross, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_grouped_items <- function(data, cols, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
     warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 

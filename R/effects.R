@@ -2,16 +2,21 @@
 #'
 #' @description
 #' The type of effect size depends on the number of selected columns:
-#' - One column: see \link{effect_counts_one}
-#' - Multiple columns: see \link{effect_counts_items}
-#' - One column and one grouping column: see \link{effect_counts_one_grouped}
-#' - Multiple columns and one grouping column: see \link{effect_counts_items_grouped} (not yet implemented)
+#' - One categorical column: see \link{effect_counts_one}
+#' - Multiple categorical columns: see \link{effect_counts_items}
+#'
+#' Cross tabulations:
+#'
+#' - One categorical column and one grouping column: see \link{effect_counts_one_grouped}
+#' - Multiple categorical columns and one grouping column: see \link{effect_counts_items_grouped} (not yet implemented)
+#' - Multiple categorical columns and multiple grouping columns: not yet implemented
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
-#' - One column and one metric column: see \link{effect_counts_one_cor} (not yet implemented)
-#' - Multiple columns and one metric column: see \link{effect_counts_items_cor} (not yet implemented)
+#' - One categorical column and one metric column: see \link{effect_counts_one_cor} (not yet implemented)
+#' - Multiple categorical columns and one metric column: see \link{effect_counts_items_cor} (not yet implemented)
+#' - Multiple categorical columns and multiple metric columns: not yet implemented
 #'
 #' `r lifecycle::badge("experimental")`
 #'
@@ -81,16 +86,22 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
 #'
 #' @description
 #' The calculations depend on the number of selected columns:
-#' - One column: see \link{effect_metrics_one}
-#' - Multiple columns: see \link{effect_metrics_items}
-#' - One column and one grouping column: see \link{effect_metrics_one_grouped}
-#' - Multiple columns and one grouping column: see \link{effect_metrics_items_grouped}
+#'
+#' - One metric column: see \link{effect_metrics_one}
+#' - Multiple metric columns: see \link{effect_metrics_items}
+#'
+#' Group comparisons:
+#'
+#' - One metric column and one grouping column: see \link{effect_metrics_one_grouped}
+#' - Multiple metric columns and one grouping column: see \link{effect_metrics_items_grouped}
+#' - Multiple metric columns and multiple grouping columns: not yet implemented
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
 #' - Two metric columns: see \link{effect_metrics_one_cor}
-#' - Multiple columns: see \link{effect_metrics_items_cor}
+#' - Multiple metric columns and one metric column: see \link{effect_metrics_items_cor}
+#' - Two metric column selections: see \link{plot_metrics_items_cor_items}
 #'
 #' `r lifecycle::badge("experimental")`
 #'

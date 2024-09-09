@@ -8,7 +8,6 @@ plot_metrics_items_grouped_items(
   data,
   cols,
   cross,
-  limits = NULL,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -21,8 +20,6 @@ plot_metrics_items_grouped_items(
 \item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
 \item{cross}{Tidyselect item variables (e.g. starts_with...)}
-
-\item{limits}{The scale limits. Set NULL to extract limits from the labels.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

@@ -2,18 +2,21 @@
 #'
 #' @description
 #' The type of frequency table depends on the number of selected columns:
-#' - One column: see \link{tab_counts_one}
-#' - Multiple columns: see \link{tab_counts_items}
-#' - One column and one grouping column: see \link{tab_counts_one_grouped}
-#' - Multiple columns and one grouping column: see \link{tab_counts_items_grouped}
-#' - Multiple columns and multiple grouping columns: not yet implemented
+#' - One categorical column: see \link{tab_counts_one}
+#' - Multiple categorical columns: see \link{tab_counts_items}
+#'
+#' Cross tabulations:
+#'
+#' - One categorical column and one grouping column: see \link{tab_counts_one_grouped}
+#' - Multiple categorical columns and one grouping column: see \link{tab_counts_items_grouped}
+#' - Multiple categorical columns and multiple grouping columns: not yet implemented
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
-#' - One column and one metric column: see \link{tab_counts_one_cor}
-#' - Multiple columns and one metric column: see \link{tab_counts_items_cor}
-#' - Two column selections: not yet implemented
+#' - One categorical column and one metric column: see \link{tab_counts_one_cor}
+#' - Multiple categorical columns and one metric column: see \link{tab_counts_items_cor}
+#' - Multiple categorical columns and multiple metric columns: not yet implemented
 #'
 #' Parameters that may be passed to specific count functions:
 #' - **ci**: Add confidence intervals to proportions.
@@ -97,17 +100,20 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
 #'
 #' @description
 #' The table type depends on the number of selected columns:
-#' - One column: see \link{tab_metrics_one}
-#' - Multiple columns: see \link{tab_metrics_items}
-#' - One column and one grouping column: see \link{tab_metrics_one_grouped}
-#' - Multiple columns and one grouping column: see \link{tab_metrics_items_grouped}
-#' - Multiple columns and multiple grouping columns: not yet implemented
+#' - One metric column: see \link{tab_metrics_one}
+#' - Multiple metric columns: see \link{tab_metrics_items}
+#'
+#' Group comparisons:
+#'
+#' - One metric column and one grouping column: see \link{tab_metrics_one_grouped}
+#' - Multiple metric columns and one grouping column: see \link{tab_metrics_items_grouped}
+#' - Multiple metric columns and multiple grouping columns: not yet implemented
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 #'
 #' - Two metric columns: see \link{tab_metrics_one_cor}
-#' - Multiple columns: see \link{tab_metrics_items_cor}
+#' - Multiple metric columns and one metric column: see \link{tab_metrics_items_cor}
 #' - Two metric column selections: see \link{tab_metrics_items_cor_items}
 #'
 #' Parameters that may be passed to specific metric functions:
@@ -704,7 +710,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
-#' @return A ggplot object.
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -916,6 +922,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 #' Correlation of categorical items with categorical items
 #'
 #' \strong{Not yet implemented. The future will come.}
+#'
 #' @keywords internal
 #'
 #'
@@ -927,9 +934,9 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
-#' @return A ggplot object.
+#' @return A volker tibble.
 #' @importFrom rlang .data
-tab_counts_items_grouped_items <- function(data, cols, cross, category = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+tab_counts_items_grouped_items <- function(data, cols, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
@@ -953,7 +960,7 @@ tab_counts_items_grouped_items <- function(data, cols, cross, category = NULL, t
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
-#' @return A ggplot object.
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -984,6 +991,7 @@ tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NUL
 #' Correlation of categorical items with metric items
 #'
 #' \strong{Not yet implemented. The future will come.}
+#'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
@@ -994,7 +1002,7 @@ tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NUL
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
-#' @return A ggplot object.
+#' @return A volker tibble.
 #' @importFrom rlang .data
 tab_counts_items_cor_items <- function(data, cols, cross,  title = TRUE, labels = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
@@ -1200,7 +1208,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, digits = 1, la
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
-#' @return A volker tibble
+#' @return A volker tibble.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -1499,6 +1507,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
 #' Correlation of metric items with categorical items
 #'
 #' \strong{Not yet implemented. The future will come.}
+#'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
@@ -1509,7 +1518,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
-#' @return A ggplot object.
+#' @return A volker tibble.
 #' @importFrom rlang .data
 tab_metrics_items_grouped_items <- function(data, cols, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
@@ -1607,8 +1616,10 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", digits 
 #' data <- volker::chatgpt
 #'
 #' tab_metrics_items_cor_items(
-#' data, starts_with("cg_adoption_adv"),
-#' starts_with("use"), metric = TRUE
+#'   data,
+#'   starts_with("cg_adoption_adv"),
+#'   starts_with("use"),
+#'   metric = TRUE
 #' )
 #'
 #' @importFrom rlang .data

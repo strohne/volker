@@ -8,7 +8,6 @@ plot_counts_items_grouped_items(
   data,
   cols,
   cross,
-  category = NULL,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,

@@ -29,18 +29,22 @@ A volker tibble.
 \description{
 The table type depends on the number of selected columns:
 \itemize{
-\item One column: see \link{tab_metrics_one}
-\item Multiple columns: see \link{tab_metrics_items}
-\item One column and one grouping column: see \link{tab_metrics_one_grouped}
-\item Multiple columns and one grouping column: see \link{tab_metrics_items_grouped}
-\item Multiple columns and multiple grouping columns: not yet implemented
+\item One metric column: see \link{tab_metrics_one}
+\item Multiple metric columns: see \link{tab_metrics_items}
+}
+
+Group comparisons:
+\itemize{
+\item One metric column and one grouping column: see \link{tab_metrics_one_grouped}
+\item Multiple metric columns and one grouping column: see \link{tab_metrics_items_grouped}
+\item Multiple metric columns and multiple grouping columns: not yet implemented
 }
 
 By default, if you provide two column selections, the second column is treated as categorical.
 Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 \itemize{
 \item Two metric columns: see \link{tab_metrics_one_cor}
-\item Multiple columns: see \link{tab_metrics_items_cor}
+\item Multiple metric columns and one metric column: see \link{tab_metrics_items_cor}
 \item Two metric column selections: see \link{tab_metrics_items_cor_items}
 }
 

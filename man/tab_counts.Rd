@@ -29,19 +29,23 @@ A volker tibble.
 \description{
 The type of frequency table depends on the number of selected columns:
 \itemize{
-\item One column: see \link{tab_counts_one}
-\item Multiple columns: see \link{tab_counts_items}
-\item One column and one grouping column: see \link{tab_counts_one_grouped}
-\item Multiple columns and one grouping column: see \link{tab_counts_items_grouped}
-\item Multiple columns and multiple grouping columns: not yet implemented
+\item One categorical column: see \link{tab_counts_one}
+\item Multiple categorical columns: see \link{tab_counts_items}
+}
+
+Cross tabulations:
+\itemize{
+\item One categorical column and one grouping column: see \link{tab_counts_one_grouped}
+\item Multiple categorical columns and one grouping column: see \link{tab_counts_items_grouped}
+\item Multiple categorical columns and multiple grouping columns: not yet implemented
 }
 
 By default, if you provide two column selections, the second column is treated as categorical.
 Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 \itemize{
-\item One column and one metric column: see \link{tab_counts_one_cor}
-\item Multiple columns and one metric column: see \link{tab_counts_items_cor}
-\item Two column selections: not yet implemented
+\item One categorical column and one metric column: see \link{tab_counts_one_cor}
+\item Multiple categorical columns and one metric column: see \link{tab_counts_items_cor}
+\item Multiple categorical columns and multiple metric columns: not yet implemented
 }
 
 Parameters that may be passed to specific count functions:

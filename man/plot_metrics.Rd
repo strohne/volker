@@ -29,22 +29,27 @@ A ggplot object.
 \description{
 The plot type depends on the number of selected columns:
 \itemize{
-\item One column: see \link{plot_metrics_one}
-\item Multiple columns: see \link{plot_metrics_items}
-\item One column and one grouping column: see \link{plot_metrics_one_grouped}
-\item Multiple columns and one grouping column: see \link{plot_metrics_items_grouped}
-\item Multiple columns and multiple grouping columns: not yet implemented
+\item One metric column: see \link{plot_metrics_one}
+\item Multiple metric columns: see \link{plot_metrics_items}
 }
 
-By default, if you provide two column selections, the second column is treated as categorical.
+Group comparisons:
+\itemize{
+\item One metric column and one grouping column: see \link{plot_metrics_one_grouped}
+\item Multiple metric columns and one grouping column: see \link{plot_metrics_items_grouped}
+\item Multiple metric columns and multiple grouping columns: not yet implemented
+}
+
+By default, if you provide two column selections, the second selection is treated as categorical.
 Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
 \itemize{
 \item Two metric columns: see \link{plot_metrics_one_cor}
-\item Multiple columns and one metric column : see \link{plot_metrics_items_cor}
+\item Multiple metric columns and one metric column : see \link{plot_metrics_items_cor}
 \item Two metric column selections: see \link{plot_metrics_items_cor_items}
 }
 
-Parameters that may be passed to specific metric functions:
+Parameters that may be passed to the metric functions
+(see the respective function help):
 \itemize{
 \item \strong{ci}: Plot confidence intervals for means or correlation coefficients.
 \item \strong{box}: Visualise the distribution by adding boxplots.
