@@ -1560,7 +1560,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
         color = ggplot2::theme_get()$axis.text.y$color
       )
     ) +
-    ggplot2::scale_x_discrete(labels = trunc_labels(result$item1)) +
+    ggplot2::scale_x_discrete(labels = \(labels) trunc_labels(labels)) +
     ggplot2::coord_fixed()
 
   # Add base

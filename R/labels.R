@@ -807,16 +807,13 @@ wrap_label <- function(x, width = 40) {
 #' Truncate labels
 #'
 #' Truncate labels that exceed a specified maximum length.
-#' TODO: don't return function, use lambda expression in scale_x_discrete call
 #'
 #' @keywords internal
 #'
 #' @param x A character vector.
-#' @param max_length Specifies max_length, default is 20.
-#' @return A function that truncates labels to the max_length,
-#'        appending "..." if shortened.
+#' @param max_length Maximum length, default is 20. The ellipsis "..." is appended to shortened labels.
+#' @return A character vector with truncated labels.
 trunc_labels <- function(x, max_length = 20) {
-
   ifelse(nchar(x) > max_length, paste0(substr(x, 1, max_length), "..."), x)
 }
 
