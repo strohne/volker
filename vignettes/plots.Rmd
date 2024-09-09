@@ -25,20 +25,24 @@ data <- volker::chatgpt
 ```
 
 
-| \#     | function                  | output | scale    | columns  | crossings  |
-|--------|---------------------------|--------|----------|----------|------------|
-| 1     | plot_counts_one            | plot   | counts   | one      |            |
-| 2     | plot_counts_one_grouped    | plot   | counts   | one      | grouped    |
-| 3     | plot_counts_one_cor        | plot   | counts   | one      | correlated |
-| 4     | plot_counts_items          | plot   | counts   | multiple |            |
-| 5     | plot_counts_items_grouped  | plot   | counts   | multiple | grouped    |
-| 6     | plot_counts_items_cor      | plot   | counts   | multiple | correlated |
-| 7     | plot_metrics_one           | plot   | metrics  | one      |            |
-| 8     | plot_metrics_one_grouped   | plot   | metrics  | one      | grouped    |
-| 9     | plot_metrics_one_cor       | plot   | metrics  | one      | correlated |
-| 10    | plot_metrics_items         | plot   | metrics  | multiple |            |
-| 11    | plot_metrics_items_grouped | plot   | metrics  | multiple | grouped    |
-| 12    | plot_metrics_items_cor     | plot   | metrics  | multiple | correlated |
+| \# | function                         | implemented | output | scale   | columns  | crossings  |
+|----|----------------------------------|-------------|--------|---------|----------|------------|
+| 1  | plot_counts_one                  |             | plot   | counts  | one      |            |
+| 2  | plot_counts_one_grouped          |             | plot   | counts  | one      | grouped    |
+| 3  | plot_counts_one_cor              |             | plot   | counts  | one      | correlated |
+| 4  | plot_counts_items                |             | plot   | counts  | multiple |            |
+| 5  | plot_counts_items_grouped        |             | plot   | counts  | multiple | grouped    |
+| 6  | plot_counts_items_grouped_items  | not yet     | plot   | counts  | multiple | grouped    |
+| 7  | plot_counts_items_cor            |             | plot   | counts  | multiple | correlated |
+| 8  | plot_counts_items_cor_items      | not yet     | plot   | counts  | multiple | correlated |
+| 9  | plot_metrics_one                 |             | plot   | metrics | one      |            |
+| 10 | plot_metrics_one_grouped         |             | plot   | metrics | one      | grouped    |
+| 11 | plot_metrics_one_cor             |             | plot   | metrics | one      | correlated |
+| 12 | plot_metrics_items               |             | plot   | metrics | multiple |            |
+| 13 | plot_metrics_items_grouped       |             | plot   | metrics | multiple | grouped    |
+| 14 | plot_metrics_items_grouped_items | not yet     | plot   | metrics | multiple | grouped    |
+| 15 | plot_metrics_items_cor           |             | plot   | metrics | multiple | correlated |
+| 16 | plot_metrics_items_cor_items     |             | plot   | metrics | multiple | correlated |
 
 
 ## Frequencies of categorical variables
@@ -80,7 +84,13 @@ plot_counts(
 
 ```
 
-### 6. Group probabilities of multiply items by a metric variable
+### 6. Correlation of categorical items with categorical items
+```{r}
+# TODO
+#plot_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+```
+
+### 7. Group probabilities of multiply items by a metric variable
 ```{r, fig.height=5}
 plot_counts(
   data, starts_with("cg_adoption_"), sd_age, metric = TRUE,
@@ -88,31 +98,37 @@ plot_counts(
 )
 ```
 
+### 8. Correlation of categorical items with metric items
+```{r}
+# TODO
+#plot_counts(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric = TRUE)
+```
+
 ## Metric distributions
 
-### 7. Distribution for one metric variable: Age
+### 9. Distribution for one metric variable: Age
 ```{r}
 plot_metrics(data, sd_age)
 ```
 
-### 8. Distribution by a grouping variable
+### 10. Distribution by a grouping variable
 ```{r}
 plot_metrics(data, sd_age, sd_gender, bars = "box")
 ```
 
-### 9. Correlation of two metric variables
+### 11. Correlation of two metric variables
 ```{r}
 plot_metrics(data, use_private, sd_age, metric = TRUE)
 ```
 
-### 10. Distribution of multiple metric items: Adoption factors
+### 12. Distribution of multiple metric items: Adoption factors
 ```{r}
 # Note that negative values are omitted,
 # you can change the behavior with the negative-parameter
 plot_metrics(data, starts_with("cg_adoption_"))
 ```
 
-### 11. Group comparison of multiple metric items: Adoption factors by gender
+### 13. Group comparison of multiple metric items: Adoption factors by gender
 ```{r}
 # Filter out one group, too few cases in the sample
 data %>% 
@@ -120,15 +136,19 @@ data %>%
   plot_metrics(starts_with("cg_adoption_"), sd_gender)
 ```
 
-### 12. Correlation of items with one single variable
+### 14. Correlation of metric items with categorical items
+```{r}
+# TODO
+# plot_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+```
+
+### 15. Correlation of items with one single variable
 ```{r}
 # For now confidence intervals only supported for pearsons r 
 plot_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric = TRUE)
 ```
 
-## Correlations
-
-### a) Correlation of metric items with metric items
+### 16. Correlation of metric items with metric items
 
 ```{r}
 plot_metrics(
@@ -136,24 +156,5 @@ plot_metrics(
   metric = TRUE, numbers = TRUE)
 ```
 
-### b) Correlation of metric items with categorical items
-
-```{r}
-# TODO
-# tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"))
-```
 
 
-### c) Correlation of categorical items with metric items
-
-```{r}
-# TODO
-#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric = TRUE)
-```
-
-### d) Correlation of categorical items with categorical items
-
-```{r}
-# TODO
-#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
-```

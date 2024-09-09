@@ -23,22 +23,24 @@ data <- volker::chatgpt
 table {margin-left:0 !important;}
 ```
 
-
-| \#     | function                  | output | scale    | columns   | crossings   |
-|--------|---------------------------|--------|----------|-----------|-------------|
-| 1      | tab_counts_one            | table  | counts   | one       |             |
-| 2      | tab_counts_one_grouped    | table  | counts   | one       | grouped     |
-| 3      | tab_counts_one_cor        | table  | counts   | one       | correlated  |
-| 4      | tab_counts_items          | table  | counts   | multiple  |             |
-| 5      | tab_counts_items_grouped  | table  | counts   | multiple  | grouped     |
-| 6      | tab_counts_items_cor      | table  | counts   | multiple  | correlated  |
-| 7      | tab_metrics_one           | table  | metrics  | one       |             |
-| 8      | tab_metrics_one_grouped   | table  | metrics  | one       | grouped     |
-| 9      | tab_metrics_one_cor       | table  | metrics  | one       | correlated  |
-| 10     | tab_metrics_items         | table  | metrics  | multiple  |             |
-| 11     | tab_metrics_items_grouped | table  | metrics  | multiple  | grouped     |
-| 12     | tab_metrics_items_cor     | table  | metrics  | multiple  | correlated  |
-
+| \# | function                         | implemented | output | scale   | columns  | crossings  |
+|----|----------------------------------|-------------|--------|---------|----------|------------|
+| 1  | tab_counts_one                  |             | table   | counts  | one      |            |
+| 2  | tab_counts_one_grouped          |             | table   | counts  | one      | grouped    |
+| 3  | tab_counts_one_cor              |             | table   | counts  | one      | correlated |
+| 4  | tab_counts_items                |             | table   | counts  | multiple |            |
+| 5  | tab_counts_items_grouped        |             | table   | counts  | multiple | grouped    |
+| 6  | tab_counts_items_grouped_items  | not yet     | table   | counts  | multiple | grouped    |
+| 7  | tab_counts_items_cor            |             | table   | counts  | multiple | correlated |
+| 8  | tab_counts_items_cor_items      | not yet     | table   | counts  | multiple | correlated |
+| 9  | tab_metrics_one                 |             | table   | metrics | one      |            |
+| 10 | tab_metrics_one_grouped         |             | table   | metrics | one      | grouped    |
+| 11 | tab_metrics_one_cor             |             | table   | metrics | one      | correlated |
+| 12 | tab_metrics_items               |             | table   | metrics | multiple |            |
+| 13 | tab_metrics_items_grouped       |             | table   | metrics | multiple | grouped    |
+| 14 | tab_metrics_items_grouped_items | not yet     | table   | metrics | multiple | grouped    |
+| 15 | tab_metrics_items_cor           |             | table   | metrics | multiple | correlated |
+| 16 | tab_metrics_items_cor_items     |             | table   | metrics | multiple | correlated |
 
 ## Frequencies of categorical variables
 
@@ -49,22 +51,25 @@ tab_counts(data, sd_gender)
 ```
 
 ### 2. Two variables: Cross table of innovator type by gender
+
 ```{r}
 tab_counts(data, adopter, sd_gender, prop="cols")
 ```
 
-
 ### 3. Two variables: One categorical and one metric variable split at the median
+
 ```{r}
 tab_counts(data, adopter, sd_age, metric=T)
 ```
 
 ### 4. Multiple items: Frequency table of adoption factors
+
 ```{r}
 tab_counts(data, starts_with("cg_adoption_"))
 ```
 
 ### 5. Multiple grouped items: Frequency table of adoption factors grouped by gender
+
 ```{r}
 tab_counts(
   data, starts_with("cg_adoption_"), sd_gender, 
@@ -72,7 +77,17 @@ tab_counts(
 )
 ```
 
-### 6. Multiple categorical items and one metric variable
+
+### 6. Correlation of categorical items with categorical items
+
+```{r}
+# TODO
+#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+```
+
+
+### 7. Multiple categorical items and one metric variable
+
 ```{r}
 
 tab_counts(
@@ -82,44 +97,60 @@ tab_counts(
 
 ```
 
+### 8. Correlation of categorical items with metric items
+
+```{r}
+# TODO
+#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric = TRUE)
+```
+
 ## Distributions of metric variables
 
-### 7. Distribution table for one metric variable: Age
+### 9. Distribution table for one metric variable: Age
+
 ```{r}
 
 tab_metrics(data, sd_age)
 ```
 
-### 8. Group comparison of a metric variable: Age by gender
+### 10. Group comparison of a metric variable: Age by gender
 
 ```{r}
 tab_metrics(data, sd_age, sd_gender)
 ```
 
-### 9. Correlation of two single variables
+### 11. Correlation of two single variables
+
 ```{r}
 tab_metrics(data, use_private, use_work, metric=T, labels=F)
 ```
 
-### 10. Distribution table for multiple metric items: Adoption factors
+### 12. Distribution table for multiple metric items: Adoption factors
+
 ```{r}
 tab_metrics(data, starts_with("cg_adoption_"))
 ```
 
-### 11. Compare means of multiple items: Adoption factors by gender
+### 13. Compare means of multiple items: Adoption factors by gender
+
 ```{r}
 tab_metrics(data, starts_with("cg_adoption_"), sd_gender)
 ```
 
-### 12. Correlation of items with one single variable
+### 14. Correlation of metric items with categorical items
+
+```{r}
+# TODO
+# tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+```
+
+### 15. Correlation of items with one single variable
 
 ```{r}
 tab_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric=T)
 ```
 
-## Correlations
-
-### a) Correlation of metric items with metric items
+### 16. Correlation of metric items with metric items
 
 ```{r}
 
@@ -139,24 +170,3 @@ tab_metrics(data, starts_with("cg_adoption_adv"),
 #             metric = TRUE)
 ```
 
-### b) Correlation of metric items with categorical items
-
-```{r}
-# TODO
-# tab_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"))
-```
-
-
-### c) Correlation of categorical items with metric items
-
-```{r}
-# TODO
-#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("cg_adoption_adv"), metric = TRUE)
-```
-
-### d) Correlation of categorical items with categorical items
-
-```{r}
-# TODO
-#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
-```
