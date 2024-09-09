@@ -20,7 +20,7 @@ A volker tibble.
 }
 \description{
 Performs a goodness-of-fit test and calculates the Gini coefficient.
-The goodness-of-fit-test is calculated using  \code{stats::\link[stats:chisq.test]{chisq.test}}.
+The goodness-of-fit-test is calculated using \code{stats::\link[stats:chisq.test]{chisq.test}}.
 }
 \examples{
 library(volker)

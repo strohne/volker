@@ -163,7 +163,7 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
 #' Test homogeneity of category shares
 #'
 #' Performs a goodness-of-fit test and calculates the Gini coefficient.
-#' The goodness-of-fit-test is calculated using  \code{stats::\link[stats:chisq.test]{chisq.test}}.
+#' The goodness-of-fit-test is calculated using \code{stats::\link[stats:chisq.test]{chisq.test}}.
 #'
 #' @keywords internal
 #'
@@ -468,7 +468,7 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = TRUE, ... ) {
 
 #' Output a regression table with estimates and macro statistics
 #'
-#' The regression output comes from \code{stats::\link[stats:lm]{lm}}.
+#' The regression output comes from \code{stats::\link[stats::lm]{lm}}.
 #'
 #' @keywords internal
 #'
@@ -899,7 +899,12 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labe
 #' library(volker)
 #' data <- volker::chatgpt
 #'
-#' effect_metrics_items_cor_items(data, starts_with("cg_adoption_adv"), starts_with("use"), metric = TRUE)
+#' effect_metrics_items_cor_items(
+#'   data,
+#'   starts_with("cg_adoption_adv"),
+#'   starts_with("use"),
+#'   metric = TRUE
+#' )
 #'
 #' @export
 #' @importFrom rlang .data
@@ -1074,7 +1079,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #'
 #' @keywords internal
 #'
-#' @param fit Result of a \code{stats::\link[lm]{lm}} call.
+#' @param fit Result of a \code{stats::\link[stats::lm]{lm}} call.
 #' @author Created with the help of ChatGPT.
 #' @return A tibble with regression parameters.
 tidy_lm_levels <- function(fit) {

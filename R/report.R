@@ -294,7 +294,7 @@ print.vlkr_list <- function(x, ...) {
 
       if (inherits(part, "vlkr_tbl")) {
         output <- append(output, .knit_table(part))
-      } else if (inherits(obj, "vlkr_plt")) {
+      } else if (inherits(part, "vlkr_plt")) {
         output <- append(output, .knit_plot(part))
       } else if (is.character(part)) {
         output <- append(output, part)
