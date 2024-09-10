@@ -12,16 +12,16 @@ editor_options:
 
 ```{r include=FALSE}
 knitr::opts_chunk$set(
-  comment = "#>",
+  comment = "", 
   echo = TRUE,
   message = FALSE,
-  collapse=TRUE
+  knitr.table.format = "html"
 )
 
 options(
   vlkr.fig.settings=list(
     html = list(
-      dpi = 96, scale = 1, width = 600, pxperline = 15
+      dpi = 96, scale = 1, width = 910, pxperline = 12
     )
   )
 )
@@ -120,7 +120,7 @@ tab_metrics(ds, sd_age, use_work, metric = TRUE, ci = TRUE)
 Each table function has a corresponding plot function with parameters
 to pimp the result. See the function help (F1 key) to learn the options. For example, you can use the `prop` parameter to grow bars to 100%. The `numbers` parameter prints frequencies and percentages onto the bars.
 
-```{r, eval=FALSE}
+```{r}
 ds |> 
   filter(sd_gender != "diverse") |> 
   plot_counts(adopter, sd_gender, prop="rows", numbers=c("p","n"))
@@ -166,7 +166,7 @@ Then, you can generate combined outputs using the report-functions.
 One advantage of the report-functions is that plots are automatically scaled to fit the page.
 See the function help for further options (F1 key). 
 
-```{r, eval=FALSE}
+```{r}
 ds %>% 
   filter(sd_gender != "diverse") %>% 
   report_metrics(starts_with("cg_adoption_"), sd_gender, index=TRUE, box=TRUE, ci=TRUE)
@@ -248,7 +248,7 @@ codebook(ds)
 You can set specific column labels by providing a named list to the items-parameter of `labs_apply()`:
 
 
-```{r, eval=FALSE}
+```{r}
 ds %>%
   labs_apply(
     items = list(
@@ -266,7 +266,7 @@ ds %>%
 Labels for values inside a column can be adjusted by providing a named list to the values-parameter of `labs_apply()`. In addition, select the columns where value labels should be changed:
 
 
-```{r, eval=FALSE}
+```{r}
 
 ds %>%
   labs_apply(
@@ -309,7 +309,7 @@ loose labels on their way. In this case, store the labels (in the
 codebook attribute of the data frame) before the operation and restore
 them afterwards:
 
-```{r, eval=FALSE}
+```{r}
 ds %>%
   labs_store() %>%
   mutate(sd_age = 2024 - sd_age) %>% 
