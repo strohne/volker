@@ -833,7 +833,7 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
   result <- lm %>%
     dplyr::mutate(
       tidy_model = purrr::map(.data$model, broom::tidy),
-      eta_sq = purrr::map(.data$model, ~ effectsize::eta_squared(anova(.x), verbose = FALSE)),
+      eta_sq = purrr::map(.data$model, ~ effectsize::eta_squared(car::Anova(.x, type = 2), verbose = FALSE)),
       f_statistic = purrr::map_dbl(.data$model, ~ round(summary(.x)$fstatistic[1], 2)),
       p_value = purrr::map_dbl(.data$model, ~ round(summary(.x)$coefficients[2, 4], 2)),
       stars = purrr::map_chr(.data$model,~ get_stars(summary(.x)$coefficients[2, 4]))
