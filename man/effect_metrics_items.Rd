@@ -21,7 +21,7 @@ effect_metrics_items(data, cols, labels = TRUE, clean = TRUE, ...)
 A volker table containing item statistics
 }
 \description{
-The test is calculated using  \code{stats::\link[stats:shapiro.test]{shapiro.test}}.
+The test is calculated using \code{stats::\link[stats:shapiro.test]{shapiro.test}}.
 }
 \examples{
 library(volker)
