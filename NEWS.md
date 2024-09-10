@@ -1,5 +1,9 @@
 # volker (development version)
 
+# volker 2.1.0
+* Implemented missing plot, tab, and effect functions
+* Implemented PDF and Word rendering
+
 # volker 2.0.1
 * Fixed markdown template
 

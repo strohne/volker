@@ -2,6 +2,25 @@
 
 0 errors | 0 warnings | 0 notes
 
+* This is the release of version 2.1.0
+* No reverse dependencies found.
+* Added missing package anchors to \link{} targets
+  (noted in the CRAN Package Check Results)
+* Implemented a bunch of new analysis functions, 
+  PDF and Word rendering.
+* We import 21 packages because our package is developed on top
+  of established statistical procedures and reporting function.
+  Implementing the functions ourselves would decrease reproducebility
+  and increase the risk of errors.
+* The introduction vignette is large because it includes plots. 
+  This is a package for generating reports, the plots are included
+  for documentation purposes.
+
+
+## R CMD check results
+
+0 errors | 0 warnings | 0 notes
+
 * This is the release of version 2.0.1
 * Removed the rendered skeleton.html from the markdown template folder
   (it sneaked into the last release, in consequence folders instead of single
