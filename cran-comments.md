@@ -6,8 +6,6 @@
 * No reverse dependencies found.
 * Added missing package anchors to \link{} targets
   (noted in the CRAN Package Check Results)
-* Implemented a bunch of new analysis functions, 
-  PDF and Word rendering.
 * We import 21 packages because our package is developed on top
   of established statistical procedures and reporting function.
   Implementing the functions ourselves would decrease reproducebility
