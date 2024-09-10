@@ -17,6 +17,14 @@ knitr::opts_chunk$set(
   message = FALSE,
   collapse=TRUE
 )
+
+options(
+  vlkr.fig.settings=list(
+    html = list(
+      dpi = 96, scale = 1, width = 910, pxperline = 15
+    )
+  )
+)
 ```
 
 
