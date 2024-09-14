@@ -76,10 +76,12 @@ plot_counts(data, starts_with("cg_adoption_"), numbers = "p")
 options(vlkr.wrap.labels=30)
 options(vlkr.wrap.legend=10)
 
-plot_counts(
-  data, starts_with("cg_adoption_"), adopter,
-  category=c("agree", "strongly agree")
-)
+data |> 
+  select(adopter, cg_adoption_social_04,cg_adoption_social_01,cg_adoption_social_02, cg_adoption_social_03) |> 
+  plot_counts(
+    starts_with("cg_adoption_"), adopter,
+    category=c("agree", "strongly agree")
+  )
 
 ```
 
@@ -122,7 +124,11 @@ plot_metrics(data, use_private, sd_age, metric = TRUE)
 
 ### 12. Distribution of multiple metric items: Adoption factors
 ```{r}
-plot_metrics(data, starts_with("cg_adoption_"))
+
+data |> 
+  select(cg_adoption_advantage_02, cg_adoption_advantage_01, cg_adoption_advantage_03) |> 
+  plot_metrics(starts_with("cg_adoption_"))
+
 ```
 
 ### 13. Group comparison of multiple metric items: Adoption factors by gender
@@ -130,7 +136,7 @@ plot_metrics(data, starts_with("cg_adoption_"))
 # Filter out one group, too few cases in the sample
 data %>% 
   filter(sd_gender != "diverse") %>% 
-  plot_metrics(starts_with("cg_adoption_"), sd_gender)
+  plot_metrics(starts_with("cg_adoption_"), sd_gender, labels=F)
 ```
 
 ### 14. Correlation of metric items with categorical items

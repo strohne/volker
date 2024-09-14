@@ -697,7 +697,9 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
       {{ cols }},
       names_to = "item",
       values_to = ".value_name"
-    )
+    ) |>
+    dplyr::mutate(item = factor(.data$item, levels=cols_names)) |>
+    dplyr::arrange(.data$item)
 
   # Add label column for category
   codebook_df <- codebook(data, {{ cols }})
@@ -1254,13 +1256,18 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
   }
 
   # 2. Pivot items
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  cols_names <- colnames(dplyr::select(data, tidyselect::all_of(cols_eval)))
+
   result <- data %>%
     labs_clear({{ cols }}) %>%
     tidyr::pivot_longer(
       {{ cols }},
       names_to = "item",
       values_to = "value"
-    )
+    ) |>
+    dplyr::mutate(item = factor(.data$item, levels=cols_names)) |>
+    dplyr::arrange(.data$item)
 
   # Replace item labels
   if (labels) {
