@@ -233,7 +233,7 @@ effect_counts_one <- function(data, col, clean = TRUE, ...) {
 #' If any cell contains less than 5 observations, the exact-parameter is set.
 #'
 #' Phi is derived from the Chi squared value by \code{sqrt(fit$statistic / n)}.
-#' Cramer's V is derived by \code{phi / sqrt(min(dim(contingency)[1], dim(contingency)[1]) - 1)}.
+#' Cramer's V is derived by \code{sqrt(phi / (min(dim(contingency)[1], dim(contingency)[2]) - 1))}.
 #'
 #' @keywords internal
 #'
