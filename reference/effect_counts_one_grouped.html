@@ -76,7 +76,7 @@ If any cell contains less than 5 observations, the exact-parameter is set.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Phi is derived from the Chi squared value by <code>sqrt(fit$statistic / n)</code>.
-Cramer's V is derived by <code>phi / sqrt(min(dim(contingency)[1], dim(contingency)[1]) - 1)</code>.</p>
+Cramer's V is derived by <code>sqrt(phi / (min(dim(contingency)[1], dim(contingency)[2]) - 1))</code>.</p>
     </div>
 
     <div class="section level2">
