@@ -17,13 +17,13 @@
 
     Code
       volker::effect_counts(dplyr::mutate(dplyr::filter(data, sd_gender != "diverse"),
-      sd_age = ifelse(sd_age > 40, "+40", "-40")), sd_gender, sd_age)
+      sd_age_group = ifelse(sd_age > 40, "40+", "< 40")), sd_gender, sd_age_group)
     Output
       
       
       |Statistic          | Value|
       |:------------------|-----:|
-      |Cramer's V         |  0.00|
+      |Cramer's V         |  0.05|
       |Number of cases    |   100|
       |Degrees of freedom |     1|
       |Chi-squared        |  0.20|
