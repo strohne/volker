@@ -41,7 +41,7 @@ test_that("Residual negative values are removed", {
 
   tibble::tibble(var1 = c(1, 2, -1, -9, -50)) |>
     data_clean() |>
-    expect_snapshot(cran= TRUE)
+    expect_snapshot(cran = TRUE)
 
 })
 
@@ -50,7 +50,7 @@ test_that("All negatives are removed", {
 
   tibble::tibble(var1 = c(1,2,-1,-9)) |>
     data_rm_negatives(var1) |>
-    expect_snapshot(cran= TRUE)
+    expect_snapshot(cran = TRUE)
 })
 
 
@@ -59,7 +59,7 @@ test_that("Negatives are kept", {
   options("vlkr.na.numbers"=FALSE)
   tibble::tibble(var1 = c(1,2,-9)) |>
     data_clean() |>
-    expect_snapshot(cran= TRUE)
+    expect_snapshot(cran = TRUE)
   options("vlkr.na.numbers"= VLKR_NA_NUMBERS)
 })
 
@@ -71,6 +71,6 @@ test_that("Baseline is extracted", {
     category = c("agree", "strongly agree")
  )
   get_baseline(result) |>
-    expect_snapshot(cran= TRUE)
+    expect_snapshot(cran = TRUE)
 
 })

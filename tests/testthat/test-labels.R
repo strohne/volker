@@ -13,7 +13,7 @@ data <- volker::data_clean(data)
 test_that("Labels are retrieved", {
   volker::codebook(data) |>
     print(n=Inf) |>
-    expect_snapshot(cran= TRUE)
+    expect_snapshot(cran = TRUE)
 })
 
 # What happens when labels are empty?
@@ -22,7 +22,7 @@ test_that("Missing labels make no trouble", {
     dplyr::select(starts_with("cg_adoption")) %>%
     volker::labs_clear() %>%
     volker::codebook() %>%
-    expect_snapshot(cran= TRUE)
+    expect_snapshot(cran = TRUE)
 })
 
 # Detect the scale
@@ -45,7 +45,7 @@ test_that("Store and clear the codebook", {
     volker::labs_clear() %>%
     codebook() %>%
     print(n=Inf) |>
-    expect_snapshot(cran= TRUE)
+    expect_snapshot(cran = TRUE)
 })
 
 # Test store and restore labels
@@ -56,7 +56,7 @@ test_that("Store, clear and restore the codebook", {
     volker::labs_restore() %>%
     codebook() %>%
     print(n=Inf) |>
-    expect_snapshot(cran= TRUE)
+    expect_snapshot(cran = TRUE)
 })
 
 # Replace item values
@@ -69,7 +69,7 @@ test_that("Item values are replaced and keep their order", {
     volker:::labs_replace(adopter, volker::codebook(data, adopter)) |>
     dplyr::pull(adopter) |>
     levels() |>
-    expect_snapshot(cran= TRUE)
+    expect_snapshot(cran = TRUE)
 })
 
 
@@ -85,7 +85,7 @@ test_that("Item values are kept even if they are not in the codebook", {
     dplyr::mutate(to = from) |>
     volker:::labs_replace(to, codes) |>
     dplyr::arrange(to) |>
-    expect_snapshot(cran= TRUE)
+    expect_snapshot(cran = TRUE)
 })
 
 
@@ -120,7 +120,7 @@ test_that("A common prefix is removed from labels", {
     codebook() |>
     dplyr::pull(item_label) |>
     get_prefix() |>
-    expect_snapshot(cran= TRUE)
+    expect_snapshot(cran = TRUE)
 })
 
 # Remove prefix from labels
@@ -131,7 +131,7 @@ test_that("A common prefix is removed from labels", {
     codebook() |>
     dplyr::pull(item_label) |>
     trim_prefix() |>
-    expect_snapshot(cran= TRUE)
+    expect_snapshot(cran = TRUE)
 })
 
 # Labeling coded numeric values
@@ -149,7 +149,7 @@ test_that("Numeric values are relabeled", {
       )
     ) %>%
     tab_counts(starts_with("cg_adoption_advantage")) |>
-    expect_snapshot(cran= TRUE)
+    expect_snapshot(cran = TRUE)
 
 })
 
@@ -201,7 +201,7 @@ test_that("Factor values are relabeled", {
       )
     ) |>
     tab_counts(sd_gender)  |>
-    expect_snapshot(cran= TRUE)
+    expect_snapshot(cran = TRUE)
 
 })
 
@@ -209,6 +209,6 @@ test_that("Factor values are relabeled", {
 test_that("Labels are wrapped at whitespace and slashes", {
 
   volker:::wrap_label("Super long/short label\\s", width=3) |>
-    expect_snapshot_value(cran= TRUE)
+    expect_snapshot_value(cran = TRUE)
 
 })

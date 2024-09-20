@@ -233,7 +233,7 @@ effect_counts_one <- function(data, col, clean = TRUE, ...) {
 #' If any cell contains less than 5 observations, the exact-parameter is set.
 #'
 #' Phi is derived from the Chi squared value by \code{sqrt(fit$statistic / n)}.
-#' Cramer's V is derived by \code{phi / sqrt(min(dim(contingency)[1], dim(contingency)[1]) - 1)}.
+#' Cramer's V is derived by \code{sqrt(phi / (min(dim(contingency)[1], dim(contingency)[2]) - 1))}.
 #'
 #' @keywords internal
 #'
@@ -271,8 +271,8 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   fit <- stats::chisq.test(contingency, simulate.p.value = exact)
 
   n <- sum(contingency)
-  cells <- min(dim(contingency)[1], dim(contingency)[1]) - 1
-  cramer_v <- round(fit$statistic / (n * sqrt(cells)), 2)
+  cells <- min(dim(contingency)[1], dim(contingency)[2]) - 1
+  cramer_v <- round(sqrt( (fit$statistic / n) / cells), 2)
 
   # 4. Prepare output
   result <- tibble::tribble(

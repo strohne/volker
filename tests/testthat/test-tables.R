@@ -11,14 +11,14 @@ data <- volker::chatgpt
 # Frequency table
 # tab_counts_one
 test_that("Frequency table", {
-  expect_snapshot(volker::tab_counts(data, sd_gender), cran= TRUE)
+  expect_snapshot(volker::tab_counts(data, sd_gender), cran = TRUE)
 })
 
 
 # Cross table of categorical variables
 # tab_counts_one_grouped
 test_that("Cross table of categorical variables", {
-  expect_snapshot(volker::tab_counts(data, adopter, sd_gender), cran= TRUE)
+  expect_snapshot(volker::tab_counts(data, adopter, sd_gender), cran = TRUE)
 })
 
 # Frequency table for multiple categorical variables
@@ -26,7 +26,7 @@ test_that("Cross table of categorical variables", {
 test_that("Frequency table for multiple categorical variables", {
   expect_snapshot(
     volker::tab_counts(
-      data, tidyselect::starts_with("cg_adoption_")), cran= TRUE)
+      data, tidyselect::starts_with("cg_adoption_")), cran = TRUE)
 })
 
 # Frequency table for multiple categorical variables grouped
@@ -38,19 +38,19 @@ test_that("Frequency table for multiple categorical variables by grouping variab
       tidyselect::starts_with("cg_adoption_"),
       sd_gender,
       category = c("agree", "strongly agree")),
-      cran= TRUE)
+      cran = TRUE)
 })
 
 # Distribution table for age
 # tab_metrics_one
 test_that("Distribution table for age", {
-  expect_snapshot(volker::tab_metrics(data, sd_age), cran= TRUE)
+  expect_snapshot(volker::tab_metrics(data, sd_age), cran = TRUE)
 })
 
 # Group comparison of a metric variable
 # tab_metrics_one_grouped
 test_that("Group comparison of a metric variable", {
-  expect_snapshot(volker::tab_metrics(data, sd_age, sd_gender), cran= TRUE)
+  expect_snapshot(volker::tab_metrics(data, sd_age, sd_gender), cran = TRUE)
 })
 
 # Correlations of two variables
@@ -59,7 +59,7 @@ test_that("Compare means of multiple items", {
   expect_snapshot(
     volker::tab_metrics(
       data, use_work, use_private,
-      metric=TRUE), cran= TRUE)
+      metric=TRUE), cran = TRUE)
 })
 
 
@@ -69,7 +69,7 @@ test_that("Distribution table for multiple metric items", {
   expect_snapshot(
     volker::tab_metrics(
       data, tidyselect::starts_with("cg_adoption_")
-      ),cran= TRUE)
+      ),cran = TRUE)
 })
 
 # Compare means of multiple items
@@ -80,7 +80,7 @@ test_that("Compare means of multiple items", {
       data,
       tidyselect::starts_with("cg_adoption_"),
       sd_gender
-      ), cran= TRUE)
+      ), cran = TRUE)
 })
 
 
@@ -92,7 +92,7 @@ test_that("Correlations of an item battery with one variable", {
       data,
       tidyselect::starts_with("cg_adoption_"),
       sd_age, metric=TRUE
-      ), cran= TRUE)
+      ), cran = TRUE)
 })
 
 # Correlations of an item battery with one variable and spearman
@@ -103,7 +103,7 @@ test_that("Correlations of an item battery with one variable and spearman", {
       data,
       tidyselect::starts_with("cg_adoption_"),
       sd_age, metric=TRUE, method = "spearman"
-    ), cran= TRUE)
+    ), cran = TRUE)
 })
 
 # Correlations of two item batteries
@@ -115,7 +115,7 @@ test_that("Correlate two item batteries", {
       tidyselect::starts_with("cg_adoption_"),
       tidyselect::starts_with("use_"),
       metric=TRUE
-      ),cran= TRUE)
+      ),cran = TRUE)
 })
 
 
@@ -127,7 +127,7 @@ test_that("Correlate two item batteries with ci", {
       data, starts_with("cg_adoption_adv"),
       starts_with("use_"),
       metric = TRUE, ci = T
-    ),cran= TRUE)
+    ),cran = TRUE)
 })
 
 # Correlations of two item batteries and spearman
@@ -139,7 +139,7 @@ test_that("Correlate two item batteries with spearmn", {
       tidyselect::starts_with("cg_adoption_"),
       tidyselect::starts_with("use_"),
       metric=TRUE, method = "spearman",
-    ),cran= TRUE)
+    ),cran = TRUE)
 })
 
 
@@ -166,6 +166,6 @@ test_that("Item order is kept", {
     ) |>
       tab_counts_items(c(f1:f10))
 
-    , cran= TRUE
+    , cran = TRUE
   )
 })
