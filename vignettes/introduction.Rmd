@@ -12,7 +12,8 @@ editor_options:
 
 ```{r include=FALSE}
 knitr::opts_chunk$set(
-  comment = "", 
+  comment = "#>",
+  collapse = TRUE,
   echo = TRUE,
   message = FALSE,
   knitr.table.format = "html"
@@ -52,11 +53,11 @@ Decide whether your data is categorical or metric
 and choose the appropriate function:  
 
 - `tab_counts()` shows frequency tables.
-- `plot_counts()` generated simple and stacked bar charts.
+- `plot_counts()` generates simple and stacked bar charts.
 - `effect_counts()` calculates test statistics for categorical data.  
 <br>
 - `tab_metrics()` creates tables with distribution parameters.
-- `plot_metrics()` visualised distributions in density plots, box plots or scatter plots.
+- `plot_metrics()` visualises distributions in density plots, box plots or scatter plots.
 - `effect_metrics()` calculates test statistics for metric data.
 
 The column selection determines whether to analyse single variables, item lists 
