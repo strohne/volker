@@ -88,7 +88,7 @@ appropriate function:</p>
 <li>
 <code><a href="../reference/tab_counts.html">tab_counts()</a></code> shows frequency tables.</li>
 <li>
-<code><a href="../reference/plot_counts.html">plot_counts()</a></code> generated simple and stacked bar
+<code><a href="../reference/plot_counts.html">plot_counts()</a></code> generates simple and stacked bar
 charts.</li>
 <li>
 <code><a href="../reference/effect_counts.html">effect_counts()</a></code> calculates test statistics for
@@ -98,7 +98,7 @@ categorical data.<br><br>
 <code><a href="../reference/tab_metrics.html">tab_metrics()</a></code> creates tables with distribution
 parameters.</li>
 <li>
-<code><a href="../reference/plot_metrics.html">plot_metrics()</a></code> visualised distributions in density
+<code><a href="../reference/plot_metrics.html">plot_metrics()</a></code> visualises distributions in density
 plots, box plots or scatter plots.</li>
 <li>
 <code><a href="../reference/effect_metrics.html">effect_metrics()</a></code> calculates test statistics for metric
@@ -1823,24 +1823,24 @@ help of the specific function.</p>
 of the variable. You can inspect all labels using the
 <code><a href="../reference/codebook.html">codebook()</a></code>-function:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/codebook.html">codebook</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span></span></code></pre></div>
-<pre><code> [38;5;246m# A tibble: 94 × 6 [39m
-   item_name     item_group item_class item_label         value_name value_label
-    [3m [38;5;246m&lt;chr&gt; [39m [23m          [3m [38;5;246m&lt;chr&gt; [39m [23m       [3m [38;5;246m&lt;chr&gt; [39m [23m       [3m [38;5;246m&lt;chr&gt; [39m [23m               [3m [38;5;246m&lt;chr&gt; [39m [23m       [3m [38;5;246m&lt;chr&gt; [39m [23m      
- [38;5;250m 1 [39m case          case       numeric    case                [31mNA [39m          [31mNA [39m         
- [38;5;250m 2 [39m sd_age        sd         numeric    Age                 [31mNA [39m          [31mNA [39m         
- [38;5;250m 3 [39m cg_activities cg         character  Activities with C…  [31mNA [39m          [31mNA [39m         
- [38;5;250m 4 [39m adopter       adopter    factor     Innovator type     I try new… I try new …
- [38;5;250m 5 [39m adopter       adopter    factor     Innovator type     I try new… I try new …
- [38;5;250m 6 [39m adopter       adopter    factor     Innovator type     I wait un… I wait unt…
- [38;5;250m 7 [39m adopter       adopter    factor     Innovator type     I only us… I only use…
- [38;5;250m 8 [39m adopter       adopter    factor     Innovator type     [no answe… [no answer]
- [38;5;250m 9 [39m sd_gender     sd         factor     Gender             female     female     
- [38;5;250m10 [39m sd_gender     sd         factor     Gender             male       male       
- [38;5;246m# ℹ 84 more rows [39m</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/codebook.html">codebook</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 94 × 6</span></span></span>
+<span><span class="co">#&gt;    item_name     item_group item_class item_label         value_name value_label</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> case          case       numeric    case               <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> sd_age        sd         numeric    Age                <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> cg_activities cg         character  Activities with C… <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> adopter       adopter    factor     Innovator type     I try new… I try new …</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> adopter       adopter    factor     Innovator type     I try new… I try new …</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> adopter       adopter    factor     Innovator type     I wait un… I wait unt…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> adopter       adopter    factor     Innovator type     I only us… I only use…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> adopter       adopter    factor     Innovator type     [no answe… [no answer]</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> sd_gender     sd         factor     Gender             female     female     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> sd_gender     sd         factor     Gender             male       male       </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 84 more rows</span></span></span></code></pre></div>
 <p>You can set specific column labels by providing a named list to the
 items-parameter of <code><a href="../reference/labs_apply.html">labs_apply()</a></code>:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/labs_apply.html">labs_apply</a></span><span class="op">(</span></span>
 <span>    items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -2004,8 +2004,9 @@ Macht mehr Spaß
 <p>Labels for values inside a column can be adjusted by providing a
 named list to the values-parameter of <code><a href="../reference/labs_apply.html">labs_apply()</a></code>. In
 addition, select the columns where value labels should be changed:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">ds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/labs_apply.html">labs_apply</a></span><span class="op">(</span></span>
 <span>    cols<span class="op">=</span><span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption"</span><span class="op">)</span>,  </span>
 <span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -2022,8 +2023,9 @@ addition, select the columns where value labels should be changed:</p>
 <code><a href="../reference/codebook.html">codebook()</a></code> to an Excel file, change the labels manually in
 a copy of the Excel file, and finally call <code><a href="../reference/labs_apply.html">labs_apply()</a></code>
 with your revised codebook.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org" class="external-link">readxl</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org" class="external-link">readxl</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/writexl/" class="external-link">writexl</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Save codebook to a file</span></span>
@@ -2037,7 +2039,7 @@ with your revised codebook.</p>
 the tidyverse loose labels on their way. In this case, store the labels
 (in the codebook attribute of the data frame) before the operation and
 restore them afterwards:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/labs_store.html">labs_store</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>sd_age <span class="op">=</span> <span class="fl">2024</span> <span class="op">-</span> <span class="va">sd_age</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
@@ -2132,7 +2134,7 @@ of all selected columns for each case.</p>
 “psych.alpha”. The reliability values are printed by
 <code><a href="../reference/tab_metrics.html">tab_metrics()</a></code>.</p>
 <p><strong>Add a single index</strong></p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/idx_add.html">idx_add</a></span><span class="op">(</span><span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="va">idx_cg_adoption</span><span class="op">)</span></span></code></pre></div>
@@ -2230,7 +2232,7 @@ alpha
 </table>
 <p>4 missing case(s) omitted.</p>
 <p><strong>Compare the index values by group</strong></p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/idx_add.html">idx_add</a></span><span class="op">(</span><span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="va">idx_cg_adoption</span>, <span class="va">adopter</span><span class="op">)</span></span></code></pre></div>
@@ -2449,7 +2451,7 @@ total
 </table>
 <p>4 missing case(s) omitted.</p>
 <p><strong>Add multiple indizes and summarize them</strong></p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/idx_add.html">idx_add</a></span><span class="op">(</span><span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/idx_add.html">idx_add</a></span><span class="op">(</span><span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_advantage"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
