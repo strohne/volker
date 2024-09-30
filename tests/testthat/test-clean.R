@@ -63,8 +63,17 @@ test_that("Negatives are kept", {
   options("vlkr.na.numbers"= VLKR_NA_NUMBERS)
 })
 
-# Get baseline
+# Remove NA levels
+test_that("NA levels are kept", {
+  options("vlkr.na.levels" = FALSE)
+  tibble::tibble(value1 = factor(c("A", "B", "[no answer]"))) |>
+    data_rm_na_levels() |>
+    expect_snapshot(cran = TRUE)
+  options(vlkr.na.levels = VLKR_NA_LEVELS)
+})
 
+
+# Get baseline
 test_that("Baseline is extracted", {
   result <- volker::tab_counts(data,
     tidyselect::starts_with("cg_adoption_"), sd_gender,
@@ -74,3 +83,49 @@ test_that("Baseline is extracted", {
     expect_snapshot(cran = TRUE)
 
 })
+
+test_that("Baseline for zeros", {
+  data <- tibble::tibble(
+    id = 1:4,
+    value1 = c(0, 2, 0, 4),
+    value2 = c(1, 0, 3, 4)
+  )
+  result <- plot_metrics(data, value1, value2, metric= TRUE, log = TRUE)
+  get_baseline(result) |>
+    expect_snapshot(cran = TRUE)
+})
+
+test_that("Baseline for negatives", {
+  data <- tibble::tibble(var1 = c(1,2,-1,-9)) |>
+    data_rm_negatives(var1)
+
+ result <- volker::tab_metrics(data, var1)
+ get_baseline(result) |>
+   expect_snapshot(cran = TRUE)
+
+})
+
+test_that("Zero removal", {
+
+  # Zeros are removed
+  zeros <- tibble(
+    id = 1:6,
+    value1 = c(0, 2, 0, 4, 5, 0),
+    value2 = c(1, 0, 3, 4, 2, 6)
+  )
+
+  # Apply the function to test data
+  result <- data_rm_zeros(zeros, cols = c(value1, value2))
+
+  # Test if rows with zeros are removed correctly
+  expect_equal(nrow(result), 2)
+
+  expect_true(!is.null(attr(result, "missings")))
+  expect_true(!is.null(attr(result, "missings")$zero))
+
+  zero_info <- attr(result, "missings")$zero
+  expect_equal(zero_info$n, 4)
+  expect_equal(zero_info$cols, "c(value1, value2)")
+})
+
+
