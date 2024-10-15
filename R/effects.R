@@ -101,7 +101,7 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
 #'
 #' - Two metric columns: see \link{effect_metrics_one_cor}
 #' - Multiple metric columns and one metric column: see \link{effect_metrics_items_cor}
-#' - Two metric column selections: see \link{plot_metrics_items_cor_items}
+#' - Two metric column selections: see \link{effect_metrics_items_cor_items}
 #'
 #' `r lifecycle::badge("experimental")`
 #'
@@ -448,7 +448,7 @@ effect_counts_items_cor_items <- function(data, cols, cross, clean = TRUE, ...) 
 
 #' Test whether a distribution is normal
 #'
-#' The test is calculated using  \code{stats::\link[stats:shapiro.test]{shapiro.test}}.
+#' The test is calculated using \code{stats::\link[stats:shapiro.test]{shapiro.test}}.
 #'
 #' @keywords internal
 #'
@@ -513,7 +513,12 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = TRUE, ... ) {
 
 #' Output a regression table with estimates and macro statistics
 #'
-#' The regression output comes from \code{\link[stats:lm]{lm}}.
+#' The regression output comes from \code{stats::\link[stats:lm]{lm}}.
+#' T-test is performed using \code{stats::\link[stats:t.test]{t.test}}.
+#' Normality check is performed using
+#' \code{stats::\link[stats:shapiro.test]{shapiro.test}}.
+#' Equality of variances across groups is assessed using \code{car::\link[car:leveneTest]{leveneTest}}.
+#' Cohen's d is calculated using \code{effectsize::\link[effectsize:cohens_d]{cohens_d}}.
 #'
 #' @keywords internal
 #'
@@ -723,7 +728,7 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", labels 
 
 #' Test whether a distribution is normal for each item
 #'
-#' The test is calculated using  \code{stats::\link[stats:shapiro.test]{shapiro.test}}.
+#' The test is calculated using \code{stats::\link[stats:shapiro.test]{shapiro.test}}.
 #'
 #' @keywords internal
 #'
@@ -791,6 +796,12 @@ effect_metrics_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
 }
 
 #' Compare groups for each item by calculating F-statistics and effect sizes
+#'
+#'
+#' The models are fitted using \code{stats::\link[stats:lm]{lm}}.
+#' ANOVA of type II is computed for each fitted model using \code{car::\link[car:Anova]{Anova}}.
+#' Eta Squared is calculated for each ANOVA result
+#' using \code{effectsize::\link[effectsize:eta_squared]{eta_squared}}.
 #'
 #' @keywords internal
 #'
@@ -885,7 +896,7 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-effect_counts_items_grouped_items <- function(data, cols, cross, clean = TRUE, ...) {
+effect_metrics_items_grouped_items <- function(data, cols, cross, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 

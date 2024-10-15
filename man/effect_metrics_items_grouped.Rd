@@ -30,7 +30,10 @@ effect_metrics_items_grouped(
 A volker tibble.
 }
 \description{
-Compare groups for each item by calculating F-statistics and effect sizes
+The models are fitted using \code{stats::\link[stats:lm]{lm}}.
+ANOVA of type II is computed for each fitted model using \code{car::\link[car:Anova]{Anova}}.
+Eta Squared is calculated for each ANOVA result
+using \code{effectsize::\link[effectsize:eta_squared]{eta_squared}}.
 }
 \examples{
 library(volker)

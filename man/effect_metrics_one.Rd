@@ -21,7 +21,7 @@ effect_metrics_one(data, col, labels = TRUE, clean = TRUE, ...)
 A volker tibble.
 }
 \description{
-The test is calculated using  \code{stats::\link[stats:shapiro.test]{shapiro.test}}.
+The test is calculated using \code{stats::\link[stats:shapiro.test]{shapiro.test}}.
 }
 \examples{
 library(volker)

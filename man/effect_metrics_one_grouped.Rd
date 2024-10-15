@@ -35,7 +35,12 @@ and lm (regression results).}
 A volker list object containing volker tables with the requested statistics.
 }
 \description{
-The regression output comes from \code{\link[stats:lm]{lm}}.
+The regression output comes from \code{stats::\link[stats:lm]{lm}}.
+T-test is performed using \code{stats::\link[stats:t.test]{t.test}}.
+Normality check is performed using
+\code{stats::\link[stats:shapiro.test]{shapiro.test}}.
+Equality of variances across groups is assessed using \code{car::\link[car:leveneTest]{leveneTest}}.
+Cohen's d is calculated using \code{effectsize::\link[effectsize:cohens_d]{cohens_d}}.
 }
 \examples{
 library(volker)
