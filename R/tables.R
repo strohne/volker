@@ -569,7 +569,8 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
     tidyr::pivot_wider(
       names_from = value,
       values_from = !!sym(value),
-      values_fill = stats::setNames(list(0), value)
+      values_fill = stats::setNames(list(0), value),
+      names_expand = TRUE
     ) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(total = sum(dplyr::c_across(-1), na.rm=TRUE)) %>%
@@ -582,7 +583,8 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
     tidyr::pivot_wider(
       names_from = value,
       values_from = !!sym(value),
-      values_fill = stats::setNames(list(0), value)
+      values_fill = stats::setNames(list(0), value),
+      names_expand = TRUE
     ) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(total = sum(dplyr::c_across(-1), na.rm=TRUE)) %>%
