@@ -569,12 +569,15 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
     dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
     dplyr::mutate(p = (.data$n / sum(.data$n)) * 100) %>%
     dplyr::ungroup() %>%
+    dplyr::arrange(.data$value) |>
     dplyr::mutate(value = as.factor(.data$value)) %>%
     dplyr::mutate(item = factor(.data$item, levels=cols_names)) |>
     dplyr::arrange(.data$item)
 
   # Detect whether the categories are binary
-  categories <- result$value |> unique() |> as.character()
+  # TODO: use codebook to determine the order
+  categories <- levels(result$value) |> as.character()
+
   if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
     category <- "TRUE"
   }

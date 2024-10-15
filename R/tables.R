@@ -558,6 +558,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
     dplyr::group_by(dplyr::across(tidyselect::all_of("item"))) %>%
     dplyr::mutate(p = .data$n / sum(.data$n)) %>%
     dplyr::ungroup() %>%
+    dplyr::arrange(.data$value) |>
     dplyr::mutate(value = as.factor(.data$value)) %>%
     dplyr::mutate(item = factor(.data$item, levels=cols_names)) |>
     dplyr::arrange(.data$item)
@@ -625,6 +626,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
   }
 
   # Replace item labels
+  # TODO: use codebook to determine the column order
   if (labels) {
     result <- labs_replace(
       result, "item",
