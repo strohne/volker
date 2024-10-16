@@ -357,6 +357,21 @@
       |Divers   |   1|   1%|
       |total    | 101| 100%|
 
+# Elliptical numeric values are relabeled
+
+    Code
+      codebook(testdata %>% labs_apply(cols = use_private, values = list(`1` = "never",
+        `2` = "2", `3` = "3", `4` = "4", `5` = "almost daily")), use_private)
+    Output
+      # A tibble: 5 x 6
+        item_name   item_group item_class item_label            value_name value_label
+        <chr>       <chr>      <chr>      <chr>                 <chr>      <chr>      
+      1 use_private use        numeric    Usage: in private co~ 1          never      
+      2 use_private use        numeric    Usage: in private co~ 2          2          
+      3 use_private use        numeric    Usage: in private co~ 3          3          
+      4 use_private use        numeric    Usage: in private co~ 4          4          
+      5 use_private use        numeric    Usage: in private co~ 5          almost dai~
+
 # Labels are wrapped at whitespace and slashes
 
     "Super\nlong/\nshort\nlabel\\\ns"

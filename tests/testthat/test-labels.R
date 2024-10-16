@@ -191,7 +191,7 @@ test_that("Numeric values are relabeled by a named vector", {
 # Labeling uncoded factor values
 test_that("Factor values are relabeled", {
 
-  data %>%
+ data %>%
     labs_apply(
       cols=sd_gender,
       values = list(
@@ -199,8 +199,33 @@ test_that("Factor values are relabeled", {
         "male" = "Männlich",
         "diverse" = "Divers"
       )
+    )  |>
+    tab_counts(sd_gender) |>
+    expect_snapshot(cran = TRUE)
+
+})
+
+
+# Labeling elliptical numeric values (where some labels are present)
+test_that("Elliptical numeric values are relabeled", {
+
+  testdata <- select(data , use_private)
+  attr(testdata$use_private,"2") <- NULL
+  attr(testdata$use_private,"3") <- NULL
+  attr(testdata$use_private,"4") <- NULL
+
+  testdata %>%
+    labs_apply(
+      cols=use_private,
+      values = list(
+        "1" = "never",
+        "2" = "2",
+        "3" = "3",
+        "4" = "4",
+        "5" = "almost daily"
+      )
     ) |>
-    tab_counts(sd_gender)  |>
+    codebook(use_private) |>
     expect_snapshot(cran = TRUE)
 
 })

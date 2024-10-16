@@ -611,11 +611,14 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
       )
     )
 
-  # Item labels
+
+  # Item and value labels
   if (labels) {
     result <- labs_replace(result, "item", codebook(data, {{ cols }}), "item_name", "item_label")
     result <- labs_replace(result, "value", codebook(data, {{ cols }}))
   }
+
+
 
   # Remove common item prefix
   result <- dplyr::mutate(result, item = trim_prefix(.data$item))

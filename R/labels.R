@@ -349,8 +349,10 @@ labs_apply <- function(data, codes = NULL, cols = NULL, items = TRUE, values = T
         )
 
       if (nrow(value_rows) > 0) {
-        value_factor <- ("item_class" %in% colnames(value_rows)) &&
-          any(value_rows$item_class == "factor", na.rm= TRUE)
+        value_factor <- (
+            ("item_class" %in% colnames(value_rows)) &&
+            any(value_rows$item_class == "factor", na.rm= TRUE)
+        )
 
         # Factor order
         if (value_factor) {
@@ -368,24 +370,35 @@ labs_apply <- function(data, codes = NULL, cols = NULL, items = TRUE, values = T
           }
         }
 
+        # Labels with numeric and boolean names are stored directly as attributes in the column (label_nested is FALSE)
+        # All other labels are stored as a list in the "label" attribute (label_nested is TRUE)
         else {
+
           label_attr <- list()
+          label_nested <- TRUE
+
           for (vr in c(1:nrow(value_rows))) {
             value_name <- value_rows$value_name[vr]
             value_label <- value_rows$value_label[vr]
 
             # Numeric or boolean values
             if (grepl("^-?[0-9TF]+$", value_name)) {
-              attr(data[[col]], as.character(value_name)) <- value_label
-            } else {
-              label_attr[[as.character(value_name)]] <- value_label
+              label_nested <- FALSE
             }
+            label_attr[[as.character(value_name)]] <- value_label
           }
 
           if (length(label_attr) > 0) {
-            attr(data[[col]], "labels") <- label_attr
-          } else {
-            attr(data[[col]], "labels") <- NULL
+            if (!label_nested) {
+              attr(data[[col]], "labels") <- NULL
+              for (value_name in names(label_attr)) {
+                value_label <- label_attr[[value_name]]
+                attr(data[[col]], as.character(value_name)) <- NULL
+                attr(data[[col]], as.character(value_name)) <- value_label
+              }
+            } else {
+              attr(data[[col]], "labels") <- label_attr
+            }
           }
         }
       }
