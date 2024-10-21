@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = FALSE, warning = TRUE, vlkr.fig.width=700)
 library(ggplot2)
 library(volker)
 
-theme_set(theme_bw())
+theme_set(theme_vlkr(base_size=15, base_fill = list("red")))
 
 data <- volker::chatgpt
 
@@ -74,6 +74,14 @@ data |>
 plot_counts(data, starts_with("cg_adoption_"), numbers = "p")
 ```
 
+### plot_counts_items_grouped
+```{r}
+plot_counts_items_grouped(
+   data, starts_with("cg_adoption_"), adopter,
+   category=c("agree","strongly agree")
+) 
+```
+
 ### plot_counts_items with binary data
 ```{r}
 data |> 
@@ -81,12 +89,39 @@ data |>
   plot_counts(starts_with("cg_adoption_advantage"))
 ```
 
+### plot_counts_one_cor
+```{r}
+plot_counts_one_cor(data, adopter, sd_age)
+```
+
+### plot_counts_one_cor with rows
+```{r}
+plot_counts_one_cor(data, adopter, sd_age, prop = "rows")
+```
+
+### plot_counts_items_cor
+```{r}
+plot_counts_items_cor(
+    data, starts_with("cg_adoption_"), sd_age,
+    category=c(4,5)
+) 
+```
 
 ## Metric distributions
 
 ### plot_metrics_one
 ```{r}
 plot_metrics(data, sd_age)
+```
+
+### plot_metrics_one with box
+```{r}
+plot_metrics(data, sd_age, box=TRUE)
+```
+
+### plot_metrics_one with ci
+```{r}
+plot_metrics(data, sd_age, ci=TRUE)
 ```
 
 ### plot_metrics_one_grouped
@@ -99,6 +134,15 @@ plot_metrics(data, sd_age, sd_gender)
 plot_metrics(data, sd_age, use_work, metric=TRUE)
 ```
 
+### plot_metrics_one_cor with log 
+```{r}
+plot_metrics(data, sd_age, use_work, metric=TRUE, log=TRUE)
+```
+
+### plot_metrics_one_cor without title
+```{r}
+plot_metrics(data, sd_age, use_work, metric=TRUE, title = FALSE)
+```
 
 ### plot_metrics_items
 ```{r}
@@ -108,6 +152,30 @@ plot_metrics(data, starts_with("cg_adoption_"))
 ### plot_metrics_items_grouped
 ```{r}
 plot_metrics(data, starts_with("cg_adoption_"), sd_gender)
+```
+
+### plot_metrics_items_cor with pearson
+```{r}
+plot_metrics_items_cor(data, starts_with("use_"), sd_age)
+```
+
+### plot_metrics_items_cor with spearman
+```{r}
+plot_metrics_items_cor(data, starts_with("use_"), sd_age, method = "spearman")
+```
+
+### plot_metrics_items_cor_items with pearson
+```{r}
+plot_metrics_items_cor_items(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+```
+
+### plot_metrics_items_cor_items with numbers
+```{r}
+plot_metrics_items_cor_items(
+  data, starts_with("cg_adoption_adv"), 
+  starts_with("use_"), 
+  numbers=TRUE
+)
 ```
 
 ## Index:  distribution by a grouping variable

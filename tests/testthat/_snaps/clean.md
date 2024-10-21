@@ -58,10 +58,36 @@
       2     2
       3    -9
 
+# NA levels are kept
+
+    Code
+      data_rm_na_levels(tibble::tibble(value1 = factor(c("A", "B", "[no answer]"))))
+    Output
+      # A tibble: 3 x 1
+        value1     
+        <fct>      
+      1 A          
+      2 B          
+      3 [no answer]
+
 # Baseline is extracted
 
     Code
       get_baseline(result)
     Output
       [1] "Frequencies based on values: agree, strongly agree. 4 missing case(s) omitted."
+
+# Baseline for zeros
+
+    Code
+      get_baseline(result)
+    Output
+      [1] "3 zero case(s) omitted."
+
+# Baseline for negatives
+
+    Code
+      get_baseline(result)
+    Output
+      [1] "2 negative case(s) omitted."
 

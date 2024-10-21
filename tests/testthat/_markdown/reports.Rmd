@@ -50,7 +50,6 @@ data %>%
 
 ```
 
-
 # Group comparisons of an index
 ```{r}
 data %>% 
@@ -58,6 +57,14 @@ data %>%
   report_metrics(starts_with("cg_adoption_"), sd_gender, index=TRUE, ci=TRUE, effect=TRUE)
 
 ```
+
+# Print lists
+```{r}
+rp <- report_metrics(data, sd_age, sd_gender, effect = TRUE)
+print(rp)
+
+```
+
 
 # Mixed content
 
