@@ -37,8 +37,7 @@ The clustering diagnostics (Within-Cluster and Between-Cluster Sum of Squares) a
 }
 \description{
 Clustering is performed using \code{stats::\link[stats:kmeans]{kmeans}}.
-}
-\details{
+
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{

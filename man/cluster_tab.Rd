@@ -47,8 +47,7 @@ A volker list with with three volker tabs: cluster centers, cluster counts, and 
 }
 \description{
 Kmeans clustering is performed using \link{add_clusters}.
-}
-\details{
+
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
@@ -58,3 +57,4 @@ data <- volker::chatgpt
 cluster_tab(data, starts_with("cg_adoption"), k = 2)
 
 }
+\keyword{internal}

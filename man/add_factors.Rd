@@ -36,8 +36,7 @@ The summary diagnostics (Bartlett test and KMO) are stored in the attribute psyc
 PCA is performed using \code{psych::\link[psych:pca]{pca}} usind varimax rotation.
 Bartlett's test for sphericity is calculated with \code{psych::\link[psych:cortest.bartlett]{cortest.bartlett}}.
 The Kaiser-Meyer-Olkin (KMO) measure is computed using \code{psych::\link[psych:KMO]{KMO}}.
-}
-\details{
+
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{

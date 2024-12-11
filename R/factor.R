@@ -4,6 +4,9 @@
 
 #' Get tables with factor analysis results
 #'
+#' @keywords internal
+#'
+#' @description
 #' PCA is performed using \link{add_factors}.
 #'
 #' `r lifecycle::badge("experimental")`
@@ -116,6 +119,9 @@ factor_tab <- function(data, cols, newcols = NULL, k = 2, method = "pca", labels
 
 #' Get plot with factor analysis result
 #'
+#' @keywords internal
+#'
+#' @description
 #' PCA is performed using \link{add_factors}.
 #'
 #' `r lifecycle::badge("experimental")`
@@ -214,6 +220,7 @@ factor_plot <- function(data, cols, newcols = NULL, k = 2, method = "pca", label
 
 #' Add PCA columns along with summary statistics (KMO and Bartlett test) to a data frame
 #'
+#' @description
 #' PCA is performed using \code{psych::\link[psych:pca]{pca}} usind varimax rotation.
 #' Bartlett's test for sphericity is calculated with \code{psych::\link[psych:cortest.bartlett]{cortest.bartlett}}.
 #' The Kaiser-Meyer-Olkin (KMO) measure is computed using \code{psych::\link[psych:KMO]{KMO}}.

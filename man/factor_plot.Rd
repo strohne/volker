@@ -45,8 +45,7 @@ A ggplot object.
 }
 \description{
 PCA is performed using \link{add_factors}.
-}
-\details{
+
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
@@ -55,3 +54,4 @@ ds <- volker::chatgpt
 
 volker::factor_plot(ds, starts_with("cg_adoption"), k = 3)
 }
+\keyword{internal}

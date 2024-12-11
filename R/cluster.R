@@ -4,6 +4,9 @@
 
 #' Get tables for clustering result
 #'
+#' @keywords internal
+#'
+#' @description
 #' Kmeans clustering is performed using \link{add_clusters}.
 #'
 #' `r lifecycle::badge("experimental")`
@@ -83,6 +86,9 @@ cluster_tab <- function(data, cols, newcol = NULL, k = NULL, method = "kmeans", 
 
 #' Get plot for clustering result
 #'
+#' @keywords internal
+#'
+#' @description
 #' Kmeans clustering is performed using \link{add_clusters}.
 #'
 #' `r lifecycle::badge("experimental")`
@@ -154,6 +160,7 @@ cluster_plot <- function(data, cols, newcol = NULL, k = NULL, method = NULL, lab
 
 #' Add cluster number to a data frame
 #'
+#' @description
 #' Clustering is performed using \code{stats::\link[stats:kmeans]{kmeans}}.
 #'
 #' `r lifecycle::badge("experimental")`

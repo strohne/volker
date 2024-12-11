@@ -49,8 +49,7 @@ A volker list with with three volker tabs: loadings, variances and diagnostics.
 }
 \description{
 PCA is performed using \link{add_factors}.
-}
-\details{
+
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
@@ -59,3 +58,4 @@ ds <- volker::chatgpt
 
 volker::factor_tab(ds, starts_with("cg_adoption"), k = 3)
 }
+\keyword{internal}
