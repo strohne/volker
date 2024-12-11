@@ -1,4 +1,6 @@
-# volker (development version)
+# volker 3.0.0
+
+* Implemented cluster and factor analysis
 
 # volker 2.1.0
 
