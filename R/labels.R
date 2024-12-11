@@ -844,28 +844,49 @@ trim_label <- function(x) {
   x
 }
 
-#' Remove a prefix from a character vector
+#' Remove a prefix from a character vector or a factor
 #'
-#' If the resulting character would be empty,
+#' If the resulting character values would be empty,
 #' the prefix is returned. At the end, all items
 #' in the vector are trimmed using \link{trim_label}.
 #'
+#' If x is a factor, the order of factor levels is retained.
+#'
 #' @keywords internal
 #'
-#' @param x A character vector.
+#' @param x A character or factor vector.
 #' @param prefix The prefix. Set to TRUE to first extract the prefix.
-#' @return The trimmed character vector.
+#' @return The trimmed character or factor vector.
 trim_prefix <- function(x, prefix=TRUE) {
+
+  if (is.factor(x)) {
+    levels_x <- levels(x)
+  } else {
+    levels_x <- c()
+  }
+  x <- as.character(x)
+
   if (!is.na(prefix) && (prefix == TRUE)) {
-    prefix <- get_prefix(x, trim=T)
+    prefix <- get_prefix(x, trim = TRUE)
   }
 
   if (!is.na(prefix) && (prefix != "")) {
+
+    levels_x <- sub(prefix, "", levels_x, fixed = TRUE)
+    levels_x <- ifelse(levels_x == "", prefix, levels_x)
+
     x <- sub(prefix, "", x, fixed = TRUE)
     x = ifelse(x == "", prefix, x)
   }
 
-  trim_label(x)
+  levels_x <- trim_label(levels_x)
+  x <- trim_label(x)
+
+  if (length(levels_x) > 0) {
+    x <- factor(x, levels = unique(levels_x))
+  }
+
+  return(x)
 }
 
 
@@ -918,7 +939,7 @@ label_scale <- function(x, scale) {
 #'
 #' @keywords internal
 #'
-#' @param labels Vector of labels to check.
+#' @param labels Vector of labels to check. The values are converted to characters.
 #' @param threshold Length threshold beyond which the angle is applied.
 #'                  Default is 20.
 #' @param angle The angle to apply if any label exceeds the threshold.
@@ -926,7 +947,7 @@ label_scale <- function(x, scale) {
 #' @return A single angle value.
 get_angle <- function(labels, threshold = 20, angle = 45) {
   # Check if any label exceeds the threshold and return the angle accordingly
-  if (any(nchar(labels) > threshold)) {
+  if (any(nchar(as.character(labels)) > threshold)) {
     return(angle)
   } else {
     return(0)

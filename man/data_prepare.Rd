@@ -4,7 +4,7 @@
 \alias{data_prepare}
 \title{Prepare data for calculation}
 \usage{
-data_prepare(data, cols, cross, clean = TRUE)
+data_prepare(data, cols, cross, reverse, clean = TRUE)
 }
 \arguments{
 \item{data}{Data frame to be prepared.}
@@ -12,6 +12,8 @@ data_prepare(data, cols, cross, clean = TRUE)
 \item{cols}{The first column selection.}
 
 \item{cross}{The second column selection.}
+
+\item{reverse}{A tidy selection of columns with reversed codings.}
 
 \item{clean}{Whether to clean data using \link{data_clean}.}
 }

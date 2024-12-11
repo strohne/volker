@@ -1,5 +1,5 @@
 #' A reduced skimmer for metric variables
-#' Returns a five point summary, mean and sd, items count and alpha for scales added by idx_add()
+#' Returns a five point summary, mean and sd, items count and alpha for scales added by add_index()
 #'
 #' @keywords internal
 #'
@@ -24,8 +24,8 @@ skim_metrics <- skimr::skim_with(
     sd = ~ stats::sd(., na.rm = TRUE),
     ci.low = ~ base::ifelse(length(.) > 3,  stats::t.test(stats::na.omit(.))$conf.int[1], NA),
     ci.high = ~ base::ifelse(length(.) > 3, stats::t.test(stats::na.omit(.))$conf.int[2], NA),
-    items = ~ idx_alpha(.)$items,
-    alpha = ~ idx_alpha(.)$alpha
+    items = ~ get_alpha(.)$items,
+    alpha = ~ get_alpha(.)$alpha
   ),
   base = skimr::sfl(
     n = length,
@@ -79,7 +79,7 @@ skim_metrics <- skimr::skim_with(
 
 #' A skimmer for boxplot generation
 #'
-#' Returns a five point summary, mean and sd, items count and alpha for scales added by idx_add().
+#' Returns a five point summary, mean and sd, items count and alpha for scales added by add_index().
 #' Additionally, the whiskers defined by the minimum respective maximum value within 1.5 * iqr are calculated.
 #' Outliers are returned in a list column.
 #'
@@ -97,8 +97,8 @@ skim_boxplot <- skimr::skim_with(
     whisker.lo = ~ .whisker_lower(.),
     whisker.hi = ~ .whisker_upper(.),
     outliers = ~.outliers(.),
-    items = ~ idx_alpha(.)$items,
-    alpha = ~ idx_alpha(.)$alpha
+    items = ~ get_alpha(.)$items,
+    alpha = ~ get_alpha(.)$alpha
   ),
   base = skimr::sfl(
     n = length,

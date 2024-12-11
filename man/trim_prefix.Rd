@@ -2,21 +2,24 @@
 % Please edit documentation in R/labels.R
 \name{trim_prefix}
 \alias{trim_prefix}
-\title{Remove a prefix from a character vector}
+\title{Remove a prefix from a character vector or a factor}
 \usage{
 trim_prefix(x, prefix = TRUE)
 }
 \arguments{
-\item{x}{A character vector.}
+\item{x}{A character or factor vector.}
 
 \item{prefix}{The prefix. Set to TRUE to first extract the prefix.}
 }
 \value{
-The trimmed character vector.
+The trimmed character or factor vector.
 }
 \description{
-If the resulting character would be empty,
+If the resulting character values would be empty,
 the prefix is returned. At the end, all items
 in the vector are trimmed using \link{trim_label}.
+}
+\details{
+If x is a factor, the order of factor levels is retained.
 }
 \keyword{internal}

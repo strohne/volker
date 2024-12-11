@@ -1,0 +1,70 @@
+---
+title: "Cluster analysis"
+output: volker::html_report
+vignette: >
+  %\VignetteIndexEntry{Clusters}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(volker)
+```
+
+```{r}
+
+# Load data 
+data <- volker::chatgpt
+
+set.seed(1852)
+
+```
+
+
+## Tables
+```{r}
+
+cluster_tab(data, starts_with("cg_adoption"), k = 3)
+
+```
+
+
+## Plot
+```{r}
+
+cluster_plot(data, starts_with("cg_adoption"), k = 3)
+
+```
+
+
+## Report
+```{r}
+
+report_metrics(data, starts_with("cg_adoption"), clusters = 3)
+
+```
+
+
+## Scree plot
+
+```{r}
+
+report_metrics(data, starts_with("cg_adoption"), clusters = TRUE)
+
+```
+
+
+## Compare values between clusters
+
+```{r}
+
+data |>
+  add_clusters(starts_with("cg_adoption"), k = 3) |>
+  report_counts(sd_gender, cls_cg_adoption, prop = "cols")
+```
+

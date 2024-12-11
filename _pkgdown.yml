@@ -50,7 +50,7 @@ reference:
 - title: Data preparation
   desc: Functions for data preparation and calculation.
 - contents:
-  - idx_add
+  - add_index
 
 - title: Example data
 - contents:

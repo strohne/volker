@@ -7,7 +7,7 @@
 get_angle(labels, threshold = 20, angle = 45)
 }
 \arguments{
-\item{labels}{Vector of labels to check.}
+\item{labels}{Vector of labels to check. The values are converted to characters.}
 
 \item{threshold}{Length threshold beyond which the angle is applied.
 Default is 20.}

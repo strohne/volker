@@ -22,6 +22,18 @@
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the 'psych' package.
 #'              Set to FALSE to suppress index generation.
+#' @param factors The number of factors to calculate.
+#'              Set to FALSE to suppress factor analysis.
+#'              Set to TRUE to output a scree plot and automatically choose the number of factors.
+#'              When the cols contain items on a metric scale
+#'              (as determined by \link{get_direction}),
+#'              factors will be calculated using the 'psych' package.
+#'              See \link{add_factors}.
+#' @param clusters The number of clusters to calculate.
+#'                 Cluster are determined using kmeans after scaling the items.
+#'                Set to FALSE to suppress cluster analysis.
+#'                Set to TRUE to output a scree plot and automatically choose the number of clusters based on the elbow criterion.
+#'                 See \link{add_clusters}.
 #' @param effect Whether to report statistical tests and effect sizes. See \link{effect_counts} for further parameters.
 #' @param title A character providing the heading or TRUE (default) to output a heading.
 #'               Classes for tabset pills will be added.
@@ -37,7 +49,7 @@
 #' report_metrics(data, sd_age)
 #'
 #' @export
-report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index = FALSE, effect = FALSE, title = TRUE, close = TRUE, clean = TRUE) {
+report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index = FALSE, factors = FALSE, clusters = FALSE, effect = FALSE, title = TRUE, close = TRUE, clean = TRUE) {
 
   if (clean) {
     data <- data_clean(data)
@@ -78,6 +90,24 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
   if (index) {
     idx <- .report_idx(data, {{ cols }}, {{ cross }}, metric = metric, ..., effect = effect, title = plot_title)
     chunks <- append(chunks, idx)
+  }
+
+  # Add factors
+  if (!isFALSE(factors)) {
+    if (factors == TRUE) {
+      factors <- NULL
+    }
+    fct <- .report_fct(data, {{ cols }}, {{ cross }}, metric = metric, k = factors, ..., effect = effect, title = plot_title)
+    chunks <- append(chunks, fct)
+  }
+
+  # Add clusters
+  if (!any(isFALSE(clusters))) {
+    if (all(clusters == TRUE)) {
+      clusters <- NULL
+    }
+    fct <- .report_cls(data, {{ cols }}, {{ cross }}, metric = metric, k = clusters, ..., effect = effect, title = plot_title)
+    chunks <- append(chunks, fct)
   }
 
   # Close tabs
@@ -214,7 +244,7 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 
   if (is_items && (is_scale != 0)) {
 
-    idx <- idx_add(data, {{ cols }}, newcol = ".idx")
+    idx <- add_index(data, {{ cols }}, newcol = ".idx")
     idx_name <- setdiff(colnames(idx), colnames(data))
 
     if (length(idx_name) > 0) {
@@ -237,6 +267,83 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 
   chunks
 }
+
+#' Generate an factor table and plot
+#'
+#' @keywords internal
+#'
+#' @param data A data frame.
+#' @param cols A tidy column selection,
+#'             e.g. a single column (without quotes)
+#'             or multiple columns selected by methods such as starts_with().
+#' @param cross Not yet implementedt. Optional, a grouping column (without quotes).
+#' @param metric Not yet implemented. When crossing variables, the cross column parameter can contain categorical or metric values.
+#'            By default, the cross column selection is treated as categorical data.
+#'            Set metric to TRUE, to treat it as metric and calculate correlations.
+#' @param k Number of factors to calculate.
+#' @param effect Not yet implemented. Whether to report statistical tests and effect sizes.
+#' @param title Add a plot title (default = TRUE).
+#' @return A list containing a table and a plot volker report chunk.
+.report_fct <- function(data, cols, cross, metric = FALSE, ..., k = 2, effect = FALSE, title = TRUE) {
+  chunks <- list()
+
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  is_items <- length(cols_eval) > 1
+  is_scale <- get_direction(data, {{ cols }}, FALSE)
+
+  if (is_items && (is_scale != 0)) {
+
+    scores <- add_factors(data, {{ cols }}, k = k, ...)
+    newcols <- setdiff(colnames(scores), colnames(data))
+
+    plt <- factor_plot(scores, tidyselect::all_of(newcols), k = k, ...)
+    chunks <- .add_to_vlkr_rprt(plt, chunks, "Factors: Plot")
+
+    tab <- factor_tab(scores, tidyselect::all_of(newcols), k = k, ...)
+    chunks <- .add_to_vlkr_rprt(tab ,chunks, "Factors: Table")
+  }
+
+  chunks
+}
+
+#' Generate an cluster table and plot
+#'
+#' @keywords internal
+#'
+#' @param data A data frame.
+#' @param cols A tidy column selection,
+#'             e.g. a single column (without quotes)
+#'             or multiple columns selected by methods such as starts_with().
+#' @param cross Not yet implemented. Optional, a grouping column (without quotes).
+#' @param metric Not yet implemented. When crossing variables, the cross column parameter can contain categorical or metric values.
+#'            By default, the cross column selection is treated as categorical data.
+#'            Set metric to TRUE, to treat it as metric and calculate correlations.
+#' @param k Number of clusters to calculate.
+#' @param effect Not yet implemented. Whether to report statistical tests and effect sizes.
+#' @param title Add a plot title (default = TRUE).
+#' @return A list containing a table and a plot volker report chunk.
+.report_cls <- function(data, cols, cross, metric = FALSE, ..., k = 2, effect = FALSE, title = TRUE) {
+  chunks <- list()
+
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  is_items <- length(cols_eval) > 1
+  is_scale <- get_direction(data, {{ cols }}, FALSE)
+
+  if (is_items && (is_scale != 0)) {
+
+    scores <- add_clusters(data, {{ cols }}, k = k, ...)
+    newcol <- setdiff(colnames(scores), colnames(data))
+
+    plt <- cluster_plot(scores, !!sym(newcol), k = k,  ...)
+    chunks <- .add_to_vlkr_rprt(plt, chunks, "Clusters: Plot")
+
+    tab <- cluster_tab(scores, !!sym(newcol), k = k, ...)
+    chunks <- .add_to_vlkr_rprt(tab ,chunks, "Clusters: Table")
+  }
+
+  chunks
+}
+
 
 #' Add vlkr_list class
 #'
@@ -389,6 +496,7 @@ print.vlkr_list <- function(x, ...) {
         newchunk <- obj
       } else {
         warning("Could not determine the volker report chunk type")
+        newchunk <- "???"
       }
 
       baseline <- attr(newchunk, "baseline", exact=TRUE)

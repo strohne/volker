@@ -139,7 +139,8 @@ ds |>
 # Automatically generate reports
 
 ## Getting started
-Reports combine plots, tables and effect calculations. Optionally, for item batteries, an index is calculated and reported.
+Reports combine plots, tables and effect calculations. 
+Optionally, for item batteries, an index, clusters or factors are calculated and reported.
 
 To see an example or develop own reports, use the volker report template in RStudio:
 
@@ -170,8 +171,7 @@ See the function help for further options (F1 key).
 ```{r}
 ds %>% 
   filter(sd_gender != "diverse") %>% 
-  report_metrics(starts_with("cg_adoption_"), sd_gender, index=TRUE, box=TRUE, ci=TRUE)
-
+  report_metrics(starts_with("cg_adoption_"), sd_gender, box=TRUE, ci=TRUE)
 ```
 
 
@@ -321,7 +321,7 @@ ds %>%
 
 # Index calculation for item batteries
 
-You can calculate mean indexes from a bunch of items using `idx_add()`. 
+You can calculate mean indexes from a bunch of items using `add_index()`. 
 A new column is created with the average value of all selected columns
 for each case. 
 
@@ -332,27 +332,69 @@ are printed by `tab_metrics()`.
 **Add a single index**
 ```{r}
 ds %>%
-  idx_add(starts_with("cg_adoption_")) %>%
+  add_index(starts_with("cg_adoption_")) %>%
   tab_metrics(idx_cg_adoption)
 ```
 
 **Compare the index values by group**
 ```{r}
 ds %>%
-  idx_add(starts_with("cg_adoption_")) %>%
+  add_index(starts_with("cg_adoption_")) %>%
   tab_metrics(idx_cg_adoption, adopter)
 ```
 
 **Add multiple indizes and summarize them**
 ```{r}
 ds %>%
-  idx_add(starts_with("cg_adoption_")) %>%
-  idx_add(starts_with("cg_adoption_advantage")) %>%
-  idx_add(starts_with("cg_adoption_fearofuse")) %>%
-  idx_add(starts_with("cg_adoption_social")) %>%
+  add_index(starts_with("cg_adoption_")) %>%
+  add_index(starts_with("cg_adoption_advantage")) %>%
+  add_index(starts_with("cg_adoption_fearofuse")) %>%
+  add_index(starts_with("cg_adoption_social")) %>%
   tab_metrics(starts_with("idx_cg_adoption"))
 ```
 
+# Factor and cluster Analysis 
+
+The easiest way to conduct factor analysis or cluster analyses is to use the respective parameters in the 
+`report_metrics()` function. 
+
+```{r}
+ds |> 
+  report_metrics(starts_with("cg_adoption"), factors = TRUE, clusters = TRUE)
+
+```
+
+Currently, cluster analysis is performed using kmeans and factor analysis is a principal component analysis.
+Setting the parameters to true, automatically generates scree plots
+and selects the number of factors or clusters. 
+Alternatively, you can explicitly specify the numbers.
+
+If you want to work with the results, use `add_factors()` and `add_clusters()` respectively. For factor analysis, new columns prefixed with "fct_" are created to store the factor loadings based on the specified number of factors. For clustering, an additional column prefixed with "cls_" is added that assigns each observation to a cluster number. 
+In the next step, you can use the new columns as shown below.
+
+To automatically determine the optimal number of factors or clusters based on diagnostics, set k = NULL.  
+
+**Add factor analysis results** 
+```{r}
+ds |> 
+  add_factors(starts_with("cg_adoption"), k = 3)  |>
+  report_metrics(fct_cg_adoption_1, fct_cg_adoption_2, metric = TRUE)
+
+```
+
+**Automatically determine the number of factors** 
+```{r}
+ds |> 
+  add_factors(starts_with("cg_adoption"), k = NULL) |>
+  factor_tab(starts_with("fct_cg_adoption"))
+```
+
+**Compare values by cluster**  
+```{r}
+ds |>
+  add_clusters(starts_with("cg_adoption"), k = 3) |>
+  report_counts(sd_gender, cls_cg_adoption, prop = "cols")
+```
 
 # What's behind the scenes?
 

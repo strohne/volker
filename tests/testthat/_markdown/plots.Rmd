@@ -182,9 +182,9 @@ plot_metrics_items_cor_items(
 ```{r}
 
 data %>%
-  idx_add(starts_with("cg_adoption_social_")) %>%
-  idx_add(starts_with("cg_adoption_fearofuse_")) %>%
-  idx_add(starts_with("cg_adoption_advantage_")) %>%
+  add_index(starts_with("cg_adoption_social_")) %>%
+  add_index(starts_with("cg_adoption_fearofuse_")) %>%
+  add_index(starts_with("cg_adoption_advantage_")) %>%
   
   # Set new labels for the three index columns
   labs_apply(tribble(

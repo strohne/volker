@@ -7,7 +7,7 @@
 skim_boxplot(data, ..., .data_name = NULL)
 }
 \description{
-Returns a five point summary, mean and sd, items count and alpha for scales added by idx_add().
+Returns a five point summary, mean and sd, items count and alpha for scales added by add_index().
 Additionally, the whiskers defined by the minimum respective maximum value within 1.5 * iqr are calculated.
 Outliers are returned in a list column.
 }

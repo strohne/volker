@@ -2,35 +2,15 @@
 % Please edit documentation in R/idx.R
 \name{idx_add}
 \alias{idx_add}
-\title{Calculate the mean value of multiple items}
+\title{Deprecated Alias for \code{add_index}}
 \usage{
 idx_add(data, cols, newcol = NULL, reverse = NULL, clean = TRUE)
 }
-\arguments{
-\item{data}{A dataframe.}
-
-\item{cols}{A tidy selection of item columns.}
-
-\item{newcol}{Name of the index as a character value.
-Set to NULL (default) to automatically build a name
-from the common column prefix, prefixed with "idx_".}
-
-\item{reverse}{A tidy selection of columns with reversed codings.
-For example, if you want to calculate an index of the
-two items "I feel bad about this" and "I like it",
-both coded with 1=not at all to 5=fully agree,
-you need to reverse one of them to make the codings compatible.}
-
-\item{clean}{Prepare data by \link{data_clean}.}
-}
-\value{
-The input tibble with an additional column that contains the index values.
-The column contains the result of the alpha calculation in the attribute named "psych.alpha".
-}
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+\code{idx_add()} was renamed to \code{add_index()}.
 }
-\examples{
-ds <- volker::chatgpt
-volker::idx_add(ds, starts_with("cg_adoption"))
+\details{
+This function is a deprecated alias for \code{add_index}.
 }
+\keyword{internal}

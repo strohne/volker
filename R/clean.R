@@ -7,6 +7,7 @@
 #' @param data Data frame to be prepared.
 #' @param cols The first column selection.
 #' @param cross The second column selection.
+#' @param reverse A tidy selection of columns with reversed codings.
 #' @param clean Whether to clean data using \link{data_clean}.
 #'
 #' @return Prepared data frame.
@@ -16,7 +17,7 @@
 #'
 #' @export
 #'
-data_prepare <- function(data, cols, cross, clean = TRUE) {
+data_prepare <- function(data, cols, cross, reverse, clean = TRUE) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -37,6 +38,10 @@ data_prepare <- function(data, cols, cross, clean = TRUE) {
     data <- data_rm_missings(data, {{ cols }})
   }
 
+  # 4. Reverse items
+  if (!missing(reverse)) {
+    data <- data_rev(data, reverse)
+  }
 
   # # 4. Remove negatives
   # if (isTRUE(rm.negatives) & !missing(cross)) {
@@ -289,6 +294,32 @@ data_rm_na_numbers <- function(data, na.numbers = TRUE, check.labels = TRUE) {
     )
 }
 
+#' Reverse the Values of Specified Items
+#'
+#' @keywords internal
+#'
+#' @param data A data frame containing the items to be reversed.
+#' @param cols A tidy selection of columns to reverse.
+#'             For example, if you want to calculate an index of the
+#'             two items "I feel bad about this" and "I like it",
+#'             both coded with 1=not at all to 5=fully agree,
+#'             you need to reverse one of them to make the codings compatible.
+#'
+#'
+#' @return A data frame with the specified items reversed.
+data_rev <- function(data, cols) {
+
+  # Get limits
+  limits <- get_limits(data, {{ cols }})
+
+  rev_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  for (rev_col in rev_eval) {
+    data[[rev_col]] <- (limits[2] - data[[rev_col]]) + limits[1]
+  }
+
+  data
+}
+
 #' Get a formatted baseline for removed zero, negative, and missing cases
 #' and include focus category information if present
 #'
@@ -300,25 +331,31 @@ get_baseline <- function(obj) {
   baseline <- c()
 
   # Focus categories
-  focus <- attr(obj, "focus", exact=TRUE)
+  focus <- attr(obj, "focus", exact = TRUE)
   if (!is.null(focus)) {
     baseline <- c(baseline, paste0("Frequencies based on values: ", paste(focus, collapse=", "), "."))
+  }
+
+  # Automatically selected k values
+  auto <- attr(obj, "auto", exact = TRUE)
+  if(!is.null(auto)) {
+    baseline <- c(baseline, auto$msg)
   }
 
   # Reversed items
   reversed <- attr(obj, "reversed", exact=TRUE)
   if (!is.null(reversed)) {
-    baseline <- c(baseline, paste0("Reversed items: ", paste(reversed, collapse=", "), "."))
+    baseline <- c(baseline, paste0("Reversed items: ", paste(reversed, collapse = ", "), "."))
   }
 
   # Split
-  split <- attr(obj, "split", exact=TRUE)
+  split <- attr(obj, "split", exact = TRUE)
   if (!is.null(split)) {
     baseline <- c(baseline, paste0(split, "."))
   }
 
   # Missings
-  missings <- attr(obj, "missings", exact=TRUE)
+  missings <- attr(obj, "missings", exact = TRUE)
   if (!is.null(missings)) {
     cols <- c()
     baseline_missing <- c()
@@ -334,12 +371,12 @@ get_baseline <- function(obj) {
       baseline_missing <- c(baseline_missing, paste0(missings$negative$n," negative"))
     }
 
-    baseline <- c(baseline, paste0(paste0(baseline_missing, collapse=", "), " case(s) omitted."))
+    baseline <- c(baseline, paste0(paste0(baseline_missing, collapse = ", "), " case(s) omitted."))
   }
 
   # Assemble baseline
   if (length(baseline) > 0) {
-    baseline = paste0(baseline, collapse=" ")
+    baseline = paste0(baseline, collapse = " ")
   } else {
     baseline <- NULL
   }

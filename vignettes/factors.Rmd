@@ -1,0 +1,67 @@
+---
+title: "Factor analysis"
+output: volker::html_report
+vignette: >
+  %\VignetteIndexEntry{Factors}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = F)
+
+library(tidyverse)
+library(volker)
+```
+
+```{r}
+
+# Load data 
+data <- volker::chatgpt
+```
+
+
+## Tables
+```{r}
+
+factor_tab(data, starts_with("cg_adoption"), k = 3)
+
+```
+
+
+## Plot
+```{r}
+
+factor_plot(data, starts_with("cg_adoption"), k = 3) 
+
+```
+
+
+## Report
+```{r}
+
+report_metrics(data, starts_with("cg_adoption"), factors = 3)
+
+```
+
+
+## Factor values
+```{r}
+
+data |> 
+  add_factors(starts_with("cg_adoption"), k = 2)  |>
+  report_metrics(fct_cg_adoption_1, fct_cg_adoption_2, metric = TRUE)
+
+```
+
+
+## Scree plot
+```{r}
+
+# Set factors to TRUE to report eigenvalues and scree plot calculated by psych::fa.parallel()
+report_metrics(data, starts_with("cg_adoption"), factors = TRUE)
+
+```
+

@@ -645,7 +645,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 
   # Remove common item prefix
   # TODO: make dry
-  prefix <- get_prefix(result$item, trim=T)
+  prefix <- get_prefix(result$item, trim = TRUE)
   result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
 
   # Rename first columns
@@ -908,7 +908,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   }
 
   # Remove common item prefix
-  prefix <- get_prefix(result$item, trim=T)
+  prefix <- get_prefix(result$item, trim = TRUE)
   result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
 
   # Rename first columns

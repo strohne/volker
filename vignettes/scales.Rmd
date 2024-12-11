@@ -31,7 +31,7 @@ h5 {font-size:100% !important; color: #444 !important;}
 
 # Scales
 
-You can calculate mean indexes from a bunch of items using `idx_add()`. 
+You can calculate mean indexes from a bunch of items using `add_index()`. 
 A new column is created with the average value of all selected columns
 for each case. 
 
@@ -43,7 +43,7 @@ are printed by `tab_metrics()`, see the items and alpha values in the following 
 ```{r}
 
 data %>%
-  idx_add(
+  add_index(
     starts_with("cg_adoption_advantage"),
     newcol = "idx_advantage"
   ) %>%
@@ -60,34 +60,17 @@ it is derived from the common prefix of all selected items.
 
 ```{r}
 data %>%
-  idx_add(starts_with("cg_adoption_advantage")) %>%
+  add_index(starts_with("cg_adoption_advantage")) %>%
   report_metrics(idx_cg_adoption_advantage_0, adopter)
 ```
-
-## Reverse items
-
-When measuring positive and negative items on the same scale,
-reverse them before calculating the index.
-
-```{r}
-
-data %>%
-  idx_add(
-    starts_with("cg_adoption_"), 
-    reverse = starts_with("cg_adoption_fearofuse_")
-  ) %>%  
-  report_metrics(idx_cg_adoption)
-  
-```
-
 
 ## Add multiple indizes
 ```{r}
 data %>%
-  idx_add(starts_with("cg_adoption_")) %>%
-  idx_add(starts_with("cg_adoption_advantage")) %>%
-  idx_add(starts_with("cg_adoption_fearofuse")) %>%
-  idx_add(starts_with("cg_adoption_social")) %>%
+  add_index(starts_with("cg_adoption_")) %>%
+  add_index(starts_with("cg_adoption_advantage")) %>%
+  add_index(starts_with("cg_adoption_fearofuse")) %>%
+  add_index(starts_with("cg_adoption_social")) %>%
   
   report_metrics(starts_with("idx_cg_adoption"))
 ```

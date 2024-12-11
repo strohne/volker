@@ -11,6 +11,8 @@ report_metrics(
   metric = FALSE,
   ...,
   index = FALSE,
+  factors = FALSE,
+  clusters = FALSE,
   effect = FALSE,
   title = TRUE,
   close = TRUE,
@@ -36,6 +38,20 @@ Set metric to TRUE, to treat it as metric and calculate correlations.}
 (as determined by \link{get_direction}),
 an index will be calculated using the 'psych' package.
 Set to FALSE to suppress index generation.}
+
+\item{factors}{The number of factors to calculate.
+Set to FALSE to suppress factor analysis.
+Set to TRUE to output a scree plot and automatically choose the number of factors.
+When the cols contain items on a metric scale
+(as determined by \link{get_direction}),
+factors will be calculated using the 'psych' package.
+See \link{add_factors}.}
+
+\item{clusters}{The number of clusters to calculate.
+Cluster are determined using kmeans after scaling the items.
+Set to FALSE to suppress cluster analysis.
+Set to TRUE to output a scree plot and automatically choose the number of clusters based on the elbow criterion.
+See \link{add_clusters}.}
 
 \item{effect}{Whether to report statistical tests and effect sizes. See \link{effect_counts} for further parameters.}
 

@@ -186,6 +186,30 @@ report_counts(data, adopter, sd_gender, prop="cols", effect=TRUE)
 procedures require mindful interpretation. Counting stars might evoke
 illusions.
 
+## Factors and Clusters
+
+You can generate tables and plots for clustering and factor analysis of
+metric variables. Both clustering and factor analysis are included in
+the reports when requested using the factors or clusters parameters.
+
+Set the respective parameters to TRUE to generate a scree plot and let
+the diagnostics choose the optimal number:
+
+``` r
+
+report_metrics(data, starts_with("cg_adoption"), factors = TRUE, clusters = TRUE)
+```
+
+Set the desired number directly:
+
+``` r
+
+report_metrics(data, starts_with("cg_adoption"), factors = 3, clusters = 4)
+```
+
+You don’t need to add both parameters at the same time if you are only
+interested in factors or clusters.
+
 ## Where do all the labels go?
 
 One of the strongest package features is labeling. You know the pain.
@@ -339,9 +363,17 @@ the specific function.
   groups.
 - **ci**: Add confidence intervals to plot and table outputs.
 - **index**: Indexes (=mean of multiple items) can be added to a dataset
-  using `idx_add()` or, using the index-parameter, automatically be
+  using `add_index()` or, using the index-parameter, automatically be
   included in report functions. Cronbach’s alpha is added to all table
   outputs.
+- **factors**: Items can be condensed to factors using principal
+  component analysis. With `add_factors()` new columns are added. The
+  factors-parameter in the report_metrics function automatically adds a
+  factor analysis to the outputs.
+- **clusters**: Cases can be grouped to clustersusing kmeans cluster
+  analysis. With `add_clusters()` a new column indicating cluster groups
+  is added. The clusters-parameter in the report_metrics function
+  automatically adds a cluster analysis to the outputs.
 - **effect**: You are not sure whether the differences are statistical
   significant? One option is to look out for non overlapping confidence
   intervals. In addition, the effect option calculates effect sizes such
@@ -427,7 +459,8 @@ You can try alternative versions:
 - Interactive reports: Use the `volker::html_report` template in your
   Markdown documents to switch between tables and plots when using the
   report-functions.  
-- Calculate metric indexes using `idx_add()` and effect sizes  
+- Generate metric indexes, conduct simple factor and cluster analyses
+  and calculate effect sizes  
   (*work in progress*)  
 - Simplified hints for wrong parameters, e.g. if you forget to provide a
   data frame (*work in progress*).
@@ -448,8 +481,8 @@ install the latest development version:
 | Version | Features           | Status           |
 |---------|--------------------|------------------|
 | 1.0     | Descriptives       | 80% done         |
-| 2.0     | Effects            | 50% done         |
-| 3.0     | Factors & clusters | work in progress |
+| 2.0     | Effects            | 60% done         |
+| 3.0     | Factors & clusters | 80% done         |
 | 4.0     | Text analysis      | work in progress |
 
 ## Similar packages
@@ -476,4 +509,4 @@ Chantal Gärtner (University of Münster)
 
 **Citation**  
 Jünger, J. & Kotthoff, H. (2024). volker: High-level functions for
-tabulating, charting and reporting survey data. R package version 2.1.
+tabulating, charting and reporting survey data. R package version 3.0.

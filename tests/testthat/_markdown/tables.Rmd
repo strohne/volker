@@ -92,12 +92,12 @@ tab_metrics(data, starts_with("cg_adoption_adv"), sd_age, metric = TRUE)
 ```{r}
 # Add a single index
 data %>%
-  idx_add(starts_with("cg_adoption_")) %>%
+  add_index(starts_with("cg_adoption_")) %>%
   tab_metrics_one(idx_cg_adoption)
 
 # Compare the index values by group
 data %>%
-  idx_add(starts_with("cg_adoption_")) %>%
+  add_index(starts_with("cg_adoption_")) %>%
   tab_metrics_one_grouped(idx_cg_adoption, adopter)
 ```
 
@@ -105,10 +105,10 @@ data %>%
 ```{r}
 # Add multiple indizes and summarize them
 data %>%
-  idx_add(starts_with("cg_adoption_")) %>%
-  idx_add(starts_with("cg_adoption_advantage")) %>%
-  idx_add(starts_with("cg_adoption_fearofuse")) %>%
-  idx_add(starts_with("cg_adoption_social")) %>%
+  add_index(starts_with("cg_adoption_")) %>%
+  add_index(starts_with("cg_adoption_advantage")) %>%
+  add_index(starts_with("cg_adoption_fearofuse")) %>%
+  add_index(starts_with("cg_adoption_social")) %>%
   tab_metrics_items(starts_with("idx_cg_adoption"))
 ```
 

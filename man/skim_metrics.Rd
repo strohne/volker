@@ -3,7 +3,7 @@
 \name{skim_metrics}
 \alias{skim_metrics}
 \title{A reduced skimmer for metric variables
-Returns a five point summary, mean and sd, items count and alpha for scales added by idx_add()}
+Returns a five point summary, mean and sd, items count and alpha for scales added by add_index()}
 \usage{
 skim_metrics(data, ..., .data_name = NULL)
 }
@@ -12,7 +12,7 @@ A skimmer, see \link[skimr:skim_with]{skim_with}
 }
 \description{
 A reduced skimmer for metric variables
-Returns a five point summary, mean and sd, items count and alpha for scales added by idx_add()
+Returns a five point summary, mean and sd, items count and alpha for scales added by add_index()
 }
 \examples{
 library(volker)

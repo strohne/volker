@@ -11,20 +11,15 @@
 #' @param newcol Name of the index as a character value.
 #'              Set to NULL (default) to automatically build a name
 #'              from the common column prefix, prefixed with "idx_".
-#' @param reverse A tidy selection of columns with reversed codings.
-#'                For example, if you want to calculate an index of the
-#'                two items "I feel bad about this" and "I like it",
-#'                both coded with 1=not at all to 5=fully agree,
-#'                you need to reverse one of them to make the codings compatible.
 #' @param clean Prepare data by \link{data_clean}.
 #' @return The input tibble with an additional column that contains the index values.
 #'         The column contains the result of the alpha calculation in the attribute named "psych.alpha".
 #' @examples
 #' ds <- volker::chatgpt
-#' volker::idx_add(ds, starts_with("cg_adoption"))
+#' volker::add_index(ds, starts_with("cg_adoption"))
 #' @export
 #' @importFrom rlang .data
-idx_add <- function(data, cols, newcol = NULL, reverse = NULL, clean = TRUE) {
+add_index <- function(data, cols, newcol = NULL, clean = TRUE) {
 
   # 1. Checks
   check_is_dataframe(data)
@@ -47,6 +42,9 @@ idx_add <- function(data, cols, newcol = NULL, reverse = NULL, clean = TRUE) {
     newcol <- paste0("idx_", prefix)
   }
 
+  # Get limits
+  limits <- get_limits(data, {{ cols }})
+
   # Create a label
   newlabel <- codebook(idx) %>%
     dplyr::distinct(dplyr::across(tidyselect::all_of("item_label"))) %>%
@@ -59,22 +57,11 @@ idx_add <- function(data, cols, newcol = NULL, reverse = NULL, clean = TRUE) {
   }
   newlabel <- paste0("Index: ", prefix)
 
-  # Get the limits
-  limits <- get_limits(data, {{ cols }})
-
-  # Reverse items
-  #cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = idx)
-  rev_eval <- tidyselect::eval_select(expr = enquo(reverse), data = idx)
-  for (rev_col in rev_eval) {
-    idx[[rev_col]] <- (limits[2] - idx[[rev_col]]) + limits[1]
-  }
-
   # Calculate the index
   idx <- psych::alpha(idx, check.keys = FALSE, warnings = FALSE)
 
   data[[newcol]] <- idx$scores
   attr(data[[newcol]], "psych.alpha") <- idx
-  attr(data[[newcol]], "reversed") <- names(rev_eval)
   attr(data[[newcol]], "comment") <- newlabel
 
   # Add limits
@@ -88,16 +75,46 @@ idx_add <- function(data, cols, newcol = NULL, reverse = NULL, clean = TRUE) {
   data
 }
 
-#' Get number of items and Cronbach's alpha of a scale added by idx_add()
+#' Get number of items and Cronbach's alpha of a scale added by add_index()
+#'
+#' TODO: Rename to index_tab, return volker list as in factor_tab()
 #'
 #' @keywords internal
 #'
 #' @param data A data frame column.
 #' @return A named list with with the keys "items" and "alpha".
-idx_alpha <- function(data) {
+get_alpha <- function(data) {
   idx <- attr(data, "psych.alpha")
   if (!is.null(idx)) {
     return(list("items" = idx$nvar, "alpha" = idx$total$std.alpha))
   }
   return(list("items" = NA, "alpha" = NA))
+}
+
+
+#' Deprecated Alias for `add_index`
+#'
+#' This function is a deprecated alias for `add_index`.
+#'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' `idx_add()` was renamed to `add_index()`.
+#'
+#' @keywords internal
+#' @export
+idx_add <- function(data, cols, newcol = NULL, reverse = NULL, clean = TRUE) {
+
+  lifecycle::deprecate_warn("3.0.0", "idx_add()", "add_index()")
+
+  # Reverse items
+  if (!missing(reverse)) {
+    data <- data_rev(data, reverse)
+  }
+
+  add_index(
+    data = data,
+    cols = tidyselect::all_of(cols),
+    newcol = newcol,
+    clean = clean)
+
 }
