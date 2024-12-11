@@ -16,8 +16,10 @@ vignettes/labels.Rmd
 vignettes/labels.html
 vignettes/effects.Rmd
 vignettes/effects.html
-vignettes/playground.Rmd
-vignettes/playground.html
+vignettes/clusters.Rmd
+vignettes/clusters.html
+vignettes/factors.Rmd
+vignettes/factors.html
 inst/rmarkdown/templates/volker-report/skeleton/skeleton.html
 ^CRAN-SUBMISSION$
 private
