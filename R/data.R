@@ -4,7 +4,7 @@
 #' adoption. The survey was conducted in April 2023 within
 #' the population of German Internet users.
 #'
-#' Call codebook(volker::chatgpt) to see the items and and answer options.
+#' Call codebook(volker::chatgpt) to see the items and answer options.
 #'
 #' @format ## `chatgpt`
 #' A data frame with 101 rows and 19 columns:

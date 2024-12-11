@@ -31,6 +31,6 @@ adoption. The survey was conducted in April 2023 within
 the population of German Internet users.
 }
 \details{
-Call codebook(volker::chatgpt) to see the items and and answer options.
+Call codebook(volker::chatgpt) to see the items and answer options.
 }
 \keyword{datasets}

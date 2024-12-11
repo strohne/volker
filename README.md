@@ -487,7 +487,7 @@ install the latest development version:
 
 ## Similar packages
 
-The volker package is inspired by outputs used in the the textbook
+The volker package is inspired by outputs used in the textbook
 [Einfache Datenauswertung mit
 R](https://doi.org/10.1007/978-3-658-34285-2) (Gehrau & Maubach et al.,
 2022), which provides an introduction to univariate and bivariate
