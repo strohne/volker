@@ -1,7 +1,9 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://strohne.github.io/volker/404.html</loc></url>
 <url><loc>https://strohne.github.io/volker/LICENSE-text.html</loc></url>
+<url><loc>https://strohne.github.io/volker/articles/clusters.html</loc></url>
 <url><loc>https://strohne.github.io/volker/articles/effects.html</loc></url>
+<url><loc>https://strohne.github.io/volker/articles/factors.html</loc></url>
 <url><loc>https://strohne.github.io/volker/articles/index.html</loc></url>
 <url><loc>https://strohne.github.io/volker/articles/introduction.html</loc></url>
 <url><loc>https://strohne.github.io/volker/articles/labels.html</loc></url>
@@ -24,15 +26,21 @@
 <url><loc>https://strohne.github.io/volker/reference/VLKR_POINT_MEAN_SHAPE.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/VLKR_POINT_SIZE.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/VLKR_WRAP_SEPARATOR.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/add_clusters.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/add_factors.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/add_index.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/cfg_get_na_numbers.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/chatgpt.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/check_has_column.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/check_is_dataframe.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/check_is_param.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/cluster_plot.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/cluster_tab.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/codebook.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_clean.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_clean_sosci.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_prepare.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/data_rev.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_rm_missings.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_rm_na_levels.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_rm_na_numbers.html</loc></url>
@@ -54,7 +62,10 @@
 <url><loc>https://strohne.github.io/volker/reference/dot-plot_bars.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-plot_cor.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-plot_lines.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-plot_scree.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-plot_summary.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-report_cls.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-report_fct.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-report_idx.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-tab_split.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-to_vlkr_df.html</loc></url>
@@ -83,7 +94,10 @@
 <url><loc>https://strohne.github.io/volker/reference/effect_metrics_one_cor.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/effect_metrics_one_grouped.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/ends_with.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/factor_plot.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/factor_tab.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/filter.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/get_alpha.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/get_angle.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/get_baseline.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/get_ci.html</loc></url>
@@ -95,7 +109,6 @@
 <url><loc>https://strohne.github.io/volker/reference/get_title.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/html_report.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/idx_add.html</loc></url>
-<url><loc>https://strohne.github.io/volker/reference/idx_alpha.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/index.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/knit_print.vlkr_plt.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/label_scale.html</loc></url>
