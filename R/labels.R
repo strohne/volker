@@ -263,7 +263,7 @@ labs_apply <- function(data, codes = NULL, cols = NULL, items = TRUE, values = T
     items <- as.list(items)
   }
 
-  if (!is.null(values) &&is.vector(values) && !is.null(names(values))) {
+  if (!is.null(values) && is.vector(values) && !is.null(names(values))) {
     values <- as.list(values)
   }
 
@@ -372,8 +372,10 @@ labs_apply <- function(data, codes = NULL, cols = NULL, items = TRUE, values = T
           }
         }
 
-        # Labels with numeric and boolean names are stored directly as attributes in the column (label_nested is FALSE)
-        # All other labels are stored as a list in the "label" attribute (label_nested is TRUE)
+        # Labels with numeric and boolean names are stored directly as attributes
+        # in the column (label_nested is FALSE).
+        # All other labels are stored as a list in the "label" attribute
+        # (label_nested is TRUE).
         else {
 
           label_attr <- list()
@@ -391,15 +393,25 @@ labs_apply <- function(data, codes = NULL, cols = NULL, items = TRUE, values = T
           }
 
           if (length(label_attr) > 0) {
-            if (!label_nested) {
-              attr(data[[col]], "labels") <- NULL
+
+            # Clear labels
+            attr(data[[col]], "labels") <- NULL
+            label_old <- attributes(data[[col]])
+            label_old <- label_old[which(grepl("^-?[0-9TF]+$", names(label_old)))]
+            for (value_name in label_old) {
+              attr(data[[col]], as.character(value_name)) <- NULL
+            }
+
+            # Set labels
+            if (label_nested) {
+              attr(data[[col]], "labels") <- label_attr
+
+            } else {
               for (value_name in names(label_attr)) {
                 value_label <- label_attr[[value_name]]
                 attr(data[[col]], as.character(value_name)) <- NULL
                 attr(data[[col]], as.character(value_name)) <- value_label
               }
-            } else {
-              attr(data[[col]], "labels") <- label_attr
             }
           }
         }
