@@ -88,9 +88,11 @@ factor_tab <- function(data, cols, newcols = NULL, k = 2, method = "pca", labels
 
 
   # Add eigenvalues and variance
-  fit_var <- t(fit$Vaccounted[c(1:3),])
-
+  fit_var <- data.frame(t(fit$Vaccounted))
+  fit_var$Cumulative.Var <- dplyr::coalesce(fit_var$Cumulative.Var, fit_var$Proportion.Var)
+  fit_var <- dplyr::select(fit_var, tidyselect::all_of(c("SS.loadings", "Proportion.Var", "Cumulative.Var")))
   colnames(fit_var) <- c("Eigenvalue", "Proportion of variance", "Cumulative proportion of variance")
+
   rownames(fit_var) <- fct_labels
   if (labels) {
     rownames(fit_var) <- fct_labels
