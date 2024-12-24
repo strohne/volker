@@ -80,7 +80,7 @@ check_has_column <- function(data, cols, msg = NULL) {
 check_is_numeric <- function(data, cols, msg = NULL) {
 
   cols <- tidyselect::eval_select(expr = rlang::enquo(cols), data = data)
-  vals <- dplyr::select(data, cols)
+  vals <- dplyr::select(data, all_of(cols))
   all_numeric <- all(sapply(vals, is.numeric))
 
   if (!all_numeric) {
@@ -102,10 +102,10 @@ check_is_numeric <- function(data, cols, msg = NULL) {
 check_is_categorical <- function(data, cols, msg = NULL) {
 
   cols <- tidyselect::eval_select(expr = rlang::enquo(cols), data = data)
-  vals <- dplyr::select(data, cols)
+  vals <- dplyr::select(data, all_of(cols))
 
   all_nonfraction <- all(sapply(vals, function(column) {
-    is.numeric(column) && all(column == floor(column), na.rm = TRUE)
+    !is.numeric(column) || all(column == floor(column), na.rm = TRUE)
   }))
 
   if (!all_nonfraction) {
@@ -117,7 +117,7 @@ check_is_categorical <- function(data, cols, msg = NULL) {
   categories <- unique(unlist(vals, use.names = FALSE))
 
   max_categories <- getOption("vlkr.max.categories")
-  if (is.null(na.numbers)) {
+  if (is.null(max_categories)) {
     max_categories <- VLKR_MAX_CATEGORIES
   }
 
