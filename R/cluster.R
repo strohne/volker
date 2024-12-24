@@ -233,7 +233,7 @@ add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", cl
   fit_wss <- c()
   items <- scale(items)
   for (i in k) {
-    fit <- stats::kmeans(items, centers = i)
+    fit <- stats::kmeans(items, centers = i, iter.max = 10)
     fitlist[[i]] <- fit
     fit_wss <- c(fit_wss, fit$tot.withinss)
   }

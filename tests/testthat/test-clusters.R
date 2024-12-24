@@ -17,7 +17,7 @@ test_that("clusters are added", {
     item2 = c(c(1:10), c(20:30))
   )
 
-  data <- add_clusters(data, c(item1, item2), k = NULL)
+  data <- suppressWarnings(add_clusters(data, c(item1, item2), k = NULL))
 
   expect_snapshot({
     cluster_tab(data, cls_item)
