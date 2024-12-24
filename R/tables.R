@@ -220,6 +220,7 @@ tab_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, clean = clean)
+  check_is_categorical(data, {{ col }})
 
   # 2. Count
   result <- data %>%
@@ -308,6 +309,8 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
 tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
+  check_is_categorical(data, {{ col }})
+  check_is_categorical(data, {{ cross }})
 
   # 2. Get labels for values
   if (labels) {
@@ -498,6 +501,8 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
 tab_counts_one_cor <- function(data, col, cross, prop = "total", percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
+  check_is_categorical(data, {{ col }})
+  check_is_numeric(data, {{ cross }})
 
   # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)
@@ -541,6 +546,7 @@ tab_counts_one_cor <- function(data, col, cross, prop = "total", percent = TRUE,
 tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, clean = clean)
+  check_is_categorical(data, {{ cols }})
 
   # 2. Calculate n and p
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -728,6 +734,8 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent = TRUE, values = c("n", "p"), title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+  check_is_categorical(data, {{ cols }})
+  check_is_categorical(data, {{ cross }})
 
   # 2. Evaluate columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -978,6 +986,8 @@ tab_counts_items_grouped_items <- function(data, cols, cross, title = TRUE, labe
 tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NULL, percent = TRUE, values = c("n", "p"), title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+  check_is_categorical(data, {{ cols }})
+  check_is_numeric(data, {{ cross }})
 
   # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)
@@ -1036,6 +1046,7 @@ tab_counts_items_cor_items <- function(data, cols, cross,  title = TRUE, labels 
 tab_metrics_one <- function(data, col, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, clean = clean)
+  check_is_numeric(data, {{ col }})
 
   # 2. Calculate values
   result <- data %>%
@@ -1124,6 +1135,8 @@ tab_metrics_one <- function(data, col, ci = FALSE, digits = 1, labels = TRUE, cl
 tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
+  check_is_numeric(data, {{ col }})
+  check_is_categorical(data, {{ cross }})
 
   # 2. Calculate values
   result_grouped <- data %>%
@@ -1224,6 +1237,8 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, digits = 1, la
 tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE, digits = 2, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
+  check_is_numeric(data, {{ col }})
+  check_is_numeric(data, {{ cross }})
 
   # 2. Check method
   check_is_param(method, c("spearman", "pearson"))
@@ -1289,6 +1304,7 @@ tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE
 tab_metrics_items <- function(data, cols, ci = FALSE, digits = 1, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, clean = clean)
+  check_is_numeric(data, {{ cols }})
 
   # 2. Calculate
   result <- data %>%
@@ -1372,6 +1388,8 @@ tab_metrics_items <- function(data, cols, ci = FALSE, digits = 1, labels = TRUE,
 tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c("m", "sd"), labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+  check_is_numeric(data, {{ cols }})
+  check_is_categorical(data, {{ cross }})
 
   # Get positions of group cols
   cross <- tidyselect::eval_select(expr = enquo(cross), data = data)
@@ -1560,6 +1578,8 @@ tab_metrics_items_grouped_items <- function(data, cols, cross, title = TRUE, lab
 tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", digits = 2, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+  check_is_numeric(data, {{ cols }})
+  check_is_numeric(data, {{ cross }})
 
   # 2. Calculate correlation
   result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
@@ -1631,6 +1651,8 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", digits 
 tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", digits = 2, ci = FALSE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+  check_is_numeric(data, {{ cols }})
+  check_is_numeric(data, {{ cross }})
 
   # 2. Check method
   check_is_param(method, c("spearman", "pearson"))

@@ -16,6 +16,14 @@ VLKR_NA_LEVELS <- c("[NA] nicht beantwortet", "[NA] keine Angabe", "[no answer]"
 #' @keywords internal
 VLKR_NA_NUMBERS <- c(-9, -2, -1)
 
+#' Maximum number of distinct values to determine whether a column selection
+#' contains only categorical values
+#'
+#' Override with \code{options(vlkr.max.categories=10)}.
+#'
+#' @keywords internal
+VLKR_MAX_CATEGORIES <- 20
+
 #' Get configured na numbers
 #'
 #' Retrieves values either from the option or from the constant.

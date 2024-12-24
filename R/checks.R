@@ -69,6 +69,69 @@ check_has_column <- function(data, cols, msg = NULL) {
   TRUE
 }
 
+#' Check whether a column selection is numeric
+#'
+#' @keywords internal
+#'
+#' @param data A data frame.
+#' @param cols A tidyselection of columns.
+#' @param msg A custom error message if the check fails.
+#' @return boolean Whether the columns are numeric.
+check_is_numeric <- function(data, cols, msg = NULL) {
+
+  cols <- tidyselect::eval_select(expr = rlang::enquo(cols), data = data)
+  vals <- dplyr::select(data, cols)
+  all_numeric <- all(sapply(vals, is.numeric))
+
+  if (!all_numeric) {
+    msg <- dplyr::coalesce(msg, paste0("The column selection contains non-numeric values. Did you forget to convert them?"))
+    stop(msg, call. = FALSE)
+  }
+
+  TRUE
+}
+
+#' Check whether a column selection is categorical
+#'
+#' @keywords internal
+#'
+#' @param data A data frame.
+#' @param cols A tidyselection of columns.
+#' @param msg A custom error message if the check fails.
+#' @return boolean Whether the columns are categorical
+check_is_categorical <- function(data, cols, msg = NULL) {
+
+  cols <- tidyselect::eval_select(expr = rlang::enquo(cols), data = data)
+  vals <- dplyr::select(data, cols)
+
+  all_nonfraction <- all(sapply(vals, function(column) {
+    is.numeric(column) && all(column == floor(column), na.rm = TRUE)
+  }))
+
+  if (!all_nonfraction) {
+    msg <- dplyr::coalesce(msg, paste0("The column selection contains numeric values with commas. Did you mean to use a metric function?"))
+    stop(msg, call. = FALSE)
+  }
+
+  all_numeric <- all(sapply(vals, is.numeric))
+  categories <- unique(unlist(vals, use.names = FALSE))
+
+  max_categories <- getOption("vlkr.max.categories")
+  if (is.null(na.numbers)) {
+    max_categories <- VLKR_MAX_CATEGORIES
+  }
+
+  if (all_numeric && (length(categories) > max_categories)) {
+    msg <- dplyr::coalesce(
+      msg,
+      paste0("The column selection contains more than ", max_categories," distinct numeric values. Did you mean to use a metric function?")
+    )
+    stop(msg, call. = FALSE)
+  }
+
+  TRUE
+}
+
 #' Check whether a parameter value is from a valid set
 #'
 #' @keywords internal
