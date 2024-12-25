@@ -2,7 +2,7 @@
 % Please edit documentation in R/clean.R
 \name{data_rev}
 \alias{data_rev}
-\title{Reverse the Values of Specified Items}
+\title{Reverse item values}
 \usage{
 data_rev(data, cols)
 }
@@ -13,12 +13,13 @@ data_rev(data, cols)
 For example, if you want to calculate an index of the
 two items "I feel bad about this" and "I like it",
 both coded with 1=not at all to 5=fully agree,
-you need to reverse one of them to make the codings compatible.}
+you need to reverse one of them to make the
+codings compatible.}
 }
 \value{
 A data frame with the specified items reversed.
 }
 \description{
-Reverse the Values of Specified Items
+Reverse item values
 }
 \keyword{internal}

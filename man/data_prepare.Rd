@@ -4,7 +4,15 @@
 \alias{data_prepare}
 \title{Prepare data for calculation}
 \usage{
-data_prepare(data, cols, cross, reverse, clean = TRUE)
+data_prepare(
+  data,
+  cols,
+  cross,
+  cols.categorical,
+  cols.numeric,
+  cols.reverse,
+  clean = TRUE
+)
 }
 \arguments{
 \item{data}{Data frame to be prepared.}
@@ -13,7 +21,11 @@ data_prepare(data, cols, cross, reverse, clean = TRUE)
 
 \item{cross}{The second column selection.}
 
-\item{reverse}{A tidy selection of columns with reversed codings.}
+\item{cols.categorical}{A tidy selection of columns to be checked for categorical values.}
+
+\item{cols.numeric}{A tidy selection of columns to be converted to numeric values.}
+
+\item{cols.reverse}{A tidy selection of columns with reversed codings.}
 
 \item{clean}{Whether to clean data using \link{data_clean}.}
 }

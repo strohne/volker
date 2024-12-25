@@ -13,14 +13,16 @@ codebook(data, cols)
 }
 \value{
 A tibble with the columns:
-- item_name: The column name.
-- item_group: First part of the column name, up to an underscore.
-- item_class: The last class value of an item (e.g. numeric, factor).
-- item_label: The comment attribute of the column.
-- value_name: In case a column has numeric attributes, the attribute names.
-- value_label: In case a column has numeric attributes or T/F-attributes,
+\itemize{
+\item item_name: The column name.
+\item item_group: First part of the column name, up to an underscore.
+\item item_class: The last class value of an item (e.g. numeric, factor).
+\item item_label: The comment attribute of the column.
+\item value_name: In case a column has numeric attributes, the attribute names.
+\item value_label: In case a column has numeric attributes or T/F-attributes,
 the attribute values.
 In case a column has a levels attribute, the levels.
+}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
