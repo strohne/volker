@@ -7,7 +7,9 @@
 #' @param data Data frame to be prepared.
 #' @param cols The first column selection.
 #' @param cross The second column selection.
-#' @param reverse A tidy selection of columns with reversed codings.
+#' @param cols.categorical A tidy selection of columns to be checked for categorical values.
+#' @param cols.numeric A tidy selection of columns to be converted to numeric values.
+#' @param cols.reverse A tidy selection of columns with reversed codings.
 #' @param clean Whether to clean data using \link{data_clean}.
 #'
 #' @return Prepared data frame.
@@ -17,7 +19,7 @@
 #'
 #' @export
 #'
-data_prepare <- function(data, cols, cross, reverse, clean = TRUE) {
+data_prepare <- function(data, cols, cross, cols.categorical, cols.numeric, cols.reverse, clean = TRUE) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -31,19 +33,30 @@ data_prepare <- function(data, cols, cross, reverse, clean = TRUE) {
     data <- data_clean(data, clean)
   }
 
-  # 3. Remove missings
+  # 3. Convert to numeric
+  if (!missing(cols.numeric)) {
+    data <- data_num(data, {{ cols.numeric }})
+  }
+
+
+  # 4. Remove missings
   if (!missing(cross)) {
     data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))
   } else {
     data <- data_rm_missings(data, {{ cols }})
   }
 
-  # 4. Reverse items
-  if (!missing(reverse)) {
-    data <- data_rev(data, reverse)
+  # 5. Reverse items
+  if (!missing(cols.reverse)) {
+    data <- data_rev(data, {{ cols.reverse }})
   }
 
-  # # 4. Remove negatives
+  # 6. Check categorical values
+  if (!missing(cols.categorical)) {
+    check_is_categorical(data, {{ cols.categorical }})
+  }
+
+  # # 6. Remove negatives
   # if (isTRUE(rm.negatives) & !missing(cross)) {
   #   data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
   # }
@@ -294,7 +307,7 @@ data_rm_na_numbers <- function(data, na.numbers = TRUE, check.labels = TRUE) {
     )
 }
 
-#' Reverse the Values of Specified Items
+#' Reverse item values
 #'
 #' @keywords internal
 #'
@@ -303,9 +316,8 @@ data_rm_na_numbers <- function(data, na.numbers = TRUE, check.labels = TRUE) {
 #'             For example, if you want to calculate an index of the
 #'             two items "I feel bad about this" and "I like it",
 #'             both coded with 1=not at all to 5=fully agree,
-#'             you need to reverse one of them to make the codings compatible.
-#'
-#'
+#'             you need to reverse one of them to make the
+#'             codings compatible.
 #' @return A data frame with the specified items reversed.
 data_rev <- function(data, cols) {
 
@@ -315,6 +327,30 @@ data_rev <- function(data, cols) {
   rev_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   for (rev_col in rev_eval) {
     data[[rev_col]] <- (limits[2] - data[[rev_col]]) + limits[1]
+  }
+
+  data
+}
+
+#' Convert values to numeric values
+#'
+#' @keywords internal
+#'
+#' @param data A data frame containing the items to be converted.
+#' @param cols A tidy selection of columns to convert.
+#' @return A data frame with the specified items reversed.
+data_num <- function(data, cols) {
+
+  # Get limits
+  #limits <- get_limits(data, {{ cols }})
+
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  for (col in cols_eval) {
+    old_attr <- attributes(data[[col]])
+    old_attr[c("class", "levels")] <- NULL
+    data[[col]] <- as.numeric(data[[col]])
+    attributes(data[[col]]) <- old_attr
+
   }
 
   data

@@ -241,7 +241,7 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
 #' @export
 plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, clean = clean)
+  data <- data_prepare(data, {{ col }}, cols.categorical = {{ col }}, clean = clean)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -360,7 +360,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #' @importFrom rlang .data
 plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "total", limits = NULL, ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -491,7 +491,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
 #' @importFrom rlang .data
 plot_counts_one_cor <- function(data, col, cross, category = NULL, prop = "total", limits = NULL, ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = {{ col }}, cols.numeric = {{ cross }}, clean = clean)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -547,7 +547,7 @@ plot_counts_one_cor <- function(data, col, cross, category = NULL, prop = "total
 #' @importFrom rlang .data
 plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = FALSE, limits = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, clean = clean)
+  data <- data_prepare(data, {{ cols }}, cols.categorical = {{ cols }}, clean = clean)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -681,7 +681,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #' @importFrom rlang .data
 plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -878,7 +878,7 @@ plot_counts_items_grouped_items <- function(data, cols, cross, title = TRUE, lab
 #' @importFrom rlang .data
 plot_counts_items_cor <- function(data, cols, cross, category = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = {{ cols }}, cols.numeric = {{ cross}}, clean = clean)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -945,7 +945,7 @@ plot_counts_items_cor_items <- function(data, cols, cross,  title = TRUE, labels
 #' @importFrom rlang .data
 plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, clean = clean)
+  data <- data_prepare(data, {{ col }}, cols.numeric = {{ col }}, clean = clean)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -1053,7 +1053,7 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
 #' @importFrom rlang .data
 plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = {{ cross }}, cols.numeric = {{ col }}, clean = clean)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -1144,7 +1144,7 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
 #' @importFrom rlang .data
 plot_metrics_one_cor <- function(data, col, cross, limits = NULL, log = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, cols.numeric = c({{ col }}, {{ cross }}), clean = clean)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -1255,7 +1255,7 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, log = FALSE, t
 #' @export
 plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, clean = clean)
+  data <- data_prepare(data, {{ cols }}, cols.numeric = {{ cols }}, clean = clean)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -1352,7 +1352,7 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
 #' @importFrom rlang .data
 plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = {{ cross }}, cols.numeric = {{ cols }}, clean = clean)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -1477,7 +1477,7 @@ plot_metrics_items_grouped_items <- function(data, cols, cross, title = TRUE, la
 #'@importFrom rlang .data
 plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, method = "pearson", title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -1584,7 +1584,7 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, method = "pear
 #'@importFrom rlang .data
 plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", numbers = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
 
   if (nrow(data) == 0) {
     return(NULL)

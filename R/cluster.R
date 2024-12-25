@@ -195,7 +195,7 @@ cluster_plot <- function(data, cols, newcol = NULL, k = NULL, method = NULL, lab
 add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", clean = TRUE) {
 
   # Check, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, clean = clean)
+  data <- data_prepare(data, {{ cols }}, cols.numeric = {{ cols }}, clean = clean)
 
   # select columns
   items <- data %>%

@@ -256,7 +256,7 @@ factor_plot <- function(data, cols, newcols = NULL, k = 2, method = "pca", label
 add_factors <- function(data, cols, newcols = NULL, k = 2, method = "pca", clean = TRUE) {
 
   # Check, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, clean = clean)
+  data <- data_prepare(data, {{ cols }}, cols.numeric = {{ cols }}, clean = clean)
 
   # Select columns
   items <- dplyr::select(data, {{ cols }})

@@ -195,7 +195,7 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
 effect_counts_one <- function(data, col, clean = TRUE, ...) {
 
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, clean = clean)
+  data <- data_prepare(data, {{ col }}, cols.categorical = {{ col }}, clean = clean)
 
   # 2. Observed
   observed <- data %>%
@@ -253,7 +253,7 @@ effect_counts_one <- function(data, col, clean = TRUE, ...) {
 #' @export
 effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
   # 2. Prepare data
   contingency <- data %>%
@@ -330,7 +330,7 @@ effect_counts_one_cor <- function(data, col, cross, clean = TRUE, labels = TRUE,
 #' @importFrom rlang .data
 effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, clean = clean)
+  data <- data_prepare(data, {{ cols }}, cols.categorical = {{ cols }}, clean = clean)
 
   # 2. Count
   result <- data %>%
@@ -468,7 +468,7 @@ effect_counts_items_cor_items <- function(data, cols, cross, clean = TRUE, ...) 
 #' @importFrom rlang .data
 effect_metrics_one <- function(data, col, labels = TRUE, clean = TRUE, ... ) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, clean = clean)
+  data <- data_prepare(data, {{ col }}, cols.numeric = {{ col }}, clean = clean)
 
   # 2. Normality test
   stats <- dplyr::select(data, av = {{ col }})
@@ -542,7 +542,7 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = TRUE, ... ) {
 #' @importFrom rlang .data
 effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = {{ cross }}, cols.numeric = {{ col }}, clean = clean)
 
   check_is_param(method, c("lm", "t.test"))
 
@@ -691,7 +691,7 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
 #' @importFrom rlang .data
 effect_metrics_one_cor <- function(data, col, cross, method = "pearson", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ col }}, {{ cross }}, clean = clean)
+  data <- data_prepare(data, {{ col }}, {{ cross }}, cols.numeric = c({{ col }}, {{ cross }}), clean = clean)
 
   # 2. Calculate correlation
   result <- .effect_correlations(data, {{ col }}, {{ cross}}, method = method, labels = labels)
@@ -749,7 +749,7 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", labels 
 #' @export
 effect_metrics_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, clean = clean)
+  data <- data_prepare(data, {{ cols }}, cols.numeric = {{ cols }}, clean = clean)
 
   data <- dplyr::select(data, {{ cols }})
 
@@ -822,7 +822,7 @@ effect_metrics_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
 #' @importFrom rlang .data
 effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = {{ cross }}, cols.numeric = {{ cols }}, clean = clean)
 
   # 2. Pivot
   lm_data <- data %>%
@@ -926,7 +926,7 @@ effect_metrics_items_grouped_items <- function(data, cols, cross, clean = TRUE, 
 #' @importFrom rlang .data
 effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
 
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
@@ -983,7 +983,7 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labe
 #' @importFrom rlang .data
 effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, clean = clean)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
 
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)

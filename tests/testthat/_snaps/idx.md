@@ -21,7 +21,7 @@
       4 missing case(s) omitted.
       
 
----
+# Index is calculated
 
     Code
       data %>% add_index(tidyselect::starts_with("cg_adoption")) %>%
