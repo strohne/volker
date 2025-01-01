@@ -54,6 +54,7 @@ data_prepare <- function(data, cols, cross, cols.categorical, cols.numeric, cols
   # 6. Check categorical values
   if (!missing(cols.categorical)) {
     check_is_categorical(data, {{ cols.categorical }})
+    data <- data_cat(data, {{ cols.categorical }})
   }
 
   # # 6. Remove negatives
@@ -338,7 +339,7 @@ data_rev <- function(data, cols) {
 #'
 #' @param data A data frame containing the items to be converted.
 #' @param cols A tidy selection of columns to convert.
-#' @return A data frame with the specified items reversed.
+#' @return A data frame with the converted values
 data_num <- function(data, cols) {
 
   # Get limits
@@ -351,6 +352,28 @@ data_num <- function(data, cols) {
     data[[col]] <- as.numeric(data[[col]])
     attributes(data[[col]]) <- old_attr
 
+  }
+
+  data
+}
+
+#' Convert numeric values to string
+#'
+#' @keywords internal
+#'
+#' @param data A data frame containing the items to be converted.
+#' @param cols A tidy selection of columns to convert.
+#' @return A data frame with the converted values
+data_cat <- function(data, cols) {
+
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  for (col in cols_eval) {
+    if (is.numeric(data[[col]])) {
+      old_attr <- attributes(data[[col]])
+      old_attr[c("class", "levels")] <- NULL
+      data[[col]] <- as.character(data[[col]])
+      attributes(data[[col]]) <- old_attr
+    }
   }
 
   data
