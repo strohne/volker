@@ -4,7 +4,7 @@
 \alias{add_index}
 \title{Calculate the mean value of multiple items}
 \usage{
-add_index(data, cols, newcol = NULL, clean = TRUE)
+add_index(data, cols, newcol = NULL, cols.reverse, clean = TRUE)
 }
 \arguments{
 \item{data}{A dataframe.}
@@ -14,6 +14,8 @@ add_index(data, cols, newcol = NULL, clean = TRUE)
 \item{newcol}{Name of the index as a character value.
 Set to NULL (default) to automatically build a name
 from the common column prefix, prefixed with "idx_".}
+
+\item{cols.reverse}{A tidy selection of columns with reversed codings.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 }
