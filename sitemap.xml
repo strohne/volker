@@ -18,6 +18,7 @@
 <url><loc>https://strohne.github.io/volker/reference/VLKR_FILLDISCRETE.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/VLKR_FILLGRADIENT.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/VLKR_FILLPOLARIZED.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/VLKR_MAX_CATEGORIES.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/VLKR_NA_LEVELS.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/VLKR_NA_NUMBERS.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/VLKR_NORMAL_DIGITS.html</loc></url>
@@ -32,13 +33,17 @@
 <url><loc>https://strohne.github.io/volker/reference/cfg_get_na_numbers.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/chatgpt.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/check_has_column.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/check_is_categorical.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/check_is_dataframe.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/check_is_numeric.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/check_is_param.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/cluster_plot.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/cluster_tab.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/codebook.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/data_cat.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_clean.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_clean_sosci.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/data_num.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_prepare.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_rev.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_rm_missings.html</loc></url>

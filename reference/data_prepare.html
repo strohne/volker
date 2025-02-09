@@ -39,7 +39,15 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">data_prepare</span><span class="op">(</span><span class="va">data</span>, <span class="va">cols</span>, <span class="va">cross</span>, <span class="va">reverse</span>, clean <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">data_prepare</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">cols</span>,</span>
+<span>  <span class="va">cross</span>,</span>
+<span>  <span class="va">cols.categorical</span>,</span>
+<span>  <span class="va">cols.numeric</span>,</span>
+<span>  <span class="va">cols.reverse</span>,</span>
+<span>  clean <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -58,7 +66,15 @@
 <dd><p>The second column selection.</p></dd>
 
 
-<dt id="arg-reverse">reverse<a class="anchor" aria-label="anchor" href="#arg-reverse"></a></dt>
+<dt id="arg-cols-categorical">cols.categorical<a class="anchor" aria-label="anchor" href="#arg-cols-categorical"></a></dt>
+<dd><p>A tidy selection of columns to be checked for categorical values.</p></dd>
+
+
+<dt id="arg-cols-numeric">cols.numeric<a class="anchor" aria-label="anchor" href="#arg-cols-numeric"></a></dt>
+<dd><p>A tidy selection of columns to be converted to numeric values.</p></dd>
+
+
+<dt id="arg-cols-reverse">cols.reverse<a class="anchor" aria-label="anchor" href="#arg-cols-reverse"></a></dt>
 <dd><p>A tidy selection of columns with reversed codings.</p></dd>
 
 
