@@ -11,6 +11,7 @@
 #' @param newcol Name of the index as a character value.
 #'              Set to NULL (default) to automatically build a name
 #'              from the common column prefix, prefixed with "idx_".
+#' @param cols.reverse A tidy selection of columns with reversed codings.
 #' @param clean Prepare data by \link{data_clean}.
 #' @return The input tibble with an additional column that contains the index values.
 #'         The column contains the result of the alpha calculation in the attribute named "psych.alpha".
@@ -19,18 +20,9 @@
 #' volker::add_index(ds, starts_with("cg_adoption"))
 #' @export
 #' @importFrom rlang .data
-add_index <- function(data, cols, newcol = NULL, clean = TRUE) {
+add_index <- function(data, cols, newcol = NULL, cols.reverse, clean = TRUE) {
 
-  # 1. Checks
-  check_is_dataframe(data)
-
-  # 2. Clean
-  if (clean) {
-    data <- data_clean(data)
-  }
-
-  # 3. Remove missings
-  data <- data_rm_missings(data, {{ cols }})
+  data <- data_prepare(data, {{ cols }}, cols.numeric = {{ cols }}, cols.reverse  = {{ cols.reverse }}, clean = clean)
 
   # Select columns
   idx <- data %>%

@@ -998,7 +998,11 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
 
   # Get title
   if (title == TRUE) {
-    title <- get_title(data, {{ col }})
+    if (labels == TRUE) {
+      title <- get_title(data, {{ col }})
+    } else {
+      title <- NULL
+    }
   } else if (title == FALSE) {
     title <- NULL
   }

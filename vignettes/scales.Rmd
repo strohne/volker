@@ -52,6 +52,21 @@ data %>%
   
 ```
 
+## Reverse items
+Note: You can select single variables by listing them
+in c(), instead of using starts_with() for multiple columns by a common prefix.
+```{r}
+
+data %>%
+  add_index(
+    starts_with("cg_adoption_advantage"),
+    newcol = "idx_advantage",
+    cols.reverse = starts_with("cg_adoption_"),
+  ) %>%
+  report_metrics(idx_advantage)
+  
+```
+
 
 ## Compare the index values by group
 

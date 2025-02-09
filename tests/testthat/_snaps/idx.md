@@ -40,3 +40,49 @@
       4 missing case(s) omitted.
       
 
+# Items are reversed
+
+    Code
+      dist_reversed
+    Output
+      
+      
+      |Index: cg_adoption_advantage_0 | value|
+      |:------------------------------|-----:|
+      |min                            |     1|
+      |q1                             |     3|
+      |median                         |   3.5|
+      |q3                             |   3.8|
+      |max                            |     5|
+      |mean                           |   3.3|
+      |sd                             |   0.8|
+      |n                              |    99|
+      |items                          |     4|
+      |alpha                          |  0.79|
+      
+      2 missing case(s) omitted.
+      
+
+---
+
+    Code
+      dist_unreversed
+    Output
+      
+      
+      |Index: cg_adoption_advantage_0 | value|
+      |:------------------------------|-----:|
+      |min                            |     1|
+      |q1                             |   2.2|
+      |median                         |   2.5|
+      |q3                             |     3|
+      |max                            |     5|
+      |mean                           |   2.7|
+      |sd                             |   0.8|
+      |n                              |    99|
+      |items                          |     4|
+      |alpha                          |  0.79|
+      
+      2 missing case(s) omitted.
+      
+
