@@ -190,7 +190,7 @@ test_that("Distribution table for multiple metric items with ci", {
 
 # Compare means of multiple items
 # tab_metrics_items_grouped
-test_that("Compare means of multiple items with and without common", {
+test_that("Compare means of multiple items with and without common prefix", {
   expect_snapshot(
     volker::tab_metrics(
       data,
@@ -297,7 +297,7 @@ test_that("Correlate two item batteries with spearman", {
 
 
 # ...with missings
-test_that("missing values make no trouble", {
+test_that("Missing values make no trouble", {
   data %>%
 #    volker::labs_store() |>
     dplyr::bind_rows(tibble::tibble(sd_gender = c("X", "X", "X"))) %>%
@@ -320,5 +320,23 @@ test_that("Item order is kept", {
       tab_counts_items(c(f1:f10))
 
     , cran = TRUE
+  )
+})
+
+
+# Apply value labels
+test_that("Values are relabeled", {
+  expect_snapshot(
+
+    data %>%
+      dplyr::filter(sd_gender != "diverse") %>%
+      volker::labs_apply(
+        cols = sd_gender,
+        values = list(
+          "female" = "Weiblich",
+          "male" = "Maennlich"
+        )
+      ) %>%
+      volker::tab_metrics(sd_age, sd_gender)
   )
 })

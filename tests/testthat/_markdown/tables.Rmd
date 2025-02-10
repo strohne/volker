@@ -144,3 +144,22 @@ data %>%
   tab_counts_items(starts_with("cg_adoption_advantage_"))
 ```
 
+## Apply value labels
+
+```{r}
+
+data %>%
+  filter(sd_gender != "diverse") %>% 
+  labs_apply(
+    cols = sd_gender,
+    values = list(
+      "female" = "Weiblich",
+      "male" = "Maennlich"
+    )
+  ) %>%
+  tab_metrics(sd_age, sd_gender)
+
+```
+
+
+

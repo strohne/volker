@@ -1136,6 +1136,10 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, digits = 1, la
     dplyr::select(-tidyselect::all_of(c("skim_variable","skim_type"))) |>
     dplyr::rename_with(function(x) sub("numeric.", "", x, fixed = TRUE))
 
+  if (labels) {
+    result_grouped <- labs_replace(result_grouped,  {{ cross }}, codebook(data, {{ cross }}))
+  }
+
   result_total <- data %>%
     skim_metrics({{ col }}) %>%
     dplyr::mutate({{ cross }} := "total") |>
@@ -1173,6 +1177,8 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, digits = 1, la
 
   # Get item label from the attributes
   if (labels) {
+
+    # Cross variable's title
     codes <- data %>%
       codebook({{ cross }}) %>%
       dplyr::distinct(dplyr::across(tidyselect::all_of(c("item_name", "item_label")))) %>%
@@ -1184,6 +1190,8 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, digits = 1, la
         dplyr::rename({{ label }} := {{ cross }})
     }
 
+
+    # Metric scale labeling
     scale <- attr(dplyr::pull(data, {{ col }}), "scale")
     if (is.null(scale)) {
       scale <- data %>%

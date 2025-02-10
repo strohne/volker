@@ -1094,6 +1094,11 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
     scale <- prepare_scale(scale)
   }
 
+  # Group labels
+  if (labels) {
+    data <- labs_replace(data,  {{ cross }}, codebook(data, {{ cross }}))
+  }
+
 
   # Add title
   if (title == TRUE) {

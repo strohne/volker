@@ -337,7 +337,7 @@
       4 missing case(s) omitted.
       
 
-# Compare means of multiple items with and without common
+# Compare means of multiple items with and without common prefix
 
     Code
       volker::tab_metrics(data, tidyselect::starts_with("cg_adoption_"), sd_gender)
@@ -734,7 +734,7 @@
       4 missing case(s) omitted.
       
 
-# missing values make no trouble
+# Missing values make no trouble
 
     Code
       .
@@ -772,4 +772,19 @@
       |1  | 67% (2)| 33% (1)| 100% (3)|
       |2  | 33% (1)| 67% (2)| 100% (3)|
       |10 | 67% (2)| 33% (1)| 100% (3)|
+
+# Values are relabeled
+
+    Code
+      data %>% dplyr::filter(sd_gender != "diverse") %>% volker::labs_apply(cols = sd_gender,
+        values = list(female = "Weiblich", male = "Maennlich")) %>% volker::tab_metrics(
+        sd_age, sd_gender)
+    Output
+      
+      
+      |Gender    | min|   q1| median|   q3| max| mean|   sd|   n|
+      |:---------|---:|----:|------:|----:|---:|----:|----:|---:|
+      |Weiblich  |  18| 25.8|   38.0| 44.2|  63| 37.5| 13.4|  40|
+      |Maennlich |  19| 32.5|   38.5| 52.0|  68| 41.2| 14.0|  60|
+      |total     |  18| 27.0|   38.0| 52.0|  68| 39.7| 13.8| 100|
 
