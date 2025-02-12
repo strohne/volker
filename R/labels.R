@@ -47,13 +47,14 @@ codebook <- function(data, cols) {
     dplyr::select(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label", "value_label"))) %>%
     tidyr::unnest_longer(tidyselect::all_of("value_label"), keep_empty = TRUE)
 
+
   if ("value_label_id" %in% colnames(labels)) {
 
     # Get items with a labels attribute
     labels_attr <- labels %>%
-      # dplyr::rename(value_name = value_label_id) %>%
       dplyr::filter(.data$value_label_id == "labels") %>%
       dplyr::select(tidyselect::all_of(c("item_group", "item_class", "item_name", "item_label", "value_label"))) |>
+      dplyr::mutate(value_label = lapply(.data$value_label, named.to.list)) %>%
       tidyr::unnest_longer(tidyselect::all_of("value_label"), indices_to = "value_name", values_to = "value_label") |>
       dplyr::mutate(
         value_name = as.character(.data$value_name),
@@ -294,7 +295,6 @@ labs_apply <- function(data, codes = NULL, cols = NULL, items = TRUE, values = T
     return (data)
   }
 
-
   # Fix column names
   if (!"item_name" %in% colnames(codes) && (colnames(codes)[1] != "value_name")) {
     colnames(codes)[1] <- "item_name"
@@ -342,7 +342,6 @@ labs_apply <- function(data, codes = NULL, cols = NULL, items = TRUE, values = T
           dplyr::filter(.data$item_name == col)
       }
 
-
       value_rows <- value_rows |>
         dplyr::select(tidyselect::any_of(c("value_name", "value_label","item_class"))) |>
         dplyr::filter(
@@ -374,7 +373,7 @@ labs_apply <- function(data, codes = NULL, cols = NULL, items = TRUE, values = T
 
         # Labels with numeric and boolean names are stored directly as attributes
         # in the column (label_nested is FALSE).
-        # All other labels are stored as a list in the "label" attribute
+        # All other labels are stored as a list in the "labels" attribute
         # (label_nested is TRUE).
         else {
 
@@ -405,7 +404,6 @@ labs_apply <- function(data, codes = NULL, cols = NULL, items = TRUE, values = T
             # Set labels
             if (label_nested) {
               attr(data[[col]], "labels") <- label_attr
-
             } else {
               for (value_name in names(label_attr)) {
                 value_label <- label_attr[[value_name]]

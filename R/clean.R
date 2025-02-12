@@ -38,7 +38,6 @@ data_prepare <- function(data, cols, cross, cols.categorical, cols.numeric, cols
     data <- data_num(data, {{ cols.numeric }})
   }
 
-
   # 4. Remove missings
   if (!missing(cross)) {
     data <- data_rm_missings(data, c({{ cols }}, {{ cross }}))

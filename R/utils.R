@@ -77,3 +77,22 @@ zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
 
   x
 }
+
+#' Convert a named vector to a list
+#'
+#' @keywords internal
+#'
+#' @param x A named vector or a list
+#' @return Lists are returned as is. Vectors are converted to lists with names as list names.
+named.to.list <- function(x) {
+
+  if (is.list(x)) {
+    return (x)
+  }
+
+  x_names <- as.character(x)
+  x_values <- as.character(names(x))
+  y = as.list(x_values)
+  names(y) <- x_names
+  y
+}
