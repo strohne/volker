@@ -1,9 +1,14 @@
-#' Get variable labels from their comment attributes
+#' Get variable and value labels from a data set
+#'
+#' Variable labels are extracted from their comment or label attribute.
+#' Variable values are extracted from factor levels, the labels attribute,
+#' numeric or boolean attributes.
 #'
 #' `r lifecycle::badge("experimental")`
 #'
 #' @param data A tibble.
 #' @param cols A tidy variable selections to filter specific columns.
+#' @param values Whether to output values (TRUE) or only items (FALSE)
 #' @return A tibble with the columns:
 #'
 #' - item_name: The column name.
@@ -19,31 +24,68 @@
 #' volker::codebook(volker::chatgpt)
 #' @importFrom rlang .data
 #' @export
-codebook <- function(data, cols) {
+codebook <- function(data, cols, values = TRUE) {
   if (!missing(cols)) {
     data <- dplyr::select(data, {{ cols }})
   }
 
   # Get column classes
-  #item_classes <- sapply(data, attr, "class", simplify = FALSE)
   item_classes <- sapply(data, class, simplify = FALSE)
   item_classes <- ifelse(sapply(item_classes, is.null), NA, item_classes)
 
-  # Get column comments
+  # Get column comments or labels
   item_comments <- sapply(data, attr, "comment", simplify = FALSE)
   item_comments <- ifelse(sapply(item_comments, is.null), NA, item_comments)
+  item_labels <- sapply(data, attr, "label", simplify = FALSE)
+  item_labels <- ifelse(sapply(item_labels, is.null), NA, item_labels)
 
   # Construct item label and value label dataframe
   labels <- dplyr::tibble(
     item_name = colnames(data),
     item_class = item_classes,
-    item_label = item_comments,
+    item_label = dplyr::coalesce(item_comments, item_labels),
     value_label = lapply(data, attributes)
   ) %>%
     dplyr::mutate(item_label = as.character(sapply(.data$item_label, function(x) ifelse(is.null(x), NA, x)))) %>%
     dplyr::mutate(item_label = ifelse(is.na(.data$item_label), .data$item_name, .data$item_label)) %>%
     dplyr::mutate(item_group = sub("_.*", "", .data$item_name)) |>
-    dplyr::mutate(item_class = as.character(sapply(.data$item_class, function(x) ifelse(length(x) > 1, x[[length(x)]], x)))) %>%
+    dplyr::mutate(item_class = as.character(sapply(.data$item_class, function(x) ifelse(length(x) > 1, x[[length(x)]], x))))
+
+
+  # Detect groups
+  # TODO: revise group detection. Will be used for index calculation.
+  # groups <- labels %>%
+  #   dplyr::distinct(item_name) %>%
+  #   dplyr::mutate(
+  #     item_prefix = get_prefix(item_name),
+  #     item_postfix = stringr::str_sub(item_name, stringr::str_length(item_prefix) + 1)
+  #   ) %>%
+  #   dplyr::arrange(item_postfix) %>%
+  #   dplyr::mutate(
+  #     item_next = dplyr::lead(item_postfix),
+  #     item_prev = dplyr::lag(item_postfix)
+  #   ) %>%
+  #   dplyr::rowwise() %>%
+  #   dplyr::mutate(
+  #     item_infix = ifelse(!is.na(item_next),get_prefix(c(item_postfix, item_next)), ""),
+  #     item_infix = ifelse(item_infix == "",get_prefix(c(item_postfix, item_prev)), item_infix),
+  #   ) %>%
+  #   dplyr::ungroup() %>%
+  #   dplyr::mutate(item_postfix = stringr::str_sub(item_postfix, stringr::str_length(item_infix) + 1)) %>%
+  #   dplyr::select(item_name, item_prefix, item_infix, item_postfix)
+  #
+  # labels <- dplyr::left_join(labels, groups, by="item_name")
+
+  # Return item overview
+  if (!values) {
+    labels <- labels %>%
+      dplyr::select(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label")))
+
+    return(labels)
+  }
+
+  # Extract value names
+  labels <- labels %>%
     dplyr::select(tidyselect::all_of(c("item_name", "item_group", "item_class", "item_label", "value_label"))) %>%
     tidyr::unnest_longer(tidyselect::all_of("value_label"), keep_empty = TRUE)
 
@@ -103,29 +145,6 @@ codebook <- function(data, cols) {
     labels$value_name <- NA
   }
 
-  # Detect groups
-  # TODO: revise group detection. Will be used for index calculation.
-  # groups <- labels %>%
-  #   dplyr::distinct(item_name) %>%
-  #   dplyr::mutate(
-  #     item_prefix = get_prefix(item_name),
-  #     item_postfix = stringr::str_sub(item_name, stringr::str_length(item_prefix) + 1)
-  #   ) %>%
-  #   dplyr::arrange(item_postfix) %>%
-  #   dplyr::mutate(
-  #     item_next = dplyr::lead(item_postfix),
-  #     item_prev = dplyr::lag(item_postfix)
-  #   ) %>%
-  #   dplyr::rowwise() %>%
-  #   dplyr::mutate(
-  #     item_infix = ifelse(!is.na(item_next),get_prefix(c(item_postfix, item_next)), ""),
-  #     item_infix = ifelse(item_infix == "",get_prefix(c(item_postfix, item_prev)), item_infix),
-  #   ) %>%
-  #   dplyr::ungroup() %>%
-  #   dplyr::mutate(item_postfix = stringr::str_sub(item_postfix, stringr::str_length(item_infix) + 1)) %>%
-  #   dplyr::select(item_name, item_prefix, item_infix, item_postfix)
-  #
-  # labels <- dplyr::left_join(labels, groups, by="item_name")
   labels
 }
 
