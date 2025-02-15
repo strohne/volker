@@ -109,3 +109,57 @@ skim_boxplot <- skimr::skim_with(
 
 
 
+skim_grouped <- function(data, cols, cross, value = "numeric.mean", labels = TRUE) {
+
+  # Get positions of group cols
+  cross <- tidyselect::eval_select(expr = enquo(cross), data = data)
+
+  total <- data %>%
+    dplyr::select({{ cols }}) %>%
+    skim_metrics() %>%
+    dplyr::select("skim_variable", total = !!sym(value))
+
+
+  grouped <- purrr::map(
+    cross,
+    function(col) {
+      col <- names(data)[col]
+
+      data %>%
+        dplyr::filter(!is.na(!!sym(col))) %>%
+        dplyr::group_by(!!sym(col)) %>%
+        dplyr::select(!!sym(col), {{ cols }}) %>%
+        skim_metrics() %>%
+        dplyr::ungroup() %>%
+        dplyr::select("skim_variable", !!sym(col), !!sym(value)) %>%
+        tidyr::pivot_wider(
+          names_from = !!sym(col),
+          values_from = !!sym(value)
+        )
+    }
+  ) %>%
+    purrr::reduce(
+      dplyr::inner_join,
+      by = "skim_variable"
+    )
+
+
+  result <- dplyr::inner_join(total, grouped, by = "skim_variable") %>%
+    dplyr::rename(item = tidyselect::all_of("skim_variable"))
+
+
+  if (labels) {
+
+    # Item labels
+    result <- labs_replace(
+      result, "item",
+      codebook(data, {{ cols }}),
+      "item_name","item_label"
+    )
+
+    # Value labels
+    #labs_replace()
+  }
+
+  result
+}

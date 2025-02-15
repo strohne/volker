@@ -1164,7 +1164,6 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, digits = 1, la
     )
   }
 
-
   # Remove items and alpha if not an index
   if (all(is.na(result$items)) || all(is.na(result$alpha))) {
     result$items <- NULL
@@ -1381,72 +1380,10 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }},  cols.categorical = {{ cross }}, cols.numeric = {{ cols }}, clean = clean)
 
-  # Get positions of group cols
-  cross <- tidyselect::eval_select(expr = enquo(cross), data = data)
+  # Means and SDs
+  result_mean <- skim_grouped(data, {{ cols }}, {{ cross }}, "numeric.mean", labels)
+  result_sd <- skim_grouped(data, {{ cols }}, {{ cross }}, "numeric.sd", labels)
 
-  # total means
-  value <- "numeric.mean"
-  total_mean <- data %>%
-    dplyr::select({{ cols }}) %>%
-    skim_metrics() %>%
-    dplyr::select("skim_variable", total = !!sym(value))
-
-  # total sd
-  value <- "numeric.sd"
-  total_sd <- data %>%
-    dplyr::select({{ cols }}) %>%
-    skim_metrics() %>%
-    dplyr::select("skim_variable", total = !!sym(value))
-
-  # Grouped means
-  value <- "numeric.mean"
-  grouped_mean <- purrr::map(
-    cross,
-    function(col) {
-      col <- names(data)[col]
-
-      data %>%
-        dplyr::filter(!is.na(!!sym(col))) %>%
-        dplyr::group_by(!!sym(col)) %>%
-        dplyr::select(!!sym(col), {{ cols }}) %>%
-        skim_metrics() %>%
-        dplyr::ungroup() %>%
-        dplyr::select("skim_variable", !!sym(col), !!sym(value)) %>%
-        tidyr::pivot_wider(
-          names_from = !!sym(col),
-          values_from = !!sym(value)
-        )
-    }
-  ) %>%
-    purrr::reduce(
-      dplyr::inner_join,
-      by = "skim_variable"
-    )
-
-  # Grouped sd
-  value <- "numeric.sd"
-  grouped_sd <- purrr::map(
-    cross,
-    function(col) {
-      col <- names(data)[col]
-
-      data %>%
-        dplyr::filter(!is.na(!!sym(col))) %>%
-        dplyr::group_by(!!sym(col)) %>%
-        dplyr::select(!!sym(col), {{ cols }}) %>%
-        skim_metrics() %>%
-        dplyr::ungroup() %>%
-        dplyr::select("skim_variable", !!sym(col), !!sym(value)) %>%
-        tidyr::pivot_wider(
-          names_from = !!sym(col),
-          values_from = !!sym(value)
-        )
-    }
-  ) %>%
-    purrr::reduce(
-      dplyr::inner_join,
-      by = "skim_variable"
-    )
 
   # Significance of lm
   # TODO
@@ -1473,32 +1410,19 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
   #     by="skim_variable"
   #   )
 
-  result_mean <- dplyr::inner_join(total_mean, grouped_mean, by = "skim_variable") %>%
-    dplyr::rename(item = tidyselect::all_of("skim_variable"))
-
-  result_sd <- dplyr::inner_join(total_sd, grouped_sd, by = "skim_variable") %>%
-    dplyr::rename(item = tidyselect::all_of("skim_variable"))
-
   # 7. Zip
   if (("m" %in% values) && ("sd" %in% values)) {
+
     # TODO: What about the resulting data frame, should it really contain rounded values?
     #       Maybe let zipping and rounding to the print function and return a list of data frames instead
     result_mean <- dplyr::mutate(result_mean, dplyr::across(tidyselect::where(is.numeric), ~ format(round(., digits), nsmall = digits)))
     result_sd <- dplyr::mutate(result_sd, dplyr::across(tidyselect::where(is.numeric), ~ format(round(., digits), nsmall = digits)))
+
     result <- zip_tables(result_mean, result_sd, brackets = TRUE)
   } else if ("sd" %in% values) {
     result <- result_sd
   } else {
     result <- result_mean
-  }
-
-  # Add labels
-  if (labels) {
-    result <- labs_replace(
-      result, "item",
-      codebook(data, {{ cols }}),
-      "item_name","item_label"
-    )
   }
 
   # Remove common item prefix
