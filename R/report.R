@@ -52,7 +52,7 @@
 report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index = FALSE, factors = FALSE, clusters = FALSE, effect = FALSE, title = TRUE, close = TRUE, clean = TRUE) {
 
   if (clean) {
-    data <- data_clean(data)
+    data <- data_clean(data, clean)
   }
 
   chunks <- list()
@@ -167,7 +167,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALSE, effect = FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
 
   if (clean) {
-    data <- data_clean(data)
+    data <- data_clean(data, clean)
   }
 
   chunks <- list()

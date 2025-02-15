@@ -156,13 +156,13 @@ data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = 
   data <- labs_store(data)
 
   # Remove residual levels such as "[NA] nicht beantwortet"
-  if (remove.na.levels != FALSE) {
+  if ((length(remove.na.levels) > 0) | any(remove.na.levels != FALSE)) {
     data <- data_rm_na_levels(data, remove.na.levels)
   }
 
   # Remove residual numbers such as -9
   # (but only if they are listed in the attributes of a column)
-  if (remove.na.numbers != FALSE) {
+  if ((length(remove.na.numbers) > 0) | any(remove.na.numbers != FALSE)) {
     data <- data_rm_na_numbers(data, remove.na.numbers)
   }
 
@@ -257,12 +257,13 @@ data_rm_negatives <- function(data, cols) {
 #'                  Either a character vector with residual values or TRUE to use defaults in \link{VLKR_NA_LEVELS}.
 #'                  You can define default residual levels by setting the global option vlkr.na.levels
 #'                  (e.g. `options(vlkr.na.levels=c("Not answered"))`).
+#' @param default The default na levels, if not explicitly provided by na.levels or the options.
 #' @return Data frame
-data_rm_na_levels <- function(data, na.levels = TRUE) {
+data_rm_na_levels <- function(data, na.levels = TRUE, default = VLKR_NA_LEVELS) {
   if (is.logical(na.levels)) {
     na.levels <- getOption("vlkr.na.levels")
     if (is.null(na.levels)) {
-      na.levels <- VLKR_NA_LEVELS
+      na.levels <- default
     } else if (all(na.levels == FALSE)) {
       na.levels <- c()
     }
@@ -287,10 +288,11 @@ data_rm_na_levels <- function(data, na.levels = TRUE) {
 #'                   You can also define residual values by setting the global option vlkr.na.numbers
 #'                   (e.g. `options(vlkr.na.numbers=c(-9))`).
 #' @param check.labels Whether to only remove NA numbers that are listed in the attributes of a column.
+#' @param default The default na numbers, if not explicitly provided by na.numbers or the options.
 #' @return Data frame
-data_rm_na_numbers <- function(data, na.numbers = TRUE, check.labels = TRUE) {
+data_rm_na_numbers <- function(data, na.numbers = TRUE, check.labels = TRUE, default = VLKR_NA_NUMBERS) {
   if (is.logical(na.numbers)) {
-    na.numbers <- cfg_get_na_numbers()
+    na.numbers <- cfg_get_na_numbers(default)
   }
 
   data %>%
@@ -299,7 +301,11 @@ data_rm_na_numbers <- function(data, na.numbers = TRUE, check.labels = TRUE) {
         dplyr::where(is.numeric),
         ~ dplyr::if_else(
             . %in% na.numbers &
-            (!check.labels | (as.character(.) %in% names(attributes(.)))),
+            (
+              !check.labels |
+              (as.character(.) %in% names(attributes(.))) |
+              (as.character(.) %in% as.character(attr(., "labels", TRUE)))
+            ),
           NA,
           .
         )

@@ -56,7 +56,7 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
 
   # 2. Clean
   if (clean) {
-    data <- data_clean(data)
+    data <- data_clean(data, clean)
   }
 
   # Find columns
@@ -153,7 +153,7 @@ tab_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 
   # 2. Clean
   if (clean) {
-    data <- data_clean(data)
+    data <- data_clean(data, clean)
   }
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)

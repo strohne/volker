@@ -39,8 +39,22 @@ test_that("Residual values are recoded to missings", {
 # Remove residual negative values
 test_that("Residual negative values are removed", {
 
-  tibble::tibble(var1 = c(1, 2, -1, -9, -50)) |>
+  tibble::tibble(var1 = c(1, 2, -1, -9, -50), -999) |>
     data_clean() |>
+    expect_snapshot(cran = TRUE)
+
+})
+
+# Remove residual negative values from data in SPPS format
+test_that("Residual negative values are removed from data in SPSS format", {
+
+  spss_data <- tibble::tibble(var1 = c(1, 2, -50, -999))
+  attr(spss_data$var1, "label") <- "Country"
+  attr(spss_data$var1, "format.spss") <- "F3.0"
+  attr(spss_data$var1, "labels") <- c(`Refused` = -999, `Missing value` = -555)
+
+  spss_data |>
+    data_clean(remove.na.numbers = c(-999, -555)) |>
     expect_snapshot(cran = TRUE)
 
 })

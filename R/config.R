@@ -29,11 +29,13 @@ VLKR_MAX_CATEGORIES <- 20
 #' Retrieves values either from the option or from the constant.
 #'
 #' @keywords internal
+#'
+#' @param default The default na numbers, if not explicitly provided by na.numbers or the options.
 #' return A vector with numbers that should be treated as NAs
-cfg_get_na_numbers <- function() {
+cfg_get_na_numbers <- function(default = VLKR_NA_NUMBERS) {
   na.numbers <- getOption("vlkr.na.numbers")
   if (is.null(na.numbers)) {
-    na.numbers <- VLKR_NA_NUMBERS
+    na.numbers <- default
   } else if (all(na.numbers == FALSE)) {
     na.numbers <- c()
   }
@@ -127,3 +129,4 @@ VLKR_LINE_ALPHA <- 0.6
 #'
 #' @keywords internal
 VLKR_POINT_SIZE <-  3
+VLKR_POINT_MEAN_SIZE <- 4

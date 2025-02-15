@@ -62,7 +62,7 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 
   # 2. Clean
   if (clean) {
-    data <- data_clean(data)
+    data <- data_clean(data, clean)
   }
 
   # Find columns
@@ -167,7 +167,7 @@ plot_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE,
 
   # 2. Clean
   if (clean) {
-    data <- data_clean(data)
+    data <- data_clean(data, clean)
   }
 
   # Find columns
@@ -1193,7 +1193,10 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, log = FALSE, t
       x=.data[[col1]],
       y=.data[[col2]],)
     ) +
-    ggplot2::geom_point(size=VLKR_POINT_SIZE, alpha=VLKR_POINT_ALPHA)
+    ggplot2::geom_point(
+      size = VLKR_POINT_SIZE,
+      alpha =  vlkr_alpha_interpolated(nrow(data))
+    )
 
   # Scale and limits
   if (log == TRUE) {
@@ -1848,7 +1851,12 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       ggplot2::stat_summary(fun = mean, geom="line")
   }
 
-  pl <- pl + ggplot2::stat_summary(fun = mean, geom="point", size=4, shape=18)
+  pl <- pl + ggplot2::stat_summary(
+    fun = mean,
+    geom = "point",
+    size = VLKR_POINT_MEAN_SIZE,
+    shape = VLKR_POINT_MEAN_SHAPE
+  )
 
 
   # Add limits
@@ -2478,4 +2486,20 @@ vlkr_colors_polarized <- function(n = NULL) {
     )
   }
   colors
+}
+
+
+#' Interpolate an alpha value based on case numbers
+#' @keywords internal
+#'
+#' @param n Number of cases
+#' @param n_min The case number where the minimum alpha value starts
+#' @param n_max The case number where the maximum alpha value ends
+#' @param alpha_min The minimum alpha value
+#' @param alpha_max The maximum alpha value
+#' @return A value between the minimum and the maximum alpha value
+vlkr_alpha_interpolated <- function(n, n_min = 20, n_max = 100, alpha_min = VLKR_POINT_ALPHA, alpha_max = 1) {
+  n <- max(n_min, min(n, n_max))
+  alpha <- alpha_max + (n - n_min) * (alpha_min - alpha_max) / (n_max - n_min)
+  return(alpha)
 }

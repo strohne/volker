@@ -44,7 +44,7 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
 
   # 2. Clean
   if (clean) {
-    data <- data_clean(data)
+    data <- data_clean(data, clean)
   }
 
   # Find columns
@@ -129,7 +129,7 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
 
   # 2. Clean
   if (clean) {
-    data <- data_clean(data)
+    data <- data_clean(data, clean)
   }
 
   # Find columns
