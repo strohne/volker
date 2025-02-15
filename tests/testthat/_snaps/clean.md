@@ -24,9 +24,9 @@
 # Residual negative values are removed
 
     Code
-      data_clean(tibble::tibble(var1 = c(1, 2, -1, -9, -50)))
+      data_clean(tibble::tibble(var1 = c(1, 2, -1, -9, -50, -999)))
     Output
-      # A tibble: 5 x 1
+      # A tibble: 6 x 1
          var1
         <dbl>
       1     1
@@ -34,6 +34,20 @@
       3    -1
       4    -9
       5   -50
+      6  -999
+
+# Residual negative values are removed from data in SPSS format
+
+    Code
+      data_clean(spss_data, remove.na.numbers = c(-999, -555))
+    Output
+      # A tibble: 4 x 1
+         var1
+        <dbl>
+      1     1
+      2     2
+      3   -50
+      4    NA
 
 # All negatives are removed
 

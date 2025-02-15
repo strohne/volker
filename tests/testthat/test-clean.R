@@ -39,7 +39,7 @@ test_that("Residual values are recoded to missings", {
 # Remove residual negative values
 test_that("Residual negative values are removed", {
 
-  tibble::tibble(var1 = c(1, 2, -1, -9, -50), -999) |>
+  tibble::tibble(var1 = c(1, 2, -1, -9, -50, -999)) |>
     data_clean() |>
     expect_snapshot(cran = TRUE)
 
