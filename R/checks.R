@@ -121,10 +121,17 @@ check_is_categorical <- function(data, cols, msg = NULL) {
     max_categories <- VLKR_MAX_CATEGORIES
   }
 
-  if (all_numeric && (length(categories) > max_categories)) {
+  n_categories <- length(categories)
+  if (all_numeric && (n_categories > max_categories)) {
     msg <- dplyr::coalesce(
       msg,
-      paste0("The column selection contains more than ", max_categories," distinct numeric values. Did you mean to use a metric function?")
+      paste0(
+        "The column selection contains more than ",
+        max_categories," distinct numeric values.\n",
+        "Did you mean to use a metric function?\n",
+        "Otherwise you can increase the number of reported categories by ",
+        "`options(vlkr.max.categories=", n_categories ,")`."
+      )
     )
     stop(msg, call. = FALSE)
   }
