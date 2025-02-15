@@ -158,11 +158,10 @@ skim_grouped <- function(data, cols, cross, value = "numeric.mean", labels = TRU
     )
 
     # Value labels
-    value_labels <- colnames(result)
-
     codes <- codebook(data, {{ cross }}) %>%
       dplyr::distinct(value_name, value_label)
 
+    value_labels <- colnames(result)
     value_labels[-(1:2)] <- value_labels[-(1:2)] %>%
       purrr::map_chr(~ ifelse(
         .x %in% codes$value_name,
