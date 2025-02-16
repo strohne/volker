@@ -23,3 +23,4 @@ A tibble with each item in a row, a total column and columns for all groups.
 \description{
 Calculate a metric by groups
 }
+\keyword{internal}
