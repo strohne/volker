@@ -135,7 +135,7 @@ data_clean <- function(data, plan = "default", ...) {
 #' @return Data frame with vlkr_df class (the class is used to prevent double preparation).
 #' @examples
 #' ds <- volker::chatgpt
-#' ds <- data_clean_sosci(ds)
+#' ds <- data_clean_default(ds)
 #' @export
 data_clean_default <- function(data, remove.na.levels = TRUE, remove.na.numbers = TRUE) {
 
