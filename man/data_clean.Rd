@@ -4,12 +4,12 @@
 \alias{data_clean}
 \title{Prepare dataframe for the analysis}
 \usage{
-data_clean(data, plan = "sosci", ...)
+data_clean(data, plan = "default", ...)
 }
 \arguments{
 \item{data}{Data frame.}
 
-\item{plan}{The cleaning plan. By now, only "sosci" is supported. See \link{data_clean_sosci}.}
+\item{plan}{The cleaning plan. By now, only "default" is supported. See \link{data_clean_default}.}
 
 \item{...}{Other parameters passed to the appropriate cleaning function.}
 }

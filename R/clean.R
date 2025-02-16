@@ -85,14 +85,14 @@ data_prepare <- function(data, cols, cross, cols.categorical, cols.numeric, cols
 #' @keywords internal
 #'
 #' @param data Data frame.
-#' @param plan The cleaning plan. By now, only "sosci" is supported. See \link{data_clean_sosci}.
+#' @param plan The cleaning plan. By now, only "default" is supported. See \link{data_clean_default}.
 #' @param ... Other parameters passed to the appropriate cleaning function.
 #' @return Cleaned data frame with vlkr_df class.
 #' @examples
 #' ds <- volker::chatgpt
 #' ds <- data_clean(ds)
 #' @export
-data_clean <- function(data, plan = "sosci", ...) {
+data_clean <- function(data, plan = "default", ...) {
 
   # Prepare only once
   if ("vlkr_df" %in% class(data)) {
@@ -100,19 +100,19 @@ data_clean <- function(data, plan = "sosci", ...) {
   }
 
   if (isTRUE(plan)) {
-    plan <- "sosci"
+    plan <- "default"
   }
 
-  if (plan == "sosci") {
-    data <- data_clean_sosci(data,...)
+  if (plan == "default") {
+    data <- data_clean_default(data,...)
   }
 
   .to_vlkr_df(data)
 }
 
-#' Prepare data originating from SoSci Survey
+#' Prepare data originating from SoSci Survey or SPSS
 #'
-#' Prepares SoSci Survey data:
+#' Preparation steps:
 #' - Remove the avector class from all columns
 #'   (comes from SoSci and prevents combining vectors)
 #' - Recode residual factor values to NA (e.g. "[NA] nicht beantwortet")
@@ -137,7 +137,7 @@ data_clean <- function(data, plan = "sosci", ...) {
 #' ds <- volker::chatgpt
 #' ds <- data_clean_sosci(ds)
 #' @export
-data_clean_sosci <- function(data, remove.na.levels = TRUE, remove.na.numbers = TRUE) {
+data_clean_default <- function(data, remove.na.levels = TRUE, remove.na.numbers = TRUE) {
 
   # Prepare only once
   if ("vlkr_df" %in% class(data)) {
