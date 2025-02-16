@@ -1612,7 +1612,7 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
   .to_vlkr_tab(result, digits = 2)
 }
 
-#' Split a metric column into categorical based on median
+#' Split a metric column into categories based on the median
 #'
 #' @keywords internal
 #'

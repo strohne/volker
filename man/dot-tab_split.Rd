@@ -2,7 +2,7 @@
 % Please edit documentation in R/tables.R
 \name{.tab_split}
 \alias{.tab_split}
-\title{Split a metric column into categorical based on median}
+\title{Split a metric column into categories based on the median}
 \usage{
 .tab_split(data, col, labels = TRUE)
 }
@@ -19,6 +19,6 @@ A data frame with the specified column converted into categorical labels based o
 The split threshold (median) is stored as an attribute of the column.
 }
 \description{
-Split a metric column into categorical based on median
+Split a metric column into categories based on the median
 }
 \keyword{internal}

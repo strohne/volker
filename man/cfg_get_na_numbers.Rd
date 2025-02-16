@@ -4,20 +4,13 @@
 \alias{cfg_get_na_numbers}
 \title{Get configured na numbers}
 \usage{
-cfg_get_na_numbers()
+cfg_get_na_numbers(default = VLKR_NA_NUMBERS)
+}
+\arguments{
+\item{default}{The default na numbers, if not explicitly provided by na.numbers or the options.
+return A vector with numbers that should be treated as NAs}
 }
 \description{
 Retrieves values either from the option or from the constant.
 }
-\keyword{A}
-\keyword{NAs}
-\keyword{as}
-\keyword{be}
 \keyword{internal}
-\keyword{numbers}
-\keyword{return}
-\keyword{should}
-\keyword{that}
-\keyword{treated}
-\keyword{vector}
-\keyword{with}

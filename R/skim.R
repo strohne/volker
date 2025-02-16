@@ -108,7 +108,14 @@ skim_boxplot <- skimr::skim_with(
 )
 
 
-
+#' Calculate a metric by groups
+#'
+#' @param data A tibble.
+#' @param cols The item columns that hold the values to summarize.
+#' @param cross The column holding groups to compare.
+#' @param value The metric to extract from the skim result, e.g. numeric.mean or numeric.sd.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @return A tibble with each item in a row, a total column and columns for all groups.
 skim_grouped <- function(data, cols, cross, value = "numeric.mean", labels = TRUE) {
 
   # Get positions of group cols

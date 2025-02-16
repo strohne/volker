@@ -4,7 +4,7 @@
 \alias{data_rm_na_levels}
 \title{Remove NA levels}
 \usage{
-data_rm_na_levels(data, na.levels = TRUE)
+data_rm_na_levels(data, na.levels = TRUE, default = VLKR_NA_LEVELS)
 }
 \arguments{
 \item{data}{Data frame}
@@ -13,6 +13,8 @@ data_rm_na_levels(data, na.levels = TRUE)
 Either a character vector with residual values or TRUE to use defaults in \link{VLKR_NA_LEVELS}.
 You can define default residual levels by setting the global option vlkr.na.levels
 (e.g. \code{options(vlkr.na.levels=c("Not answered"))}).}
+
+\item{default}{The default na levels, if not explicitly provided by na.levels or the options.}
 }
 \value{
 Data frame

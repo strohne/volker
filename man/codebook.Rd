@@ -2,14 +2,16 @@
 % Please edit documentation in R/labels.R
 \name{codebook}
 \alias{codebook}
-\title{Get variable labels from their comment attributes}
+\title{Get variable and value labels from a data set}
 \usage{
-codebook(data, cols)
+codebook(data, cols, values = TRUE)
 }
 \arguments{
 \item{data}{A tibble.}
 
 \item{cols}{A tidy variable selections to filter specific columns.}
+
+\item{values}{Whether to output values (TRUE) or only items (FALSE)}
 }
 \value{
 A tibble with the columns:
@@ -25,6 +27,11 @@ In case a column has a levels attribute, the levels.
 }
 }
 \description{
+Variable labels are extracted from their comment or label attribute.
+Variable values are extracted from factor levels, the labels attribute,
+numeric or boolean attributes.
+}
+\details{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{

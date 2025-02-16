@@ -4,7 +4,12 @@
 \alias{data_rm_na_numbers}
 \title{Remove NA numbers}
 \usage{
-data_rm_na_numbers(data, na.numbers = TRUE, check.labels = TRUE)
+data_rm_na_numbers(
+  data,
+  na.numbers = TRUE,
+  check.labels = TRUE,
+  default = VLKR_NA_NUMBERS
+)
 }
 \arguments{
 \item{data}{Data frame}
@@ -14,6 +19,8 @@ You can also define residual values by setting the global option vlkr.na.numbers
 (e.g. \code{options(vlkr.na.numbers=c(-9))}).}
 
 \item{check.labels}{Whether to only remove NA numbers that are listed in the attributes of a column.}
+
+\item{default}{The default na numbers, if not explicitly provided by na.numbers or the options.}
 }
 \value{
 Data frame
