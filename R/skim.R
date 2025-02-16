@@ -166,7 +166,7 @@ skim_grouped <- function(data, cols, cross, value = "numeric.mean", labels = TRU
 
     # Value labels
     codes <- codebook(data, {{ cross }}) %>%
-      dplyr::distinct(value_name, value_label)
+      dplyr::distinct(.data$value_name, .data$value_label)
 
     value_labels <- colnames(result)
     value_labels[-(1:2)] <- value_labels[-(1:2)] %>%

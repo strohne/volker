@@ -441,11 +441,11 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
   }
   if (width) {
     result <- result %>%
-      dplyr::group_by(item) %>%
+      dplyr::group_by(.data$item) %>%
       dplyr::mutate(n_item = sum(.data$n)) %>%
       dplyr::ungroup() %>%
       dplyr::mutate(p_item = (.data$n_item / sum(.data$n)) * 100) %>%
-      dplyr::mutate(.values = ifelse(.data$p_item < VLKR_LOWPERCENT, "", .values))
+      dplyr::mutate(.values = ifelse(.data$p_item < VLKR_LOWPERCENT, "", .data$.values))
   }
 
   # Get title
