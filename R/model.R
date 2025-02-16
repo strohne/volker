@@ -1,7 +1,10 @@
 #' Output a regression table with estimates and macro statistics
 #' for multiple categorical or metric independent variables
 #'
+#' @description
 #' The regression output comes from \code{stats::\link[stats:lm]{lm}}.
+#'
+#' `r lifecycle::badge("experimental")`
 #'
 #' @keywords internal
 #'
@@ -109,7 +112,10 @@ model_metrics_tab <- function(data, col, categorical, metric, labels = TRUE, cle
 
 #' Plot regression coefficients
 #'
+#' @description
 #' The regression output comes from \code{stats::\link[stats:lm]{lm}}.
+#'
+#' `r lifecycle::badge("experimental")`
 #'
 #' @keywords internal
 #'
@@ -131,7 +137,6 @@ model_metrics_tab <- function(data, col, categorical, metric, labels = TRUE, cle
 #'
 #' @export
 #' @importFrom rlang .data
-
 model_metrics_plot <- function(data, col, categorical, metric, labels = TRUE, clean = TRUE, ...) {
 
   # TODO: implement model_metrics_add() and reuse fitted model if already present

@@ -34,6 +34,8 @@ A volker list object containing volker plots
 }
 \description{
 The regression output comes from \code{stats::\link[stats:lm]{lm}}.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 library(volker)
