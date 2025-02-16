@@ -143,8 +143,8 @@ model_metrics_plot <- function(data, col, categorical, metric, labels = TRUE, cl
   model_data <- model_metrics_tab(data, {{ col }}, {{ categorical }}, {{ metric }}, labels = labels, clean = clean, ...)
 
   coef_data <-  model_data$coefficients |>
-    dplyr::filter(Term != "(Intercept)") |>
-    dplyr::filter(estimate != "") |>
+    dplyr::filter(.data$Term != "(Intercept)") |>
+    dplyr::filter(.data$estimate != "") |>
     dplyr::select(
       item = tidyselect::all_of("Term"),
       value = tidyselect::all_of("estimate"),
@@ -154,7 +154,7 @@ model_metrics_plot <- function(data, col, categorical, metric, labels = TRUE, cl
 
   pl_coef <- .plot_cor(coef_data, ci = TRUE) +
     ggplot2::geom_hline(yintercept = 0, color= "darkred") +
-    coord_flip()
+    ggplot2::coord_flip()
 
   # Assemble list
   result <- c(
