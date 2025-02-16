@@ -421,6 +421,9 @@ the specific function.
   visualise. In scatter plots, you can use a logarithmic scale. Be
   aware, that zero values will be omitted because their log value is
   undefined.
+- **width**: In stacked plots with column or row proportions, by
+  default, the column or bar widths mirror the group size. Set to FALSE
+  to produce equal widths.
 
 ## Installation
 
@@ -487,11 +490,11 @@ install the latest development version:
 
 ## Similar packages
 
-The volker package is inspired by outputs used in the textbook
-[Einfache Datenauswertung mit
-R](https://doi.org/10.1007/978-3-658-34285-2) (Gehrau & Maubach et al.,
-2022), which provides an introduction to univariate and bivariate
-statistics and data representation using RStudio and R Markdown.
+The volker package is inspired by outputs used in the textbook [Einfache
+Datenauswertung mit R](https://doi.org/10.1007/978-3-658-34285-2)
+(Gehrau & Maubach et al., 2022), which provides an introduction to
+univariate and bivariate statistics and data representation using
+RStudio and R Markdown.
 
 Other packages with high-level reporting functions:  
 - <https://github.com/joon-e/tidycomm>  

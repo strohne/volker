@@ -110,7 +110,7 @@ tab_metrics(ds, sd_age, sd_gender, ci = TRUE)
 ```
 
 By default, the crossing variable is treated as categorical. 
-You can change this behaviour using the metric-parameter to calculate correlations:
+You can change this behavior using the metric-parameter to calculate correlations:
 
 ```{r}
 # Correlate two metric variables
@@ -324,6 +324,9 @@ ds %>%
 You can calculate mean indexes from a bunch of items using `add_index()`. 
 A new column is created with the average value of all selected columns
 for each case. 
+
+If you don't like the automatically created column name,
+you can explicitly name it with the `newcol` parameter.
 
 Reliability and number of items are calculated with `psych::alpha()`
 and stored as column attribute named "psych.alpha". The reliability values 

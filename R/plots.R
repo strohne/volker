@@ -341,7 +341,9 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #'             Plotting row or column percentages results in stacked bars that add up to 100%.
 #'             Whether you set rows or cols determines which variable is in the legend (fill color)
 #'             and which on the vertical scale.
-#' @param width Whether to plot the bar width proportionally to the number of cases.
+#' @param width By default, when setting the prop parameter to "rows" or "cols",
+#'              the bar or column width reflects the number of cases.
+#'              You can disable this behavior by setting width to FALSE.
 #' @param limits The scale limits, autoscaled by default.
 #'               Set to \code{c(0,100)} to make a 100 % plot.
 #' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
@@ -359,7 +361,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "total", width = FALSE, limits = NULL, ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "total", width = NULL, limits = NULL, ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
@@ -433,6 +435,10 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
       )
     )
 
+  # Calculate bar / col width
+  if (!is_logical(width)) {
+    width <- (prop == "rows") || (prop == "cols")
+  }
   if (width) {
     result <- result %>%
       dplyr::group_by(item) %>%
@@ -2090,8 +2096,8 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     pl <- pl +
       ggplot2::geom_errorbar(
         ggplot2::aes(ymin = .data$low, ymax = .data$high),
-        orientation ="x",
-        width=0.2,
+        orientation = "x",
+        width= 0.2,
         colour = VLKR_COLOR_CI)
   }
 
@@ -2231,12 +2237,19 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   if (is.null(rows)) {
     if ("CoordFlip" %in% class(pl$coordinates)) {
       labels <- plot_data$layout$panel_scales_x[[1]]$range$range
+      scale <- 1
     } else {
-      labels <- plot_data$layout$panel_scales_y[[1]]$range$range
+      legend <- unique(plot_data$data[[1]]$group)
+      geom <- class(pl$layers[[1]]$geom)[[1]]
+      if (geom == "GeomCol") {
+        labels <- legend
+        scale <- 2.5
+      } else {
+        labels <- plot_data$layout$panel_scales_y[[1]]$range$range
+        scale <- 1
+      }
     }
-    legend <- unique(plot_data$data[[1]]$group)
-
-    rows <- max(length(labels), (length(legend) / 3) * 2)
+    rows <- max(length(labels) * scale, (length(legend) / 3) * 2)
   }
 
   if (is.null(maxlab)) {

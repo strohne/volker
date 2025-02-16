@@ -367,6 +367,7 @@ using the index-parameter, automatically be included in report functions. Cronba
 - **limits**: Do you know how to create misleading graphs? It happens when you truncate the minimum or maximum value in a scale. The scale limits are automatically guessed by the package functions (work in progress). Use the limits-parameter to manually fix any misleading graphs.
 - **box**: In metric plots you can visualise the distribution by adding boxplots.
 - **log**: Metric values having long tail distributions are not easy to visualise. In scatter plots, you can use a logarithmic scale. Be aware, that zero values will be omitted because their log value is undefined.
+- **width**: In stacked plots with column or row proportions, by default, the column or bar widths mirror the group size. Set to FALSE to produce equal widths.
 
 ## Installation
 

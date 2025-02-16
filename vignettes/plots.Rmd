@@ -55,10 +55,8 @@ plot_counts(data, sd_gender)
 ### 2. Two variables: Stacked frequency plot of innovator type by gender
 ```{r}
 # The prop parameter grows columns to 100%.
-# The width parameter generates a mosaic plot.
 # The numbers parameter adds percentages to the bars.
-plot_counts(data, adopter, sd_gender, prop = "cols", width = TRUE, number = "p")
-
+plot_counts(data, adopter, sd_gender, prop = "cols", number = "p")
 ```
 
 ### 3. Group comparison of a metric variable split at the median

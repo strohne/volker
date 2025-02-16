@@ -10,6 +10,7 @@ plot_counts_one_grouped(
   cross,
   category = NULL,
   prop = "total",
+  width = NULL,
   limits = NULL,
   ordered = NULL,
   numbers = NULL,
@@ -34,6 +35,10 @@ When NULL, in case of boolean values, only the TRUE category is plotted.}
 Plotting row or column percentages results in stacked bars that add up to 100\%.
 Whether you set rows or cols determines which variable is in the legend (fill color)
 and which on the vertical scale.}
+
+\item{width}{By default, when setting the prop parameter to "rows" or "cols",
+the bar or column width reflects the number of cases.
+You can disable this behavior by setting width to FALSE.}
 
 \item{limits}{The scale limits, autoscaled by default.
 Set to \code{c(0,100)} to make a 100 \% plot.}
