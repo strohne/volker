@@ -37,6 +37,6 @@ the operations are only performed once in the first call.
 }
 \examples{
 ds <- volker::chatgpt
-ds <- data_clean_sosci(ds)
+ds <- data_clean_default(ds)
 }
 \keyword{internal}
