@@ -159,6 +159,3 @@ model_metrics_plot <- function(data, col, categorical, metric, labels = TRUE, cl
   result <- .attr_transfer(result, model_data, "missings")
   .to_vlkr_list(result)
 }
-
-
-tmp2 <- tmp$coefficients
