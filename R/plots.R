@@ -1777,7 +1777,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
         group = .data$value,
         width = .data$p_item / 100
       )) +
-      geom_col()
+      ggplot2::geom_col()
 
   }
 
@@ -1790,7 +1790,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
         fill = .data$value,
         group = .data$value
       )) +
-      geom_col()
+      ggplot2::geom_col()
   }
 
   pl <- .to_vlkr_plot(pl, theme_options = list(axis.text.y = !all(data$item == "TRUE")))
