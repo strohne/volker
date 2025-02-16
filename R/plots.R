@@ -1770,12 +1770,13 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   width <- "p_item" %in% colnames(data)
   if (width) {
     pl <- data %>%
+      dplyr::mutate(width = .data$p_item / max(.data$p_item) * 0.95) |>
       ggplot2::ggplot(ggplot2::aes(
         x = .data$item,
         y = .data$p / 100,
         fill = .data$value,
         group = .data$value,
-        width = .data$p_item / 100
+        width = .data$width
       )) +
       ggplot2::geom_col()
 
