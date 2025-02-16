@@ -3,6 +3,7 @@
 ^data-raw$
 ^README\.Rmd$
 ^\.github$
+^\.idea$
 ^cran-comments\.md$
 vignettes/tables.Rmd
 vignettes/tables.html
