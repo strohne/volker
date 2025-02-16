@@ -11,6 +11,7 @@
   scale = NULL,
   limits = NULL,
   numbers = NULL,
+  orientation = "horizontal",
   base = NULL,
   title = NULL
 )
@@ -26,6 +27,8 @@
 -1 = descending or 1 = ascending values.}
 
 \item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
+
+\item{orientation}{Whether to show bars (horizontal) or columns (vertical)}
 
 \item{base}{The plot base as character or NULL.}
 

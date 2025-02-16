@@ -373,7 +373,10 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
     col_temp <- col
     col <- cross
     cross <- col_temp
+    orientation = "vertical"
     #stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
+  } else {
+    orientation = "horizontal"
   }
 
   # 3. Calculate data
@@ -448,6 +451,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
     category = category,
     scale = scale,
     numbers = numbers,
+    orientation = orientation,
     base = paste0("n=", base_n),
     title = title
   )
@@ -1715,11 +1719,12 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #' @param scale Direction of the scale: 0 = no direction for categories,
 #'              -1 = descending or 1 = ascending values.
 #' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
-#' @param title The plot title as character or NULL.
+#' @param orientation Whether to show bars (horizontal) or columns (vertical)
 #' @param base The plot base as character or NULL.
+#' @param title The plot title as character or NULL.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-.plot_bars <- function(data, category = NULL, ci = FALSE, scale = NULL, limits = NULL, numbers = NULL, base = NULL, title = NULL) {
+.plot_bars <- function(data, category = NULL, ci = FALSE, scale = NULL, limits = NULL, numbers = NULL, orientation = "horizontal", base = NULL, title = NULL) {
 
   data_missings <- attr(data, "missings", exact = TRUE)
 
@@ -1738,6 +1743,14 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       )
   }
 
+  # Reverse stacked columns
+  if (orientation == "vertical") {
+    data <- data %>%
+      dplyr::mutate(
+        value = factor(.data$value, levels = rev(levels(.data$value)))
+      )
+  }
+
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(x = .data$item, y = .data$p / 100, fill = .data$value, group = .data$value)) +
     ggplot2::geom_col()
@@ -1750,14 +1763,33 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       )
   }
 
-  pl <- pl +
-    ggplot2::scale_y_continuous(labels = scales::percent, limits = limits) +
-    ggplot2::scale_x_discrete(
-      labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)),
-      limits = rev
-    ) +
-    ggplot2::ylab("Share in percent") +
-    ggplot2::coord_flip()
+
+  if (orientation == "horizontal") {
+    pl <- pl +
+      ggplot2::scale_y_continuous(labels = scales::percent, limits = limits) +
+      ggplot2::scale_x_discrete(
+        labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)),
+        limits = rev
+      ) +
+      ggplot2::ylab("Share in percent") +
+      ggplot2::coord_flip()
+  }
+  else {
+    angle <- get_angle(levels(data$item))
+
+    pl <- pl +
+      ggplot2::scale_y_continuous(labels = scales::percent, limits = limits) +
+      ggplot2::scale_x_discrete(labels = \(labels) trunc_labels(labels)) +
+      ggplot2::ylab("Share in percent")+
+      ggplot2::theme(
+        axis.text.x = ggplot2::element_text(
+          angle = angle,
+          hjust = ifelse(angle > 0, 1, 0.5),
+          size = ggplot2::theme_get()$axis.text.y$size,
+          color = ggplot2::theme_get()$axis.text.y$color
+      )
+    )
+  }
 
   # Select scales:
   # - Simplify binary plots
@@ -1777,13 +1809,13 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     pl <- pl +
       ggplot2::scale_fill_manual(
         values = vlkr_colors_sequential(length(levels(as.factor(data$value)))),
-        guide = ggplot2::guide_legend(reverse = TRUE)
+        guide = ggplot2::guide_legend(reverse = orientation == "horizontal")
       )
   } else {
     pl <- pl +
       ggplot2::scale_fill_manual(
         values = vlkr_colors_discrete(length(levels(as.factor(data$value)))),
-        guide = ggplot2::guide_legend(reverse = TRUE)
+        guide = ggplot2::guide_legend(reverse = orientation == "horizontal")
       )
   }
 
@@ -2490,6 +2522,7 @@ vlkr_colors_polarized <- function(n = NULL) {
 
 
 #' Interpolate an alpha value based on case numbers
+#'
 #' @keywords internal
 #'
 #' @param n Number of cases
