@@ -42,7 +42,7 @@
 <url><loc>https://strohne.github.io/volker/reference/codebook.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_cat.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_clean.html</loc></url>
-<url><loc>https://strohne.github.io/volker/reference/data_clean_sosci.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/data_clean_default.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_num.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_prepare.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_rev.html</loc></url>
@@ -124,6 +124,7 @@
 <url><loc>https://strohne.github.io/volker/reference/labs_restore.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/labs_store.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/mutate.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/named.to.list.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/pdf_report.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/pipe.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/plot_counts.html</loc></url>
@@ -153,6 +154,7 @@
 <url><loc>https://strohne.github.io/volker/reference/report_metrics.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/select.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/skim_boxplot.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/skim_grouped.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/skim_metrics.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/starts_with.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/tab_counts.html</loc></url>
@@ -181,6 +183,7 @@
 <url><loc>https://strohne.github.io/volker/reference/trim_label.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/trim_prefix.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/trunc_labels.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/vlkr_alpha_interpolated.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/vlkr_colors_discrete.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/vlkr_colors_polarized.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/vlkr_colors_sequential.html</loc></url>
