@@ -341,6 +341,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #'             Plotting row or column percentages results in stacked bars that add up to 100%.
 #'             Whether you set rows or cols determines which variable is in the legend (fill color)
 #'             and which on the vertical scale.
+#' @param width Whether to plot the bar width proportionally to the number of cases.
 #' @param limits The scale limits, autoscaled by default.
 #'               Set to \code{c(0,100)} to make a 100 % plot.
 #' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
@@ -358,7 +359,8 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "total", limits = NULL, ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "total", width = FALSE, limits = NULL, ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
@@ -384,14 +386,9 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
     dplyr::count({{ col }}, {{ cross }})
 
   # 4. Set labels
-  # data <- data |>
-  #   dplyr::mutate(data, "{{ col_group }}" := as.factor({{ col_group }}))
-
   result <- result %>%
     dplyr::mutate(item = factor({{ col }})) |>
     dplyr::mutate(value = as.factor({{ cross }}))
-
-    #dplyr::mutate(value = factor({{ col }}, levels = categories))
 
   if ((prop == "rows") || (prop == "cols")) {
     result <- result %>%
@@ -402,6 +399,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
     result <- result %>%
       dplyr::mutate(p = (.data$n / sum(.data$n)) * 100)
   }
+
 
   # Detect the scale (whether the categories are binary and direction)
   # TODO: make dry
@@ -420,9 +418,10 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
 
   lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
 
-  #return(result)
   # Select numbers to print on the bars
   # ...omit the last category in scales, omit small bars
+
+
   result <- result %>%
     dplyr::mutate(
       .values = dplyr::case_when(
@@ -433,6 +432,15 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
         TRUE ~ paste0(.data$n, "\n", round(.data$p, 0), "%")
       )
     )
+
+  if (width) {
+    result <- result %>%
+      dplyr::group_by(item) %>%
+      dplyr::mutate(n_item = sum(.data$n)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(p_item = (.data$n_item / sum(.data$n)) * 100) %>%
+      dplyr::mutate(.values = ifelse(.data$p_item < VLKR_LOWPERCENT, "", .values))
+  }
 
   # Get title
   if (title == TRUE) {
@@ -1713,8 +1721,9 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #'
 #' @keywords internal
 #'
-#' @param data Dataframe with the columns item, value, p, n.
-#' @param category Category for filtering the dataframe.
+#' @param data Data frame with the columns item, value, p, n and optionally p_item.
+#'             If p_item is provided, the column width is generated according the p_item value, resulting in a mosaic plot.
+#' @param category Category for filtering the data frame.
 #' @param ci Whether to plot error bars for 95% confidence intervals. Provide the columns ci.low and ci.high in data.
 #' @param scale Direction of the scale: 0 = no direction for categories,
 #'              -1 = descending or 1 = ascending values.
@@ -1751,9 +1760,34 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       )
   }
 
-  pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes(x = .data$item, y = .data$p / 100, fill = .data$value, group = .data$value)) +
-    ggplot2::geom_col()
+  # Calculate bar width
+  width <- "p_item" %in% colnames(data)
+  if (width) {
+    pl <- data %>%
+      ggplot2::ggplot(ggplot2::aes(
+        x = .data$item,
+        y = .data$p / 100,
+        fill = .data$value,
+        group = .data$value,
+        width = .data$p_item / 100
+      )) +
+      geom_col()
+
+  }
+
+  # Equal bars
+  else {
+    pl <- data %>%
+      ggplot2::ggplot(ggplot2::aes(
+        x = .data$item,
+        y = .data$p / 100,
+        fill = .data$value,
+        group = .data$value
+      )) +
+      geom_col()
+  }
+
+  pl <- .to_vlkr_plot(pl, theme_options = list(axis.text.y = !all(data$item == "TRUE")))
 
   if (ci && !is.null(category)) {
     pl <- pl +
@@ -2536,3 +2570,4 @@ vlkr_alpha_interpolated <- function(n, n_min = 20, n_max = 100, alpha_min = VLKR
   alpha <- alpha_max + (n - n_min) * (alpha_min - alpha_max) / (n_max - n_min)
   return(alpha)
 }
+
