@@ -187,7 +187,7 @@ data_rm_missings <- function(data, cols) {
   if (cases > 0) {
     data <- cleaned
     colnames <- rlang::as_label(rlang::enquo(cols))
-    data <- .attr_insert(data, "missings", "na", list("cols" = colnames, "n"=cases))
+    data <- .attr_insert(data, "missings", "na", list("cols" = colnames, "n" = cases))
   }
 
   data

@@ -280,7 +280,7 @@ write_xlsx(codes,"codebook.xlsx")
 
 # Load and apply a codebook from a file
 codes <- read_xlsx("codebook_revised.xlsx")
-data <- labs_apply(data, codebook)
+data <- labs_apply(data, codes)
 
 ```
 
