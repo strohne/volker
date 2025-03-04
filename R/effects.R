@@ -218,8 +218,8 @@ effect_counts_one <- function(data, col, clean = TRUE, ...) {
     "stars" = get_stars(fit$p.value)
   ) |>
   tibble::enframe(
-    name = "Chi-Square Goodness-of-Fit",
-    value = "value"
+    name = "Statistic",
+    value = "Value"
   )
 
   result <- .attr_transfer(result, data, "missings")
@@ -1163,9 +1163,6 @@ tidy_lm_levels <- function(fit) {
   lm_tidy <- broom::tidy(fit, conf.int = TRUE)
   lm_data <- fit$model
 
-  # Initialize an empty data frame for reference rows
-  ref_rows <- data.frame()
-
   # Work through each factor in the model frame
   for (var in names(lm_data)) {
     if (is.character(lm_data[[var]])) {
@@ -1173,6 +1170,10 @@ tidy_lm_levels <- function(fit) {
     }
     if (is.factor(lm_data[[var]])) {
       levels <- levels(lm_data[[var]])
+
+      ref_level <- levels[1]
+      ref_first <- paste0(var, levels[2])
+      ref_index <- which(lm_tidy$term == ref_first)
 
       # Rename the coefficients in tidy_data
       for (level in levels[-1]) {
@@ -1182,19 +1183,12 @@ tidy_lm_levels <- function(fit) {
       }
 
       # Create reference level row, assuming the first level is the reference
-      reference <- levels[1]
-      ref_row <- data.frame(term = paste0(reference, " (Reference)"))
-      ref_rows <- dplyr::bind_rows(ref_rows, ref_row)
+      ref_row <- data.frame(term = paste0(ref_level, " (Reference)"))
+
+      # Insert the ref_row at ref_index in lm_tidy
+      lm_tidy <- dplyr::bind_rows(lm_tidy[1:ref_index-1,,drop = FALSE], ref_row, lm_tidy[ref_index:nrow(lm_tidy),,drop = FALSE])
     }
   }
-
-  # Insert the reference rows just below the intercept row
-  intercept_index <- which(lm_tidy$term == "(Intercept)")
-  lm_tidy <- dplyr::bind_rows(
-    lm_tidy[1:intercept_index, ],
-    ref_rows,
-    lm_tidy[-(1:intercept_index), ]
-  )
 
   lm_tidy
 }

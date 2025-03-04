@@ -1635,6 +1635,7 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
     mutate("{{ col }}" := ifelse({{ col }} < cross_median, names(cross_levels)[1], names(cross_levels)[2])) |>
     labs_apply(cols = {{ col }}, values = cross_levels)
 
+  attr(data[[ cross_name ]], "label")  <- cross_label
   attr(data[[ cross_name ]], "split") <- paste0(cross_label, " split at median ", round(cross_median, 1))
 
   data

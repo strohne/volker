@@ -378,7 +378,6 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
     col <- cross
     cross <- col_temp
     orientation = "vertical"
-    #stop("To display column proportions, swap the first and the grouping column. Then set the prop parameter to \"rows\".")
   } else {
     orientation = "horizontal"
   }
@@ -450,7 +449,14 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
 
   # Get title
   if (title == TRUE) {
-    title <- get_title(data, {{ col }})
+    title_col <- get_title(data,  {{ col }})
+    title_cross <- get_title(data,  {{ cross }})
+
+    title <-ifelse(
+      prop == "cols",
+      paste(title_cross, title_col, sep = " x "),
+      paste(title_col, title_cross, sep = " x ")
+    )
   } else if (title == FALSE) {
     title <- NULL
   }
@@ -1770,12 +1776,13 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   width <- "p_item" %in% colnames(data)
   if (width) {
     pl <- data %>%
+      dplyr::mutate(width = .data$p_item / max(.data$p_item) * 0.95) |>
       ggplot2::ggplot(ggplot2::aes(
         x = .data$item,
         y = .data$p / 100,
         fill = .data$value,
         group = .data$value,
-        width = .data$p_item / 100
+        width = .data$width
       )) +
       ggplot2::geom_col()
 
@@ -2092,7 +2099,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       color = vlkr_colors_discrete(1)
       )
 
-  if (ci && ("low" %in% colnames(data)) && ("low" %in% colnames(data))) {
+  if (ci && ("low" %in% colnames(data)) && ("high" %in% colnames(data))) {
     pl <- pl +
       ggplot2::geom_errorbar(
         ggplot2::aes(ymin = .data$low, ymax = .data$high),

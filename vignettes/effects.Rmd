@@ -102,6 +102,7 @@ effect_metrics(data, sd_age)
 ## 10. T-test / ANOVA
 ```{r}
 effect_metrics(data, sd_age, adopter)
+
 ```
 
 ## 11. Correlation test
@@ -143,5 +144,15 @@ effect_metrics(
 ```
 
 
+## 17. Multivariable regression
+```{r}
+data |> 
+  filter(sd_gender != "diverse") |> 
+  model_metrics_tab(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption"), sd_age))
 
+data |> 
+  filter(sd_gender != "diverse") |> 
+  model_metrics_plot(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption"), sd_age))
+
+```
 

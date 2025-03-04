@@ -5,13 +5,13 @@
     Output
       
       
-      |Chi-Square Goodness-of-Fit | value|
-      |:--------------------------|-----:|
-      |Gini coefficient           |  0.10|
-      |Number of cases            |   100|
-      |Chi-squared                |  4.00|
-      |p value                    | 0.046|
-      |stars                      |     *|
+      |Statistic        | Value|
+      |:----------------|-----:|
+      |Gini coefficient |  0.10|
+      |Number of cases  |   100|
+      |Chi-squared      |  4.00|
+      |p value          | 0.046|
+      |stars            |     *|
 
 # effect_counts_one_grouped
 

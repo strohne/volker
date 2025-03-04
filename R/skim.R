@@ -110,6 +110,8 @@ skim_boxplot <- skimr::skim_with(
 
 #' Calculate a metric by groups
 #'
+#' @keywords internal
+#'
 #' @param data A tibble.
 #' @param cols The item columns that hold the values to summarize.
 #' @param cross The column holding groups to compare.
