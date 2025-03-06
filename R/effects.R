@@ -693,6 +693,8 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", labels 
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.numeric = c({{ col }}, {{ cross }}), clean = clean)
 
+  check_is_param(method, c("pearson", "spearman"))
+
   # 2. Calculate correlation
   result <- .effect_correlations(data, {{ col }}, {{ cross}}, method = method, labels = labels)
 
@@ -928,6 +930,8 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labe
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
 
+  check_is_param(method, c("pearson", "spearman"))
+
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
 
@@ -984,6 +988,8 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labe
 effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
+
+  check_is_param(method, c("pearson", "spearman"))
 
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
