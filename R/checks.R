@@ -18,18 +18,17 @@ check_is_dataframe <- function(obj, msg = NULL, stopit = TRUE) {
     error = function(e) { FALSE }
   )
 
-  if (!check && stopit) {
+  if (!all(check) && stopit) {
     msg <- dplyr::coalesce(msg, "Check your params: Did you provide a data frame?")
     stop(msg, call. = FALSE)
   }
 
   check <- (nrow(obj) * ncol(obj)) > 0
 
-  if (!check && stopit) {
+  if (!all(check) && stopit) {
     msg <- dplyr::coalesce(msg, "Check your data: Are they empty?")
     stop(msg, call. = FALSE)
   }
-
 
   check
 }
@@ -157,7 +156,7 @@ check_is_param <- function(value, allowed, stopit = TRUE, msg = NULL) {
     error = function(e) { FALSE }
   )
 
-  if (!check && stopit) {
+  if (all(!check) && stopit) {
     msg <- dplyr::coalesce(
       msg,
       paste0("Check your parameters: The value '", value, "' is not supported. Supported values are ", paste0(allowed, collapse=", "), ".")
