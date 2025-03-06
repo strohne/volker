@@ -309,6 +309,8 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
+  check_is_param(prop, c("total", "cols", "rows"))
+
   # 2. Get labels for values
   if (labels) {
     data <- labs_replace(
@@ -499,6 +501,9 @@ tab_counts_one_cor <- function(data, col, cross, prop = "total", percent = TRUE,
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = {{ col }}, cols.numeric = {{ cross }}, clean = clean)
 
+  check_is_param(prop, c("total", "cols", "rows"))
+  check_is_param(values, c("n", "p"))
+
   # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)
 
@@ -541,6 +546,8 @@ tab_counts_one_cor <- function(data, col, cross, prop = "total", percent = TRUE,
 tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c("n", "p"), labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, cols.categorical = {{ cols }}, clean = clean)
+
+  check_is_param(values, c("n", "p"))
 
   # 2. Calculate n and p
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -728,6 +735,8 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent = TRUE, values = c("n", "p"), title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols}}, {{ cross}}), clean = clean)
+
+  check_is_param(values, c("n", "p"))
 
   # 2. Evaluate columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -978,6 +987,8 @@ tab_counts_items_grouped_items <- function(data, cols, cross, title = TRUE, labe
 tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NULL, percent = TRUE, values = c("n", "p"), title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = {{ cols }}, cols.numeric = {{ cross }}, clean = clean)
+
+  check_is_param(values, c("n", "p"))
 
   # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)
@@ -1232,14 +1243,13 @@ tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.numeric = c({{ col }}, {{ cross }}), clean = clean)
 
-  # 2. Check method
   check_is_param(method, c("spearman", "pearson"))
 
-  # 3. Get columns
+  # 2. Get columns
   cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
-  # 4. Calculate correlation
+  # 3. Calculate correlation
   result <- .effect_correlations(data, {{ col }}, {{ cross}}, method = method, labels = labels)
 
   if (method=="spearman") {
@@ -1380,6 +1390,8 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }},  cols.categorical = {{ cross }}, cols.numeric = {{ cols }}, clean = clean)
 
+  check_is_param(values, c("m", "sd"))
+
   # Means and SDs
   result_mean <- skim_grouped(data, {{ cols }}, {{ cross }}, "numeric.mean", labels)
   result_sd <- skim_grouped(data, {{ cols }}, {{ cross }}, "numeric.sd", labels)
@@ -1493,6 +1505,8 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", digits 
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross}}), clean = clean)
 
+  check_is_param(method, c("spearman", "pearson"))
+
   # 2. Calculate correlation
   result <- .effect_correlations(data, {{ cols }}, {{ cross}}, method = method, labels = labels)
 
@@ -1564,10 +1578,9 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
 
-  # 2. Check method
   check_is_param(method, c("spearman", "pearson"))
 
-  # 3. Calculate correlations
+  # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
 
   result_cols <- c("item1", "item2")
