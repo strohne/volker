@@ -196,8 +196,6 @@ add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", cl
   # Check, clean, remove missings
   data <- data_prepare(data, {{ cols }}, cols.numeric = {{ cols }}, clean = clean)
 
-  check_is_param(method, "kmeans")
-
   # select columns
   items <- data %>%
     dplyr::select({{ cols }})
