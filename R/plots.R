@@ -243,8 +243,6 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, cols.categorical = {{ col }}, clean = clean)
 
-  check_is_param(numbers, c("n", "p"))
-
   if (nrow(data) == 0) {
     return(NULL)
   }
@@ -1755,6 +1753,10 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #' @return A ggplot object.
 #' @importFrom rlang .data
 .plot_bars <- function(data, category = NULL, ci = FALSE, scale = NULL, limits = NULL, numbers = NULL, orientation = "horizontal", base = NULL, title = NULL) {
+
+  if (!is.null(numbers)) {
+    check_is_param(numbers, c("n", "p"))
+  }
 
   data_missings <- attr(data, "missings", exact = TRUE)
 

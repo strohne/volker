@@ -310,6 +310,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
   check_is_param(prop, c("total", "cols", "rows"))
+  check_is_param(values, c("n", "p"))
 
   # 2. Get labels for values
   if (labels) {
