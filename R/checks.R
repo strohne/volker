@@ -144,10 +144,17 @@ check_is_categorical <- function(data, cols, msg = NULL) {
 #'
 #' @param value A character value.
 #' @param allowed Allowed values.
+#' @param allownull Whether to allow NULL values.
 #' @param stopit Whether to stop execution if the value is invalid.
 #' @param msg A custom error message if the check fails.
 #' @return logical whether method is valid.
-check_is_param <- function(value, allowed, stopit = TRUE, msg = NULL) {
+check_is_param <- function(value, allowed, allownull = FALSE, stopit = TRUE, msg = NULL) {
+
+  # Check for null
+  if (!allownull && is.null(value)) {
+    arg <- deparse(substitute(value))
+    stop(paste0("The ", arg, " parameter cannot be NULL."), call. = FALSE)
+  }
 
   check <- tryCatch(
     {
