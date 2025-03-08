@@ -520,7 +520,7 @@ plot_counts_one_cor <- function(data, col, cross, category = NULL, prop = "total
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = {{ col }}, cols.numeric = {{ cross }}, clean = clean)
 
   check_is_param(prop, c("total", "rows", "cols"))
-  check_is_param(numbers, c("n", "p"), allowmultiple = TRUE)
+  check_is_param(numbers, c("n", "p"), allowmultiple = TRUE, allownull = TRUE)
 
   if (nrow(data) == 0) {
     return(NULL)
