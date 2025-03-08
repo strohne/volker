@@ -18,14 +18,14 @@ check_is_dataframe <- function(obj, msg = NULL, stopit = TRUE) {
     error = function(e) { FALSE }
   )
 
-  if (!all(check) && stopit) {
+  if (!check && stopit) {
     msg <- dplyr::coalesce(msg, "Check your params: Did you provide a data frame?")
     stop(msg, call. = FALSE)
   }
 
   check <- (nrow(obj) * ncol(obj)) > 0
 
-  if (!all(check) && stopit) {
+  if (!check && stopit) {
     msg <- dplyr::coalesce(msg, "Check your data: Are they empty?")
     stop(msg, call. = FALSE)
   }
@@ -145,15 +145,21 @@ check_is_categorical <- function(data, cols, msg = NULL) {
 #' @param value A character value.
 #' @param allowed Allowed values.
 #' @param allownull Whether to allow NULL values.
+#' @param allowmultiple Whether to allow multiple values.
 #' @param stopit Whether to stop execution if the value is invalid.
 #' @param msg A custom error message if the check fails.
 #' @return logical whether method is valid.
-check_is_param <- function(value, allowed, allownull = FALSE, stopit = TRUE, msg = NULL) {
+check_is_param <- function(value, allowed, allownull = FALSE, allowmultiple = FALSE, stopit = TRUE, msg = NULL) {
 
   # Check for null
   if (!allownull && is.null(value)) {
     arg <- deparse(substitute(value))
     stop(paste0("The ", arg, " parameter cannot be NULL."), call. = FALSE)
+  }
+
+  # Check for multiple values
+  if (!allowmultiple && length(value) > 1) {
+    stop(paste0("Only a single value is allowed, but multiple values were provided: ", paste(value, collapse = ", "), "."), call. = FALSE)
   }
 
   check <- tryCatch(
@@ -163,10 +169,12 @@ check_is_param <- function(value, allowed, allownull = FALSE, stopit = TRUE, msg
     error = function(e) { FALSE }
   )
 
-  if (all(!check) && stopit) {
+  # Check if all values are valid
+  if (!all(check) && stopit) {
+    invalid_values <- paste(value[!check], collapse = ", ")
     msg <- dplyr::coalesce(
       msg,
-      paste0("Check your parameters: The value '", value, "' is not supported. Supported values are ", paste0(allowed, collapse=", "), ".")
+      paste0("Check your parameters: The value(s) '", invalid_values, "' are not supported. Supported values are: ", paste0(allowed, collapse = ", "), ".")
     )
     stop(msg, call. = FALSE)
   }
