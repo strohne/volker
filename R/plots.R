@@ -366,6 +366,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
   check_is_param(prop, c("total", "rows", "cols"))
+  check_is_param(numbers, c("n", "p"), allowmultiple = TRUE, allownull = TRUE)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -519,6 +520,7 @@ plot_counts_one_cor <- function(data, col, cross, category = NULL, prop = "total
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = {{ col }}, cols.numeric = {{ cross }}, clean = clean)
 
   check_is_param(prop, c("total", "rows", "cols"))
+  check_is_param(numbers, c("n", "p"), allowmultiple = TRUE)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -579,6 +581,8 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
   if (nrow(data) == 0) {
     return(NULL)
   }
+
+  check_is_param(numbers, c("n", "p"), allowmultiple = TRUE)
 
   # 2. Calculate data
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -1753,10 +1757,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #' @return A ggplot object.
 #' @importFrom rlang .data
 .plot_bars <- function(data, category = NULL, ci = FALSE, scale = NULL, limits = NULL, numbers = NULL, orientation = "horizontal", base = NULL, title = NULL) {
-
-  if (!is.null(numbers)) {
-    check_is_param(numbers, c("n", "p"))
-  }
 
   data_missings <- attr(data, "missings", exact = TRUE)
 

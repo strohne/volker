@@ -310,7 +310,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
   check_is_param(prop, c("total", "cols", "rows"))
-  check_is_param(values, c("n", "p"))
+  check_is_param(values, c("n", "p"), allowmultiple = TRUE)
 
   # 2. Get labels for values
   if (labels) {
@@ -1391,7 +1391,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }},  cols.categorical = {{ cross }}, cols.numeric = {{ cols }}, clean = clean)
 
-  check_is_param(values, c("m", "sd"))
+  check_is_param(values, c("m", "sd"), allowmultiple = TRUE)
 
   # Means and SDs
   result_mean <- skim_grouped(data, {{ cols }}, {{ cross }}, "numeric.mean", labels)
