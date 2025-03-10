@@ -503,7 +503,7 @@ tab_counts_one_cor <- function(data, col, cross, prop = "total", percent = TRUE,
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = {{ col }}, cols.numeric = {{ cross }}, clean = clean)
 
   check_is_param(prop, c("total", "cols", "rows"))
-  check_is_param(values, c("n", "p"))
+  check_is_param(values, c("n", "p"), allowmultiple = TRUE)
 
   # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)
@@ -548,7 +548,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, cols.categorical = {{ cols }}, clean = clean)
 
-  check_is_param(values, c("n", "p"))
+  check_is_param(values, c("n", "p"), allowmultiple = TRUE)
 
   # 2. Calculate n and p
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -737,7 +737,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols}}, {{ cross}}), clean = clean)
 
-  check_is_param(values, c("n", "p"))
+  check_is_param(values, c("n", "p"), allowmultiple = TRUE)
 
   # 2. Evaluate columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -989,7 +989,7 @@ tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NUL
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = {{ cols }}, cols.numeric = {{ cross }}, clean = clean)
 
-  check_is_param(values, c("n", "p"))
+  check_is_param(values, c("n", "p"), allowmultiple = TRUE)
 
   # 2. Split into groups
   data <- .tab_split(data, {{ cross }}, labels = labels)

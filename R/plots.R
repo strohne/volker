@@ -582,7 +582,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
     return(NULL)
   }
 
-  check_is_param(numbers, c("n", "p"), allowmultiple = TRUE)
+  check_is_param(numbers, c("n", "p"), allowmultiple = TRUE, allownull = TRUE)
 
   # 2. Calculate data
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
