@@ -254,7 +254,7 @@ All table functions return data frames that can be processed further. The tables
 <span></span>
 <span><span class="co"># Load and apply a codebook from a file</span></span>
 <span><span class="va">codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="st">"codebook_revised.xlsx"</span><span class="op">)</span></span>
-<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/labs_apply.html">labs_apply</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">codebook</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/labs_apply.html">labs_apply</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">codes</span><span class="op">)</span></span></code></pre></div>
 <p>Be aware that some data operations such as <code><a href="reference/mutate.html">mutate()</a></code> from the tidyverse loose labels on their way. In this case, store the labels (in the codebook attribute of the data frame) before the operation and restore them afterwards:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
