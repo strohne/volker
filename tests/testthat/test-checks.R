@@ -62,6 +62,8 @@ test_that("Parameter checks work as expected", {
 
   expect_false(check_is_param(NULL, c("n", "p"), stopit = FALSE))
 
+  expect_true(check_is_param(NULL, c("n", "p"), allownull = TRUE, stopit = FALSE))
+
   expect_false(check_is_param(c("n", "p"), c("n", "p"), stopit = FALSE))
 
   expect_true(check_is_param(c("n", "p"), c("n", "p"), allowmultiple = TRUE, stopit = FALSE))

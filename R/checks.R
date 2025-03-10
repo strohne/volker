@@ -153,7 +153,10 @@ check_is_param <- function(value, allowed, allownull = FALSE, allowmultiple = FA
 
   # Check for null
   if (is.null(value)) {
-    if (allownull) return(TRUE)
+    if (allownull) {
+      return(TRUE)
+    }
+
     if (stopit) {
       arg <- deparse(substitute(value))
       stop(paste0("The parameter '", arg, "' cannot be NULL."), call. = FALSE)
