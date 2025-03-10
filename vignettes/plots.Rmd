@@ -56,7 +56,7 @@ plot_counts(data, sd_gender)
 ```{r}
 # The prop parameter grows columns to 100%.
 # The numbers parameter adds percentages to the bars.
-plot_counts(data, adopter, sd_gender, prop = "cols", number = "p")
+plot_counts(data, adopter, sd_gender, prop = "cols", numbers = "p")
 ```
 
 ### 3. Group comparison of a metric variable split at the median

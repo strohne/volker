@@ -4,12 +4,23 @@
 \alias{check_is_param}
 \title{Check whether a parameter value is from a valid set}
 \usage{
-check_is_param(value, allowed, stopit = TRUE, msg = NULL)
+check_is_param(
+  value,
+  allowed,
+  allownull = FALSE,
+  allowmultiple = FALSE,
+  stopit = TRUE,
+  msg = NULL
+)
 }
 \arguments{
 \item{value}{A character value.}
 
 \item{allowed}{Allowed values.}
+
+\item{allownull}{Whether to allow NULL values.}
+
+\item{allowmultiple}{Whether to allow multiple values.}
 
 \item{stopit}{Whether to stop execution if the value is invalid.}
 

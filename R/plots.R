@@ -362,9 +362,11 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #' @export
 #' @importFrom rlang .data
 plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "total", width = NULL, limits = NULL, ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
+
+  check_is_param(prop, c("total", "rows", "cols"))
+  check_is_param(numbers, c("n", "p"), allowmultiple = TRUE, allownull = TRUE)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -517,6 +519,9 @@ plot_counts_one_cor <- function(data, col, cross, category = NULL, prop = "total
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = {{ col }}, cols.numeric = {{ cross }}, clean = clean)
 
+  check_is_param(prop, c("total", "rows", "cols"))
+  check_is_param(numbers, c("n", "p"), allowmultiple = TRUE, allownull = TRUE)
+
   if (nrow(data) == 0) {
     return(NULL)
   }
@@ -576,6 +581,8 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
   if (nrow(data) == 0) {
     return(NULL)
   }
+
+  check_is_param(numbers, c("n", "p"), allowmultiple = TRUE, allownull = TRUE)
 
   # 2. Calculate data
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -1515,6 +1522,8 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, method = "pear
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
 
+  check_is_param(method, c("pearson", "spearman"))
+
   if (nrow(data) == 0) {
     return(NULL)
   }
@@ -1621,6 +1630,8 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, method = "pear
 plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", numbers = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
+
+  check_is_param(method, c("pearson", "spearman"))
 
   if (nrow(data) == 0) {
     return(NULL)

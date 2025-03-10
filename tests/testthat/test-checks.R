@@ -58,14 +58,26 @@ test_that("check_has_column", {
 # Check check_is_param method
 test_that("Parameter checks work as expected", {
 
-  expect_true(check_is_param("spearman", c("spearman", "pearson")))
-  expect_true(check_is_param("pearson", c("spearman", "pearson")))
+  expect_true(check_is_param("n", c("n", "p"), stopit = FALSE))
 
-  expect_false(check_is_param("kendall", c("spearman", "pearson"), stopit = FALSE))
+  expect_false(check_is_param(NULL, c("n", "p"), stopit = FALSE))
 
-  expect_error(
-    check_is_param("kendall", c("spearman", "pearson")),
-    "Check your parameters: The value 'kendall' is not supported\\. Supported values are spearman, pearson\\."
-  )
+  expect_true(check_is_param(NULL, c("n", "p"), allownull = TRUE, stopit = FALSE))
+
+  expect_false(check_is_param(c("n", "p"), c("n", "p"), stopit = FALSE))
+
+  expect_true(check_is_param(c("n", "p"), c("n", "p"), allowmultiple = TRUE, stopit = FALSE))
+
+  expect_false(check_is_param(c("n", "x"), c("n", "p"), allowmultiple = TRUE, stopit = FALSE))
+
+  expect_error(check_is_param(NULL, c("n", "p"), stopit = TRUE), "cannot be NULL.")
+
+  expect_error(check_is_param("x", c("n", "p"), stopit = TRUE), "not supported")
+
+  expect_error(check_is_param(c("n", "p"), c("n", "p"), allowmultiple = FALSE, stopit = TRUE), "Only a single value is allowed")
+
 })
+
+
+
 
