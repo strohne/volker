@@ -781,10 +781,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
   # Get category labels if names are provided (e.g. for numeric values)
   base_labels <- base_category
   if (is.null(category) || all(base_labels %in% result$.value_name)) {
-    base_labels <- codebook_df %>%
-      dplyr::filter(.data$value_name %in% base_category) %>%
-      dplyr::pull(.data$value_label) %>%
-      unique()
+    base_labels <- get_labels(codebook_df, base_category)
   }
 
   # Recode

@@ -846,7 +846,7 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
   result <- lm %>%
     dplyr::mutate(
       tidy_model = purrr::map(.data$model, broom::tidy),
-      eta_sq = purrr::map(.data$model, ~ effectsize::eta_squared(car::Anova(.x, type = 2), verbose = FALSE)),
+      eta_sq = purrr::map(.data$model, ~ get_etasq(.x) ),
       f_statistic = purrr::map_dbl(.data$model, ~ round(summary(.x)$fstatistic[1], 2)),
       p_value = purrr::map_dbl(.data$model, ~ round(summary(.x)$coefficients[2, 4], 2)),
       stars = purrr::map_chr(.data$model,~ get_stars(summary(.x)$coefficients[2, 4]))
@@ -1197,6 +1197,21 @@ tidy_lm_levels <- function(fit) {
   }
 
   lm_tidy
+}
+
+#' Calculate Eta squared
+#'
+#' @keywords internal
+#'
+#' @param fit A model
+#' @return A data frame with at least the column Eta2
+get_etasq <- function(fit) {
+  if(round(sum(fit$residuals),20) == 0) {
+    result <- data.frame("Eta2"=0)
+  } else  {
+    result <- effectsize::eta_squared(car::Anova(fit, type = 2), verbose = FALSE)
+  }
+  result
 }
 
 #' Calculate the Gini coefficient

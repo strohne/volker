@@ -743,6 +743,27 @@ get_direction <- function(data, cols, extract = TRUE) {
   categories_scale
 }
 
+#' Get the labels of values from a codebook
+#'
+#' @keywords internal
+#'
+#' @param codes The codebook as it results from the codebook() function
+#' @param values A vector of labels
+#' @return The labels. If the values are not present in the codebook, returns the values.
+#' @importFrom rlang .data
+get_labels <- function(codes, values) {
+
+  labels <- codes %>%
+    dplyr::filter(.data$value_name %in% values) %>%
+    dplyr::pull(.data$value_label) %>%
+    unique()
+
+  if (length(labels) == 0) {
+    labels <- values
+  }
+
+  labels
+}
 
 #' Get the common prefix of character values
 #'

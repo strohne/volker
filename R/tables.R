@@ -791,7 +791,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 
   # Focus TRUE category or the first category
   if (is.null(category)) {
-    value_names <- unique(as.character(pivoted$.value_name))
+    value_names <- sort(unique(as.character(pivoted$.value_name)))
     if ((length(value_names) == 2) && ("TRUE" %in% value_names)) {
       base_category <- "TRUE"
     } else {
@@ -813,10 +813,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
   # Get category labels if names are provided (e.g. for numeric values)
   base_labels <- base_category
   if (is.null(category) || all(base_labels %in% pivoted$.value_name)) {
-    base_labels <- codebook_df %>%
-      dplyr::filter(.data$value_name %in% base_category) %>%
-      dplyr::pull(.data$value_label) %>%
-      unique()
+    base_labels <- get_labels(codebook_df, base_category)
   }
 
   # Recode
