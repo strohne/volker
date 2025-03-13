@@ -1432,11 +1432,9 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, title =
 
   # Replace item labels
   if (labels) {
-    result <- labs_replace(
-      result, "item",
-      codebook(data, {{ cols }}),
-      "item_name", "item_label"
-      )
+    result <- result %>%
+      labs_replace("item", codebook(data, {{ cols }}), "item_name", "item_label") %>%
+      labs_replace(".cross", codebook(data, {{ cross }}), "value_name", "value_label")
   }
 
   # Remove common item prefix
