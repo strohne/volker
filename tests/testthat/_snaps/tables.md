@@ -188,7 +188,7 @@
       |3                       | 63% (64)| 68% (27)| 60% (36)| 100% (1)|
       |4                       | 54% (55)| 62% (25)| 50% (30)|   0% (0)|
       
-      Frequencies based on values: .
+      Frequencies based on values: TRUE.
       
 
 # Distribution table for age
