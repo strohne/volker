@@ -301,6 +301,9 @@
       |2     |  1|  33%|
       |3     |  1|  33%|
       |total |  3| 100%|
+      
+      n=3.
+      
 
 # A common prefix is removed from labels
 
@@ -356,6 +359,9 @@
       |Männlich |  60|  59%|
       |Divers   |   1|   1%|
       |total    | 101| 100%|
+      
+      n=101.
+      
 
 # Elliptical numeric values are relabeled
 

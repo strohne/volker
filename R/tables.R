@@ -1394,6 +1394,11 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
   result_mean <- skim_grouped(data, {{ cols }}, {{ cross }}, "numeric.mean", labels)
   result_sd <- skim_grouped(data, {{ cols }}, {{ cross }}, "numeric.sd", labels)
 
+  total_n <- data |>
+    dplyr::count({{ cross }}) |>
+    (\(.) dplyr::bind_rows(.,dplyr::summarise(., {{ cross }} := "total", n = sum(.$n))))()  |>
+    tidyr::pivot_wider(names_from = {{ cross }}, values_from = "n") |>
+    dplyr::mutate(item = "n")
 
   # Significance of lm
   # TODO
@@ -1427,6 +1432,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
     #       Maybe let zipping and rounding to the print function and return a list of data frames instead
     result_mean <- dplyr::mutate(result_mean, dplyr::across(tidyselect::where(is.numeric), ~ format(round(., digits), nsmall = digits)))
     result_sd <- dplyr::mutate(result_sd, dplyr::across(tidyselect::where(is.numeric), ~ format(round(., digits), nsmall = digits)))
+    total_n <- dplyr::mutate(total_n, dplyr::across(tidyselect::where(is.numeric), ~ as.character(.)))
 
     result <- zip_tables(result_mean, result_sd, brackets = TRUE)
   } else if ("sd" %in% values) {
@@ -1438,6 +1444,9 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
   # Remove common item prefix
   prefix <- get_prefix(result$item, trim=TRUE)
   result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
+
+  # Add total row
+  result <- dplyr::bind_rows(result, total_n)
 
   # Rename first column
   if (prefix != "") {
@@ -1538,7 +1547,7 @@ tab_metrics_items_cor <- function(data, cols, cross, method = "pearson", digits 
 
   result <- dplyr::rename(result, {{ prefix1 }} := "item1")
 
-  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data, c("missings", "cases"))
   .to_vlkr_tab(result, digits = digits, caption = title)
 }
 

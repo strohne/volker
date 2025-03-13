@@ -68,6 +68,7 @@ data_prepare <- function(data, cols, cross, cols.categorical, cols.numeric, cols
   # }
 
   check_is_dataframe(data)
+  attr(data, "cases") <- nrow(data)
   data
 }
 
@@ -211,7 +212,7 @@ data_rm_zeros <- function(data, cols) {
   if (cases > 0) {
     data <- cleaned
     colnames <- rlang::as_label(rlang::enquo(cols))
-    data <- .attr_insert(data, "missings", "zero", list("cols" = colnames, "n"=cases))
+    data <- .attr_insert(data, "missings", "zero", list("cols" = colnames, "n" = cases))
   }
 
   data
@@ -390,6 +391,12 @@ data_cat <- function(data, cols) {
 #' @return A formatted message or NULL if missings and focus attributes are not present.
 get_baseline <- function(obj) {
   baseline <- c()
+
+  # Cases
+  cases <- attr(obj, "cases", exact = TRUE)
+  if (!is.null(cases)) {
+    baseline <- c(baseline, paste0("n=", cases,"."))
+  }
 
   # Focus categories
   focus <- attr(obj, "focus", exact = TRUE)
