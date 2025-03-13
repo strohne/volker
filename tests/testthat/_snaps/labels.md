@@ -273,6 +273,18 @@
       [3] "I wait until offers establish themselves"         
       [4] "I only use new offers when I have no other choice"
 
+---
+
+    Code
+      levels(dplyr::pull(volker:::labs_replace(dplyr::mutate(dplyr::select(data,
+        adopter), adopter = as.character(adopter)), adopter, volker::codebook(data,
+        adopter)), adopter))
+    Output
+      [1] "I try new offers immediately"                     
+      [2] "I try new offers rather quickly"                  
+      [3] "I wait until offers establish themselves"         
+      [4] "I only use new offers when I have no other choice"
+
 # Item values are kept even if they are not in the codebook
 
     Code

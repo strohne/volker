@@ -64,12 +64,19 @@ test_that("Item values are replaced and keep their order", {
 
   data |>
     dplyr::select(adopter) |>
-    # TODO: Even if the column was converted to character beforehand
-    #  dplyr::mutate(adopter = as.character(adopter)) |>
     volker:::labs_replace(adopter, volker::codebook(data, adopter)) |>
     dplyr::pull(adopter) |>
     levels() |>
     expect_snapshot(cran = TRUE)
+
+    #Even if the column was converted to character beforehand
+    data |>
+      dplyr::select(adopter) |>
+      dplyr::mutate(adopter = as.character(adopter)) |>
+      volker:::labs_replace(adopter, volker::codebook(data, adopter)) |>
+      dplyr::pull(adopter) |>
+      levels() |>
+      expect_snapshot(cran = TRUE)
 })
 
 
