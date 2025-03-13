@@ -67,10 +67,7 @@ data_prepare <- function(data, cols, cross, cols.categorical, cols.numeric, cols
   #   data <- data_rm_negatives(data, {{ cols }})
   # }
 
-  if (nrow(data) == 0) {
-     message("The dataset is empty, check your values.")
-  }
-
+  check_is_dataframe(data)
   data
 }
 
