@@ -278,10 +278,10 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   result <- tibble::tribble(
     ~Statistic, ~Value,
     "Cramer's V", sprintf("%.2f", round(cramer_v, 2)),
-    "Number of cases", as.character(n),
-    "Degrees of freedom", as.character(fit$parameter),
+    "n", as.character(n),
+    "df", as.character(fit$parameter),
     "Chi-squared", sprintf("%.2f", round(fit$statistic, 2)),
-    "p value", sprintf("%.3f", round(fit$p.value, 3)),
+    "p", sprintf("%.3f", round(fit$p.value, 3)),
     "stars", get_stars(fit$p.value)
   )
 
@@ -349,10 +349,10 @@ effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
   result <- result %>%
     dplyr::group_by(.data$item) %>%
     dplyr::summarize(
-      "Gini" = sprintf("%.2f", get_gini(.data$n)),
-      "Number of cases" = as.character(sum(.data$n)),
+      "Gini coefficent" = sprintf("%.2f", get_gini(.data$n)),
+      "n" = as.character(sum(.data$n)),
       "Chi-squared" = stats::chisq.test(.data$n)$statistic,
-      "p value" = stats::chisq.test(.data$n)$p.value,
+      "p" = stats::chisq.test(.data$n)$p.value,
       "stars" = get_stars(stats::chisq.test(.data$n)$p.value)
     )
 
@@ -478,8 +478,8 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = TRUE, ... ) {
     name = "Shapiro-Wilk normality test",
     value = "value",
     x = list(
-      "W-statistic" = sprintf("%.2f", round(stats_shapiro$statistic, 2)),
-      "p value" = sprintf("%.3f", round(stats_shapiro$p.value, 3)),
+      "W" = sprintf("%.2f", round(stats_shapiro$statistic, 2)),
+      "p" = sprintf("%.3f", round(stats_shapiro$p.value, 3)),
       "stars" = get_stars(stats_shapiro$p.value),
       "normality" = ifelse(stats_shapiro$p.value > 0.05, "normal", "not normal")
     )
@@ -587,7 +587,7 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
         "difference" = sprintf("%.2f", round(stats_t$estimate[1] - stats_t$estimate[2], 2)),
         "ci low" = sprintf("%.2f", round(stats_t$conf.int[1], 2)),
         "ci high" = sprintf("%.2f",round(stats_t$conf.int[2], 2)),
-        "standard error" = sprintf("%.2f",round(stats_t$stderr,2)),
+        "se" = sprintf("%.2f",round(stats_t$stderr,2)),
         "df" = round(stats_t$parameter,2),
         "t" = sprintf("%.2f",round(stats_t$statistic,2)),
         "p" = sprintf("%.3f",round(stats_t$p.value,3)),
@@ -602,7 +602,7 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
         values_to="value",
         transform=as.character
       ) |>
-      dplyr::select("Test", "statistic","value")
+      dplyr::select("Test","statistic","value")
 
     result <- c(result, list(.to_vlkr_tab(stats_t)))
   }
@@ -622,15 +622,15 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
         estimate = sprintf("%.2f",round(.data$estimate,2)),
         "ci low" = sprintf("%.2f",round(.data$conf.low,2)),
         "ci high" = sprintf("%.2f",round(.data$conf.high,2)),
-        "standard error" = sprintf("%.2f",round(.data$std.error,2)),
+        "se" = sprintf("%.2f",round(.data$std.error,2)),
         t = sprintf("%.2f", round(.data$statistic,2)),
         p = sprintf("%.3f",round(.data$p.value,3))
       ) |>
       dplyr::mutate(dplyr::across(tidyselect::all_of(
-        c("estimate","ci low", "ci high" , "standard error","t","p")
+        c("estimate","ci low", "ci high" , "se","t","p")
       ), function(x) ifelse(x == "NA","",x))) |>
       dplyr::select(tidyselect::all_of(c(
-        "Term","estimate","ci low","ci high","standard error","t","p","stars"
+        "Term","estimate","ci low","ci high","se","t","p","stars"
       )))
 
     # Regression model statistics
@@ -647,7 +647,7 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
           "adj.r.squared", "df", "df.residual", "statistic", "p.value", "stars"
         ),
         value_label=c(
-          "Adjusted R squared", "Degrees of freedom", "Residuals' degrees of freedom",
+          "Adjusted R-squared", "df", "residual df",
           "F", "p", "stars"
         )
       ), na.missing = TRUE) |>
@@ -765,8 +765,8 @@ effect_metrics_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
         "Item" = .y,
         "skewness" = sprintf("%.2f", round(stats$skew, 2)),
         "kurtosis" = sprintf("%.2f", round(stats$kurt, 2)),
-        "W-statistic" = sprintf("%.2f", round(shapiro$statistic,2)),
-        "p value" = sprintf("%.3f", round(shapiro$p.value, 3)),
+        "W" = sprintf("%.2f", round(shapiro$statistic,2)),
+        "p" = sprintf("%.3f", round(shapiro$p.value, 3)),
         "stars" = get_stars(shapiro$p.value),
         "normality" = ifelse(shapiro$p.value > 0.05, "normal", "not normal")
       )
@@ -854,11 +854,11 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
     tidyr::unnest(cols = c(.data$tidy_model, .data$eta_sq)) %>%
     dplyr::mutate(
       "Eta" = purrr::map_dbl(.data$Eta2, ~ round(sqrt(.), 2)),
-      "Eta squared" = purrr::map_dbl(.data$Eta2, ~ round(., 2))
+      "Etasquared" = purrr::map_dbl(.data$Eta2, ~ round(., 2))
     ) %>%
     dplyr::select(tidyselect::all_of(c(
-      "item", "F" = "f_statistic", "p" = "p_value",
-      "stars", "Eta", "Eta squared"
+      "item", "F" = "f_statistic", "p",
+      "stars", "Eta", "Eta-squared"
     ))) %>%
     dplyr::distinct(.data$item, .keep_all = TRUE)
 
@@ -1064,14 +1064,14 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
       dplyr::mutate(
         n = nrow(data),
         "Spearman's rho" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate),2)),
-        "R squared" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate^2),2)),
+        "R-squared" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate^2),2)),
         s = sprintf("%.2f", purrr::map_dbl(.data$.test, function(x) round(x$statistic,2))),
         stars = purrr::map_chr(.data$.test, function(x) get_stars(x$p.value)),
         p = sprintf("%.3f", purrr::map_dbl(.data$.test, function(x) round(x$p.value,3))),
         ) %>%
       dplyr::select(
         item1 = "x_name", item2 = "y_name",
-        "R squared", "n","Spearman's rho","s","p","stars"
+        "R-squared", "n","Spearman's rho","s","p","stars"
       )
 
   } else {
@@ -1079,7 +1079,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
       dplyr::mutate(
         n = nrow(data),
         "Pearson's r" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate),2)),
-        "R squared" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate^2),2)),
+        "R-squared" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate^2),2)),
         "ci low" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[1]),2)),
         "ci high" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[2]),2)),
         df = purrr::map_int(.data$.test, function(x) as.numeric(x$parameter)),
@@ -1090,7 +1090,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
       dplyr::mutate(t = ifelse(.data$x_name == .data$y_name, "Inf", t)) |>
       dplyr::select(
         item1 = "x_name", item2 = "y_name",
-        "R squared", "n","Pearson's r", "ci low", "ci high","df","t","p","stars"
+        "R-squared", "n","Pearson's r", "ci low", "ci high","df","t","p","stars"
       )
   }
 
