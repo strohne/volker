@@ -186,7 +186,7 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
-#' data <- data |>
+#' data |>
 #'   filter(sd_gender != "diverse") |>
 #'   effect_counts_one(sd_gender)
 #'
