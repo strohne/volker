@@ -182,7 +182,13 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
 #' @param col The column holding factor values.
 #' @param clean Prepare data by \link{data_clean}
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
-#' @return A volker tibble.
+#' @return A volker tibble with the following statistical measures:
+#'  - gini coefficent: Gini coefficient, measuring inequality.
+#'  - n: Number of cases the calculation is based on.
+#'  - Chi-squared: Chi-Squared test statistic.
+#'  - p: p-value for the statistical test.
+#'  - stars: Significance stars based on p-value (*, **, ***).
+#'
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -209,12 +215,12 @@ effect_counts_one <- function(data, col, clean = TRUE, ...) {
   # 4. Perform Chi-Square Goodness-of-Fit Test
   fit <- stats::chisq.test(x = observed, p = expected / sum(expected))
 
-  # To tibble
+  # 5. To tibble
   result <- list(
     "Gini coefficient" = sprintf("%.2f", get_gini(observed)),
-    "Number of cases" = as.character(sum(observed)),
+    "n" = as.character(sum(observed)),
     "Chi-squared" = sprintf("%.2f", round(fit$statistic, 2)),
-    "p value" = sprintf("%.3f", round(fit$p.value, 3)),
+    "p" = sprintf("%.3f", round(fit$p.value, 3)),
     "stars" = get_stars(fit$p.value)
   ) |>
   tibble::enframe(
@@ -229,7 +235,7 @@ effect_counts_one <- function(data, col, clean = TRUE, ...) {
 
 #' Output test statistics and effect size for contingency tables
 #'
-#' Chi squared is calculated using  \code{stats::\link[stats:chisq.test]{chisq.test}}.
+#' Chi squared is calculated using \code{stats::\link[stats:chisq.test]{chisq.test}}.
 #' If any cell contains less than 5 observations, the exact-parameter is set.
 #'
 #' Phi is derived from the Chi squared value by \code{sqrt(fit$statistic / n)}.
@@ -242,7 +248,13 @@ effect_counts_one <- function(data, col, clean = TRUE, ...) {
 #' @param cross The column holding groups to compare.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
-#' @return A volker tibble.
+#' @return A volker tibble with the following statistical measures:
+#'  - Cramer's V: Effect size measuring the association between two variables.
+#'  - n: Number of cases the calculation is based on.
+#'  - Chi-squared: Chi-Squared test statistic.
+#'  - df: Degrees of freedom.
+#'  - p: p-value for the statistical test.
+#'  - stars: Significance stars based on p-value (*, **, ***).
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -275,14 +287,17 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   cramer_v <- round(sqrt( (fit$statistic / n) / cells), 2)
 
   # 4. Prepare output
-  result <- tibble::tribble(
-    ~Statistic, ~Value,
-    "Cramer's V", sprintf("%.2f", round(cramer_v, 2)),
-    "n", as.character(n),
-    "df", as.character(fit$parameter),
-    "Chi-squared", sprintf("%.2f", round(fit$statistic, 2)),
-    "p", sprintf("%.3f", round(fit$p.value, 3)),
-    "stars", get_stars(fit$p.value)
+  result <- list(
+    "Cramer's V" = sprintf("%.2f", round(cramer_v, 2)),
+    "n" = as.character(n),
+    "Chi-squared" = sprintf("%.2f", round(fit$statistic, 2)),
+    "df" = as.character(fit$parameter),
+    "p"= sprintf("%.3f", round(fit$p.value, 3)),
+    "stars"= get_stars(fit$p.value)
+  ) |>
+  tibble::enframe(
+    name = "Statistic",
+    value = "Value"
   )
 
   result <- .attr_transfer(result, data, "missings")
@@ -319,7 +334,12 @@ effect_counts_one_cor <- function(data, col, cross, clean = TRUE, labels = TRUE,
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
-#' @return  A volker tibble.
+#' @return A volker tibble with the following statistical measures:
+#'  - gini coefficent: Gini coefficient, measuring inequality.
+#'  - n: Number of cases the calculation is based on.
+#'  - Chi-squared: Chi-Squared test statistic.
+#'  - p: p-value for the statistical test.
+#'  - stars: Significance stars based on p-value (*, **, ***).
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -332,7 +352,7 @@ effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, cols.categorical = {{ cols }}, clean = clean)
 
-  # 2. Count
+  # 2. Count and chi-square goodness-of-fit test for each item
   result <- data %>%
     labs_clear({{ cols }}) %>%
     tidyr::pivot_longer(
@@ -341,36 +361,41 @@ effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
       values_to = ".value",
       values_drop_na = TRUE
     ) %>%
-    dplyr::group_by(.data$item, .data$.value) %>%
+    dplyr::group_by(item, .value) %>%
     dplyr::count() %>%
-    dplyr::ungroup()
+    dplyr::ungroup() %>%
+    split(.$item) %>%
+    purrr::imap(\(df, .y) {
+      counts <- df$n
+      chi <- chisq.test(counts)
 
-  # Chi-square goodness-of-fit test for each item
-  result <- result %>%
-    dplyr::group_by(.data$item) %>%
-    dplyr::summarize(
-      "Gini coefficent" = sprintf("%.2f", get_gini(.data$n)),
-      "n" = as.character(sum(.data$n)),
-      "Chi-squared" = stats::chisq.test(.data$n)$statistic,
-      "p" = stats::chisq.test(.data$n)$p.value,
-      "stars" = get_stars(stats::chisq.test(.data$n)$p.value)
-    )
+      list(
+        "item" = .y,
+        "Gini coefficent" = sprintf("%.2f", get_gini(counts)),
+        "n" = sum(counts),
+        "Chi-squared" = sprintf("%.2f", round(chi$statistic, 2)),
+        "p" = sprintf("%.3f", round(chi$p.value, 3)),
+        "stars" = get_stars(chi$p.value)
+      )
+    }) %>%
+    tibble::enframe(name = NULL) %>%
+    tidyr::unnest_wider(value)
 
-  # Get variable caption from the attributes
+  # 3. Get variable caption from the attributes
   if (labels) {
     result <- labs_replace(result, "item", codebook(data, {{ cols }}), col_from="item_name", col_to="item_label")
     prefix <- get_prefix(result$item)
     result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix))
   }
 
-  # Rename first column
+  # 4. Rename first column
   if (prefix != "") {
     colnames(result)[1] <- prefix
   } else {
     result <- dplyr::rename(result, Item = tidyselect::all_of("item"))
   }
 
-  # Result
+  # 5. Result
   result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result)
 }
@@ -457,7 +482,11 @@ effect_counts_items_cor_items <- function(data, cols, cross, clean = TRUE, ...) 
 #' @param clean Prepare data by \link{data_clean}.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
-#' @return A volker tibble.
+#' @return A volker list object with the following statistical measures:
+#'  - W: W-statistic from the Shapiro-Wilk normality test.
+#'  - p: p-value for the statistical test.
+#'  - stars: Significance stars based on p-value (*, **, ***).
+#'  - normality: Interpretation of normality based on Shapiro-Wilk test.
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -474,31 +503,29 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = TRUE, ... ) {
   stats <- dplyr::select(data, av = {{ col }})
   stats_shapiro <- stats::shapiro.test(stats$av)
 
-  stats_shapiro <- tibble::enframe(
-    name = "Shapiro-Wilk normality test",
-    value = "value",
-    x = list(
-      "W" = sprintf("%.2f", round(stats_shapiro$statistic, 2)),
-      "p" = sprintf("%.3f", round(stats_shapiro$p.value, 3)),
-      "stars" = get_stars(stats_shapiro$p.value),
-      "normality" = ifelse(stats_shapiro$p.value > 0.05, "normal", "not normal")
-    )
-  )
+  stats_shapiro <- list(
+    "W" = sprintf("%.2f", round(stats_shapiro$statistic, 2)),
+    "p" = sprintf("%.3f", round(stats_shapiro$p.value, 3)),
+    "stars" = get_stars(stats_shapiro$p.value),
+    "normality" = ifelse(stats_shapiro$p.value > 0.05, "normal", "not normal")
+  ) |>
+    tibble::enframe(name = "Shapiro-Wilk normality test", value = "Value")
 
   # 3. Skewness and kurtosis
   stats_skew <- psych::describe(stats$av)
-  stats <- tibble::tibble(
-    "metric" = c("skewness", "kurtosis"),
-    "value" = c(
-      sprintf("%.2f", round(stats_skew$skew, 2)),
-      sprintf("%.2f", round(stats_skew$kurtosis, 2))
+  stats <- list(
+    "skewness" = sprintf("%.2f", round(stats_skew$skew, 2)),
+    "kurtosis" = sprintf("%.2f", round(stats_skew$kurtosis, 2))
+  ) |>
+    tibble::enframe(
+      name = "Metric",
+      value = "Value"
     )
-  )
 
   # 4. Get item label from the attributes
   if (labels) {
     label <- get_title(data, {{ col }})
-    stats <- dplyr::rename(stats, {{ label }} := "metric")
+    stats <- dplyr::rename(stats, {{ label }} := "Metric")
   }
 
   # 5. Results
@@ -532,6 +559,22 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = TRUE, ... ) {
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
 #' @return A volker list object containing volker tables with the requested statistics.
+#' Regression table:
+#' - estimate: Regression coefficient (unstandardized).
+#' - ci low, ci high: lower and upper bound of the 95% confidence interval.
+#' - se: Standard error of the estimate.
+#' - t: t-statistic.
+#' - p: p-value for the statistical test.
+#' - stars: Significance stars based on p-value (*, **, ***).
+#'
+#' Macro statistics:
+#' - Adjusted R-squared: Adjusted coefficient of determination.
+#' - F: F-statistic for the overall significance of the model.
+#' - df: Degrees of freedom for the model.
+#' - residual df: Residual degrees of freedom.
+#' - p: p-value for the statistical test.
+#' - stars: Significance stars based on p-value (*, **, ***).
+#'
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -598,11 +641,11 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
     stats_t <- stats_t |>
       tidyr::unnest_longer(
         tidyselect::all_of("Results"),
-        indices_to="statistic",
-        values_to="value",
+        indices_to="Statistic",
+        values_to="Value",
         transform=as.character
       ) |>
-      dplyr::select("Test","statistic","value")
+      dplyr::select("Test","Statistic","Value")
 
     result <- c(result, list(.to_vlkr_tab(stats_t)))
   }
@@ -627,7 +670,7 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
         p = sprintf("%.3f",round(.data$p.value,3))
       ) |>
       dplyr::mutate(dplyr::across(tidyselect::all_of(
-        c("estimate","ci low", "ci high" , "se","t","p")
+        c("estimate","ci low","ci high","se","t","p")
       ), function(x) ifelse(x == "NA","",x))) |>
       dplyr::select(tidyselect::all_of(c(
         "Term","estimate","ci low","ci high","se","t","p","stars"
@@ -640,15 +683,15 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
       tidyr::pivot_longer(
         tidyselect::everything(),
         names_to="Statistic",
-        values_to="value"
+        values_to="Value"
       ) |>
       labs_replace("Statistic", tibble::tibble(
         value_name=c(
-          "adj.r.squared", "df", "df.residual", "statistic", "p.value", "stars"
+          "adj.r.squared", "statistic", "df", "df.residual", "p.value", "stars"
         ),
         value_label=c(
-          "Adjusted R-squared", "df", "residual df",
-          "F", "p", "stars"
+          "Adjusted R-squared","F", "df", "residual df",
+          "p", "stars"
         )
       ), na.missing = TRUE) |>
       stats::na.omit() |>
@@ -813,7 +856,14 @@ effect_metrics_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
-#' @return A volker tibble.
+#' @return A volker tibble with the following statistical measures:
+#'  - Eta-squared: Effect size measure indicating the proportion of variance in the dependent variable explained by the predictor.
+#'  - Eta: Root of Eta-squared, a standardized effect size.
+#'  - n: Number of cases the calculation is based on.
+#'  - F: F-statistic from the linear model.
+#'  - p: p-value for the statistical test.
+#'  - stars: Significance stars based on p-value (*, **, ***).
+#'
 #' @examples
 #' library(volker)
 #'
@@ -826,41 +876,36 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = {{ cross }}, cols.numeric = {{ cols }}, clean = clean)
 
-  # 2. Pivot
+  # 2. Pivot longer
   lm_data <- data %>%
-    dplyr::rename(uv = {{ cross }})
-
-  lm_data <- lm_data %>%
+    dplyr::rename(uv = {{ cross }}) %>%
     tidyr::pivot_longer(
-    cols = {{ cols }},
-    names_to = "item",
-    values_to = "value") %>%
-    dplyr::group_by(.data$item)
-
-  # 3. Linear model
-  lm <- lm_data %>%
-    dplyr::summarise(
-      model = list(lm(value ~ uv))
+      cols = {{ cols }},
+      names_to = "item",
+      values_to = "value"
     )
 
-  result <- lm %>%
-    dplyr::mutate(
-      tidy_model = purrr::map(.data$model, broom::tidy),
-      eta_sq = purrr::map(.data$model, ~ get_etasq(.x) ),
-      f_statistic = purrr::map_dbl(.data$model, ~ round(summary(.x)$fstatistic[1], 2)),
-      p_value = purrr::map_dbl(.data$model, ~ round(summary(.x)$coefficients[2, 4], 2)),
-      stars = purrr::map_chr(.data$model,~ get_stars(summary(.x)$coefficients[2, 4]))
-    ) %>%
-    tidyr::unnest(cols = c(.data$tidy_model, .data$eta_sq)) %>%
-    dplyr::mutate(
-      "Eta" = purrr::map_dbl(.data$Eta2, ~ round(sqrt(.), 2)),
-      "Etasquared" = purrr::map_dbl(.data$Eta2, ~ round(., 2))
-    ) %>%
-    dplyr::select(tidyselect::all_of(c(
-      "item", "F" = "f_statistic", "p",
-      "stars", "Eta", "Eta-squared"
-    ))) %>%
-    dplyr::distinct(.data$item, .keep_all = TRUE)
+  # 3. Split by item
+  item_list <- split(lm_data, lm_data$item)
+
+  # 4. Linear model per item
+  result <- purrr::imap(item_list, \(df, item_name) {
+    model <- lm(value ~ uv, data = df)
+    summ <- summary(model)
+    eta_sq <- get_etasq(model)
+
+    list(
+      item = item_name,
+      "Eta-squared" = round(eta_sq$Eta2, 2),
+      "Eta" = round(sqrt(eta_sq$Eta2), 2),
+      "n" = nrow(df),
+      "F" = round(summ$fstatistic[1], 2),
+      "p" = round(summ$coefficients[2, 4], 3),
+      "stars" = get_stars(summ$coefficients[2, 4])
+    )
+  }) %>%
+    tibble::enframe(name = NULL) %>%
+    tidyr::unnest_wider(value)
 
   # 4. Labels
   if (labels) {
