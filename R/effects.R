@@ -203,30 +203,22 @@ effect_counts_one <- function(data, col, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, cols.categorical = {{ col }}, clean = clean)
 
-  # 2. Observed
-  observed <- data %>%
+  # 2. Chi-squared test
+  counts <- data %>%
     dplyr::count({{ col }}) %>%
-    dplyr::arrange({{ col }}) %>%
-    dplyr::pull(.data$n)
+    dplyr::pull(n)
 
-  # 3. Expected
-  expected <- rep(sum(observed) / length(observed), length(observed))
+  fit <- stats::chisq.test(counts)
 
-  # 4. Perform Chi-Square Goodness-of-Fit Test
-  fit <- stats::chisq.test(x = observed, p = expected / sum(expected))
-
-  # 5. To tibble
+  # 3. Results
   result <- list(
-    "Gini coefficient" = sprintf("%.2f", get_gini(observed)),
-    "n" = as.character(sum(observed)),
+    "Gini coefficient" = sprintf("%.2f", get_gini(counts)),
+    "n" = as.character(sum(counts)),
     "Chi-squared" = sprintf("%.2f", round(fit$statistic, 2)),
     "p" = sprintf("%.3f", round(fit$p.value, 3)),
     "stars" = get_stars(fit$p.value)
-  ) |>
-  tibble::enframe(
-    name = "Statistic",
-    value = "Value"
-  )
+  ) %>%
+  tibble::enframe(name = "Statistic", value = "Value")
 
   result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, caption = fit$method)
@@ -377,6 +369,7 @@ effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
         "p" = sprintf("%.3f", round(chi$p.value, 3)),
         "stars" = get_stars(chi$p.value)
       )
+
     }) %>%
     tibble::enframe(name = NULL) %>%
     tidyr::unnest_wider(value)
@@ -509,7 +502,10 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = TRUE, ... ) {
     "stars" = get_stars(stats_shapiro$p.value),
     "normality" = ifelse(stats_shapiro$p.value > 0.05, "normal", "not normal")
   ) |>
-    tibble::enframe(name = "Shapiro-Wilk normality test", value = "Value")
+    tibble::enframe(
+      name = "Shapiro-Wilk normality test",
+      value = "Value"
+    )
 
   # 3. Skewness and kurtosis
   stats_skew <- psych::describe(stats$av)
