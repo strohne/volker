@@ -8,9 +8,9 @@
       |Statistic        | Value|
       |:----------------|-----:|
       |Gini coefficient |  0.10|
-      |Number of cases  |   100|
+      |n                |   100|
       |Chi-squared      |  4.00|
-      |p value          | 0.046|
+      |p                | 0.046|
       |stars            |     *|
 
 # effect_counts_one_grouped
@@ -21,14 +21,14 @@
     Output
       
       
-      |Statistic          | Value|
-      |:------------------|-----:|
-      |Cramer's V         |  0.05|
-      |Number of cases    |   100|
-      |Degrees of freedom |     1|
-      |Chi-squared        |  0.20|
-      |p value            | 0.651|
-      |stars              |      |
+      |Statistic   | Value|
+      |:-----------|-----:|
+      |Cramer's V  |  0.05|
+      |n           |   100|
+      |Chi-squared |  0.20|
+      |df          |     1|
+      |p           | 0.651|
+      |stars       |      |
 
 # effect_metrics_one
 
@@ -37,16 +37,16 @@
     Output
       
       
-      |Age      | value|
+      |Age      | Value|
       |:--------|-----:|
       |skewness |  0.25|
       |kurtosis | -0.98|
       
       
-      |Shapiro-Wilk normality test |      value|
+      |Shapiro-Wilk normality test |      Value|
       |:---------------------------|----------:|
-      |W-statistic                 |       0.96|
-      |p value                     |      0.002|
+      |W                           |       0.96|
+      |p                           |      0.002|
       |stars                       |         **|
       |normality                   | not normal|
 
@@ -57,23 +57,23 @@
     Output
       
       
-      |Term                                              | estimate| ci low| ci high| standard error|     t|     p| stars|
-      |:-------------------------------------------------|--------:|------:|-------:|--------------:|-----:|-----:|-----:|
-      |(Intercept)                                       |    36.60|  29.55|   43.65|           3.55| 10.30| 0.000|   ***|
-      |I try new offers immediately (Reference)          |         |       |        |               |      |      |      |
-      |I try new offers rather quickly                   |     4.21|  -3.64|   12.06|           3.95|  1.06| 0.290|      |
-      |I wait until offers establish themselves          |     1.17|  -7.97|   10.32|           4.61|  0.25| 0.800|      |
-      |I only use new offers when I have no other choice |    19.40|  -8.81|   47.61|          14.21|  1.36| 0.175|      |
+      |Term                                              | estimate| ci low| ci high|    se|     t|     p| stars|
+      |:-------------------------------------------------|--------:|------:|-------:|-----:|-----:|-----:|-----:|
+      |(Intercept)                                       |    36.60|  29.55|   43.65|  3.55| 10.30| 0.000|   ***|
+      |I try new offers immediately (Reference)          |         |       |        |      |      |      |      |
+      |I try new offers rather quickly                   |     4.21|  -3.64|   12.06|  3.95|  1.06| 0.290|      |
+      |I wait until offers establish themselves          |     1.17|  -7.97|   10.32|  4.61|  0.25| 0.800|      |
+      |I only use new offers when I have no other choice |    19.40|  -8.81|   47.61| 14.21|  1.36| 0.175|      |
       
       
-      |Statistic                     | value|
-      |:-----------------------------|-----:|
-      |Adjusted R squared            |     0|
-      |Degrees of freedom            |     3|
-      |Residuals' degrees of freedom |    97|
-      |F                             |     1|
-      |p                             |   0.4|
-      |stars                         |      |
+      |Statistic          | Value|
+      |:------------------|-----:|
+      |Adjusted R-squared |     0|
+      |F                  |     1|
+      |df                 |     3|
+      |residual df        |    97|
+      |p                  |   0.4|
+      |stars              |      |
 
 # effect_metrics_one_cor
 
@@ -84,7 +84,7 @@
       
       |Statistic   | value|
       |:-----------|-----:|
-      |R squared   |  0.03|
+      |R-squared   |  0.03|
       |n           |   101|
       |Pearson's r | -0.19|
       |ci low      | -0.37|
@@ -103,7 +103,7 @@
       
       |Statistic   | value|
       |:-----------|-----:|
-      |R squared   |  0.03|
+      |R-squared   |  0.03|
       |n           |   101|
       |Pearson's r | -0.19|
       |ci low      | -0.37|
@@ -122,7 +122,7 @@
       
       |Statistic      |     value|
       |:--------------|---------:|
-      |R squared      |      0.04|
+      |R-squared      |      0.04|
       |n              |       101|
       |Spearman's rho |      -0.2|
       |s              | 206410.07|
@@ -136,10 +136,10 @@
     Output
       
       
-      |Usage                   | skewness| kurtosis| W-statistic| p value| stars|  normality|
-      |:-----------------------|--------:|--------:|-----------:|-------:|-----:|----------:|
-      |in private context      |     0.41|    -0.39|        0.90|   0.000|   ***| not normal|
-      |in professional context |     0.51|    -1.13|        0.84|   0.000|   ***| not normal|
+      |Usage                   | skewness| kurtosis|    W|     p| stars|  normality|
+      |:-----------------------|--------:|--------:|----:|-----:|-----:|----------:|
+      |in private context      |     0.41|    -0.39| 0.90| 0.000|   ***| not normal|
+      |in professional context |     0.51|    -1.13| 0.84| 0.000|   ***| not normal|
 
 # effect_metrics_items_cor with one variable
 
@@ -149,7 +149,7 @@
     Output
       
       
-      |Expectations: Correlation with Age                          | R squared|  n| Pearson's r| ci low| ci high| df|     t|     p| stars|
+      |Expectations: Correlation with Age                          | R-squared|  n| Pearson's r| ci low| ci high| df|     t|     p| stars|
       |:-----------------------------------------------------------|---------:|--:|-----------:|------:|-------:|--:|-----:|-----:|-----:|
       |ChatGPT has clear advantages compared to similar offerings. |      0.02| 97|       -0.12|  -0.32|    0.08| 95| -1.22| 0.227|      |
       |Using ChatGPT brings financial benefits.                    |      0.02| 97|       -0.13|  -0.32|    0.07| 95| -1.29| 0.200|      |
@@ -175,7 +175,7 @@
     Output
       
       
-      |Expectations: Correlation with Age                          | R squared|  n| Spearman's rho|         s|     p| stars|
+      |Expectations: Correlation with Age                          | R-squared|  n| Spearman's rho|         s|     p| stars|
       |:-----------------------------------------------------------|---------:|--:|--------------:|---------:|-----:|-----:|
       |ChatGPT has clear advantages compared to similar offerings. |      0.02| 97|          -0.14| 172811.45| 0.183|      |
       |Using ChatGPT brings financial benefits.                    |      0.02| 97|          -0.14| 173694.29| 0.165|      |
@@ -201,7 +201,7 @@
     Output
       
       
-      |Item 1: Expectations                                        |                                        Item 2: Expectations| R squared|  n| Pearson's r| ci low| ci high| df|     t|     p| stars|
+      |Item 1: Expectations                                        |                                        Item 2: Expectations| R-squared|  n| Pearson's r| ci low| ci high| df|     t|     p| stars|
       |:-----------------------------------------------------------|-----------------------------------------------------------:|---------:|--:|-----------:|------:|-------:|--:|-----:|-----:|-----:|
       |ChatGPT has clear advantages compared to similar offerings. | ChatGPT has clear advantages compared to similar offerings.|      1.00| 97|        1.00|   1.00|    1.00| 95|   Inf| 0.000|   ***|
       |ChatGPT has clear advantages compared to similar offerings. |                    Using ChatGPT brings financial benefits.|      0.14| 97|        0.37|   0.19|    0.53| 95|  3.91| 0.000|   ***|
@@ -359,7 +359,7 @@
     Output
       
       
-      |Expectations                                                |                   Usage| R squared|  n| Pearson's r| ci low| ci high| df|     t|     p| stars|
+      |Expectations                                                |                   Usage| R-squared|  n| Pearson's r| ci low| ci high| df|     t|     p| stars|
       |:-----------------------------------------------------------|-----------------------:|---------:|--:|-----------:|------:|-------:|--:|-----:|-----:|-----:|
       |ChatGPT has clear advantages compared to similar offerings. |      in private context|      0.25| 97|        0.50|   0.33|    0.63| 95|  5.60| 0.000|   ***|
       |ChatGPT has clear advantages compared to similar offerings. | in professional context|      0.08| 97|        0.28|   0.09|    0.46| 95|  2.86| 0.005|    **|
@@ -397,7 +397,7 @@
     Output
       
       
-      |Expectations                                                |                   Usage| R squared|  n| Spearman's rho|         s|     p| stars|
+      |Expectations                                                |                   Usage| R-squared|  n| Spearman's rho|         s|     p| stars|
       |:-----------------------------------------------------------|-----------------------:|---------:|--:|--------------:|---------:|-----:|-----:|
       |ChatGPT has clear advantages compared to similar offerings. |      in private context|      0.22| 97|           0.47|  80105.62| 0.000|   ***|
       |ChatGPT has clear advantages compared to similar offerings. | in professional context|      0.06| 97|           0.24| 114894.18| 0.016|     *|
