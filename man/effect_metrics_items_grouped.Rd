@@ -27,7 +27,15 @@ effect_metrics_items_grouped(
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.}
 }
 \value{
-A volker tibble.
+A volker tibble with the following statistical measures:
+\itemize{
+\item \strong{Eta-squared}: Effect size indicating the proportion of variance in the dependent variable explained by the predictor.
+\item \strong{Eta}: Root of Eta-squared, a standardized effect size.
+\item \strong{n}: Number of cases the calculation is based on.
+\item \strong{F}: F-statistic from the linear model.
+\item \strong{p}: p-value for the statistical test.
+\item \strong{stars}: Significance stars based on p-value (*, **, ***).
+}
 }
 \description{
 The models are fitted using \code{stats::\link[stats:lm]{lm}}.
@@ -37,8 +45,8 @@ using \code{effectsize::\link[effectsize:eta_squared]{eta_squared}}.
 }
 \examples{
 library(volker)
-
 data <- volker::chatgpt
+
 effect_metrics(data, starts_with("cg_adoption_"), adopter)
 
 }

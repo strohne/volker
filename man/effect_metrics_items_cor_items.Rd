@@ -31,6 +31,24 @@ effect_metrics_items_cor_items(
 }
 \value{
 A volker table containing correlations.
+
+If \code{method = "pearson"}:
+\itemize{
+\item \strong{R-squared}: Coefficient of determination.
+\item \strong{n}: Number of cases the calculation is based on.
+\item \strong{Pearson's r}: Correlation coefficient.
+\item \strong{ci low / ci high}: Lower and upper bounds of the 95\% confidence interval.
+\item \strong{df}: Degrees of freedom.
+\item \strong{t}: t-statistic.
+\item \strong{p}: p-value for the statistical test, indicating whether the correlation differs from zero.
+\item \strong{stars}: Significance stars based on the p-value (*, **, ***).
+}
+
+If \code{method = "spearman"}:
+\itemize{
+\item \strong{Spearman's rho} is displayed instead of Pearson's r.
+\item \strong{S-statistic} is used instead of the t-statistic.
+}
 }
 \description{
 The correlation is calculated using \code{stats::\link[stats:cor.test]{cor.test}}.
