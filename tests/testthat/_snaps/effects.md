@@ -75,6 +75,36 @@
       |p                  |   0.4|
       |stars              |      |
 
+# effect_metrics_one_grouped with t.test
+
+    Code
+      volker::effect_metrics(data, sd_age, sd_gender, method = "t.test")
+    Output
+      
+      
+      |Test                        |  Statistic|             Value|
+      |:---------------------------|----------:|-----------------:|
+      |Shapiro-Wilk normality test |          W|              0.96|
+      |Shapiro-Wilk normality test |          p|             0.002|
+      |Shapiro-Wilk normality test |      stars|                **|
+      |Shapiro-Wilk normality test |  normality|        not normal|
+      |Levene test                 |          F|              0.07|
+      |Levene test                 |          p|             0.796|
+      |Levene test                 |      stars|                  |
+      |Levene test                 |  variances|             equal|
+      |Cohen's d                   |          d|              -0.3|
+      |Cohen's d                   |     ci low|              -0.7|
+      |Cohen's d                   |    ci high|               0.1|
+      |t-Test                      |     method| Two Sample t-test|
+      |t-Test                      | difference|             -3.69|
+      |t-Test                      |     ci low|             -9.27|
+      |t-Test                      |    ci high|              1.88|
+      |t-Test                      |         se|              2.81|
+      |t-Test                      |         df|                98|
+      |t-Test                      |          t|             -1.31|
+      |t-Test                      |          p|             0.192|
+      |t-Test                      |      stars|                  |
+
 # effect_metrics_one_cor
 
     Code
