@@ -219,7 +219,10 @@ effect_counts_one <- function(data, col, clean = TRUE, ...) {
     "p" = sprintf("%.3f", round(fit$p.value, 3)),
     "stars" = get_stars(fit$p.value)
   ) %>%
-  tibble::enframe(name = "Statistic", value = "Value")
+  tibble::enframe(
+    name = "Statistic",
+    value = "Value"
+    )
 
   result <- .attr_transfer(result, data, "missings")
   .to_vlkr_tab(result, caption = fit$method)
@@ -758,6 +761,7 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
 #' @return A volker table containing the requested statistics.
+#'
 #' If `method = "pearson"`:
 #' - **R-squared**: Coefficient of determination.
 #' - **n**: Number of cases the calculation is based on.
@@ -1023,7 +1027,7 @@ effect_metrics_items_grouped_items <- function(data, cols, cross, clean = TRUE, 
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
 #' @return A volker table containing itemwise correlations:
 #'
-#' #' If `method = "pearson"`:
+#' If `method = "pearson"`:
 #' - **R-squared**: Coefficient of determination.
 #' - **n**: Number of cases the calculation is based on.
 #' - **Pearson's r**: Correlation coefficient.
