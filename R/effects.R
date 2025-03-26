@@ -582,6 +582,31 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = TRUE, ... ) {
 #' - **p**: p-value for the statistical test.
 #' - **stars**: Significance stars based on p-value (*, **, ***).
 #'
+#' If `method = t.test`:
+#' ### Shapiro-Wilk test (normality check):
+#' - **W**: W-statistic from the Shapiro-Wilk normality test.
+#' - **p**: p-value for the test.
+#' - **normality**: Interpretation of the Shapiro-Wilk test.
+#'
+#' ### Levene test (equality of variances):
+#' - **F**: F-statistic from the Levene test for equality of variances between groups.
+#' - **p**: p-value for Levene's test.
+#' - **variances**: Interpretation of the Levene test.
+#'
+#' ### Cohen's d (effect size):
+#' - **d**: Standardized mean difference between the two groups.
+#' - **ci low / ci high**: Lower and upper bounds of the 95% confidence interval.
+#'
+#' ### t-test
+#' - **method**: Type of t-test performed (e.g., "Two Sample t-test").
+#' - **difference**: Observed difference between group means.
+#' - **ci low / ci high**: Lower and upper bounds of the 95% confidence interval.
+#' - **se**: Estimated standard error of the difference.
+#' - **df**: Degrees of freedom used in the t-test.
+#' - **t**: t-statistic.
+#' - **p**: p-value for the t-test.
+#' - **stars**: Significance stars based on p-value (`*`, `**`, `***`).
+#'
 #' @examples
 #' library(volker)
 #' data <- volker::chatgpt
@@ -613,26 +638,25 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
     stats_cohen <- effectsize::cohens_d(lm_data$av, lm_data$uv, pooled_sd = stats_varequal, paired=FALSE)
     stats_t <- stats::t.test(lm_data$av ~ lm_data$uv, var.equal = stats_varequal)
 
-    stats_t <- tibble::tribble(
-      ~"Test", ~ "Results",
-      "Shapiro-Wilk normality test", list(
-        "W" = sprintf("%.2f",round(stats_shapiro$statistic,2)),
-        "p" = sprintf("%.3f",round(stats_shapiro$p.value,3)),
+    stats_t <- list(
+      "Shapiro-Wilk normality test" = list(
+        "W" = sprintf("%.2f", stats_shapiro$statistic),
+        "p" = sprintf("%.3f", stats_shapiro$p.value),
         "stars" = get_stars(stats_shapiro$p.value),
         "normality" = ifelse(stats_shapiro$p.value > 0.05, "normal", "not normal")
       ),
-      "Levene test", list(
-        "F" = sprintf("%.2f",round(stats_levene[["F value"]][1],2)),
-        "p" = sprintf("%.3f",round(stats_levene[["Pr(>F)"]][1],3)),
+      "Levene test" = list(
+        "F" = sprintf("%.2f", stats_levene[["F value"]][1]),
+        "p" = sprintf("%.3f", stats_levene[["Pr(>F)"]][1]),
         "stars" = get_stars(stats_levene[["Pr(>F)"]][1]),
         "variances" = ifelse(stats_varequal, "equal", "not equal")
       ),
-      "Cohen's d" , list(
+      "Cohen's d" = list(
         "d" = sprintf("%.1f",round(stats_cohen$Cohens_d, 1)),
         "ci low" = sprintf("%.1f",round(stats_cohen$CI_low, 1)),
         "ci high" = sprintf("%.1f",round(stats_cohen$CI_high, 1))
       ),
-      "t-Test" ,list(
+      "t-Test" = list(
         "method" = stats_t$method,
         "difference" = sprintf("%.2f", round(stats_t$estimate[1] - stats_t$estimate[2], 2)),
         "ci low" = sprintf("%.2f", round(stats_t$conf.int[1], 2)),
@@ -643,7 +667,11 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
         "p" = sprintf("%.3f",round(stats_t$p.value,3)),
         "stars" = get_stars(stats_t$p.value)
       )
-    )
+    ) %>%
+      tibble::enframe(
+        name = "Test",
+        value = "Results"
+        )
 
     stats_t <- stats_t |>
       tidyr::unnest_longer(

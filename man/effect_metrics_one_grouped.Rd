@@ -53,6 +53,19 @@ Macro statistics:
 \item \strong{p}: p-value for the statistical test.
 \item \strong{stars}: Significance stars based on p-value (*, **, ***).
 }
+
+If \code{method = t.test}:
+\itemize{
+\item \strong{W}: W-statistic from the Shapiro-Wilk normality test.
+\item \strong{normality}: Interpretation of the Shapiro-Wilk test.
+\item \strong{F}: F-statistic from the Levene test for equality of variances between groups.
+\item \strong{variances}: Interpretation of the Levene test.
+\item \strong{t}: t-statistic.
+\item \strong{df}: Degrees of freedom.
+\item \strong{p}: p-value for the t-test.
+\item \strong{stars}: Significance level based on p-value (\code{*}, \verb{**}, \verb{***}).
+\item \strong{Cohen's d}: Effect size indicating the standardized mean difference between groups.
+}
 }
 \description{
 The regression output comes from \code{stats::\link[stats:lm]{lm}}.
