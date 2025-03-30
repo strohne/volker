@@ -18,10 +18,18 @@ effect_counts_one_grouped(data, col, cross, clean = TRUE, ...)
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{effect_counts}.}
 }
 \value{
-A volker tibble.
+A volker tibble with the following statistical measures:
+\itemize{
+\item \strong{Cramer's V}: Effect size measuring the association between two variables.
+\item \strong{n}: Number of cases the calculation is based on.
+\item \strong{Chi-squared}: Chi-Squared test statistic.
+\item \strong{df}: Degrees of freedom.
+\item \strong{p}: p-value for the statistical test.
+\item \strong{stars}: Significance stars based on p-value (*, **, ***).
+}
 }
 \description{
-Chi squared is calculated using  \code{stats::\link[stats:chisq.test]{chisq.test}}.
+Chi squared is calculated using \code{stats::\link[stats:chisq.test]{chisq.test}}.
 If any cell contains less than 5 observations, the exact-parameter is set.
 }
 \details{

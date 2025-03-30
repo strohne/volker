@@ -18,7 +18,15 @@ effect_metrics_one(data, col, labels = TRUE, clean = TRUE, ...)
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.}
 }
 \value{
-A volker tibble.
+A volker list object with the following statistical measures:
+\itemize{
+\item \strong{skewness}: Measure of asymmetry in the distribution. A value of 0 indicates perfect symmetry.
+\item \strong{kurtosis}: Measure of the "tailedness" of the distribution.
+\item \strong{W}: W-statistic from the Shapiro-Wilk normality test.
+\item \strong{p}: p-value for the statistical test.
+\item \strong{stars}: Significance stars based on p-value (*, **, ***).
+\item \strong{normality}: Interpretation of normality based on Shapiro-Wilk test.
+}
 }
 \description{
 The test is calculated using \code{stats::\link[stats:shapiro.test]{shapiro.test}}.

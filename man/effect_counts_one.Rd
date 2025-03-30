@@ -16,7 +16,14 @@ effect_counts_one(data, col, clean = TRUE, ...)
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{effect_counts}.}
 }
 \value{
-A volker tibble.
+A volker tibble with the following statistical measures:
+\itemize{
+\item \strong{gini coefficent}: Gini coefficient, measuring inequality.
+\item \strong{n}: Number of cases the calculation is based on.
+\item \strong{Chi-squared}: Chi-Squared test statistic.
+\item \strong{p}: p-value for the statistical test.
+\item \strong{stars}: Significance stars based on p-value (*, **, ***).
+}
 }
 \description{
 Performs a goodness-of-fit test and calculates the Gini coefficient.
@@ -25,7 +32,8 @@ The goodness-of-fit-test is calculated using \code{stats::\link[stats:chisq.test
 \examples{
 library(volker)
 data <- volker::chatgpt
-data <- data |>
+
+data |>
   filter(sd_gender != "diverse") |>
   effect_counts_one(sd_gender)
 

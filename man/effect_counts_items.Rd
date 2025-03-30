@@ -18,7 +18,14 @@ effect_counts_items(data, cols, labels = TRUE, clean = TRUE, ...)
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{effect_counts}.}
 }
 \value{
-A volker tibble.
+A volker tibble with the following statistical measures:
+\itemize{
+\item \strong{gini coefficient}: Gini coefficient, measuring inequality.
+\item \strong{n}: Number of cases the calculation is based on.
+\item \strong{Chi-squared}: Chi-Squared test statistic.
+\item \strong{p}: p-value for the statistical test.
+\item \strong{stars}: Significance stars based on p-value (*, **, ***).
+}
 }
 \description{
 Performs a goodness-of-fit test and calculates the Gini coefficient for each item.

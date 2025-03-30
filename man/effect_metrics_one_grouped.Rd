@@ -33,6 +33,39 @@ and lm (regression results).}
 }
 \value{
 A volker list object containing volker tables with the requested statistics.
+
+Regression table:
+\itemize{
+\item \strong{estimate}: Regression coefficient (unstandardized).
+\item \strong{ci low, ci high}: lower and upper bound of the 95\% confidence interval.
+\item \strong{se}: Standard error of the estimate.
+\item \strong{t}: t-statistic.
+\item \strong{p}: p-value for the statistical test.
+\item \strong{stars}: Significance stars based on p-value (*, **, ***).
+}
+
+Macro statistics:
+\itemize{
+\item \strong{Adjusted R-squared}: Adjusted coefficient of determination.
+\item \strong{F}: F-statistic for the overall significance of the model.
+\item \strong{df}: Degrees of freedom for the model.
+\item \strong{residual df}: Residual degrees of freedom.
+\item \strong{p}: p-value for the statistical test.
+\item \strong{stars}: Significance stars based on p-value (*, **, ***).
+}
+
+If \code{method = t.test}:
+\itemize{
+\item \strong{W}: W-statistic from the Shapiro-Wilk normality test.
+\item \strong{normality}: Interpretation of the Shapiro-Wilk test.
+\item \strong{F}: F-statistic from the Levene test for equality of variances between groups.
+\item \strong{variances}: Interpretation of the Levene test.
+\item \strong{t}: t-statistic.
+\item \strong{df}: Degrees of freedom.
+\item \strong{p}: p-value for the t-test.
+\item \strong{stars}: Significance level based on p-value (\code{*}, \verb{**}, \verb{***}).
+\item \strong{Cohen's d}: Effect size indicating the standardized mean difference between groups.
+}
 }
 \description{
 The regression output comes from \code{stats::\link[stats:lm]{lm}}.

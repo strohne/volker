@@ -33,10 +33,6 @@ test_that("effect_counts_one_grouped", {
 
 })
 
-data |>
-  filter(sd_gender != "diverse") |>
-  volker::effect_metrics(sd_age, sd_gender)
-
 # Metric
 
 test_that("effect_metrics_one", {
@@ -45,6 +41,13 @@ test_that("effect_metrics_one", {
 
 test_that("effect_metrics_one_grouped", {
   expect_snapshot(volker::effect_metrics(data, sd_age, adopter), cran = TRUE)
+})
+
+test_that("effect_metrics_one_grouped with t.test", {
+  data <- data |>
+    filter(sd_gender != "diverse")
+
+  expect_snapshot(volker::effect_metrics(data, sd_age, sd_gender, method = "t.test"), cran = TRUE)
 })
 
 test_that("effect_metrics_one_cor", {
