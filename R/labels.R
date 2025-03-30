@@ -993,11 +993,15 @@ label_scale <- function(x, scale) {
 #'
 #' @param labels Vector of labels to check. The values are converted to characters.
 #' @param threshold Length threshold beyond which the angle is applied.
-#'                  Default is 20.
+#'                  Default is 20. Override with \code{options(vlkr.angle.threshold=10)}.
 #' @param angle The angle to apply if any label exceeds the threshold.
-#'            Default is 45.
+#'            Default is 45. Override with \code{options(vlkr.angle.value=30)}.
 #' @return A single angle value.
-get_angle <- function(labels, threshold = 20, angle = 45) {
+get_angle <- function(labels, threshold = VLKR_PLOT_ANGLE_THRESHOLD, angle = VLKR_PLOT_ANGLE_VALUE) {
+
+  threshold <- dplyr::coalesce(getOption("vlkr.angle.threshold"), threshold)
+  angle <- dplyr::coalesce(getOption("vlkr.angle.value"), angle)
+
   # Check if any label exceeds the threshold and return the angle accordingly
   if (any(nchar(as.character(labels)) > threshold)) {
     return(angle)

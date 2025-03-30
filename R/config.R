@@ -95,11 +95,15 @@ VLKR_PLOT_TITLEROWS <- 2
 #' Override with \code{options(vlkr.wrap.labels=20)}.
 #' Override with \code{options(vlkr.wrap.legend=10)}.
 #' Override with \code{options(vlkr.wrap.scale=10)}.
+#' Override with \code{options(vlkr.angle.value=30)}.
+#' Override with \code{options(vlkr.angle.threshold=10)}.
 #'
 #' @keywords internal
 VLKR_PLOT_LABELWRAP <- 40
 VLKR_PLOT_LEGENDWRAP <- 20
 VLKR_PLOT_SCALEWRAP <- 10
+VLKR_PLOT_ANGLE_VALUE <- 45
+VLKR_PLOT_ANGLE_THRESHOLD <- 20
 
 #' Word wrap separators
 #'
