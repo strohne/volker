@@ -183,7 +183,7 @@ effect_metrics <- function(data, cols, cross = NULL, metric = FALSE, clean = TRU
 #' @param clean Prepare data by \link{data_clean}
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble with the following statistical measures:
-#'  - **gini coefficent**: Gini coefficient, measuring inequality.
+#'  - **Gini coefficent**: Gini coefficient, measuring inequality.
 #'  - **n**: Number of cases the calculation is based on.
 #'  - **Chi-squared**: Chi-Squared test statistic.
 #'  - **p**: p-value for the statistical test.
@@ -334,7 +334,7 @@ effect_counts_one_cor <- function(data, col, cross, clean = TRUE, labels = TRUE,
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble with the following statistical measures:
 #'
-#'  - **gini coefficient**: Gini coefficient, measuring inequality.
+#'  - **Gini coefficient**: Gini coefficient, measuring inequality.
 #'  - **n**: Number of cases the calculation is based on.
 #'  - **Chi-squared**: Chi-Squared test statistic.
 #'  - **p**: p-value for the statistical test.
@@ -571,7 +571,7 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = TRUE, ... ) {
 #'
 #' Regression table:
 #' - **estimate**: Regression coefficient (unstandardized).
-#' - **ci low, ci high**: lower and upper bound of the 95% confidence interval.
+#' - **ci low / ci high**: lower and upper bound of the 95% confidence interval.
 #' - **se**: Standard error of the estimate.
 #' - **t**: t-statistic.
 #' - **p**: p-value for the statistical test.
