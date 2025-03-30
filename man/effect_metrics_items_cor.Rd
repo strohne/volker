@@ -32,7 +32,7 @@ effect_metrics_items_cor(
 \value{
 A volker table containing itemwise correlations:
 
-#' If \code{method = "pearson"}:
+If \code{method = "pearson"}:
 \itemize{
 \item \strong{R-squared}: Coefficient of determination.
 \item \strong{n}: Number of cases the calculation is based on.

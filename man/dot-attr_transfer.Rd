@@ -2,21 +2,21 @@
 % Please edit documentation in R/utils.R
 \name{.attr_transfer}
 \alias{.attr_transfer}
-\title{Transfer an attribute from one to another object}
+\title{Transfer attributes from one to another object}
 \usage{
-.attr_transfer(to, from, key)
+.attr_transfer(to, from, keys)
 }
 \arguments{
 \item{to}{The target object.}
 
 \item{from}{The source object.}
 
-\item{key}{The attribute key as character value.}
+\item{key}{A character vector of attribute keys}
 }
 \value{
-The target object with the updated attribute.
+The target object with the updated attributes.
 }
 \description{
-Transfer an attribute from one to another object
+Transfer attributes from one to another object
 }
 \keyword{internal}

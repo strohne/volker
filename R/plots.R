@@ -1497,7 +1497,7 @@ plot_metrics_items_grouped_items <- function(data, cols, cross, title = TRUE, la
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column to correlate.
-#' @param ci Whether to plot confidence intervals of the correlation coefficent.
+#' @param ci Whether to plot confidence intervals of the correlation coefficient.
 #' @param method The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.

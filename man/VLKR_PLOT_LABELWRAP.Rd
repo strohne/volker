@@ -14,5 +14,7 @@ VLKR_PLOT_LABELWRAP
 Override with \code{options(vlkr.wrap.labels=20)}.
 Override with \code{options(vlkr.wrap.legend=10)}.
 Override with \code{options(vlkr.wrap.scale=10)}.
+Override with \code{options(vlkr.angle.value=30)}.
+Override with \code{options(vlkr.angle.threshold=10)}.
 }
 \keyword{internal}

@@ -4,16 +4,20 @@
 \alias{get_angle}
 \title{Angle labels}
 \usage{
-get_angle(labels, threshold = 20, angle = 45)
+get_angle(
+  labels,
+  threshold = VLKR_PLOT_ANGLE_THRESHOLD,
+  angle = VLKR_PLOT_ANGLE_VALUE
+)
 }
 \arguments{
 \item{labels}{Vector of labels to check. The values are converted to characters.}
 
 \item{threshold}{Length threshold beyond which the angle is applied.
-Default is 20.}
+Default is 20. Override with \code{options(vlkr.angle.threshold=10)}.}
 
 \item{angle}{The angle to apply if any label exceeds the threshold.
-Default is 45.}
+Default is 45. Override with \code{options(vlkr.angle.value=30)}.}
 }
 \value{
 A single angle value.

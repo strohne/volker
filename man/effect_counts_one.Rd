@@ -18,7 +18,7 @@ effect_counts_one(data, col, clean = TRUE, ...)
 \value{
 A volker tibble with the following statistical measures:
 \itemize{
-\item \strong{gini coefficent}: Gini coefficient, measuring inequality.
+\item \strong{Gini coefficient}: Gini coefficient, measuring inequality.
 \item \strong{n}: Number of cases the calculation is based on.
 \item \strong{Chi-squared}: Chi-Squared test statistic.
 \item \strong{p}: p-value for the statistical test.

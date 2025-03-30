@@ -31,6 +31,7 @@ effect_metrics_one_cor(
 }
 \value{
 A volker table containing the requested statistics.
+
 If \code{method = "pearson"}:
 \itemize{
 \item \strong{R-squared}: Coefficient of determination.

@@ -23,7 +23,7 @@ plot_metrics_items_cor(
 
 \item{cross}{The column to correlate.}
 
-\item{ci}{Whether to plot confidence intervals of the correlation coefficent.}
+\item{ci}{Whether to plot confidence intervals of the correlation coefficient.}
 
 \item{method}{The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.}
 
