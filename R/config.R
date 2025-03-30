@@ -16,6 +16,13 @@ VLKR_NA_LEVELS <- c("[NA] nicht beantwortet", "[NA] keine Angabe", "[no answer]"
 #' @keywords internal
 VLKR_NA_NUMBERS <- c(-9, -2, -1)
 
+#' Whether to remove all missings
+#'
+#' Override with \code{options(vlkr.na.omit=FALSE)} to use all cases if possible.
+#'
+#' @keywords internal
+VLKR_NA_OMIT <- TRUE
+
 #' Maximum number of distinct values to determine whether a column selection
 #' contains only categorical values
 #'
