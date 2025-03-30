@@ -68,8 +68,13 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A volker tibble.</p>
-    </div>
+    <p>A volker list object with the following statistical measures:</p><ul><li><p><strong>skewness</strong>: Measure of asymmetry in the distribution. A value of 0 indicates perfect symmetry.</p></li>
+<li><p><strong>kurtosis</strong>: Measure of the "tailedness" of the distribution.</p></li>
+<li><p><strong>W</strong>: W-statistic from the Shapiro-Wilk normality test.</p></li>
+<li><p><strong>p</strong>: p-value for the statistical test.</p></li>
+<li><p><strong>stars</strong>: Significance stars based on p-value (*, **, ***).</p></li>
+<li><p><strong>normality</strong>: Interpretation of normality based on Shapiro-Wilk test.</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -79,16 +84,16 @@
 <span class="r-in"><span><span class="fu">effect_metrics_one</span><span class="op">(</span><span class="va">data</span>, <span class="va">sd_age</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Age      | value|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Age      | Value|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |:--------|-----:|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |skewness |  0.25|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |kurtosis | -0.98|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Shapiro-Wilk normality test |      value|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Shapiro-Wilk normality test |      Value|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |:---------------------------|----------:|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |W-statistic                 |       0.96|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |p value                     |      0.002|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |W                           |       0.96|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |p                           |      0.002|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |stars                       |         **|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |normality                   | not normal|</span>
 <span class="r-in"><span></span></span>

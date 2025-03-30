@@ -39,7 +39,11 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_angle</span><span class="op">(</span><span class="va">labels</span>, threshold <span class="op">=</span> <span class="fl">20</span>, angle <span class="op">=</span> <span class="fl">45</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_angle</span><span class="op">(</span></span>
+<span>  <span class="va">labels</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="va">VLKR_PLOT_ANGLE_THRESHOLD</span>,</span>
+<span>  angle <span class="op">=</span> <span class="va">VLKR_PLOT_ANGLE_VALUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -52,12 +56,12 @@
 
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
 <dd><p>Length threshold beyond which the angle is applied.
-Default is 20.</p></dd>
+Default is 20. Override with <code>options(vlkr.angle.threshold=10)</code>.</p></dd>
 
 
 <dt id="arg-angle">angle<a class="anchor" aria-label="anchor" href="#arg-angle"></a></dt>
 <dd><p>The angle to apply if any label exceeds the threshold.
-Default is 45.</p></dd>
+Default is 45. Override with <code>options(vlkr.angle.value=30)</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

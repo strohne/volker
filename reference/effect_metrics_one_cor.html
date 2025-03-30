@@ -85,7 +85,17 @@
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A volker table containing the requested statistics.</p>
-    </div>
+<p>If <code>method = "pearson"</code>:</p><ul><li><p><strong>R-squared</strong>: Coefficient of determination.</p></li>
+<li><p><strong>n</strong>: Number of cases the calculation is based on.</p></li>
+<li><p><strong>Pearson's r</strong>: Correlation coefficient.</p></li>
+<li><p><strong>ci low / ci high</strong>: Lower and upper bounds of the 95% confidence interval.</p></li>
+<li><p><strong>df</strong>: Degrees of freedom.</p></li>
+<li><p><strong>t</strong>: t-statistic.</p></li>
+<li><p><strong>p</strong>: p-value for the statistical test, indicating whether the correlation differs from zero.</p></li>
+<li><p><strong>stars</strong>: Significance stars based on the p-value (*, **, ***).</p></li>
+</ul><p>If <code>method = "spearman"</code>:</p><ul><li><p><strong>Spearman's rho</strong> is displayed instead of Pearson's r.</p></li>
+<li><p><strong>S-statistic</strong> is used instead of the t-statistic.</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -97,7 +107,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |Statistic   | value|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |:-----------|-----:|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |R squared   |  0.03|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |R-squared   |  0.03|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |n           |   101|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |Pearson's r | -0.19|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |ci low      | -0.37|</span>

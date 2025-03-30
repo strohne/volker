@@ -71,8 +71,12 @@ The goodness-of-fit-test is calculated using  <code>stats::<a href="https://rdrr
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A volker tibble.</p>
-    </div>
+    <p>A volker tibble with the following statistical measures:</p><ul><li><p><strong>Gini coefficient</strong>: Gini coefficient, measuring inequality.</p></li>
+<li><p><strong>n</strong>: Number of cases the calculation is based on.</p></li>
+<li><p><strong>Chi-squared</strong>: Chi-Squared test statistic.</p></li>
+<li><p><strong>p</strong>: p-value for the statistical test.</p></li>
+<li><p><strong>stars</strong>: Significance stars based on p-value (*, **, ***).</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -82,12 +86,12 @@ The goodness-of-fit-test is calculated using  <code>stats::<a href="https://rdrr
 <span class="r-in"><span><span class="fu">effect_counts_items</span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_adv"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Expectations                                                | Gini| Number of cases| Chi-squared| p value| stars|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |:-----------------------------------------------------------|----:|---------------:|-----------:|-------:|-----:|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |ChatGPT has clear advantages compared to similar offerings. | 0.36|              99|        43.5|       0|   ***|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT brings financial benefits.                    | 0.19|              99|        14.3|       0|    **|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT is advantageous in many tasks.                | 0.36|              99|        47.0|       0|   ***|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Compared to other systems, using ChatGPT is more fun.       | 0.40|              99|        53.7|       0|   ***|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Expectations                                                | Gini coefficient|  n| Chi-squared|     p| stars|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |:-----------------------------------------------------------|----------------:|--:|-----------:|-----:|-----:|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |ChatGPT has clear advantages compared to similar offerings. |             0.36| 99|       43.47| 0.000|   ***|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT brings financial benefits.                    |             0.19| 99|       14.28| 0.006|    **|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT is advantageous in many tasks.                |             0.36| 99|       47.01| 0.000|   ***|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Compared to other systems, using ChatGPT is more fun.       |             0.40| 99|       53.68| 0.000|   ***|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 missing case(s) omitted.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

@@ -102,6 +102,54 @@ and lm (regression results).</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A volker list object containing volker tables with the requested statistics.</p>
+<p>Regression table:</p><ul><li><p><strong>estimate</strong>: Regression coefficient (unstandardized).</p></li>
+<li><p><strong>ci low / ci high</strong>: lower and upper bound of the 95% confidence interval.</p></li>
+<li><p><strong>se</strong>: Standard error of the estimate.</p></li>
+<li><p><strong>t</strong>: t-statistic.</p></li>
+<li><p><strong>p</strong>: p-value for the statistical test.</p></li>
+<li><p><strong>stars</strong>: Significance stars based on p-value (*, **, ***).</p></li>
+</ul><p>Macro statistics:</p><ul><li><p><strong>Adjusted R-squared</strong>: Adjusted coefficient of determination.</p></li>
+<li><p><strong>F</strong>: F-statistic for the overall significance of the model.</p></li>
+<li><p><strong>df</strong>: Degrees of freedom for the model.</p></li>
+<li><p><strong>residual df</strong>: Residual degrees of freedom.</p></li>
+<li><p><strong>p</strong>: p-value for the statistical test.</p></li>
+<li><p><strong>stars</strong>: Significance stars based on p-value (*, **, ***).</p></li>
+</ul><p>If <code>method = t.test</code>:</p><div class="section">
+<h3 id="shapiro-wilk-test-normality-check-">Shapiro-Wilk test (normality check):<a class="anchor" aria-label="anchor" href="#shapiro-wilk-test-normality-check-"></a></h3>
+
+<ul><li><p><strong>W</strong>: W-statistic from the Shapiro-Wilk normality test.</p></li>
+<li><p><strong>p</strong>: p-value for the test.</p></li>
+<li><p><strong>normality</strong>: Interpretation of the Shapiro-Wilk test.</p></li>
+</ul></div>
+
+<div class="section">
+<h3 id="levene-test-equality-of-variances-">Levene test (equality of variances):<a class="anchor" aria-label="anchor" href="#levene-test-equality-of-variances-"></a></h3>
+
+<ul><li><p><strong>F</strong>: F-statistic from the Levene test for equality of variances between groups.</p></li>
+<li><p><strong>p</strong>: p-value for Levene's test.</p></li>
+<li><p><strong>variances</strong>: Interpretation of the Levene test.</p></li>
+</ul></div>
+
+<div class="section">
+<h3 id="cohen-s-d-effect-size-">Cohen's d (effect size):<a class="anchor" aria-label="anchor" href="#cohen-s-d-effect-size-"></a></h3>
+
+<ul><li><p><strong>d</strong>: Standardized mean difference between the two groups.</p></li>
+<li><p><strong>ci low / ci high</strong>: Lower and upper bounds of the 95% confidence interval.</p></li>
+</ul></div>
+
+<div class="section">
+<h3 id="t-test">t-test<a class="anchor" aria-label="anchor" href="#t-test"></a></h3>
+
+<ul><li><p><strong>method</strong>: Type of t-test performed (e.g., "Two Sample t-test").</p></li>
+<li><p><strong>difference</strong>: Observed difference between group means.</p></li>
+<li><p><strong>ci low / ci high</strong>: Lower and upper bounds of the 95% confidence interval.</p></li>
+<li><p><strong>se</strong>: Estimated standard error of the difference.</p></li>
+<li><p><strong>df</strong>: Degrees of freedom used in the t-test.</p></li>
+<li><p><strong>t</strong>: t-statistic.</p></li>
+<li><p><strong>p</strong>: p-value for the t-test.</p></li>
+<li><p><strong>stars</strong>: Significance stars based on p-value (<code>*</code>, <code>**</code>, <code>***</code>).</p></li>
+</ul></div>
+
     </div>
 
     <div class="section level2">
@@ -112,22 +160,22 @@ and lm (regression results).</p></dd>
 <span class="r-in"><span><span class="fu">effect_metrics_one_grouped</span><span class="op">(</span><span class="va">data</span>, <span class="va">sd_age</span>, <span class="va">sd_gender</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Term               | estimate| ci low| ci high| standard error|     t|     p| stars|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |:------------------|--------:|------:|-------:|--------------:|-----:|-----:|-----:|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |(Intercept)        |    37.52|  33.21|   41.84|           2.18| 17.24| 0.000|   ***|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |female (Reference) |         |       |        |               |      |      |      |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |male               |     3.69|  -1.88|    9.27|           2.81|  1.31| 0.192|      |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |diverse            |    -4.53| -32.18|   23.13|          13.94| -0.32| 0.746|      |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Term               | estimate| ci low| ci high|    se|     t|     p| stars|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |:------------------|--------:|------:|-------:|-----:|-----:|-----:|-----:|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |(Intercept)        |    37.52|  33.21|   41.84|  2.18| 17.24| 0.000|   ***|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |female (Reference) |         |       |        |      |      |      |      |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |male               |     3.69|  -1.88|    9.27|  2.81|  1.31| 0.192|      |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |diverse            |    -4.53| -32.18|   23.13| 13.94| -0.32| 0.746|      |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Statistic                     | value|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |:-----------------------------|-----:|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Adjusted R squared            |     0|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Degrees of freedom            |     2|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Residuals' degrees of freedom |    98|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |F                             |  0.98|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |p                             |  0.38|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |stars                         |      |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Statistic          | Value|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |:------------------|-----:|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Adjusted R-squared |     0|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |F                  |  0.98|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |df                 |     2|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |residual df        |    98|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |p                  |  0.38|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |stars              |      |</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

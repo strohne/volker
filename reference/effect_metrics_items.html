@@ -68,8 +68,13 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A volker table containing item statistics</p>
-    </div>
+    <p>A volker table containing itemwise statistics:</p><ul><li><p><strong>skewness</strong>: Measure of asymmetry in the distribution. A value of 0 indicates perfect symmetry.</p></li>
+<li><p><strong>kurtosis</strong>: Measure of the "tailedness" of the distribution.</p></li>
+<li><p><strong>W</strong>: W-statistic from the Shapiro-Wilk normality test.</p></li>
+<li><p><strong>p</strong>: p-value for the statistical test.</p></li>
+<li><p><strong>stars</strong>: Significance stars based on p-value (*, **, ***).</p></li>
+<li><p><strong>normality</strong>: Interpretation of normality based on Shapiro-Wilk test.</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -79,20 +84,20 @@
 <span class="r-in"><span><span class="fu">effect_metrics_items</span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Expectations                                                | skewness| kurtosis| W-statistic| p value| stars|  normality|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |:-----------------------------------------------------------|--------:|--------:|-----------:|-------:|-----:|----------:|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |ChatGPT has clear advantages compared to similar offerings. |    -0.51|    -0.05|        0.89|   0.000|   ***| not normal|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT brings financial benefits.                    |     0.09|    -1.00|        0.90|   0.000|   ***| not normal|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT is advantageous in many tasks.                |    -0.76|    -0.02|        0.86|   0.000|   ***| not normal|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Compared to other systems, using ChatGPT is more fun.       |    -0.66|     0.43|        0.86|   0.000|   ***| not normal|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Much can go wrong when using ChatGPT.                       |     0.12|    -0.85|        0.91|   0.000|   ***| not normal|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |There are legal issues with using ChatGPT.                  |     0.07|    -0.66|        0.90|   0.000|   ***| not normal|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |The security of user data is not guaranteed with ChatGPT.   |     0.22|    -0.61|        0.89|   0.000|   ***| not normal|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT could bring personal disadvantages.           |     0.33|    -0.65|        0.91|   0.000|   ***| not normal|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |In my environment, using ChatGPT is standard.               |     0.39|    -0.68|        0.90|   0.000|   ***| not normal|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Almost everyone in my environment uses ChatGPT.             |     0.56|    -0.51|        0.88|   0.000|   ***| not normal|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Not using ChatGPT is considered being an outsider.          |     1.08|     0.22|        0.79|   0.000|   ***| not normal|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT brings me recognition from my environment.    |     0.57|    -0.77|        0.87|   0.000|   ***| not normal|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Expectations                                                | skewness| kurtosis|    W|     p| stars|  normality|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |:-----------------------------------------------------------|--------:|--------:|----:|-----:|-----:|----------:|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |ChatGPT has clear advantages compared to similar offerings. |    -0.51|    -0.05| 0.89| 0.000|   ***| not normal|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT brings financial benefits.                    |     0.09|    -1.00| 0.90| 0.000|   ***| not normal|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT is advantageous in many tasks.                |    -0.76|    -0.02| 0.86| 0.000|   ***| not normal|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Compared to other systems, using ChatGPT is more fun.       |    -0.66|     0.43| 0.86| 0.000|   ***| not normal|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Much can go wrong when using ChatGPT.                       |     0.12|    -0.85| 0.91| 0.000|   ***| not normal|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |There are legal issues with using ChatGPT.                  |     0.07|    -0.66| 0.90| 0.000|   ***| not normal|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |The security of user data is not guaranteed with ChatGPT.   |     0.22|    -0.61| 0.89| 0.000|   ***| not normal|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT could bring personal disadvantages.           |     0.33|    -0.65| 0.91| 0.000|   ***| not normal|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |In my environment, using ChatGPT is standard.               |     0.39|    -0.68| 0.90| 0.000|   ***| not normal|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Almost everyone in my environment uses ChatGPT.             |     0.56|    -0.51| 0.88| 0.000|   ***| not normal|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Not using ChatGPT is considered being an outsider.          |     1.08|     0.22| 0.79| 0.000|   ***| not normal|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT brings me recognition from my environment.    |     0.57|    -0.77| 0.87| 0.000|   ***| not normal|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 missing case(s) omitted.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
