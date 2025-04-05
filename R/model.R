@@ -63,7 +63,7 @@ model_metrics_tab <- function(data, col, categorical, metric, labels = TRUE, cle
     )))
 
   # Effect sizes
-  lm_effects <- heplots::etasq(fit, anova=T,partial=T, type=2) |>
+  lm_effects <- heplots::etasq(fit, anova = TRUE, partial = TRUE, type=2) |>
     tibble::as_tibble(rownames = "Item")
 
   colnames(lm_effects) <- c("Item", "Partial Eta Squared", "Sum of Squares", "Df", "F","p")
