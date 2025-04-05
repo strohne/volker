@@ -65,6 +65,9 @@ Set to FALSE to suppress the title or provide a title of your choice as a charac
 Set to FALSE to output bare column names and values.
 \item \strong{numbers}: Set the numbers parameter to “n” (frequency), “p” (percentage) or c(“n”,“p”).
 To prevent cluttering and overlaps, numbers are only plotted on bars larger than 5\%.
+\item \strong{width}: When comparing groups by row of column percentages, by default,
+the bar or column width reflects the number of cases.
+You can disable this behavior by setting width to FALSE.
 }
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

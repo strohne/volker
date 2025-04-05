@@ -35,6 +35,9 @@
 #'               Set to FALSE to output bare column names and values.
 #' - **numbers**: Set the numbers parameter to “n” (frequency), “p” (percentage) or c(“n”,“p”).
 #'                To prevent cluttering and overlaps, numbers are only plotted on bars larger than 5%.
+#' - **width**: When comparing groups by row of column percentages, by default,
+#'              the bar or column width reflects the number of cases.
+#'              You can disable this behavior by setting width to FALSE.
 #'
 #' `r lifecycle::badge("experimental")`
 #'
