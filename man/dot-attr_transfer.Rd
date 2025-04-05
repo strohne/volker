@@ -11,7 +11,7 @@
 
 \item{from}{The source object.}
 
-\item{key}{A character vector of attribute keys}
+\item{keys}{A character vector of attribute keys}
 }
 \value{
 The target object with the updated attributes.
