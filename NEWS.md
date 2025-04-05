@@ -1,7 +1,7 @@
-# volker 3.0.1
+# volker 3.1.0
 
 * SPSS labels are now supported
-* In plot functions, the Width of bars and columns 
+* In plot functions, the width of bars and columns 
   is calculated from data (similar to mosaic plots)
 * The tables now have a row for totals
 * Improved error messages
