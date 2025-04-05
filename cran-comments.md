@@ -2,6 +2,24 @@
 
 0 errors | 0 warnings | 0 notes
 
+* This is the release of version 3.1.0
+* No reverse dependencies found.
+* No issues in the current CRAN Package Check Results.
+* We import 21 packages because our package is used
+  to genenerate reports based on established other packages.
+
+## revdepcheck results
+
+We checked 0 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 0 packages
+
+
+## R CMD check results
+
+0 errors | 0 warnings | 0 notes
+
 * This is the release of version 3.0.0
 * No reverse dependencies found.
 * No issues in the current CRAN Package Check Results.
