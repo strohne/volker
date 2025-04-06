@@ -1,7 +1,7 @@
 Package: volker
 Type: Package
 Title: High-Level Functions for Tabulating, Charting and Reporting Survey Data
-Version: 3.1.0
+Version: 3.1.0.9000
 Date: 2025-04-05
 Authors@R:
   c(
