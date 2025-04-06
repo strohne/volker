@@ -93,8 +93,6 @@ simple and stacked bar charts.</li>
 parameters, visualises distributions in density plots, box plots or
 scatter plots.</li>
 </ul>
-<p>The column selection determines whether to analyse single variables,
-item lists or to compare and correlate multiple variables.</p>
 <p>Report functions, under the hood, call functions that generate plots,
 tables or calculate effects. If you only need one of those outputs, you
 can call the functions directly:</p>
@@ -106,13 +104,16 @@ can call the functions directly:</p>
 <code><a href="../reference/tab_metrics.html">tab_metrics()</a></code>, <code><a href="../reference/plot_metrics.html">plot_metrics()</a></code> or
 <code><a href="../reference/effect_metrics.html">effect_metrics()</a></code> for metric data.</li>
 </ul>
+<p>All functions expect a dataset as their first parameter. The second
+and third parameters await your column selections. The column selections
+determine whether to analyse single variables, item lists or to compare
+and correlate multiple variables.</p>
 <p><em>Try out the following examples!</em></p>
 <div class="section level4">
 <h4 id="categorical-variables">Categorical variables<a class="anchor" aria-label="anchor" href="#categorical-variables"></a>
 </h4>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># A single variable</span></span>
+<code class="sourceCode R"><span><span class="co"># A single variable</span></span>
 <span><span class="fu"><a href="../reference/report_counts.html">report_counts</a></span><span class="op">(</span><span class="va">ds</span>, <span class="va">use_private</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># A list of variables</span></span>
@@ -120,6 +121,10 @@ can call the functions directly:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Variables matched by a pattern</span></span>
 <span><span class="fu"><a href="../reference/report_counts.html">report_counts</a></span><span class="op">(</span><span class="va">ds</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"use_"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>You can use all sorts of tidyverse style selections: A single column,
+a list of columns or patterns such as <code><a href="../reference/starts_with.html">starts_with()</a></code>,
+<code><a href="../reference/ends_with.html">ends_with()</a></code>, <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">contains()</a></code> or
+<code><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">matches()</a></code>.</p>
 </div>
 <div class="section level4">
 <h4 id="metric-variables">Metric variables<a class="anchor" aria-label="anchor" href="#metric-variables"></a>
@@ -216,8 +221,7 @@ items-parameter of <code><a href="../reference/labs_apply.html">labs_apply()</a>
 named list to the values-parameter of <code><a href="../reference/labs_apply.html">labs_apply()</a></code>. In
 addition, select the columns where value labels should be changed:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">ds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<code class="sourceCode R"><span><span class="va">ds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/labs_apply.html">labs_apply</a></span><span class="op">(</span></span>
 <span>    cols<span class="op">=</span><span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption"</span><span class="op">)</span>,  </span>
 <span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -234,8 +238,7 @@ addition, select the columns where value labels should be changed:</p>
 a copy of the Excel file, and finally call <code><a href="../reference/labs_apply.html">labs_apply()</a></code>
 with your revised codebook.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org" class="external-link">readxl</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org" class="external-link">readxl</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ropensci.r-universe.dev/writexl" class="external-link">writexl</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Save codebook to a file</span></span>
@@ -288,7 +291,8 @@ One advantage of the report-functions is that plots are automatically
 scaled to fit the page. See the function help for further options (F1
 key).</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#&gt; ```{r echo=FALSE}</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; ```{r echo=FALSE}</span></span>
 <span><span class="co">#&gt; ds %&gt;% </span></span>
 <span><span class="co">#&gt;   filter(sd_gender != "diverse") %&gt;% </span></span>
 <span><span class="co">#&gt;   report_counts(adopter, sd_gender, </span></span>
@@ -309,7 +313,8 @@ tabsheet with <code>#### {-}</code> (4 x #).</li>
 </ul>
 <p>Try out the following pattern in an RMarkdown document!</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#&gt; ### Adoption types</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; ### Adoption types</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ```{r echo=FALSE}</span></span>
 <span><span class="co">#&gt; ds %&gt;% </span></span>
