@@ -35,7 +35,7 @@ See further examples in `vignette("introduction", package="volker")`.
 
 Don’t miss the template feature: Within RStudio, create a new Markdown
 document, select `From template`, choose and finally knit the **volkeR
-Report**! It’s a blueprint for your own tidy reports.
+Report**! It’s a blueprint for your own tidy reports. <br> <br>
 
 <img src="man/figures/report_example.png" alt="Example report" width="600">
 
@@ -464,7 +464,6 @@ You can try alternative versions:
   report-functions.  
 - Generate metric indexes, conduct simple factor and cluster analyses
   and calculate effect sizes  
-  (*work in progress*)  
 - Simplified hints for wrong parameters, e.g. if you forget to provide a
   data frame (*work in progress*).
 - Tidyverse style.

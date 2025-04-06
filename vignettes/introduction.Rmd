@@ -59,12 +59,19 @@ and choose the appropriate function:
 The column selection determines whether to analyse single variables, item lists 
 or to compare and correlate multiple variables.  
 
-**Try out the following examples!**  
+Report functions, under the hood, call functions that generate plots, tables or calculate effects.
+If you only need one of those outputs, you can call the functions directly:
+
+- `tab_counts()`, `plot_counts()` or `effect_counts()` for categorical data.
+- `tab_metrics()`, `plot_metrics()` or `effect_metrics()` for metric data.
+
+*Try out the following examples!*
 
 
 ### Categorical variables
 
 ```{r eval=FALSE}
+
 # A single variable
 report_counts(ds, use_private)
 ```
@@ -84,12 +91,12 @@ report_counts(ds, starts_with("use_"))
 
 ```{r eval=FALSE}
 # One metric variable
-tab_metrics(ds, sd_age)
+report_metrics(ds, sd_age)
 ```
 
 ```{r eval=FALSE}
 # Multiple metric items
-tab_metrics(ds, starts_with("cg_adoption_"))
+report_metrics(ds, starts_with("cg_adoption_"))
 
 ```
 
@@ -102,21 +109,36 @@ report_counts(ds, adopter, sd_gender)
 ```
 
 For metric variables, you can compare the mean values.
-The ci parameter adds confidence intervals.
 
 ```{r eval=FALSE}
-report_metrics(ds, sd_age, sd_gender, ci = TRUE)
+report_metrics(ds, sd_age, sd_gender)
 ```
 
 By default, the crossing variable is treated as categorical. 
 You can change this behavior using the metric-parameter to calculate correlations:
 
 ```{r eval=FALSE}
-tab_metrics(ds, sd_age, use_work, metric = TRUE, ci = TRUE)
+report_metrics(ds, sd_age, use_work, metric = TRUE)
+```
+
+The ci parameter, where possible, adds confidence intervals to the outputs.
+
+```{r eval=FALSE}
+ds |> 
+  filter(sd_gender != "diverse") |> 
+  report_metrics(sd_age, sd_gender, ci = TRUE)
+```
+
+Conduct statistical tests with the `effect`-parameter.
+
+```{r eval=FALSE}
+ds |> 
+  filter(sd_gender != "diverse") |> 
+  report_counts(adopter, sd_gender, effect = TRUE)
 ```
 
 
-See the function help (F1 key) to learn the options. 
+See the function help (F1 key) to learn more options. 
 For example, you can use the `prop` parameter to grow bars to 100%. 
 The `numbers` parameter prints frequencies and percentages onto the bars.
 
@@ -124,85 +146,6 @@ The `numbers` parameter prints frequencies and percentages onto the bars.
 ds |> 
   filter(sd_gender != "diverse") |> 
   report_counts(adopter, sd_gender, prop="rows", numbers= "n")
-```
-
-Further, the effect-functions conduct statistical tests:
-
-```{r eval=FALSE}
-ds |> 
-  filter(sd_gender != "diverse") |> 
-  effect_counts(adopter, sd_gender)
-```
-
-
-## The volker report template
-
-Reports combine plots, tables and effect calculations in an RMarkdown document.
-Optionally, for item batteries, an index, clusters or factors are calculated and reported.
-
-To see an example or develop own reports, use the volker report template in RStudio:
-
-- Create a new R Markdown document from the main menu  
-- In the popup select the "From Template" option  
-- Select the volker template.  
-- The template contains a working example. 
-  Just click knit to see the result.
-
-Have fun with developing own reports!
-
-Without the template, to generate a volker-report from any R-Markdown document, 
-add `volker::html_report` to the 
-output options of your Markdown document:
-
-```
----
-title: "How to create reports?"
-output: 
-  volker::html_report
----
-```
-
-Then, you can generate combined outputs using the report-functions.
-One advantage of the report-functions is that plots are automatically scaled to fit the page.
-See the function help for further options (F1 key). 
-
-```{r}
-ds %>% 
-  filter(sd_gender != "diverse") %>% 
-  report_metrics(starts_with("cg_adoption_"), sd_gender, box=TRUE, ci=TRUE)
-```
-
-
-## Custom tab sheets
-By default, a header and tabsheets are automatically created. 
-You can mix in custom content.
-
-- If you want to add content before the report outputs, 
-  set the title parameter to `FALSE` and add your 
-  own title.
-- A good place for methodological details is a custom tabsheet 
-  next to the "Plot" and the "Table" buttons. You can add a tab
-  by setting the close-parameter to `FALSE` and adding a new header
-  on the fifth level (5 x # followed by the tab name). 
-  Close your custom new tabsheet with `#### {-}` (4 x #). 
-
-Try out the following pattern in an RMarkdown document!
-
-
-```{r}
-#> ### Adoption types
-#> 
-#> ```{r echo=FALSE}
-#> ds %>% 
-#>   filter(sd_gender != "diverse") %>% 
-#>   report_counts(adopter, sd_gender, prop="rows", title=FALSE, close=FALSE)
-#> ```
-#>
-#> ##### Method
-#> Basis: Only male and female respondents.
-#> 
-#> #### {-}
-
 ```
 
 
@@ -301,6 +244,82 @@ ds %>%
   report_metrics(sd_age)
 ```
 
+
+## The volker report template
+
+Reports combine plots, tables and effect calculations in an RMarkdown document.
+Optionally, for item batteries, an index, clusters or factors are calculated and reported.
+
+To see an example or develop own reports, use the volker report template in RStudio:
+
+- Create a new R Markdown document from the main menu  
+- In the popup select the "From Template" option  
+- Select the volker template.  
+- The template contains a working example. 
+  Just click knit to see the result.
+
+Have fun with developing own reports!
+
+Without the template, to generate a volker-report from any R-Markdown document, 
+add `volker::html_report` to the 
+output options of your Markdown document:
+
+```
+---
+title: "How to create reports?"
+output: 
+  volker::html_report
+---
+```
+
+Then, you can generate combined outputs using the report-functions.
+One advantage of the report-functions is that plots are automatically scaled to fit the page.
+See the function help for further options (F1 key). 
+
+
+```{r}
+#> ```{r echo=FALSE}
+#> ds %>% 
+#>   filter(sd_gender != "diverse") %>% 
+#>   report_counts(adopter, sd_gender, 
+#> ```
+
+```
+
+
+### Custom tab sheets
+By default, a header and tabsheets are automatically created. 
+You can mix in custom content.
+
+- If you want to add content before the report outputs, 
+  set the title parameter to `FALSE` and add your 
+  own title.
+- A good place for methodological details is a custom tabsheet 
+  next to the "Plot" and the "Table" buttons. You can add a tab
+  by setting the close-parameter to `FALSE` and adding a new header
+  on the fifth level (5 x # followed by the tab name). 
+  Close your custom new tabsheet with `#### {-}` (4 x #). 
+
+Try out the following pattern in an RMarkdown document!
+
+
+```{r}
+#> ### Adoption types
+#> 
+#> ```{r echo=FALSE}
+#> ds %>% 
+#>   filter(sd_gender != "diverse") %>% 
+#>   report_counts(adopter, sd_gender, prop="rows", title=FALSE, close=FALSE)
+#> ```
+#>
+#> ##### Method
+#> Basis: Only male and female respondents.
+#> 
+#> #### {-}
+
+```
+
+
 # Index calculation for item batteries
 
 You can calculate mean indexes from a bunch of items using `add_index()`. 
@@ -351,13 +370,22 @@ Setting the parameters to true, automatically generates scree plots
 and selects the number of factors or clusters. 
 Alternatively, you can explicitly specify the numbers.
 
-
-**Add factor analysis results**   
+**Add factor or cluster analysis results to the original data** 
 
 If you want to work with the results, use `add_factors()` and `add_clusters()` respectively. 
 For factor analysis, new columns prefixed with "fct_" are created to store the factor loadings based on the specified number of factors. 
 For clustering, an additional column prefixed with "cls_" is added that assigns each observation to a cluster number. 
-You can use the new columns as shown below.
+
+```{r eval=FALSE}
+
+ds |> 
+  add_factors(starts_with("cg_adoption"), k = 3) |> 
+  select(starts_with("fct_"))
+
+```
+
+Once you have added factor or cluster columns to your data set,
+you can use them with the report functions:
 
 ```{r eval=FALSE}
 ds |> 
@@ -366,7 +394,26 @@ ds |>
 
 ```
 
-**Automatically determine the number of factors**  
+
+```{r eval=FALSE}
+ds |>
+  add_clusters(starts_with("cg_adoption"), k = 3) |>
+  report_counts(sd_gender, cls_cg_adoption, prop = "cols")
+```
+
+After explicitly adding factor or cluster columns,
+you can inspect the analysis results using
+`factor_tab()`, `factor_plot()` or `cluster_tab()`, `cluster_plot()`.
+
+```{r eval=FALSE}
+ds |> 
+  add_factors(starts_with("cg_adoption"), k = 3)  |>
+  factor_tab(starts_with("fct_"))
+
+```
+
+
+**Automatically determine the number of factors or clusters**  
 
 To automatically determine the optimal number of factors or clusters based on diagnostics, set k = NULL.  
 
@@ -376,13 +423,6 @@ ds |>
   factor_tab(starts_with("fct_cg_adoption"))
 ```
 
-**Compare values by cluster**  
-
-```{r eval=FALSE}
-ds |>
-  add_clusters(starts_with("cg_adoption"), k = 3) |>
-  report_counts(sd_gender, cls_cg_adoption, prop = "cols")
-```
 
 # What's behind the scenes?
 
@@ -390,10 +430,9 @@ The volker-package is based on standard methods for data handling and visualisat
 You could produce all outputs on your own. The package just makes your
 code dry - don't repeat yourself - and wraps often used snippets into a simple interface.
 
-Report functions call subsidiary tab and plot functions, which in turn call functions
-specifically designed for the provided column selection.
-In case you only need a table or want to work with the result of a table,
-call the specific function. For example `tab_counts()` or `plot_counts()`.
+Report functions call subsidiary tab, plot and effect functions, which in turn call functions
+specifically designed for the provided column selection. Open the package help to see,
+to which specific functions the report functions are redirected.
 
 Console and markdown output is pimped by specific print- and knit-functions. 
 To make this work, the cleaned data, produced plots, tables and markdown snippets 
