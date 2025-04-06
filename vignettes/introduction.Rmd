@@ -56,8 +56,6 @@ and choose the appropriate function:
 - `report_metrics()` creates tables with distribution parameters, 
   visualises distributions in density plots, box plots or scatter plots.
 
-The column selection determines whether to analyse single variables, item lists 
-or to compare and correlate multiple variables.  
 
 Report functions, under the hood, call functions that generate plots, tables or calculate effects.
 If you only need one of those outputs, you can call the functions directly:
@@ -65,13 +63,18 @@ If you only need one of those outputs, you can call the functions directly:
 - `tab_counts()`, `plot_counts()` or `effect_counts()` for categorical data.
 - `tab_metrics()`, `plot_metrics()` or `effect_metrics()` for metric data.
 
+All functions expect a dataset as their first parameter.
+The second and third parameters await your column selections. 
+The column selections determine whether to analyse single variables, item lists 
+or to compare and correlate multiple variables.  
+
 *Try out the following examples!*
 
 
 ### Categorical variables
 
-```{r eval=FALSE}
 
+```{r eval=FALSE}
 # A single variable
 report_counts(ds, use_private)
 ```
@@ -87,6 +90,10 @@ report_counts(ds, starts_with("use_"))
 ```
 
 
+You can use all sorts of tidyverse style selections:
+A single column, a list of columns or patterns such as
+`starts_with()`, `ends_with()`, `contains()` or `matches()`.
+
 ### Metric variables
 
 ```{r eval=FALSE}
@@ -97,7 +104,6 @@ report_metrics(ds, sd_age)
 ```{r eval=FALSE}
 # Multiple metric items
 report_metrics(ds, starts_with("cg_adoption_"))
-
 ```
 
 ### Cross tabulation and group comparison
@@ -158,7 +164,6 @@ theme_set(theme_vlkr(
   base_fill = c("#F0983A","#3ABEF0","#95EF39","#E35FF5","#7A9B59"),
   base_gradient = c("#FAE2C4","#F0983A")
 ))
-
 ```
 
 # Labeling
@@ -185,7 +190,6 @@ ds %>%
     )
   ) %>% 
   report_metrics(starts_with("cg_adoption_advantage_"))
-
 ```
 
 
@@ -193,7 +197,6 @@ Labels for values inside a column can be adjusted by providing a named list to t
 
 
 ```{r eval=FALSE}
-
 ds %>%
   labs_apply(
     cols=starts_with("cg_adoption"),  
@@ -206,7 +209,6 @@ ds %>%
     ) 
   ) %>% 
   report_metrics(starts_with("cg_adoption"))
-
 ```
 
 To conveniently manage all labels of a dataset, 
@@ -215,7 +217,6 @@ change the labels manually in a copy of the Excel file,
 and finally call `labs_apply()` with your revised codebook.
 
 ```{r, eval=FALSE}
-
 library(readxl)
 library(writexl)
 
@@ -226,7 +227,6 @@ write_xlsx(codes,"codebook.xlsx")
 # Load and apply a codebook from a file
 codes <- read_xlsx("codebook_revised.xlsx")
 ds <- labs_apply(ds, codebook)
-
 ```
 
 
@@ -278,6 +278,7 @@ See the function help for further options (F1 key).
 
 
 ```{r}
+
 #> ```{r echo=FALSE}
 #> ds %>% 
 #>   filter(sd_gender != "diverse") %>% 
@@ -304,6 +305,7 @@ Try out the following pattern in an RMarkdown document!
 
 
 ```{r}
+
 #> ### Adoption types
 #> 
 #> ```{r echo=FALSE}
@@ -362,7 +364,6 @@ is to use the respective parameters in the `report_metrics()` function.
 ```{r eval=FALSE}
 ds |> 
   report_metrics(starts_with("cg_adoption"), factors = TRUE, clusters = TRUE)
-
 ```
 
 Currently, cluster analysis is performed using kmeans and factor analysis is a principal component analysis.
@@ -381,7 +382,6 @@ For clustering, an additional column prefixed with "cls_" is added that assigns 
 ds |> 
   add_factors(starts_with("cg_adoption"), k = 3) |> 
   select(starts_with("fct_"))
-
 ```
 
 Once you have added factor or cluster columns to your data set,
@@ -409,7 +409,6 @@ you can inspect the analysis results using
 ds |> 
   add_factors(starts_with("cg_adoption"), k = 3)  |>
   factor_tab(starts_with("fct_"))
-
 ```
 
 
