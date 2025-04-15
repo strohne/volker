@@ -8,7 +8,6 @@ tab_metrics_items_grouped_items(
   data,
   cols,
   cross,
-  title = TRUE,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -20,9 +19,6 @@ tab_metrics_items_grouped_items(
 \item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
 \item{cross}{Tidyselect item variables (e.g. starts_with...)}
-
-\item{title}{If TRUE (default) shows a plot title derived from the column labels.
-Disable the title with FALSE or provide a custom title as character value.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
