@@ -99,6 +99,9 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
   else if (is_items && is_grouped && is_metric) {
     plot_counts_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
+  else if (is_items && !is_grouped && !is_metric && is_multi) {
+    plot_counts_items_grouped_items(data, {{ cols }}, {{ cross }},  ...)
+  }
 
   # Not found
   else {
@@ -862,6 +865,8 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables (e.g. starts_with...).
+#' @param method The method of correlation calculation, currently only `cramer` is supported.
+#' @param numbers Controls whether to display correlation coefficients on the plot.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -869,8 +874,17 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-plot_counts_items_grouped_items <- function(data, cols, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+plot_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", numbers = TRUE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
+  check_is_param(method, c("cramer"))
+
+  if (nrow(data) == 0) {
+    return(NULL)
+  }
+
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
+  .plot_heatmap(result, "Cramer's V", nrow(data), numbers, title, labels)
 }
 
 #' Plot percent shares of multiple items compared by a metric variable split into groups
@@ -1626,115 +1640,17 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, method = "pear
 #'@export
 #'@importFrom rlang .data
 plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", numbers = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
 
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
   check_is_param(method, c("pearson", "spearman"))
 
   if (nrow(data) == 0) {
     return(NULL)
   }
 
-  # 2. Calculate correlation
-  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
-
-  # Remove common item prefix
-  prefix1 <- get_prefix(result$item1)
-  prefix2 <- get_prefix(result$item2)
-
-  result <- dplyr::mutate(
-    result,
-    item1 = trim_prefix(.data$item1, prefix1),
-    item2 = trim_prefix(.data$item2, prefix2)
-  )
-
   value_col <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
-  value_range <- range(result[[value_col]], na.rm = TRUE)
-
-  # Plot
-  pl <- result %>%
-    ggplot2::ggplot(ggplot2::aes(
-      y = .data$item1,
-      x = .data$item2,
-      fill = !!sym(value_col)
-      )
-    ) +
-    ggplot2::geom_tile()
-
-  if (all(value_range >= 0 & value_range <= 1)) {
-    # range 0 to 1
-    pl <- pl + ggplot2::scale_fill_gradientn(
-      colors = vlkr_colors_sequential(),
-      limits = c(0,1))
-
-  } else {
-
-    # range -1 to 1
-    pl <- pl + ggplot2::scale_fill_gradientn(
-      colors = vlkr_colors_polarized(),
-      limits = c(-1,1)
-    )
-  }
-
-  if (numbers) {
-    pl <- pl +
-      ggplot2::geom_text(
-        ggplot2::aes(label = !!sym(value_col), color = !!sym(value_col)),
-        size = 3,
-      ) +
-      ggplot2::scale_color_gradientn(
-        colors = VLKR_COLORPOLARIZED,
-        limits = c(-1,1),
-        guide = "none"
-      )
-  }
-
-  # Add labels
-  if (labels)
-    pl <- pl + ggplot2::labs(
-      x = prefix1,
-      y = prefix2
-    )
-
-  # Add title
-  if (title == TRUE) {
-    if (prefix1 != prefix2) {
-      title <- paste0(prefix1, " - ", prefix2)
-    } else {
-      title <- prefix1
-    }
-  } else if (title == FALSE) {
-    title <- NULL
-  }
-
-  if (!is.null(title)) {
-    pl <- pl + ggplot2::ggtitle(label = title)
-  }
-
-  # Wrap labels and adjust text size
-  pl <- pl +
-    ggplot2::scale_y_discrete(
-      labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP))
-    ) +
-    ggplot2::theme(
-      axis.text.x = ggplot2::element_text(
-        angle = get_angle(result$item1),
-        hjust = 1,
-        size = ggplot2::theme_get()$axis.text.y$size,
-        color = ggplot2::theme_get()$axis.text.y$color
-      )
-    ) +
-    ggplot2::scale_x_discrete(labels = \(labels) trunc_labels(labels)) +
-    ggplot2::coord_fixed()
-
-  # Add base
-  base_n <- nrow(data)
-  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
-
-  # Convert to vlkr_plot
-  pl <- .attr_transfer(pl, data, "missings")
-  .to_vlkr_plot(pl, rows = dplyr::n_distinct(result$item1) + 3)
-
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
+  .plot_heatmap(result, value_col, nrow(data), numbers, title, labels)
 }
 
 
@@ -2141,6 +2057,115 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   pl <- .attr_transfer(pl, data, "missings")
   .to_vlkr_plot(pl, theme_options = list(axis.title.x = TRUE))
 
+}
+
+#' Helper function: Heatmap
+#'
+#' @keywords internal
+#'
+#' @param result A tibble with item combinations in the first two columns and a correlation value in the last column
+#' @param value_col The name of the column containing correlation values, a character value
+#' @param numbers Controls whether to display correlation coefficients on the plot.
+#' @param title If TRUE (default) shows a plot title derived from the column labels.
+#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @return  A ggplot object
+#' @importFrom rlang .data
+.plot_heatmap <- function(result, value_col, base_n, numbers, title, labels) {
+  # Remove common item prefix
+  prefix1 <- get_prefix(result$item1)
+  prefix2 <- get_prefix(result$item2)
+
+  result <- dplyr::mutate(
+    result,
+    item1 = trim_prefix(.data$item1, prefix1),
+    item2 = trim_prefix(.data$item2, prefix2)
+  )
+
+  value_range <- range(result[[value_col]], na.rm = TRUE)
+
+  # Plot
+  pl <- result %>%
+    ggplot2::ggplot(ggplot2::aes(
+      y = .data$item1,
+      x = .data$item2,
+      fill = !!sym(value_col)
+    )
+    ) +
+    ggplot2::geom_tile()
+
+  if (all(value_range >= 0 & value_range <= 1)) {
+    # range 0 to 1
+    pl <- pl + ggplot2::scale_fill_gradientn(
+      colors = vlkr_colors_sequential(),
+      limits = c(0,1))
+
+  } else {
+
+    # range -1 to 1
+    pl <- pl + ggplot2::scale_fill_gradientn(
+      colors = vlkr_colors_polarized(),
+      limits = c(-1,1)
+    )
+  }
+
+  if (numbers) {
+    pl <- pl +
+      ggplot2::geom_text(
+        ggplot2::aes(label = !!sym(value_col), color = !!sym(value_col)),
+        size = 3,
+      ) +
+      ggplot2::scale_color_gradientn(
+        colors = VLKR_COLORPOLARIZED,
+        limits = c(-1,1),
+        guide = "none"
+      )
+  }
+
+  # Add labels
+  if (labels)
+    pl <- pl + ggplot2::labs(
+      x = prefix1,
+      y = prefix2
+    )
+
+  # Add title
+  if (title == TRUE) {
+    if (prefix1 != prefix2) {
+      title <- paste0(prefix1, " - ", prefix2)
+    } else {
+      title <- prefix1
+    }
+  } else if (title == FALSE) {
+    title <- NULL
+  }
+
+  if (!is.null(title)) {
+    pl <- pl + ggplot2::ggtitle(label = title)
+  }
+
+  # Wrap labels and adjust text size
+  pl <- pl +
+    ggplot2::scale_y_discrete(
+      labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP))
+    ) +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(
+        angle = get_angle(result$item1),
+        hjust = 1,
+        size = ggplot2::theme_get()$axis.text.y$size,
+        color = ggplot2::theme_get()$axis.text.y$color
+      )
+    ) +
+    ggplot2::scale_x_discrete(labels = \(labels) trunc_labels(labels)) +
+    ggplot2::coord_fixed()
+
+  # Add base
+  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
+
+  # Convert to vlkr_plot
+  pl <- .attr_transfer(pl, data, "missings")
+  .to_vlkr_plot(pl, rows = dplyr::n_distinct(result$item1) + 3)
 }
 
 #' Helper function: scree plot

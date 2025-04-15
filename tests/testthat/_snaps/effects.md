@@ -24,8 +24,8 @@
       |Statistic   | Value|
       |:-----------|-----:|
       |Cramer's V  |  0.05|
-      |n           |   100|
       |Chi-squared |  0.20|
+      |n           |   100|
       |df          |     1|
       |p           | 0.651|
       |stars       |      |

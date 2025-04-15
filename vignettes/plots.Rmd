@@ -32,7 +32,7 @@ data <- volker::chatgpt
 | 3  | plot_counts_one_cor              |             | counts    | one      | metric       | one         |
 | 4  | plot_counts_items                |             | counts    | multiple |              |             |
 | 5  | plot_counts_items_grouped        |             | counts    | multiple | counts       | one         |
-| 6  | plot_counts_items_grouped_items  | not yet     | counts    | multiple | counts       | multiple    |
+| 6  | plot_counts_items_grouped_items  |             | counts    | multiple | counts       | multiple    |
 | 7  | plot_counts_items_cor            |             | counts    | multiple | metric       | one         |
 | 8  | plot_counts_items_cor_items      | not yet     | counts    | multiple | metric       | multiple    |
 | 9  | plot_metrics_one                 |             | metric    | one      |              |             |
@@ -86,8 +86,7 @@ data |>
 
 ### 6. Correlation of categorical items with categorical items
 ```{r}
-# TODO
-#plot_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+plot_counts(data, starts_with("cg_adoption"), starts_with("cg_adoption"))
 ```
 
 ### 7. Group comparison of multiple items by a metric variable split at the median
