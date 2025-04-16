@@ -444,7 +444,7 @@ effect_counts_items_grouped <- function(data, cols, cross, method = "cramer", la
 #' @param data A tibble containing item measures and grouping variable.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The columns holding groups to compare.
-#' @param method The output metrics, currently only `cramer` is supported.
+#' @param method The output metrics: cramer = Cramer's V, f1 = F1-value (only for variable sets with the same labels).
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
@@ -464,7 +464,7 @@ effect_counts_items_grouped <- function(data, cols, cross, method = "cramer", la
 effect_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
-  check_is_param(method, c("cramer"))
+  check_is_param(method, c("cramer", "f1"))
 
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
@@ -1227,8 +1227,10 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #' @param data A tibble.
 #' @param cols The columns holding metric values.
 #' @param cross The columns holding metric values to correlate.
-#' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho.
+#' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho,
+#'               cramer = Cramer's V, f1 = F1-value.
 #'               The reported R square value is just squared Spearman's or Pearson's R.
+#'               F1-values are only supported for variable sets with the same labels.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @return A tibble with correlation results.
 #' @importFrom rlang .data
@@ -1238,7 +1240,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
   # Check method
-  check_is_param(method, c("spearman", "pearson", "cramer"))
+  check_is_param(method, c("spearman", "pearson", "cramer", "f1"))
 
   # Calculate
   result <- expand.grid(
@@ -1277,7 +1279,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #'
 #' @param x First vector
 #' @param y Second vector
-#' @param method One of "spearman" or "pearson" for metric vectors. For catecorical vectors, use "cramer".
+#' @param method One of "spearman" or "pearson" for metric vectors. For catecorical vectors, use "cramer" or "f1".
 #' @return The result of cor.test() for metric vectors.
 .effect_correl <- function(x, y, method) {
 
@@ -1300,6 +1302,48 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
       "df" = as.character(fit$parameter),
       "p"= sprintf("%.3f", round(fit$p.value, 3)),
       "stars"= get_stars(fit$p.value)
+    )
+  }
+  else if (method == "f1") {
+
+    # Ensure factors for consistent levels
+    # Align y with x levels
+    x <- factor(x)
+    y <- factor(y, levels = levels(x))
+
+    contingency <- table(x, y)
+    TP <- sum(diag(contingency))
+    total <- sum(contingency)
+
+    # Calculate Precision, Recall, F1 for each class and average (macro)
+    precision_vec <- recall_vec <- f1_vec <- numeric(length = nrow(contingency))
+
+    for (i in 1:nrow(contingency)) {
+      TP_i <- contingency[i, i]
+      FP_i <- sum(contingency[-i, i])
+      FN_i <- sum(contingency[i, -i])
+
+      precision_vec[i] <- if ((TP_i + FP_i) > 0) TP_i / (TP_i + FP_i) else 0
+      recall_vec[i] <- if ((TP_i + FN_i) > 0) TP_i / (TP_i + FN_i) else 0
+
+      if ((precision_vec[i] + recall_vec[i]) > 0) {
+        f1_vec[i] <- 2 * precision_vec[i] * recall_vec[i] / (precision_vec[i] + recall_vec[i])
+      } else {
+        f1_vec[i] <- 0
+      }
+    }
+
+    accuracy <- TP / total
+    precision <- mean(precision_vec)
+    recall <- mean(recall_vec)
+    f1 <- mean(f1_vec)
+
+    result <- list(
+      "n" = total,
+      "Accuracy" = round(accuracy, 2),
+      "Precision" = round(precision, 2),
+      "Recall" = round(recall, 2),
+      "F1" = round(f1, 2)
     )
   }
   else if (method == "spearman") {

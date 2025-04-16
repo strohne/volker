@@ -865,7 +865,8 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables (e.g. starts_with...).
-#' @param method The method of correlation calculation, currently only `cramer` is supported.
+#' @param method The method of correlation calculation: `cramer` for Cramer's V and `f1` for F1.
+#'               F1 can only be calculated if the two variable sets have the same labels.
 #' @param numbers Controls whether to display correlation coefficients on the plot.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
@@ -877,14 +878,17 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
 plot_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", numbers = TRUE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
-  check_is_param(method, c("cramer"))
+  check_is_param(method, c("cramer", "f1"))
+  numbers <- TRUE
+  #check_is_param(numbers, c("n", "p"), allowmultiple = TRUE, allownull = TRUE)
 
   if (nrow(data) == 0) {
     return(NULL)
   }
 
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
-  .plot_heatmap(result, "Cramer's V", nrow(data), numbers, title, labels)
+  value_col = ifelse(method == "cramer",  "Cramer's V", "F1")
+  .plot_heatmap(result, value_col, nrow(data), numbers, title, labels)
 }
 
 #' Plot percent shares of multiple items compared by a metric variable split into groups

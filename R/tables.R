@@ -943,7 +943,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables (e.g. starts_with...).
-#' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho.
+#' @param method The output metrics, cramer = Cramer's V, f1 = F1-value (only possible when the variable sets have the same labels).
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
@@ -953,7 +953,7 @@ tab_counts_items_grouped_items <- function(data, cols, cross, method = "cramer",
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
 
-  check_is_param(method, c("cramer"))
+  check_is_param(method, c("cramer", "f1"))
 
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
@@ -962,6 +962,9 @@ tab_counts_items_grouped_items <- function(data, cols, cross, method = "cramer",
 
   if(method == "cramer") {
     result_cols <- c(result_cols, "Cramer's V")
+  }
+  if(method == "f1") {
+    result_cols <- c(result_cols, "F1")
   }
 
 
