@@ -423,6 +423,37 @@ ds |>
 ```
 
 
+## Modeling: Regression and Analysis of Variance
+
+Modeling in the statistical sense is predicting an outcome (dependent variable) from one or multiple predictors (independet variables).
+
+The model functions allow linear modeling by providing a metric outcome as first variable
+and a selection of categorical or metric predictor in the respective parameters.
+
+There are two functions: One for getting a regression table and one for plotting the regression coefficients.
+
+```{r, eval=FALSE}
+
+ds |>
+ filter(sd_gender != "diverse") |>
+ model_metrics_tab(
+   use_work, 
+   categorical = c(sd_gender, adopter), 
+   metric = sd_age
+ )
+
+ds |>
+ filter(sd_gender != "diverse") |>
+ model_metrics_plot(
+   use_work,
+   categorical = c(sd_gender, adopter), 
+   metric = sd_age
+ )
+
+``` 
+
+
+
 # What's behind the scenes?
 
 The volker-package is based on standard methods for data handling and visualisation. 

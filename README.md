@@ -210,6 +210,28 @@ report_metrics(data, starts_with("cg_adoption"), factors = 3, clusters = 4)
 You don’t need to add both parameters at the same time if you are only
 interested in factors or clusters.
 
+## Modeling: Regression and Analysis of Variance
+
+Modeling in the statistical sense is predicting an outcome (dependent
+variable) from one or multiple predictors (independet variables).
+
+The model functions allow linear modeling by providing the outcome as
+first variable and a selection of categorical or metric predictor in the
+respective parameters.
+
+There are two functions: One for getting a regression table and one for
+plotting the regression coefficients.
+
+``` r
+data |>
+ filter(sd_gender != "diverse") |>
+ model_metrics_tab(use_work, categorical = c(sd_gender, adopter), metric = sd_age)
+
+data |>
+ filter(sd_gender != "diverse") |>
+ model_metrics_plot(use_work, categorical = c(sd_gender, adopter), metric = sd_age)
+```
+
 ## Where do all the labels go?
 
 One of the strongest package features is labeling. You know the pain.

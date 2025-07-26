@@ -70,7 +70,7 @@ model_metrics_tab <- function(data, col, categorical, metric, interactions = NUL
   formula_str <- paste0(lhs, " ~ ", rhs)
 
   # Fit
-  fit <- stats::lm(as.formula(formula_str), data = data)
+  fit <- stats::lm(stats::as.formula(formula_str), data = data)
 
   # Regression parameters
   lm_params <- tidy_lm_levels(fit)
@@ -203,21 +203,9 @@ model_metrics_plot <- function(data, col, categorical, metric, interactions = NU
   .to_vlkr_list(result)
 }
 
-#' Plot regression coefficients
-#'
-#' @description
-#' Alias of \link{model_metrics_plot}.
-#' In the future, logistic regression and a method parameter to choose between logistic and linear regression will be implemented.
-#'
+
 #' @export
 model_plot <- model_metrics_plot
 
-#' Output a regression table with estimates and macro statistics
-#' for multiple categorical or metric independent variables
-#'
-#' @description
-#' Alias of \link{model_metrics_tab}.
-#' In the future, logistic regression and a method parameter to choose between logistic and linear regression will be implemented.
-#'
 #' @export
 model_tab <- model_metrics_tab
