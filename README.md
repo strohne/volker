@@ -504,10 +504,11 @@ install the latest development version:
 
 | Version | Features           | Status           |
 |---------|--------------------|------------------|
-| 1.0     | Descriptives       | 80% done         |
-| 2.0     | Effects            | 60% done         |
+| 1.0     | Descriptives       | 90% done         |
+| 2.0     | Effects            | 75% done         |
 | 3.0     | Factors & clusters | 80% done         |
-| 4.0     | Text analysis      | work in progress |
+| 4.0     | Linear models      | 50% done         |
+| 5.0     | Text analysis      | work in progress |
 
 ## Similar packages
 
