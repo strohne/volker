@@ -7,6 +7,7 @@
 <url><loc>https://strohne.github.io/volker/articles/index.html</loc></url>
 <url><loc>https://strohne.github.io/volker/articles/introduction.html</loc></url>
 <url><loc>https://strohne.github.io/volker/articles/labels.html</loc></url>
+<url><loc>https://strohne.github.io/volker/articles/models.html</loc></url>
 <url><loc>https://strohne.github.io/volker/articles/plots.html</loc></url>
 <url><loc>https://strohne.github.io/volker/articles/reports.html</loc></url>
 <url><loc>https://strohne.github.io/volker/articles/scales.html</loc></url>
@@ -55,6 +56,7 @@
 <url><loc>https://strohne.github.io/volker/reference/dot-attr_insert.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-attr_transfer.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-density_mode.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-effect_correl.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-effect_correlations.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-effect_npmi.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-factor_with_attr.html</loc></url>
@@ -66,6 +68,7 @@
 <url><loc>https://strohne.github.io/volker/reference/dot-outliers.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-plot_bars.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-plot_cor.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-plot_heatmap.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-plot_lines.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-plot_scree.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-plot_summary.html</loc></url>

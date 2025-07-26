@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   clusters: clusters.html
@@ -7,11 +7,12 @@ articles:
   factors: factors.html
   introduction: introduction.html
   labels: labels.html
+  models: models.html
   plots: plots.html
   reports: reports.html
   scales: scales.html
   tables: tables.html
-last_built: 2025-04-06T17:37Z
+last_built: 2025-07-26T22:45Z
 urls:
   reference: https://strohne.github.io/volker/reference
   article: https://strohne.github.io/volker/articles

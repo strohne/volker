@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>All kinds of statistics: effect sizes, parameter estimates, p values • volker</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -107,13 +106,13 @@ fit)</td>
 <tr class="odd">
 <td>5</td>
 <td>effect_counts_items_grouped</td>
-<td>not yet</td>
+<td></td>
 <td>Cramer’s V and Chi-square-test for each item</td>
 </tr>
 <tr class="even">
 <td>6</td>
 <td>effect_counts_items_grouped_items</td>
-<td>not yet</td>
+<td></td>
 <td>Correlation of categorical items with categorical items</td>
 </tr>
 <tr class="odd">
@@ -265,18 +264,18 @@ Cramer’s V
 </tr>
 <tr>
 <td style="text-align:left;">
-n
-</td>
-<td style="text-align:right;">
-101
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 Chi-squared
 </td>
 <td style="text-align:right;">
 13.48
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+n
+</td>
+<td style="text-align:right;">
+101
 </td>
 </tr>
 <tr>
@@ -291,7 +290,7 @@ df
 p
 </td>
 <td style="text-align:right;">
-0.020
+0.017
 </td>
 </tr>
 <tr>
@@ -421,10 +420,351 @@ Compared to other systems, using ChatGPT is more fun.
 <div class="section level3">
 <h3 id="cramers-v-and-chi-square-test-for-each-item">5. Cramers v and Chi-square-test for each item<a class="anchor" aria-label="anchor" href="#cramers-v-and-chi-square-test-for-each-item"></a>
 </h3>
+<table class="table table" style="width: auto !important; ">
+<thead><tr>
+<th style="text-align:left;">
+Expectations: Correlation with Gender
+</th>
+<th style="text-align:right;">
+Cramer’s V
+</th>
+<th style="text-align:right;">
+Chi-squared
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+p
+</th>
+<th style="text-align:right;">
+stars
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+ChatGPT has clear advantages compared to similar offerings.
+</td>
+<td style="text-align:right;">
+0.14
+</td>
+<td style="text-align:right;">
+3.76
+</td>
+<td style="text-align:right;">
+99
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.825
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT brings financial benefits.
+</td>
+<td style="text-align:right;">
+0.16
+</td>
+<td style="text-align:right;">
+4.99
+</td>
+<td style="text-align:right;">
+99
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.818
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT is advantageous in many tasks.
+</td>
+<td style="text-align:right;">
+0.14
+</td>
+<td style="text-align:right;">
+3.78
+</td>
+<td style="text-align:right;">
+99
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.837
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Compared to other systems, using ChatGPT is more fun.
+</td>
+<td style="text-align:right;">
+0.13
+</td>
+<td style="text-align:right;">
+3.44
+</td>
+<td style="text-align:right;">
+99
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.841
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+</tbody>
+</table>
+<p>2 missing case(s) omitted.</p>
 </div>
 <div class="section level3">
 <h3 id="correlation-of-categorical-items-with-categorical-items">6. Correlation of categorical items with categorical items<a class="anchor" aria-label="anchor" href="#correlation-of-categorical-items-with-categorical-items"></a>
 </h3>
+<table class="table table" style="width: auto !important; ">
+<thead><tr>
+<th style="text-align:left;">
+Expectations
+</th>
+<th style="text-align:right;">
+Usage
+</th>
+<th style="text-align:right;">
+Cramer’s V
+</th>
+<th style="text-align:right;">
+Chi-squared
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+p
+</th>
+<th style="text-align:right;">
+stars
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+ChatGPT has clear advantages compared to similar offerings.
+</td>
+<td style="text-align:right;">
+in private context
+</td>
+<td style="text-align:right;">
+0.32
+</td>
+<td style="text-align:right;">
+41.27
+</td>
+<td style="text-align:right;">
+99
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.001
+</td>
+<td style="text-align:right;">
+**
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ChatGPT has clear advantages compared to similar offerings.
+</td>
+<td style="text-align:right;">
+in professional context
+</td>
+<td style="text-align:right;">
+0.24
+</td>
+<td style="text-align:right;">
+23.46
+</td>
+<td style="text-align:right;">
+99
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.085
+</td>
+<td style="text-align:right;">
+.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT brings financial benefits.
+</td>
+<td style="text-align:right;">
+in private context
+</td>
+<td style="text-align:right;">
+0.24
+</td>
+<td style="text-align:right;">
+22.48
+</td>
+<td style="text-align:right;">
+99
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.119
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT brings financial benefits.
+</td>
+<td style="text-align:right;">
+in professional context
+</td>
+<td style="text-align:right;">
+0.37
+</td>
+<td style="text-align:right;">
+53.99
+</td>
+<td style="text-align:right;">
+99
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+***
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT is advantageous in many tasks.
+</td>
+<td style="text-align:right;">
+in private context
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+<td style="text-align:right;">
+24.15
+</td>
+<td style="text-align:right;">
+99
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.084
+</td>
+<td style="text-align:right;">
+.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Using ChatGPT is advantageous in many tasks.
+</td>
+<td style="text-align:right;">
+in professional context
+</td>
+<td style="text-align:right;">
+0.30
+</td>
+<td style="text-align:right;">
+34.57
+</td>
+<td style="text-align:right;">
+99
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.007
+</td>
+<td style="text-align:right;">
+**
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Compared to other systems, using ChatGPT is more fun.
+</td>
+<td style="text-align:right;">
+in private context
+</td>
+<td style="text-align:right;">
+0.30
+</td>
+<td style="text-align:right;">
+34.62
+</td>
+<td style="text-align:right;">
+99
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.010
+</td>
+<td style="text-align:right;">
+*
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Compared to other systems, using ChatGPT is more fun.
+</td>
+<td style="text-align:right;">
+in professional context
+</td>
+<td style="text-align:right;">
+0.20
+</td>
+<td style="text-align:right;">
+16.23
+</td>
+<td style="text-align:right;">
+99
+</td>
+<td style="text-align:right;">
+</td>
+<td style="text-align:right;">
+0.441
+</td>
+<td style="text-align:right;">
+</td>
+</tr>
+</tbody>
+</table>
+<p>2 missing case(s) omitted.</p>
 </div>
 <div class="section level3">
 <h3 id="explained-variance-of-each-item-by-the-metric-variable-pseudo-r-squared-of-logistic-regression">7. Explained variance of each item by the metric variable
@@ -3536,7 +3876,7 @@ omitted.<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABgsAAAPiCAIAAADO
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
