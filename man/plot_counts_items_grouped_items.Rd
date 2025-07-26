@@ -23,7 +23,8 @@ plot_counts_items_grouped_items(
 
 \item{cross}{Tidyselect item variables (e.g. starts_with...).}
 
-\item{method}{The method of correlation calculation, currently only \code{cramer} is supported.}
+\item{method}{The method of correlation calculation: \code{cramer} for Cramer's V and \code{f1} for F1.
+F1 can only be calculated if the two variable sets have the same labels.}
 
 \item{numbers}{Controls whether to display correlation coefficients on the plot.}
 

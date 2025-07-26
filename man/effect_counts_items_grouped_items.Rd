@@ -21,7 +21,7 @@ effect_counts_items_grouped_items(
 
 \item{cross}{The columns holding groups to compare.}
 
-\item{method}{The output metrics, currently only \code{cramer} is supported.}
+\item{method}{The output metrics: cramer = Cramer's V, f1 = F1-value (only for variable sets with the same labels).}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

@@ -11,7 +11,7 @@
 
 \item{y}{Second vector}
 
-\item{method}{One of "spearman" or "pearson" for metric vectors. For catecorical vectors, use "cramer".}
+\item{method}{One of "spearman" or "pearson" for metric vectors. For catecorical vectors, use "cramer" or "f1".}
 }
 \value{
 The result of cor.test() for metric vectors.

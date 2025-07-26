@@ -68,7 +68,6 @@ effect_counts(data, starts_with("cg_adoption_advantage"))
 
 ## 5. Cramers v and Chi-square-test for each item
 ```{r}
-# TODO
 effect_counts(data, starts_with("cg_adoption_advantage"), sd_gender)
 ```
 

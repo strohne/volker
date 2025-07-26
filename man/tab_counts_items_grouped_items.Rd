@@ -21,7 +21,7 @@ tab_counts_items_grouped_items(
 
 \item{cross}{Tidyselect item variables (e.g. starts_with...).}
 
-\item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho.}
+\item{method}{The output metrics, cramer = Cramer's V, f1 = F1-value (only possible when the variable sets have the same labels).}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
