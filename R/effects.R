@@ -1257,7 +1257,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
         \(x, y) .effect_correl(data[[x]], data[[y]], method)
       )
     ) |>
-    tidyr::unnest_wider(.data$.test) |>
+    tidyr::unnest_wider(".test") |>
     dplyr::select(-tidyselect::all_of(c("x", "y")))
 
   result <- dplyr::select(result, item1 = "x_name", item2 = "y_name", tidyselect::everything())
