@@ -1,0 +1,89 @@
+---
+title: "Linear modeling: Multivariable regression"
+output: volker::html_report
+vignette: >
+  %\VignetteIndexEntry{Effects}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = F)
+
+library(tidyverse)
+library(volker)
+```
+
+```{r}
+
+# Load data 
+data <- volker::chatgpt
+```
+
+## One categorical and one metric independent variable
+```{r}
+data |> 
+  filter(sd_gender != "diverse") |> 
+  model_tab(use_work, categorical = sd_gender, metric = sd_age)
+
+data |> 
+  filter(sd_gender != "diverse") |> 
+  model_plot(use_work, categorical = sd_gender, metric = sd_age)
+
+```
+
+
+## Multiple categorical and metric independent variables
+```{r}
+data |> 
+  filter(sd_gender != "diverse") |> 
+  model_tab(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption"), sd_age))
+
+data |> 
+  filter(sd_gender != "diverse") |> 
+  model_plot(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption"), sd_age))
+
+```
+
+
+## Index as independet variable
+```{r}
+
+data |> 
+  filter(sd_gender != "diverse") |>
+  add_index(starts_with("cg_adoption")) |> 
+  model_tab(use_work, categorical = c(sd_gender, adopter), metric = c(idx_cg_adoption, sd_age))
+
+data |> 
+  filter(sd_gender != "diverse") |>
+  add_index(starts_with("cg_adoption")) |> 
+  model_plot(use_work, categorical = c(sd_gender, adopter), metric = c(idx_cg_adoption, sd_age))
+
+```
+
+
+## Interactions
+```{r}
+
+data |> 
+  filter(sd_gender != "diverse") |>
+  model_tab(
+    use_work, 
+    metric = c(sd_age),
+    categorical = c(sd_gender), 
+    interactions = c(sd_gender * sd_age)
+  )
+
+data |> 
+  filter(sd_gender != "diverse") |>
+  model_plot(
+    use_work, 
+    metric = c(sd_age),
+    categorical = c(sd_gender), 
+    interactions = c(sd_gender * sd_age)
+  )
+
+```
+

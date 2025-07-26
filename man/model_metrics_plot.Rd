@@ -2,6 +2,7 @@
 % Please edit documentation in R/model.R
 \name{model_metrics_plot}
 \alias{model_metrics_plot}
+\alias{model_plot}
 \title{Plot regression coefficients}
 \usage{
 model_metrics_plot(
@@ -9,6 +10,7 @@ model_metrics_plot(
   col,
   categorical,
   metric,
+  interactions = NULL,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -22,6 +24,10 @@ model_metrics_plot(
 \item{categorical}{A tidy column selection holding categorical variables.}
 
 \item{metric}{A tidy column selection holding metric variables.}
+
+\item{interactions}{A vector of interaction effects to calculate.
+Each interaction effect should be provided as multiplication of the variables.
+Example: \code{c(sd_gender * adopter)}.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

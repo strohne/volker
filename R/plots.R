@@ -2168,7 +2168,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
   # Convert to vlkr_plot
-  pl <- .attr_transfer(pl, data, "missings")
+  pl <- .attr_transfer(pl, result, "missings")
   .to_vlkr_plot(pl, rows = dplyr::n_distinct(result$item1) + 3)
 }
 

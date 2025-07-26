@@ -3,6 +3,8 @@
 #'
 #' @description
 #' The regression output comes from \code{stats::\link[stats:lm]{lm}}.
+#' The effect sizes are calculated by \code{heplots::\link[heplots:etasq]{etasq}}.
+#' The variance inflation is calculated by \code{car::\link[car:vif]{vif}}.
 #'
 #' `r lifecycle::badge("experimental")`
 #'
@@ -12,6 +14,9 @@
 #' @param col The target column holding metric values.
 #' @param categorical A tidy column selection holding categorical variables.
 #' @param metric A tidy column selection holding metric variables.
+#' @param interactions A vector of interaction effects to calculate.
+#'                     Each interaction effect should be provided as multiplication of the variables.
+#'                     Example: `c(sd_gender * adopter)`.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -25,8 +30,9 @@
 #'   model_metrics_tab(use_work, categorical = c(sd_gender, adopter), metric = sd_age)
 #'
 #' @export
+#' @aliases model_tab
 #' @importFrom rlang .data
-model_metrics_tab <- function(data, col, categorical, metric, labels = TRUE, clean = TRUE, ...) {
+model_metrics_tab <- function(data, col, categorical, metric, interactions = NULL, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(
     data,
@@ -39,8 +45,32 @@ model_metrics_tab <- function(data, col, categorical, metric, labels = TRUE, cle
 
   # 2. Regression
   result <- list()
-  lm_data <- dplyr::select(data, av = {{ col }}, {{ categorical }}, {{ metric }})
-  fit <- stats::lm(av ~ ., data = lm_data)
+
+  # Construct formula
+  categorical_vars <- names(tidyselect::eval_select(expr = rlang::enquo(categorical), data = data))
+  metric_vars <-  names(tidyselect::eval_select(expr = rlang::enquo(metric), data = data))
+
+  iexprs <- rlang::enexpr(interactions)
+  if (rlang::is_call(iexprs, "enexpr")) {
+    iexprs <- interactions
+  }
+
+  if (is.null(iexprs)) {
+    interaction_terms <- character(0)
+  }
+  else if (rlang::is_call(iexprs, "c")) {
+    interaction_terms <- vapply(as.list(iexprs)[-1], rlang::expr_text, character(1))
+  } else {
+    interaction_terms <- rlang::expr_text(iexprs)
+  }
+
+  rhs_terms <- c(categorical_vars, metric_vars, interaction_terms)
+  rhs <- paste(rhs_terms, collapse = " + ")
+  lhs <- rlang::as_label(rlang::enquo(col))
+  formula_str <- paste0(lhs, " ~ ", rhs)
+
+  # Fit
+  fit <- stats::lm(as.formula(formula_str), data = data)
 
   # Regression parameters
   lm_params <- tidy_lm_levels(fit)
@@ -70,9 +100,13 @@ model_metrics_tab <- function(data, col, categorical, metric, labels = TRUE, cle
   lm_effects <- lm_effects |>
     mutate(stars = get_stars(.data$p))
 
-  lm_vif <- car::vif(fit) |>
+  lm_vif <- car::vif(fit, type = "terms") |>
     tibble::as_tibble(rownames = "Item") |>
-    dplyr::select(-tidyselect::all_of("Df"))
+    dplyr::select(-tidyselect::any_of("Df"))
+
+  if ("value" %in% colnames(lm_vif)) {
+    colnames(lm_vif)[colnames(lm_vif) == "value"] <- "VIF"
+  }
 
   lm_effects <- dplyr::left_join(lm_effects, lm_vif, by = "Item")
 
@@ -123,6 +157,9 @@ model_metrics_tab <- function(data, col, categorical, metric, labels = TRUE, cle
 #' @param col The target column holding metric values.
 #' @param categorical A tidy column selection holding categorical variables.
 #' @param metric A tidy column selection holding metric variables.
+#' @param interactions A vector of interaction effects to calculate.
+#'                     Each interaction effect should be provided as multiplication of the variables.
+#'                     Example: `c(sd_gender * adopter)`.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -136,11 +173,12 @@ model_metrics_tab <- function(data, col, categorical, metric, labels = TRUE, cle
 #'   model_metrics_plot(use_work, categorical = c(sd_gender, adopter), metric = sd_age)
 #'
 #' @export
+#' @aliases model_plot
 #' @importFrom rlang .data
-model_metrics_plot <- function(data, col, categorical, metric, labels = TRUE, clean = TRUE, ...) {
+model_metrics_plot <- function(data, col, categorical, metric, interactions = NULL, labels = TRUE, clean = TRUE, ...) {
 
   # TODO: implement model_metrics_add() and reuse fitted model if already present
-  model_data <- model_metrics_tab(data, {{ col }}, {{ categorical }}, {{ metric }}, labels = labels, clean = clean, ...)
+  model_data <- model_metrics_tab(data, {{ col }}, {{ categorical }}, {{ metric }}, interactions = rlang::enexpr(interactions), labels = labels, clean = clean, ...)
 
   coef_data <-  model_data$coefficients |>
     dplyr::filter(.data$Term != "(Intercept)") |>
@@ -164,3 +202,22 @@ model_metrics_plot <- function(data, col, categorical, metric, labels = TRUE, cl
   result <- .attr_transfer(result, model_data, "missings")
   .to_vlkr_list(result)
 }
+
+#' Plot regression coefficients
+#'
+#' @description
+#' Alias of \link{model_metrics_plot}.
+#' In the future, logistic regression and a method parameter to choose between logistic and linear regression will be implemented.
+#'
+#' @export
+model_plot <- model_metrics_plot
+
+#' Output a regression table with estimates and macro statistics
+#' for multiple categorical or metric independent variables
+#'
+#' @description
+#' Alias of \link{model_metrics_tab}.
+#' In the future, logistic regression and a method parameter to choose between logistic and linear regression will be implemented.
+#'
+#' @export
+model_tab <- model_metrics_tab
