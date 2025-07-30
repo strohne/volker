@@ -17,6 +17,9 @@
 #' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
 #'            Set metric to TRUE, to treat it as metric and calculate correlations.
+#'            Alternatively, for multivariable models (if the model parameter is TRUE),
+#'            provide the metric column selection in the metric parameter
+#'            and the categorical column selection in the cross parameter.
 #' @param ... Parameters passed to the \link{plot_metrics} and \link{tab_metrics} and \link{effect_metrics} functions.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
@@ -34,6 +37,15 @@
 #'                Set to FALSE to suppress cluster analysis.
 #'                Set to TRUE to output a scree plot and automatically choose the number of clusters based on the elbow criterion.
 #'                 See \link{add_clusters}.
+#' @param model Set to TRUE for multivariable models.
+#'              The dependent variable must be provided in the first parameter (cols).
+#'              Independent categorical variables are provided in the second parameter (cross),
+#'              which supports tidy column selections or vectors of multiple columns.
+#'              Independent metric variables are provided in the metric parameter
+#'              as tidy column selections or vectors of multiple columns.
+#'              Interaction terms are provided in the interactions parameter and passed to the model functions.
+#'              You can get diagnostic plots by setting the diagnostics parameter to TRUE.
+#'              See \link{model_metrics_tab},  \link{model_metrics_plot} and  \link{add_model} for further options.
 #' @param effect Whether to report statistical tests and effect sizes. See \link{effect_counts} for further parameters.
 #' @param title A character providing the heading or TRUE (default) to output a heading.
 #'               Classes for tabset pills will be added.
@@ -368,15 +380,10 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
 #' @keywords internal
 #'
 #' @param data A data frame.
-#' @param cols A tidy column selection,
-#'             e.g. a single column (without quotes)
-#'             or multiple columns selected by methods such as starts_with().
-#' @param cross Not yet implementedt. Optional, a grouping column (without quotes).
-#' @param metric Not yet implemented. When crossing variables, the cross column parameter can contain categorical or metric values.
-#'            By default, the cross column selection is treated as categorical data.
-#'            Set metric to TRUE, to treat it as metric and calculate correlations.
-#' @param k Number of factors to calculate.
-#' @param effect Not yet implemented. Whether to report statistical tests and effect sizes.
+#' @param cols A a single column (without quotes).
+#' @param categorical A tidy column selection holding independet categorical variables.
+#' @param metric A tidy column selection holding independent metric variables.
+#'
 #' @param title Add a plot title (default = TRUE).
 #' @return A list containing a table and a plot volker report chunk.
 .report_mdl <- function(data, cols, categorical = NULL, metric = NULL, ..., title = TRUE) {

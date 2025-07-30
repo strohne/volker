@@ -427,30 +427,48 @@ ds |>
 
 Modeling in the statistical sense is predicting an outcome (dependent variable) from one or multiple predictors (independet variables).
 
-The model functions allow linear modeling by providing a metric outcome as first variable
-and a selection of categorical or metric predictor in the respective parameters.
+The report_metrics() function calculates a linear model if the model parameter is TRUE. You provide the variables in the following parameters:
+- Dependent metric variable: first parameter.
+- Independet categorical variables: second parameter (a tidy column selection).
+- Independent metric variables: metric-parameter (a tidy column selection).
+- Interaction effects: interactions-parameter with a vector of multiplication terms (e.g. `c(sd_age * sd_gender)`)
 
-There are two functions: One for getting a regression table and one for plotting the regression coefficients.
+
 
 ```{r, eval=FALSE}
-
 ds |>
  filter(sd_gender != "diverse") |>
- model_metrics_tab(
+ report_metrics(
    use_work, 
-   categorical = c(sd_gender, adopter), 
-   metric = sd_age
+   cross = c(sd_gender, adopter), 
+   metric = sd_age,
+   model = TRUE
  )
+```
 
-ds |>
- filter(sd_gender != "diverse") |>
- model_metrics_plot(
+
+To work with the predicted values, use add_model() instead of the report function.
+This will add a new variable prefixes with `prd_` holding the target scores.
+
+
+```{r, eval=FALSE}
+ds <- |> add_model(
    use_work,
    categorical = c(sd_gender, adopter), 
    metric = sd_age
  )
 
-``` 
+report_metrics(data, use_work, prd_use_work, metric = T)
+```
+
+
+There are two functions to get the regression table or plot from the new column: 
+
+```{r, eval=FALSE}
+model_tab(ds, prd_use_work)
+model_plot(ds, prd_use_work)
+
+```
 
 
 

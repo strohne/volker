@@ -212,24 +212,54 @@ interested in factors or clusters.
 
 ## Modeling: Regression and Analysis of Variance
 
+## Modeling: Regression and Analysis of Variance
+
 Modeling in the statistical sense is predicting an outcome (dependent
-variable) from one or multiple predictors (independet variables).
+variable) from one or multiple predictors (independent variables).
 
-The model functions allow linear modeling by providing the outcome as
-first variable and a selection of categorical or metric predictor in the
-respective parameters.
+The report_metrics() function calculates a linear model if the model
+parameter is TRUE. You provide the variables in the following
+parameters:
 
-There are two functions: One for getting a regression table and one for
-plotting the regression coefficients.
+- Dependent metric variable: first parameter (a single column).  
+- Independet categorical variables: second parameter (a tidy column
+  selection).  
+- Independent metric variables: metric-parameter (a tidy column
+  selection).  
+- Interaction effects: interactions-parameter with a vector of
+  multiplication terms (e.g. `c(sd_age * sd_gender)`).
 
 ``` r
-data |>
+ds |>
  filter(sd_gender != "diverse") |>
- model_metrics_tab(use_work, categorical = c(sd_gender, adopter), metric = sd_age)
+ report_metrics(
+   use_work, 
+   cross = c(sd_gender, adopter), 
+   metric = sd_age,
+   model = TRUE
+ )
+```
 
-data |>
- filter(sd_gender != "diverse") |>
- model_metrics_plot(use_work, categorical = c(sd_gender, adopter), metric = sd_age)
+To work with the predicted values, use add_model() instead of the report
+function. This will add a new variable prefixes with `prd_` holding the
+target scores.
+
+``` r
+ds <- |> add_model(
+   use_work,
+   categorical = c(sd_gender, adopter), 
+   metric = sd_age
+ )
+
+report_metrics(data, use_work, prd_use_work, metric = T)
+```
+
+There are two functions to get the regression table or plot from the new
+column:
+
+``` r
+model_tab(ds, prd_use_work)
+model_plot(ds, prd_use_work)
 ```
 
 ## Where do all the labels go?

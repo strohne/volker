@@ -1186,6 +1186,7 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
 #' @param limits The scale limits, a list with x and y components, e.g. \code{list(x=c(0,100), y=c(20,100))}.
 #'               Set NULL to extract limits from the labels.
 #' @param log Whether to plot log scales.
+#' @param jitter Whether to jitter the points.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1200,7 +1201,7 @@ plot_metrics_one_grouped <- function(data, col, cross, ci = FALSE, box = FALSE, 
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_one_cor <- function(data, col, cross, limits = NULL, log = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_one_cor <- function(data, col, cross, limits = NULL, log = FALSE, jitter = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.numeric = c({{ col }}, {{ cross }}), clean = clean)
 
@@ -1244,7 +1245,8 @@ plot_metrics_one_cor <- function(data, col, cross, limits = NULL, log = FALSE, t
     ) +
     ggplot2::geom_point(
       size = VLKR_POINT_SIZE,
-      alpha =  vlkr_alpha_interpolated(nrow(data))
+      alpha =  vlkr_alpha_interpolated(nrow(data)),
+      position = ifelse(jitter,"jitter", "identity")
     )
 
   # Scale and limits

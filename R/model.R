@@ -12,8 +12,8 @@
 #'
 #' @param data A tibble.
 #' @param col The target column holding metric values.
-#' @param categorical A tidy column selection holding categorical variables.
-#' @param metric A tidy column selection holding metric variables.
+#' @param categorical A tidy column selection holding independet categorical variables.
+#' @param metric A tidy column selection holding independent metric variables.
 #' @param interactions A vector of interaction effects to calculate.
 #'                     Each interaction effect should be provided as multiplication of the variables.
 #'                     Example: `c(sd_gender * adopter)`.
@@ -319,6 +319,9 @@ add_model <- function(data, col, categorical, metric, interactions = NULL, label
   # Add column with fitted values and add the fit object as attribute
   newcol <- paste0("prd_", lhs)
   data[[newcol]] <- fit$fitted.values
+
+  base_label <- get_title(data, {{ col }})
+  attr(data[[newcol]], "comment") <- paste0("Predicted: ", base_label)
   attr(data[[newcol]], "lm.fit") <- fit
 
   data
@@ -337,7 +340,7 @@ add_model <- function(data, col, categorical, metric, interactions = NULL, label
 #'
 #' data <- add_model(data, use_work, metric = sd_age)
 #'
-#' fit <- attr(data$use_work, "lm.fit")
+#' fit <- attr(data$prd_use_work, "lm.fit")
 #' diagnostics_resid_fitted(fit)
 #' @export
 diagnostics_resid_fitted <- function(fit) {
@@ -369,7 +372,7 @@ diagnostics_resid_fitted <- function(fit) {
 #'
 #' data <- add_model(data, use_work, metric = sd_age)
 #'
-#' fit <- attr(data$use_work, "lm.fit")
+#' fit <- attr(data$prd_use_work, "lm.fit")
 #' diagnostics_qq(fit)
 #'
 #' @importFrom rlang .data
@@ -378,7 +381,7 @@ diagnostics_qq <- function(fit) {
 
   df <- data.frame(stdres = stats::rstandard(fit))
 
-  ggplot(df, aes(sample = .data$stdres)) +
+  ggplot2::ggplot(df, ggplot2::aes(sample = .data$stdres)) +
     ggplot2::stat_qq() +
     ggplot2::stat_qq_line(color = VLKR_COLOR_SMOOTH, linewidth = 1) +
     ggplot2::labs(
@@ -400,7 +403,7 @@ diagnostics_qq <- function(fit) {
 #'
 #' data <- add_model(data, use_work, metric = sd_age)
 #'
-#' fit <- attr(data$use_work, "lm.fit)
+#' fit <- attr(data$prd_use_work, "lm.fit)
 #' diagnostics_scale_location(fit")
 #'
 #' @importFrom rlang .data
@@ -411,7 +414,7 @@ diagnostics_scale_location <- function(fit) {
     Sqrt_Std_Resid = sqrt(abs(stats::rstandard(fit)))
   )
 
-  ggplot2::ggplot(df, aes(x = .data$Fitted, y = .data$Sqrt_Std_Resid)) +
+  ggplot2::ggplot(df, ggplot2::aes(x = .data$Fitted, y = .data$Sqrt_Std_Resid)) +
     ggplot2::geom_point() +
     ggplot2::geom_smooth(method = "loess", se = FALSE, linewidth = 1, col = VLKR_COLOR_SMOOTH) +
     ggplot2::labs(
@@ -432,7 +435,7 @@ diagnostics_scale_location <- function(fit) {
 #'
 #' data <- add_model(data, use_work, metric = sd_age)
 #'
-#' fit <- attr(data$use_work, "lm.fit")
+#' fit <- attr(data$prd_use_work, "lm.fit")
 #' diagnostics_cooksd(fit)
 #'
 #' @importFrom rlang .data
@@ -444,7 +447,7 @@ diagnostics_cooksd <- function(fit) {
     Observation = seq_along(cooksd),
     CookD = cooksd
   )
-  ggplot2::ggplot(df, aes(x = .data$Observation, y = .data$CookD)) +
+  ggplot2::ggplot(df, ggplot2::aes(x = .data$Observation, y = .data$CookD)) +
     ggplot2::geom_bar(stat = "identity", width = 0.3, fill = vlkr_colors_discrete(1)) +
     ggplot2::labs(
       title = "Cook's distance",

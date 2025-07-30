@@ -22,9 +22,9 @@ model_metrics_tab(
 
 \item{col}{The target column holding metric values.}
 
-\item{categorical}{A tidy column selection holding categorical variables.}
+\item{categorical}{A tidy column selection holding independet categorical variables.}
 
-\item{metric}{A tidy column selection holding metric variables.}
+\item{metric}{A tidy column selection holding independent metric variables.}
 
 \item{interactions}{A vector of interaction effects to calculate.
 Each interaction effect should be provided as multiplication of the variables.

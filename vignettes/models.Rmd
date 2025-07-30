@@ -64,20 +64,14 @@ data |>
 ## Interactions
 ```{r}
 
-data |> 
-  model_tab(
-    use_work, 
-    metric = c(sd_age),
-    categorical = c(sd_gender), 
-    interactions = c(sd_gender * sd_age)
-  )
 
 data |> 
-  model_plot(
+  report_metrics(
     use_work, 
+    c(sd_gender), 
     metric = c(sd_age),
-    categorical = c(sd_gender), 
-    interactions = c(sd_gender * sd_age)
+    interactions = c(sd_gender * sd_age),
+    model=T
   )
 
 ```
@@ -96,7 +90,7 @@ data <- add_model(
 model_tab(data, prd_use_work)
 model_plot(data, prd_use_work)
 
-report_metrics(data, use_work, prd_use_work, metric = T)
+report_metrics(data, use_work, prd_use_work, metric = TRUE, jitter = TRUE)
 
 ```
 

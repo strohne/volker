@@ -9,21 +9,13 @@
 \arguments{
 \item{data}{A data frame.}
 
-\item{cols}{A tidy column selection,
-e.g. a single column (without quotes)
-or multiple columns selected by methods such as starts_with().}
+\item{cols}{A a single column (without quotes).}
 
-\item{metric}{Not yet implemented. When crossing variables, the cross column parameter can contain categorical or metric values.
-By default, the cross column selection is treated as categorical data.
-Set metric to TRUE, to treat it as metric and calculate correlations.}
+\item{categorical}{A tidy column selection holding independet categorical variables.}
+
+\item{metric}{A tidy column selection holding independent metric variables.}
 
 \item{title}{Add a plot title (default = TRUE).}
-
-\item{cross}{Not yet implementedt. Optional, a grouping column (without quotes).}
-
-\item{k}{Number of factors to calculate.}
-
-\item{effect}{Not yet implemented. Whether to report statistical tests and effect sizes.}
 }
 \value{
 A list containing a table and a plot volker report chunk.
