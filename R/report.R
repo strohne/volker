@@ -49,7 +49,7 @@
 #' report_metrics(data, sd_age)
 #'
 #' @export
-report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index = FALSE, factors = FALSE, clusters = FALSE, effect = FALSE, title = TRUE, close = TRUE, clean = TRUE) {
+report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index = FALSE, factors = FALSE, clusters = FALSE, model = FALSE, effect = FALSE, title = TRUE, close = TRUE, clean = TRUE) {
 
   if (clean) {
     data <- data_clean(data, clean)
@@ -71,6 +71,18 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
     plot_title <- title
   }
 
+  # Prepare modeling
+  if (model) {
+    model.categorical <- rlang::enquo(cross)
+    model.metric <- rlang::enquo(metric)
+
+    if ((!rlang::quo_is_symbol(model.metric) && rlang::as_label(model.metric) == "FALSE")) {
+      model.metric <- NULL
+    }
+
+    metric <-  FALSE
+    cross <- NULL
+  }
 
   # Add Plot
   chunks <- plot_metrics(data, {{ cols }}, {{ cross }}, metric = metric, effect = effect, clean = clean, ..., title = plot_title) %>%
@@ -108,6 +120,12 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
     }
     fct <- .report_cls(data, {{ cols }}, {{ cross }}, metric = metric, k = clusters, ..., effect = effect, title = plot_title)
     chunks <- append(chunks, fct)
+  }
+
+  # Add model
+  if (!any(isFALSE(model))) {
+    mdl <- .report_mdl(data,{{ cols }}, categorical = !!model.categorical, metric = !!model.metric, ..., title = plot_title)
+    chunks <- append(chunks, mdl)
   }
 
   # Close tabs
@@ -344,6 +362,38 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
   chunks
 }
 
+
+#' Generate an model table and plot
+#'
+#' @keywords internal
+#'
+#' @param data A data frame.
+#' @param cols A tidy column selection,
+#'             e.g. a single column (without quotes)
+#'             or multiple columns selected by methods such as starts_with().
+#' @param cross Not yet implementedt. Optional, a grouping column (without quotes).
+#' @param metric Not yet implemented. When crossing variables, the cross column parameter can contain categorical or metric values.
+#'            By default, the cross column selection is treated as categorical data.
+#'            Set metric to TRUE, to treat it as metric and calculate correlations.
+#' @param k Number of factors to calculate.
+#' @param effect Not yet implemented. Whether to report statistical tests and effect sizes.
+#' @param title Add a plot title (default = TRUE).
+#' @return A list containing a table and a plot volker report chunk.
+.report_mdl <- function(data, cols, categorical = NULL, metric = NULL, ..., title = TRUE) {
+  chunks <- list()
+
+  scores <- add_model(data, {{ cols }}, {{ categorical }}, {{ metric }}, ...)
+  newcols <- setdiff(colnames(scores), colnames(data))
+
+  plt <- model_plot(scores, tidyselect::all_of(newcols),  ...)
+  chunks <- .add_to_vlkr_rprt(plt, chunks, "Model: Plot")
+
+  tab <- model_tab(scores, tidyselect::all_of(newcols), ...)
+  chunks <- .add_to_vlkr_rprt(tab ,chunks, "Model: Table")
+
+
+  chunks
+}
 
 #' Add vlkr_list class
 #'

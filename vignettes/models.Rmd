@@ -20,46 +20,43 @@ library(volker)
 
 # Load data 
 data <- volker::chatgpt
+data <- filter(data, sd_gender != "diverse") 
 ```
 
 ## One categorical and one metric independent variable
 ```{r}
-data |> 
-  filter(sd_gender != "diverse") |> 
-  model_tab(use_work, categorical = sd_gender, metric = sd_age)
 
-data |> 
-  filter(sd_gender != "diverse") |> 
-  model_plot(use_work, categorical = sd_gender, metric = sd_age)
+report_metrics(data, use_work, sd_gender, metric = sd_age, model = TRUE, diagnostics = TRUE)
 
 ```
 
 
 ## Multiple categorical and metric independent variables
 ```{r}
-data |> 
-  filter(sd_gender != "diverse") |> 
-  model_tab(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption"), sd_age))
 
-data |> 
-  filter(sd_gender != "diverse") |> 
-  model_plot(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption"), sd_age))
+report_metrics(
+  data,
+  use_work, 
+  c(sd_gender, adopter), 
+  metric = c(starts_with("cg_adoption"), sd_age), 
+  model = TRUE,
+  diagnostics = TRUE
+)
 
 ```
 
 
-## Index as independet variable
+## Index as independent variable
 ```{r}
 
 data |> 
-  filter(sd_gender != "diverse") |>
   add_index(starts_with("cg_adoption")) |> 
-  model_tab(use_work, categorical = c(sd_gender, adopter), metric = c(idx_cg_adoption, sd_age))
-
-data |> 
-  filter(sd_gender != "diverse") |>
-  add_index(starts_with("cg_adoption")) |> 
-  model_plot(use_work, categorical = c(sd_gender, adopter), metric = c(idx_cg_adoption, sd_age))
+  report_metrics(
+    use_work, 
+    c(sd_gender, adopter), 
+    metric = c(idx_cg_adoption, sd_age),
+    model = TRUE
+  )
 
 ```
 
@@ -68,7 +65,6 @@ data |>
 ```{r}
 
 data |> 
-  filter(sd_gender != "diverse") |>
   model_tab(
     use_work, 
     metric = c(sd_age),
@@ -77,13 +73,30 @@ data |>
   )
 
 data |> 
-  filter(sd_gender != "diverse") |>
   model_plot(
     use_work, 
     metric = c(sd_age),
     categorical = c(sd_gender), 
     interactions = c(sd_gender * sd_age)
   )
+
+```
+
+## Add predicted values to data frame
+```{r}
+
+data <- add_model(
+  data, 
+  use_work, 
+  categorical = c(sd_gender), 
+  metric = c(use_private),
+  interactions = c(sd_gender * use_private)
+)
+
+model_tab(data, prd_use_work)
+model_plot(data, prd_use_work)
+
+report_metrics(data, use_work, prd_use_work, metric = T)
 
 ```
 

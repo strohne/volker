@@ -13,6 +13,7 @@ report_metrics(
   index = FALSE,
   factors = FALSE,
   clusters = FALSE,
+  model = FALSE,
   effect = FALSE,
   title = TRUE,
   close = TRUE,
