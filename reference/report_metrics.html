@@ -51,6 +51,7 @@ See <a href="plot_metrics.html">plot_metrics</a> and <a href="tab_metrics.html">
 <span>  index <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  factors <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  clusters <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  model <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  effect <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  close <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -79,7 +80,10 @@ or multiple columns selected by methods such as starts_with().</p></dd>
 <dt id="arg-metric">metric<a class="anchor" aria-label="anchor" href="#arg-metric"></a></dt>
 <dd><p>When crossing variables, the cross column parameter can contain categorical or metric values.
 By default, the cross column selection is treated as categorical data.
-Set metric to TRUE, to treat it as metric and calculate correlations.</p></dd>
+Set metric to TRUE, to treat it as metric and calculate correlations.
+Alternatively, for multivariable models (if the model parameter is TRUE),
+provide the metric column selection in the metric parameter
+and the categorical column selection in the cross parameter.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -109,6 +113,18 @@ Cluster are determined using kmeans after scaling the items.
 Set to FALSE to suppress cluster analysis.
 Set to TRUE to output a scree plot and automatically choose the number of clusters based on the elbow criterion.
 See <a href="add_clusters.html">add_clusters</a>.</p></dd>
+
+
+<dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
+<dd><p>Set to TRUE for multivariable models.
+The dependent variable must be provided in the first parameter (cols).
+Independent categorical variables are provided in the second parameter (cross),
+which supports tidy column selections or vectors of multiple columns.
+Independent metric variables are provided in the metric parameter
+as tidy column selections or vectors of multiple columns.
+Interaction terms are provided in the interactions parameter and passed to the model functions.
+You can get diagnostic plots by setting the diagnostics parameter to TRUE.
+See <a href="model_metrics_tab.html">model_metrics_tab</a>,  <a href="model_metrics_plot.html">model_metrics_plot</a> and  <a href="add_model.html">add_model</a> for further options.</p></dd>
 
 
 <dt id="arg-effect">effect<a class="anchor" aria-label="anchor" href="#arg-effect"></a></dt>

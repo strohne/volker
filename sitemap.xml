@@ -31,6 +31,7 @@
 <url><loc>https://strohne.github.io/volker/reference/add_clusters.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/add_factors.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/add_index.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/add_model.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/cfg_get_na_numbers.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/chatgpt.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/check_has_column.html</loc></url>
@@ -52,6 +53,10 @@
 <url><loc>https://strohne.github.io/volker/reference/data_rm_na_numbers.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_rm_negatives.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_rm_zeros.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/diagnostics_cooksd.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/diagnostics_qq.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/diagnostics_resid_fitted.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/diagnostics_scale_location.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-add_to_vlkr_rprt.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-attr_insert.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-attr_transfer.html</loc></url>
@@ -75,6 +80,7 @@
 <url><loc>https://strohne.github.io/volker/reference/dot-report_cls.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-report_fct.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-report_idx.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-report_mdl.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-tab_split.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-to_vlkr_df.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-to_vlkr_list.html</loc></url>

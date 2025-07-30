@@ -210,27 +210,52 @@ All table functions return data frames that can be processed further. The tables
 <div class="section level2">
 <h2 id="modeling-regression-and-analysis-of-variance">Modeling: Regression and Analysis of Variance<a class="anchor" aria-label="anchor" href="#modeling-regression-and-analysis-of-variance"></a>
 </h2>
-<p>Modeling in the statistical sense is predicting an outcome (dependent variable) from one or multiple predictors (independet variables).</p>
-<p>The model functions allow linear modeling by providing the outcome as first variable and a selection of categorical or metric predictor in the respective parameters.</p>
-<p>There are two functions: One for getting a regression table and one for plotting the regression coefficients.</p>
+</div>
+<div class="section level2">
+<h2 id="modeling-regression-and-analysis-of-variance-1">Modeling: Regression and Analysis of Variance<a class="anchor" aria-label="anchor" href="#modeling-regression-and-analysis-of-variance-1"></a>
+</h2>
+<p>Modeling in the statistical sense is predicting an outcome (dependent variable) from one or multiple predictors (independent variables).</p>
+<p>The report_metrics() function calculates a linear model if the model parameter is TRUE. You provide the variables in the following parameters:</p>
+<ul>
+<li>Dependent metric variable: first parameter (a single column).<br>
+</li>
+<li>Independet categorical variables: second parameter (a tidy column selection).<br>
+</li>
+<li>Independent metric variables: metric-parameter (a tidy column selection).<br>
+</li>
+<li>Interaction effects: interactions-parameter with a vector of multiplication terms (e.g. <code>c(sd_age * sd_gender)</code>).</li>
+</ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">ds</span> <span class="op">|&gt;</span></span>
 <span> <span class="fu"><a href="reference/filter.html">filter</a></span><span class="op">(</span><span class="va">sd_gender</span> <span class="op">!=</span> <span class="st">"diverse"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span> <span class="fu"><a href="reference/model_metrics_tab.html">model_metrics_tab</a></span><span class="op">(</span><span class="va">use_work</span>, categorical <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">sd_gender</span>, <span class="va">adopter</span><span class="op">)</span>, metric <span class="op">=</span> <span class="va">sd_age</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">data</span> <span class="op">|&gt;</span></span>
-<span> <span class="fu"><a href="reference/filter.html">filter</a></span><span class="op">(</span><span class="va">sd_gender</span> <span class="op">!=</span> <span class="st">"diverse"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span> <span class="fu"><a href="reference/model_metrics_plot.html">model_metrics_plot</a></span><span class="op">(</span><span class="va">use_work</span>, categorical <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">sd_gender</span>, <span class="va">adopter</span><span class="op">)</span>, metric <span class="op">=</span> <span class="va">sd_age</span><span class="op">)</span></span></code></pre></div>
+<span> <span class="fu"><a href="reference/report_metrics.html">report_metrics</a></span><span class="op">(</span></span>
+<span>   <span class="va">use_work</span>, </span>
+<span>   cross <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">sd_gender</span>, <span class="va">adopter</span><span class="op">)</span>, </span>
+<span>   metric <span class="op">=</span> <span class="va">sd_age</span>,</span>
+<span>   model <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span> <span class="op">)</span></span></code></pre></div>
+<p>To work with the predicted values, use add_model() instead of the report function. This will add a new variable prefixes with <code>prd_</code> holding the target scores.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>ds <span class="ot">&lt;-</span> <span class="er">|&gt;</span> <span class="fu">add_model</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>   use_work,</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>   <span class="at">categorical =</span> <span class="fu">c</span>(sd_gender, adopter), </span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>   <span class="at">metric =</span> sd_age</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a> )</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="fu">report_metrics</span>(data, use_work, prd_use_work, <span class="at">metric =</span> T)</span></code></pre></div>
+<p>There are two functions to get the regression table or plot from the new column:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/model_metrics_tab.html">model_tab</a></span><span class="op">(</span><span class="va">ds</span>, <span class="va">prd_use_work</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/model_metrics_plot.html">model_plot</a></span><span class="op">(</span><span class="va">ds</span>, <span class="va">prd_use_work</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="where-do-all-the-labels-go">Where do all the labels go?<a class="anchor" aria-label="anchor" href="#where-do-all-the-labels-go"></a>
 </h2>
 <p>One of the strongest package features is labeling. You know the pain. Labels are stored in the column attributes. Inspect current labels of columns and values by the <code><a href="reference/codebook.html">codebook()</a></code>-function:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/codebook.html">codebook</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div>
 <p>This results in a table with item names, item values, value names and value labels.</p>
 <p>You can set specific column labels by providing a named list to the items-parameter of <code><a href="reference/labs_apply.html">labs_apply()</a></code>:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/labs_apply.html">labs_apply</a></span><span class="op">(</span></span>
 <span>    items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -242,7 +267,7 @@ All table functions return data frames that can be processed further. The tables
 <span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="reference/tab_metrics.html">tab_metrics</a></span><span class="op">(</span><span class="fu"><a href="reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_advantage_"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Labels for values inside a column can be adjusted by providing a named list to the values-parameter of <code><a href="reference/labs_apply.html">labs_apply()</a></code>. In addition, select the columns where value labels should be changed:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">data</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/labs_apply.html">labs_apply</a></span><span class="op">(</span></span>
@@ -257,7 +282,7 @@ All table functions return data frames that can be processed further. The tables
 <span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="reference/plot_metrics.html">plot_metrics</a></span><span class="op">(</span><span class="fu"><a href="reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>To conveniently manage all labels of a dataset, save the result of <code><a href="reference/codebook.html">codebook()</a></code> to an Excel file, change the labels manually in a copy of the Excel file, and finally call <code><a href="reference/labs_apply.html">labs_apply()</a></code> with your revised codebook.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org" class="external-link">readxl</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ropensci.r-universe.dev/writexl" class="external-link">writexl</a></span><span class="op">)</span></span>
@@ -270,7 +295,7 @@ All table functions return data frames that can be processed further. The tables
 <span><span class="va">codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="st">"codebook_revised.xlsx"</span><span class="op">)</span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/labs_apply.html">labs_apply</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">codes</span><span class="op">)</span></span></code></pre></div>
 <p>Be aware that some data operations such as <code><a href="reference/mutate.html">mutate()</a></code> from the tidyverse loose labels on their way. In this case, store the labels (in the codebook attribute of the data frame) before the operation and restore them afterwards:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/labs_store.html">labs_store</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/mutate.html">mutate</a></span><span class="op">(</span>sd_age <span class="op">=</span> <span class="fl">2024</span> <span class="op">-</span> <span class="va">sd_age</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
@@ -282,7 +307,7 @@ All table functions return data frames that can be processed further. The tables
 <h2 id="sosci-survey-integration">SoSci Survey integration<a class="anchor" aria-label="anchor" href="#sosci-survey-integration"></a>
 </h2>
 <p>The labeling mechanisms follow a technique used, for example, on <a href="https://www.soscisurvey.de/" class="external-link">SoSci Survey</a>. Sidenote for techies: Labels are stored in the column attributes. That’s why you can directly throw in labeled data from the SoSci Survey API:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/strohne/volker" class="external-link">volker</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Get your API link from SoSci Survey with settings "Daten als CSV für R abrufen"</span></span>
@@ -297,7 +322,7 @@ All table functions return data frames that can be processed further. The tables
 <h2 id="customization">Customization<a class="anchor" aria-label="anchor" href="#customization"></a>
 </h2>
 <p>You can change plot colors using the <code><a href="reference/theme_vlkr.html">theme_vlkr()</a></code>-function:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/theme_set.html">theme_set</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="reference/theme_vlkr.html">theme_vlkr</a></span><span class="op">(</span></span>
 <span>    base_fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#F0983A"</span>,<span class="st">"#3ABEF0"</span>,<span class="st">"#95EF39"</span>,<span class="st">"#E35FF5"</span>,<span class="st">"#7A9B59"</span><span class="op">)</span>,</span>
@@ -381,19 +406,19 @@ All table functions return data frames that can be processed further. The tables
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>As with all other packages you’ll have to install the package first.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"strohne/volker"</span><span class="op">)</span></span></code></pre></div>
 <p>You can try alternative versions:</p>
 <ul>
 <li>
 <p>If you want, install the main version from GitHub using remotes, which may include features not yet published on CRAN (if asked, skip the updates):</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span> <span class="op">}</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"strohne/volker"</span>, upgrade<span class="op">=</span><span class="st">"never"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </li>
 <li>
 <p>In case you are adventurous, try the latest experimental development version which lives in the devel branch (if asked, skip the updates):</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span> <span class="op">}</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"strohne/volker"</span>, ref<span class="op">=</span><span class="st">"devel"</span>, upgrade<span class="op">=</span><span class="st">"never"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </li>
@@ -419,7 +444,7 @@ All table functions return data frames that can be processed further. The tables
 <h2 id="troubleshooting">Troubleshooting<a class="anchor" aria-label="anchor" href="#troubleshooting"></a>
 </h2>
 <p>The kableExtra package produces an error in R 4.3 when knitting documents: <code>.onLoad in loadNamespace() für 'kableExtra' fehlgeschlagen</code>. As a work around, remove PDF and Word settings from the output options in you markdown document (the yml section at the top). Alternatively, install the latest development version:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"kupietz/kableExtra"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"kupietz/kableExtra"</span>)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="roadmap">Roadmap<a class="anchor" aria-label="anchor" href="#roadmap"></a>
