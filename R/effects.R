@@ -1364,7 +1364,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 
     result = list(
       "R-squared" = round(as.numeric(fit$estimate^2),2),
-      n = length(x),
+      n = sum(!is.na(x) & !is.na(y)),
       "Pearson's r" = round(as.numeric(fit$estimate),2),
       "ci low" = round(as.numeric(fit$conf.int[1]),2),
       "ci high" = round(as.numeric(fit$conf.int[2]),2),
@@ -1377,6 +1377,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 
   return (result)
 }
+
 
 #' Calculate nmpi
 #'

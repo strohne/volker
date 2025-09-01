@@ -109,7 +109,7 @@
       |Not using ChatGPT is considered being an outsider.          |          46% (45)| 27% (26)| 14% (14)|   7% (7)|         5% (5)| 100% (97)|
       |Using ChatGPT brings me recognition from my environment.    |          33% (32)| 27% (26)| 21% (20)| 13% (13)|         6% (6)| 100% (97)|
       
-      4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted.
       
 
 # Frequency table for multiple categorical variables with percent
@@ -134,7 +134,7 @@
       |Not using ChatGPT is considered being an outsider.          |               46%|      27%|     14%|    7%|             5%|  100%|
       |Using ChatGPT brings me recognition from my environment.    |               33%|      27%|     21%|   13%|             6%|  100%|
       
-      4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted.
       
 
 # Frequency table for multiple categorical variables with counts
@@ -159,7 +159,7 @@
       |Not using ChatGPT is considered being an outsider.          |                45|       26|      14|     7|              5|    97|
       |Using ChatGPT brings me recognition from my environment.    |                32|       26|      20|    13|              6|    97|
       
-      4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted.
       
 
 # Frequency table for multiple categorical variables by grouping variable
@@ -185,14 +185,14 @@
       |Not using ChatGPT is considered being an outsider.          | 12% (12)|   3% (1)| 17% (10)| 100% (1)|
       |Using ChatGPT brings me recognition from my environment.    | 20% (19)|  16% (6)| 22% (13)|   0% (0)|
       
-      Frequencies based on values: agree, strongly agree. 4 missing case(s) omitted.
+      n=97. Frequencies based on values: agree, strongly agree. 4 missing case(s) omitted.
       
 
 # Frequency table for multiple categorical variables by binary grouping variable
 
     Code
       volker::tab_counts(data, tidyselect::starts_with("cg_adoption_advantage"),
-      sd_gender, cran = TRUE)
+      sd_gender)
     Output
       
       
@@ -203,7 +203,7 @@
       |3                       | 63% (64)| 68% (27)| 60% (36)| 100% (1)|
       |4                       | 54% (55)| 62% (25)| 50% (30)|   0% (0)|
       
-      Frequencies based on values: TRUE.
+      n=101. Frequencies based on values: TRUE.
       
 
 # Distribution table for age
@@ -223,6 +223,9 @@
       |mean   |  39.7|
       |sd     |  13.8|
       |n      |   101|
+      
+      n=101.
+      
 
 # Distribution table for age with ci
 
@@ -243,6 +246,9 @@
       |ci low  |    37|
       |ci high |  42.4|
       |n       |   101|
+      
+      n=101.
+      
 
 # Group comparison of a metric variable
 
@@ -257,6 +263,9 @@
       |male    |  19| 32.5|   38.5| 52.0|  68| 41.2| 14.0|  60|
       |diverse |  33| 33.0|   33.0| 33.0|  33| 33.0|     |   1|
       |total   |  18| 27.0|   38.0| 52.0|  68| 39.7| 13.8| 101|
+      
+      n=101.
+      
 
 # Correlations with two variables
 
@@ -268,6 +277,9 @@
       |Item 1                  |             Item 2|   n| Pearson's r|
       |:-----------------------|------------------:|---:|-----------:|
       |in professional context | in private context| 101|        0.37|
+      
+      n=101.
+      
 
 # Correlations with two variables with no common prefix
 
@@ -279,6 +291,9 @@
       |Item 1 |                    Item 2|   n| Pearson's r|
       |:------|-------------------------:|---:|-----------:|
       |Age    | Usage: in private context| 101|       -0.19|
+      
+      n=101.
+      
 
 # Correlation with two variables and ci
 
@@ -290,6 +305,9 @@
       |Item 1                  |             Item 2|   n| Pearson's r| ci low| ci high|
       |:-----------------------|------------------:|---:|-----------:|------:|-------:|
       |in professional context | in private context| 101|        0.37|   0.19|    0.53|
+      
+      n=101.
+      
 
 # Correlation with two variables and spearman
 
@@ -301,6 +319,9 @@
       |Item 1                  |             Item 2|   n| Spearman's rho|
       |:-----------------------|------------------:|---:|--------------:|
       |in professional context | in private context| 101|           0.33|
+      
+      n=101.
+      
 
 # Distribution table for multiple metric items
 
@@ -324,7 +345,7 @@
       |Not using ChatGPT is considered being an outsider.          |   1|  1|      2|  3|   5|  2.0| 1.2| 97|
       |Using ChatGPT brings me recognition from my environment.    |   1|  1|      2|  3|   5|  2.3| 1.2| 97|
       
-      4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted.
       
 
 # Distribution table for multiple metric items with ci
@@ -349,7 +370,7 @@
       |Not using ChatGPT is considered being an outsider.          |   1|  1|      2|  3|   5|  2.0| 1.2|    1.7|     2.2| 97|
       |Using ChatGPT brings me recognition from my environment.    |   1|  1|      2|  3|   5|  2.3| 1.2|    2.1|     2.6| 97|
       
-      4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted.
       
 
 # Compare means of multiple items with and without common prefix
@@ -375,7 +396,7 @@
       |Using ChatGPT brings me recognition from my environment.    | 2.3 (1.2)| 2.4 (1.2)| 2.3 (1.3)| 3.0 (NA)|
       |n                                                           |        97|        37|        59|        1|
       
-      4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted.
       
 
 ---
@@ -390,6 +411,9 @@
       |Age                            | 39.7 (13.8)| 37.5 (13.4)| 41.2 (14.0)| 33.0 (NA)|
       |Usage: in professional context |  2.4 ( 1.4)|  2.5 ( 1.6)|  2.3 ( 1.3)|  4.0 (NA)|
       |n                              |         101|          40|          60|         1|
+      
+      n=101.
+      
 
 # Compare means of multiple items with sd or mean
 
@@ -415,7 +439,7 @@
       |Using ChatGPT brings me recognition from my environment.    |   1.2|    1.2|  1.3|        |
       |n                                                           |  97.0|   37.0| 59.0|       1|
       
-      4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted.
       
 
 ---
@@ -442,7 +466,7 @@
       |Using ChatGPT brings me recognition from my environment.    |   2.3|    2.4|  2.3|       3|
       |n                                                           |  97.0|   37.0| 59.0|       1|
       
-      4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted.
       
 
 # Correlations of an item battery with one variable
@@ -532,7 +556,7 @@
       |Using ChatGPT brings me recognition from my environment.    |      in private context|        0.42|
       |Using ChatGPT brings me recognition from my environment.    | in professional context|        0.46|
       
-      4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted.
       
 
 ---
@@ -690,7 +714,7 @@
       |Using ChatGPT brings me recognition from my environment.    |          Not using ChatGPT is considered being an outsider.|        0.56|
       |Using ChatGPT brings me recognition from my environment.    |    Using ChatGPT brings me recognition from my environment.|        1.00|
       
-      4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted.
       
 
 # Correlate two item batteries with ci
@@ -712,7 +736,7 @@
       |Compared to other systems, using ChatGPT is more fun.       |      in private context|        0.47|   0.30|    0.61|
       |Compared to other systems, using ChatGPT is more fun.       | in professional context|        0.27|   0.07|    0.44|
       
-      2 missing case(s) omitted.
+      n=99. 2 missing case(s) omitted.
       
 
 # Correlate two item batteries with spearman
@@ -750,7 +774,7 @@
       |Using ChatGPT brings me recognition from my environment.    |      in private context|           0.36|
       |Using ChatGPT brings me recognition from my environment.    | in professional context|           0.40|
       
-      4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted.
       
 
 # Missing values make no trouble
@@ -776,7 +800,7 @@
       |social_04    | 2.3 (1.2)| 3.0 (NA)| 2.4 (1.2)| 2.3 (1.3)|
       |n            |       101|        1|        40|        60|
       
-      3 missing case(s) omitted.
+      n=101. 3 missing case(s) omitted.
       
 
 # Item order is kept
@@ -792,6 +816,9 @@
       |1  | 67% (2)| 33% (1)| 100% (3)|
       |2  | 33% (1)| 67% (2)| 100% (3)|
       |10 | 67% (2)| 33% (1)| 100% (3)|
+      
+      n=3.
+      
 
 # Values are relabeled
 
@@ -807,4 +834,228 @@
       |Weiblich  |  18| 25.8|   38.0| 44.2|  63| 37.5| 13.4|  40|
       |Maennlich |  19| 32.5|   38.5| 52.0|  68| 41.2| 14.0|  60|
       |total     |  18| 27.0|   38.0| 52.0|  68| 39.7| 13.8| 100|
+      
+      n=100.
+      
+
+# Missing values are skipped in item batteries
+
+    Code
+      volker::tab_counts(data_with_missings, starts_with("f"))
+    Output
+      
+      
+      |f  |       1|       2|       3|       4|    total|
+      |:--|-------:|-------:|-------:|-------:|--------:|
+      |1  | 25% (1)| 25% (1)| 25% (1)| 25% (1)| 100% (4)|
+      |2  |  0% (0)| 33% (1)| 33% (1)| 33% (1)| 100% (3)|
+      |3  | 50% (1)|  0% (0)|  0% (0)| 50% (1)| 100% (2)|
+      
+      n=4. 3 case(s) with missing values.
+      
+
+---
+
+    Code
+      volker::tab_metrics(data_with_missings, starts_with("f"))
+    Output
+      
+      
+      |f  | min|  q1| median|  q3| max| mean|  sd|  n|
+      |:--|---:|---:|------:|---:|---:|----:|---:|--:|
+      |1  |   1| 1.8|    2.5| 3.2|   4|  2.5| 1.3|  4|
+      |2  |   2| 2.5|    3.0| 3.5|   4|  3.0| 1.0|  3|
+      |3  |   1| 1.8|    2.5| 3.2|   4|  2.5| 2.1|  2|
+      
+      n=4. 3 case(s) with missing values.
+      
+
+# Missing values are skipped in single variables
+
+    Code
+      volker::tab_counts(data_with_missings, f2)
+    Output
+      
+      
+      |f2    |  n|    p|
+      |:-----|--:|----:|
+      |2     |  1|  50%|
+      |3     |  1|  50%|
+      |total |  2| 100%|
+      
+      n=3. 1 case(s) with missing values.
+      
+
+---
+
+    Code
+      volker::tab_metrics(data_with_missings, f2)
+    Output
+      
+      
+      |f2     | value|
+      |:------|-----:|
+      |min    |     2|
+      |q1     |   2.2|
+      |median |   2.5|
+      |q3     |   2.8|
+      |max    |     3|
+      |mean   |   2.5|
+      |sd     |   0.7|
+      |n      |     2|
+      
+      n=3. 1 case(s) with missing values.
+      
+
+# Missing values are skipped in item comparisons
+
+    Code
+      volker::tab_counts(data_with_missings, starts_with("f"), gr)
+    Output
+      
+      
+      |f  |   total|       A|      B|     NA|
+      |:--|-------:|-------:|------:|------:|
+      |1  | 20% (1)| 33% (1)| 0% (0)| 0% (0)|
+      |2  |  0% (0)|  0% (0)| 0% (0)| 0% (0)|
+      |3  | 20% (1)| 33% (1)| 0% (0)| 0% (0)|
+      
+      n=5. Frequencies based on values: 1. 4 case(s) with missing values.
+      
+
+---
+
+    Code
+      volker::tab_metrics(data_with_missings, starts_with("f"), gr)
+    Output
+      
+      
+      |f  |     total|         A|        B| NA|
+      |:--|---------:|---------:|--------:|--:|
+      |1  | 3.0 (1.6)| 2.7 (1.5)| 2.0 (NA)|   |
+      |2  | 3.5 (1.3)| 3.5 (0.7)| 2.0 (NA)|   |
+      |3  | 3.3 (2.1)| 2.5 (2.1)| NaN (NA)|   |
+      |n  |         5|         3|        1|  1|
+      
+      n=5. 4 case(s) with missing values.
+      
+
+# Missing values are skipped in single variable comparisons
+
+    Code
+      volker::tab_counts(data_with_missings, f2, gr)
+    Output
+      
+      
+      |f2      |    total|       B|       A| missing|
+      |:-------|--------:|-------:|-------:|-------:|
+      |2       |  20% (1)| 20% (1)|  0% (0)|  0% (0)|
+      |3       |  20% (1)|  0% (0)| 20% (1)|  0% (0)|
+      |4       |  20% (1)|  0% (0)| 20% (1)|  0% (0)|
+      |5       |  20% (1)|  0% (0)|  0% (0)| 20% (1)|
+      |missing |  20% (1)|  0% (0)| 20% (1)|  0% (0)|
+      |total   | 100% (5)| 20% (1)| 60% (3)| 20% (1)|
+      
+      n=5. 2 case(s) with missing values.
+      
+
+---
+
+    Code
+      volker::tab_metrics(data_with_missings, f2, gr)
+    Output
+      
+      
+      |gr    | min|  q1| median|  q3| max| mean|  sd|  n|
+      |:-----|---:|---:|------:|---:|---:|----:|---:|--:|
+      |A     |   3| 3.2|    3.5| 3.8|   4|  3.5| 0.7|  2|
+      |B     |   2| 2.0|    2.0| 2.0|   2|  2.0|    |  1|
+      |      |   5| 5.0|    5.0| 5.0|   5|  5.0|    |  1|
+      |total |   2| 2.8|    3.5| 4.2|   5|  3.5| 1.3|  4|
+      
+      n=5. 2 case(s) with missing values.
+      
+
+# Missing values are skipped in single variable correlations
+
+    Code
+      volker::tab_counts(data_with_missings, f2, gr, metric = TRUE)
+    Output
+      
+      
+      |f2      |    total|  Low gr| High gr| missing|
+      |:-------|--------:|-------:|-------:|-------:|
+      |2       |  20% (1)| 20% (1)|  0% (0)|  0% (0)|
+      |3       |  20% (1)|  0% (0)| 20% (1)|  0% (0)|
+      |4       |  20% (1)|  0% (0)| 20% (1)|  0% (0)|
+      |5       |  20% (1)|  0% (0)|  0% (0)| 20% (1)|
+      |missing |  20% (1)| 20% (1)|  0% (0)|  0% (0)|
+      |total   | 100% (5)| 40% (2)| 40% (2)| 20% (1)|
+      
+      n=5. gr split at median 2.5. 2 case(s) with missing values.
+      
+
+---
+
+    Code
+      volker::tab_metrics_one_cor(data_with_missings, f2, gr, metric = TRUE)
+    Output
+      
+      
+      |Item 1 | Item 2|  n| Pearson's r|
+      |:------|------:|--:|-----------:|
+      |f2     |     gr|  3|           1|
+      
+      n=5. 2 case(s) with missing values.
+      
+
+# Missing values are skipped in item correlations with another variable
+
+    Code
+      volker::tab_counts(data_with_missings, starts_with("f"), gr, metric = TRUE)
+    Output
+      
+      
+      |f  |   total| High gr|  Low gr|     NA|
+      |:--|-------:|-------:|-------:|------:|
+      |1  | 17% (1)|  0% (0)| 50% (1)| 0% (0)|
+      |2  |  0% (0)|  0% (0)|  0% (0)| 0% (0)|
+      |3  | 17% (1)|  0% (0)| 50% (1)| 0% (0)|
+      
+      n=6. Frequencies based on values: 1. gr split at median 3. 4 case(s) with missing values.
+      
+
+---
+
+    Code
+      volker::tab_metrics_one_cor(data_with_missings, starts_with("f"), gr, metric = TRUE)
+    Output
+      
+      
+      |Item 1 | Item 2|  n| Pearson's r|
+      |:------|------:|--:|-----------:|
+      |f1     |     gr|  5|           1|
+      |f2     |     gr|  4|           1|
+      |f3     |     gr|  3|           1|
+      
+      n=6. 4 case(s) with missing values.
+      
+
+# Missing values are skipped in item correlations with items
+
+    Code
+      volker::tab_metrics(data_with_missings, starts_with("f"), starts_with("g"),
+      metric = TRUE)
+    Output
+      
+      
+      |f  |  g| Pearson's r|
+      |:--|--:|-----------:|
+      |1  |  1|           1|
+      |1  |  2|           1|
+      |2  |  1|           1|
+      |2  |  2|           1|
+      
+      n=6. 4 case(s) with missing values.
+      
 

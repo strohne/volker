@@ -282,7 +282,7 @@ tab_counts_one <- function(data, col, ci = FALSE, percent = TRUE, labels = TRUE,
 
   digits <- ifelse(percent, 0, 2)
 
-  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data, c("missings", "cases"))
   .to_vlkr_tab(result, digits=digits)
 }
 
@@ -474,7 +474,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
       result <- dplyr::rename(result, {{ title }} := {{ col }})
   }
 
-  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data, c("missings", "cases"))
   .to_vlkr_tab(result, digits=0)
 }
 
@@ -518,7 +518,7 @@ tab_counts_one_cor <- function(data, col, cross, prop = "total", percent = TRUE,
     ...
   )
 
-  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data, c("missings","cases"))
   result <- .attr_transfer(result, data[[rlang::as_string(rlang::ensym(cross))]], "split")
 
   result
@@ -696,10 +696,10 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
       count = .to_vlkr_tab(result),
       ci = .to_vlkr_tab(result_ci, digits=2)
     )
-    result <- .attr_transfer(result, data, "missings")
+    result <- .attr_transfer(result, data, c("missings", "cases"))
     result <- .to_vlkr_list(result)
   } else {
-    result <- .attr_transfer(result, data, "missings")
+    result <- .attr_transfer(result, data, c("missings", "cases"))
     result <- .to_vlkr_tab(result, digits= 0)
   }
 
@@ -926,7 +926,7 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 
   # Add baseline
   attr(result, "focus") <- base_labels
-  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data, c("missings", "cases"))
 
   .to_vlkr_tab(result)
 
@@ -993,7 +993,7 @@ tab_counts_items_grouped_items <- function(data, cols, cross, method = "cramer",
     colnames(result)[2] <- prefix2
   }
 
-  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data, c("missings","cases"))
   .to_vlkr_tab(result, digits = 2)
 }
 
@@ -1040,7 +1040,7 @@ tab_counts_items_cor <- function(data, cols, cross, category = NULL, split = NUL
   # 3. Output
   result <- tab_counts_items_grouped(data, {{ cols }}, {{ cross }}, category = category, percent = percent, values = values, title = title, labels = labels, clean = clean, ...)
 
-  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data, c("missings","cases"))
   result <- .attr_transfer(result, data[[rlang::as_string(rlang::ensym(cross))]], "split")
 
   result
@@ -1125,7 +1125,7 @@ tab_metrics_one <- function(data, col, ci = FALSE, digits = 1, labels = TRUE, cl
   #     alpha = "numeric.alpha"
   #   )
 
-  # 3. Remove items and alpha if not and index
+  # 3. Remove items and alpha if not an index
   if (all(is.na(result$items)) || all(is.na(result$alpha))) {
     result$items <- NULL
     result$alpha <- NULL
@@ -1150,7 +1150,8 @@ tab_metrics_one <- function(data, col, ci = FALSE, digits = 1, labels = TRUE, cl
     label <- get_title(data, {{ col }})
     result <- dplyr::rename(result, {{ label }} := {{ col }})
   }
-  result <- .attr_transfer(result, data, "missings")
+
+  result <- .attr_transfer(result, data, c("missings", "cases"))
   .to_vlkr_tab(result)
 }
 
@@ -1257,7 +1258,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, digits = 1, la
 
   # TODO: Add limits
   # attr(data[[newcol]],"limits")
-  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data, c("missings", "cases"))
   .to_vlkr_tab(result, digits= digits)
 }
 
@@ -1323,7 +1324,7 @@ tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE
     dplyr::rename("Item 1" = tidyselect::all_of("item1")) |>
     dplyr::rename("Item 2" = tidyselect::all_of("item2"))
 
-  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data, c("missings","cases"))
   .to_vlkr_tab(result, digits = digits, caption = title)
 }
 
@@ -1405,7 +1406,7 @@ tab_metrics_items <- function(data, cols, ci = FALSE, digits = 1, labels = TRUE,
     result <- dplyr::rename(result, Item = tidyselect::all_of("item"))
   }
 
-  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data, c("missings", "cases"))
   .to_vlkr_tab(result, digits= digits)
 }
 
@@ -1501,7 +1502,7 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
     result <- dplyr::rename(result, Item = tidyselect::all_of("item"))
   }
 
-  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data, c("missings","cases"))
   .to_vlkr_tab(result, digits= digits)
 }
 
@@ -1646,7 +1647,6 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
     }
   }
 
-
   result <- dplyr::select(result, tidyselect::all_of(result_cols))
 
   # 4. Labels
@@ -1672,7 +1672,7 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
     colnames(result)[2] <- prefix2
   }
 
-  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data, c("missings","cases"))
   .to_vlkr_tab(result, digits = 2)
 }
 

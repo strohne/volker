@@ -354,7 +354,7 @@
       |Using ChatGPT is advantageous in many tasks.                |                    6% (6)|        10% (10)|      21% (21)|  45% (45)|                17% (17)| 100% (99)|
       |Compared to other systems, using ChatGPT is more fun.       |                    6% (6)|          4% (4)|      35% (35)|  39% (39)|                15% (15)| 100% (99)|
       
-      2 missing case(s) omitted.
+      n=99. 2 missing case(s) omitted.
       
 
 # Factor values are relabeled

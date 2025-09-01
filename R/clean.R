@@ -434,21 +434,21 @@ get_baseline <- function(obj) {
     cols <- c()
     baseline_missing <- c()
     if (!is.null(missings$na)) {
-      postfix <- ifelse(isTRUE(missings$omit), " missing", " case(s) with missing")
+      postfix <- ifelse(isTRUE(missings$na$omit), " missing", " case(s) with missing")
       baseline_missing <- c(baseline_missing, paste0(missings$na$n,postfix))
     }
 
     if (!is.null(missings$zero)) {
-      postfix <- ifelse(isTRUE(missings$omit), " zero", " case(s) with zero")
+      postfix <- ifelse(isTRUE(missings$na$omit), " zero", " case(s) with zero")
       baseline_missing <- c(baseline_missing, paste0(missings$zero$n, postfix))
     }
 
     if (!is.null(missings$negative)) {
-      postfix <- ifelse(isTRUE(missings$omit), " negativ", " case(s) with negative")
+      postfix <- ifelse(isTRUE(missings$na$omit), " negative", " case(s) with negative")
       baseline_missing <- c(baseline_missing, paste0(missings$negative$n,postfix))
     }
 
-    if (isTRUE(missings$omit)) {
+    if (isTRUE(missings$na$omit)) {
       baseline <- c(baseline, paste0(paste0(baseline_missing, collapse = ", "), " case(s) omitted."))
     } else {
        baseline <- c(baseline, paste0(paste0(baseline_missing, collapse = ", "), " values."))
