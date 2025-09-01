@@ -13,8 +13,10 @@
 
 \item{cross}{The columns holding metric values to correlate.}
 
-\item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho.
-The reported R square value is just squared Spearman's or Pearson's R.}
+\item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho,
+cramer = Cramer's V, f1 = F1-value.
+The reported R square value is just squared Spearman's or Pearson's R.
+F1-values are only supported for variable sets with the same labels.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 }

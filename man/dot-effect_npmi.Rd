@@ -4,7 +4,7 @@
 \alias{.effect_npmi}
 \title{Calculate nmpi}
 \usage{
-.effect_npmi(data, col, cross, labels = TRUE, clean = TRUE, smoothing = 0, ...)
+.effect_npmi(data, col, cross, smoothing = 0, labels = TRUE, clean = TRUE, ...)
 }
 \arguments{
 \item{data}{A tibble.}
@@ -13,12 +13,12 @@
 
 \item{cross}{The column to correlate.}
 
+\item{smoothing}{Add pseudocount. Calculate the pseudocount based on the number of trials
+to apply Laplace's rule of succession.}
+
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
-
-\item{smoothing}{Add pseudocount. Calculate the pseudocount based on the number of trials
-to apply Laplace's rule of succession.}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }

@@ -2,6 +2,7 @@
 % Please edit documentation in R/model.R
 \name{model_metrics_tab}
 \alias{model_metrics_tab}
+\alias{model_tab}
 \title{Output a regression table with estimates and macro statistics
 for multiple categorical or metric independent variables}
 \usage{
@@ -10,6 +11,7 @@ model_metrics_tab(
   col,
   categorical,
   metric,
+  interactions = NULL,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -24,6 +26,10 @@ model_metrics_tab(
 
 \item{metric}{A tidy column selection holding metric variables.}
 
+\item{interactions}{A vector of interaction effects to calculate.
+Each interaction effect should be provided as multiplication of the variables.
+Example: \code{c(sd_gender * adopter)}.}
+
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
@@ -35,6 +41,8 @@ A volker list object containing volker tables with the requested statistics.
 }
 \description{
 The regression output comes from \code{stats::\link[stats:lm]{lm}}.
+The effect sizes are calculated by \code{heplots::\link[heplots:etasq]{etasq}}.
+The variance inflation is calculated by \code{car::\link[car:vif]{vif}}.
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }

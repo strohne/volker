@@ -52,94 +52,202 @@ ds <- volker::chatgpt
 Decide whether your data is categorical or metric
 and choose the appropriate function:  
 
-- `tab_counts()` shows frequency tables.
-- `plot_counts()` generates simple and stacked bar charts.
-- `effect_counts()` calculates test statistics for categorical data.  
-<br>
-- `tab_metrics()` creates tables with distribution parameters.
-- `plot_metrics()` visualises distributions in density plots, box plots or scatter plots.
-- `effect_metrics()` calculates test statistics for metric data.
+- `report_counts()` shows frequency tables and generates simple and stacked bar charts.
+- `report_metrics()` creates tables with distribution parameters, 
+  visualises distributions in density plots, box plots or scatter plots.
 
-The column selection determines whether to analyse single variables, item lists 
-or to compare and correlate multiple variables. **Try it out!**  
+
+Report functions, under the hood, call functions that generate plots, tables or calculate effects.
+If you only need one of those outputs, you can call the functions directly:
+
+- `tab_counts()`, `plot_counts()` or `effect_counts()` for categorical data.
+- `tab_metrics()`, `plot_metrics()` or `effect_metrics()` for metric data.
+
+All functions expect a dataset as their first parameter.
+The second and third parameters await your column selections. 
+The column selections determine whether to analyse single variables, item lists 
+or to compare and correlate multiple variables.  
+
+*Try out the following examples!*
+
 
 ### Categorical variables
 
-```{r}
+
+```{r eval=FALSE}
 # A single variable
-tab_counts(ds, use_private)
+report_counts(ds, use_private)
 ```
 
-```{r}
+```{r eval=FALSE}
 # A list of variables
-tab_counts(ds, c(use_private, use_work))
+report_counts(ds, c(use_private, use_work))
 ```
 
-```{r}
+```{r eval=FALSE}
 # Variables matched by a pattern
-tab_counts(ds, starts_with("use_"))
+report_counts(ds, starts_with("use_"))
 ```
 
+
+You can use all sorts of tidyverse style selections:
+A single column, a list of columns or patterns such as
+`starts_with()`, `ends_with()`, `contains()` or `matches()`.
 
 ### Metric variables
 
-```{r}
+```{r eval=FALSE}
 # One metric variable
-tab_metrics(ds, sd_age)
+report_metrics(ds, sd_age)
 ```
 
-```{r}
+```{r eval=FALSE}
 # Multiple metric items
-tab_metrics(ds, starts_with("cg_adoption_"))
-
+report_metrics(ds, starts_with("cg_adoption_"))
 ```
 
 ### Cross tabulation and group comparison
 
 Provide a grouping column in the third parameter to compare different groups.
 
-```{r}
-tab_counts(ds, adopter, sd_gender)
+```{r eval=FALSE}
+report_counts(ds, adopter, sd_gender)
 ```
 
 For metric variables, you can compare the mean values.
 
-```{r}
-# Compare the means of one grouping variable  (including the confidence interval)
-tab_metrics(ds, sd_age, sd_gender, ci = TRUE)
+```{r eval=FALSE}
+report_metrics(ds, sd_age, sd_gender)
 ```
 
 By default, the crossing variable is treated as categorical. 
 You can change this behavior using the metric-parameter to calculate correlations:
 
-```{r}
-# Correlate two metric variables
-tab_metrics(ds, sd_age, use_work, metric = TRUE, ci = TRUE)
+```{r eval=FALSE}
+report_metrics(ds, sd_age, use_work, metric = TRUE)
 ```
 
+The ci parameter, where possible, adds confidence intervals to the outputs.
 
-Each table function has a corresponding plot function with parameters
-to pimp the result. See the function help (F1 key) to learn the options. For example, you can use the `prop` parameter to grow bars to 100%. The `numbers` parameter prints frequencies and percentages onto the bars.
-
-```{r}
+```{r eval=FALSE}
 ds |> 
   filter(sd_gender != "diverse") |> 
-  plot_counts(adopter, sd_gender, prop="rows", numbers=c("p","n"))
+  report_metrics(sd_age, sd_gender, ci = TRUE)
 ```
 
-Further, the effect-functions conduct statistical tests:
+Conduct statistical tests with the `effect`-parameter.
 
-```{r}
+```{r eval=FALSE}
 ds |> 
   filter(sd_gender != "diverse") |> 
-  effect_counts(adopter, sd_gender)
+  report_counts(adopter, sd_gender, effect = TRUE)
 ```
 
 
-# Automatically generate reports
+See the function help (F1 key) to learn more options. 
+For example, you can use the `prop` parameter to grow bars to 100%. 
+The `numbers` parameter prints frequencies and percentages onto the bars.
 
-## Getting started
-Reports combine plots, tables and effect calculations. 
+```{r eval=FALSE}
+ds |> 
+  filter(sd_gender != "diverse") |> 
+  report_counts(adopter, sd_gender, prop="rows", numbers= "n")
+```
+
+
+# Theming
+
+The `theme_vlkr()`-function lets you customise colors:
+
+```{r}
+theme_set(theme_vlkr(
+  base_fill = c("#F0983A","#3ABEF0","#95EF39","#E35FF5","#7A9B59"),
+  base_gradient = c("#FAE2C4","#F0983A")
+))
+```
+
+# Labeling
+
+Labels used in plots and tables are stored in the comment attribute of the variable. 
+You can inspect all labels using the `codebook()`-function:
+
+```{r}
+codebook(ds)
+```
+
+
+Set specific column labels by providing a named list to the items-parameter of `labs_apply()`:
+
+
+```{r eval = FALSE}
+ds %>%
+  labs_apply(
+    items = list(
+      "cg_adoption_advantage_01" = "Allgemeine Vorteile",
+      "cg_adoption_advantage_02" = "Finanzielle Vorteile",
+      "cg_adoption_advantage_03" = "Vorteile bei der Arbeit",
+      "cg_adoption_advantage_04" = "Macht mehr Spaß"
+    )
+  ) %>% 
+  report_metrics(starts_with("cg_adoption_advantage_"))
+```
+
+
+Labels for values inside a column can be adjusted by providing a named list to the values-parameter of `labs_apply()`. In addition, select the columns where value labels should be changed:
+
+
+```{r eval=FALSE}
+ds %>%
+  labs_apply(
+    cols=starts_with("cg_adoption"),  
+    values = list(
+      "1" = "Stimme überhaupt nicht zu",
+      "2" = "Stimme nicht zu",
+      "3" = "Unentschieden",
+      "4" = "Stimme zu",
+      "5" =  "Stimme voll und ganz zu"
+    ) 
+  ) %>% 
+  report_metrics(starts_with("cg_adoption"))
+```
+
+To conveniently manage all labels of a dataset, 
+save the result of `codebook()` to an Excel file,
+change the labels manually in a copy of the Excel file, 
+and finally call `labs_apply()` with your revised codebook.
+
+```{r, eval=FALSE}
+library(readxl)
+library(writexl)
+
+# Save codebook to a file
+codes <- codebook(ds)
+write_xlsx(codes,"codebook.xlsx")
+
+# Load and apply a codebook from a file
+codes <- read_xlsx("codebook_revised.xlsx")
+ds <- labs_apply(ds, codebook)
+```
+
+
+Be aware that some data operations such as `mutate()` from the tidyverse
+loose labels on their way. In this case, store the labels (in the
+codebook attribute of the data frame) before the operation and restore
+them afterwards:
+
+```{r eval=FALSE}
+ds %>%
+  labs_store() %>%
+  mutate(sd_age = 2024 - sd_age) %>% 
+  labs_restore() %>% 
+  
+  report_metrics(sd_age)
+```
+
+
+## The volker report template
+
+Reports combine plots, tables and effect calculations in an RMarkdown document.
 Optionally, for item batteries, an index, clusters or factors are calculated and reported.
 
 To see an example or develop own reports, use the volker report template in RStudio:
@@ -152,8 +260,8 @@ To see an example or develop own reports, use the volker report template in RStu
 
 Have fun with developing own reports!
 
-## Custom reports
-To generate a volker-report from any R-Markdown document, add `volker::html_report` to the 
+Without the template, to generate a volker-report from any R-Markdown document, 
+add `volker::html_report` to the 
 output options of your Markdown document:
 
 ```
@@ -168,14 +276,19 @@ Then, you can generate combined outputs using the report-functions.
 One advantage of the report-functions is that plots are automatically scaled to fit the page.
 See the function help for further options (F1 key). 
 
+
 ```{r}
-ds %>% 
-  filter(sd_gender != "diverse") %>% 
-  report_metrics(starts_with("cg_adoption_"), sd_gender, box=TRUE, ci=TRUE)
+
+#> ```{r echo=FALSE}
+#> ds %>% 
+#>   filter(sd_gender != "diverse") %>% 
+#>   report_counts(adopter, sd_gender, 
+#> ```
+
 ```
 
 
-## Custom tab sheets
+### Custom tab sheets
 By default, a header and tabsheets are automatically created. 
 You can mix in custom content.
 
@@ -188,10 +301,11 @@ You can mix in custom content.
   on the fifth level (5 x # followed by the tab name). 
   Close your custom new tabsheet with `#### {-}` (4 x #). 
 
-All together, the following report output is generated by the pattern:
+Try out the following pattern in an RMarkdown document!
 
 
 ```{r}
+
 #> ### Adoption types
 #> 
 #> ```{r echo=FALSE}
@@ -208,146 +322,32 @@ All together, the following report output is generated by the pattern:
 ```
 
 
-### Adoption types
-
-```{r echo=FALSE}
-ds %>% 
-  filter(sd_gender != "diverse") %>% 
-  report_counts(adopter, sd_gender, prop="rows", title=FALSE, close=FALSE)
-```
-
-##### Method
-Basis: Only male and female respondents.
-
-#### {-}
-
-
-# Theming
-
-Plot and table functions share a number of parameters that can be used to customize the outputs. Lookup the available parameters in the help of the specific function.
-
-The theme_vlkr()-function lets you customise colors:
-
-```{r}
-theme_set(theme_vlkr(
-  base_fill = c("#F0983A","#3ABEF0","#95EF39","#E35FF5","#7A9B59"),
-  base_gradient = c("#FAE2C4","#F0983A")
-))
-
-```
-
-# Custom labels
-
-Labels used in plots and tables are stored in the comment attribute of the variable. 
-You can inspect all labels using the `codebook()`-function:
-
-```{r}
-codebook(ds)
-```
-
-
-You can set specific column labels by providing a named list to the items-parameter of `labs_apply()`:
-
-
-```{r}
-ds %>%
-  labs_apply(
-    items = list(
-      "cg_adoption_advantage_01" = "Allgemeine Vorteile",
-      "cg_adoption_advantage_02" = "Finanzielle Vorteile",
-      "cg_adoption_advantage_03" = "Vorteile bei der Arbeit",
-      "cg_adoption_advantage_04" = "Macht mehr Spaß"
-    )
-  ) %>% 
-  tab_metrics(starts_with("cg_adoption_advantage_"))
-
-```
-
-
-Labels for values inside a column can be adjusted by providing a named list to the values-parameter of `labs_apply()`. In addition, select the columns where value labels should be changed:
-
-
-```{r}
-
-ds %>%
-  labs_apply(
-    cols=starts_with("cg_adoption"),  
-    values = list(
-      "1" = "Stimme überhaupt nicht zu",
-      "2" = "Stimme nicht zu",
-      "3" = "Unentschieden",
-      "4" = "Stimme zu",
-      "5" =  "Stimme voll und ganz zu"
-    ) 
-  ) %>% 
-  plot_metrics(starts_with("cg_adoption"))
-
-```
-
-To conveniently manage all labels of a dataset, 
-save the result of `codebook()` to an Excel file,
-change the labels manually in a copy of the Excel file, 
-and finally call `labs_apply()` with your revised codebook.
-
-```{r, eval = FALSE}
-
-library(readxl)
-library(writexl)
-
-# Save codebook to a file
-codes <- codebook(ds)
-write_xlsx(codes,"codebook.xlsx")
-
-# Load and apply a codebook from a file
-codes <- read_xlsx("codebook_revised.xlsx")
-ds <- labs_apply(ds, codebook)
-
-```
-
-
-Be aware that some data operations such as `mutate()` from the tidyverse
-loose labels on their way. In this case, store the labels (in the
-codebook attribute of the data frame) before the operation and restore
-them afterwards:
-
-```{r}
-ds %>%
-  labs_store() %>%
-  mutate(sd_age = 2024 - sd_age) %>% 
-  labs_restore() %>% 
-  
-  tab_metrics(sd_age)
-```
-
 # Index calculation for item batteries
 
 You can calculate mean indexes from a bunch of items using `add_index()`. 
 A new column is created with the average value of all selected columns
-for each case. 
-
-If you don't like the automatically created column name,
-you can explicitly name it with the `newcol` parameter.
+for each case. Provide a custom name for the column using the `newcol` parameter.
 
 Reliability and number of items are calculated with `psych::alpha()`
 and stored as column attribute named "psych.alpha". The reliability values 
-are printed by `tab_metrics()`.
+are printed by `report`_metrics()`.
 
 **Add a single index**
-```{r}
+```{r eval=FALSE}
 ds %>%
-  add_index(starts_with("cg_adoption_")) %>%
-  tab_metrics(idx_cg_adoption)
+  add_index(starts_with("cg_adoption_"), newcol = "idx_cg_adoption") %>%
+  report_metrics(idx_cg_adoption)
 ```
 
 **Compare the index values by group**
-```{r}
+```{r eval=FALSE}
 ds %>%
-  add_index(starts_with("cg_adoption_")) %>%
-  tab_metrics(idx_cg_adoption, adopter)
+  add_index(starts_with("cg_adoption_"), newcol = "idx_cg_adoption") %>%
+  report_metrics(idx_cg_adoption, adopter)
 ```
 
 **Add multiple indizes and summarize them**
-```{r}
+```{r eval=FALSE}
 ds %>%
   add_index(starts_with("cg_adoption_")) %>%
   add_index(starts_with("cg_adoption_advantage")) %>%
@@ -356,15 +356,14 @@ ds %>%
   tab_metrics(starts_with("idx_cg_adoption"))
 ```
 
-# Factor and cluster Analysis 
+# Factor and cluster analysis 
 
-The easiest way to conduct factor analysis or cluster analyses is to use the respective parameters in the 
-`report_metrics()` function. 
+The easiest way to conduct factor analysis or cluster analyses 
+is to use the respective parameters in the `report_metrics()` function. 
 
-```{r}
+```{r eval=FALSE}
 ds |> 
   report_metrics(starts_with("cg_adoption"), factors = TRUE, clusters = TRUE)
-
 ```
 
 Currently, cluster analysis is performed using kmeans and factor analysis is a principal component analysis.
@@ -372,54 +371,109 @@ Setting the parameters to true, automatically generates scree plots
 and selects the number of factors or clusters. 
 Alternatively, you can explicitly specify the numbers.
 
-If you want to work with the results, use `add_factors()` and `add_clusters()` respectively. For factor analysis, new columns prefixed with "fct_" are created to store the factor loadings based on the specified number of factors. For clustering, an additional column prefixed with "cls_" is added that assigns each observation to a cluster number. 
-In the next step, you can use the new columns as shown below.
+**Add factor or cluster analysis results to the original data** 
 
-To automatically determine the optimal number of factors or clusters based on diagnostics, set k = NULL.  
+If you want to work with the results, use `add_factors()` and `add_clusters()` respectively. 
+For factor analysis, new columns prefixed with "fct_" are created to store the factor loadings based on the specified number of factors. 
+For clustering, an additional column prefixed with "cls_" is added that assigns each observation to a cluster number. 
 
-**Add factor analysis results** 
-```{r}
+```{r eval=FALSE}
+
+ds |> 
+  add_factors(starts_with("cg_adoption"), k = 3) |> 
+  select(starts_with("fct_"))
+```
+
+Once you have added factor or cluster columns to your data set,
+you can use them with the report functions:
+
+```{r eval=FALSE}
 ds |> 
   add_factors(starts_with("cg_adoption"), k = 3)  |>
   report_metrics(fct_cg_adoption_1, fct_cg_adoption_2, metric = TRUE)
 
 ```
 
-**Automatically determine the number of factors** 
-```{r}
-ds |> 
-  add_factors(starts_with("cg_adoption"), k = NULL) |>
-  factor_tab(starts_with("fct_cg_adoption"))
-```
 
-**Compare values by cluster**  
-```{r}
+```{r eval=FALSE}
 ds |>
   add_clusters(starts_with("cg_adoption"), k = 3) |>
   report_counts(sd_gender, cls_cg_adoption, prop = "cols")
 ```
 
+After explicitly adding factor or cluster columns,
+you can inspect the analysis results using
+`factor_tab()`, `factor_plot()` or `cluster_tab()`, `cluster_plot()`.
+
+```{r eval=FALSE}
+ds |> 
+  add_factors(starts_with("cg_adoption"), k = 3)  |>
+  factor_tab(starts_with("fct_"))
+```
+
+
+**Automatically determine the number of factors or clusters**  
+
+To automatically determine the optimal number of factors or clusters based on diagnostics, set k = NULL.  
+
+```{r eval=FALSE}
+ds |> 
+  add_factors(starts_with("cg_adoption"), k = NULL) |>
+  factor_tab(starts_with("fct_cg_adoption"))
+```
+
+
+## Modeling: Regression and Analysis of Variance
+
+Modeling in the statistical sense is predicting an outcome (dependent variable) from one or multiple predictors (independet variables).
+
+The model functions allow linear modeling by providing a metric outcome as first variable
+and a selection of categorical or metric predictor in the respective parameters.
+
+There are two functions: One for getting a regression table and one for plotting the regression coefficients.
+
+```{r, eval=FALSE}
+
+ds |>
+ filter(sd_gender != "diverse") |>
+ model_metrics_tab(
+   use_work, 
+   categorical = c(sd_gender, adopter), 
+   metric = sd_age
+ )
+
+ds |>
+ filter(sd_gender != "diverse") |>
+ model_metrics_plot(
+   use_work,
+   categorical = c(sd_gender, adopter), 
+   metric = sd_age
+ )
+
+``` 
+
+
+
 # What's behind the scenes?
 
 The volker-package is based on standard methods for data handling and visualisation. 
-You can produce all outputs with a handful of functions. The package just makes your
+You could produce all outputs on your own. The package just makes your
 code dry - don't repeat yourself - and wraps often used snippets into a simple interface.
 
-The package provides print- and knit-functions that pimp console and markdown output. 
+Report functions call subsidiary tab, plot and effect functions, which in turn call functions
+specifically designed for the provided column selection. Open the package help to see,
+to which specific functions the report functions are redirected.
+
+Console and markdown output is pimped by specific print- and knit-functions. 
 To make this work, the cleaned data, produced plots, tables and markdown snippets 
 gain new classes (`vlkr_df`, `vlkr_plt`, `vlkr_tbl`, `vlkr_list`, `vlkr_rprt`).
 
-Basically, all table values are calculated two tidyverse functions:
+The volker-package makes use of common tidyverse functions.
+Basically, most outputs are generated by three functions:
 
 - `count()` is used to produce counts  
 - `skim()` is used to produce metrics  
-
-To shape the data frames, two essential functions come into play:  
-
-- `group_by()` is used to calculate grouped outputs
-- `pivot_longer()` brings multiple items into a format where the item name becomes a grouping variable.  
-
-Plots are generated by `ggplot()`.
+- `ggplot()` is used to assemble plots.
 
 Statistical tests, clustering and factor analysis are largely based on the 
 stats, psych, car and effectsize packages.

@@ -1,6 +1,7 @@
 url: https://strohne.github.io/volker/
 template:
   bootstrap: 5
+  light-switch: true
 navbar:
   structure:
     left:

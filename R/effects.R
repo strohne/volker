@@ -76,6 +76,9 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
   else if (is_items && is_grouped && is_metric) {
     effect_counts_items_cor(data, {{ cols }}, {{ cross }},  ...)
   }
+  else if (is_items && !is_grouped && is_multi && !is_metric) {
+    effect_counts_items_grouped_items(data, {{ cols }}, {{ cross }},  ...)
+  }
   # Not found
   else {
     stop("Check your parameters: the column selection is not yet supported by volker functions.")
@@ -265,41 +268,19 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
-  # 2. Prepare data
-  contingency <- data %>%
-    dplyr::count({{ col }}, {{ cross }}) %>%
-    tidyr::pivot_wider(
-      names_from = {{ cross }},
-      values_from = "n",
-      values_fill = 0) %>%
-    as.data.frame() %>%
-    dplyr::select(-1) %>%
-    as.matrix()
-
-  # 3. Chi-squared test and Cramer's V
-  exact <- any(contingency < 5)
-  fit <- stats::chisq.test(contingency, simulate.p.value = exact)
-
-  n <- sum(contingency)
-  cells <- min(dim(contingency)[1], dim(contingency)[2]) - 1
-  cramer_v <- round(sqrt( (fit$statistic / n) / cells), 2)
-
-  # 4. Result
-  result <- list(
-    "Cramer's V" = sprintf("%.2f", round(cramer_v, 2)),
-    "n" = as.character(n),
-    "Chi-squared" = sprintf("%.2f", round(fit$statistic, 2)),
-    "df" = as.character(fit$parameter),
-    "p"= sprintf("%.3f", round(fit$p.value, 3)),
-    "stars"= get_stars(fit$p.value)
-  ) |>
+  # 2. Test
+  result <- .effect_correl(
+    dplyr::pull(data, {{ col }}),
+    dplyr::pull(data, {{ cross }}),
+    method = "cramer"
+  )  |>
   tibble::enframe(
     name = "Statistic",
     value = "Value"
   )
 
   result <- .attr_transfer(result, data, "missings")
-  .to_vlkr_tab(result, caption=fit$method)
+  .to_vlkr_tab(result)
 }
 
 #' Output test statistics and effect size from a logistic regression of one metric predictor
@@ -405,36 +386,114 @@ effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
 
 #' Effect size and test for comparing multiple variables by a grouping variable
 #'
-#' \strong{Not yet implemented. The future will come.}
-#'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures and grouping variable.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
+#' @param method The output metrics, currently only `cramer` is supported.
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' effect_counts_items_grouped(
+#'   data, starts_with("cg_adoption_adv"),  sd_gender
+#' )
+#'
+#' @export
 #' @importFrom rlang .data
-effect_counts_items_grouped <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+effect_counts_items_grouped <- function(data, cols, cross, method = "cramer", labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
+
+  check_is_param(method, c("cramer"))
+
+  # 2. Calculate correlations
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
+
+  # 3. Labels
+  prefix1 <- get_prefix(result$item1)
+
+  if (labels) {
+    prefix2 <- get_title(data, {{ cross }})
+  } else {
+    prefix2 <- rlang::as_string(rlang::ensym(cross))
+  }
+
+  result <- result %>%
+    dplyr::mutate(item1 = trim_prefix(.data$item1, prefix1)) %>%
+    dplyr::select(-tidyselect::all_of("item2"))
+
+  # Rename first column
+  if (prefix1 != "") {
+    colnames(result)[1] <- paste0(prefix1, ": Correlation with ", prefix2)
+  }
+
+  result <- .attr_transfer(result, data, "missings")
+  .to_vlkr_tab(result, digits = 2)
 }
 
 #' Effect size and test for comparing multiple variables by multiple grouping variables
-#'
-#' \strong{Not yet implemented. The future will come.}
 #'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures and grouping variable.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The columns holding groups to compare.
+#' @param method The output metrics: cramer = Cramer's V, f1 = F1-value (only for variable sets with the same labels).
+#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' effect_counts(
+#'   data,
+#'   starts_with("cg_adoption_adv"),
+#'   starts_with("use_")
+#')
+#'
+#' @export
 #' @importFrom rlang .data
-effect_counts_items_grouped_items <- function(data, cols, cross, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+effect_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
+  check_is_param(method, c("cramer", "f1"))
+
+  # 2. Calculate correlations
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
+
+  # 3. Labels
+  prefix1 <- get_prefix(result$item1)
+  prefix2 <- get_prefix(result$item2)
+
+  result <- result %>%
+    dplyr::mutate(item1 = trim_prefix(.data$item1, prefix1)) |>
+    dplyr::mutate(item2 = trim_prefix(.data$item2, prefix2))
+
+  if ((prefix1 == prefix2) && (prefix1 != "")) {
+    prefix1 <- paste0("Item 1: ", prefix1)
+    prefix2 <- paste0("Item 2: ", prefix2)
+  }
+
+  # Rename first column
+  if (prefix1 != "") {
+    colnames(result)[1] <- prefix1
+  }
+
+  # Rename second column
+  if (prefix2 != "") {
+    colnames(result)[2] <- prefix2
+  }
+
+  result <- .attr_transfer(result, data, "missings")
+  .to_vlkr_tab(result, digits = 2)
 }
 
 #' Correlate the values in multiple items with one metric column and output effect sizes and tests
@@ -1128,7 +1187,6 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labe
 effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
-
   check_is_param(method, c("pearson", "spearman"))
 
   # 2. Calculate correlations
@@ -1169,8 +1227,10 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #' @param data A tibble.
 #' @param cols The columns holding metric values.
 #' @param cross The columns holding metric values to correlate.
-#' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho.
+#' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho,
+#'               cramer = Cramer's V, f1 = F1-value.
 #'               The reported R square value is just squared Spearman's or Pearson's R.
+#'               F1-values are only supported for variable sets with the same labels.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @return A tibble with correlation results.
 #' @importFrom rlang .data
@@ -1180,60 +1240,27 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
   # Check method
-  check_is_param(method, c("spearman", "pearson"))
+  check_is_param(method, c("spearman", "pearson", "cramer", "f1"))
 
+  # Calculate
   result <- expand.grid(
-    x = cols_eval, y = cross_eval, stringsAsFactors = FALSE
-  ) %>%
-    dplyr::mutate(x_name = names(.data$x), y_name = names(.data$y)) %>%
+      x = cols_eval, y = cross_eval,
+      stringsAsFactors = FALSE
+    ) %>%
+    dplyr::mutate(
+      x_name = names(.data$x),
+      y_name = names(.data$y)
+    ) %>%
     dplyr::mutate(
       .test = purrr::map2(
         .data$x, .data$y,
-        function(x, y) stats::cor.test(
-          data[[x]], data[[y]],
-          method = method,
-          exact = method != "spearman"
-        )
+        \(x, y) .effect_correl(data[[x]], data[[y]], method)
       )
-    )
+    ) |>
+    tidyr::unnest_wider(".test") |>
+    dplyr::select(-tidyselect::all_of(c("x", "y")))
 
-  if (method == "spearman") {
-    # TODO: geht das eleganter? Make DRY!
-    # TODO: round in print function, not here
-    result <- result |>
-      dplyr::mutate(
-        n = nrow(data),
-        "Spearman's rho" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate),2)),
-        "R-squared" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate^2),2)),
-        s = sprintf("%.2f", purrr::map_dbl(.data$.test, function(x) round(x$statistic,2))),
-        stars = purrr::map_chr(.data$.test, function(x) get_stars(x$p.value)),
-        p = sprintf("%.3f", purrr::map_dbl(.data$.test, function(x) round(x$p.value,3))),
-        ) %>%
-      dplyr::select(
-        item1 = "x_name", item2 = "y_name",
-        "R-squared", "n","Spearman's rho","s","p","stars"
-      )
-
-  } else {
-    result <- result |>
-      dplyr::mutate(
-        n = nrow(data),
-        "Pearson's r" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate),2)),
-        "R-squared" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$estimate^2),2)),
-        "ci low" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[1]),2)),
-        "ci high" = purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$conf.int[2]),2)),
-        df = purrr::map_int(.data$.test, function(x) as.numeric(x$parameter)),
-        t = sprintf("%.2f", purrr::map_dbl(.data$.test, function(x) round(as.numeric(x$statistic),2))),
-        stars = purrr::map_chr(.data$.test, function(x) get_stars(x$p.value)),
-        p = sprintf("%.3f", purrr::map_dbl(.data$.test, function(x) round(x$p.value,3))),
-      ) %>%
-      dplyr::mutate(t = ifelse(.data$x_name == .data$y_name, "Inf", t)) |>
-      dplyr::select(
-        item1 = "x_name", item2 = "y_name",
-        "R-squared", "n","Pearson's r", "ci low", "ci high","df","t","p","stars"
-      )
-  }
-
+  result <- dplyr::select(result, item1 = "x_name", item2 = "y_name", tidyselect::everything())
   result <- dplyr::arrange(result, .data$item1, .data$item2)
 
   # Get variable caption from the attributes
@@ -1243,6 +1270,112 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
   }
 
   result
+}
+
+
+#' Calculate correlation between two vectors
+#'
+#' @keywords internal
+#'
+#' @param x First vector
+#' @param y Second vector
+#' @param method One of "spearman" or "pearson" for metric vectors. For catecorical vectors, use "cramer" or "f1".
+#' @return The result of cor.test() for metric vectors.
+.effect_correl <- function(x, y, method) {
+
+  result <- list()
+
+  # TODO: round in print function, not here
+
+  if (method == "cramer") {
+    contingency <- table(as.character(x),as.character(y))
+    exact <- any(contingency < 5)
+    fit <- stats::chisq.test(contingency, simulate.p.value = exact)
+    n <- sum(contingency)
+    cells <- min(dim(contingency)[1], dim(contingency)[2]) - 1
+    cramer_v <- round(sqrt( (fit$statistic / n) / cells), 2)
+
+    result <- list(
+      "Cramer's V" = round(cramer_v, 2),
+      "Chi-squared" = sprintf("%.2f", round(fit$statistic, 2)),
+      "n" = as.character(n),
+      "df" = as.character(fit$parameter),
+      "p"= sprintf("%.3f", round(fit$p.value, 3)),
+      "stars"= get_stars(fit$p.value)
+    )
+  }
+  else if (method == "f1") {
+
+    # Ensure factors for consistent levels
+    # Align y with x levels
+    x <- factor(x)
+    y <- factor(y, levels = levels(x))
+
+    contingency <- table(x, y)
+    TP <- sum(diag(contingency))
+    total <- sum(contingency)
+
+    # Calculate Precision, Recall, F1 for each class and average (macro)
+    precision_vec <- recall_vec <- f1_vec <- numeric(length = nrow(contingency))
+
+    for (i in 1:nrow(contingency)) {
+      TP_i <- contingency[i, i]
+      FP_i <- sum(contingency[-i, i])
+      FN_i <- sum(contingency[i, -i])
+
+      precision_vec[i] <- if ((TP_i + FP_i) > 0) TP_i / (TP_i + FP_i) else 0
+      recall_vec[i] <- if ((TP_i + FN_i) > 0) TP_i / (TP_i + FN_i) else 0
+
+      if ((precision_vec[i] + recall_vec[i]) > 0) {
+        f1_vec[i] <- 2 * precision_vec[i] * recall_vec[i] / (precision_vec[i] + recall_vec[i])
+      } else {
+        f1_vec[i] <- 0
+      }
+    }
+
+    accuracy <- TP / total
+    precision <- mean(precision_vec)
+    recall <- mean(recall_vec)
+    f1 <- mean(f1_vec)
+
+    result <- list(
+      "n" = total,
+      "Accuracy" = round(accuracy, 2),
+      "Precision" = round(precision, 2),
+      "Recall" = round(recall, 2),
+      "F1" = round(f1, 2)
+    )
+  }
+  else if (method == "spearman") {
+    fit <- stats::cor.test(x, y, method = method, exact = FALSE)
+
+    result = list(
+      "R-squared" = round(as.numeric(fit$estimate^2),2),
+      n = length(x),
+      "Spearman's rho" = round(as.numeric(fit$estimate),2),
+      s = sprintf("%.2f", round(fit$statistic,2)),
+      p = sprintf("%.3f", round(fit$p.value,3)),
+      stars = get_stars(fit$p.value)
+    )
+
+  }
+  else {
+    fit <- stats::cor.test(x, y, method = method, exact = TRUE)
+
+    result = list(
+      "R-squared" = round(as.numeric(fit$estimate^2),2),
+      n = length(x),
+      "Pearson's r" = round(as.numeric(fit$estimate),2),
+      "ci low" = round(as.numeric(fit$conf.int[1]),2),
+      "ci high" = round(as.numeric(fit$conf.int[2]),2),
+      df = as.numeric(fit$parameter),
+      t = ifelse(all(x == y), "Inf", sprintf("%.2f", round(as.numeric(fit$statistic),2))),
+      p = sprintf("%.3f", round(fit$p.value,3)),
+      stars = get_stars(fit$p.value)
+    )
+  }
+
+  return (result)
 }
 
 #' Calculate nmpi
@@ -1259,7 +1392,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-.effect_npmi <- function(data, col, cross, labels = TRUE, clean = TRUE, smoothing = 0, ...) {
+.effect_npmi <- function(data, col, cross,smoothing = 0, labels = TRUE, clean = TRUE, ...) {
 
   cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)

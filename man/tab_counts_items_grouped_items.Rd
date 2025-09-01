@@ -8,7 +8,7 @@ tab_counts_items_grouped_items(
   data,
   cols,
   cross,
-  title = TRUE,
+  method = "cramer",
   labels = TRUE,
   clean = TRUE,
   ...
@@ -21,8 +21,7 @@ tab_counts_items_grouped_items(
 
 \item{cross}{Tidyselect item variables (e.g. starts_with...).}
 
-\item{title}{If TRUE (default) shows a plot title derived from the column labels.
-Disable the title with FALSE or provide a custom title as character value.}
+\item{method}{The output metrics, cramer = Cramer's V, f1 = F1-value (only possible when the variable sets have the same labels).}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

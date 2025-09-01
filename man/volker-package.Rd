@@ -20,7 +20,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jakob JÃ¼nger \email{jakob.juenger@uni-muenster.de} (\href{https://orcid.org/0000-0003-1860-6695}{ORCID}) [copyright holder]
+\strong{Maintainer}: Jakob Jünger \email{jakob.juenger@uni-muenster.de} (\href{https://orcid.org/0000-0003-1860-6695}{ORCID}) [copyright holder]
 
 Authors:
 \itemize{
@@ -29,7 +29,7 @@ Authors:
 
 Other contributors:
 \itemize{
-  \item Chantal GÃ¤rtner \email{chantal.gaertner@uni-muenster.de} (\href{https://orcid.org/0000-0002-3653-6013}{ORCID}) [contributor]
+  \item Chantal Gärtner \email{chantal.gaertner@uni-muenster.de} (\href{https://orcid.org/0000-0002-3653-6013}{ORCID}) [contributor]
 }
 
 }

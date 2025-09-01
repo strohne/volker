@@ -8,6 +8,8 @@ plot_counts_items_grouped_items(
   data,
   cols,
   cross,
+  method = "cramer",
+  numbers = TRUE,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -20,6 +22,11 @@ plot_counts_items_grouped_items(
 \item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
 \item{cross}{Tidyselect item variables (e.g. starts_with...).}
+
+\item{method}{The method of correlation calculation: \code{cramer} for Cramer's V and \code{f1} for F1.
+F1 can only be calculated if the two variable sets have the same labels.}
+
+\item{numbers}{Controls whether to display correlation coefficients on the plot.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

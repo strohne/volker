@@ -35,7 +35,7 @@ See further examples in `vignette("introduction", package="volker")`.
 
 Don’t miss the template feature: Within RStudio, create a new Markdown
 document, select `From template`, choose and finally knit the **volkeR
-Report**! It’s a blueprint for your own tidy reports.
+Report**! It’s a blueprint for your own tidy reports. <br> <br>
 
 <img src="man/figures/report_example.png" alt="Example report" width="600">
 
@@ -209,6 +209,28 @@ report_metrics(data, starts_with("cg_adoption"), factors = 3, clusters = 4)
 
 You don’t need to add both parameters at the same time if you are only
 interested in factors or clusters.
+
+## Modeling: Regression and Analysis of Variance
+
+Modeling in the statistical sense is predicting an outcome (dependent
+variable) from one or multiple predictors (independet variables).
+
+The model functions allow linear modeling by providing the outcome as
+first variable and a selection of categorical or metric predictor in the
+respective parameters.
+
+There are two functions: One for getting a regression table and one for
+plotting the regression coefficients.
+
+``` r
+data |>
+ filter(sd_gender != "diverse") |>
+ model_metrics_tab(use_work, categorical = c(sd_gender, adopter), metric = sd_age)
+
+data |>
+ filter(sd_gender != "diverse") |>
+ model_metrics_plot(use_work, categorical = c(sd_gender, adopter), metric = sd_age)
+```
 
 ## Where do all the labels go?
 
@@ -464,7 +486,6 @@ You can try alternative versions:
   report-functions.  
 - Generate metric indexes, conduct simple factor and cluster analyses
   and calculate effect sizes  
-  (*work in progress*)  
 - Simplified hints for wrong parameters, e.g. if you forget to provide a
   data frame (*work in progress*).
 - Tidyverse style.

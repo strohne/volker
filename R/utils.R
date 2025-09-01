@@ -49,7 +49,7 @@ zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
 #'
 #' @param to The target object.
 #' @param from The source object.
-#' @param key A character vector of attribute keys
+#' @param keys A character vector of attribute keys
 #' @return The target object with the updated attributes.
 .attr_transfer <- function(to, from, keys) {
   for (key in keys) {

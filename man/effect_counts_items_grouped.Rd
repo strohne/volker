@@ -4,7 +4,15 @@
 \alias{effect_counts_items_grouped}
 \title{Effect size and test for comparing multiple variables by a grouping variable}
 \usage{
-effect_counts_items_grouped(data, cols, cross, clean = TRUE, ...)
+effect_counts_items_grouped(
+  data,
+  cols,
+  cross,
+  method = "cramer",
+  labels = TRUE,
+  clean = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{A tibble containing item measures and grouping variable.}
@@ -12,6 +20,10 @@ effect_counts_items_grouped(data, cols, cross, clean = TRUE, ...)
 \item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
 \item{cross}{The column holding groups to compare.}
+
+\item{method}{The output metrics, currently only \code{cramer} is supported.}
+
+\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 
@@ -21,6 +33,15 @@ effect_counts_items_grouped(data, cols, cross, clean = TRUE, ...)
 A volker tibble.
 }
 \description{
-\strong{Not yet implemented. The future will come.}
+Effect size and test for comparing multiple variables by a grouping variable
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+effect_counts_items_grouped(
+  data, starts_with("cg_adoption_adv"),  sd_gender
+)
+
 }
 \keyword{internal}

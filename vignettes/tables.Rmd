@@ -30,7 +30,7 @@ table {margin-left:0 !important;}
 | 3  | tab_counts_one_cor              |             | counts    | one      | metric       | one         |
 | 4  | tab_counts_items                |             | counts    | multiple |              |             |
 | 5  | tab_counts_items_grouped        |             | counts    | multiple | counts       | one         |
-| 6  | tab_counts_items_grouped_items  | not yet     | counts    | multiple | counts       | multiple    |
+| 6  | tab_counts_items_grouped_items  |             | counts    | multiple | counts       | multiple    |
 | 7  | tab_counts_items_cor            |             | counts    | multiple | metric       | one         |
 | 8  | tab_counts_items_cor_items      | not yet     | counts    | multiple | metric       | multiple    |
 | 9  | tab_metrics_one                 |             | metric    | one      |              |             |
@@ -80,8 +80,7 @@ tab_counts(
 ### 6. Correlation of categorical items with categorical items
 
 ```{r}
-# TODO
-#tab_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+tab_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 ```
 
 

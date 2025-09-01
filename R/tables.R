@@ -88,6 +88,9 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
   else if (is_items && is_grouped && is_metric) {
     tab_counts_items_cor(data, {{ cols }}, {{ cross }}, ...)
   }
+  else if (is_items && !is_grouped && !is_metric && is_multi) {
+    tab_counts_items_grouped_items(data, {{ cols }}, {{ cross }}, ...)
+  }
 
   # Not found
   else {
@@ -940,15 +943,58 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables (e.g. starts_with...).
-#' @param title If TRUE (default) shows a plot title derived from the column labels.
-#'              Disable the title with FALSE or provide a custom title as character value.
+#' @param method The output metrics, cramer = Cramer's V, f1 = F1-value (only possible when the variable sets have the same labels).
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-tab_counts_items_grouped_items <- function(data, cols, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+tab_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", labels = TRUE, clean = TRUE, ...) {
+  # 1. Checks, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
+
+  check_is_param(method, c("cramer", "f1"))
+
+  # 2. Calculate correlations
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
+
+  result_cols <- c("item1", "item2")
+
+  if(method == "cramer") {
+    result_cols <- c(result_cols, "Cramer's V")
+  }
+  if(method == "f1") {
+    result_cols <- c(result_cols, "F1")
+  }
+
+
+  result <- dplyr::select(result, tidyselect::all_of(result_cols))
+
+  # 4. Labels
+  prefix1 <- get_prefix(result$item1)
+  prefix2 <- get_prefix(result$item2)
+
+  result <- result %>%
+    dplyr::mutate(item1 = trim_prefix(.data$item1, prefix1)) |>
+    dplyr::mutate(item2 = trim_prefix(.data$item2, prefix2))
+
+  if ((prefix1 == prefix2) && (prefix1 != "")) {
+    prefix1 <- paste0("Item 1: ", prefix1)
+    prefix2 <- paste0("Item 2: ", prefix2)
+  }
+
+  # Rename first column
+  if (prefix1 != "") {
+    colnames(result)[1] <- prefix1
+  }
+
+  # Rename second column
+  if (prefix2 != "") {
+    colnames(result)[2] <- prefix2
+  }
+
+  result <- .attr_transfer(result, data, "missings")
+  .to_vlkr_tab(result, digits = 2)
 }
 
 #' Compare the values in multiple items by a metric column that will be split into groups
@@ -1468,14 +1514,12 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables (e.g. starts_with...)
-#' @param title If TRUE (default) shows a plot title derived from the column labels.
-#'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-tab_metrics_items_grouped_items <- function(data, cols, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+tab_metrics_items_grouped_items <- function(data, cols, cross, labels = TRUE, clean = TRUE, ...) {
   warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
