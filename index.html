@@ -210,10 +210,6 @@ All table functions return data frames that can be processed further. The tables
 <div class="section level2">
 <h2 id="modeling-regression-and-analysis-of-variance">Modeling: Regression and Analysis of Variance<a class="anchor" aria-label="anchor" href="#modeling-regression-and-analysis-of-variance"></a>
 </h2>
-</div>
-<div class="section level2">
-<h2 id="modeling-regression-and-analysis-of-variance-1">Modeling: Regression and Analysis of Variance<a class="anchor" aria-label="anchor" href="#modeling-regression-and-analysis-of-variance-1"></a>
-</h2>
 <p>Modeling in the statistical sense is predicting an outcome (dependent variable) from one or multiple predictors (independent variables).</p>
 <p>The report_metrics() function calculates a linear model if the model parameter is TRUE. You provide the variables in the following parameters:</p>
 <ul>
@@ -339,7 +335,7 @@ All table functions return data frames that can be processed further. The tables
 <li>
 <strong>category</strong>: When you have multiple categories in a column, you can focus one of the categories to simplify the plots and tables. By default, if a column has only TRUE and FALSE values, the outputs focus the TRUE category.</li>
 <li>
-<strong>clean</strong> Before all calculations, the dataset goes through a cleaning plan that, for example, recodes residual factor values such as “[NA] nicht beantwortet” to missings. In surveys, negative values such as -9 or -2 are often used to mark missing values or residual answers (“I don’t know”). See the help for further details or disable data cleaning if you don’t like it. For example, to disable removing the negative residual values, call <code>options(vlkr.na.numbers=FALSE)</code> and <code>options(vlkr.na.levels=FALSE)</code>.</li>
+<strong>clean</strong> Before all calculations, the dataset goes through a cleaning plan that, for example, recodes residual factor values such as “[NA] nicht beantwortet” to missings. In surveys, negative values such as -9 or -2 are often used to mark missing values or residual answers (“I don’t know”). See the help for further details or disable data cleaning if you don’t like it. For example, to disable removing the negative residual values, call <code>options(vlkr.na.numbers=FALSE)</code> and <code>options(vlkr.na.levels=FALSE)</code>. Rows with missing values in the analyzed columns are, by default, removed before producing tables or plots. To prevent this and to use the maximum available information, call <code>options(vlkr.na.omit=FALSE)</code>. From this point on, for example, item summaries are calculated using all values available for each single item. The outputs contain hints about cases with missing data.</li>
 </ul>
 </div>
 <div class="section level3">
