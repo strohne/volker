@@ -212,8 +212,6 @@ interested in factors or clusters.
 
 ## Modeling: Regression and Analysis of Variance
 
-## Modeling: Regression and Analysis of Variance
-
 Modeling in the statistical sense is predicting an outcome (dependent
 variable) from one or multiple predictors (independent variables).
 
@@ -404,7 +402,12 @@ the specific function.
   don’t know”). See the help for further details or disable data
   cleaning if you don’t like it. For example, to disable removing the
   negative residual values, call `options(vlkr.na.numbers=FALSE)` and
-  `options(vlkr.na.levels=FALSE)`.
+  `options(vlkr.na.levels=FALSE)`. Rows with missing values in the
+  analyzed columns are, by default, removed before producing tables or
+  plots. To prevent this and to use the maximum available information,
+  call `options(vlkr.na.omit=FALSE)`. From this point on, for example,
+  item summaries are calculated using all values available for each
+  single item. The outputs contain hints about cases with missing data.
 
 ### Calculations
 

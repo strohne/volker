@@ -217,9 +217,6 @@ You don't need to add both parameters at the same time if you are only intereste
 
 ## Modeling: Regression and Analysis of Variance
 
-
-## Modeling: Regression and Analysis of Variance
-
 Modeling in the statistical sense is predicting an outcome (dependent variable) from one or multiple predictors (independent variables).
 
 The report_metrics() function calculates a linear model if the model parameter is TRUE. You provide the variables in the following parameters:
@@ -393,7 +390,7 @@ Plot and table functions share a number of parameters that can be used to custom
 
 - **ordered**: Sometimes categories have an order, from low to high or from few to many. It helps visual inspections to plot ordered values with shaded colors instead of arbitrary colors. For frequency plots, you can inform the method about the desired order. By default the functions try to automatically detect a sensitive order.
 - **category**: When you have multiple categories in a column, you can focus one of the categories to simplify the plots and tables. By default, if a column has only TRUE and FALSE values, the outputs focus the TRUE category.
-- **clean** Before all calculations, the dataset goes through a cleaning plan that, for example, recodes residual factor values such as "[NA] nicht beantwortet" to missings. In surveys, negative values such as -9 or -2 are often used to mark missing values or residual answers ("I don't know"). See the help for further details or disable data cleaning if you don't like it. For example, to disable removing the negative residual values, call `options(vlkr.na.numbers=FALSE)` and `options(vlkr.na.levels=FALSE)`.
+- **clean** Before all calculations, the dataset goes through a cleaning plan that, for example, recodes residual factor values such as "[NA] nicht beantwortet" to missings. In surveys, negative values such as -9 or -2 are often used to mark missing values or residual answers ("I don't know"). See the help for further details or disable data cleaning if you don't like it. For example, to disable removing the negative residual values, call `options(vlkr.na.numbers=FALSE)` and `options(vlkr.na.levels=FALSE)`. Rows with missing values in the analyzed columns are, by default, removed before producing tables or plots. To prevent this and to use the maximum available information, call `options(vlkr.na.omit=FALSE)`. From this point on, for example, item summaries are calculated using all values available for each single item. The outputs contain hints about cases with missing data.
 
 ### Calculations
 
