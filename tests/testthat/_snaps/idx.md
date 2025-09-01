@@ -18,7 +18,7 @@
       |I only use new offers when I have no other choice | 2.4| 2.4|    2.4| 2.4| 2.4|  2.4|    |  1|    12|  0.81|
       |total                                             | 1.0| 2.4|    2.8| 3.2| 5.0|  2.9| 0.6| 97|    12|  0.81|
       
-      4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted.
       
 
 # Index is calculated
@@ -37,7 +37,7 @@
       |I only use new offers when I have no other choice | 2.4| 2.4|    2.4| 2.4| 2.4|  2.4|    |  1|    12|  0.81|
       |total                                             | 1.0| 2.4|    2.8| 3.2| 5.0|  2.9| 0.6| 97|    12|  0.81|
       
-      4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted.
       
 
 # Items are reversed
@@ -60,7 +60,7 @@
       |items                          |     4|
       |alpha                          |  0.79|
       
-      2 missing case(s) omitted.
+      n=99. 2 missing case(s) omitted.
       
 
 ---
@@ -83,6 +83,6 @@
       |items                          |     4|
       |alpha                          |  0.79|
       
-      2 missing case(s) omitted.
+      n=99. 2 missing case(s) omitted.
       
 

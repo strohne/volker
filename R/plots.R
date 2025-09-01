@@ -314,7 +314,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 
   # 8. Base
   base_n <- nrow(data)
-  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data, c("missings","cases"))
 
   .plot_bars(
     result,
@@ -472,7 +472,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
   # Get base
   base_n <- nrow(data)
 
-  result <- .attr_transfer(result, data, "missings")
+  result <- .attr_transfer(result, data, c("missings","cases"))
 
   .plot_bars(
     result,

@@ -28,7 +28,7 @@ skim_metrics <- skimr::skim_with(
     alpha = ~ get_alpha(.)$alpha
   ),
   base = skimr::sfl(
-    n = length,
+    n = skimr::n_complete,
     missing = skimr::n_missing
   ),
   append = FALSE

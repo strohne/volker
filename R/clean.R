@@ -183,9 +183,15 @@ data_rm_missings <- function(data, cols) {
   cases <-  nrow(data) - nrow(cleaned)
 
   if (cases > 0) {
-    data <- cleaned
+
+    na.omit <- dplyr::coalesce(getOption("vlkr.na.omit"), VLKR_NA_OMIT)
     colnames <- rlang::as_label(rlang::enquo(cols))
-    data <- .attr_insert(data, "missings", "na", list("cols" = colnames, "n" = cases))
+
+    if (na.omit == TRUE) {
+      data <- cleaned
+    }
+
+    data <- .attr_insert(data, "missings", "na", list("cols" = colnames, "n" = cases, "omit" = na.omit))
   }
 
   data
@@ -428,18 +434,25 @@ get_baseline <- function(obj) {
     cols <- c()
     baseline_missing <- c()
     if (!is.null(missings$na)) {
-      baseline_missing <- c(baseline_missing, paste0(missings$na$n," missing"))
+      postfix <- ifelse(isTRUE(missings$na$omit), " missing", " case(s) with missing")
+      baseline_missing <- c(baseline_missing, paste0(missings$na$n,postfix))
     }
 
     if (!is.null(missings$zero)) {
-      baseline_missing <- c(baseline_missing, paste0(missings$zero$n," zero"))
+      postfix <- ifelse(isTRUE(missings$na$omit), " zero", " case(s) with zero")
+      baseline_missing <- c(baseline_missing, paste0(missings$zero$n, postfix))
     }
 
     if (!is.null(missings$negative)) {
-      baseline_missing <- c(baseline_missing, paste0(missings$negative$n," negative"))
+      postfix <- ifelse(isTRUE(missings$na$omit), " negative", " case(s) with negative")
+      baseline_missing <- c(baseline_missing, paste0(missings$negative$n,postfix))
     }
 
-    baseline <- c(baseline, paste0(paste0(baseline_missing, collapse = ", "), " case(s) omitted."))
+    if (isTRUE(missings$na$omit)) {
+      baseline <- c(baseline, paste0(paste0(baseline_missing, collapse = ", "), " case(s) omitted."))
+    } else {
+       baseline <- c(baseline, paste0(paste0(baseline_missing, collapse = ", "), " values."))
+    }
   }
 
   # Assemble baseline
