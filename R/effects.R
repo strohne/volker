@@ -38,7 +38,7 @@
 #' effect_counts(data, sd_gender, adopter)
 #'
 #' @export
-effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ...) {
+effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, ids = NULL, ...) {
   # Check
   check_is_dataframe(data)
 
@@ -50,14 +50,20 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
   # Find columns
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
+  ids_eval <- tidyselect::eval_select(expr = enquo(ids), data = data)
+
   is_items <- length(cols_eval) > 1
   is_grouped <- length(cross_eval) == 1
   is_multi <- length(cross_eval) > 1
   is_metric <- metric != FALSE
+  has_ids <- length(ids_eval) == 1
 
   # Single variables
   if (!is_items && !is_grouped && !is_multi) {
     effect_counts_one(data, {{ cols }}, ...)
+  }
+  else if (!is_items && is_grouped && !is_metric && has_ids) {
+    effect_counts_one_grouped(data, {{ cols }}, {{ cross }}, ids = {{ ids }}, ...)
   }
   else if (!is_items && is_grouped && !is_metric) {
     effect_counts_one_grouped(data, {{ cols }}, {{ cross }}, ...)
@@ -69,6 +75,9 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
   # Items
   else if (is_items && !is_grouped && !is_multi) {
     effect_counts_items(data, {{ cols }} , ...)
+  }
+  else if (is_items && is_grouped && !is_metric && has_ids) {
+    effect_counts_items_grouped(data, {{ cols }}, {{ cross }}, ids = {{ ids }},  ...)
   }
   else if (is_items && is_grouped && !is_metric) {
     effect_counts_items_grouped(data, {{ cols }}, {{ cross }},  ...)
@@ -245,6 +254,7 @@ effect_counts_one <- function(data, col, clean = TRUE, ...) {
 #' @param data A tibble.
 #' @param col The column holding factor values.
 #' @param cross The column holding groups to compare.
+#' @param method The output metrics, currently only `cramer` is supported.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
 #' @return A volker tibble with the following statistical measures:
@@ -264,15 +274,23 @@ effect_counts_one <- function(data, col, clean = TRUE, ...) {
 #'
 #' @importFrom rlang .data
 #' @export
-effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
+effect_counts_one_grouped <- function(data, col, cross, ids = NULL, method = "cramer", clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
+
+  ids_eval <- tidyselect::eval_select(expr = enquo(ids), data = data)
+  if (length(ids_eval) == 1) {
+    ids = dplyr::pull(data, {{ ids }})
+  } else {
+    ids <- NULL
+  }
 
   # 2. Test
   result <- .effect_correl(
     dplyr::pull(data, {{ col }}),
     dplyr::pull(data, {{ cross }}),
-    method = "cramer"
+    ids,
+    method = method
   )  |>
   tibble::enframe(
     name = "Statistic",
@@ -406,14 +424,15 @@ effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-effect_counts_items_grouped <- function(data, cols, cross, method = "cramer", labels = TRUE, clean = TRUE, ...) {
+effect_counts_items_grouped <- function(data, cols, cross, ids = NULL, method = "cramer", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
 
-  check_is_param(method, c("cramer"))
+  check_is_param(method, c("cramer", "agree"))
+
 
   # 2. Calculate correlations
-  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, ids = {{ ids }}, method = method, labels = labels)
 
   # 3. Labels
   prefix1 <- get_prefix(result$item1)
@@ -1234,31 +1253,51 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @return A tibble with correlation results.
 #' @importFrom rlang .data
-.effect_correlations <- function(data, cols, cross, method = "pearson", labels = TRUE) {
+.effect_correlations <- function(data, cols, cross, ids = NULL, method = "pearson", labels = TRUE) {
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
+  ids_eval <- tidyselect::eval_select(expr = enquo(ids), data = data)
+
 
   # Check method
-  check_is_param(method, c("spearman", "pearson", "cramer", "f1"))
+  check_is_param(method, c("spearman", "pearson", "cramer", "agree", "f1"))
 
   # Calculate
-  result <- expand.grid(
+  if (length(ids_eval) == 1) {
+    result <- expand.grid(
+        x = cols_eval, y = cross_eval, z = ids_eval,
+        stringsAsFactors = FALSE
+      ) |>
+        dplyr::mutate(
+          .test = purrr::pmap(
+            list(.data$x, .data$y, .data$z),
+            \(x, y, z) .effect_correl(data[[x]], data[[y]], ids = data[[z]], method = method)
+          )
+        )
+
+  } else {
+    result <- expand.grid(
       x = cols_eval, y = cross_eval,
       stringsAsFactors = FALSE
     ) %>%
+      dplyr::mutate(
+        .test = purrr::pmap(
+          list(.data$x, .data$y),
+          \(x, y, z) .effect_correl(data[[x]], data[[y]], method = method)
+        )
+      )
+
+  }
+
+
+  result <- result %>%
     dplyr::mutate(
       x_name = names(.data$x),
       y_name = names(.data$y)
     ) %>%
-    dplyr::mutate(
-      .test = purrr::map2(
-        .data$x, .data$y,
-        \(x, y) .effect_correl(data[[x]], data[[y]], method)
-      )
-    ) |>
     tidyr::unnest_wider(".test") |>
-    dplyr::select(-tidyselect::all_of(c("x", "y")))
+    dplyr::select(-tidyselect::any_of(c("x", "y", "z")))
 
   result <- dplyr::select(result, item1 = "x_name", item2 = "y_name", tidyselect::everything())
   result <- dplyr::arrange(result, .data$item1, .data$item2)
@@ -1272,6 +1311,28 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
   result
 }
 
+# helper: mean of pairwise agreements (nominal)
+pair_agreement <- function(vals) {
+  vals <- na.omit(vals)
+  m <- length(vals)
+  if (m < 2) return(NA)
+
+  pairs <- combn(vals, 2)
+  agree <- pairs[1, ] == pairs[2, ]
+  mean(agree)
+}
+
+
+# helper: mean of pairwise disagreements (nominal)
+pair_disagreement <- function(vals) {
+  vals <- na.omit(vals)
+  m <- length(vals)
+  if (m < 2) return(NA)
+
+  pairs <- combn(vals, 2)
+  dis <- pairs[1, ] != pairs[2, ]
+  mean(dis)
+}
 
 #' Calculate correlation between two vectors
 #'
@@ -1279,16 +1340,18 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #'
 #' @param x First vector
 #' @param y Second vector
+#' @param ids Case ids. Used for reliability calculations where X are values and y contains coders.
 #' @param method One of "spearman" or "pearson" for metric vectors. For catecorical vectors, use "cramer" or "f1".
+#'               For reliability calculations, provide ids and set method to "agree".
 #' @return The result of cor.test() for metric vectors.
-.effect_correl <- function(x, y, method) {
+.effect_correl <- function(x, y, ids = NULL, method) {
 
   result <- list()
 
   # TODO: round in print function, not here
 
   if (method == "cramer") {
-    contingency <- table(as.character(x),as.character(y))
+    contingency <- table(as.character(x), as.character(y))
     exact <- any(contingency < 5)
     fit <- stats::chisq.test(contingency, simulate.p.value = exact)
     n <- sum(contingency)
@@ -1304,6 +1367,110 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
       "stars"= get_stars(fit$p.value)
     )
   }
+  else if (method == "agree" && !is.null(ids)) {
+
+      df <- data.frame(id = ids, coder = y, value = x, stringsAsFactors = FALSE)
+
+      # Wide format: rows = cases, cols = coders
+      mat <- reshape(
+        df,
+        idvar = "id",
+        timevar = "coder",
+        direction = "wide"
+      )
+      mat <- mat[ , -1, drop = FALSE]
+      mat <- as.matrix(mat)
+
+      n_cases <- nrow(mat)
+      n_coders <- ncol(mat)
+      n_categories <- length(unique(as.vector(mat)))
+
+      holsti <- NA
+      if (n_coders == 2) {
+        matches <- mat[,1] == mat[,2]
+        holsti <- mean(matches, na.rm = TRUE)
+      }
+
+      kappa <- NA
+      if (n_coders == 2) {
+        # Cohen’s Kappa
+        tab <- table(mat[,1], mat[,2])
+        Po <- sum(diag(tab)) / sum(tab)
+        Pe <- sum(rowSums(tab) * colSums(tab)) / (sum(tab)^2)
+        kappa <- (Po - Pe) / (1 - Pe)
+      } else if (n_coders > 2) {
+        # Fleiss’ Kappa
+        cats <- unique(as.vector(mat))
+        cats <- cats[!is.na(cats)]
+        k <- length(cats)
+
+        # rating counts per subject
+        n_ij <- sapply(cats, function(c) rowSums(mat == c, na.rm = TRUE))
+        N <- nrow(n_ij)
+        n <- n_coders
+
+        P_i <- (rowSums(n_ij^2) - n) / (n * (n - 1))
+        Po <- mean(P_i)
+
+        p_j <- colSums(n_ij) / (N * n)
+        Pe <- sum(p_j^2)
+
+        kappa <- (Po - Pe) / (1 - Pe)
+      }
+
+      gwet <- NA
+      if (n_coders >= 2) {
+        Po_vec <- apply(mat, 1, pair_agreement)
+        Po <- mean(Po_vec, na.rm = TRUE)
+
+        # compute category proportions (π_k)
+        all_ratings <- as.vector(mat)
+        all_ratings <- all_ratings[!is.na(all_ratings)]
+        tab <- table(all_ratings)
+        pk <- as.numeric(tab) / sum(tab)   # vector of π_k
+        q <- length(pk)
+
+        # Degenerate cases
+        if (q == 0) {
+          warning("No ratings found.")
+        } else {
+
+          # only one category -> no chance-agreement; agreement is trivially 1 if Po==1
+          if (q == 1) {
+            Pe <- 0
+          }
+          else {
+            Pe <- sum(pk * (1 - pk)) / (q - 1)
+          }
+          gwet <- (Po - Pe) / (1 - Pe)
+        }
+
+      }
+
+      kripp <- NA
+      if (n_coders >= 2) {
+        Do_vec <- apply(mat, 1, pair_disagreement)
+        Do <- mean(Do_vec, na.rm = TRUE)
+
+        all_vals <- as.vector(mat)
+        all_vals <- all_vals[!is.na(all_vals)]
+        p <- table(all_vals) / length(all_vals)
+        De <- 1 - sum(p^2)
+
+        kripp <- if (!is.na(Do) && De > 0) 1 - Do / De else NA
+      }
+
+      result <- list(
+        "n" = n_cases,
+        "Coders" = n_coders,
+        "Categories" = n_categories,
+        "Holsti" = ifelse(is.na(holsti), NA, round(holsti, 3)),
+        "Krippendorff's Alpha" = ifelse(is.na(kripp), NA, round(kripp, 3)),
+        "Kappa" = ifelse(is.na(kappa), NA, round(kappa, 3)),
+        "Gwet's AC1" = ifelse(is.na(gwet), NA, round(gwet, 3))
+      )
+    }
+
   else if (method == "f1") {
 
     # Ensure factors for consistent levels
