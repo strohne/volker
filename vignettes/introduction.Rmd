@@ -498,9 +498,9 @@ Furthermore, each function first cleans the values:
 
 ```{r}
 
-print(VLKR_NA_LEVELS)
+print(volker:::VLKR_NA_LEVELS)
 
-print(VLKR_NA_NUMBERS)
+print(volker:::VLKR_NA_NUMBERS)
 
 ```
 
