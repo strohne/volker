@@ -324,13 +324,23 @@ Try out the following pattern in an RMarkdown document!
 
 # Index calculation for item batteries
 
-You can calculate mean indexes from a bunch of items using `add_index()`. 
+For quick inspections of an index from a bunch of items, set the index parameter to `TRUE`.
+The index is calculated by the average value of all selected columns.
+
+Cronbach's Alpha and the number of items are calculated with `psych::alpha()`
+and stored as column attribute named "psych.alpha". The reliability values 
+are printed by `report_metrics()`.
+
+```{r}
+ds |> 
+  report_metrics(starts_with("cg_adoption"), index = TRUE)
+```
+
+You can add an index as a new column using `add_index()`. 
 A new column is created with the average value of all selected columns
 for each case. Provide a custom name for the column using the `newcol` parameter.
+The `report_metrics()` function still outputs reliability values for the column.
 
-Reliability and number of items are calculated with `psych::alpha()`
-and stored as column attribute named "psych.alpha". The reliability values 
-are printed by `report`_metrics()`.
 
 **Add a single index**
 ```{r eval=FALSE}
@@ -355,6 +365,8 @@ ds %>%
   add_index(starts_with("cg_adoption_social")) %>%
   tab_metrics(starts_with("idx_cg_adoption"))
 ```
+
+To reverse items, provide a selection of columns to the `cols.reverse`-parameter of `add_index()`.
 
 # Factor and cluster analysis 
 
@@ -423,15 +435,16 @@ ds |>
 ```
 
 
-## Modeling: Regression and Analysis of Variance
+# Modeling: Regression and Analysis of Variance
 
-Modeling in the statistical sense is predicting an outcome (dependent variable) from one or multiple predictors (independet variables).
+Modeling in the statistical sense is predicting an outcome (dependent variable) from one or multiple predictors (independent variables).
 
-The report_metrics() function calculates a linear model if the model parameter is TRUE. You provide the variables in the following parameters:
-- Dependent metric variable: first parameter.
-- Independet categorical variables: second parameter (a tidy column selection).
-- Independent metric variables: metric-parameter (a tidy column selection).
-- Interaction effects: interactions-parameter with a vector of multiplication terms (e.g. `c(sd_age * sd_gender)`)
+The report_metrics() function calculates a linear model if the model parameter is TRUE. You provide the variables in the following parameters:  
+
+- Dependent metric variable: first parameter after the dataset (cols parameter).  
+- Independent categorical variables: a tidy column selection in the second parameter (cross parameter).  
+- Independent metric variables: a tidy column selection in the third parameter (metric parameter.  
+- Interaction effects: interactions-parameter with a vector of multiplication terms (e.g. `interactions = c(sd_age * sd_gender)`)  
 
 
 
@@ -452,13 +465,14 @@ This will add a new variable prefixes with `prd_` holding the target scores.
 
 
 ```{r, eval=FALSE}
-ds <- |> add_model(
+ds <- ds |> 
+  add_model(
    use_work,
    categorical = c(sd_gender, adopter), 
    metric = sd_age
  )
 
-report_metrics(data, use_work, prd_use_work, metric = T)
+report_metrics(ds, use_work, prd_use_work, metric = T)
 ```
 
 
@@ -470,6 +484,32 @@ model_plot(ds, prd_use_work)
 
 ```
 
+# The mystery of missing values
+
+Cases with missing values, by default, are omitted in all methods. 
+Thus, the calculations are only based on cases with complete values
+in the selected columns.
+
+Furthermore, each function first cleans the values:  
+
+- Residual levels defined in the `VLKR_NA_LEVELS` constant are recoded to missing values ("[NA] nicht beantwortet", "[NA] keine Angabe", "[no answer]" and "keine Angabe").  
+- Residual numeric values defined in the `VLKR_NA_NUMBERS` constant  are recoded to missing values (-9, -2, and -1).  
+
+
+```{r}
+
+print(VLKR_NA_LEVELS)
+
+print(VLKR_NA_NUMBERS)
+
+```
+
+The output always contains information about how many cases were removed due to missing values.
+You have three options to treat missings:  
+
+1. Disable recoding by setting the `clean`-parameter of the functions to `FALSE`.  
+2. Override the values in VLKR_NA_LEVELS and VLKR_NA_NUMBERS by `options(vlkr.na.levels=c("Not answered"))` or `options(vlkr.na.numbers=c(-2,-9))`. If you set the value to `FALSE`, no values are recoded.  
+3. When analysing items, use pairwise complete data by calling `options(vlkr.na.omit=FALSE)` (maximal information from all items).  
 
 
 # What's behind the scenes?
