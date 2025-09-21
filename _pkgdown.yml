@@ -12,6 +12,8 @@ navbar:
     right:
     - search
     - github
+    - href: https://www.youtube.com/@volkerpackage
+      text: YouTube
   components:
     introduction:
       text: Introduction
