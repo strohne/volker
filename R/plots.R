@@ -695,6 +695,9 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #'                By default, for logical column types, only TRUE values are counted.
 #'                For other column types, the first category is counted.
 #'                To override the default behavior, provide a vector of values in the dataset or labels from the codebook.
+#' @param limits The scale limits, autoscaled by default.
+#'               Set to \code{c(0,100)} to make a 100% plot.
+#'               If the data is binary or focused on a single category, by default a 100% plot is created.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -716,7 +719,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_items_grouped <- function(data, cols, cross, category = NULL, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
 
@@ -847,6 +850,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, title 
   .plot_lines(
     result,
     title = title,
+    limits=limits,
     base = paste0(
       "n=", base_n,
       "; multiple responses possible",
