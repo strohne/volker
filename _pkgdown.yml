@@ -12,12 +12,16 @@ navbar:
     right:
     - search
     - github
-    - href: https://www.youtube.com/@volkerpackage
-      text: YouTube
+    - youtube
   components:
     introduction:
       text: Introduction
       href: articles/introduction.html
+    youtube:
+      icon: fa-youtube
+      href: https://www.youtube.com/@volkerpackage
+      aria-label: YouTube
+
 vignettes:
 - title: "Introduction"
   name: "introduction"
