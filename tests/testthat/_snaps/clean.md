@@ -105,3 +105,10 @@
     Output
       [1] "n=2. 2 case(s) with negative values."
 
+# Baseline for missings
+
+    Code
+      get_baseline(result)
+    Output
+      [1] "n=4. 2 case(s) with missing values."
+
