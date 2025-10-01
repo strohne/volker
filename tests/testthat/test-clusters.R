@@ -26,10 +26,10 @@ test_that("Clusters are added", {
 #     f2 = c(1:18, NA, NA)
 #   )
 #
-#   d <- suppressWarnings(add_clusters(data_with_missings, c(item1, item2), k = NULL))
+#   d <- suppressWarnings(add_clusters(data_with_missings, c(f1, f2), k = NULL))
 #
 #   expect_snapshot({
-#     volker:: cluster_tab(d, cls_item)
+#     volker::cluster_tab(d, cls_f)
 #   }, cran = TRUE)
 #
 #   options(vlkr.na.omit=TRUE)

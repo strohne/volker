@@ -318,9 +318,9 @@ plot_counts_items_cor(
 ## Metrics 
 ### plot_metrics_one
 ```{r}
-# TODO: Remove warning 
-#data |> 
-  #plot_metrics(sd_age)
+# TODO: Handle warnings 
+data |> 
+  plot_metrics(sd_age)
 ```
 
 ### plot_metrics_one with box
