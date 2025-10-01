@@ -203,7 +203,7 @@ test_that("Missing values are skipped in single variables", {
   options(vlkr.na.omit=TRUE)
 })
 
-# test_that("Missing values are skipped in item comparisons", {
+# test_that("Cramer's V and Chi-square-test for each item with missings", {
 #
 #   options(vlkr.na.omit=FALSE)
 #
