@@ -2,9 +2,16 @@
 % Please edit documentation in R/effects.R
 \name{.effect_correlations}
 \alias{.effect_correlations}
-\title{Test whether correlations are different from zero}
+\title{Calculate correlation and cooccurrence coefficients and test whether they are different from zero}
 \usage{
-.effect_correlations(data, cols, cross, method = "pearson", labels = TRUE)
+.effect_correlations(
+  data,
+  cols,
+  cross,
+  method = "pearson",
+  category = NULL,
+  labels = TRUE
+)
 }
 \arguments{
 \item{data}{A tibble.}
@@ -14,9 +21,14 @@
 \item{cross}{The columns holding metric values to correlate.}
 
 \item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho,
-cramer = Cramer's V, f1 = F1-value.
-The reported R square value is just squared Spearman's or Pearson's R.
-F1-values are only supported for variable sets with the same labels.}
+cramer = Cramer's V.
+The reported R square value is simply the square of Spearman's rho respective Pearson's r.}
+
+\item{category}{Calculating NPMI for multiple items requires a focus category.
+By default, for logical column types, only TRUE values are counted.
+For other column types, the first category is counted.
+Accepts both character and numeric values to override default counting behavior.
+Not implemented yet.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 }
@@ -24,6 +36,7 @@ F1-values are only supported for variable sets with the same labels.}
 A tibble with correlation results.
 }
 \description{
-Test whether correlations are different from zero
+This function is used to calculate coefficients for all pairwise items
+by calling \code{.effect_correl()} on each combination of the items in the \code{cols}- by \code{cross}-parameter.
 }
 \keyword{internal}

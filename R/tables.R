@@ -312,7 +312,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
-  check_is_param(prop, c("total", "cols", "rows"))
+  check_is_param(prop, c("total", "cells", "cols", "rows"))
   check_is_param(values, c("n", "p"), allowmultiple = TRUE)
 
   # 2. Get labels for values
@@ -717,7 +717,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 #' @param category Summarizing multiple items (the cols parameter) by group requires a focus category.
 #'                By default, for logical column types, only TRUE values are counted.
 #'                For other column types, the first category is counted.
-#'                Accepts both character and numeric vectors to override default counting behavior.
+#'                Accepts both character and numeric values to override default counting behavior.
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param values The values to output: n (frequency) or p (percentage) or both (the default).
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
@@ -943,7 +943,9 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables (e.g. starts_with...).
-#' @param method The output metrics, cramer = Cramer's V, f1 = F1-value (only possible when the variable sets have the same labels).
+#' @param method The method of correlation calculation:
+#' - `cramer` for Cramer's V,
+#' - `npmi` for Normalized Pointwise Mutual Information. Not implemented yet.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
@@ -953,20 +955,14 @@ tab_counts_items_grouped_items <- function(data, cols, cross, method = "cramer",
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
 
-  check_is_param(method, c("cramer", "f1"))
+  check_is_param(method, c("cramer"))
 
   # 2. Calculate correlations
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
 
   result_cols <- c("item1", "item2")
 
-  if(method == "cramer") {
-    result_cols <- c(result_cols, "Cramer's V")
-  }
-  if(method == "f1") {
-    result_cols <- c(result_cols, "F1")
-  }
-
+  result_cols <- c(result_cols, map_label(method, list("cramer"= "Cramer's V", "npmi" = "NPMI")))
 
   result <- dplyr::select(result, tidyselect::all_of(result_cols))
 
@@ -979,18 +975,18 @@ tab_counts_items_grouped_items <- function(data, cols, cross, method = "cramer",
     dplyr::mutate(item2 = trim_prefix(.data$item2, prefix2))
 
   if ((prefix1 == prefix2) && (prefix1 != "")) {
-    prefix1 <- paste0("Item 1: ", prefix1)
-    prefix2 <- paste0("Item 2: ", prefix2)
+    prefix1 <- paste0("Item 1: ", trim_label(prefix1))
+    prefix2 <- paste0("Item 2: ", trim_label(prefix2))
   }
 
   # Rename first column
   if (prefix1 != "") {
-    colnames(result)[1] <- prefix1
+    colnames(result)[1] <- trim_label(prefix1)
   }
 
   # Rename second column
   if (prefix2 != "") {
-    colnames(result)[2] <- prefix2
+    colnames(result)[2] <- trim_label(prefix2)
   }
 
   result <- .attr_transfer(result, data, c("missings","cases"))
@@ -1008,7 +1004,7 @@ tab_counts_items_grouped_items <- function(data, cols, cross, method = "cramer",
 #' @param category Summarizing multiple items (the cols parameter) by group requires a focus category.
 #'                By default, for logical column types, only TRUE values are counted.
 #'                For other column types, the first category is counted.
-#'                Accepts both character and numeric vectors to override default counting behavior.
+#'                Accepts both character and numeric values to override default counting behavior.
 #' @param split Not implemented yet.
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param values The values to output: n (frequency) or p (percentage) or both (the default).

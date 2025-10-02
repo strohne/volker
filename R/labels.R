@@ -616,7 +616,7 @@ labs_impute <- function(data) {
 #' @param default A character string used in case not prefix is found
 #' @return A character string.
 #' @importFrom rlang .data
-get_title <- function(data, cols, default=NULL) {
+get_title <- function(data, cols, default = NULL, max_length = 40) {
   labels <- data %>%
     codebook({{ cols }}) |>
     tidyr::drop_na("item_label") |>
@@ -637,7 +637,7 @@ get_title <- function(data, cols, default=NULL) {
     prefix <- default
   }
 
-  prefix
+  trunc_labels(prefix, max_length)
 }
 
 #' Get the numeric range from the labels
@@ -828,6 +828,17 @@ get_prefix <- function(x, ignore.case = FALSE, trim = FALSE, delimiters= c(":","
 }
 
 length(c("asdasd","sdf"))
+
+#' Get a label for a key
+#'
+#' @keywords internal
+#'
+#' @param key The key
+#' @param options A list of labels with their keys
+#' @return The label from the options that matches the key
+map_label <- function(key, options = list()) {
+  options[[key]]
+}
 
 #' Wrap a string
 #'

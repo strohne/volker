@@ -49,7 +49,7 @@ An appropriate color scale should be chosen depending on the ordering.
 For unordered values, colors from VLKR_FILLDISCRETE are used.
 For ordered values, shades of the VLKR_FILLGRADIENT option are used.}
 
-\item{numbers}{The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.}
+\item{numbers}{The numbers to print on the bars or tiles: "n" (frequency), "p" (percentage) or both.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

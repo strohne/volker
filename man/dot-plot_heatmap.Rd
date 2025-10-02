@@ -4,14 +4,24 @@
 \alias{.plot_heatmap}
 \title{Helper function: Heatmap}
 \usage{
-.plot_heatmap(result, value_col, base_n, numbers, title, labels)
+.plot_heatmap(
+  data,
+  values_col,
+  numbers_col = NULL,
+  base_n,
+  title = TRUE,
+  labels = TRUE
+)
 }
 \arguments{
-\item{result}{A tibble with item combinations in the first two columns and a correlation value in the last column}
+\item{data}{A tibble with item combinations in the first two columns.
+Only if the item values are equal in both columns, titles are added to the axes.}
 
-\item{value_col}{The name of the column containing correlation values, a character value}
+\item{values_col}{Name of the column containing correlation values, a character value.}
 
-\item{numbers}{Controls whether to display correlation coefficients on the plot.}
+\item{numbers_col}{Name of the column containing values to plot on the tiles or NULL to hide numbers.}
+
+\item{base_n}{The number of cases, plotted in the base line.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

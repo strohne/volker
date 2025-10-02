@@ -4,7 +4,7 @@
 \alias{get_title}
 \title{Get a common title for a column selection}
 \usage{
-get_title(data, cols, default = NULL)
+get_title(data, cols, default = NULL, max_length = 40)
 }
 \arguments{
 \item{data}{A tibble.}

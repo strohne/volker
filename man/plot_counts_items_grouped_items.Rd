@@ -9,7 +9,6 @@ plot_counts_items_grouped_items(
   cols,
   cross,
   method = "cramer",
-  numbers = TRUE,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -23,10 +22,11 @@ plot_counts_items_grouped_items(
 
 \item{cross}{Tidyselect item variables (e.g. starts_with...).}
 
-\item{method}{The method of correlation calculation: \code{cramer} for Cramer's V and \code{f1} for F1.
-F1 can only be calculated if the two variable sets have the same labels.}
-
-\item{numbers}{Controls whether to display correlation coefficients on the plot.}
+\item{method}{The method of correlation calculation:
+\itemize{
+\item \code{cramer} for Cramer's V,
+\item \code{npmi} for Normalized Pointwise Mutual Information. Not implemented yet.
+}}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}
@@ -41,6 +41,18 @@ Disable the title with FALSE or provide a custom title as character value.}
 A ggplot object.
 }
 \description{
-\strong{Not yet implemented. The future will come.}
+Correlation of categorical items with categorical items
+}
+\examples{
+library(volker)
+data <- volker::chatgpt
+
+plot_counts_items_grouped_items(
+  data,
+  starts_with("cg_adoption_advantage"),
+  starts_with("cg_adoption_fearofuse"),
+  method ="cramer"
+)
+
 }
 \keyword{internal}

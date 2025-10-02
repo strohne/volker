@@ -11,10 +11,11 @@
 
 \item{y}{Second vector}
 
-\item{method}{One of "spearman" or "pearson" for metric vectors. For catecorical vectors, use "cramer" or "f1".}
+\item{method}{One of "spearman" or "pearson" for metric vectors.
+For catecorical vectors, use "cramer" or "npmi".}
 }
 \value{
-The result of cor.test() for metric vectors.
+The result of cor.test() for metric vectors, chisq.test for Cramer's V.
 }
 \description{
 Calculate correlation between two vectors

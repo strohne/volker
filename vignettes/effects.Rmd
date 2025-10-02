@@ -79,16 +79,9 @@ data %>%
 
 ## 2. Cross table
 ```{r}
+# TODO: Output a heatmap with npmi values
 effect_counts(data, adopter, sd_gender)
 ```
-
-## 2. Reliability for a single item
-```{r}
-
-effect_counts(data_coded, topic_schreiben, coder, ids = case, method="agree")
-
-```
-
 
 ## 3. Logistic regression with one metric predictor
 ```{r}
@@ -104,11 +97,6 @@ effect_counts(data, starts_with("cg_adoption_advantage"))
 ## 5. Cramers v and Chi-square-test for each item
 ```{r}
 effect_counts(data, starts_with("cg_adoption_advantage"), sd_gender)
-```
-
-## 5. Reliability for multiple items
-```{r}
-effect_counts(data_coded, starts_with("topic_"), coder, ids = case, method="agree")
 ```
 
 ## 6. Correlation of categorical items with categorical items

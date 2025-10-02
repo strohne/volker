@@ -352,7 +352,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #'              You can disable this behavior by setting width to FALSE.
 #' @param limits The scale limits, autoscaled by default.
 #'               Set to \code{c(0,100)} to make a 100 % plot.
-#' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
+#' @param numbers The numbers to print on the bars or tiles: "n" (frequency), "p" (percentage) or both.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -371,7 +371,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
-  check_is_param(prop, c("total", "rows", "cols"))
+  check_is_param(prop, c("total", "cells", "rows", "cols"))
   check_is_param(numbers, c("n", "p"), allowmultiple = TRUE, allownull = TRUE)
 
   if (nrow(data) == 0) {
@@ -394,11 +394,6 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
   result <- data %>%
     dplyr::count({{ col }}, {{ cross }})
 
-  # 4. Set labels
-  result <- result %>%
-    dplyr::mutate(item = factor({{ col }})) |>
-    dplyr::mutate(value = as.factor({{ cross }}))
-
   if ((prop == "rows") || (prop == "cols")) {
     result <- result %>%
       dplyr::group_by({{ col }}) %>%
@@ -410,15 +405,17 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
   }
 
 
+  # 4. Set labels
+  result <- result %>%
+    dplyr::mutate(item = as.factor({{ col }})) |>
+    dplyr::mutate(value = as.factor({{ cross }}))
+
+
   # Detect the scale (whether the categories are binary and direction)
   # TODO: make dry
-  scale <-dplyr::coalesce(ordered, get_direction(data, {{ cross }}))
+  scale <- dplyr::coalesce(ordered, get_direction(data, {{ cross }}))
 
   categories <- dplyr::pull(result, {{ cross }}) |> unique() |> as.character()
-
-  if ((length(categories) == 2) && (is.null(category)) && ("TRUE" %in% categories)) {
-    category <- "TRUE"
-  }
 
   if (labels) {
     result <- labs_replace(result, "value", codebook(data, {{ cross }}))
@@ -434,8 +431,8 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
   result <- result %>%
     dplyr::mutate(
       .values = dplyr::case_when(
-        (is.null(category)) & (scale != 0) & (lastcategory == .data$value) ~ "",
-        .data$p < VLKR_LOWPERCENT ~ "",
+        (prop != "cells") & (is.null(category)) & (scale != 0) & (lastcategory == .data$value) ~ "",
+        (prop != "cells") & (.data$p < VLKR_LOWPERCENT) ~ "",
         all(numbers == "n") ~ as.character(.data$n),
         all(numbers == "p") ~ paste0(round(.data$p, 0), "%"),
         TRUE ~ paste0(.data$n, "\n", round(.data$p, 0), "%")
@@ -456,33 +453,67 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
   }
 
   # Get title
-  if (title == TRUE) {
-    title_col <- get_title(data,  {{ col }})
-    title_cross <- get_title(data,  {{ cross }})
+  title_col <- get_title(data,  {{ col }})
+  title_cross <- get_title(data,  {{ cross }})
 
-    title <-ifelse(
-      prop == "cols",
-      paste(title_cross, title_col, sep = " x "),
-      paste(title_col, title_cross, sep = " x ")
+  if (labels) {
+    result <- labs_apply(result, items = list(
+        "value" = title_cross,
+        "item" =  title_col
+      )
     )
+  }
+
+  if (title == TRUE) {
+    title <- get_prefix(
+      c(title_col, title_cross),
+      trim = TRUE,
+      delimiters = c(":","\n","_")
+    )
+
+    if (title == "") {
+      title <- ifelse(
+        prop == "cols",
+        paste(title_cross, title_col, sep = " x "),
+        paste(title_col, title_cross, sep = " x ")
+      )
+    }
   } else if (title == FALSE) {
     title <- NULL
   }
 
   # Get base
   base_n <- nrow(data)
-
   result <- .attr_transfer(result, data, c("missings","cases"))
 
-  .plot_bars(
-    result,
-    category = category,
-    scale = scale,
-    numbers = numbers,
-    orientation = orientation,
-    base = paste0("n=", base_n),
-    title = title
-  )
+  result <- dplyr::select(result, tidyselect::all_of(c("item","value","n", "p", ".values")))
+
+
+  if (prop == "cells") {
+
+    result <- tidyr::complete(result, .data$item, .data$value, fill = list(n = 0, p = 0, .values = "0"))
+
+    .plot_heatmap(
+      result,
+      values_col = "n",
+      numbers_col = ".values",
+      labels = TRUE,
+      base_n = base_n,
+      title = title
+    )
+  }
+
+  else {
+    .plot_bars(
+      result,
+      category = category,
+      scale = scale,
+      numbers = numbers,
+      orientation = orientation,
+      base = paste0("n=", base_n),
+      title = title
+    )
+  }
 }
 
 #' Plot frequencies cross tabulated with a metric column that will be split into groups
@@ -687,7 +718,6 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #'
 #' @keywords internal
 #'
-#'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
@@ -862,37 +892,45 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, limits
 
 #' Correlation of categorical items with categorical items
 #'
-#' \strong{Not yet implemented. The future will come.}
-#'
 #' @keywords internal
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables (e.g. starts_with...).
-#' @param method The method of correlation calculation: `cramer` for Cramer's V and `f1` for F1.
-#'               F1 can only be calculated if the two variable sets have the same labels.
-#' @param numbers Controls whether to display correlation coefficients on the plot.
+#' @param method The method of correlation calculation:
+#' - `cramer` for Cramer's V,
+#' - `npmi` for Normalized Pointwise Mutual Information. Not implemented yet.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A ggplot object.
+#' @examples
+#' library(volker)
+#' data <- volker::chatgpt
+#'
+#' plot_counts_items_grouped_items(
+#'   data,
+#'   starts_with("cg_adoption_advantage"),
+#'   starts_with("cg_adoption_fearofuse"),
+#'   method ="cramer"
+#' )
+#'
+#' @export
 #' @importFrom rlang .data
-plot_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", numbers = TRUE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
-  check_is_param(method, c("cramer", "f1"))
-  numbers <- TRUE
-  #check_is_param(numbers, c("n", "p"), allowmultiple = TRUE, allownull = TRUE)
+  check_is_param(method, c("cramer"))
+  value_label <- map_label(method, list("cramer" = "Cramer's V", "npmi" = "npmi"))
 
   if (nrow(data) == 0) {
     return(NULL)
   }
 
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
-  value_col = ifelse(method == "cramer",  "Cramer's V", "F1")
-  .plot_heatmap(result, value_col, nrow(data), numbers, title, labels)
+  .plot_heatmap(result, value_label, value_label, nrow(data), title, labels)
 }
 
 #' Plot percent shares of multiple items compared by a metric variable split into groups
@@ -1551,21 +1589,17 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, method = "pear
   }
 
   # 2. Calculate correlations
+  value_label <- map_label(method, list("pearson" = "Pearson's r", "spearman" =  "Spearman's rho"))
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
 
   # Remove common item prefix
   prefix1 <- get_prefix(result$item1)
   prefix2 <- get_title(data, {{ cross }})
 
-  result <- dplyr::mutate(
-    result,
-    item1 = trim_prefix(.data$item1, prefix1)
-  )
+  result$item1 <- trim_prefix(result$item1, prefix1)
 
   # Adjust result for plot
   if (method == "pearson") {
-
-    value_label <- "Pearson's r"
 
     result <- result %>%
       dplyr::rename(
@@ -1579,8 +1613,6 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, method = "pear
 
   } else if (method == "spearman") {
 
-    value_label <- "Spearman's rho"
-
     result <- result %>%
       dplyr::rename(
         item = "item1",
@@ -1590,18 +1622,12 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, method = "pear
   }
 
   # Get limits
-  method_range <- range(result$value, na.rm = TRUE)
-
-  if (all(method_range >= 0 & method_range <= 1)) {
-    limits <- c(0, 1)
-  } else {
-    limits <- c(-1, 1)
-  }
+  limits = .get_plot_limits(result$value)
 
   # Add title
   if (title == TRUE) {
     if (prefix1 != prefix2) {
-      title <- paste0(prefix1, " - ", prefix2)
+      title <- paste0(prefix1, " x ", prefix2)
     } else {
       title <- prefix1
     }
@@ -1634,7 +1660,6 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, method = "pear
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
 #' @param method The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.
-#' @param numbers Controls whether to display correlation coefficients on the plot.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1649,7 +1674,7 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, method = "pear
 #'
 #'@export
 #'@importFrom rlang .data
-plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", numbers = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
   check_is_param(method, c("pearson", "spearman"))
@@ -1658,9 +1683,9 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     return(NULL)
   }
 
-  value_col <- ifelse(method=="spearman", "Spearman's rho", "Pearson's r")
+  values_col <- map_label(method, list("spearman"="Spearman's rho", "pearson" = "Pearson's r"))
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
-  .plot_heatmap(result, value_col, nrow(data), numbers, title, labels)
+  .plot_heatmap(result, values_col, values_col, nrow(data), title, labels)
 }
 
 
@@ -1670,7 +1695,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #'
 #' @param data Data frame with the columns item, value, p, n and optionally p_item.
 #'             If p_item is provided, the column width is generated according the p_item value, resulting in a mosaic plot.
-#' @param category Category for filtering the data frame.
+#' @param category Optionally, a category to focus. All rows not matching the category will be filtered out.
 #' @param ci Whether to plot error bars for 95% confidence intervals. Provide the columns ci.low and ci.high in data.
 #' @param scale Direction of the scale: 0 = no direction for categories,
 #'              -1 = descending or 1 = ascending values.
@@ -1683,6 +1708,12 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 .plot_bars <- function(data, category = NULL, ci = FALSE, scale = NULL, limits = NULL, numbers = NULL, orientation = "horizontal", base = NULL, title = NULL) {
 
   data_missings <- attr(data, "missings", exact = TRUE)
+
+  # Get axes and legend titles before the respective columns are mutated
+  axis_titles = setequal(data$item, data$value)
+  title_item <- get_title(data, tidyselect::all_of("item"))
+  title_value <- get_title(data, tidyselect::all_of("value"))
+
 
   if (!is.null(category)) {
     data <- dplyr::filter(data, .data$value == category)
@@ -1735,7 +1766,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       ggplot2::geom_col()
   }
 
-  pl <- .to_vlkr_plot(pl, theme_options = list(axis.text.y = !all(data$item == "TRUE")))
+  #pl <- .to_vlkr_plot(pl, theme_options = plot_options)
 
   if (ci && !is.null(category)) {
     pl <- pl +
@@ -1746,6 +1777,8 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   }
 
 
+  pl <- pl + ggplot2::labs(x = title_item)
+
   if (orientation == "horizontal") {
     pl <- pl +
       ggplot2::scale_y_continuous(labels = scales::percent, limits = limits) +
@@ -1755,6 +1788,16 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       ) +
       ggplot2::ylab("Share in percent") +
       ggplot2::coord_flip()
+
+    # Coord flip changes axes
+    plot_options = list(
+      axis.text.y = !all(data$item == "TRUE"),
+      axis.title.y = is.null(category) & axis_titles,
+      axis.title.x = TRUE,
+      legend.title = axis_titles
+    )
+
+
   }
   else {
     angle <- get_angle(levels(data$item))
@@ -1762,7 +1805,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     pl <- pl +
       ggplot2::scale_y_continuous(labels = scales::percent, limits = limits) +
       ggplot2::scale_x_discrete(labels = \(labels) trunc_labels(labels)) +
-      ggplot2::ylab("Share in percent")+
+      ggplot2::ylab("Share in percent") +
       ggplot2::theme(
         axis.text.x = ggplot2::element_text(
           angle = angle,
@@ -1770,6 +1813,13 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
           size = ggplot2::theme_get()$axis.text.y$size,
           color = ggplot2::theme_get()$axis.text.y$color
       )
+    )
+
+    plot_options = list(
+      axis.text.y = !all(data$item == "TRUE"),
+      axis.title.y = TRUE,
+      axis.title.x = is.null(category) & axis_titles,
+      legend.title = axis_titles
     )
   }
 
@@ -1781,23 +1831,24 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   if (!is.null(category)) {
     pl <- pl +
       ggplot2::scale_fill_manual(
-        values = vlkr_colors_discrete(1)
+        values = vlkr_colors_discrete(1),
+        name = title_value
       ) +
       ggplot2::theme(
-        legend.position = ifelse(category == "TRUE" | category == TRUE, "none","bottom"),
+        legend.position = ifelse(category == "TRUE" | category == TRUE, "none", "bottom"),
         legend.justification = "left"
       )
   } else if ((scale > 0) || (scale < 0)) {
     pl <- pl +
       ggplot2::scale_fill_manual(
         values = vlkr_colors_sequential(length(levels(as.factor(data$value)))),
-        guide = ggplot2::guide_legend(reverse = orientation == "horizontal")
+        guide = ggplot2::guide_legend(reverse = orientation == "horizontal", title = title_value)
       )
   } else {
     pl <- pl +
       ggplot2::scale_fill_manual(
         values = vlkr_colors_discrete(length(levels(as.factor(data$value)))),
-        guide = ggplot2::guide_legend(reverse = orientation == "horizontal")
+        guide = ggplot2::guide_legend(reverse = orientation == "horizontal", title = title_value)
       )
   }
 
@@ -1820,7 +1871,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   # Convert to vlkr_plot
   attr(pl, "missings") <- data_missings
 
-  .to_vlkr_plot(pl, theme_options = list(axis.text.y = !all(data$item == "TRUE")))
+  .to_vlkr_plot(pl, theme_options = plot_options)
 }
 
 
@@ -2073,78 +2124,81 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #'
 #' @keywords internal
 #'
-#' @param result A tibble with item combinations in the first two columns and a correlation value in the last column
-#' @param value_col The name of the column containing correlation values, a character value
-#' @param numbers Controls whether to display correlation coefficients on the plot.
+#' @param data A tibble with item combinations in the first two columns.
+#'             Only if the item values are equal in both columns, titles are added to the axes.
+#' @param values_col Name of the column containing correlation values, a character value.
+#' @param numbers_col Name of the column containing values to plot on the tiles or NULL to hide numbers.
+#' @param base_n The number of cases, plotted in the base line.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @return  A ggplot object
 #' @importFrom rlang .data
-.plot_heatmap <- function(result, value_col, base_n, numbers, title, labels) {
+.plot_heatmap <- function(data, values_col, numbers_col = NULL, base_n, title = TRUE, labels = TRUE) {
+
   # Remove common item prefix
-  prefix1 <- get_prefix(result$item1)
-  prefix2 <- get_prefix(result$item2)
+  prefix1 <- get_prefix(data[[1]])
+  prefix2 <- get_prefix(data[[2]])
 
-  result <- dplyr::mutate(
-    result,
-    item1 = trim_prefix(.data$item1, prefix1),
-    item2 = trim_prefix(.data$item2, prefix2)
-  )
+  title1 <- get_title(data, 1)
+  title2 <- get_title(data, 2)
+  axis_titles <- (values_col != numbers_col) & setequal(data[[1]],data[[2]])
 
-  value_range <- range(result[[value_col]], na.rm = TRUE)
+  data$item1 <- trim_prefix(data[[1]], prefix1)
+  data$item2 <- trim_prefix(data[[2]], prefix2)
+
+  # Precompute text colors
+  scale_limits <- .get_plot_limits(data[[values_col]])
+  color_method <- vlkr_colors_sequential
+  if (all(scale_limits == c(-1, 1))) {
+    color_method <- vlkr_colors_polarized
+  }
+
+  data$.fill_color <- scales::gradient_n_pal(color_method())(scales::rescale(data[[values_col]], from = scale_limits))
+  data$.text_color <- vlkr_colors_contrast(data$.fill_color)
+
 
   # Plot
-  pl <- result %>%
+  pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(
       y = .data$item1,
       x = .data$item2,
-      fill = !!sym(value_col)
+      fill = !!sym(values_col)
     )
     ) +
     ggplot2::geom_tile()
 
-  if (all(value_range >= 0 & value_range <= 1)) {
-    # range 0 to 1
-    pl <- pl + ggplot2::scale_fill_gradientn(
-      colors = vlkr_colors_sequential(),
-      limits = c(0,1))
 
-  } else {
-
-    # range -1 to 1
-    pl <- pl + ggplot2::scale_fill_gradientn(
-      colors = vlkr_colors_polarized(),
-      limits = c(-1,1)
-    )
-  }
-
-  if (numbers) {
+  if (!is.null(numbers_col)) {
     pl <- pl +
       ggplot2::geom_text(
-        ggplot2::aes(label = !!sym(value_col), color = !!sym(value_col)),
+        ggplot2::aes(label = !!sym(numbers_col), color = .data$.text_color),
         size = 3,
-      ) +
-      ggplot2::scale_color_gradientn(
-        colors = VLKR_COLORPOLARIZED,
-        limits = c(-1,1),
-        guide = "none"
       )
   }
 
+  # Color scales
+  pl <- pl +
+    ggplot2::scale_fill_gradientn(
+      colors = color_method(),
+      limits = scale_limits
+    ) +
+    ggplot2::scale_color_identity(guide = "none")
+
   # Add labels
-  if (labels)
+  if (labels)  {
     pl <- pl + ggplot2::labs(
-      x = prefix1,
-      y = prefix2
+      x = title1,
+      y = title2
     )
+  }
 
   # Add title
   if (title == TRUE) {
     if (prefix1 != prefix2) {
-      title <- paste0(prefix1, " - ", prefix2)
+      title <- paste0(trim_label(prefix1), " x ", trim_label(prefix2))
     } else {
-      title <- prefix1
+      title <- trim_label(prefix1)
     }
   } else if (title == FALSE) {
     title <- NULL
@@ -2161,7 +2215,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     ) +
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(
-        angle = get_angle(result$item1),
+        angle = get_angle(data$item2),
         hjust = 1,
         size = ggplot2::theme_get()$axis.text.y$size,
         color = ggplot2::theme_get()$axis.text.y$color
@@ -2170,12 +2224,22 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     ggplot2::scale_x_discrete(labels = \(labels) trunc_labels(labels)) +
     ggplot2::coord_fixed()
 
+
   # Add base
   pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
 
   # Convert to vlkr_plot
-  pl <- .attr_transfer(pl, result, "missings")
-  .to_vlkr_plot(pl, rows = dplyr::n_distinct(result$item1) + 3)
+  pl <- .attr_transfer(pl, data, "missings")
+  .to_vlkr_plot(
+    pl,
+    rows = dplyr::n_distinct(data$item1) + 3,
+    theme_options = list(
+      legend.title = TRUE,
+      axis.title.x = axis_titles,
+      axis.title.y = axis_titles
+
+    )
+  )
 }
 
 #' Helper function: scree plot
@@ -2242,6 +2306,8 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #' @param theme_options Enable or disable axis titles and text, by providing a list with any of the elements
 #'                      axis.text.x, axis.text.y, axis.title.x, axis.title.y set to TRUE or FALSE.
 #'                      By default, titles (=scale labels) are disabled and text (= the tick labels) are enabled.
+#'                      Enable or disable legend title by setting the list element legend.title to TRUE or FALSE.
+#'                      Legend titles are disabled by default.
 #' @return A ggplot object with vlkr_plt class.
 .to_vlkr_plot <- function(pl, rows = NULL, maxlab = NULL, baseline = TRUE, theme_options = TRUE) {
 
@@ -2251,20 +2317,24 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   # Apply standard theme
   if (!is.null(theme_options)) {
 
+    # TODO: simplify
+    if (isTRUE(theme_options)) {
+      theme_options <- list()
+    }
+    theme_options <- utils::modifyList(
+      list(axis.text.x = TRUE, axis.text.y = TRUE, axis.title.x = FALSE, axis.title.y = FALSE, legend.title = FALSE),
+      theme_options
+    )
+
     theme_args <- list(
-      legend.title = ggplot2::element_blank(),
       plot.caption = ggplot2::element_text(hjust = 0),
       plot.title.position = "plot",
       plot.caption.position = "plot"
     )
 
-
-    # TODO: simplify
-    if (isTRUE(theme_options)) {
-      theme_options <- list()
+    if (isFALSE(theme_options$legend.title)) {
+      theme_args$legend.title <-  ggplot2::element_blank()
     }
-    theme_options <- utils::modifyList(list(axis.text.x = TRUE, axis.text.y = TRUE, axis.title.x = FALSE, axis.title.y = FALSE), theme_options)
-
 
     if (isFALSE(theme_options$axis.title.x)) {
       theme_args$axis.title.x <-  ggplot2::element_blank()
@@ -2327,6 +2397,24 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   }
 
   pl
+}
+
+#' Guess plot limits from values
+#'
+#' @keywords internal
+#'
+#' @param values Numeric values vector
+#' @return Either a vector c(0,1) or c(-1,1) or the range of the values,, whatever covers the values better
+.get_plot_limits <- function(values) {
+  valuerange <- range(values, na.rm = TRUE)
+
+  if (all(valuerange >= 0 & valuerange <= 1)) {
+    return(c(0, 1))
+  } else if (all(valuerange >= -1 & valuerange <= 1)) {
+    return(c(-1, 1))
+  } else {
+    return(valuerange)
+  }
 }
 
 #' Get plot size and resolution for the current output format from the config
@@ -2543,6 +2631,23 @@ theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDI
     )
 }
 
+#' Given a vector of hex fill colors, choose an appropriate color for text
+#'
+#' @keywords internal
+#'
+#' @param fill_colors A vector of hex colors
+#' @param threshold Luminance theshold for choosing black over white
+#' @return A vector of the same length as fill_colors with white or black colors.
+vlkr_colors_contrast <- function(colors, threshold = 0.5) {
+  # Convert hex colors to RGB [0, 1]
+  rgb_colors <- grDevices::col2rgb(colors) / 255
+
+  # Calculate luminance using Rec. 709 formula:
+  # luminance = 0.2126 R + 0.7152 G + 0.0722 B
+  luminance <- colSums(rgb_colors * c(0.2126, 0.7152, 0.0722))
+  ifelse(luminance < threshold, "white", "black")
+}
+
 #' Get colors for discrete scales
 #'
 #' If the option ggplot2.discrete.fill is set,
@@ -2555,8 +2660,9 @@ theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDI
 #' @keywords internal
 #'
 #' @param n Number of colors.
+#' @param inv Whether to get a text color with good contrast on the chosen fill colors.
 #' @return A vector of colors.
-vlkr_colors_discrete <- function(n) {
+vlkr_colors_discrete <- function(n = NULL, inv = FALSE) {
   colors <- getOption("vlkr.discrete.fill")
   if (is.null(colors)) {
     colors <- VLKR_FILLDISCRETE
@@ -2569,6 +2675,9 @@ vlkr_colors_discrete <- function(n) {
     colors <- rev(colors[[1]][1:n])
   }
 
+  if (inv) {
+    colors <- vlkr_colors_contrast(colors)
+  }
 
   colors
 }
@@ -2580,19 +2689,24 @@ vlkr_colors_discrete <- function(n) {
 #' @keywords internal
 #'
 #' @param n Number of colors or NULL to get the raw colors from the config
+#' @param inv Whether to get a text color with good contrast on the chosen fill colors.
 #' @return A vector of colors.
-vlkr_colors_sequential <- function(n = NULL) {
+vlkr_colors_sequential <- function(n = NULL, inv = FALSE) {
   colors <- getOption("vlkr.gradient.fill")
   if (is.null(colors)) {
     colors <- VLKR_FILLGRADIENT
   }
-
 
   if (!is.null(n)) {
     colors <- scales::gradient_n_pal(colors)(
       seq(0,1,length.out=n)
     )
   }
+
+  if (inv) {
+    colors <- vlkr_colors_contrast(colors)
+  }
+
   colors
 }
 
@@ -2603,8 +2717,9 @@ vlkr_colors_sequential <- function(n = NULL) {
 #' @keywords internal
 #'
 #' @param n Number of colors or NULL to get the raw colors from the config
+#' @param inv Whether to get a text color with good contrast on the chosen fill colors.
 #' @return A vector of colors.
-vlkr_colors_polarized <- function(n = NULL) {
+vlkr_colors_polarized <- function(n = NULL, inv = FALSE) {
   colors <- getOption("vlkr.polarized.fill")
   if (is.null(colors)) {
     colors <- VLKR_FILLPOLARIZED
@@ -2615,6 +2730,12 @@ vlkr_colors_polarized <- function(n = NULL) {
       seq(0,1,length.out=n)
     )
   }
+
+
+  if (inv) {
+    colors <- vlkr_colors_contrast(colors)
+  }
+
   colors
 }
 

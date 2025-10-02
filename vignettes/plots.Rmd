@@ -52,11 +52,15 @@ data <- volker::chatgpt
 plot_counts(data, sd_gender)
 ```
 
-### 2. Two variables: Stacked frequency plot of innovator type by gender
+### 2. Two variables: Stacked frequency plot and heatmap of innovator type by gender
 ```{r}
 # The prop parameter grows columns to 100%.
 # The numbers parameter adds percentages to the bars.
 plot_counts(data, adopter, sd_gender, prop = "cols", numbers = "p")
+
+# The prop=cells parameter generates a heatmap
+plot_counts(data, sd_gender, adopter, prop = "cells", numbers="p")
+
 ```
 
 ### 3. Group comparison of a metric variable split at the median

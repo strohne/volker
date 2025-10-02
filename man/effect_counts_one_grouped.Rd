@@ -18,14 +18,27 @@ effect_counts_one_grouped(data, col, cross, clean = TRUE, ...)
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{effect_counts}.}
 }
 \value{
-A volker tibble with the following statistical measures:
+A volker list with two volker tibbles.
+The first tibble contains npmi values for each combinations:
 \itemize{
-\item \strong{Cramer's V}: Effect size measuring the association between two variables.
-\item \strong{n}: Number of cases the calculation is based on.
-\item \strong{Chi-squared}: Chi-Squared test statistic.
-\item \strong{df}: Degrees of freedom.
-\item \strong{p}: p-value for the statistical test.
-\item \strong{stars}: Significance stars based on p-value (*, **, ***).
+\item n Number the combination occurs.
+\item p_x Marginal share of the first category.
+\item p_y Marginal share of the second category.
+\item p_xy Share of the combination based on all combinations.
+\item ratio The ratio of p_xy to (p_x * p_y).
+\item pmi Pointwise Mutual information, derived from the ratio.
+\item npmi Normalized Pointwise Mutual Information, derived from the pmi.
+}
+
+The second tibble contains effect sizes based on the cross table:
+\itemize{
+\item Cramer's V: Effect size measuring the association between the two variables.
+\item n: Number of cases the calculation is based on.
+\item Chi-squared: Chi-Squared test statistic.
+If expected values are below 5 in at least one cell, an exact Fisher test is conducted.
+\item df: Degrees of freedo of the chi-squared test. Empty for the exact Fisher test.
+\item p: p-value of the chi-squared test.
+\item stars: Significance stars based on p-value (*, **, ***).
 }
 }
 \description{

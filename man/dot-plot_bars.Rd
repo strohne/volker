@@ -20,7 +20,7 @@
 \item{data}{Data frame with the columns item, value, p, n and optionally p_item.
 If p_item is provided, the column width is generated according the p_item value, resulting in a mosaic plot.}
 
-\item{category}{Category for filtering the data frame.}
+\item{category}{Optionally, a category to focus. All rows not matching the category will be filtered out.}
 
 \item{ci}{Whether to plot error bars for 95\% confidence intervals. Provide the columns ci.low and ci.high in data.}
 

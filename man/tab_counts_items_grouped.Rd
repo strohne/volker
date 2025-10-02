@@ -27,7 +27,7 @@ tab_counts_items_grouped(
 \item{category}{Summarizing multiple items (the cols parameter) by group requires a focus category.
 By default, for logical column types, only TRUE values are counted.
 For other column types, the first category is counted.
-Accepts both character and numeric vectors to override default counting behavior.}
+Accepts both character and numeric values to override default counting behavior.}
 
 \item{percent}{Proportions are formatted as percent by default. Set to FALSE to get bare proportions.}
 
