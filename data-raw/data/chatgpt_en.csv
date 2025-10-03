@@ -1,102 +1,102 @@
-case;use_private;use_work;cg_adoption_advantage_01;cg_adoption_advantage_02;cg_adoption_advantage_03;cg_adoption_advantage_04;cg_adoption_fearofuse_01;cg_adoption_fearofuse_02;cg_adoption_fearofuse_03;cg_adoption_fearofuse_04;cg_adoption_social_01;cg_adoption_social_02;cg_adoption_social_03;cg_adoption_social_04;adopter;sd_age;sd_gender;cg_activities
-170;4;4;3;4;3;4;3;4;4;4;5;4;4;5;I try new offers immediately;26;male;Texte vorschreiben
-183;1;1;4;3;5;4;4;2;5;4;1;1;1;1;I wait until offers establish themselves;20;male;Haben nur einmal einen Text schreiben lassen, zum Test
-195;2;4;5;5;5;4;4;4;4;3;2;2;3;3;I try new offers rather quickly;43;female;Textvorschläge formulieren lassen.
-212;5;5;4;4;4;4;2;3;2;2;4;4;2;4;I try new offers immediately;44;female;Ich lasse mir code schreiben
-222;2;3;3;2;3;3;5;4;2;2;2;2;2;1;I try new offers rather quickly;61;male;Texte generieren
-236;3;1;3;2;3;3;3;3;2;3;2;2;2;2;I try new offers rather quickly;65;male;Webseiten für SEO optimiert.
-255;3;1;3;1;4;3;2;1;3;3;4;4;5;4;I try new offers rather quickly;25;male;Wiseensfragen stellen
-297;3;4;4;3;4;2;3;4;3;3;3;3;2;2;I try new offers rather quickly;26;male;Texte schreiben
-309;3;3;3;4;4;4;2;2;3;2;4;2;1;1;I try new offers rather quickly;19;male;Ich lasse die KI kreative Aufgaben übernehmen, wie zB Ideen sammeln für eine Pro/Contra Liste
-325;2;1;4;1;4;3;4;4;3;3;1;2;2;3;I try new offers rather quickly;63;male;k.a.
-354;2;4;3;4;4;3;2;2;2;3;4;3;1;2;I try new offers rather quickly;43;female;Grundlagen erfragen, um Texte darauf aufzubauen
-369;3;1;4;2;4;3;2;2;2;2;2;2;1;1;I try new offers rather quickly;19;male;Texte schreiben, und informationen schnell zusammenfassen lassen
-373;2;2;3;4;4;4;2;3;5;3;3;2;3;3;I try new offers rather quickly;43;male;herumspielen und ausprobieren
-404;3;1;4;2;4;5;4;2;2;2;2;1;2;1;I try new offers rather quickly;18;female;Ich nutze es eher, um nicht allzulange mit Google suchen zu müssen, zum Beisüiel um leichtere Antworten schneller zu bekommen oder geeignete Dienste für mich zu finden. Für komplexere Probleme funktioniert es nicht sehr gut
-405;3;5;3;3;4;4;4;5;5;2;2;4;5;2;I try new offers rather quickly;52;female;Überschriften, Ideen sammeln, Social Media Posts, Storyboards
-406;4;4;5;3;5;4;3;2;2;3;2;2;2;4;I wait until offers establish themselves;23;female;Fragen emails zu formulieren
-417;2;2;4;4;3;4;3;4;4;2;1;1;2;2;I try new offers rather quickly;35;male;Verfassen von Textblöcken für Konzertprogramme, nämlich zum Übergang von einer Musiknummer zu einer anderen. Schreiben des gesamten Szenarios und Aufteilen in semantische Themenblöcke.
-429;4;1;4;1;4;3;2;1;1;1;1;2;1;3;I try new offers rather quickly;34;female;Ich optimiere damit Buchrezensionen
-449;4;4;4;1;4;5;2;2;2;2;2;1;1;2;I try new offers rather quickly;39;female;Emails erstellen, Insta Story erstellen
-456;3;2;4;2;4;3;3;5;2;4;1;1;4;2;I try new offers rather quickly;61;male;Informationen zu aktuellen Themen historisch einordnen.<br>
-483;5;5;5;5;5;5;1;5;5;5;5;5;5;5;I try new offers immediately;48;male;Ich lasse Texte erstellen
-497;3;4;4;3;4;4;4;3;3;4;4;2;3;2;I try new offers immediately;35;male;Infos erfragen
-515;1;1;1;3;1;1;5;5;5;2;1;1;3;1;I try new offers rather quickly;44;male;Nix
-518;2;2;2;2;2;3;4;3;3;3;2;2;1;2;I wait until offers establish themselves;53;female;ich suche nach Textformulierungen für komplizierte Situationen, Verhältnisse
-533;4;4;5;5;5;5;5;5;5;5;5;5;5;5;I try new offers immediately;56;male;Profile erstellen
-542;3;3;4;3;4;4;2;3;2;2;4;3;3;3;I wait until offers establish themselves;62;female;Lasse kurze Erklärungen schreiben
-553;2;2;4;4;4;4;4;3;3;4;4;3;3;4;I try new offers rather quickly;40;male;Ich benutze es anstelle der Suchmaschine für komplexere Anfragen.
-556;5;2;5;4;4;5;5;5;4;5;4;5;4;4;I try new offers immediately;36;male;sehr spannendes spiel
-590;3;4;3;4;2;5;4;3;4;2;2;3;4;3;I try new offers immediately;37;male;nix
-592;4;1;4;1;3;5;4;4;-9;4;1;1;-9;1;I wait until offers establish themselves;26;female;Texte übersetzen oder Synonyme für Wörter suchen
-597;2;1;3;4;4;3;4;3;3;4;2;3;1;1;I try new offers rather quickly;58;male;Bewerbungsunterlagen erstellen
-599;4;2;5;3;4;5;2;3;3;1;3;2;3;3;I try new offers rather quickly;56;female;kurze Erklärungen oder Aufsätze erstellen lassen
-635;4;4;3;3;4;4;3;4;4;3;3;3;2;4;I try new offers immediately;38;male;Chatten und austauschen
-649;3;3;2;4;4;4;4;4;4;4;4;5;3;3;I try new offers immediately;33;male;Texte erfinden
-654;2;1;1;1;1;2;2;1;1;2;1;1;2;3;I try new offers immediately;39;male;Lustige Fragen stellen, wo ich mir sicher bin, das ChatGPT eigentlich keine Antwort haben kann
-664;4;1;3;1;4;3;4;3;3;2;2;1;1;2;I try new offers rather quickly;46;male;Schreiben mit privaten Personen im Ausland. Ich kann leider nicht so gut französich
-701;2;2;2;2;2;3;2;2;2;1;2;1;1;1;I try new offers rather quickly;38;male;Rumspielen, Texte generieren lassen.
-719;1;2;3;2;4;2;3;5;4;4;2;1;1;1;I try new offers rather quickly;55;female;Ich habe nur herumgespielt und die Fähigkeiten zur Texterstellung ausprobiert.
-797;2;5;3;5;5;3;4;2;5;3;2;3;1;1;I try new offers rather quickly;32;female;hilft mir, gute Artikel zu schreiben
-811;4;3;5;2;5;5;2;2;3;2;1;1;1;3;I try new offers rather quickly;21;male;Formulierungshilfen, Übersetzungen, Ideenfindung
-826;2;5;3;4;4;4;3;2;4;5;4;2;2;4;I try new offers rather quickly;20;male;Texte zusammenfassen, aber das Fragen zu Methoden im Hinblick auf das Erledigen bestimmter Aufgaben
-842;3;1;4;3;5;4;1;1;2;1;3;3;1;3;I wait until offers establish themselves;52;male;ich stelle eine Frage zu einem bestimmten Thema
-843;2;2;3;1;3;3;3;3;3;3;2;2;1;1;I try new offers rather quickly;57;male;Ich habe versucht einen Text zu erstellen
-846;2;2;4;1;2;4;2;4;4;3;2;1;1;1;I try new offers rather quickly;29;female;Mich inspirieren lassen
-847;3;3;5;4;4;5;3;4;3;1;3;3;2;4;I try new offers rather quickly;50;male;Texte zu bestimmten Fragestellungen und Python Programme generieren
-865;1;5;3;3;4;2;5;2;3;4;3;4;2;1;I try new offers rather quickly;38;female;blog geschieben
-877;2;5;5;5;5;5;3;5;3;3;4;3;1;4;I try new offers rather quickly;23;female;Texte paraphrasieren, Essays schreiben
-884;3;3;3;4;5;4;2;3;3;3;4;3;1;1;I try new offers rather quickly;23;male;Problemlösungen für Algorithmen<br>
-924;1;2;2;2;3;3;3;3;2;2;3;2;2;2;I only use new offers when I have no other choice;56;male;Texte erstellen
-925;2;3;-9;3;4;3;3;3;3;2;2;3;2;2;I try new offers rather quickly;62;male;texte erstellen
-936;2;2;3;3;3;3;5;2;5;4;3;3;3;3;I try new offers rather quickly;20;female;Als Gruppenaufgabe im Deutsch-Unterricht sollten wir CHat GPT ausprobieren, um zu schauen ob es wirklich Aufsätze schreiben kann
-943;3;3;4;3;3;3;3;3;4;3;3;3;4;3;I try new offers immediately;35;male;Texte umschreiben, Ideen entwickeln zu Hausarbeiten, Formulierungsänderungen abfragen, Fragen stellen
-944;2;1;3;2;4;3;5;5;5;5;1;2;2;1;I try new offers rather quickly;64;male;Ich lasse damit Texte schreiben oder Erzählungen, die ich poste. Habe eine Rede für eine Hochzeit damit erstellt. Übersetzt damit auch Fremdsprachen bzw. schmücke sie aus.
-946;3;1;4;2;4;4;2;3;3;3;2;2;2;2;I try new offers rather quickly;45;female;Informationen sammeln
-948;1;1;1;1;1;1;5;1;5;5;1;1;1;1;I wait until offers establish themselves;55;male;Bisschen rumprobieren, bis mir die ständigen Wiederholungen und Standardantworten auf die Nerven gehen.
-951;5;5;5;4;5;4;2;3;3;2;3;4;1;4;I try new offers rather quickly;25;female;Zusammenfassungen von wissenschaftlichen Papern ausgeben
-979;3;3;4;4;4;3;4;3;4;2;2;3;1;1;I try new offers rather quickly;36;male;Emails verbessern
-986;2;1;3;3;3;4;3;3;3;2;3;2;3;3;I wait until offers establish themselves;44;female;irgendwelche Fragen stellen, leider funktioniert chatgpt bei mir selten
-1007;2;1;4;4;5;4;5;3;4;2;-9;1;2;2;I try new offers rather quickly;63;female;Texte erstellen lassen, Interessensgebiete vertiefen
-1009;1;3;3;4;4;3;2;3;2;4;4;3;2;4;I try new offers rather quickly;27;male;Texte erstellen, Varianten einholen, Textverarbeitung
-1037;4;4;4;3;4;3;3;3;3;4;4;4;4;3;I try new offers immediately;33;diverse;?????
-1089;2;4;2;3;3;3;5;4;4;4;4;5;4;4;I wait until offers establish themselves;34;male;Suchen
-1103;2;1;3;1;2;3;2;1;4;3;1;1;1;1;I try new offers rather quickly;36;male;Ich habe mal gefragt, ob ChatGPT mir ein 3 dimensionales Objekt als druckbare STL Datei erstellen könne. Das Programm sagte mir wie man dies könne. Es beschrieb detailiert (und korrekt) wie man sowas anstellt. Allerdings weiß ich bereits wie und mit welcher Software das funktioniert, ich wollte wissen ob die KI es für mich mnachen kann. Leider nein.
-1120;3;2;4;2;4;4;3;3;3;2;3;2;1;1;I wait until offers establish themselves;23;male;Kurze zusammenfassungen<br>Sätze authentischer machen<br>Infos abfragen<br>Wissen erweitern
-1122;3;1;5;4;4;5;2;3;4;1;2;2;1;1;I wait until offers establish themselves;19;female;Programmier Tipps
-1130;2;1;2;2;4;4;3;3;3;2;2;1;1;2;I wait until offers establish themselves;30;female;Ich habe es nur ausprobiert um zu sehen welche Sprachen es spricht und wie es antwortet
-1137;2;1;4;1;3;1;5;3;2;2;1;3;1;2;I wait until offers establish themselves;37;female;Chatten
-1150;3;1;4;1;4;3;3;3;3;2;2;2;1;1;I try new offers rather quickly;21;female;Inspirationen für Kurzgeschichten oder Zeichnungen sammeln
-1152;2;2;4;3;4;4;2;1;2;1;3;3;1;2;I try new offers rather quickly;31;male;Bisher habe ich Chat gpt nur ausprobiert und suche nach Verwendungszwecken<br>
-1156;2;2;1;1;2;4;3;3;2;2;3;3;1;1;I try new offers rather quickly;41;female;Textideen, Präsentationen
-1171;3;2;4;3;2;3;5;3;5;4;2;2;1;2;I try new offers rather quickly;27;female;Generelle Karrieretips, Tages- und Essensplanung, private E-Mails schreiben, Ausprobieren (verschiedene Fragestellungen ohne konkrete Nutzung)
-1174;3;1;4;4;5;3;4;3;3;4;3;3;2;1;I try new offers rather quickly;52;male;"bisher nur ""gespielt"", um andere Beispiele zu prüfen. noch keine konkrete Anwendung für mich"
-1179;2;1;2;2;3;3;4;5;4;3;2;2;1;3;I try new offers rather quickly;50;male;Spaßige Texte formulieren
-1182;2;4;4;3;4;4;1;5;3;3;3;1;1;1;I try new offers rather quickly;43;male;IT Fragen klären
-1187;2;2;4;3;4;4;4;3;3;4;2;2;1;1;I try new offers rather quickly;21;female;E-Mails
-1199;2;1;4;3;3;3;3;3;3;3;3;3;3;2;I try new offers rather quickly;38;female;Inspiration holen
-1207;3;3;3;2;4;3;2;2;3;2;2;2;1;2;I try new offers immediately;37;male;Generate source code<br>
-1208;4;2;5;1;4;4;3;2;3;2;2;4;3;1;I try new offers rather quickly;57;female;Fragen stellen, aus unterschiedlichen Bereichen
-1209;2;1;3;2;4;3;3;3;3;3;2;2;2;2;I try new offers rather quickly;43;male;bisher nur Tests zu dessen Umfang und Aktualität
-1226;3;1;4;3;4;4;2;2;3;2;3;3;1;2;I try new offers rather quickly;38;female;Strukturierung von Texten, Inspiration.
-1227;3;3;3;4;5;4;4;5;4;2;1;1;2;3;I wait until offers establish themselves;35;female;Ich habe das Programm gerade erst entdeckt, daher kann ich hierzu noch keine Aussage treffen.
-1254;4;4;-9;4;4;4;3;3;3;2;2;2;3;4;I wait until offers establish themselves;39;female;Erstellen von content plan
-1262;1;1;3;2;4;3;5;4;3;2;1;1;2;4;I try new offers rather quickly;57;male;nix
-1270;3;1;3;1;2;4;3;2;2;2;2;1;2;2;I try new offers rather quickly;41;female;Sachen die ich sonst googeln würde abfragen
-1288;2;2;4;3;4;4;4;3;2;3;3;2;2;2;I try new offers rather quickly;67;male;Stichpunktartige Inhalte in sinnvollen Kontext bringen. Dann manuell nachbessern.
-1299;2;4;3;3;3;3;3;3;3;3;3;3;3;3;I wait until offers establish themselves;24;female;meine bachelor arbeit absätze inhaltlich und rhetorisch überprüfen lassen <br>mir bei formulierungen helfen lassen <br>
-1300;2;3;3;1;3;1;2;4;4;1;2;1;1;1;I try new offers rather quickly;38;male;-
-1331;3;4;4;3;3;4;2;3;2;2;3;4;2;2;I try new offers rather quickly;41;male;Texte erstellen
-1335;2;1;3;1;3;3;3;1;3;3;1;1;1;1;I wait until offers establish themselves;42;male;müsste erstmal durchkommen, bisher war ChatGPT immer voll ausgelastet
-1337;3;1;2;1;1;4;3;1;5;1;1;2;1;1;I try new offers rather quickly;34;male;blödsinn. Lasse mir von ChatGPT Geschichten erstellen oder frage die KI nach bestimmten Dingen und amüsiere mich dann über die eingebaute Zensur
-1347;4;5;5;5;5;5;1;5;5;1;5;5;5;5;I try new offers immediately;30;male;gut
-1361;2;1;3;3;3;4;3;3;3;2;2;1;1;2;I try new offers rather quickly;68;male;Gedichte und Glückwunsche
-1377;1;1;4;1;5;4;3;2;3;3;1;1;1;1;I wait until offers establish themselves;24;male;Bisher 1x ausprobiert und verschiedene Fragen gestellt
-1390;1;1;1;1;1;1;1;1;1;1;1;1;1;1;I wait until offers establish themselves;52;male;ist überflüssig
-1409;1;1;3;3;3;3;3;3;3;3;2;2;2;3;I wait until offers establish themselves;55;female;Nichts
-1421;2;1;1;1;1;1;4;4;2;4;3;1;1;2;I try new offers rather quickly;26;female;Ausprobieren aus Spaß
-1468;4;5;3;2;4;3;2;3;3;2;5;4;3;5;I try new offers immediately;22;female;Fragen zu Informationssicherheit stellen, er soll mir Sachen erklären und einordnen. Auch Programmiertipps oder das Finde eines Themas zur Masterarbeit
-1491;1;1;4;3;2;4;4;3;3;3;1;1;1;1;I try new offers rather quickly;45;male;Ich habe Fragen aus meinem persönlichen und meinem beruflichen Kontext gestellt, um die Qualität der Texte aber auch der Informationen kennenzulernen und einschätzen zu können.
-1492;3;4;5;2;3;5;5;5;5;5;3;3;1;3;I try new offers rather quickly;38;male;Deutsche Aufsätze schreiben die dann ins koreanische übersetzt werden.
-1528;2;2;4;3;2;4;1;3;3;2;2;2;2;2;I wait until offers establish themselves;19;male;Etwas schreib rein aus Langeweile
-1549;2;3;4;2;5;5;3;5;3;2;3;3;1;5;I wait until offers establish themselves;63;female;Fragen stellen, Texte oder Berichte erstellen lassen
+case;use_private;use_work;cg_adoption_advantage_01;cg_adoption_advantage_02;cg_adoption_advantage_03;cg_adoption_advantage_04;cg_adoption_fearofuse_01;cg_adoption_fearofuse_02;cg_adoption_fearofuse_03;cg_adoption_fearofuse_04;cg_adoption_social_01;cg_adoption_social_02;cg_adoption_social_03;cg_adoption_social_04;adopter;sd_age;sd_gender;cg_activities;cg_act_write;cg_act_test;cg_act_search
+170;4;4;3;4;3;4;3;4;4;4;5;4;4;5;I try new offers immediately;26;male;Prescribing texts;x;;
+183;1;1;4;3;5;4;4;2;5;4;1;1;1;1;I wait until offers establish themselves;20;male;Only had a text written once, for testing;x;x;
+195;2;4;5;5;5;4;4;4;4;3;2;2;3;3;I try new offers rather quickly;43;female;Having text suggestions formulated;x;;
+212;5;5;4;4;4;4;2;3;2;2;4;4;2;4;I try new offers immediately;44;female;I have code written for me;x;;
+222;2;3;3;2;3;3;5;4;2;2;2;2;2;1;I try new offers rather quickly;61;male;Generating texts;x;;
+236;3;1;3;2;3;3;3;3;2;3;2;2;2;2;I try new offers rather quickly;65;male;Websites optimized for SEO;x;;
+255;3;1;3;1;4;3;2;1;3;3;4;4;5;4;I try new offers rather quickly;25;male;Asking knowledge questions;;;x
+297;3;4;4;3;4;2;3;4;3;3;3;3;2;2;I try new offers rather quickly;26;male;Writing texts;;x;
+309;3;3;3;4;4;4;2;2;3;2;4;2;1;1;I try new offers rather quickly;19;male;I let the AI take on creative tasks, like collecting ideas for a pro/con list;;;x
+325;2;1;4;1;4;3;4;4;3;3;1;2;2;3;I try new offers rather quickly;63;male;n/a;;;
+354;2;4;3;4;4;3;2;2;2;3;4;3;1;2;I try new offers rather quickly;43;female;Asking for basics to build texts on them;;;x
+369;3;1;4;2;4;3;2;2;2;2;2;2;1;1;I try new offers rather quickly;19;male;Writing texts and having information quickly summarized;x;;x
+373;2;2;3;4;4;4;2;3;5;3;3;2;3;3;I try new offers rather quickly;43;male;Playing around and experimenting;;x;
+404;3;1;4;2;4;5;4;2;2;2;2;1;2;1;I try new offers rather quickly;18;female;I use it mainly to avoid having to search too long with Google, for example to get easier answers faster or to find suitable services for me. It does not work very well for complex problems;;;x
+405;3;5;3;3;4;4;4;5;5;2;2;4;5;2;I try new offers rather quickly;52;female;Headlines, collecting ideas, social media posts, storyboards;x;;
+406;4;4;5;3;5;4;3;2;2;3;2;2;2;4;I wait until offers establish themselves;23;female;Formulating questions and emails;x;;x
+417;2;2;4;4;3;4;3;4;4;2;1;1;2;2;I try new offers rather quickly;35;male;Writing text blocks for concert programs, namely for transitions from one music piece to another. Writing the whole scenario and dividing it into semantic topic blocks;x;;
+429;4;1;4;1;4;3;2;1;1;1;1;2;1;3;I try new offers rather quickly;34;female;I optimize book reviews with it;x;;
+449;4;4;4;1;4;5;2;2;2;2;2;1;1;2;I try new offers rather quickly;39;female;Creating emails, creating Instagram stories;x;;
+456;3;2;4;2;4;3;3;5;2;4;1;1;4;2;I try new offers rather quickly;61;male;Historically classifying information on current topics;;;x
+483;5;5;5;5;5;5;1;5;5;5;5;5;5;5;I try new offers immediately;48;male;I have texts created;x;;
+497;3;4;4;3;4;4;4;3;3;4;4;2;3;2;I try new offers immediately;35;male;Asking for information;;;x
+515;1;1;1;3;1;1;5;5;5;2;1;1;3;1;I try new offers rather quickly;44;male;Nothing;;;
+518;2;2;2;2;2;3;4;3;3;3;2;2;1;2;I wait until offers establish themselves;53;female;I look for text formulations for complicated situations, relationships;x;;
+533;4;4;5;5;5;5;5;5;5;5;5;5;5;5;I try new offers immediately;56;male;Creating profiles;x;;
+542;3;3;4;3;4;4;2;3;2;2;4;3;3;3;I wait until offers establish themselves;62;female;Having short explanations written;;;x
+553;2;2;4;4;4;4;4;3;3;4;4;3;3;4;I try new offers rather quickly;40;male;I use it instead of a search engine for more complex queries;;;x
+556;5;2;5;4;4;5;5;5;4;5;4;5;4;4;I try new offers immediately;36;male;Very exciting game;;x;
+590;3;4;3;4;2;5;4;3;4;2;2;3;4;3;I try new offers immediately;37;male;Nothing;;;
+592;4;1;4;1;3;5;4;4;-9;4;1;1;-9;1;I wait until offers establish themselves;26;female;Translating texts or looking for synonyms for words;x;;
+597;2;1;3;4;4;3;4;3;3;4;2;3;1;1;I try new offers rather quickly;58;male;Creating application documents;x;;
+599;4;2;5;3;4;5;2;3;3;1;3;2;3;3;I try new offers rather quickly;56;female;Having short explanations or essays created;x;;x
+635;4;4;3;3;4;4;3;4;4;3;3;3;2;4;I try new offers immediately;38;male;Chatting and exchanging;;x;
+649;3;3;2;4;4;4;4;4;4;4;4;5;3;3;I try new offers immediately;33;male;Inventing texts;x;;
+654;2;1;1;1;1;2;2;1;1;2;1;1;2;3;I try new offers immediately;39;male;Asking funny questions where I am sure ChatGPT actually cannot have an answer;;x;
+664;4;1;3;1;4;3;4;3;3;2;2;1;1;2;I try new offers rather quickly;46;male;Writing with private persons abroad. Unfortunately, I am not very good at French;x;;
+701;2;2;2;2;2;3;2;2;2;1;2;1;1;1;I try new offers rather quickly;38;male;Playing around, having texts generated;;x;
+719;1;2;3;2;4;2;3;5;4;4;2;1;1;1;I try new offers rather quickly;55;female;I just played around and tried out the text creation capabilities;;x;
+797;2;5;3;5;5;3;4;2;5;3;2;3;1;1;I try new offers rather quickly;32;female;Helps me write good articles;x;;
+811;4;3;5;2;5;5;2;2;3;2;1;1;1;3;I try new offers rather quickly;21;male;Help with phrasing, translations, idea generation;x;;
+826;2;5;3;4;4;4;3;2;4;5;4;2;2;4;I try new offers rather quickly;20;male;Summarizing texts, but also asking about methods regarding task completion;x;;x
+842;3;1;4;3;5;4;1;1;2;1;3;3;1;3;I wait until offers establish themselves;52;male;I ask a question about a specific topic;;;x
+843;2;2;3;1;3;3;3;3;3;3;2;2;1;1;I try new offers rather quickly;57;male;I tried to create a text;x;;
+846;2;2;4;1;2;4;2;4;4;3;2;1;1;1;I try new offers rather quickly;29;female;Getting inspired;;;x
+847;3;3;5;4;4;5;3;4;3;1;3;3;2;4;I try new offers rather quickly;50;male;Generating texts for specific questions and Python programs;x;;
+865;1;5;3;3;4;2;5;2;3;4;3;4;2;1;I try new offers rather quickly;38;female;Wrote blog;x;;
+877;2;5;5;5;5;5;3;5;3;3;4;3;1;4;I try new offers rather quickly;23;female;Paraphrasing texts, writing essays;x;;
+884;3;3;3;4;5;4;2;3;3;3;4;3;1;1;I try new offers rather quickly;23;male;Problem solutions for algorithms;x;;
+924;1;2;2;2;3;3;3;3;2;2;3;2;2;2;I only use new offers when I have no other choice;56;male;Creating texts;x;;
+925;2;3;-9;3;4;3;3;3;3;2;2;3;2;2;I try new offers rather quickly;62;male;Creating texts;x;;
+936;2;2;3;3;3;3;5;2;5;4;3;3;3;3;I try new offers rather quickly;20;female;As a group task in German class we had to try ChatGPT to see if it can really write essays;x;x;
+943;3;3;4;3;3;3;3;3;4;3;3;3;4;3;I try new offers immediately;35;male;Rewriting texts, developing ideas for papers, querying formulation changes, asking questions;x;;x
+944;2;1;3;2;4;3;5;5;5;5;1;2;2;1;I try new offers rather quickly;64;male;I have texts or stories written with it that I post. Created a speech for a wedding with it. Also translate foreign languages with it or embellish them;x;;
+946;3;1;4;2;4;4;2;3;3;3;2;2;2;2;I try new offers rather quickly;45;female;Collecting information;;;x
+948;1;1;1;1;1;1;5;1;5;5;1;1;1;1;I wait until offers establish themselves;55;male;Playing around a bit until the constant repetitions and standard answers annoy me;x;;
+951;5;5;5;4;5;4;2;3;3;2;3;4;1;4;I try new offers rather quickly;25;female;Providing summaries of scientific papers;x;;
+979;3;3;4;4;4;3;4;3;4;2;2;3;1;1;I try new offers rather quickly;36;male;Improving emails;x;;
+986;2;1;3;3;3;4;3;3;3;2;3;2;3;3;I wait until offers establish themselves;44;female;Asking random questions, unfortunately ChatGPT rarely works for me;;;x
+1007;2;1;4;4;5;4;5;3;4;2;-9;1;2;2;I try new offers rather quickly;63;female;Having texts created, deepening areas of interest;x;;x
+1009;1;3;3;4;4;3;2;3;2;4;4;3;2;4;I try new offers rather quickly;27;male;Creating texts, getting variants, text processing;x;;
+1037;4;4;4;3;4;3;3;3;3;4;4;4;4;3;I try new offers immediately;33;diverse;?????;;;
+1089;2;4;2;3;3;3;5;4;4;4;4;5;4;4;I wait until offers establish themselves;34;male;Searching;;;x
+1103;2;1;3;1;2;3;2;1;4;3;1;1;1;1;I try new offers rather quickly;36;male;I once asked if ChatGPT can create a 3D object as printable STL file for me. The program told me how to do this. It described in detail (and correctly) how to do such a thing. However, I already know how and with which software this works, I wanted to know if the AI could do it for me. Unfortunately no.;x;x;
+1120;3;2;4;2;4;4;3;3;3;2;3;2;1;1;I wait until offers establish themselves;23;male;Short summaries, making sentences more authentic, querying information, expanding knowledge;x;;x
+1122;3;1;5;4;4;5;2;3;4;1;2;2;1;1;I wait until offers establish themselves;19;female;Programming tips;;;x
+1130;2;1;2;2;4;4;3;3;3;2;2;1;1;2;I wait until offers establish themselves;30;female;I just tried it to see which languages it speaks and how it answers;;x;
+1137;2;1;4;1;3;1;5;3;2;2;1;3;1;2;I wait until offers establish themselves;37;female;Chatting;;;
+1150;3;1;4;1;4;3;3;3;3;2;2;2;1;1;I try new offers rather quickly;21;female;Collecting inspirations for short stories or drawings;;;x
+1152;2;2;4;3;4;4;2;1;2;1;3;3;1;2;I try new offers rather quickly;31;male;So far I have only tried ChatGPT and am searching for uses;;x;
+1156;2;2;1;1;2;4;3;3;2;2;3;3;1;1;I try new offers rather quickly;41;female;Text ideas, presentations;x;;
+1171;3;2;4;3;2;3;5;3;5;4;2;2;1;2;I try new offers rather quickly;27;female;General career tips, daily and meal planning, writing personal emails, trying out (various questions without concrete use);x;x;x
+1174;3;1;4;4;5;3;4;3;3;4;3;3;2;1;I try new offers rather quickly;52;male;So far only 'played' to check other examples. No concret;;;
+1179;2;1;2;2;3;3;4;5;4;3;2;2;1;3;I try new offers rather quickly;50;male;Formulating funny texts;x;;
+1182;2;4;4;3;4;4;1;5;3;3;3;1;1;1;I try new offers rather quickly;43;male;Clarifying IT questions;;;x
+1187;2;2;4;3;4;4;4;3;3;4;2;2;1;1;I try new offers rather quickly;21;female;Emails;x;;
+1199;2;1;4;3;3;3;3;3;3;3;3;3;3;2;I try new offers rather quickly;38;female;Getting inspiration;;;x
+1207;3;3;3;2;4;3;2;2;3;2;2;2;1;2;I try new offers immediately;37;male;Generate source code;x;;
+1208;4;2;5;1;4;4;3;2;3;2;2;4;3;1;I try new offers rather quickly;57;female;Asking questions from different fields;;;x
+1209;2;1;3;2;4;3;3;3;3;3;2;2;2;2;I try new offers rather quickly;43;male;Only tests of its scope and topicality so far;;x;
+1226;3;1;4;3;4;4;2;2;3;2;3;3;1;2;I try new offers rather quickly;38;female;Structuring texts, inspiration;x;;x
+1227;3;3;3;4;5;4;4;5;4;2;1;1;2;3;I wait until offers establish themselves;35;female;I just discovered the program, so I cannot make a statement on this yet;;;
+1254;4;4;-9;4;4;4;3;3;3;2;2;2;3;4;I wait until offers establish themselves;39;female;Creating content plan;x;;
+1262;1;1;3;2;4;3;5;4;3;2;1;1;2;4;I try new offers rather quickly;57;male;Nothing;;;
+1270;3;1;3;1;2;4;3;2;2;2;2;1;2;2;I try new offers rather quickly;41;female;Querying things I would otherwise google;;;x
+1288;2;2;4;3;4;4;4;3;2;3;3;2;2;2;I try new offers rather quickly;67;male;Putting bullet point content into meaningful context. Then manually improving;x;;
+1299;2;4;3;3;3;3;3;3;3;3;3;3;3;3;I wait until offers establish themselves;24;female;Having my bachelor thesis paragraphs checked content-wise and rhetorically, getting help with formulations;x;;
+1300;2;3;3;1;3;1;2;4;4;1;2;1;1;1;I try new offers rather quickly;38;male;-;;;
+1331;3;4;4;3;3;4;2;3;2;2;3;4;2;2;I try new offers rather quickly;41;male;Creating texts;x;;
+1335;2;1;3;1;3;3;3;1;3;3;1;1;1;1;I wait until offers establish themselves;42;male;Would have to get through first, so far ChatGPT was always overloaded;;;
+1337;3;1;2;1;1;4;3;1;5;1;1;2;1;1;I try new offers rather quickly;34;male;Nonsense. I have ChatGPT create stories or ask AI about certain things and then amuse myself about the built-in censorship;;x;
+1347;4;5;5;5;5;5;1;5;5;1;5;5;5;5;I try new offers immediately;30;male;Good;;;
+1361;2;1;3;3;3;4;3;3;3;2;2;1;1;2;I try new offers rather quickly;68;male;Poems and congratulations;x;;
+1377;1;1;4;1;5;4;3;2;3;3;1;1;1;1;I wait until offers establish themselves;24;male;Tried once so far and asked various questions;;;x
+1390;1;1;1;1;1;1;1;1;1;1;1;1;1;1;I wait until offers establish themselves;52;male;Is superfluous;;;
+1409;1;1;3;3;3;3;3;3;3;3;2;2;2;3;I wait until offers establish themselves;55;female;Nothing;;;
+1421;2;1;1;1;1;1;4;4;2;4;3;1;1;2;I try new offers rather quickly;26;female;Trying out for fun;;x;
+1468;4;5;3;2;4;3;2;3;3;2;5;4;3;5;I try new offers immediately;22;female;Asking questions about information security, asking it to explain and classify things. Also programming tips or finding a topic for the master's thesis;;;x
+1491;1;1;4;3;2;4;4;3;3;3;1;1;1;1;I try new offers rather quickly;45;male;I asked questions from my personal and professional context to get to know and assess the quality of texts and information;;x;x
+1492;3;4;5;2;3;5;5;5;5;5;3;3;1;3;I try new offers rather quickly;38;male;Writing German essays that are then translated into Korean;x;;
+1528;2;2;4;3;2;4;1;3;3;2;2;2;2;2;I wait until offers establish themselves;19;male;Writing something out of boredom;x;;
+1549;2;3;4;2;5;5;3;5;3;2;3;3;1;5;I wait until offers establish themselves;63;female;Asking questions, having texts or reports created;x;;x
