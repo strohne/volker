@@ -7,20 +7,23 @@
 \format{
 \subsection{\code{chatgpt}}{
 
-A data frame with 101 rows and 19 columns:
+A data frame with 101 rows and 22 columns:
 \describe{
 \item{case}{A running case number}
-\item{adopter}{Adoption groups inspired by Roger's innovator typology.}
-\item{use_}{Columns starting with use contain data about ChatGPT usage in different contexts.}
-\item{cg_activities}{Text answers to the question, what the respondents do with ChatGPT.}
-\item{cg_adoption_}{A scale consisting of items about advantages, fears, and social aspects.
-The scales match theoretical constructs inspired by Roger's diffusion model and Davis' Technology Acceptance Model}
 \item{sd_}{Columns starting with sd contain sociodemographics of the respondents.}
+\item{adopter}{Adoption groups, inspired by Roger's innovator typology.}
+\item{use_}{Columns starting with use contain data about ChatGPT usage in different contexts.}
+\item{cg_adoption_}{A scale consisting of items about advantages, fears, and social aspects.
+The scales match theoretical constructs inspired by Roger's diffusion model and Davis' Technology Acceptance Model.}
+\item{cg_activities}{Text answers to the question, what the respondents do with ChatGPT.}
+\item{cg_act_text}{Manual content analysis of cg_activities: Does the activities involve generating text, code or other artifacts?}
+\item{cg_act_test}{Manual content analysis of cg_activities: Does the activities involve testing, experimenting or playing around?}
+\item{cg_act_search}{Manual content analysis of cg_activities: Does the activities involve searching for information, advice or inspiration?}
 }
 }
 }
 \source{
-Communication Department of the University of Münster (\href{mailto:gehrau@uni-muenster.de}{gehrau@uni-muenster.de}).
+Communication Department of the University of Münster (\href{mailto:gehrau@uni-muenster.de}{gehrau@uni-muenster.de} and \href{mailto:jakob.juenger@uni-muenster.de}{jakob.juenger@uni-muenster.de}).
 }
 \usage{
 chatgpt
