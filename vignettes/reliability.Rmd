@@ -22,25 +22,24 @@ library(volker)
 data <- volker::chatgpt
 
 # Code some data for reliability calculations
+# First, add a colder column to the already existing example data
 data_coder1 <- data |> 
-  select(case, cg_activities) |> 
-  mutate(cg_activities = tolower(cg_activities)) |> 
-  mutate(
-    topic_write = str_detect(cg_activities, "texte|schreiben|formulieren"),
-    topic_search = str_detect(cg_activities, "suche|informationen|suchmaschine|frage"),
-    topic_test = str_detect(cg_activities, "probier|spass|freude|langeweile"),
-    coder="c1"
-  )
-
+  mutate(coder = "c1") %>% 
+  mutate(across(starts_with("cg_act_"), ~ ifelse(is.na(.), FALSE, TRUE))) %>% 
+  select(case, coder, starts_with("cg_act_"))
+  
+# Second, code the data using a simple dictionary approach
+# Be aware, this is not exactly a procedure of manual content analysis as 
+# assumed by the reliability calculation algorithms. Just for example purposes.
 data_coder2 <- data |> 
-  select(case, cg_activities) |> 
   mutate(cg_activities = tolower(cg_activities)) |> 
   mutate(
-    topic_write = str_detect(cg_activities, "texte|schreiben|verfass|uerbersetz"),
-    topic_search = str_detect(cg_activities, "such|informationen|frage"),
-    topic_test = str_detect(cg_activities, "probier|spass|freude|idee|interesse|frage"),
+    cg_act_write = str_detect(cg_activities, "text|write|formulate|translate|create"),
+    cg_act_test = str_detect(cg_activities, "test|fun|experiment"),
+    cg_act_search = str_detect(cg_activities, "search|information|question|answer"),
     coder="c2"
-  )
+  ) %>% 
+  select(case, coder, starts_with("cg_act_"))
 
 data_coded <- bind_rows(
   data_coder1,
@@ -57,15 +56,15 @@ data_coded <- bind_rows(
 
 # TODO: Add confusion matrix or something similar
 # TODO: Output agreement in plots / tables (c11 & c2, c1 only, c2 only)
-report_counts(data_coded, topic_write, coder, ids = case, prop="cells", agree = "reli")
-report_counts(data_coded, starts_with("topic_"), coder, ids = case, agree = "reliability")
+report_counts(data_coded, cg_act_write, coder, ids = case, prop="cells", agree = "reli")
+report_counts(data_coded, starts_with("cg_act_"), coder, ids = case, agree = "reliability")
 
 ```
 
 ## 1. Reliability for a single item
 ```{r}
 
-agree_tab(data_coded, topic_write, coder, ids = case, method="reli")
+agree_tab(data_coded, cg_act_write, coder, ids = case, method="reli")
 
 ```
 
@@ -73,7 +72,7 @@ agree_tab(data_coded, topic_write, coder, ids = case, method="reli")
 ## 2. Reliability for multiple items
 ```{r}
 
-agree_tab(data_coded, starts_with("topic_"), coder, ids = case, method="reliability")
+agree_tab(data_coded, starts_with("cg_act_"), coder, ids = case, method="reliability")
 
 ```
 
@@ -82,7 +81,7 @@ agree_tab(data_coded, starts_with("topic_"), coder, ids = case, method="reliabil
 ## 3. F1 for a single item
 ```{r}
 
-agree_tab(data_coded, topic_write, coder, ids = case, method="classification")
+agree_tab(data_coded, cg_act_write, coder, ids = case, method="classification")
 
 ```
 
@@ -107,9 +106,11 @@ agree_tab(data_coded, starts_with("topic_"), coder, ids = case, method="classifi
 #   averaging over the results of all categories. You will find the number of categories
 #   in the result table.
 
+# The following assumes that "no" is the target category of interest
+# (although this is unlikely in real world scenarios)
 data_coded %>% 
-  mutate(across(starts_with("topic_"), ~ ifelse(., "yes", "no"))) %>% 
-  agree_tab(starts_with("topic_"), coder, ids = case, method = "classification", category = "no")
+  mutate(across(starts_with("cg_act_"), ~ ifelse(., "yes", "no"))) %>% 
+  agree_tab(starts_with("cg_act_"), coder, ids = case, method = "classification", category = "no")
 
 ```
 
