@@ -42,16 +42,6 @@ data_coder2 <- data |>
     coder="c2"
   )
 
-data_coder3 <- data |> 
-  select(case, cg_activities) |> 
-  mutate(cg_activities = tolower(cg_activities)) |> 
-  mutate(
-    topic_write = str_detect(cg_activities, "schreiben|verfass|uerbersetz"),
-    topic_search = str_detect(cg_activities, "such|informationen|frage"),
-    topic_test = str_detect(cg_activities, "probier|spass|freude|idee|interesse|frage"),
-    coder="c3"
-  )
-
 data_coded <- bind_rows(
   data_coder1,
   data_coder2
@@ -67,8 +57,7 @@ data_coded <- bind_rows(
 
 # TODO: Add confusion matrix or something similar
 # TODO: Output agreement in plots / tables (c11 & c2, c1 only, c2 only)
-# TODO: Allow shortened values (e.g. "rel" instead of "reliability")
-report_counts(data_coded, topic_write, coder, ids = case, agree = "reliability")
+report_counts(data_coded, topic_write, coder, ids = case, prop="cells", agree = "reli")
 report_counts(data_coded, starts_with("topic_"), coder, ids = case, agree = "reliability")
 
 ```
@@ -76,7 +65,7 @@ report_counts(data_coded, starts_with("topic_"), coder, ids = case, agree = "rel
 ## 1. Reliability for a single item
 ```{r}
 
-agree_tab(data_coded, topic_write, coder, ids = case, method="reliability")
+agree_tab(data_coded, topic_write, coder, ids = case, method="reli")
 
 ```
 
@@ -105,4 +94,22 @@ agree_tab(data_coded, starts_with("topic_"), coder, ids = case, method="classifi
 
 ```
 
+
+## 5. Choosing macro statistics vs. single categories
+```{r}
+
+# There are three cases to consider:
+# - If you provide a category in the respective parameter,
+#   results relate to this category. 
+# - If you omit the parameter (or set it to null) and you have boolean values,
+#   the TRUE category is automatically choosen.
+# - Otherwise, macro statistics for precision, recall, and f1 are calculated by
+#   averaging over the results of all categories. You will find the number of categories
+#   in the result table.
+
+data_coded %>% 
+  mutate(across(starts_with("topic_"), ~ ifelse(., "yes", "no"))) %>% 
+  agree_tab(starts_with("topic_"), coder, ids = case, method = "classification", category = "no")
+
+```
 

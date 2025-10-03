@@ -244,8 +244,9 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, ids = NULL, 
   }
 
   # Add reliability
-  agree <- ifelse(agree == TRUE, "reliability", agree)
-  if (!metric && (agree %in% c("reliability", "classification"))) {
+
+  if (!metric && (agree != FALSE)) {
+    agree <- ifelse(agree == TRUE, "reliability", agree)
     agr <- .report_agr(data, {{ cols }}, {{ cross }}, {{ ids }}, method = agree, clean = TRUE, ...)
     chunks <- append(chunks, agr)
   }

@@ -149,7 +149,7 @@ check_is_categorical <- function(data, cols, msg = NULL) {
 #' @param stopit Whether to stop execution if the value is invalid.
 #' @param msg A custom error message if the check fails.
 #' @return logical whether method is valid.
-check_is_param <- function(value, allowed, allownull = FALSE, allowmultiple = FALSE, stopit = TRUE, msg = NULL) {
+check_is_param <- function(value, allowed, allownull = FALSE, allowmultiple = FALSE, expand = FALSE, stopit = TRUE, msg = NULL) {
 
   # Check for null
   if (is.null(value)) {
@@ -172,6 +172,13 @@ check_is_param <- function(value, allowed, allownull = FALSE, allowmultiple = FA
     return(FALSE)
   }
 
+  if (expand) {
+    value <- sapply(value, function(v) {
+      matches <- allowed[startsWith(allowed, v)]
+      ifelse (length(matches) == 0, NA_character_, matches[1])
+    }, USE.NAMES = FALSE)
+  }
+
   check <- tryCatch(
     {
       value %in% allowed
@@ -192,6 +199,6 @@ check_is_param <- function(value, allowed, allownull = FALSE, allowmultiple = FA
     return(FALSE)
   }
 
-  TRUE
+  value
 }
 
