@@ -9,6 +9,7 @@ check_is_param(
   allowed,
   allownull = FALSE,
   allowmultiple = FALSE,
+  expand = FALSE,
   stopit = TRUE,
   msg = NULL
 )

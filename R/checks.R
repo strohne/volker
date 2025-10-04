@@ -68,6 +68,48 @@ check_has_column <- function(data, cols, msg = NULL) {
   TRUE
 }
 
+#' Check whether there is no overlap between two column sets
+#'
+#' @keywords internal
+#'
+#' @param data A data frame.
+#' @param cols A tidyselection of columns.
+#' @param cross A tidyselection of columns.
+#' @param msg A custom error message if the check fails.
+#' @return boolean Whether the two column sets are different.
+check_nonequal_columns <- function(data, cols, cross, msg = NULL) {
+
+  coleval <- tryCatch(
+    {
+      tidyselect::eval_select(expr = rlang::enquo(cols), data = data)
+    },
+    error = function(e) {
+      msg <- dplyr::coalesce(msg, paste0("The column selection is not valid, check your parameters."))
+      stop(msg, call. = FALSE)
+
+    }
+  )
+
+  crosseval <- tryCatch(
+    {
+      tidyselect::eval_select(expr = rlang::enquo(cross), data = data)
+    },
+    error = function(e) {
+      msg <- dplyr::coalesce(msg, paste0("The column selection is not valid, check your parameters."))
+      stop(msg, call. = FALSE)
+
+    }
+  )
+
+
+  if (any(names(coleval) %in% names(crosseval))) {
+    msg <- dplyr::coalesce(msg, paste0("The column selection overlaps, check your parameters."))
+    stop(msg, call. = FALSE)
+  }
+
+  TRUE
+}
+
 #' Check whether a column selection is numeric
 #'
 #' @keywords internal

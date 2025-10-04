@@ -312,6 +312,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
+  check_nonequal_columns(data, {{ col }}, {{ cross }})
   check_is_param(prop, c("total", "cells", "cols", "rows"))
   check_is_param(values, c("n", "p"), allowmultiple = TRUE)
 
@@ -363,6 +364,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
     dplyr::summarise(n = sum(.data$n)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate("{{ col }}" := "total") %>%
+
     tidyr::pivot_wider(
       names_from = {{ cross }},
       values_from = "n",

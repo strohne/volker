@@ -48,6 +48,7 @@ If any cell contains less than 5 observations, the exact-parameter is set.
 \details{
 Phi is derived from the Chi squared value by \code{sqrt(fit$statistic / n)}.
 Cramer's V is derived by \code{sqrt(phi / (min(dim(contingency)[1], dim(contingency)[2]) - 1))}.
+Cramer's V is set to 1.0 for diagonal contingency matrices, indicating perfect association.
 }
 \examples{
 library(volker)

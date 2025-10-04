@@ -7,9 +7,9 @@
 vlkr_colors_contrast(colors, threshold = 0.5)
 }
 \arguments{
-\item{threshold}{Luminance theshold for choosing black over white}
+\item{colors}{A vector of hex colors}
 
-\item{fill_colors}{A vector of hex colors}
+\item{threshold}{Luminance theshold for choosing black over white}
 }
 \value{
 A vector of the same length as fill_colors with white or black colors.
