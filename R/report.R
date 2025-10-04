@@ -330,7 +330,7 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, ids = NULL, 
   #plt <- agree_plot(data, ...)
   #chunks <- .add_to_vlkr_rprt(plt, chunks, "Agreement: Plot")
 
-  tab <-agree_tab(data,  {{ cols}}, {{ coders }}, {{ ids }}, method = method, clean = TRUE, ...)
+  tab <- agree_tab(data,  {{ cols}}, {{ coders }}, {{ ids }}, method = method, clean = TRUE, ...)
   chunks <- .add_to_vlkr_rprt(tab ,chunks, "Agreement: Table")
 
   chunks

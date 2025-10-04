@@ -240,6 +240,7 @@ effect_counts_one <- function(data, col, clean = TRUE, ...) {
 #'
 #' Phi is derived from the Chi squared value by \code{sqrt(fit$statistic / n)}.
 #' Cramer's V is derived by \code{sqrt(phi / (min(dim(contingency)[1], dim(contingency)[2]) - 1))}.
+#' Cramer's V is set to 1.0 for diagonal contingency matrices, indicating perfect association.
 #'
 #' @keywords internal
 #'
@@ -1324,16 +1325,23 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 
   if (method == "cramer") {
     contingency <- table(as.character(x), as.character(y))
+    n <- sum(contingency)
     sr <- rowSums(contingency)
     sc <- colSums(contingency)
     E <- outer(sr, sc) / sum(contingency)
     exact <- any(E < 5)
+    isdiag = sum(diag(contingency)) == n
 
-    fit <- stats::chisq.test(contingency, simulate.p.value = exact)
+    if ((nrow(contingency) < 2) | (ncol(contingency) < 2)) {
+      fit <- list(statistic = NA, parameter = NA, p.value = NA)
+    } else {
+      fit <- stats::chisq.test(contingency, simulate.p.value = exact)
+    }
 
-    n <- sum(contingency)
+
     cells <- min(dim(contingency)[1], dim(contingency)[2]) - 1
     cramer_v <- round(sqrt( (fit$statistic / n) / cells), 2)
+    cramer_v <- ifelse(isdiag, 1.0, cramer_v)
 
     result <- list(
       "Cramer's V" = round(cramer_v, 2),
@@ -1398,25 +1406,27 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
   cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
+  col_name <- names(cols_eval)[1]
+  cross_name <- names(cross_eval)[1]
 
   # Calculate marginal probabilities
   result <- data %>%
-    dplyr::count({{ col }}, {{ cross }}) %>%
+    dplyr::count(.data[[col_name]], .data[[cross_name]]) %>%
     #tidyr::complete({{ col }}, {{ cross }}, fill=list(n=0)) |>
 
-    dplyr::group_by({{ col }}) %>%
+    dplyr::group_by(!!sym(col_name)) %>%
     dplyr::mutate(.total_x = sum(.data$n)) %>%
     dplyr::ungroup() %>%
-    dplyr::group_by({{ cross }}) %>%
+    dplyr::group_by(!!sym(cross_name)) %>%
     dplyr::mutate(.total_y = sum(.data$n)) %>%
     dplyr::ungroup() %>%
 
     # Calculate joint probablities
     dplyr::mutate(
       .total = sum(.data$n),
-      p_x = (.data$.total_x + smoothing) / (.data$.total + (dplyr::n_distinct({{ col }}) * smoothing)),
-      p_y = (.data$.total_y + smoothing) / (.data$.total + (dplyr::n_distinct({{ cross }}) * smoothing)),
-      p_xy = (.data$n + smoothing) / (.data$.total + dplyr::n_distinct({{ col }}) * smoothing + dplyr::n_distinct({{ cross }}) *  smoothing),
+      p_x = (.data$.total_x + smoothing) / (.data$.total + (dplyr::n_distinct(!!sym(col_name)) * smoothing)),
+      p_y = (.data$.total_y + smoothing) / (.data$.total + (dplyr::n_distinct(!!sym(cross_name)) * smoothing)),
+      p_xy = (.data$n + smoothing) / (.data$.total + dplyr::n_distinct(!!sym(col_name)) * smoothing + dplyr::n_distinct(!!sym(cross_name)) *  smoothing),
 
       ratio = .data$p_xy / (.data$p_x * .data$p_y),
       pmi = dplyr::case_when(
