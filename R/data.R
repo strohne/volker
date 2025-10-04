@@ -16,7 +16,7 @@
 #'   \item{cg_adoption_}{A scale consisting of items about advantages, fears, and social aspects.
 #'                       The scales match theoretical constructs inspired by Roger's diffusion model and Davis' Technology Acceptance Model.}
 #'   \item{cg_activities}{Text answers to the question, what the respondents do with ChatGPT.}
-#'   \item{cg_act_text}{Manual content analysis of cg_activities: Does the activities involve generating text, code or other artifacts?}
+#'   \item{cg_act_write}{Manual content analysis of cg_activities: Does the activities involve generating text, code or other artifacts?}
 #'   \item{cg_act_test}{Manual content analysis of cg_activities: Does the activities involve testing, experimenting or playing around?}
 #'   \item{cg_act_search}{Manual content analysis of cg_activities: Does the activities involve searching for information, advice or inspiration?}
 #' }

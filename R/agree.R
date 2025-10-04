@@ -48,30 +48,34 @@
 #'  - **F1**: Harmonic mean of precision and recall.
 #'
 #' @examples
-#' library(volker)
 #' library(dplyr)
+#' library(volker)
 #'
 #' data <- volker::chatgpt
 #'
-#' # Code some data for reliability calculations
+#' # Prepare example data.
+#' # First, recode "x" to TRUE/FALSE for the first coder's sample.
 #' data_coder1 <- data |>
-#'   mutate(
-#'     coding = grepl(tolower(cg_activities), "schreiben|texte|formulieren"),
-#'     coder="c1"
-#'   )
+#'   mutate(across(starts_with("cg_act_"), ~ ifelse(is.na(.), FALSE, TRUE))) %>%
+#'   mutate(coder = "coder one")
 #'
+#' # Second, recode using a dictionary approach for the second coder's sample.
 #' data_coder2 <- data |>
-#'   mutate(
-#'     coding = grepl(tolower(cg_activities), "schreiben|uebersetz|verfass"),
-#'     coder="c2"
-#'   )
+#'   mutate(across(starts_with("cg_act_"), ~ ifelse(is.na(.), FALSE, TRUE))) %>%
+#'   mutate(cg_act_write = grepl("write|text|translate", tolower(cg_activities))) %>%
+#'   mutate(coder="coder two")
 #'
 #' data_coded <- bind_rows(
 #'   data_coder1,
 #'   data_coder2
 #' )
 #'
-#' agree_tab(data_coded, coding,  coder, case, method = "reliability")
+#' # Reliability coefficients are strictly only appropriate for manual codings
+#' agree_tab(data_coded, cg_act_write,  coder, case, method = "reli")
+#'
+#' # Better use classification performance indicators to compare the
+#' # dictionary approach with human coding
+#' agree_tab(data_coded, cg_act_write,  coder, case, method = "class")
 #'
 #' @export
 #' @importFrom rlang .data
@@ -97,8 +101,8 @@ agree_tab <- function(data, cols, coders, ids = NULL, category = NULL, method = 
 
   # 5. Assemble result list
   result <- c(
-    "coefficients" = list(.to_vlkr_tab(result_coef, digits = 2))
-   # "confusion" = list(.to_vlkr_tab(result_conf, digits = 2))
+    "coefficients" = list(.to_vlkr_tab(result_coef, digits = 2)),
+    "confusion" = list(.to_vlkr_tab(result_conf, digits = 2))
   )
   result <- .attr_transfer(result, data, "missings")
   .to_vlkr_list(result)
@@ -122,17 +126,26 @@ agree_tab <- function(data, cols, coders, ids = NULL, category = NULL, method = 
     dplyr::select({{ ids }}, {{cols }}, {{coders }}) %>%
     tidyr::pivot_longer({{ cols }}, names_to = ".item", values_to = ".value")
 
-  #df_long$.case <- paste0(dplyr::pull(df_long, {{ ids }}), ": ", df_long$.item)
+  df_agree <- df_long %>%
+    tidyr::pivot_wider(names_from = {{ coders }} , values_from = ".value") %>%
 
-  #df_long$.value <- paste0(df_long$.item, ": ", df_long$.value)
-  #df_long$.value <- trim_prefix(df_long$.value)
-  #df_long$.item <- NULL
-  df_wide <- tidyr::pivot_wider(df_long, names_from = c({{ coders }}, ".item") , values_from = ".value")
+    dplyr::count(dplyr::across(- {{ ids }})) %>%
+    dplyr::group_by(.data$.item) %>%
+    dplyr::mutate(p = .data$n / sum(.data$n)) %>%
+    dplyr::ungroup() %>%
 
-  coder_prefixes <- paste0(unique(dplyr::pull(df_long, {{ coders }})), "_")
-  c1 <- coder_prefixes[1]
-  c2 <- coder_prefixes[2]
-  tab_counts_items_grouped_items(df_wide, tidyselect::starts_with(c1), tidyselect::starts_with(c2))
+    dplyr::rowwise() %>%
+    mutate(.agree = dplyr::n_distinct(dplyr::c_across(-tidyselect::all_of(c(".item", "n", "p")))) == 1) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(.data$.item,-.data$.agree) %>%
+
+    dplyr::select(item = ".item", agree = ".agree", tidyselect::everything())
+
+
+
+  df_agree
+
+
 }
 
 #' Calculate agreement coefficients for multiple items

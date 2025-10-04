@@ -9,6 +9,7 @@ agree_tab(
   cols,
   coders,
   ids = NULL,
+  category = NULL,
   method = "reliability",
   labels = TRUE,
   clean = TRUE,
@@ -24,7 +25,11 @@ agree_tab(
 
 \item{ids}{The column with case IDs.}
 
-\item{method}{The output metrics, one of \code{reliability} or \code{classification}.}
+\item{category}{For classification performance indicators, if no category is provided, macro statistics are returned (along with the number of categories in the output).
+Provide a category to get the statistics for this category only.
+If values are boolean (TRUE / FALSE) and no category is provided, the category is always assumed to be "TRUE".}
+
+\item{method}{The output metrics, one of \code{reliability} or \code{classification}. You can abbreviate it, e.g. \code{reli} or \code{class}.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
@@ -69,30 +74,34 @@ Common performance metrics include accuracy, precision, recall and F1.
 }
 }
 \examples{
-library(volker)
 library(dplyr)
+library(volker)
 
 data <- volker::chatgpt
 
-# Code some data for reliability calculations
+# Prepare example data.
+# First, recode "x" to TRUE/FALSE for the first coder's sample.
 data_coder1 <- data |>
-  mutate(
-    coding = grepl(tolower(cg_activities), "schreiben|texte|formulieren"),
-    coder="c1"
-  )
+  mutate(across(starts_with("cg_act_"), ~ ifelse(is.na(.), FALSE, TRUE))) \%>\%
+  mutate(coder = "coder one")
 
+# Second, recode using a dictionary approach for the second coder's sample.
 data_coder2 <- data |>
-  mutate(
-    coding = grepl(tolower(cg_activities), "schreiben|uebersetz|verfass"),
-    coder="c2"
-  )
+  mutate(across(starts_with("cg_act_"), ~ ifelse(is.na(.), FALSE, TRUE))) \%>\%
+  mutate(cg_act_write = grepl("write|text|translate", tolower(cg_activities))) \%>\%
+  mutate(coder="coder two")
 
 data_coded <- bind_rows(
   data_coder1,
   data_coder2
 )
 
-agree_tab(data_coded, coding,  coder, case, method = "reliability")
+# Reliability coefficients are strictly only appropriate for manual codings
+agree_tab(data_coded, cg_act_write,  coder, case, method = "reli")
+
+# Better use classification performance indicators to compare the
+# dictionary approach with human coding
+agree_tab(data_coded, cg_act_write,  coder, case, method = "class")
 
 }
 \keyword{internal}
