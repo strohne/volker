@@ -388,13 +388,22 @@ data_cat <- function(data, cols) {
   data
 }
 
-#' Get a formatted baseline for removed zero, negative, and missing cases
-#' and include focus category information if present
+#' Get a formatted baseline from attributes of an object.
+#'
+#' The following attributes are considered:
+#' - cases: Number of cases.
+#' - missing: Removed zero, negative, and missing cases.
+#' - focus: Focus category.
+#' - auto: The k value of cluster methods.
+#' - reversed: A list of reversed items.
+#' - split: Items that were split at the median.
+#' - adjust: The adjustment method for p values.
+#'
 #'
 #' @keywords internal
 #'
-#' @param obj An object with the missings and focus attributes.
-#' @return A formatted message or NULL if missings and focus attributes are not present.
+#' @param obj An object with supported attributes.
+#' @return A formatted message or NULL if none of the supported attributes is present.
 get_baseline <- function(obj) {
   baseline <- c()
 
@@ -426,6 +435,12 @@ get_baseline <- function(obj) {
   split <- attr(obj, "split", exact = TRUE)
   if (!is.null(split)) {
     baseline <- c(baseline, paste0(split, "."))
+  }
+
+  # Adjust
+  adjust <- attr(obj, "adjust", exact = TRUE)
+  if (!is.null(adjust)) {
+    baseline <- c(baseline, paste0("Adjusted p values with ", adjust, " method."))
   }
 
   # Missings

@@ -283,7 +283,7 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
   # 2. NPMI
-  result_items <- .effect_npmi(data, {{ col }}, {{ cross }})
+  result_items <- .effect_npmi(data, {{ col }}, {{ cross }}, ...)
 
 
   # 3. Cramer's V
@@ -1396,12 +1396,16 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #' @param cross The column to correlate.
 #' @param smoothing Add pseudocount. Calculate the pseudocount based on the number of trials
 #'        to apply Laplace's rule of succession.
+#' @param adjust Performing multiple significance tests inflates the alpha error.
+#'               Thus, p values need to be adjusted according to the number of tests.
+#'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-.effect_npmi <- function(data, col, cross, smoothing = 0, labels = TRUE, clean = TRUE, ...) {
+.effect_npmi <- function(data, col, cross, smoothing = 0, adjust = "fdr", labels = TRUE, clean = TRUE, ...) {
 
   cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
@@ -1419,9 +1423,10 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
     dplyr::ungroup() %>%
     dplyr::group_by(!!sym(cross_name)) %>%
     dplyr::mutate(.total_y = sum(.data$n)) %>%
-    dplyr::ungroup() %>%
+    dplyr::ungroup()
 
-    # Calculate joint probablities
+  # Calculate joint probablities
+  result <- result %>%
     dplyr::mutate(
       .total = sum(.data$n),
       p_x = (.data$.total_x + smoothing) / (.data$.total + (dplyr::n_distinct(!!sym(col_name)) * smoothing)),
@@ -1439,9 +1444,30 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
       )
     )
 
-    result <- dplyr::select(result, -tidyselect::all_of(c(".total",".total_x", ".total_y")))
-    result
+  # Add exact fisher test
+  result <- result %>%
+    rowwise() %>%
+    mutate(
+      fisher_p = {
+        a <- n
+        b <- .total_x - n
+        c <- .total_y - n
+        d <- .total - a - b - c
+        tbl <- matrix(c(a, b, c, d), nrow = 2)
+        suppressWarnings(fisher.test(tbl)$p.value)
+      }) %>%
+    ungroup() %>%
+    mutate(fisher_p = stats::p.adjust(fisher_p, method = adjust)) %>%
+    mutate(fisher_stars = get_stars(fisher_p))
+
+  result <- dplyr::select(result, -tidyselect::all_of(c(".total",".total_x", ".total_y")))
+
+  if (adjust != "none") {
+    attr(result, "adjust")  <- adjust
   }
+
+  result
+}
 
 #' Tidy lm results, replace categorical parameter names by their levels and add the reference level
 #'
