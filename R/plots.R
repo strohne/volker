@@ -491,7 +491,16 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
 
   if (prop == "cells") {
 
+
     result <- tidyr::complete(result, .data$item, .data$value, fill = list(n = 0, p = 0, .values = "0"))
+
+    if (labels) {
+      result <- labs_apply(result, items = list(
+        "value" = title_cross,
+        "item" =  title_col
+      )
+      )
+    }
 
     .plot_heatmap(
       result,
