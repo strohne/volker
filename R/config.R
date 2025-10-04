@@ -67,7 +67,7 @@ VLKR_FILLDISCRETE <- list(
 #' Override with \code{options(vlkr.gradient.fill=list(c("white","black")))}.
 #'
 #' @keywords internal
-VLKR_FILLGRADIENT <- c("#e5f7ff", "#96dfde", "#008b8b", "#006363", "#001212")
+VLKR_FILLGRADIENT <- c("#e5f7f7", "#96dfdf", "#008b8b", "#006363", "#004444")
 
 VLKR_COLOR_BOX_BACKGROUND <- "#aaaaaa"
 VLKR_COLOR_BOX_FOREGROUND <- "#222222"

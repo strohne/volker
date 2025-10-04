@@ -2194,7 +2194,10 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   }
 
   # Add title
-  if (title == TRUE) {
+  if (is.null(title)) {
+    title <- TRUE
+  }
+  if(title == TRUE) {
     if (prefix1 != prefix2) {
       title <- paste0(trim_label(prefix1), " x ", trim_label(prefix2))
     } else {
@@ -2203,6 +2206,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   } else if (title == FALSE) {
     title <- NULL
   }
+
 
   if (!is.null(title)) {
     pl <- pl + ggplot2::ggtitle(label = title)
@@ -2635,7 +2639,7 @@ theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDI
 #'
 #' @keywords internal
 #'
-#' @param fill_colors A vector of hex colors
+#' @param colors A vector of hex colors
 #' @param threshold Luminance theshold for choosing black over white
 #' @return A vector of the same length as fill_colors with white or black colors.
 vlkr_colors_contrast <- function(colors, threshold = 0.5) {
@@ -2698,6 +2702,14 @@ vlkr_colors_sequential <- function(n = NULL, inv = FALSE) {
   }
 
   if (!is.null(n)) {
+    # Crop first and last colors if possible (to make it less extreme)
+    if (n < length(colors)) {
+      colors <- colors[-1]
+    }
+    if (n < length(colors)) {
+      colors <- colors[-length(colors)]
+    }
+
     colors <- scales::gradient_n_pal(colors)(
       seq(0,1,length.out=n)
     )
@@ -2709,6 +2721,7 @@ vlkr_colors_sequential <- function(n = NULL, inv = FALSE) {
 
   colors
 }
+
 
 #' Get colors for polarized scales
 #'
