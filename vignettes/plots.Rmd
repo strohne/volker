@@ -91,6 +91,11 @@ data |>
 ### 6. Correlation of categorical items with categorical items
 ```{r}
 plot_counts(data, starts_with("cg_adoption"), starts_with("cg_adoption"))
+
+data %>% 
+  mutate(across(starts_with("cg_act_"), ~ ifelse(is.na(.), FALSE, TRUE))) %>% 
+  plot_counts(starts_with("cg_act_"), starts_with("cg_act_"))
+
 ```
 
 ### 7. Group comparison of multiple items by a metric variable split at the median

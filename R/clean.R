@@ -388,6 +388,44 @@ data_cat <- function(data, cols) {
   data
 }
 
+#' Round and format selected numeric columns
+#'
+#' Round and format specified numeric columns in a data frame
+#' to a fixed number of decimal places.
+#'
+#' For each selected numeric column:
+#' \itemize{
+#'   \item The column is rounded using \code{round()}.
+#'   \item It is then formatted as a character vector with a fixed number of
+#'         decimal places using \code{sprintf()}.
+#'   \item Missing values (\code{NA}) are preserved as \code{NA_character_}.
+#'   \item Original non-essential attributes (except \code{class} and
+#'         \code{levels}) are restored.
+#' }
+#'
+#' @keywords internal
+#'
+#' @param data A data frame or tibble.
+#' @param cols A tidyselect expression specifying which columns to round
+#'   (e.g., \code{c(var1, var2)} or \code{starts_with("score")}).
+#' @param digits Integer; number of decimal places to round.
+#' @return The input data frame, with the specified numeric columns rounded
+#'   and formatted as character vectors.
+data_round <- function(data, cols, digits) {
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  for (col in cols_eval) {
+    if (is.numeric(data[[col]])) {
+      old_attr <- attributes(data[[col]])
+      old_attr[c("class", "levels")] <- NULL
+      data[[col]] <- round(data[[col]], digits)
+      data[[col]] <- sprintf(paste0("%.", digits, "f"), data[[col]])
+      data[[col]][data[[col]] == "NA"] <- NA_character_
+      attributes(data[[col]]) <- old_attr
+    }
+  }
+  data
+}
+
 #' Get a formatted baseline from attributes of an object.
 #'
 #' The following attributes are considered:
@@ -437,12 +475,6 @@ get_baseline <- function(obj) {
     baseline <- c(baseline, paste0(split, "."))
   }
 
-  # Adjust
-  adjust <- attr(obj, "adjust", exact = TRUE)
-  if (!is.null(adjust)) {
-    baseline <- c(baseline, paste0("Adjusted p values with ", adjust, " method."))
-  }
-
   # Missings
   missings <- attr(obj, "missings", exact = TRUE)
   if (!is.null(missings)) {
@@ -469,6 +501,15 @@ get_baseline <- function(obj) {
        baseline <- c(baseline, paste0(paste0(baseline_missing, collapse = ", "), " values."))
     }
   }
+
+  # Adjust
+  adjust <- attr(obj, "adjust", exact = TRUE)
+  if (!is.null(adjust)) {
+    if (adjust != "none") {
+      baseline <- c(baseline, paste0("Adjusted significance p values with ", adjust, " method."))
+    }
+  }
+
 
   # Assemble baseline
   if (length(baseline) > 0) {

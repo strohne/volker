@@ -95,6 +95,7 @@ effect_counts(data, adopter, sd_gender)
 ## 4. Chi-square goodness-of-fit test for each item
 ```{r}
 effect_counts(data, starts_with("cg_adoption_advantage"))
+
 ```
 
 ## 5. Cramers v and Chi-square-test for each item
@@ -182,11 +183,11 @@ effect_metrics(
 ```{r}
 data |> 
   filter(sd_gender != "diverse") |> 
-  model_metrics_tab(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption"), sd_age))
+  model_metrics_tab(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption_advantage"), sd_age))
 
 data |> 
   filter(sd_gender != "diverse") |> 
-  model_metrics_plot(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption"), sd_age))
+  model_metrics_plot(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption_advantage"), sd_age))
 
 ```
 

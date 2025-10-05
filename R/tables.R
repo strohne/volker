@@ -1736,6 +1736,17 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
 
 #' Knit volker tables
 #'
+#' Numbers are rounded by three mechanisms:
+#' - Each column may have an attribute "round" with the numbers of digits.
+#'   This results in a character vector with a fixed number of digits.
+#'   NA values are replaced by an empty string.
+#' - The data frame may have a column ".digits" with a number of digits.
+#'   All numeric values are rounded to the number of digits in this column,
+#'   the column is discarded afterwards.
+#' - The data frame may have an attribute "digits" resulting
+#'   in all numbers in the data frame being rounded to that number.
+#'   The constant VLKR_NORMAL_DIGITS is used as a fallback.
+#'
 #' @keywords internal
 #'
 #' @param df Data frame.
@@ -1743,11 +1754,8 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
 .knit_table <- function(df, ...) {
   options(knitr.kable.NA = '')
 
-  digits <- attr(df, "digits", exact = TRUE)
-  if (is.null(digits)) {
-    digits <- getOption("vlkr.digits", VLKR_NORMAL_DIGITS)
-  }
-
+  # Get attributes before they are potentially destroyed
+  # - baseline
   baseline <- attr(df, "baseline", exact=TRUE)
   if (is.null(baseline)) {
     baseline <- get_baseline(df)
@@ -1755,7 +1763,23 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
     baseline <- NULL
   }
 
-  # Round
+  # - digits
+  digits <- attr(df, "digits", exact = TRUE)
+  if (is.null(digits)) {
+    digits <- getOption("vlkr.digits", VLKR_NORMAL_DIGITS)
+  }
+
+  # Round cells
+  for (col in names(df)) {
+    r <- attr(df[[col]], "round")
+    if (!is.null(r) && is.numeric(df[[col]])) {
+      df[[col]] <- round(df[[col]], r)
+      df[[col]] <- sprintf(paste0("%.", r, "f"), df[[col]])
+      df[[col]][df[[col]] == "NA"] <- ""
+    }
+  }
+
+  # Round rows
   if (".digits" %in% colnames(df)) {
     df <- df |>
       dplyr::rowwise() |>
@@ -1765,6 +1789,7 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
     df$.digits <- NULL
   }
 
+  # Global rounding
   if (!is.null(digits) && digits > 1) {
     numberformat = list(nsmall = digits)
   } else {
@@ -1821,6 +1846,7 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
       )
   }
 
+  # Base line
   if (!is.null(baseline)) {
     attr(df, "baseline") <- baseline
   }

@@ -278,7 +278,7 @@
       |:-----------------------|------------------:|---:|-----------:|
       |in professional context | in private context| 101|        0.37|
       
-      n=101.
+      n=101. Adjusted significance p values with fdr method.
       
 
 # Correlations with two variables with no common prefix
@@ -292,7 +292,7 @@
       |:------|-------------------------:|---:|-----------:|
       |Age    | Usage: in private context| 101|       -0.19|
       
-      n=101.
+      n=101. Adjusted significance p values with fdr method.
       
 
 # Correlation with two variables and ci
@@ -306,7 +306,7 @@
       |:-----------------------|------------------:|---:|-----------:|------:|-------:|
       |in professional context | in private context| 101|        0.37|   0.19|    0.53|
       
-      n=101.
+      n=101. Adjusted significance p values with fdr method.
       
 
 # Correlation with two variables and spearman
@@ -320,7 +320,7 @@
       |:-----------------------|------------------:|---:|--------------:|
       |in professional context | in private context| 101|           0.33|
       
-      n=101.
+      n=101. Adjusted significance p values with fdr method.
       
 
 # Distribution table for multiple metric items
@@ -556,7 +556,7 @@
       |Using ChatGPT brings me recognition from my environment.    |      in private context|        0.42|
       |Using ChatGPT brings me recognition from my environment.    | in professional context|        0.46|
       
-      n=97. 4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted. Adjusted significance p values with fdr method.
       
 
 ---
@@ -714,7 +714,7 @@
       |Using ChatGPT brings me recognition from my environment.    |          Not using ChatGPT is considered being an outsider.|        0.56|
       |Using ChatGPT brings me recognition from my environment.    |    Using ChatGPT brings me recognition from my environment.|        1.00|
       
-      n=97. 4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted. Adjusted significance p values with fdr method.
       
 
 # Correlate two item batteries with ci
@@ -736,7 +736,7 @@
       |Compared to other systems, using ChatGPT is more fun.       |      in private context|        0.47|   0.30|    0.61|
       |Compared to other systems, using ChatGPT is more fun.       | in professional context|        0.27|   0.07|    0.44|
       
-      n=99. 2 missing case(s) omitted.
+      n=99. 2 missing case(s) omitted. Adjusted significance p values with fdr method.
       
 
 # Correlate two item batteries with spearman
@@ -774,7 +774,7 @@
       |Using ChatGPT brings me recognition from my environment.    |      in private context|           0.36|
       |Using ChatGPT brings me recognition from my environment.    | in professional context|           0.40|
       
-      n=97. 4 missing case(s) omitted.
+      n=97. 4 missing case(s) omitted. Adjusted significance p values with fdr method.
       
 
 # Missing values make no trouble
@@ -1006,7 +1006,7 @@
       |:------|------:|--:|-----------:|
       |f2     |     gr|  3|           1|
       
-      n=5. 2 case(s) with missing values.
+      n=5. 2 case(s) with missing values. Adjusted significance p values with fdr method.
       
 
 # Missing values are skipped in item correlations with another variable
@@ -1038,7 +1038,7 @@
       |f2     |     gr|  4|           1|
       |f3     |     gr|  3|           1|
       
-      n=6. 4 case(s) with missing values.
+      n=6. 4 case(s) with missing values. Adjusted significance p values with fdr method.
       
 
 # Missing values are skipped in item correlations with items
@@ -1056,6 +1056,6 @@
       |f2    |    g1|           1|
       |f2    |    g2|           1|
       
-      n=6. 4 case(s) with missing values.
+      n=6. 4 case(s) with missing values. Adjusted significance p values with fdr method.
       
 

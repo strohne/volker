@@ -291,8 +291,13 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
     dplyr::pull(data, {{ col }}),
     dplyr::pull(data, {{ cross }}),
     method = "cramer"
-  )  |>
-  tibble::enframe(
+  )
+
+  result_stats$p = sprintf("%.3f", round(result_stats$p, 3))
+  result_stats$stars = get_stars(result_stats$p)
+
+  result_stats <- tibble::enframe(
+    result_stats,
     name = "Statistic",
     value = "Value"
   )
@@ -335,6 +340,10 @@ effect_counts_one_cor <- function(data, col, cross, clean = TRUE, labels = TRUE,
 #'
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
+#' @param adjust Performing multiple significance tests inflates the alpha error.
+#'               Thus, p values need to be adjusted according to the number of tests.
+#'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
@@ -354,7 +363,7 @@ effect_counts_one_cor <- function(data, col, cross, clean = TRUE, labels = TRUE,
 #'
 #' @export
 #' @importFrom rlang .data
-effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
+effect_counts_items <- function(data, cols, adjust = "fdr", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, cols.categorical = {{ cols }}, clean = clean)
 
@@ -380,14 +389,22 @@ effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
 
       list(
         "item" = .y,
-        "Gini coefficient" = sprintf("%.2f", get_gini(.x)),
+        "Gini coefficient" = get_gini(.x),
         "n" = sum(.x),
-        "Chi-squared" = sprintf("%.2f", round(chi$statistic, 2)),
-        "p" = sprintf("%.3f", round(chi$p.value, 3)),
-        "stars" = get_stars(chi$p.value)
+        "Chi-squared" = chi$statistic,
+        "p" = chi$p.value
       )
    }) %>%
     dplyr::bind_rows()
+
+  # Adjust
+  result <- adjust_p(result, "p", method = adjust)
+
+  # Round
+  result <- .attr_setcolumn(
+    result, tidyselect::all_of(c("Gini coefficient", "Chi-squared")),
+    "round", 2
+  )
 
   # 3. Get variable caption from the attributes
   if (labels) {
@@ -417,6 +434,10 @@ effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
 #' @param method The output metrics, currently only `cramer` is supported.
+#' @param adjust Performing multiple significance tests inflates the alpha error.
+#'               Thus, p values need to be adjusted according to the number of tests.
+#'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
@@ -431,7 +452,7 @@ effect_counts_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-effect_counts_items_grouped <- function(data, cols, cross, method = "cramer", labels = TRUE, clean = TRUE, ...) {
+effect_counts_items_grouped <- function(data, cols, cross, method = "cramer", adjust = "fdr", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
 
@@ -439,7 +460,7 @@ effect_counts_items_grouped <- function(data, cols, cross, method = "cramer", la
 
 
   # 2. Calculate correlations
-  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, adjust = adjust, labels = labels)
 
   # 3. Labels
   prefix1 <- get_prefix(result$item1)
@@ -471,6 +492,10 @@ effect_counts_items_grouped <- function(data, cols, cross, method = "cramer", la
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The columns holding groups to compare.
 #' @param method The output metrics: cramer = Cramer's V, pmi = Pointwise Mutual Information, npmi = Normalized PMI.
+#' @param adjust Performing multiple significance tests inflates the alpha error.
+#'               Thus, p values need to be adjusted according to the number of tests.
+#'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
@@ -487,13 +512,13 @@ effect_counts_items_grouped <- function(data, cols, cross, method = "cramer", la
 #'
 #' @export
 #' @importFrom rlang .data
-effect_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", labels = TRUE, clean = TRUE, ...) {
+effect_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", adjust = "fdr", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
   check_is_param(method, c("cramer"))
 
   # 2. Calculate correlations
-  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, adjust = adjust, labels = labels)
 
   # 3. Labels
   prefix1 <- get_prefix(result$item1)
@@ -649,6 +674,10 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = TRUE, ... ) {
 #' @param method A character vector of methods, e.g. c("t.test","lm").
 #'              Supported methods are t.test (only valid if the cross column contains two levels)
 #'              and lm (regression results).
+#' @param adjust Performing multiple significance tests inflates the alpha error.
+#'               Thus, p values need to be adjusted according to the number of tests.
+#'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -703,7 +732,7 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = TRUE, ... ) {
 #'
 #' @export
 #' @importFrom rlang .data
-effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels = TRUE, clean = TRUE, ...) {
+effect_metrics_one_grouped <- function(data, col, cross, method = "lm", adjust = "fdr", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = {{ cross }}, cols.numeric = {{ col }}, clean = clean)
 
@@ -774,6 +803,7 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
   }
 
   # Regression model
+  # TODO: should we omit the intercept from adjusting p values?
   else if ("lm" %in% method) {
     fit <- stats::lm(av ~ uv, data = lm_data)
 
@@ -783,25 +813,33 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
     lm_params <- lm_params |>
       dplyr::mutate(
         Term = .data$term,
-        stars = get_stars(.data$p.value),
-        estimate = sprintf("%.2f",round(.data$estimate,2)),
-        "ci low" = sprintf("%.2f",round(.data$conf.low,2)),
-        "ci high" = sprintf("%.2f",round(.data$conf.high,2)),
-        "se" = sprintf("%.2f",round(.data$std.error,2)),
-        t = sprintf("%.2f", round(.data$statistic,2)),
-        p = sprintf("%.3f",round(.data$p.value,3))
-      ) |>
-      dplyr::mutate(dplyr::across(tidyselect::all_of(
-        c("estimate","ci low","ci high","se","t","p")
-      ), function(x) ifelse(x == "NA","",x))) |>
+        estimate = .data$estimate,
+        "ci low" = .data$conf.low,
+        "ci high" = .data$conf.high,
+        "se" = .data$std.error,
+        t = .data$statistic,
+        p = .data$p.value
+      )
+
+    # Adjust and round
+    lm_params <- lm_params %>%
+      adjust_p("p", method = adjust) %>%
+      .attr_setcolumn(
+        tidyselect::all_of(c("estimate", "ci low", "ci high", "se", "t")),
+        "round", 2
+      )
+
+    lm_params <- lm_params %>%
       dplyr::select(tidyselect::all_of(c(
         "Term","estimate","ci low","ci high","se","t","p","stars"
       )))
 
     # Regression model statistics
     lm_model <- broom::glance(fit) |>
-      dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), function(x) as.character(round(x,2)))) |>
       dplyr::mutate(stars = get_stars(.data$p.value)) |>
+      data_round("p.value", 3) %>%
+      dplyr::mutate(dplyr::across(tidyselect::any_of(c("n", "df", "df.residual")), function(x) as.character(x))) |>
+      data_round(tidyselect::where(is.numeric), 2) %>%
       tidyr::pivot_longer(
         tidyselect::everything(),
         names_to="Statistic",
@@ -809,7 +847,8 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
       ) |>
       labs_replace("Statistic", tibble::tibble(
         value_name=c(
-          "adj.r.squared", "statistic", "df", "df.residual", "p.value", "stars"
+          "adj.r.squared", "statistic", "df", "df.residual",
+          "p.value", "stars"
         ),
         value_label=c(
           "Adjusted R-squared","F", "df", "residual df",
@@ -822,8 +861,8 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
 
     result <- c(
       result,
-      list(.to_vlkr_tab(lm_params, digits=2)),
-      list(.to_vlkr_tab(lm_model, digits=2))
+      list(.to_vlkr_tab(lm_params)),
+      list(.to_vlkr_tab(lm_model))
     )
   }
 
@@ -842,6 +881,10 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
 #' @param col The column holding metric values.
 #' @param cross The column holding metric values to correlate.
 #' @param method The output metrics, TRUE or pearson = Pearson's R, spearman = Spearman's rho.
+#' @param adjust Performing multiple significance tests inflates the alpha error.
+#'               Thus, p values need to be adjusted according to the number of tests.
+#'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -869,14 +912,14 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", labels =
 #'
 #' @export
 #' @importFrom rlang .data
-effect_metrics_one_cor <- function(data, col, cross, method = "pearson", labels = TRUE, clean = TRUE, ...) {
+effect_metrics_one_cor <- function(data, col, cross, method = "pearson", adjust = "fdr", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.numeric = c({{ col }}, {{ cross }}), clean = clean)
 
   check_is_param(method, c("pearson", "spearman"))
 
   # 2. Calculate correlation
-  result <- .effect_correlations(data, {{ col }}, {{ cross}}, method = method, labels = labels)
+  result <- .effect_correlations(data, {{ col }}, {{ cross}}, adjust = adjust, method = method, labels = labels)
 
   # 3. Labeling
   # Remove common prefix
@@ -897,7 +940,11 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", labels 
   }
 
   result <- result |>
-    dplyr::mutate(dplyr::across(tidyselect::everything(), \(x) as.character(x))) |>
+    data_round("p", 3) %>%
+    dplyr::mutate(dplyr::across(tidyselect::any_of(c("n", "df", "df.residual")), function(x) as.character(x))) |>
+    data_round(tidyselect::where(is.numeric), 2) %>%
+
+    #dplyr::mutate(dplyr::across(tidyselect::everything(), \(x) as.character(x))) |>
     tidyr::pivot_longer(
       cols = -tidyselect::all_of(c("Item 1", "Item 2")),
       names_to ="Statistic"
@@ -916,6 +963,10 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", labels 
 #'
 #' @param data A tibble containing item measures.
 #' @param cols The column holding metric values.
+#' @param adjust Performing multiple significance tests inflates the alpha error.
+#'               Thus, p values need to be adjusted according to the number of tests.
+#'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -937,7 +988,7 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", labels 
 #'
 #' @importFrom rlang .data
 #' @export
-effect_metrics_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
+effect_metrics_items <- function(data, cols, adjust = "fdr", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, cols.numeric = {{ cols }}, clean = clean)
 
@@ -952,17 +1003,25 @@ effect_metrics_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
 
       list(
         "Item" = .y,
-        "skewness" = sprintf("%.2f", stats$skew),
-        "kurtosis" = sprintf("%.2f", stats$kurt),
-        "W" = sprintf("%.2f", shapiro$statistic),
-        "p" = sprintf("%.3f", shapiro$p.value),
-        "stars" = get_stars(shapiro$p.value),
-        "normality" = ifelse(shapiro$p.value > 0.05, "normal", "not normal")
+        "skewness" = stats$skew,
+        "kurtosis" = stats$kurt,
+        "W" = shapiro$statistic,
+        "p" = shapiro$p.value
       )
 
     }
   ) %>%
     dplyr::bind_rows()
+
+  # Adjust and round
+  result <- result %>%
+    adjust_p("p", method = adjust) %>%
+    .attr_setcolumn(
+      tidyselect::all_of(c("skewness", "kurtosis", "W")),
+      "round", 2
+    )
+
+  result$normality = ifelse(result$p > 0.05, "normal", "not normal")
 
   # 3. Labels
   if (labels) {
@@ -1001,6 +1060,10 @@ effect_metrics_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
+#' @param adjust Performing multiple significance tests inflates the alpha error.
+#'               Thus, p values need to be adjusted according to the number of tests.
+#'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
 #' @return A volker tibble with the following statistical measures:
@@ -1020,7 +1083,7 @@ effect_metrics_items <- function(data, cols, labels = TRUE, clean = TRUE, ...) {
 #'
 #' @export
 #' @importFrom rlang .data
-effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean = TRUE, ...) {
+effect_metrics_items_grouped <- function(data, cols, cross, adjust = "fdr", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = {{ cross }}, cols.numeric = {{ cols }}, clean = clean)
 
@@ -1047,15 +1110,22 @@ effect_metrics_items_grouped <- function(data, cols, cross, labels = TRUE, clean
 
     list(
       "item" = .y,
-      "Eta-squared" = sprintf("%.2f", eta_sq$Eta2),
-      "Eta" = sprintf("%.2f", sqrt(eta_sq$Eta2)),
+      "Eta-squared" = eta_sq$Eta2,
+      "Eta" = sqrt(eta_sq$Eta2),
       "n" = nrow(.x),
-      "F" = sprintf("%.2f", summ$fstatistic[1]),
-      "p" = sprintf("%.3f", summ$coefficients[2, 4]),
-      "stars" = get_stars(summ$coefficients[2, 4])
+      "F" = summ$fstatistic[1],
+      "p" = summ$coefficients[2, 4]
     )
   }) %>%
     dplyr::bind_rows()
+
+  # Adjust and round
+  result <- result %>%
+    adjust_p("p", method = adjust) %>%
+    .attr_setcolumn(
+      tidyselect::all_of(c("Eta-squared", "Eta", "F")),
+      "round", 2
+    )
 
   # 5. Labels
   if (labels) {
@@ -1107,6 +1177,10 @@ effect_metrics_items_grouped_items <- function(data, cols, cross, clean = TRUE, 
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding metric values to correlate.
 #' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho.
+#' @param adjust Performing multiple significance tests inflates the alpha error.
+#'               Thus, p values need to be adjusted according to the number of tests.
+#'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -1136,14 +1210,14 @@ effect_metrics_items_grouped_items <- function(data, cols, cross, clean = TRUE, 
 #'
 #' @export
 #' @importFrom rlang .data
-effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labels = TRUE, clean = TRUE, ...) {
+effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", adjust = "fdr", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
 
   check_is_param(method, c("pearson", "spearman"))
 
   # 2. Calculate correlations
-  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, adjust = adjust, labels = labels)
 
   # 3. Labels
   prefix1 <- get_prefix(result$item1)
@@ -1178,6 +1252,10 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labe
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables (e.g. starts_with...).
 #' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho.
+#' @param adjust Performing multiple significance tests inflates the alpha error.
+#'               Thus, p values need to be adjusted according to the number of tests.
+#'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -1210,13 +1288,13 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", labe
 #'
 #' @export
 #' @importFrom rlang .data
-effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", labels = TRUE, clean = TRUE, ...) {
+effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", adjust = "fdr", labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
   check_is_param(method, c("pearson", "spearman"))
 
   # 2. Calculate correlations
-  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, adjust = adjust, labels = labels)
 
   # 3. Labels
   prefix1 <- get_prefix(result$item1)
@@ -1264,10 +1342,14 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #'                For other column types, the first category is counted.
 #'                Accepts both character and numeric values to override default counting behavior.
 #'                Not implemented yet.
+#' @param adjust Performing multiple significance tests inflates the alpha error.
+#'               Thus, p values need to be adjusted according to the number of tests.
+#'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @return A tibble with correlation results.
 #' @importFrom rlang .data
-.effect_correlations <- function(data, cols, cross, method = "pearson", category = NULL, labels = TRUE) {
+.effect_correlations <- function(data, cols, cross, method = "pearson", category = NULL, adjust = "fdr", labels = TRUE) {
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
@@ -1297,6 +1379,12 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 
   result <- dplyr::select(result, item1 = "x_name", item2 = "y_name", tidyselect::everything())
   result <- dplyr::arrange(result, .data$item1, .data$item2)
+
+  # Adjust and round
+  # TODO: omit adjusting for test for self-correlation (item matrices)?
+  result <- result %>%
+    adjust_p("p", method = adjust)
+
 
   # Get variable caption from the attributes
   if (labels) {
@@ -1348,8 +1436,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
       "Chi-squared" = sprintf("%.2f", round(fit$statistic, 2)),
       "n" = as.character(n),
       "df" = as.character(fit$parameter),
-      "p"= sprintf("%.3f", round(fit$p.value, 3)),
-      "stars"= get_stars(fit$p.value)
+      "p"= fit$p.value
     )
   }
 
@@ -1362,8 +1449,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
        "R-squared" = round(as.numeric(fit$estimate^2),2),
       n = length(x),
       s = sprintf("%.2f", round(fit$statistic,2)),
-      p = sprintf("%.3f", round(fit$p.value,3)),
-      stars = get_stars(fit$p.value)
+      p = fit$p.value
     )
 
   }
@@ -1378,8 +1464,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
       "ci high" = round(as.numeric(fit$conf.int[2]),2),
       df = as.numeric(fit$parameter),
       t = ifelse(all(x == y), "Inf", sprintf("%.2f", round(as.numeric(fit$statistic),2))),
-      p = sprintf("%.3f", round(fit$p.value,3)),
-      stars = get_stars(fit$p.value)
+      p = fit$p.value
     )
   }
 
@@ -1446,25 +1531,23 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 
   # Add exact fisher test
   result <- result %>%
-    rowwise() %>%
-    mutate(
+    dplyr::rowwise() %>%
+    dplyr::mutate(
       fisher_p = {
         a <- n
         b <- .total_x - n
         c <- .total_y - n
         d <- .total - a - b - c
         tbl <- matrix(c(a, b, c, d), nrow = 2)
-        suppressWarnings(fisher.test(tbl)$p.value)
+        suppressWarnings(stats::fisher.test(tbl)$p.value)
       }) %>%
-    ungroup() %>%
-    mutate(fisher_p = stats::p.adjust(fisher_p, method = adjust)) %>%
-    mutate(fisher_stars = get_stars(fisher_p))
+    dplyr::ungroup()
+
+  # Adjust and round
+  result <- result %>%
+    adjust_p("fisher_p", method = adjust, stars = "fisher_stars")
 
   result <- dplyr::select(result, -tidyselect::all_of(c(".total",".total_x", ".total_y")))
-
-  if (adjust != "none") {
-    attr(result, "adjust")  <- adjust
-  }
 
   result
 }
@@ -1582,3 +1665,53 @@ get_stars <- function(x) {
     }
   })
 }
+
+#' Adjust p-values from multiple tests and optionally annotate significance stars
+#'
+#' @keywords internal
+#'
+#' @param df A data frame or tibble containing the column to adjust.
+#' @param col A tidyselect expression specifying the p-value column to adjust.
+#' @param method Character string specifying the p-value adjustment method.
+#'   See \code{\link[stats]{p.adjust}} for available methods.
+#' @param digits Integer; number of decimal places for rounding.
+#' @param stars Logical or character; if \code{TRUE}, add a "stars" column
+#'              with significance symbols (e.g., `"***"`, `"**"`, `"*"`)
+#'              based on the adjusted p-values.
+#'              If set to a character value it determines the new column name.
+#'
+#' @return A modified data frame with:
+#'   \itemize{
+#'     \item Adjusted p-values in the selected column.
+#'     \item (Optionally) a new column \code{stars} containing significance symbols.
+#'     \item An attribute \code{"adjust"} on the data frame storing the method.
+#'     \item A \code{"round"} attribute on the p-value column.
+#'   }
+adjust_p <- function(df, col, method = "fdr", digits = 3, stars = TRUE) {
+
+  col_eval <- tidyselect::eval_select(expr = enquo(col), data = df)
+  col_name <- names(col_eval)
+
+  if (length(col_name) != 1) {
+    stop("`col` must select exactly one column.")
+  }
+
+  # Adjust p-values
+  df[[col_name]] <- stats::p.adjust(df[[col_name]], method = method)
+  attr(df, "adjust") <- method
+
+  # Set 'round' attribute on p-value column
+  df <- .attr_setcolumn(df, !!sym(col_name), "round", digits)
+
+
+  # Optionally add significance stars
+  if (!isFALSE(stars)) {
+    if (!is.character(stars)) {
+      stars <- "stars"
+    }
+    df[[stars]] <- get_stars(df[[col_name]])
+  }
+
+  return(df)
+}
+

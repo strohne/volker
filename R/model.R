@@ -17,6 +17,10 @@
 #' @param interactions A vector of interaction effects to calculate.
 #'                     Each interaction effect should be provided as multiplication of the variables.
 #'                     Example: `c(sd_gender * adopter)`.
+#' @param adjust Performing multiple significance tests inflates the alpha error.
+#'               Thus, p values need to be adjusted according to the number of tests.
+#'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -32,7 +36,7 @@
 #' @export
 #' @aliases model_tab
 #' @importFrom rlang .data
-model_metrics_tab <- function(data, col, categorical, metric, interactions = NULL, labels = TRUE, clean = TRUE, ...) {
+model_metrics_tab <- function(data, col, categorical, metric, interactions = NULL, adjust = "fdr", labels = TRUE, clean = TRUE, ...) {
 
 
   model_col <- dplyr::select(data, {{ col }})
@@ -59,9 +63,9 @@ model_metrics_tab <- function(data, col, categorical, metric, interactions = NUL
       interactions <- rlang::expr_text(iexprs)
     }
 
-    scores <- add_model(data, {{ col }}, {{ categorical }}, {{ metric }}, rlang::enexpr(interactions), labels, clean, ...)
+    scores <- add_model(data, {{ col }}, {{ categorical }}, {{ metric }}, rlang::enexpr(interactions), labels = labels, clean = clean, ...)
     newcol <- setdiff(colnames(scores), colnames(data))
-    result <- model_metrics_tab(scores, tidyselect::all_of(newcol), {{ categorical }}, {{ metric }}, rlang::enexpr(interactions), labels, clean, ...)
+    result <- model_metrics_tab(scores, tidyselect::all_of(newcol), {{ categorical }}, {{ metric }}, rlang::enexpr(interactions), adjust = adjust, labels = labels, clean = clean, ...)
     return(result)
   }
 
@@ -78,20 +82,24 @@ model_metrics_tab <- function(data, col, categorical, metric, interactions = NUL
       t = .data$statistic,
       p = .data$p.value
     ) |>
-    dplyr::mutate(dplyr::across(tidyselect::all_of(
-      c("estimate","ci low", "ci high" , "standard error","t","p")
-    ), function(x) ifelse(x == "NA","",x))) |>
     dplyr::select(tidyselect::all_of(c(
-      "Term","estimate","ci low","ci high","standard error","t","p","stars"
+      "Term","estimate","ci low","ci high","standard error","t","p"
     )))
+
+
+  # Adjust and round
+  lm_params <- lm_params %>%
+    adjust_p("p", method = adjust)
 
   # Effect sizes
   lm_effects <- heplots::etasq(fit, anova = TRUE, partial = TRUE, type=2) |>
     tibble::as_tibble(rownames = "Item")
 
   colnames(lm_effects) <- c("Item", "Partial Eta Squared", "Sum of Squares", "Df", "F","p")
-  lm_effects <- lm_effects |>
-    mutate(stars = get_stars(.data$p))
+
+  # Adjust and round
+  lm_effects <- lm_effects %>%
+    adjust_p("p", method = adjust)
 
   if (nrow(lm_effects) > 2) {
 
