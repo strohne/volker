@@ -4,7 +4,7 @@
 \alias{.effect_correl}
 \title{Calculate correlation between two vectors}
 \usage{
-.effect_correl(x, y, method)
+.effect_correl(x, y, method, category = NULL, test = TRUE)
 }
 \arguments{
 \item{x}{First vector}
@@ -13,6 +13,10 @@
 
 \item{method}{One of "spearman" or "pearson" for metric vectors.
 For catecorical vectors, use "cramer" or "npmi".}
+
+\item{category}{A vector of values to focus. Necessary for the npmi method only.}
+
+\item{test}{Boolean; whether to perform significance tests.}
 }
 \value{
 The result of cor.test() for metric vectors, chisq.test for Cramer's V.

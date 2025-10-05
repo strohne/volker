@@ -356,12 +356,12 @@
     Output
       
       
-      |Expectations                                                | Stimme überhaupt nicht zu| Stimme nicht zu| Unentschieden| Stimme zu| Stimme voll und ganz zu|     total|
-      |:-----------------------------------------------------------|-------------------------:|---------------:|-------------:|---------:|-----------------------:|---------:|
-      |ChatGPT has clear advantages compared to similar offerings. |                    6% (6)|          8% (8)|      34% (34)|  37% (37)|                14% (14)| 100% (99)|
-      |Using ChatGPT brings financial benefits.                    |                  22% (22)|        21% (21)|      29% (29)|  21% (21)|                  6% (6)| 100% (99)|
-      |Using ChatGPT is advantageous in many tasks.                |                    6% (6)|        10% (10)|      21% (21)|  45% (45)|                17% (17)| 100% (99)|
-      |Compared to other systems, using ChatGPT is more fun.       |                    6% (6)|          4% (4)|      35% (35)|  39% (39)|                15% (15)| 100% (99)|
+      |Expectations                             | Stimme überhaupt nicht zu| Stimme nicht zu| Unentschieden| Stimme zu| Stimme voll und ganz zu|     total|
+      |:----------------------------------------|-------------------------:|---------------:|-------------:|---------:|-----------------------:|---------:|
+      |ChatGPT has clear advantages compared... |                    6% (6)|          8% (8)|      34% (34)|  37% (37)|                14% (14)| 100% (99)|
+      |Using ChatGPT brings financial benefits. |                  22% (22)|        21% (21)|      29% (29)|  21% (21)|                  6% (6)| 100% (99)|
+      |Using ChatGPT is advantageous in many... |                    6% (6)|        10% (10)|      21% (21)|  45% (45)|                17% (17)| 100% (99)|
+      |Compared to other systems, using Chat... |                    6% (6)|          4% (4)|      35% (35)|  39% (39)|                15% (15)| 100% (99)|
       
       n=99. 2 missing case(s) omitted.
       

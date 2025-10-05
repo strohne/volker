@@ -13,6 +13,17 @@
 Formatted  table produced by \link[knitr:kable]{kable}.
 }
 \description{
-Knit volker tables
+Numbers are rounded by three mechanisms:
+\itemize{
+\item Each column may have an attribute "round" with the numbers of digits.
+This results in a character vector with a fixed number of digits.
+NA values are replaced by an empty string.
+\item The data frame may have a column ".digits" with a number of digits.
+All numeric values are rounded to the number of digits in this column,
+the column is discarded afterwards.
+\item The data frame may have an attribute "digits" resulting
+in all numbers in the data frame being rounded to that number.
+The constant VLKR_NORMAL_DIGITS is used as a fallback.
+}
 }
 \keyword{internal}

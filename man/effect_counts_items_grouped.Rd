@@ -9,6 +9,7 @@ effect_counts_items_grouped(
   cols,
   cross,
   method = "cramer",
+  adjust = "fdr",
   labels = TRUE,
   clean = TRUE,
   ...
@@ -22,6 +23,11 @@ effect_counts_items_grouped(
 \item{cross}{The column holding groups to compare.}
 
 \item{method}{The output metrics, currently only \code{cramer} is supported.}
+
+\item{adjust}{Performing multiple significance tests inflates the alpha error.
+Thus, p values need to be adjusted according to the number of tests.
+Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

@@ -4,7 +4,7 @@
 \alias{.effect_npmi}
 \title{Calculate nmpi}
 \usage{
-.effect_npmi(data, col, cross, smoothing = 0, labels = TRUE, clean = TRUE, ...)
+.effect_npmi(data, col, cross, smoothing = 0, adjust = "fdr", test = TRUE, ...)
 }
 \arguments{
 \item{data}{A tibble.}
@@ -16,9 +16,12 @@
 \item{smoothing}{Add pseudocount. Calculate the pseudocount based on the number of trials
 to apply Laplace's rule of succession.}
 
-\item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
+\item{adjust}{Performing multiple significance tests inflates the alpha error.
+Thus, p values need to be adjusted according to the number of tests.
+Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".}
 
-\item{clean}{Prepare data by \link{data_clean}.}
+\item{test}{Boolean; whether to perform significance tests (default TRUE).}
 
 \item{...}{Placeholder to allow calling the method with unused parameters from \link{tab_counts}.}
 }

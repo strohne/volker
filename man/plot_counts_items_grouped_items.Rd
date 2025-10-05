@@ -9,6 +9,7 @@ plot_counts_items_grouped_items(
   cols,
   cross,
   method = "cramer",
+  category = NULL,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,

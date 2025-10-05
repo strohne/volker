@@ -9,6 +9,7 @@ effect_metrics_items_cor(
   cols,
   cross,
   method = "pearson",
+  adjust = "fdr",
   labels = TRUE,
   clean = TRUE,
   ...
@@ -22,6 +23,11 @@ effect_metrics_items_cor(
 \item{cross}{The column holding metric values to correlate.}
 
 \item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho.}
+
+\item{adjust}{Performing multiple significance tests inflates the alpha error.
+Thus, p values need to be adjusted according to the number of tests.
+Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

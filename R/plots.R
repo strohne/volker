@@ -507,7 +507,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
       values_col = "n",
       numbers_col = ".values",
       labels = TRUE,
-      base_n = base_n,
+      base =   paste0("n=", base_n),
       title = title
     )
   }
@@ -928,18 +928,24 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, limits
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", category = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
-  check_is_param(method, c("cramer"))
+  check_is_param(method, c("cramer", "npmi"))
   value_label <- map_label(method, list("cramer" = "Cramer's V", "npmi" = "npmi"))
 
   if (nrow(data) == 0) {
     return(NULL)
   }
 
-  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
-  .plot_heatmap(result, value_label, value_label, nrow(data), title, labels)
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, category = category, test = FALSE, labels = labels)
+
+  .plot_heatmap(
+    result,
+    value_label, value_label,
+    get_baseline(result, ignore = "adjust"),
+    title, labels
+  )
 }
 
 #' Plot percent shares of multiple items compared by a metric variable split into groups
@@ -1693,8 +1699,12 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   }
 
   values_col <- map_label(method, list("spearman"="Spearman's rho", "pearson" = "Pearson's r"))
-  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
-  .plot_heatmap(result, values_col, values_col, nrow(data), title, labels)
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, test = FALSE, labels = labels)
+  .plot_heatmap(
+    result, values_col, values_col,
+    get_baseline(result, ignore = "adjust"),
+    title, labels
+  )
 }
 
 
@@ -2137,13 +2147,13 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #'             Only if the item values are equal in both columns, titles are added to the axes.
 #' @param values_col Name of the column containing correlation values, a character value.
 #' @param numbers_col Name of the column containing values to plot on the tiles or NULL to hide numbers.
-#' @param base_n The number of cases, plotted in the base line.
+#' @param base Character value; the baseline note, including the number of cases.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @return  A ggplot object
 #' @importFrom rlang .data
-.plot_heatmap <- function(data, values_col, numbers_col = NULL, base_n, title = TRUE, labels = TRUE) {
+.plot_heatmap <- function(data, values_col, numbers_col = NULL, base = NULL, title = TRUE, labels = TRUE) {
 
   # Remove common item prefix
   prefix1 <- get_prefix(data[[1]])
@@ -2165,7 +2175,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 
   data$.fill_color <- scales::gradient_n_pal(color_method())(scales::rescale(data[[values_col]], from = scale_limits))
   data$.text_color <- vlkr_colors_contrast(data$.fill_color)
-
 
   # Plot
   pl <- data %>%
@@ -2239,7 +2248,9 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 
 
   # Add base
-  pl <- pl + ggplot2::labs(caption = paste0("n=", base_n))
+  if (!is.null(base)) {
+    pl <- pl + ggplot2::labs(caption = base)
+  }
 
   # Convert to vlkr_plot
   pl <- .attr_transfer(pl, data, "missings")

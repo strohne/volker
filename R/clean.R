@@ -441,8 +441,14 @@ data_round <- function(data, cols, digits) {
 #' @keywords internal
 #'
 #' @param obj An object with supported attributes.
+#' @param ignore Characer vector of attributes to ignore.
 #' @return A formatted message or NULL if none of the supported attributes is present.
-get_baseline <- function(obj) {
+get_baseline <- function(obj, ignore = c()) {
+
+  for (attrname in ignore) {
+    attr(obj, attrname) <- NULL
+  }
+
   baseline <- c()
 
   # Cases

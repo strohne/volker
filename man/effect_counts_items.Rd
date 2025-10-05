@@ -4,12 +4,24 @@
 \alias{effect_counts_items}
 \title{Test homogeneity of category shares for multiple items}
 \usage{
-effect_counts_items(data, cols, labels = TRUE, clean = TRUE, ...)
+effect_counts_items(
+  data,
+  cols,
+  adjust = "fdr",
+  labels = TRUE,
+  clean = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{A tibble containing item measures.}
 
 \item{cols}{Tidyselect item variables (e.g. starts_with...).}
+
+\item{adjust}{Performing multiple significance tests inflates the alpha error.
+Thus, p values need to be adjusted according to the number of tests.
+Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

@@ -512,13 +512,13 @@ effect_counts_items_grouped <- function(data, cols, cross, method = "cramer", ad
 #'
 #' @export
 #' @importFrom rlang .data
-effect_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", adjust = "fdr", labels = TRUE, clean = TRUE, ...) {
+effect_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", adjust = "fdr", category = NULL, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
-  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
-  check_is_param(method, c("cramer"))
+  data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
+  check_is_param(method, c("cramer", "npmi"))
 
   # 2. Calculate correlations
-  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, adjust = adjust, labels = labels)
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, adjust = adjust, category = category, labels = labels)
 
   # 3. Labels
   prefix1 <- get_prefix(result$item1)
@@ -1335,13 +1335,13 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #' @param cols The columns holding metric values.
 #' @param cross The columns holding metric values to correlate.
 #' @param method The output metrics, pearson = Pearson's R, spearman = Spearman's rho,
-#'               cramer = Cramer's V.
+#'               cramer = Cramer's V, npmi = Normalized Pointwise Mutual Information.
 #'               The reported R square value is simply the square of Spearman's rho respective Pearson's r.
 #' @param category Calculating NPMI for multiple items requires a focus category.
 #'                By default, for logical column types, only TRUE values are counted.
 #'                For other column types, the first category is counted.
 #'                Accepts both character and numeric values to override default counting behavior.
-#'                Not implemented yet.
+#' @param test Boolean, whether to perform significance tests (default = TRUE).
 #' @param adjust Performing multiple significance tests inflates the alpha error.
 #'               Thus, p values need to be adjusted according to the number of tests.
 #'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
@@ -1349,13 +1349,32 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @return A tibble with correlation results.
 #' @importFrom rlang .data
-.effect_correlations <- function(data, cols, cross, method = "pearson", category = NULL, adjust = "fdr", labels = TRUE) {
+.effect_correlations <- function(data, cols, cross, method = "pearson", category = NULL, test = TRUE, adjust = "fdr", labels = TRUE) {
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
   # Check method
-  check_is_param(method, c("spearman", "pearson", "cramer"))
+  check_is_param(method, c("spearman", "pearson", "cramer", "npmi"))
+
+  # Category
+  if (is.null(category) & (method == "npmi")) {
+
+    if ("TRUE" %in% as.character(data[[cols_eval[1]]])) {
+      category <- "TRUE"
+    }
+    else if (is.factor(data[[cols_eval[1]]])) {
+      category <- levels(data[[cols_eval[1]]])[1]
+    }
+    else  {
+      category <- unique(as.character(data[[cols_eval[1]]]))[1]
+    }
+
+    # TODO: Recode as in plot_counts_items_grouped() to reduce number of tests
+    # result <- result %>%
+    #  mutate(.category = (.data$.value_name %in% base_category) | (.data$.value_label %in% base_category))
+
+  }
 
   # Calculate
   result <- expand.grid(
@@ -1365,7 +1384,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
     dplyr::mutate(
       .test = purrr::pmap(
         list(.data$x, .data$y),
-        \(x, y) .effect_correl(data[[x]], data[[y]], method = method)
+        \(x, y) .effect_correl(data[[x]], data[[y]], method = method, category = category, test = test)
       )
     )
 
@@ -1382,8 +1401,16 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 
   # Adjust and round
   # TODO: omit adjusting for test for self-correlation (item matrices)?
-  result <- result %>%
-    adjust_p("p", method = adjust)
+  if (method == "npmi") {
+    if (test) {
+      result <- adjust_p(result, "fisher_p",stars = "fisher_stars", method = adjust)
+    }
+    result <- dplyr::mutate(result, npmi = round(.data$npmi, 2))
+    attr(result, "focus") <- category
+  }
+  else if (test) {
+    result <- adjust_p(result, "p", method = adjust)
+  }
 
 
   # Get variable caption from the attributes
@@ -1391,6 +1418,9 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
     result <- labs_replace(result, "item1", codebook(data, {{ cols }}), col_from="item_name", col_to="item_label")
     result <- labs_replace(result, "item2", codebook(data, {{ cross }}), col_from="item_name", col_to="item_label" )
   }
+
+  # Baseline
+  attr(result, "cases") <- nrow(data)
 
   result
 }
@@ -1404,14 +1434,28 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #' @param y Second vector
 #' @param method One of "spearman" or "pearson" for metric vectors.
 #'               For catecorical vectors, use "cramer" or "npmi".
+#' @param category A vector of values to focus. Necessary for the npmi method only.
+#' @param test Boolean; whether to perform significance tests.
 #' @return The result of cor.test() for metric vectors, chisq.test for Cramer's V.
-.effect_correl <- function(x, y, method) {
+.effect_correl <- function(x, y, method, category = NULL, test = TRUE) {
 
   result <- list()
 
   # TODO: round in print function, not here
+  if (method == "npmi") {
 
-  if (method == "cramer") {
+    if (is.null(category)) {
+      stop("The npmi method needs a focus category, check your parameters.")
+    }
+
+    df <- data.frame(x = x, y = y)
+    npmi <- .effect_npmi(df, !!sym("x"), !!sym("y"), adjust = "none", test= test)
+    npmi <- npmi[as.character(npmi[[1]]) %in% category,, drop = FALSE]
+    npmi <- npmi[as.character(npmi[[2]]) %in% category,, drop = FALSE]
+    npmi <- npmi[,-c(1,2), drop = FALSE]
+    result <- as.list(npmi[1, , drop = TRUE])
+  }
+  else if (method == "cramer") {
     contingency <- table(as.character(x), as.character(y))
     n <- sum(contingency)
     sr <- rowSums(contingency)
@@ -1485,12 +1529,11 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #'               Thus, p values need to be adjusted according to the number of tests.
 #'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
 #'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
-#' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
-#' @param clean Prepare data by \link{data_clean}.
+#' @param test Boolean; whether to perform significance tests (default TRUE).
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-.effect_npmi <- function(data, col, cross, smoothing = 0, adjust = "fdr", labels = TRUE, clean = TRUE, ...) {
+.effect_npmi <- function(data, col, cross, smoothing = 0, adjust = "fdr", test = TRUE, ...) {
 
   cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
@@ -1530,23 +1573,24 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
     )
 
   # Add exact fisher test
-  result <- result %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(
-      fisher_p = {
-        a <- n
-        b <- .total_x - n
-        c <- .total_y - n
-        d <- .total - a - b - c
-        tbl <- matrix(c(a, b, c, d), nrow = 2)
-        suppressWarnings(stats::fisher.test(tbl)$p.value)
-      }) %>%
-    dplyr::ungroup()
+  if (test) {
+    result <- result %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(
+        fisher_p = {
+          a <- .data$n
+          b <- .data$.total_x - .data$n
+          c <- .data$.total_y - .data$n
+          d <- .data$.total - a - b - c
+          tbl <- matrix(c(a, b, c, d), nrow = 2)
+          suppressWarnings(stats::fisher.test(tbl)$p.value)
+        }) %>%
+      dplyr::ungroup()
 
-  # Adjust and round
-  result <- result %>%
-    adjust_p("fisher_p", method = adjust, stars = "fisher_stars")
-
+    # Adjust and round
+    result <- result %>%
+      adjust_p("fisher_p", method = adjust, stars = "fisher_stars")
+  }
   result <- dplyr::select(result, -tidyselect::all_of(c(".total",".total_x", ".total_y")))
 
   result

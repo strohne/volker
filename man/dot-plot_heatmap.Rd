@@ -8,7 +8,7 @@
   data,
   values_col,
   numbers_col = NULL,
-  base_n,
+  base = NULL,
   title = TRUE,
   labels = TRUE
 )
@@ -21,7 +21,7 @@ Only if the item values are equal in both columns, titles are added to the axes.
 
 \item{numbers_col}{Name of the column containing values to plot on the tiles or NULL to hide numbers.}
 
-\item{base_n}{The number of cases, plotted in the base line.}
+\item{base}{Character value; the baseline note, including the number of cases.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

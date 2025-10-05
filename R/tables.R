@@ -953,18 +953,17 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-tab_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", labels = TRUE, clean = TRUE, ...) {
+tab_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", category = NULL, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
 
-  check_is_param(method, c("cramer"))
+  check_is_param(method, c("cramer", "npmi"))
 
   # 2. Calculate correlations
-  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
-
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, category = category, test = FALSE, labels = labels)
   result_cols <- c("item1", "item2")
 
-  result_cols <- c(result_cols, map_label(method, list("cramer"= "Cramer's V", "npmi" = "NPMI")))
+  result_cols <- c(result_cols, map_label(method, list("cramer"= "Cramer's V", "npmi" = "npmi")))
 
   result <- dplyr::select(result, tidyselect::all_of(result_cols))
 
@@ -1839,6 +1838,7 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
       )
   } else {
     df <- df %>%
+      .knit_shorten() %>%
       knitr::kable(
         align = c("l", rep("r", ncol(df) - 1)),
         digits = digits,
@@ -1883,6 +1883,45 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
     }
   }
   x
+}
+
+#' Compact table printing with shortened names and values
+#'
+#' Truncates long column names and long character values,
+#' for more readable console output.
+#'
+#' The default column name length is 30 and the cell values length is 40.
+#' Override with \code{options(vlkr.trunc.columns=20)} and
+#'  \code{options(vlkr.trunc.cells=20)}.
+#'
+#' @keywords internal
+#'
+#' @param df A data frame or tibble.
+#' @return A data fram with shortened column names and cell content.
+.knit_shorten <- function(df) {
+
+  max_name <- dplyr::coalesce(getOption("vlkr.trunc.columns"), VLKR_TAB_TRUNC_COLUMNS)
+  max_char <- dplyr::coalesce(getOption("vlkr.trunc.cells"), VLKR_TAB_TRUNC_CELLS)
+
+  # Truncate column names
+  colnames(df) <- ifelse(
+    nchar(colnames(df)) > max_name,
+    paste0(substr(colnames(df), 1, max_name - 3), "..."),
+    colnames(df)
+  )
+
+  # Truncate long character or factor values
+
+  df <- lapply(df, function(x) {
+    if (is.character(x) || is.factor(x)) {
+      x <- as.character(x)
+      rows <- !is.na(x) & (nchar(x) > max_char)
+      x[rows] <- paste0(substr(x[rows], 1, max_char - 3), "...")
+    }
+    x
+  })
+
+  tibble::as_tibble(df)
 }
 
 #' Printing method for volker tables.

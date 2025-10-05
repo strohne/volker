@@ -12,6 +12,7 @@ model_metrics_tab(
   categorical,
   metric,
   interactions = NULL,
+  adjust = "fdr",
   labels = TRUE,
   clean = TRUE,
   ...
@@ -29,6 +30,11 @@ model_metrics_tab(
 \item{interactions}{A vector of interaction effects to calculate.
 Each interaction effect should be provided as multiplication of the variables.
 Example: \code{c(sd_gender * adopter)}.}
+
+\item{adjust}{Performing multiple significance tests inflates the alpha error.
+Thus, p values need to be adjusted according to the number of tests.
+Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

@@ -110,7 +110,7 @@ effect_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 
 data %>% 
   mutate(across(starts_with("cg_act_"), ~ ifelse(is.na(.), FALSE, TRUE))) %>% 
-  effect_counts(starts_with("cg_act_"), starts_with("cg_act_"))
+  effect_counts(starts_with("cg_act_"), starts_with("cg_act_"), method="npmi")
   
 ```
 

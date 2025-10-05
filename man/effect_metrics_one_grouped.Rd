@@ -9,6 +9,7 @@ effect_metrics_one_grouped(
   col,
   cross,
   method = "lm",
+  adjust = "fdr",
   labels = TRUE,
   clean = TRUE,
   ...
@@ -24,6 +25,11 @@ effect_metrics_one_grouped(
 \item{method}{A character vector of methods, e.g. c("t.test","lm").
 Supported methods are t.test (only valid if the cross column contains two levels)
 and lm (regression results).}
+
+\item{adjust}{Performing multiple significance tests inflates the alpha error.
+Thus, p values need to be adjusted according to the number of tests.
+Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

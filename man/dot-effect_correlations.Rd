@@ -10,6 +10,8 @@
   cross,
   method = "pearson",
   category = NULL,
+  test = TRUE,
+  adjust = "fdr",
   labels = TRUE
 )
 }
@@ -21,14 +23,20 @@
 \item{cross}{The columns holding metric values to correlate.}
 
 \item{method}{The output metrics, pearson = Pearson's R, spearman = Spearman's rho,
-cramer = Cramer's V.
+cramer = Cramer's V, npmi = Normalized Pointwise Mutual Information.
 The reported R square value is simply the square of Spearman's rho respective Pearson's r.}
 
 \item{category}{Calculating NPMI for multiple items requires a focus category.
 By default, for logical column types, only TRUE values are counted.
 For other column types, the first category is counted.
-Accepts both character and numeric values to override default counting behavior.
-Not implemented yet.}
+Accepts both character and numeric values to override default counting behavior.}
+
+\item{test}{Boolean, whether to perform significance tests (default = TRUE).}
+
+\item{adjust}{Performing multiple significance tests inflates the alpha error.
+Thus, p values need to be adjusted according to the number of tests.
+Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 }

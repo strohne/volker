@@ -2,19 +2,28 @@
 % Please edit documentation in R/clean.R
 \name{get_baseline}
 \alias{get_baseline}
-\title{Get a formatted baseline for removed zero, negative, and missing cases
-and include focus category information if present}
+\title{Get a formatted baseline from attributes of an object.}
 \usage{
-get_baseline(obj)
+get_baseline(obj, ignore = c())
 }
 \arguments{
-\item{obj}{An object with the missings and focus attributes.}
+\item{obj}{An object with supported attributes.}
+
+\item{ignore}{Characer vector of attributes to ignore.}
 }
 \value{
-A formatted message or NULL if missings and focus attributes are not present.
+A formatted message or NULL if none of the supported attributes is present.
 }
 \description{
-Get a formatted baseline for removed zero, negative, and missing cases
-and include focus category information if present
+The following attributes are considered:
+\itemize{
+\item cases: Number of cases.
+\item missing: Removed zero, negative, and missing cases.
+\item focus: Focus category.
+\item auto: The k value of cluster methods.
+\item reversed: A list of reversed items.
+\item split: Items that were split at the median.
+\item adjust: The adjustment method for p values.
+}
 }
 \keyword{internal}
