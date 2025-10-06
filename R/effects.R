@@ -283,11 +283,11 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
   # 2. NPMI
-  result_items <- .effect_npmi(data, {{ col }}, {{ cross }}, ...)
+  result_items <- get_npmi(data, {{ col }}, {{ cross }}, ...)
 
 
   # 3. Cramer's V
-  result_stats <- .effect_correl(
+  result_stats <- get_correlation(
     dplyr::pull(data, {{ col }}),
     dplyr::pull(data, {{ cross }}),
     method = "cramer"
@@ -456,7 +456,7 @@ effect_counts_items_grouped <- function(data, cols, cross, method = "cramer", ad
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
 
-  check_is_param(method, c("cramer"))
+  check_is_param(method, c("cramer", "npmi"))
 
 
   # 2. Calculate correlations
@@ -1327,7 +1327,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #' Calculate correlation and cooccurrence coefficients and test whether they are different from zero
 #'
 #' This function is used to calculate coefficients for all pairwise items
-#' by calling `.effect_correl()` on each combination of the items in the `cols`- by `cross`-parameter.
+#' by calling `get_correlation()` on each combination of the items in the `cols`- by `cross`-parameter.
 #'
 #' @keywords internal
 #'
@@ -1384,7 +1384,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
     dplyr::mutate(
       .test = purrr::pmap(
         list(.data$x, .data$y),
-        \(x, y) .effect_correl(data[[x]], data[[y]], method = method, category = category, test = test)
+        \(x, y) get_correlation(data[[x]], data[[y]], method = method, category = category, test = test)
       )
     )
 
@@ -1426,176 +1426,6 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 }
 
 
-#' Calculate correlation between two vectors
-#'
-#' @keywords internal
-#'
-#' @param x First vector
-#' @param y Second vector
-#' @param method One of "spearman" or "pearson" for metric vectors.
-#'               For catecorical vectors, use "cramer" or "npmi".
-#' @param category A vector of values to focus. Necessary for the npmi method only.
-#' @param test Boolean; whether to perform significance tests.
-#' @return The result of cor.test() for metric vectors, chisq.test for Cramer's V.
-.effect_correl <- function(x, y, method, category = NULL, test = TRUE) {
-
-  result <- list()
-
-  # TODO: round in print function, not here
-  if (method == "npmi") {
-
-    if (is.null(category)) {
-      stop("The npmi method needs a focus category, check your parameters.")
-    }
-
-    df <- data.frame(x = x, y = y)
-    npmi <- .effect_npmi(df, !!sym("x"), !!sym("y"), adjust = "none", test= test)
-    npmi <- npmi[as.character(npmi[[1]]) %in% category,, drop = FALSE]
-    npmi <- npmi[as.character(npmi[[2]]) %in% category,, drop = FALSE]
-    npmi <- npmi[,-c(1,2), drop = FALSE]
-    result <- as.list(npmi[1, , drop = TRUE])
-  }
-  else if (method == "cramer") {
-    contingency <- table(as.character(x), as.character(y))
-    n <- sum(contingency)
-    sr <- rowSums(contingency)
-    sc <- colSums(contingency)
-    E <- outer(sr, sc) / sum(contingency)
-    exact <- any(E < 5)
-    isdiag = sum(diag(contingency)) == n
-
-    if ((nrow(contingency) < 2) | (ncol(contingency) < 2)) {
-      fit <- list(statistic = NA, parameter = NA, p.value = NA)
-    } else {
-      fit <- stats::chisq.test(contingency, simulate.p.value = exact)
-    }
-
-
-    cells <- min(dim(contingency)[1], dim(contingency)[2]) - 1
-    cramer_v <- round(sqrt( (fit$statistic / n) / cells), 2)
-    cramer_v <- ifelse(isdiag, 1.0, cramer_v)
-
-    result <- list(
-      "Cramer's V" = round(cramer_v, 2),
-      "Chi-squared" = sprintf("%.2f", round(fit$statistic, 2)),
-      "n" = as.character(n),
-      "df" = as.character(fit$parameter),
-      "p"= fit$p.value
-    )
-  }
-
-
-  else if (method == "spearman") {
-    fit <- stats::cor.test(x, y, method = method, exact = FALSE)
-
-    result = list(
-      "Spearman's rho" = round(as.numeric(fit$estimate),2),
-       "R-squared" = round(as.numeric(fit$estimate^2),2),
-      n = length(x),
-      s = sprintf("%.2f", round(fit$statistic,2)),
-      p = fit$p.value
-    )
-
-  }
-  else {
-    fit <- stats::cor.test(x, y, method = method, exact = TRUE)
-
-    result = list(
-      "Pearson's r" = round(as.numeric(fit$estimate),2),
-      "R-squared" = round(as.numeric(fit$estimate^2),2),
-      n = sum(!is.na(x) & !is.na(y)),
-      "ci low" = round(as.numeric(fit$conf.int[1]),2),
-      "ci high" = round(as.numeric(fit$conf.int[2]),2),
-      df = as.numeric(fit$parameter),
-      t = ifelse(all(x == y), "Inf", sprintf("%.2f", round(as.numeric(fit$statistic),2))),
-      p = fit$p.value
-    )
-  }
-
-  return (result)
-}
-
-
-#' Calculate nmpi
-#'
-#' @keywords internal
-#'
-#' @param data A tibble.
-#' @param col The column holding factor values.
-#' @param cross The column to correlate.
-#' @param smoothing Add pseudocount. Calculate the pseudocount based on the number of trials
-#'        to apply Laplace's rule of succession.
-#' @param adjust Performing multiple significance tests inflates the alpha error.
-#'               Thus, p values need to be adjusted according to the number of tests.
-#'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
-#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
-#' @param test Boolean; whether to perform significance tests (default TRUE).
-#' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
-#' @return A volker tibble.
-#' @importFrom rlang .data
-.effect_npmi <- function(data, col, cross, smoothing = 0, adjust = "fdr", test = TRUE, ...) {
-
-  cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
-  cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
-
-  col_name <- names(cols_eval)[1]
-  cross_name <- names(cross_eval)[1]
-
-  # Calculate marginal probabilities
-  result <- data %>%
-    dplyr::count(.data[[col_name]], .data[[cross_name]]) %>%
-    #tidyr::complete({{ col }}, {{ cross }}, fill=list(n=0)) |>
-
-    dplyr::group_by(!!sym(col_name)) %>%
-    dplyr::mutate(.total_x = sum(.data$n)) %>%
-    dplyr::ungroup() %>%
-    dplyr::group_by(!!sym(cross_name)) %>%
-    dplyr::mutate(.total_y = sum(.data$n)) %>%
-    dplyr::ungroup()
-
-  # Calculate joint probablities
-  result <- result %>%
-    dplyr::mutate(
-      .total = sum(.data$n),
-      p_x = (.data$.total_x + smoothing) / (.data$.total + (dplyr::n_distinct(!!sym(col_name)) * smoothing)),
-      p_y = (.data$.total_y + smoothing) / (.data$.total + (dplyr::n_distinct(!!sym(cross_name)) * smoothing)),
-      p_xy = (.data$n + smoothing) / (.data$.total + dplyr::n_distinct(!!sym(col_name)) * smoothing + dplyr::n_distinct(!!sym(cross_name)) *  smoothing),
-
-      ratio = .data$p_xy / (.data$p_x * .data$p_y),
-      pmi = dplyr::case_when(
-        .data$p_xy == 0 ~ -Inf,
-        TRUE ~ log2(.data$ratio)
-      ),
-      npmi = dplyr::case_when(
-        .data$p_xy == 0 ~ -1,
-        TRUE ~ .data$pmi / -log2(.data$p_xy)
-      )
-    )
-
-  # Add exact fisher test
-  if (test) {
-    result <- result %>%
-      dplyr::rowwise() %>%
-      dplyr::mutate(
-        fisher_p = {
-          a <- .data$n
-          b <- .data$.total_x - .data$n
-          c <- .data$.total_y - .data$n
-          d <- .data$.total - a - b - c
-          tbl <- matrix(c(a, b, c, d), nrow = 2)
-          suppressWarnings(stats::fisher.test(tbl)$p.value)
-        }) %>%
-      dplyr::ungroup()
-
-    # Adjust and round
-    result <- result %>%
-      adjust_p("fisher_p", method = adjust, stars = "fisher_stars")
-  }
-  result <- dplyr::select(result, -tidyselect::all_of(c(".total",".total_x", ".total_y")))
-
-  result
-}
-
 #' Tidy lm results, replace categorical parameter names by their levels and add the reference level
 #'
 #' @keywords internal
@@ -1636,6 +1466,236 @@ tidy_lm_levels <- function(fit) {
 
   lm_tidy
 }
+
+#' Adjust p-values from multiple tests and optionally annotate significance stars
+#'
+#' @keywords internal
+#'
+#' @param df A data frame or tibble containing the column to adjust.
+#' @param col A tidyselect expression specifying the p-value column to adjust.
+#' @param method Character string specifying the p-value adjustment method.
+#'   See \code{\link[stats]{p.adjust}} for available methods.
+#' @param digits Integer; number of decimal places for rounding.
+#' @param stars Logical or character; if \code{TRUE}, add a "stars" column
+#'              with significance symbols (e.g., `"***"`, `"**"`, `"*"`)
+#'              based on the adjusted p-values.
+#'              If set to a character value it determines the new column name.
+#'
+#' @return A modified data frame with:
+#'   \itemize{
+#'     \item Adjusted p-values in the selected column.
+#'     \item (Optionally) a new column \code{stars} containing significance symbols.
+#'     \item An attribute \code{"adjust"} on the data frame storing the method.
+#'     \item A \code{"round"} attribute on the p-value column.
+#'   }
+adjust_p <- function(df, col, method = "fdr", digits = 3, stars = TRUE) {
+
+  col_eval <- tidyselect::eval_select(expr = enquo(col), data = df)
+  col_name <- names(col_eval)
+
+  if (length(col_name) != 1) {
+    stop("`col` must select exactly one column.")
+  }
+
+  # Adjust p-values
+  df[[col_name]] <- stats::p.adjust(df[[col_name]], method = method)
+  attr(df, "adjust") <- method
+
+  # Set 'round' attribute on p-value column
+  df <- .attr_setcolumn(df, !!sym(col_name), "round", digits)
+
+
+  # Optionally add significance stars
+  if (!isFALSE(stars)) {
+    if (!is.character(stars)) {
+      stars <- "stars"
+    }
+    df[[stars]] <- get_stars(df[[col_name]])
+  }
+
+  return(df)
+}
+
+
+#' Calculate correlation between two vectors
+#'
+#' @keywords internal
+#'
+#' @param x First vector
+#' @param y Second vector
+#' @param method One of "spearman" or "pearson" for metric vectors.
+#'               For catecorical vectors, use "cramer" or "npmi".
+#' @param category A vector of values to focus. Necessary for the npmi method only.
+#' @param test Boolean; whether to perform significance tests.
+#' @return The result of cor.test() for metric vectors, chisq.test for Cramer's V.
+get_correlation <- function(x, y, method, category = NULL, test = TRUE) {
+
+  result <- list()
+
+  # TODO: round in print function, not here
+  if (method == "npmi") {
+
+    if (is.null(category)) {
+      stop("The npmi method needs a focus category, check your parameters.")
+    }
+
+    df <- data.frame(x = x, y = y)
+    npmi <- get_npmi(df, !!sym("x"), !!sym("y"), category = category, adjust = "none", test= test)
+    result <- as.list(npmi[1, -c(1,2) , drop = TRUE])
+  }
+  else if (method == "cramer") {
+    contingency <- table(as.character(x), as.character(y))
+    n <- sum(contingency)
+    sr <- rowSums(contingency)
+    sc <- colSums(contingency)
+    E <- outer(sr, sc) / sum(contingency)
+    exact <- any(E < 5)
+    isdiag = sum(diag(contingency)) == n
+
+    if ((nrow(contingency) < 2) | (ncol(contingency) < 2)) {
+      fit <- list(statistic = NA, parameter = NA, p.value = NA)
+    } else {
+      fit <- stats::chisq.test(contingency, simulate.p.value = exact)
+    }
+
+
+    cells <- min(dim(contingency)[1], dim(contingency)[2]) - 1
+    cramer_v <- round(sqrt( (fit$statistic / n) / cells), 2)
+    cramer_v <- ifelse(isdiag, 1.0, cramer_v)
+
+    result <- list(
+      "Cramer's V" = round(cramer_v, 2),
+      "Chi-squared" = sprintf("%.2f", round(fit$statistic, 2)),
+      "n" = as.character(n),
+      "df" = as.character(fit$parameter),
+      "p"= fit$p.value
+    )
+  }
+
+  else if (method == "spearman") {
+    fit <- stats::cor.test(x, y, method = method, exact = FALSE)
+
+    result = list(
+      "Spearman's rho" = round(as.numeric(fit$estimate),2),
+      "R-squared" = round(as.numeric(fit$estimate^2),2),
+      n = length(x),
+      s = sprintf("%.2f", round(fit$statistic,2)),
+      p = fit$p.value
+    )
+
+  }
+  else {
+    fit <- stats::cor.test(x, y, method = method, exact = TRUE)
+
+    result = list(
+      "Pearson's r" = round(as.numeric(fit$estimate),2),
+      "R-squared" = round(as.numeric(fit$estimate^2),2),
+      n = sum(!is.na(x) & !is.na(y)),
+      "ci low" = round(as.numeric(fit$conf.int[1]),2),
+      "ci high" = round(as.numeric(fit$conf.int[2]),2),
+      df = as.numeric(fit$parameter),
+      t = ifelse(all(x == y), "Inf", sprintf("%.2f", round(as.numeric(fit$statistic),2))),
+      p = fit$p.value
+    )
+  }
+
+  return (result)
+}
+
+#' Calculate nmpi
+#'
+#' @keywords internal
+#'
+#' @param data A tibble.
+#' @param col The column holding factor values.
+#' @param cross The column to correlate.
+#' @param category A vector of values to focus. If not null, all other values will be removed from the result.
+#' @param smoothing Add pseudocount. Calculate the pseudocount based on the number of trials
+#'        to apply Laplace's rule of succession.
+#' @param adjust Performing multiple significance tests inflates the alpha error.
+#'               Thus, p values need to be adjusted according to the number of tests.
+#'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
+#' @param test Boolean; whether to perform significance tests (default TRUE).
+#' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
+#' @return A volker tibble.
+#' @importFrom rlang .data
+get_npmi <- function(data, col, cross, category = NULL, smoothing = 0, adjust = "fdr", test = TRUE, ...) {
+
+  cols_eval <- tidyselect::eval_select(expr = enquo(col), data = data)
+  cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
+
+  col_name <- names(cols_eval)[1]
+  cross_name <- names(cross_eval)[1]
+
+  # Calculate marginal probabilities
+  result <- data %>%
+    dplyr::count(.data[[col_name]], .data[[cross_name]]) %>%
+    #tidyr::complete({{ col }}, {{ cross }}, fill=list(n=0)) |>
+
+    dplyr::group_by(!!sym(col_name)) %>%
+    dplyr::mutate(.total_x = sum(.data$n)) %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(!!sym(cross_name)) %>%
+    dplyr::mutate(.total_y = sum(.data$n)) %>%
+    dplyr::ungroup()
+
+  # Calculate joint probablities
+  result <- result %>%
+    dplyr::mutate(
+      .total = sum(.data$n),
+      p_x = (.data$.total_x + smoothing) / (.data$.total + (dplyr::n_distinct(!!sym(col_name)) * smoothing)),
+      p_y = (.data$.total_y + smoothing) / (.data$.total + (dplyr::n_distinct(!!sym(cross_name)) * smoothing)),
+      p_xy = (.data$n + smoothing) / (.data$.total + dplyr::n_distinct(!!sym(col_name)) * smoothing + dplyr::n_distinct(!!sym(cross_name)) *  smoothing),
+      p_x_if_y = .data$n / .data$.total_y,
+      p_y_if_x = .data$n / .data$.total_x,
+
+      ratio = .data$p_xy / (.data$p_x * .data$p_y),
+      pmi = dplyr::case_when(
+        .data$p_xy == 0 ~ -Inf,
+        TRUE ~ log2(.data$ratio)
+      ),
+      npmi = dplyr::case_when(
+        .data$p_xy == 0 ~ -1,
+        TRUE ~ .data$pmi / -log2(.data$p_xy)
+      )
+    )
+
+  # Filter out categories
+  if (!is.null(category)) {
+    result <- result[as.character(result[[1]]) %in% category,, drop = FALSE]
+    result <- result[as.character(result[[2]]) %in% category,, drop = FALSE]
+  }
+
+  # Add exact fisher test
+  if (test & (nrow(result) > 0)) {
+    result <- result %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(
+        fisher_p = {
+          a <- .data$n
+          b <- .data$.total_x - .data$n
+          c <- .data$.total_y - .data$n
+          d <- .data$.total - a - b - c
+          tbl <- matrix(c(a, b, c, d), nrow = 2)
+          suppressWarnings(stats::fisher.test(tbl)$p.value)
+        }) %>%
+      dplyr::ungroup()
+
+    # Adjust and round
+    result <- result %>%
+      adjust_p("fisher_p", method = adjust, stars = "fisher_stars")
+  }
+  else if (test & (nrow(result) == 0)) {
+    result$fisher_p <- NA
+    result$fisher_stars <- NA
+  }
+
+  result <- dplyr::select(result, -tidyselect::all_of(c(".total",".total_x", ".total_y")))
+
+  result
+}
+
 
 #' Calculate Eta squared
 #'
@@ -1710,52 +1770,4 @@ get_stars <- function(x) {
   })
 }
 
-#' Adjust p-values from multiple tests and optionally annotate significance stars
-#'
-#' @keywords internal
-#'
-#' @param df A data frame or tibble containing the column to adjust.
-#' @param col A tidyselect expression specifying the p-value column to adjust.
-#' @param method Character string specifying the p-value adjustment method.
-#'   See \code{\link[stats]{p.adjust}} for available methods.
-#' @param digits Integer; number of decimal places for rounding.
-#' @param stars Logical or character; if \code{TRUE}, add a "stars" column
-#'              with significance symbols (e.g., `"***"`, `"**"`, `"*"`)
-#'              based on the adjusted p-values.
-#'              If set to a character value it determines the new column name.
-#'
-#' @return A modified data frame with:
-#'   \itemize{
-#'     \item Adjusted p-values in the selected column.
-#'     \item (Optionally) a new column \code{stars} containing significance symbols.
-#'     \item An attribute \code{"adjust"} on the data frame storing the method.
-#'     \item A \code{"round"} attribute on the p-value column.
-#'   }
-adjust_p <- function(df, col, method = "fdr", digits = 3, stars = TRUE) {
-
-  col_eval <- tidyselect::eval_select(expr = enquo(col), data = df)
-  col_name <- names(col_eval)
-
-  if (length(col_name) != 1) {
-    stop("`col` must select exactly one column.")
-  }
-
-  # Adjust p-values
-  df[[col_name]] <- stats::p.adjust(df[[col_name]], method = method)
-  attr(df, "adjust") <- method
-
-  # Set 'round' attribute on p-value column
-  df <- .attr_setcolumn(df, !!sym(col_name), "round", digits)
-
-
-  # Optionally add significance stars
-  if (!isFALSE(stars)) {
-    if (!is.character(stars)) {
-      stars <- "stars"
-    }
-    df[[stars]] <- get_stars(df[[col_name]])
-  }
-
-  return(df)
-}
 

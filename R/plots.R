@@ -350,9 +350,15 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #' @param width By default, when setting the prop parameter to "rows" or "cols",
 #'              the bar or column width reflects the number of cases.
 #'              You can disable this behavior by setting width to FALSE.
+#' @param tiles Set tiles to `TRUE` to generate a heatmap with case numbers or npmi values see the npmi-parameter.
+#' @param tiles Set npmi to `TRUE` to generate a heatmap based on npmi values. Only valid in combination with tiles = TRUE.
 #' @param limits The scale limits, autoscaled by default.
 #'               Set to \code{c(0,100)} to make a 100 % plot.
-#' @param numbers The numbers to print on the bars or tiles: "n" (frequency), "p" (percentage) or both.
+#' @param numbers The numbers to print on the bars or tiles, a vector with one or more of:
+#'                - "n" (frequency),
+#'                - "p" (percentage)
+#'                - "npmi" (normalized pointwise mutual information)
+#'                - "stars" (significance stars of a fisher test)
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -367,12 +373,12 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "total", width = NULL, limits = NULL, ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "total", width = NULL, tiles = FALSE, npmi = FALSE, limits = NULL, ordered = NULL, numbers = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
-  check_is_param(prop, c("total", "cells", "rows", "cols"))
-  check_is_param(numbers, c("n", "p"), allowmultiple = TRUE, allownull = TRUE)
+  check_is_param(prop, c("total", "rows", "cols"))
+  check_is_param(numbers, c("n", "p", "npmi", "stars"), allowmultiple = TRUE, allownull = TRUE)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -391,17 +397,12 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
   }
 
   # 3. Calculate data
-  result <- data %>%
-    dplyr::count({{ col }}, {{ cross }})
+  result <- get_npmi(data, {{ col }}, {{ cross }}, test = "stars" %in% numbers)
 
   if ((prop == "rows") || (prop == "cols")) {
-    result <- result %>%
-      dplyr::group_by({{ col }}) %>%
-      dplyr::mutate(p = (.data$n / sum(.data$n)) * 100) %>%
-      dplyr::ungroup()
+    result$p <- result$p_y_if_x * 100
   } else {
-    result <- result %>%
-      dplyr::mutate(p = (.data$n / sum(.data$n)) * 100)
+    result$p <- result$p_xy  * 100
   }
 
 
@@ -425,19 +426,30 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
   lastcategory <- ifelse(scale > 0, categories[1], categories[length(categories)])
 
   # Select numbers to print on the bars
-  # ...omit the last category in scales, omit small bars
-
-
   result <- result %>%
+    dplyr::rowwise() %>%
     dplyr::mutate(
-      .values = dplyr::case_when(
-        (prop != "cells") & (is.null(category)) & (scale != 0) & (lastcategory == .data$value) ~ "",
-        (prop != "cells") & (.data$p < VLKR_LOWPERCENT) ~ "",
-        all(numbers == "n") ~ as.character(.data$n),
-        all(numbers == "p") ~ paste0(round(.data$p, 0), "%"),
-        TRUE ~ paste0(.data$n, "\n", round(.data$p, 0), "%")
+      .values = {
+        parts <- list()
+        if ("n" %in% numbers) parts <- c(parts, as.character(.data$n))
+        if ("p" %in% numbers) parts <- c(parts, paste0(round(.data$p, 0), "%"))
+        if ("npmi" %in% numbers) parts <- c(parts, sprintf("%.2f", .data$npmi))
+        if ("stars" %in% numbers) parts <- c(parts, .data$fisher_stars)
+        paste(parts, collapse = "\n")
+      }
+    ) %>%
+    # ...omit the last category in scales, omit small bars
+    dplyr::mutate(
+      .values = dplyr::if_else(
+        (!tiles) & (
+          (is.null(category) & (scale != 0) & (lastcategory == .data$value)) |
+          (.data$p < VLKR_LOWPERCENT)
+          ),
+        "",
+        .data$.values
       )
-    )
+    ) %>%
+    dplyr::ungroup()
 
   # Calculate bar / col width
   if (!is_logical(width)) {
@@ -445,11 +457,8 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
   }
   if (width) {
     result <- result %>%
-      dplyr::group_by(.data$item) %>%
-      dplyr::mutate(n_item = sum(.data$n)) %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(p_item = (.data$n_item / sum(.data$n)) * 100) %>%
-      dplyr::mutate(.values = ifelse(.data$p_item < VLKR_LOWPERCENT, "", .data$.values))
+      dplyr::mutate(w = .data$p_x * 100) %>%
+      dplyr::mutate(.values = ifelse(.data$w < VLKR_LOWPERCENT, "", .data$.values))
   }
 
   # Get title
@@ -486,11 +495,11 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
   base_n <- nrow(data)
   result <- .attr_transfer(result, data, c("missings","cases"))
 
-  result <- dplyr::select(result, tidyselect::all_of(c("item","value","n", "p", ".values")))
+  result <- dplyr::select(result, tidyselect::any_of(c("item","value","n", "p", "w", "npmi", ".values")))
 
 
-  if (prop == "cells") {
-
+  # Heatmap
+  if (tiles) {
 
     result <- tidyr::complete(result, .data$item, .data$value, fill = list(n = 0, p = 0, .values = "0"))
 
@@ -504,7 +513,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
 
     .plot_heatmap(
       result,
-      values_col = "n",
+      values_col = ifelse(npmi, "npmi", "n"),
       numbers_col = ".values",
       labels = TRUE,
       base =   paste0("n=", base_n),
@@ -512,6 +521,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
     )
   }
 
+  # Bar plot
   else {
     .plot_bars(
       result,
@@ -1058,7 +1068,7 @@ plot_metrics_one <- function(data, col, ci = FALSE, box = FALSE, limits = NULL, 
   }
 
   # Extract the maximum density value
-  max_density <- .density_mode(data, {{ col }})
+  max_density <- .get_density_mode(data, {{ col }})
 
   # TODO: make configurable: density, boxplot or histogram
   pl <- data %>%
@@ -1712,13 +1722,13 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #'
 #' @keywords internal
 #'
-#' @param data Data frame with the columns item, value, p, n and optionally p_item.
-#'             If p_item is provided, the column width is generated according the p_item value, resulting in a mosaic plot.
+#' @param data Data frame with the columns item, value, p, n and optionally w
+#'             If w is provided, the column width is generated according the w value, resulting in a mosaic plot.
 #' @param category Optionally, a category to focus. All rows not matching the category will be filtered out.
 #' @param ci Whether to plot error bars for 95% confidence intervals. Provide the columns ci.low and ci.high in data.
 #' @param scale Direction of the scale: 0 = no direction for categories,
 #'              -1 = descending or 1 = ascending values.
-#' @param numbers The values to print on the bars: "n" (frequency), "p" (percentage) or both.
+#' @param numbers Set to something that evaluates to TRUE and add the .values column to the data frame to ouput values on the bars.
 #' @param orientation Whether to show bars (horizontal) or columns (vertical)
 #' @param base The plot base as character or NULL.
 #' @param title The plot title as character or NULL.
@@ -1758,10 +1768,10 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   }
 
   # Calculate bar width
-  width <- "p_item" %in% colnames(data)
+  width <- "w" %in% colnames(data)
   if (width) {
     pl <- data %>%
-      dplyr::mutate(width = .data$p_item / max(.data$p_item) * 0.95) |>
+      dplyr::mutate(width = .data$w / max(.data$w) * 0.95) |>
       ggplot2::ggplot(ggplot2::aes(
         x = .data$item,
         y = .data$p / 100,
@@ -2299,23 +2309,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   )
 }
 
-#' Get the maximum density value in a density plot
-#'
-#' Useful for placing geoms in the center of density plots
-#'
-#' @keywords internal
-#'
-#' @param data A tibble.
-#' @param col A tidyselect column.
-#' @return The maximum density value.
-.density_mode <- function(data, col) {
-  pl <- data %>%
-    ggplot2::ggplot(ggplot2::aes({{ col }})) +
-    ggplot2::geom_density() +
-    ggplot2::theme_void()
-
-  ggplot2::ggplot_build(pl)$data[[1]]$y %>% max()
-}
 
 #' Add the volker class and options
 #'
@@ -2421,6 +2414,24 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   }
 
   pl
+}
+
+#' Get the maximum density value in a density plot
+#'
+#' Useful for placing geoms in the center of density plots
+#'
+#' @keywords internal
+#'
+#' @param data A tibble.
+#' @param col A tidyselect column.
+#' @return The maximum density value.
+.get_density_mode <- function(data, col) {
+  pl <- data %>%
+    ggplot2::ggplot(ggplot2::aes({{ col }})) +
+    ggplot2::geom_density() +
+    ggplot2::theme_void()
+
+  ggplot2::ggplot_build(pl)$data[[1]]$y %>% max()
 }
 
 #' Guess plot limits from values

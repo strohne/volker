@@ -45,6 +45,6 @@ A tibble with correlation results.
 }
 \description{
 This function is used to calculate coefficients for all pairwise items
-by calling \code{.effect_correl()} on each combination of the items in the \code{cols}- by \code{cross}-parameter.
+by calling \code{get_correlation()} on each combination of the items in the \code{cols}- by \code{cross}-parameter.
 }
 \keyword{internal}

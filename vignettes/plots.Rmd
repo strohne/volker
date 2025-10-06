@@ -58,8 +58,12 @@ plot_counts(data, sd_gender)
 # The numbers parameter adds percentages to the bars.
 plot_counts(data, adopter, sd_gender, prop = "cols", numbers = "p")
 
-# The prop=cells parameter generates a heatmap
-plot_counts(data, sd_gender, adopter, prop = "cells", numbers="p")
+# The tiles=TRUE parameter generates a heatmap,
+# the npmi=TRUE parameter uses npmi values as base,
+# significance stars of a value-wise fisher test 
+# are added by including "stars" in the numbers parameter.
+plot_counts(data, sd_gender, adopter, tiles = TRUE, npmi = TRUE, numbers=c("n", "stars"))
+
 
 ```
 
@@ -91,11 +95,11 @@ data |>
 ### 6. Correlation of categorical items with categorical items
 ```{r}
 
-plot_counts(data, starts_with("cg_adoption"), starts_with("cg_adoption"), method="cramer")
+plot_counts(data, starts_with("cg_adoption_advantage"), starts_with("cg_adoption_social"), method="cramer")
 
 data %>% 
   mutate(across(starts_with("cg_act_"), ~ ifelse(is.na(.), FALSE, TRUE))) %>% 
-  plot_counts(starts_with("cg_act_"), starts_with("cg_act_"), method="npmi", effect = TRUE)
+  plot_counts(starts_with("cg_act_"), starts_with("cg_act_"), method="npmi")
 
 ```
 
