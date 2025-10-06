@@ -426,6 +426,33 @@ data_round <- function(data, cols, digits) {
   data
 }
 
+#' One-hot encode selected columns
+#'
+#' @keywords internal
+
+#' @param data A data frame or tibble.
+#' @param ... Tidyselect expressions specifying columns to one-hot encode
+#'
+#' @return Data frame with one hot encoded data
+data_onehot <- function(data, ...) {
+
+  cols_eval <- tidyselect::eval_select(expr = rlang::expr(c(...)), data = data)
+  selected_cols <- names(cols_eval)
+
+  df_selected <- data[, selected_cols, drop = FALSE]
+
+  df_selected[] <- lapply(df_selected, function(x) paste0("_", as.character(x)))
+  mm <- model.matrix(~ . - 1, data = df_selected)
+  mm <- mm == 1
+
+  mm <- dplyr::bind_cols(
+    dplyr::select(data, -dplyr::all_of(selected_cols)),
+    as.data.frame(mm)
+  )
+
+  mm
+}
+
 #' Get a formatted baseline from attributes of an object.
 #'
 #' The following attributes are considered:
