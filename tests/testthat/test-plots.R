@@ -69,8 +69,23 @@ if (Sys.getenv("R_LOCALTESTS") == "1") {
         plot_counts(adopter, sd_gender, prop = "cols")
     })
 
+
+    expect_doppelganger("plot_counts_one_cor", {
+      plot_counts_one_cor(data, adopter, sd_age)
+    })
+
+    expect_doppelganger("plot_counts_one_cor with rows props", {
+      plot_counts_one_cor(data, adopter, sd_age, prop = "rows")
+    })
+
+
     expect_doppelganger("plot_counts_items", {
       plot_counts(data, starts_with("cg_adoption_"), numbers = "p")
+    })
+
+    expect_doppelganger("plot_counts_items with binary data", {
+      data |> mutate(across(starts_with("cg_adoption_advantage"), \(x) x > 3)) |>
+        plot_counts(starts_with("cg_adoption_advantage"))
     })
 
     expect_doppelganger("plot_counts_items_grouped", {
@@ -80,18 +95,7 @@ if (Sys.getenv("R_LOCALTESTS") == "1") {
       )
     })
 
-    expect_doppelganger("plot_counts_items with binary data", {
-      data |> mutate(across(starts_with("cg_adoption_advantage"), \(x) x > 3)) |>
-        plot_counts(starts_with("cg_adoption_advantage"))
-    })
-
-    expect_doppelganger("plot_counts_one_cor", {
-      plot_counts_one_cor(data, adopter, sd_age)
-    })
-
-    expect_doppelganger("plot_counts_one_cor with rows props", {
-      plot_counts_one_cor(data, adopter, sd_age, prop = "rows")
-    })
+    # TODO: Add plot_counts_items_grouped_items
 
     expect_doppelganger("plot_counts_items_cor", {
       plot_counts_items_cor(
@@ -194,24 +198,7 @@ if (Sys.getenv("R_LOCALTESTS") == "1") {
         plot_metrics(sd_age, sd_gender)
     })
   })
-#
-#   test_that("boxplot renders as expected", {
-#
-#     p <- plot_metrics(data, sd_age, box = T)
-#     expect_doppelganger("Univariable box plot", p)
-#   })
-#
-#   test_that("Univariable denisity plot with CI", {
-#
-#     p <- plot_metrics(data, sd_age, ci = TRUE)
-#     expect_doppelganger("Univariable density plot with CI", p)
-#   })
-#
-#   test_that("univariable bar plot with CI renders as expected", {
-#
-#     p <- plot_counts(data, sd_gender, ci = TRUE)
-#     expect_doppelganger("Univariable bar plot with CI", p)
-#   })
+
 
 } else {
   skip("R_LOCALTESTS not set; skipping visual tests.")
