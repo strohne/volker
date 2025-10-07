@@ -34,7 +34,7 @@ Example: \code{c(sd_gender * adopter)}.}
 \item{adjust}{Performing multiple significance tests inflates the alpha error.
 Thus, p values need to be adjusted according to the number of tests.
 Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
-e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".}
+e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
@@ -49,6 +49,10 @@ A volker list object containing volker tables with the requested statistics.
 The regression output comes from \code{stats::\link[stats:lm]{lm}}.
 The effect sizes are calculated by \code{heplots::\link[heplots:etasq]{etasq}}.
 The variance inflation is calculated by \code{car::\link[car:vif]{vif}}.
+The standardized beta (in the column standard beta) is calculated by
+multiplying the estimate with the ratio \code{x_sd / y_sd} where x_sd contains
+the standard deviation of the predictor values and y_sd the standard deviation of
+the predicted value.
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }

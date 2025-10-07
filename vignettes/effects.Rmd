@@ -81,7 +81,7 @@ data %>%
 
 ## 2. Cross table
 ```{r}
-# TODO: Output a heatmap with npmi values
+
 effect_counts(data, adopter, sd_gender)
 
 ```

@@ -30,7 +30,7 @@ to apply Laplace's rule of succession.}
 \item{adjust}{Performing multiple significance tests inflates the alpha error.
 Thus, p values need to be adjusted according to the number of tests.
 Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
-e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".}
+e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.}
 
 \item{test}{Boolean; whether to perform significance tests (default TRUE).}
 

@@ -56,8 +56,7 @@ For ordered values, shades of the VLKR_FILLGRADIENT option are used.}
 \item{numbers}{The numbers to print on the bars or tiles, a vector with one or more of:
 - "n" (frequency),
 - "p" (percentage)
-- "npmi" (normalized pointwise mutual information)
-- "stars" (significance stars of a fisher test)}
+- "npmi" (normalized pointwise mutual information)}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

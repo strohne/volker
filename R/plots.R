@@ -358,7 +358,6 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #'                - "n" (frequency),
 #'                - "p" (percentage)
 #'                - "npmi" (normalized pointwise mutual information)
-#'                - "stars" (significance stars of a fisher test)
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -378,7 +377,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
   check_is_param(prop, c("total", "rows", "cols"))
-  check_is_param(numbers, c("n", "p", "npmi", "stars"), allowmultiple = TRUE, allownull = TRUE)
+  check_is_param(numbers, c("n", "p", "npmi"), allowmultiple = TRUE, allownull = TRUE)
 
   if (nrow(data) == 0) {
     return(NULL)
@@ -918,7 +917,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, limits
 #' @param cross Tidyselect item variables (e.g. starts_with...).
 #' @param method The method of correlation calculation:
 #' - `cramer` for Cramer's V,
-#' - `npmi` for Normalized Pointwise Mutual Information. Not implemented yet.
+#' - `npmi` for Normalized Pointwise Mutual Information.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1710,8 +1709,11 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 
   values_col <- map_label(method, list("spearman"="Spearman's rho", "pearson" = "Pearson's r"))
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, test = FALSE, labels = labels)
+
   .plot_heatmap(
-    result, values_col, values_col,
+    result,
+    values_col,
+    values_col,
     get_baseline(result, ignore = "adjust"),
     title, labels
   )

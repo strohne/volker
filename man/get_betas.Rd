@@ -7,7 +7,7 @@
 get_betas(fit)
 }
 \arguments{
-\item{model}{A model fitted with lm()}
+\item{fit}{A model fitted with lm()}
 }
 \value{
 A data frame with a row for each term

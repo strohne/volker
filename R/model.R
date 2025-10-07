@@ -5,6 +5,10 @@
 #' The regression output comes from \code{stats::\link[stats:lm]{lm}}.
 #' The effect sizes are calculated by \code{heplots::\link[heplots:etasq]{etasq}}.
 #' The variance inflation is calculated by \code{car::\link[car:vif]{vif}}.
+#' The standardized beta (in the column standard beta) is calculated by
+#' multiplying the estimate with the ratio `x_sd / y_sd` where x_sd contains
+#' the standard deviation of the predictor values and y_sd the standard deviation of
+#' the predicted value.
 #'
 #' `r lifecycle::badge("experimental")`
 #'
@@ -20,7 +24,7 @@
 #' @param adjust Performing multiple significance tests inflates the alpha error.
 #'               Thus, p values need to be adjusted according to the number of tests.
 #'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
-#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -228,10 +232,10 @@ model_metrics_plot <- function(data, col, categorical, metric, interactions = NU
 
     result <- c(
       result,
-      residuals = list(.to_vlkr_plot(diagnostics_resid_fitted(fit))),
-      qq =        list(.to_vlkr_plot(diagnostics_qq(fit))),
-      location =  list(.to_vlkr_plot(diagnostics_scale_location(fit))),
-      cooksd =    list(.to_vlkr_plot(diagnostics_cooksd(fit)))
+      residuals = list(.to_vlkr_plot(diagnostics_resid_fitted(fit), rows=8)),
+      qq =        list(.to_vlkr_plot(diagnostics_qq(fit), rows=8)),
+      location =  list(.to_vlkr_plot(diagnostics_scale_location(fit), rows=8)),
+      cooksd =    list(.to_vlkr_plot(diagnostics_cooksd(fit), rows=4))
     )
   }
 

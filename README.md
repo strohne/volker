@@ -177,7 +177,7 @@ Note: Some column combinations are not implemented yet.
 
 ## Effect sizes and statistical tests
 
-You can calculate effect sizes and conduct basic statistical tests using
+Calculate effect sizes and conduct basic statistical tests using
 `effect_counts()` and `effect_metrics()`. Effect calculation is included
 in the reports if you request it by the effect-parameter, for example:
 
@@ -237,9 +237,25 @@ ds |>
    use_work, 
    cross = c(sd_gender, adopter), 
    metric = sd_age,
-   model = TRUE
+   model = TRUE, diagnostics = TRUE
  )
 ```
+
+Four selected diagnostic plots are generated if the
+diagnostics-parameter is TRUE:
+
+- Residual vs. fitted: Residuals should be evenly distributed
+  vertically. Horizontally, they should follow the straight line.
+  Otherwise this could be an indicator for heteroscedasticity,
+  non-linearity or auto-correlationb.
+- Scale-location plot: Points should be evenly distributed, without a
+  pattern, as in the residual plot.
+- Q-Q-Plot of fitted values: All dots should be located on a straight
+  line. Otherweise, this may indicate non-linearity or that residuals
+  are not normally distributed.
+- Cooks’ distance plot: High values indicate that single cases influence
+  the model disproportionally. Rule of thumb: Cook’s distance \> 1 is a
+  problem.
 
 To work with the predicted values, use add_model() instead of the report
 function. This will add a new variable prefixes with `prd_` holding the
@@ -262,6 +278,77 @@ column:
 model_tab(ds, prd_use_work)
 model_plot(ds, prd_use_work)
 ```
+
+By default, p values are adjusted to the number of tests by controlling
+the false discovery rate (fdr). Set the adjust-parameter to FALSE for
+disabling p correction.
+
+## Reliability scores (and classification performance indicators)
+
+In content analysis, reliability is usually checked by coding the cases
+with different persons and then calculating the overlap. To calculate
+reliability scores, prepare one data frame for each person:
+
+- All column names in the different data frames should be identical.  
+  Codings must be either binary (TRUE/FALSE) or contain a fixed number
+  of values such as “sports”, “politics”, “weather”.  
+- Add a column holding initials or the name of the coder.  
+- One column must contain unique IDs for each case, e.g. a running case
+  number.
+
+Next, you row bind the data frames. The columns for coder and ID make
+sure that each coding is uniquely identified and can be related to the
+cases and coders.
+
+    data_coded <-  bind_rows(
+      data_coder1,
+      data_coder2
+    )
+
+The final data, for example, looks like:
+
+| case | coder | topic_sports | topic_weather |
+|------|-------|--------------|---------------|
+| 1    | anne  | TRUE         | FALSE         |
+| 2    | anne  | TRUE         | FALSE         |
+| 3    | anne  | FALSE        | TRUE          |
+| 1    | ben   | TRUE         | TRUE          |
+| 2    | ben   | TRUE         | FALSE         |
+| 3    | ben   | FALSE        | TRUE          |
+
+Calculating reliability is straight forward with report_counts():
+
+- Provide the data to the first parameter.  
+- Add the column with codings (or a selection of multiple columns,
+  e.g. using `starts_with()`) to the second parameter.  
+- Set the the third parameter to the column name with coder names or
+  initials.  
+- Set the ids-parameter to the column that contains case IDs or case
+  numbers (this tells the volker-package which cases belong together).  
+- Set the agree-parameter to “reliability” to request reliability
+  scores.
+
+Example:
+
+    report_counts(data_coded, starts_with("topic_"), coder, ids = case, prop="cols", agree = "reliability")
+
+Alternatively, if you are only interested in the scores, not a plot, you
+get them using agree_tab. Hint: You may abbreviate the reliability
+value.
+
+    agree_tab(data_coded, starts_with("topic_"), coder, ids = case, method="reli")
+
+Further, you can request classification performance indicators
+(accuracy, precision, recall, F1) with the same function by setting the
+method to “classification” (may be abbreviated). Use this option if you
+compare manual codings to automated codings (classifiers, large language
+models). By default, you get macro statistics (average precision, recall
+and f1 over categories).
+
+Give you have multiple values in on column, you may focus one category
+to get micro statistics:
+
+    agree_tab(starts_with("topic_"), coder, ids = case, method = "class", category = "catcontent")
 
 ## Where do all the labels go?
 
@@ -438,7 +525,20 @@ the specific function.
   as Cramer’s v or R squared and generates typical statistical tests
   such as Chi-squared tests and t-tests.
 - **method**: By default, correlations are calculated using Pearson’s R.
-  You can choose Spearman’s Rho with the methods-parameter.
+  You can choose Spearman’s Rho with the methods-parameter. For
+  cooccurrence analysis of categories (you provide two variable sets to
+  `report_counts()`), you can choose between Cramer’s V (items are
+  compared with items) or NPMI (the single item values are compared). In
+  this case, we recommend to also set the tiles-parameter to TRUE for
+  generating a heatmap (the default are bar plots). Normalized pointwise
+  mutual information helps spotting combinations that are more rare
+  (negative values) or more frequent (positive values) than expected by
+  chance. You can add “npmi” to the numbers parameter to plot the values
+  on the tiles.
+- **adjust**: Performing multiple significance tests inflates the alpha
+  error. Thus, p values need to be adjusted according to the number of
+  tests. By default, the false discovery rate is controlled (fdr). You
+  can, for example, choose Bonferroni-correction or disable correction.
 
 ### Labeling
 
@@ -482,6 +582,8 @@ the specific function.
 - **width**: In stacked plots with column or row proportions, by
   default, the column or bar widths mirror the group size. Set to FALSE
   to produce equal widths.
+- **tiles**: The default plot for two categorical variables is a bar
+  plot. Alternatively, generate a heat map.
 
 ## Installation
 

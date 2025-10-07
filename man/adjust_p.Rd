@@ -12,7 +12,7 @@ adjust_p(df, col, method = "fdr", digits = 3, stars = TRUE)
 \item{col}{A tidyselect expression specifying the p-value column to adjust.}
 
 \item{method}{Character string specifying the p-value adjustment method.
-See \code{\link[stats]{p.adjust}} for available methods.}
+See \code{\link[stats]{p.adjust}} for available methods. Disable adjustment with FALSE.}
 
 \item{digits}{Integer; number of decimal places for rounding.}
 

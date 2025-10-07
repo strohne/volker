@@ -26,7 +26,7 @@ plot_counts_items_grouped_items(
 \item{method}{The method of correlation calculation:
 \itemize{
 \item \code{cramer} for Cramer's V,
-\item \code{npmi} for Normalized Pointwise Mutual Information. Not implemented yet.
+\item \code{npmi} for Normalized Pointwise Mutual Information.
 }}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.

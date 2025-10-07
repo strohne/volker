@@ -278,7 +278,7 @@
       |:-----------------------|------------------:|---:|-----------:|
       |in professional context | in private context| 101|        0.37|
       
-      n=101. Adjusted significance p values with fdr method.
+      n=101.
       
 
 # Correlations with two variables with no common prefix
@@ -292,7 +292,7 @@
       |:------|-------------------------:|---:|-----------:|
       |Age    | Usage: in private context| 101|       -0.19|
       
-      n=101. Adjusted significance p values with fdr method.
+      n=101.
       
 
 # Correlation with two variables and ci
@@ -306,7 +306,7 @@
       |:-----------------------|------------------:|---:|-----------:|------:|-------:|
       |in professional context | in private context| 101|        0.37|   0.19|    0.53|
       
-      n=101. Adjusted significance p values with fdr method.
+      n=101.
       
 
 # Correlation with two variables and spearman
@@ -320,7 +320,7 @@
       |:-----------------------|------------------:|---:|--------------:|
       |in professional context | in private context| 101|           0.33|
       
-      n=101. Adjusted significance p values with fdr method.
+      n=101.
       
 
 # Distribution table for multiple metric items
@@ -1006,7 +1006,7 @@
       |:------|------:|--:|-----------:|
       |f2     |     gr|  3|           1|
       
-      n=5. 2 case(s) with missing values. Adjusted significance p values with fdr method.
+      n=5. 2 case(s) with missing values.
       
 
 # Missing values are skipped in item correlations with another variable
@@ -1038,7 +1038,7 @@
       |f2     |     gr|  4|           1|
       |f3     |     gr|  3|           1|
       
-      n=6. 4 case(s) with missing values. Adjusted significance p values with fdr method.
+      n=6. 4 case(s) with missing values.
       
 
 # Missing values are skipped in item correlations with items

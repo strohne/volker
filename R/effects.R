@@ -284,6 +284,8 @@ effect_counts_one_grouped <- function(data, col, cross, clean = TRUE, ...) {
 
   # 2. NPMI
   result_items <- get_npmi(data, {{ col }}, {{ cross }}, ...)
+  result_items$p_y_if_x <- NULL
+  result_items$p_x_if_y <- NULL
 
 
   # 3. Cramer's V
@@ -343,7 +345,7 @@ effect_counts_one_cor <- function(data, col, cross, clean = TRUE, labels = TRUE,
 #' @param adjust Performing multiple significance tests inflates the alpha error.
 #'               Thus, p values need to be adjusted according to the number of tests.
 #'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
-#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
@@ -437,7 +439,7 @@ effect_counts_items <- function(data, cols, adjust = "fdr", labels = TRUE, clean
 #' @param adjust Performing multiple significance tests inflates the alpha error.
 #'               Thus, p values need to be adjusted according to the number of tests.
 #'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
-#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
@@ -495,7 +497,7 @@ effect_counts_items_grouped <- function(data, cols, cross, method = "cramer", ad
 #' @param adjust Performing multiple significance tests inflates the alpha error.
 #'               Thus, p values need to be adjusted according to the number of tests.
 #'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
-#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_counts}.
@@ -677,7 +679,7 @@ effect_metrics_one <- function(data, col, labels = TRUE, clean = TRUE, ... ) {
 #' @param adjust Performing multiple significance tests inflates the alpha error.
 #'               Thus, p values need to be adjusted according to the number of tests.
 #'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
-#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -884,7 +886,7 @@ effect_metrics_one_grouped <- function(data, col, cross, method = "lm", adjust =
 #' @param adjust Performing multiple significance tests inflates the alpha error.
 #'               Thus, p values need to be adjusted according to the number of tests.
 #'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
-#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -966,7 +968,7 @@ effect_metrics_one_cor <- function(data, col, cross, method = "pearson", adjust 
 #' @param adjust Performing multiple significance tests inflates the alpha error.
 #'               Thus, p values need to be adjusted according to the number of tests.
 #'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
-#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -1063,7 +1065,7 @@ effect_metrics_items <- function(data, cols, adjust = "fdr", labels = TRUE, clea
 #' @param adjust Performing multiple significance tests inflates the alpha error.
 #'               Thus, p values need to be adjusted according to the number of tests.
 #'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
-#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
 #' @return A volker tibble with the following statistical measures:
@@ -1180,7 +1182,7 @@ effect_metrics_items_grouped_items <- function(data, cols, cross, clean = TRUE, 
 #' @param adjust Performing multiple significance tests inflates the alpha error.
 #'               Thus, p values need to be adjusted according to the number of tests.
 #'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
-#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -1255,7 +1257,7 @@ effect_metrics_items_cor <- function(data, cols, cross, method = "pearson", adju
 #' @param adjust Performing multiple significance tests inflates the alpha error.
 #'               Thus, p values need to be adjusted according to the number of tests.
 #'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
-#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
@@ -1345,7 +1347,7 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #' @param adjust Performing multiple significance tests inflates the alpha error.
 #'               Thus, p values need to be adjusted according to the number of tests.
 #'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
-#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @return A tibble with correlation results.
 #' @importFrom rlang .data
@@ -1476,7 +1478,7 @@ tidy_lm_levels <- function(fit) {
 #' @param df A data frame or tibble containing the column to adjust.
 #' @param col A tidyselect expression specifying the p-value column to adjust.
 #' @param method Character string specifying the p-value adjustment method.
-#'   See \code{\link[stats]{p.adjust}} for available methods.
+#'   See \code{\link[stats]{p.adjust}} for available methods. Disable adjustment with FALSE.
 #' @param digits Integer; number of decimal places for rounding.
 #' @param stars Logical or character; if \code{TRUE}, add a "stars" column
 #'              with significance symbols (e.g., `"***"`, `"**"`, `"*"`)
@@ -1499,10 +1501,15 @@ adjust_p <- function(df, col, method = "fdr", digits = 3, stars = TRUE) {
     stop("`col` must select exactly one column.")
   }
 
+
   # Adjust p-values
   if (nrow(df) > 1) {
-    df[[col_name]] <- stats::p.adjust(df[[col_name]], method = method)
-    attr(df, "adjust") <- method
+    method <- ifelse(method == "none", FALSE, method)
+
+    if (method != FALSE) {
+      df[[col_name]] <- stats::p.adjust(df[[col_name]], method = method)
+      attr(df, "adjust") <-  method
+    }
   }
 
   # Set 'round' attribute on p-value column
@@ -1544,8 +1551,10 @@ get_correlation <- function(x, y, method, category = NULL, test = TRUE) {
     }
 
     df <- data.frame(x = x, y = y)
-    npmi <- get_npmi(df, !!sym("x"), !!sym("y"), category = category, adjust = "none", test= test)
-    result <- as.list(npmi[1, -c(1,2) , drop = TRUE])
+    result <- get_npmi(df, !!sym("x"), !!sym("y"), category = category, adjust = FALSE, test = test)
+    result$p_y_if_x <- NULL
+    result$p_x_if_y <- NULL
+    result <- as.list(result[1, -c(1,2) , drop = TRUE])
   }
   else if (method == "cramer") {
     contingency <- table(as.character(x), as.character(y))
@@ -1619,7 +1628,7 @@ get_correlation <- function(x, y, method, category = NULL, test = TRUE) {
 #' @param adjust Performing multiple significance tests inflates the alpha error.
 #'               Thus, p values need to be adjusted according to the number of tests.
 #'               Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
-#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with "none".
+#'               e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.
 #' @param test Boolean; whether to perform significance tests (default TRUE).
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_counts}.
 #' @return A volker tibble.
@@ -1776,7 +1785,7 @@ get_stars <- function(x) {
 
 #' Calculate standardized betas
 #'
-#' @param model A model fitted with lm()
+#' @param fit A model fitted with lm()
 #' @return A data frame with a row for each term
 get_betas <- function(fit) {
 
@@ -1789,7 +1798,7 @@ get_betas <- function(fit) {
 
   # Predictor SDs
   mm <- stats::model.matrix(fit)[, -1, drop = FALSE]
-  x_sds <- apply(mm, 2, sd, na.rm = TRUE)
+  x_sds <- apply(mm, 2, stats::sd, na.rm = TRUE)
 
 
   # Compute standardized betas

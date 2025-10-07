@@ -442,7 +442,7 @@ data_onehot <- function(data, ...) {
   df_selected <- data[, selected_cols, drop = FALSE]
 
   df_selected[] <- lapply(df_selected, function(x) paste0("_", as.character(x)))
-  mm <- model.matrix(~ . - 1, data = df_selected)
+  mm <- stats::model.matrix(~ . - 1, data = df_selected)
   mm <- mm == 1
 
   mm <- dplyr::bind_cols(
@@ -538,7 +538,7 @@ get_baseline <- function(obj, ignore = c()) {
   # Adjust
   adjust <- attr(obj, "adjust", exact = TRUE)
   if (!is.null(adjust)) {
-    if (adjust != "none") {
+    if (adjust != FALSE) {
       baseline <- c(baseline, paste0("Adjusted significance p values with ", adjust, " method."))
     }
   }
