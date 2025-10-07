@@ -21,95 +21,84 @@
 <rect x='0.00' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
 </g>
 <defs>
-  <clipPath id='cpMTc1Ljc3fDcxNC41MnwyMi43OHw1MzQuODQ='>
-    <rect x='175.77' y='22.78' width='538.75' height='512.06' />
+  <clipPath id='cpMjE3LjExfDcxNC41MnwyMi43OHw1MzQuODQ='>
+    <rect x='217.11' y='22.78' width='497.41' height='512.06' />
   </clipPath>
 </defs>
-<g clip-path='url(#cpMTc1Ljc3fDcxNC41MnwyMi43OHw1MzQuODQ=)'>
-<rect x='175.77' y='22.78' width='538.75' height='512.06' style='stroke-width: 1.07; stroke: none; fill: #EBEBEB;' />
-<polyline points='261.48,534.84 261.48,22.78 ' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='383.92,534.84 383.92,22.78 ' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='506.37,534.84 506.37,22.78 ' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='628.81,534.84 628.81,22.78 ' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='175.77,509.66 714.52,509.66 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='175.77,467.68 714.52,467.68 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='175.77,425.71 714.52,425.71 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='175.77,383.74 714.52,383.74 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='175.77,341.77 714.52,341.77 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='175.77,299.80 714.52,299.80 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='175.77,257.83 714.52,257.83 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='175.77,215.85 714.52,215.85 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='175.77,173.88 714.52,173.88 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='175.77,131.91 714.52,131.91 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='175.77,89.94 714.52,89.94 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='175.77,47.97 714.52,47.97 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='200.26,534.84 200.26,22.78 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='322.70,534.84 322.70,22.78 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='445.15,534.84 445.15,22.78 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='567.59,534.84 567.59,22.78 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='690.03,534.84 690.03,22.78 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='363.10,509.66 320.18,467.68 369.41,425.71 387.08,383.74 413.59,341.77 469.13,299.80 452.72,257.83 456.51,215.85 508.26,173.88 514.57,131.91 406.01,89.94 499.42,47.97 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
-<polygon points='358.47,509.66 363.10,505.03 367.72,509.66 363.10,514.28 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<polygon points='315.56,467.68 320.18,463.06 324.80,467.68 320.18,472.31 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<polygon points='364.78,425.71 369.41,421.09 374.03,425.71 369.41,430.34 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<polygon points='382.46,383.74 387.08,379.12 391.70,383.74 387.08,388.36 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<polygon points='408.97,341.77 413.59,337.15 418.21,341.77 413.59,346.39 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<polygon points='464.51,299.80 469.13,295.18 473.75,299.80 469.13,304.42 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<polygon points='448.10,257.83 452.72,253.20 457.34,257.83 452.72,262.45 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<polygon points='451.88,215.85 456.51,211.23 461.13,215.85 456.51,220.48 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<polygon points='503.64,173.88 508.26,169.26 512.88,173.88 508.26,178.50 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<polygon points='509.95,131.91 514.57,127.29 519.19,131.91 514.57,136.53 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<polygon points='401.39,89.94 406.01,85.32 410.64,89.94 406.01,94.56 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<polygon points='494.80,47.97 499.42,43.34 504.05,47.97 499.42,52.59 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
+<g clip-path='url(#cpMjE3LjExfDcxNC41MnwyMi43OHw1MzQuODQ=)'>
+<rect x='217.11' y='22.78' width='497.41' height='512.06' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<polyline points='296.24,534.84 296.24,22.78 ' style='stroke-width: 0.53; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='409.29,534.84 409.29,22.78 ' style='stroke-width: 0.53; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='522.34,534.84 522.34,22.78 ' style='stroke-width: 0.53; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='635.39,534.84 635.39,22.78 ' style='stroke-width: 0.53; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='217.11,509.66 714.52,509.66 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='217.11,467.68 714.52,467.68 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='217.11,425.71 714.52,425.71 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='217.11,383.74 714.52,383.74 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='217.11,341.77 714.52,341.77 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='217.11,299.80 714.52,299.80 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='217.11,257.83 714.52,257.83 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='217.11,215.85 714.52,215.85 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='217.11,173.88 714.52,173.88 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='217.11,131.91 714.52,131.91 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='217.11,89.94 714.52,89.94 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='217.11,47.97 714.52,47.97 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='239.72,534.84 239.72,22.78 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='352.77,534.84 352.77,22.78 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='465.82,534.84 465.82,22.78 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='578.86,534.84 578.86,22.78 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='691.91,534.84 691.91,22.78 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='390.06,509.66 350.44,467.68 395.89,425.71 412.20,383.74 436.68,341.77 487.96,299.80 472.81,257.83 476.30,215.85 524.09,173.88 529.91,131.91 429.69,89.94 515.93,47.97 ' style='stroke-width: 1.07; stroke: #008B8B; stroke-linecap: butt;' />
+<polygon points='385.44,509.66 390.06,505.03 394.68,509.66 390.06,514.28 ' style='stroke-width: 0.71; stroke: none; fill: #008B8B;' />
+<polygon points='345.81,467.68 350.44,463.06 355.06,467.68 350.44,472.31 ' style='stroke-width: 0.71; stroke: none; fill: #008B8B;' />
+<polygon points='391.27,425.71 395.89,421.09 400.51,425.71 395.89,430.34 ' style='stroke-width: 0.71; stroke: none; fill: #008B8B;' />
+<polygon points='407.58,383.74 412.20,379.12 416.83,383.74 412.20,388.36 ' style='stroke-width: 0.71; stroke: none; fill: #008B8B;' />
+<polygon points='432.06,341.77 436.68,337.15 441.30,341.77 436.68,346.39 ' style='stroke-width: 0.71; stroke: none; fill: #008B8B;' />
+<polygon points='483.34,299.80 487.96,295.18 492.58,299.80 487.96,304.42 ' style='stroke-width: 0.71; stroke: none; fill: #008B8B;' />
+<polygon points='468.19,257.83 472.81,253.20 477.43,257.83 472.81,262.45 ' style='stroke-width: 0.71; stroke: none; fill: #008B8B;' />
+<polygon points='471.68,215.85 476.30,211.23 480.93,215.85 476.30,220.48 ' style='stroke-width: 0.71; stroke: none; fill: #008B8B;' />
+<polygon points='519.47,173.88 524.09,169.26 528.71,173.88 524.09,178.50 ' style='stroke-width: 0.71; stroke: none; fill: #008B8B;' />
+<polygon points='525.29,131.91 529.91,127.29 534.54,131.91 529.91,136.53 ' style='stroke-width: 0.71; stroke: none; fill: #008B8B;' />
+<polygon points='425.06,89.94 429.69,85.32 434.31,89.94 429.69,94.56 ' style='stroke-width: 0.71; stroke: none; fill: #008B8B;' />
+<polygon points='511.31,47.97 515.93,43.34 520.55,47.97 515.93,52.59 ' style='stroke-width: 0.71; stroke: none; fill: #008B8B;' />
+<rect x='217.11' y='22.78' width='497.41' height='512.06' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
-<text x='170.84' y='507.93' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='148.22px' lengthAdjust='spacingAndGlyphs'>Using ChatGPT brings me recognition</text>
-<text x='170.84' y='517.44' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='85.11px' lengthAdjust='spacingAndGlyphs'>from my environment.</text>
-<text x='170.84' y='465.96' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='154.59px' lengthAdjust='spacingAndGlyphs'>Not using ChatGPT is considered being</text>
-<text x='170.84' y='475.46' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='45.99px' lengthAdjust='spacingAndGlyphs'>an outsider.</text>
-<text x='170.84' y='423.99' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='160.95px' lengthAdjust='spacingAndGlyphs'>Almost everyone in my environment uses</text>
-<text x='170.84' y='433.49' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='39.13px' lengthAdjust='spacingAndGlyphs'>ChatGPT.</text>
-<text x='170.84' y='382.02' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='146.26px' lengthAdjust='spacingAndGlyphs'>In my environment, using ChatGPT is</text>
-<text x='170.84' y='391.52' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='36.70px' lengthAdjust='spacingAndGlyphs'>standard.</text>
-<text x='170.84' y='340.05' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='143.34px' lengthAdjust='spacingAndGlyphs'>Using ChatGPT could bring personal</text>
-<text x='170.84' y='349.55' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='59.21px' lengthAdjust='spacingAndGlyphs'>disadvantages.</text>
-<text x='170.84' y='298.07' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='120.34px' lengthAdjust='spacingAndGlyphs'>The security of user data is not</text>
-<text x='170.84' y='307.58' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='104.20px' lengthAdjust='spacingAndGlyphs'>guaranteed with ChatGPT.</text>
-<text x='170.84' y='256.10' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='128.17px' lengthAdjust='spacingAndGlyphs'>There are legal issues with using</text>
-<text x='170.84' y='265.61' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='39.13px' lengthAdjust='spacingAndGlyphs'>ChatGPT.</text>
-<text x='170.84' y='218.88' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='165.36px' lengthAdjust='spacingAndGlyphs'>Much can go wrong when using ChatGPT.</text>
-<text x='170.84' y='172.16' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='134.04px' lengthAdjust='spacingAndGlyphs'>Compared to other systems, using</text>
-<text x='170.84' y='181.66' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='85.11px' lengthAdjust='spacingAndGlyphs'>ChatGPT is more fun.</text>
-<text x='170.84' y='130.19' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='161.45px' lengthAdjust='spacingAndGlyphs'>Using ChatGPT is advantageous in many</text>
-<text x='170.84' y='139.69' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='22.99px' lengthAdjust='spacingAndGlyphs'>tasks.</text>
-<text x='170.84' y='88.21' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='122.78px' lengthAdjust='spacingAndGlyphs'>Using ChatGPT brings financial</text>
-<text x='170.84' y='97.72' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='33.27px' lengthAdjust='spacingAndGlyphs'>benefits.</text>
-<text x='170.84' y='46.24' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='164.39px' lengthAdjust='spacingAndGlyphs'>ChatGPT has clear advantages compared</text>
-<text x='170.84' y='55.75' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='73.85px' lengthAdjust='spacingAndGlyphs'>to similar offerings.</text>
-<polyline points='173.03,509.66 175.77,509.66 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='173.03,467.68 175.77,467.68 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='173.03,425.71 175.77,425.71 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='173.03,383.74 175.77,383.74 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='173.03,341.77 175.77,341.77 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='173.03,299.80 175.77,299.80 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='173.03,257.83 175.77,257.83 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='173.03,215.85 175.77,215.85 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='173.03,173.88 175.77,173.88 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='173.03,131.91 175.77,131.91 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='173.03,89.94 175.77,89.94 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='173.03,47.97 175.77,47.97 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='200.26,537.58 200.26,534.84 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='322.70,537.58 322.70,534.84 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='445.15,537.58 445.15,534.84 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='567.59,537.58 567.59,534.84 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='690.03,537.58 690.03,534.84 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<text x='200.26' y='545.83' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='30.82px' lengthAdjust='spacingAndGlyphs'>strongly</text>
-<text x='200.26' y='555.33' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='33.76px' lengthAdjust='spacingAndGlyphs'>disagree</text>
-<text x='322.70' y='545.83' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='33.76px' lengthAdjust='spacingAndGlyphs'>disagree</text>
-<text x='445.15' y='545.83' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='26.91px' lengthAdjust='spacingAndGlyphs'>neutral</text>
-<text x='567.59' y='545.83' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='22.51px' lengthAdjust='spacingAndGlyphs'>agree</text>
-<text x='690.03' y='545.83' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='30.82px' lengthAdjust='spacingAndGlyphs'>strongly</text>
-<text x='690.03' y='555.33' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='22.51px' lengthAdjust='spacingAndGlyphs'>agree</text>
+<text x='212.18' y='507.50' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='185.28px' lengthAdjust='spacingAndGlyphs'>Using ChatGPT brings me recognition</text>
+<text x='212.18' y='519.38' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='106.39px' lengthAdjust='spacingAndGlyphs'>from my environment.</text>
+<text x='212.18' y='465.53' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='193.24px' lengthAdjust='spacingAndGlyphs'>Not using ChatGPT is considered being</text>
+<text x='212.18' y='477.41' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='57.49px' lengthAdjust='spacingAndGlyphs'>an outsider.</text>
+<text x='212.18' y='423.56' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='201.19px' lengthAdjust='spacingAndGlyphs'>Almost everyone in my environment uses</text>
+<text x='212.18' y='435.44' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='48.91px' lengthAdjust='spacingAndGlyphs'>ChatGPT.</text>
+<text x='212.18' y='381.59' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='182.83px' lengthAdjust='spacingAndGlyphs'>In my environment, using ChatGPT is</text>
+<text x='212.18' y='393.47' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='45.87px' lengthAdjust='spacingAndGlyphs'>standard.</text>
+<text x='212.18' y='339.61' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='179.17px' lengthAdjust='spacingAndGlyphs'>Using ChatGPT could bring personal</text>
+<text x='212.18' y='351.49' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='74.01px' lengthAdjust='spacingAndGlyphs'>disadvantages.</text>
+<text x='212.18' y='297.64' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='150.43px' lengthAdjust='spacingAndGlyphs'>The security of user data is not</text>
+<text x='212.18' y='309.52' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='130.25px' lengthAdjust='spacingAndGlyphs'>guaranteed with ChatGPT.</text>
+<text x='212.18' y='255.67' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='160.21px' lengthAdjust='spacingAndGlyphs'>There are legal issues with using</text>
+<text x='212.18' y='267.55' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='48.91px' lengthAdjust='spacingAndGlyphs'>ChatGPT.</text>
+<text x='212.18' y='219.64' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='206.70px' lengthAdjust='spacingAndGlyphs'>Much can go wrong when using ChatGPT.</text>
+<text x='212.18' y='171.73' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='167.55px' lengthAdjust='spacingAndGlyphs'>Compared to other systems, using</text>
+<text x='212.18' y='183.61' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='106.39px' lengthAdjust='spacingAndGlyphs'>ChatGPT is more fun.</text>
+<text x='212.18' y='129.76' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='201.81px' lengthAdjust='spacingAndGlyphs'>Using ChatGPT is advantageous in many</text>
+<text x='212.18' y='141.64' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='28.74px' lengthAdjust='spacingAndGlyphs'>tasks.</text>
+<text x='212.18' y='87.78' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='153.48px' lengthAdjust='spacingAndGlyphs'>Using ChatGPT brings financial</text>
+<text x='212.18' y='99.66' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='41.59px' lengthAdjust='spacingAndGlyphs'>benefits.</text>
+<text x='212.18' y='45.81' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='205.48px' lengthAdjust='spacingAndGlyphs'>ChatGPT has clear advantages compared</text>
+<text x='212.18' y='57.69' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='92.31px' lengthAdjust='spacingAndGlyphs'>to similar offerings.</text>
+<polyline points='239.72,537.58 239.72,534.84 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='352.77,537.58 352.77,534.84 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='465.82,537.58 465.82,534.84 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='578.86,537.58 578.86,534.84 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='691.91,537.58 691.91,534.84 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<text x='239.72' y='545.83' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='30.82px' lengthAdjust='spacingAndGlyphs'>strongly</text>
+<text x='239.72' y='555.33' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='33.76px' lengthAdjust='spacingAndGlyphs'>disagree</text>
+<text x='352.77' y='545.83' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='33.76px' lengthAdjust='spacingAndGlyphs'>disagree</text>
+<text x='465.82' y='545.83' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='26.91px' lengthAdjust='spacingAndGlyphs'>neutral</text>
+<text x='578.86' y='545.83' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='22.51px' lengthAdjust='spacingAndGlyphs'>agree</text>
+<text x='691.91' y='545.83' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='30.82px' lengthAdjust='spacingAndGlyphs'>strongly</text>
+<text x='691.91' y='555.33' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='22.51px' lengthAdjust='spacingAndGlyphs'>agree</text>
 <text x='5.48' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='75.60px' lengthAdjust='spacingAndGlyphs'>Expectations</text>
 <text x='5.48' y='568.69' style='font-size: 8.80px; font-family: sans;' textLength='132.83px' lengthAdjust='spacingAndGlyphs'>n=97; multiple responses possible</text>
 </g>

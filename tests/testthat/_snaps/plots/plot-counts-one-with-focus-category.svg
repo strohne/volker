@@ -21,33 +21,34 @@
 <rect x='0.00' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
 </g>
 <defs>
-  <clipPath id='cpMTE3LjUzfDcxNC41MnwyMi43OHw1NDQuMzQ='>
-    <rect x='117.53' y='22.78' width='596.99' height='521.56' />
+  <clipPath id='cpMTQ0LjMxfDcxNC41MnwyMi43OHw1MzEuNzU='>
+    <rect x='144.31' y='22.78' width='570.22' height='508.97' />
   </clipPath>
 </defs>
-<g clip-path='url(#cpMTE3LjUzfDcxNC41MnwyMi43OHw1NDQuMzQ=)'>
-<rect x='117.53' y='22.78' width='596.99' height='521.56' style='stroke-width: 1.07; stroke: none; fill: #EBEBEB;' />
-<polyline points='236.02,544.34 236.02,22.78 ' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='418.74,544.34 418.74,22.78 ' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='601.45,544.34 601.45,22.78 ' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='117.53,283.56 714.52,283.56 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='144.66,544.34 144.66,22.78 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='327.38,544.34 327.38,22.78 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='510.10,544.34 510.10,22.78 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='692.81,544.34 692.81,22.78 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<rect x='144.66' y='87.98' width='542.72' height='391.17' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #008B8B;' />
+<g clip-path='url(#cpMTQ0LjMxfDcxNC41MnwyMi43OHw1MzEuNzU=)'>
+<rect x='144.31' y='22.78' width='570.22' height='508.97' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<polyline points='257.48,531.75 257.48,22.78 ' style='stroke-width: 0.53; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='432.00,531.75 432.00,22.78 ' style='stroke-width: 0.53; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='606.53,531.75 606.53,22.78 ' style='stroke-width: 0.53; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='144.31,277.27 714.52,277.27 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='170.22,531.75 170.22,22.78 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='344.74,531.75 344.74,22.78 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='519.26,531.75 519.26,22.78 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='693.79,531.75 693.79,22.78 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<rect x='170.22' y='86.40' width='518.38' height='381.72' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #008B8B;' />
+<rect x='144.31' y='22.78' width='570.22' height='508.97' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
-<text x='112.59' y='286.59' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='107.12px' lengthAdjust='spacingAndGlyphs'>I try new offers immediately</text>
-<polyline points='114.79,283.56 117.53,283.56 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='144.66,547.08 144.66,544.34 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='327.38,547.08 327.38,544.34 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='510.10,547.08 510.10,544.34 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='692.81,547.08 692.81,544.34 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<text x='144.66' y='555.33' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='12.72px' lengthAdjust='spacingAndGlyphs'>0%</text>
-<text x='327.38' y='555.33' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='12.72px' lengthAdjust='spacingAndGlyphs'>5%</text>
-<text x='510.10' y='555.33' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='17.61px' lengthAdjust='spacingAndGlyphs'>10%</text>
-<text x='692.81' y='555.33' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='17.61px' lengthAdjust='spacingAndGlyphs'>15%</text>
+<text x='139.37' y='281.05' text-anchor='end' style='font-size: 11.00px; font-family: sans;' textLength='133.89px' lengthAdjust='spacingAndGlyphs'>I try new offers immediately</text>
+<polyline points='170.22,534.49 170.22,531.75 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='344.74,534.49 344.74,531.75 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='519.26,534.49 519.26,531.75 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='693.79,534.49 693.79,531.75 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<text x='170.22' y='542.74' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='12.72px' lengthAdjust='spacingAndGlyphs'>0%</text>
+<text x='344.74' y='542.74' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='12.72px' lengthAdjust='spacingAndGlyphs'>5%</text>
+<text x='519.26' y='542.74' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='17.61px' lengthAdjust='spacingAndGlyphs'>10%</text>
+<text x='693.79' y='542.74' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='17.61px' lengthAdjust='spacingAndGlyphs'>15%</text>
+<text x='429.41' y='554.87' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='80.72px' lengthAdjust='spacingAndGlyphs'>Share in percent</text>
 <text x='5.48' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='83.67px' lengthAdjust='spacingAndGlyphs'>Innovator type</text>
 <text x='5.48' y='568.69' style='font-size: 8.80px; font-family: sans;' textLength='24.72px' lengthAdjust='spacingAndGlyphs'>n=101</text>
 </g>

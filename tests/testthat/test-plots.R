@@ -38,6 +38,8 @@ test_that("Empty plots are empty", {
 
 if (Sys.getenv("R_LOCALTESTS") == "1") {
 
+  ggplot2::theme_set(volker::theme_vlkr())
+
   test_that("Categorical plots render as expected", {
 
     expect_doppelganger("plot_counts_one", {
