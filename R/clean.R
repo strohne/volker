@@ -240,15 +240,15 @@ data_rm_negatives <- function(data, cols) {
     #TODO: only drop rows that had negatives, not all missings
     tidyr::drop_na({{ cols }})
 
-    cases <-  nrow(data) - nrow(data_clean)
+  cases <-  nrow(data) - nrow(data_clean)
 
-    if (cases > 0) {
-      data <- data_clean
-      colnames <- rlang::as_label(rlang::enquo(cols))
-      data <- .attr_insert(data, "missings", "negative", list("cols" = colnames, "n"=cases))
-    }
+  if (cases > 0) {
+    data <- data_clean
+    colnames <- rlang::as_label(rlang::enquo(cols))
+    data <- .attr_insert(data, "missings", "negative", list("cols" = colnames, "n"=cases))
+  }
 
-    data
+  data
 }
 
 
@@ -304,11 +304,11 @@ data_rm_na_numbers <- function(data, na.numbers = TRUE, check.labels = TRUE, def
       dplyr::across(
         dplyr::where(is.numeric),
         ~ dplyr::if_else(
-            . %in% na.numbers &
+          . %in% na.numbers &
             (
               !check.labels |
-              (as.character(.) %in% names(attributes(.))) |
-              (as.character(.) %in% as.character(attr(., "labels", TRUE)))
+                (as.character(.) %in% names(attributes(.))) |
+                (as.character(.) %in% as.character(attr(., "labels", TRUE)))
             ),
           NA,
           .
@@ -388,14 +388,94 @@ data_cat <- function(data, cols) {
   data
 }
 
-#' Get a formatted baseline for removed zero, negative, and missing cases
-#' and include focus category information if present
+#' Round and format selected numeric columns
+#'
+#' Round and format specified numeric columns in a data frame
+#' to a fixed number of decimal places.
+#'
+#' For each selected numeric column:
+#' \itemize{
+#'   \item The column is rounded using \code{round()}.
+#'   \item It is then formatted as a character vector with a fixed number of
+#'         decimal places using \code{sprintf()}.
+#'   \item Missing values (\code{NA}) are preserved as \code{NA_character_}.
+#'   \item Original non-essential attributes (except \code{class} and
+#'         \code{levels}) are restored.
+#' }
 #'
 #' @keywords internal
 #'
-#' @param obj An object with the missings and focus attributes.
-#' @return A formatted message or NULL if missings and focus attributes are not present.
-get_baseline <- function(obj) {
+#' @param data A data frame or tibble.
+#' @param cols A tidyselect expression specifying which columns to round
+#'   (e.g., \code{c(var1, var2)} or \code{starts_with("score")}).
+#' @param digits Integer; number of decimal places to round.
+#' @return The input data frame, with the specified numeric columns rounded
+#'   and formatted as character vectors.
+data_round <- function(data, cols, digits) {
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
+  for (col in cols_eval) {
+    if (is.numeric(data[[col]])) {
+      old_attr <- attributes(data[[col]])
+      old_attr[c("class", "levels")] <- NULL
+      data[[col]] <- round(data[[col]], digits)
+      data[[col]] <- sprintf(paste0("%.", digits, "f"), data[[col]])
+      data[[col]][data[[col]] == "NA"] <- NA_character_
+      attributes(data[[col]]) <- old_attr
+    }
+  }
+  data
+}
+
+#' One-hot encode selected columns
+#'
+#' @keywords internal
+
+#' @param data A data frame or tibble.
+#' @param ... Tidyselect expressions specifying columns to one-hot encode
+#'
+#' @return Data frame with one hot encoded data
+data_onehot <- function(data, ...) {
+
+  cols_eval <- tidyselect::eval_select(expr = rlang::expr(c(...)), data = data)
+  selected_cols <- names(cols_eval)
+
+  df_selected <- data[, selected_cols, drop = FALSE]
+
+  df_selected[] <- lapply(df_selected, function(x) paste0("_", as.character(x)))
+  mm <- stats::model.matrix(~ . - 1, data = df_selected)
+  mm <- mm == 1
+
+  mm <- dplyr::bind_cols(
+    dplyr::select(data, -dplyr::all_of(selected_cols)),
+    as.data.frame(mm)
+  )
+
+  mm
+}
+
+#' Get a formatted baseline from attributes of an object.
+#'
+#' The following attributes are considered:
+#' - cases: Number of cases.
+#' - missing: Removed zero, negative, and missing cases.
+#' - focus: Focus category.
+#' - auto: The k value of cluster methods.
+#' - reversed: A list of reversed items.
+#' - split: Items that were split at the median.
+#' - adjust: The adjustment method for p values.
+#'
+#'
+#' @keywords internal
+#'
+#' @param obj An object with supported attributes.
+#' @param ignore Characer vector of attributes to ignore.
+#' @return A formatted message or NULL if none of the supported attributes is present.
+get_baseline <- function(obj, ignore = c()) {
+
+  for (attrname in ignore) {
+    attr(obj, attrname) <- NULL
+  }
+
   baseline <- c()
 
   # Cases
@@ -451,9 +531,18 @@ get_baseline <- function(obj) {
     if (isTRUE(missings$na$omit)) {
       baseline <- c(baseline, paste0(paste0(baseline_missing, collapse = ", "), " case(s) omitted."))
     } else {
-       baseline <- c(baseline, paste0(paste0(baseline_missing, collapse = ", "), " values."))
+      baseline <- c(baseline, paste0(paste0(baseline_missing, collapse = ", "), " values."))
     }
   }
+
+  # Adjust
+  adjust <- attr(obj, "adjust", exact = TRUE)
+  if (!is.null(adjust)) {
+    if (adjust != FALSE) {
+      baseline <- c(baseline, paste0("Adjusted significance p values with ", adjust, " method."))
+    }
+  }
+
 
   # Assemble baseline
   if (length(baseline) > 0) {

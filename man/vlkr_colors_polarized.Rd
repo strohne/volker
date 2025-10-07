@@ -4,10 +4,12 @@
 \alias{vlkr_colors_polarized}
 \title{Get colors for polarized scales}
 \usage{
-vlkr_colors_polarized(n = NULL)
+vlkr_colors_polarized(n = NULL, inv = FALSE)
 }
 \arguments{
 \item{n}{Number of colors or NULL to get the raw colors from the config}
+
+\item{inv}{Whether to get a text color with good contrast on the chosen fill colors.}
 }
 \value{
 A vector of colors.

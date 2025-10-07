@@ -324,13 +324,23 @@ Try out the following pattern in an RMarkdown document!
 
 # Index calculation for item batteries
 
-You can calculate mean indexes from a bunch of items using `add_index()`. 
+For quick inspections of an index from a bunch of items, set the index parameter to `TRUE`.
+The index is calculated by the average value of all selected columns.
+
+Cronbach's Alpha and the number of items are calculated with `psych::alpha()`
+and stored as column attribute named "psych.alpha". The reliability values 
+are printed by `report_metrics()`.
+
+```{r}
+ds |> 
+  report_metrics(starts_with("cg_adoption"), index = TRUE)
+```
+
+You can add an index as a new column using `add_index()`. 
 A new column is created with the average value of all selected columns
 for each case. Provide a custom name for the column using the `newcol` parameter.
+The `report_metrics()` function still outputs reliability values for the column.
 
-Reliability and number of items are calculated with `psych::alpha()`
-and stored as column attribute named "psych.alpha". The reliability values 
-are printed by `report`_metrics()`.
 
 **Add a single index**
 ```{r eval=FALSE}
@@ -355,6 +365,8 @@ ds %>%
   add_index(starts_with("cg_adoption_social")) %>%
   tab_metrics(starts_with("idx_cg_adoption"))
 ```
+
+To reverse items, provide a selection of columns to the `cols.reverse`-parameter of `add_index()`.
 
 # Factor and cluster analysis 
 
@@ -423,35 +435,161 @@ ds |>
 ```
 
 
-## Modeling: Regression and Analysis of Variance
+# Modeling: Regression and Analysis of Variance
 
-Modeling in the statistical sense is predicting an outcome (dependent variable) from one or multiple predictors (independet variables).
+Modeling in the statistical sense is predicting an outcome (dependent variable) from one or multiple predictors (independent variables).
 
-The model functions allow linear modeling by providing a metric outcome as first variable
-and a selection of categorical or metric predictor in the respective parameters.
+The report_metrics() function calculates a linear model if the model parameter is TRUE. You provide the variables in the following parameters:  
 
-There are two functions: One for getting a regression table and one for plotting the regression coefficients.
+- Dependent metric variable: first parameter after the dataset (cols parameter).  
+- Independent categorical variables: a tidy column selection in the second parameter (cross parameter).  
+- Independent metric variables: a tidy column selection in the third parameter (metric parameter.  
+- Interaction effects: interactions-parameter with a vector of multiplication terms (e.g. `interactions = c(sd_age * sd_gender)`)  
+
+
 
 ```{r, eval=FALSE}
-
 ds |>
  filter(sd_gender != "diverse") |>
- model_metrics_tab(
+ report_metrics(
    use_work, 
-   categorical = c(sd_gender, adopter), 
-   metric = sd_age
+   cross = c(sd_gender, adopter), 
+   metric = sd_age,
+   model = TRUE,
+   diagnostics = TRUE
  )
+```
 
-ds |>
- filter(sd_gender != "diverse") |>
- model_metrics_plot(
+Four selected diagnostic plots are generated if the diagnostics-parameter is TRUE:
+
+- Residual vs. fitted: Residuals should be evenly distributed vertically. Horizontally, they should follow the straight line. 
+  Otherwise this could be an indicator for heteroscedasticity, non-linearity or auto-correlationb.
+- Scale-location plot: Points should be evenly distributed, without a pattern, as in the residual plot.
+- Q-Q-Plot of fitted values: All dots should be located on a straight line.
+Otherweise, this may indicate non-linearity or that residuals are not normally distributed.
+- Cooks' distance plot: High values indicate that single cases influence the model disproportionally. Rule of thumb: Cook's distance > 1 is a problem.
+
+
+To work with the predicted values, use add_model() instead of the report function.
+This will add a new variable prefixed with `prd_` holding the target scores.
+
+
+```{r, eval=FALSE}
+ds <- ds |> 
+  add_model(
    use_work,
    categorical = c(sd_gender, adopter), 
    metric = sd_age
  )
 
-``` 
+report_metrics(ds, use_work, prd_use_work, metric = T)
+```
 
+
+There are two functions to get the regression table or plot from the new column: 
+
+```{r, eval=FALSE}
+model_tab(ds, prd_use_work)
+model_plot(ds, prd_use_work)
+
+```
+
+By default, p values are adjusted to the number of tests by controlling the false discovery rate (fdr). Set the adjust-parameter to FALSE for disabling p correction.
+
+## Reliability scores (and classification performance indicators)
+
+In content analysis, reliability is usually checked by coding the cases with different persons
+and then calculating the overlap. To calculate reliability scores, prepare one data frame for each person:  
+
+- All column names in the different data frames should be identical.  
+  Codings must be either binary (TRUE/FALSE) or 
+  contain a fixed number of values such as "sports", "politics", "weather".  
+- Add a column holding  initials or the name of the coder.  
+- One column must contain unique IDs for each case, e.g. a running case number.  
+
+Next, you row bind the data frames. The columns for coder and ID make sure that each coding
+is uniquely identified and can be related to the cases and coders.
+
+``` 
+data_coded <-  bind_rows(
+  data_coder1,
+  data_coder2
+)
+```
+
+The final data, for example, looks like:
+
+| case | coder | topic_sports | topic_weather |
+| ---- | ----- | ------------ | ------------- |
+|    1 | anne  | TRUE         | FALSE         |
+|    2 | anne  | TRUE         | FALSE         |
+|    3 | anne  | FALSE        | TRUE          |
+|    1 | ben   | TRUE         | TRUE          |
+|    2 | ben   | TRUE         | FALSE         |
+|    3 | ben   | FALSE        | TRUE          |
+
+
+Calculating reliability is straight forward with report_counts():  
+
+- Provide the data to the first parameter.  
+- Add the column with codings (or a selection of multiple columns, e.g. using `starts_with()`) 
+  to the second parameter.  
+- Set the the third parameter to the column name with coder names or initials.  
+- Set the ids-parameter to the column that contains case IDs or case numbers 
+  (this tells the volker-package which cases belong together).  
+- Set the agree-parameter to "reliability" to request reliability scores.  
+
+Example:
+
+```
+report_counts(data_coded, starts_with("topic_"), coder, ids = case, prop="cols", agree = "reliability")
+```
+
+Alternatively, if you are only interested in the scores, not a plot, you get them 
+using agree_tab. Hint: You may abbreviate the reliability value.
+
+```
+agree_tab(data_coded, starts_with("topic_"), coder, ids = case, method="reli")
+```
+
+Further, you can request classification performance indicators 
+(accuracy, precision, recall, F1) with the same function by setting the method 
+to "classification" (may be abbreviated). Use this option if you compare 
+manual codings to automated codings (classifiers, large language models).
+By default, you get macro statistics (average precision, recall and f1 over categories).
+
+Give you have multiple values in on column, you may focus one category to get micro statistics:
+
+```
+agree_tab(starts_with("topic_"), coder, ids = case, method = "class", category = "catcontent")
+```
+
+# The mystery of missing values
+
+Cases with missing values, by default, are omitted in all methods. 
+Thus, the calculations are only based on cases with complete values
+in the selected columns.
+
+Furthermore, each function first cleans the values:  
+
+- Residual levels defined in the `VLKR_NA_LEVELS` constant are recoded to missing values ("[NA] nicht beantwortet", "[NA] keine Angabe", "[no answer]" and "keine Angabe").  
+- Residual numeric values defined in the `VLKR_NA_NUMBERS` constant  are recoded to missing values (-9, -2, and -1).  
+
+
+```{r}
+
+print(volker:::VLKR_NA_LEVELS)
+
+print(volker:::VLKR_NA_NUMBERS)
+
+```
+
+The output always contains information about how many cases were removed due to missing values.
+You have three options to treat missings:  
+
+1. Disable recoding by setting the `clean`-parameter of the functions to `FALSE`.  
+2. Override the values in VLKR_NA_LEVELS and VLKR_NA_NUMBERS by calls such as `options(vlkr.na.levels=c("Not answered"))` or `options(vlkr.na.numbers=c(-2,-9))`. If you set the value to `FALSE`, no values are recoded.  
+3. When analysing items, use pairwise complete data by calling `options(vlkr.na.omit=FALSE)` (maximal information from all items). 
 
 
 # What's behind the scenes?

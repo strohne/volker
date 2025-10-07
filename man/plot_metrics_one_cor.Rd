@@ -10,6 +10,7 @@ plot_metrics_one_cor(
   cross,
   limits = NULL,
   log = FALSE,
+  jitter = FALSE,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -27,6 +28,8 @@ plot_metrics_one_cor(
 Set NULL to extract limits from the labels.}
 
 \item{log}{Whether to plot log scales.}
+
+\item{jitter}{Whether to jitter the points.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

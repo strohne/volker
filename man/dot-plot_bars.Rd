@@ -17,17 +17,17 @@
 )
 }
 \arguments{
-\item{data}{Data frame with the columns item, value, p, n and optionally p_item.
-If p_item is provided, the column width is generated according the p_item value, resulting in a mosaic plot.}
+\item{data}{Data frame with the columns item, value, p, n and optionally w
+If w is provided, the column width is generated according the w value, resulting in a mosaic plot.}
 
-\item{category}{Category for filtering the data frame.}
+\item{category}{Optionally, a category to focus. All rows not matching the category will be filtered out.}
 
 \item{ci}{Whether to plot error bars for 95\% confidence intervals. Provide the columns ci.low and ci.high in data.}
 
 \item{scale}{Direction of the scale: 0 = no direction for categories,
 -1 = descending or 1 = ascending values.}
 
-\item{numbers}{The values to print on the bars: "n" (frequency), "p" (percentage) or both.}
+\item{numbers}{Set to something that evaluates to TRUE and add the .values column to the data frame to ouput values on the bars.}
 
 \item{orientation}{Whether to show bars (horizontal) or columns (vertical)}
 

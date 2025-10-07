@@ -8,6 +8,7 @@ effect_metrics_items_grouped(
   data,
   cols,
   cross,
+  adjust = "fdr",
   labels = TRUE,
   clean = TRUE,
   ...
@@ -19,6 +20,11 @@ effect_metrics_items_grouped(
 \item{cols}{Tidyselect item variables (e.g. starts_with...).}
 
 \item{cross}{The column holding groups to compare.}
+
+\item{adjust}{Performing multiple significance tests inflates the alpha error.
+Thus, p values need to be adjusted according to the number of tests.
+Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

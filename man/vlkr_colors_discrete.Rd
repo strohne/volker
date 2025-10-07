@@ -4,10 +4,12 @@
 \alias{vlkr_colors_discrete}
 \title{Get colors for discrete scales}
 \usage{
-vlkr_colors_discrete(n)
+vlkr_colors_discrete(n = NULL, inv = FALSE)
 }
 \arguments{
 \item{n}{Number of colors.}
+
+\item{inv}{Whether to get a text color with good contrast on the chosen fill colors.}
 }
 \value{
 A vector of colors.

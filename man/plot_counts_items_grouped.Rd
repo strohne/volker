@@ -9,6 +9,7 @@ plot_counts_items_grouped(
   cols,
   cross,
   category = NULL,
+  limits = NULL,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -26,6 +27,10 @@ plot_counts_items_grouped(
 By default, for logical column types, only TRUE values are counted.
 For other column types, the first category is counted.
 To override the default behavior, provide a vector of values in the dataset or labels from the codebook.}
+
+\item{limits}{The scale limits, autoscaled by default.
+Set to \code{c(0,100)} to make a 100\% plot.
+If the data is binary or focused on a single category, by default a 100\% plot is created.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

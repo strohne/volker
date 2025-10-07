@@ -11,6 +11,8 @@ plot_counts_one_grouped(
   category = NULL,
   prop = "total",
   width = NULL,
+  tiles = FALSE,
+  npmi = FALSE,
   limits = NULL,
   ordered = NULL,
   numbers = NULL,
@@ -40,6 +42,8 @@ and which on the vertical scale.}
 the bar or column width reflects the number of cases.
 You can disable this behavior by setting width to FALSE.}
 
+\item{tiles}{Set npmi to \code{TRUE} to generate a heatmap based on npmi values. Only valid in combination with tiles = TRUE.}
+
 \item{limits}{The scale limits, autoscaled by default.
 Set to \code{c(0,100)} to make a 100 \% plot.}
 
@@ -49,7 +53,10 @@ An appropriate color scale should be chosen depending on the ordering.
 For unordered values, colors from VLKR_FILLDISCRETE are used.
 For ordered values, shades of the VLKR_FILLGRADIENT option are used.}
 
-\item{numbers}{The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.}
+\item{numbers}{The numbers to print on the bars or tiles, a vector with one or more of:
+- "n" (frequency),
+- "p" (percentage)
+- "npmi" (normalized pointwise mutual information)}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

@@ -17,6 +17,9 @@
 #' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
 #'            Set metric to TRUE, to treat it as metric and calculate correlations.
+#'            Alternatively, for multivariable models (if the model parameter is TRUE),
+#'            provide the metric column selection in the metric parameter
+#'            and the categorical column selection in the cross parameter.
 #' @param ... Parameters passed to the \link{plot_metrics} and \link{tab_metrics} and \link{effect_metrics} functions.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
@@ -34,6 +37,15 @@
 #'                Set to FALSE to suppress cluster analysis.
 #'                Set to TRUE to output a scree plot and automatically choose the number of clusters based on the elbow criterion.
 #'                 See \link{add_clusters}.
+#' @param model Set to TRUE for multivariable models.
+#'              The dependent variable must be provided in the first parameter (cols).
+#'              Independent categorical variables are provided in the second parameter (cross),
+#'              which supports tidy column selections or vectors of multiple columns.
+#'              Independent metric variables are provided in the metric parameter
+#'              as tidy column selections or vectors of multiple columns.
+#'              Interaction terms are provided in the interactions parameter and passed to the model functions.
+#'              You can get diagnostic plots by setting the diagnostics parameter to TRUE.
+#'              See \link{model_metrics_tab},  \link{model_metrics_plot} and  \link{add_model} for further options.
 #' @param effect Whether to report statistical tests and effect sizes. See \link{effect_counts} for further parameters.
 #' @param title A character providing the heading or TRUE (default) to output a heading.
 #'               Classes for tabset pills will be added.
@@ -49,7 +61,7 @@
 #' report_metrics(data, sd_age)
 #'
 #' @export
-report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index = FALSE, factors = FALSE, clusters = FALSE, effect = FALSE, title = TRUE, close = TRUE, clean = TRUE) {
+report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index = FALSE, factors = FALSE, clusters = FALSE, model = FALSE, effect = FALSE, title = TRUE, close = TRUE, clean = TRUE) {
 
   if (clean) {
     data <- data_clean(data, clean)
@@ -71,6 +83,18 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
     plot_title <- title
   }
 
+  # Prepare modeling
+  if (model) {
+    model.categorical <- rlang::enquo(cross)
+    model.metric <- rlang::enquo(metric)
+
+    if ((!rlang::quo_is_symbol(model.metric) && rlang::as_label(model.metric) == "FALSE")) {
+      model.metric <- NULL
+    }
+
+    metric <-  FALSE
+    cross <- NULL
+  }
 
   # Add Plot
   chunks <- plot_metrics(data, {{ cols }}, {{ cross }}, metric = metric, effect = effect, clean = clean, ..., title = plot_title) %>%
@@ -110,6 +134,12 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
     chunks <- append(chunks, fct)
   }
 
+  # Add model
+  if (!any(isFALSE(model))) {
+    mdl <- .report_mdl(data,{{ cols }}, categorical = !!model.categorical, metric = !!model.metric, ..., title = plot_title)
+    chunks <- append(chunks, mdl)
+  }
+
   # Close tabs
   if (close) {
     if (knitr::is_html_output()) {
@@ -142,6 +172,12 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 #' @param metric When crossing variables, the cross column parameter can contain categorical or metric values.
 #'            By default, the cross column selection is treated as categorical data.
 #'            Set metric to TRUE, to treat it as metric and calculate correlations.
+#' @param ids A column containing unique identifiers for the cases, used only in combination with the `agree`-parameter.
+#' @param agree Setting agree to "reliability" or `TRUE` adds reliability coefficients to the report (e.g. Kappa).
+#'              Setting agree to "classification" adds classification performance indicators to the report (e.g. F1).
+#'              You need to provide a column selection for values in the `cols`-parameter,
+#'              provide a column with coders or classification source in the `cross`-parameter,
+#'              and a column containing unique case ids to the `ids`-parameter.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the 'psych' package.
@@ -164,7 +200,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 #' report_counts(data, sd_gender)
 #'
 #' @export
-report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALSE, effect = FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
+report_counts <- function(data, cols, cross = NULL, metric = FALSE, ids = NULL, agree = FALSE, index = FALSE, effect = FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
 
   if (clean) {
     data <- data_clean(data, clean)
@@ -205,6 +241,14 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
   if (index) {
     idx <- .report_idx(data, {{ cols }}, {{ cross }}, metric = metric, effect = effect, title = plot_title)
     chunks <- append(chunks,idx)
+  }
+
+  # Add reliability
+
+  if (!metric && (agree != FALSE)) {
+    agree <- ifelse(agree == TRUE, "reliability", agree)
+    agr <- .report_agr(data, {{ cols }}, {{ cross }}, {{ ids }}, method = agree, clean = TRUE, ...)
+    chunks <- append(chunks, agr)
   }
 
   # Close tabs
@@ -264,6 +308,30 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
       }
     }
   }
+
+  chunks
+}
+
+#' Generate table and plot for agreement analysis
+#'
+#' @keywords internal
+#'
+#' @param data A data frame.
+#' @param cols Columns with codings. A tidy column selection,
+#'             e.g. a single column (without quotes)
+#'             or multiple columns selected by methods such as starts_with().
+#' @param coders The coders or classification methods.
+#' @param ids Column with case IDs.
+#' @param method One of "reliability" or "classification".
+#' @return A list containing a table and a plot volker report chunk.
+.report_agr <- function(data, cols, coders, ids, method = "reliability", clean = TRUE, ...) {
+  chunks <- list()
+
+  #plt <- agree_plot(data, ...)
+  #chunks <- .add_to_vlkr_rprt(plt, chunks, "Agreement: Plot")
+
+  tab <- agree_tab(data,  {{ cols}}, {{ coders }}, {{ ids }}, method = method, clean = TRUE, ...)
+  chunks <- .add_to_vlkr_rprt(tab ,chunks, "Agreement: Table")
 
   chunks
 }
@@ -344,6 +412,33 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, index = FALS
   chunks
 }
 
+
+#' Generate an model table and plot
+#'
+#' @keywords internal
+#'
+#' @param data A data frame.
+#' @param cols A a single column (without quotes).
+#' @param categorical A tidy column selection holding independet categorical variables.
+#' @param metric A tidy column selection holding independent metric variables.
+#'
+#' @param title Add a plot title (default = TRUE).
+#' @return A list containing a table and a plot volker report chunk.
+.report_mdl <- function(data, cols, categorical = NULL, metric = NULL, ..., title = TRUE) {
+  chunks <- list()
+
+  scores <- add_model(data, {{ cols }}, {{ categorical }}, {{ metric }}, ...)
+  newcol <- names(scores)[ncol(scores)] # Last col
+
+  plt <- model_plot(scores, tidyselect::all_of(newcol),  ...)
+  chunks <- .add_to_vlkr_rprt(plt, chunks, "Model: Plot")
+
+  tab <- model_tab(scores, tidyselect::all_of(newcol), ...)
+  chunks <- .add_to_vlkr_rprt(tab ,chunks, "Model: Table")
+
+
+  chunks
+}
 
 #' Add vlkr_list class
 #'

@@ -1,0 +1,120 @@
+---
+title: "Reliability and classification performance indicators"
+output: volker::html_report
+vignette: >
+  %\VignetteIndexEntry{Reliability}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = F)
+
+library(tidyverse)
+library(volker)
+
+theme_set(theme_vlkr())
+```
+
+```{r}
+
+# Load data 
+data <- volker::chatgpt
+
+# Code some data for reliability calculations with TRUE/FALSE values.
+# Firstly, add a coder column to the already existing example data
+data_coder1 <- data |> 
+  mutate(coder = "coder one") %>% 
+  mutate(across(starts_with("cg_act_"), ~ ifelse(is.na(.), FALSE, TRUE))) %>% 
+  select(case, coder, starts_with("cg_act_"))
+  
+# Secondly, code the data using a simple dictionary approach.
+# Be aware that this is well suited to calculating classification performance. 
+# However, it is not exactly a procedure of manual content analysis. 
+# This is not what reliability calculation algorithms assume. 
+# A dictionary approach is deterministic, whereas some reliability coefficients are based on chance correction.
+# This is just for example purposes.
+data_coder2 <- data |> 
+  mutate(cg_activities = tolower(cg_activities)) |> 
+  mutate(
+    cg_act_write   = str_detect(cg_activities, "text|write|formulate|translate|create"),
+    cg_act_test    = str_detect(cg_activities, "test|fun|experiment"),
+    cg_act_search  = str_detect(cg_activities, "search|information|question|answer"),
+    coder="coder two"
+  ) %>% 
+  select(case, coder, starts_with("cg_act_"))
+
+data_coded <- bind_rows(
+  data_coder1,
+  data_coder2
+)
+
+
+```
+
+
+## Using report_counts() including plots
+
+```{r}
+
+# TODO: Output agreement in plots: add dashed line for share of agreed cases
+report_counts(data_coded, cg_act_write, coder, ids = case, prop="cols", agree = "reliability")
+report_counts(data_coded, starts_with("cg_act_"), coder, ids = case, agree = "reliability")
+
+```
+
+## 1. Reliability for a single item
+```{r}
+
+agree_tab(data_coded, cg_act_write, coder, ids = case, method="reli")
+
+```
+
+
+## 2. Reliability for multiple items
+```{r}
+
+agree_tab(data_coded, starts_with("cg_act_"), coder, ids = case, method = "reliability")
+
+```
+
+
+
+## 3. F1 for a single item
+```{r}
+
+agree_tab(data_coded, cg_act_write, coder, ids = case, method = "classification")
+
+```
+
+
+## 4. F1 for multiple items
+```{r}
+
+agree_tab(data_coded, starts_with("cg_act_"), coder, ids = case, method = "classification")
+
+```
+
+
+## 5. Choosing macro statistics vs. single categories
+```{r}
+
+# There are three cases to consider:
+# - If you provide a category in the respective parameter,
+#   results relate to this category. 
+# - If you omit the parameter (or set it to null) and you have boolean values,
+#   the TRUE category is automatically choosen.
+# - Otherwise, macro statistics for precision, recall, and f1 are calculated by
+#   averaging over the results of all categories. You will find the number of categories
+#   in the result table.
+
+# The following assumes that "no" is the target category of interest
+# (although this is unlikely in real world scenarios)
+data_coded %>% 
+  mutate(across(starts_with("cg_act_"), ~ ifelse(., "yes", "no"))) %>% 
+  agree_tab(starts_with("cg_act_"), coder, ids = case, method = "classification", category = "no")
+
+```
+

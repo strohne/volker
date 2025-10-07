@@ -67,12 +67,13 @@ VLKR_FILLDISCRETE <- list(
 #' Override with \code{options(vlkr.gradient.fill=list(c("white","black")))}.
 #'
 #' @keywords internal
-VLKR_FILLGRADIENT <- c("#e5f7ff", "#96dfde", "#008b8b", "#006363", "#001212")
+VLKR_FILLGRADIENT <- c("#e5f7f7", "#96dfdf", "#008b8b", "#006363", "#004444")
 
 VLKR_COLOR_BOX_BACKGROUND <- "#aaaaaa"
 VLKR_COLOR_BOX_FOREGROUND <- "#222222"
 VLKR_COLOR_CI <- "#222222"
 VLKR_COLOR_DISABLED <- "#aaaaaa"
+VLKR_COLOR_SMOOTH <- "#AA4499"
 
 #' Polarized colors
 #'
@@ -104,6 +105,8 @@ VLKR_PLOT_TITLEROWS <- 2
 #' Override with \code{options(vlkr.wrap.scale=10)}.
 #' Override with \code{options(vlkr.angle.value=30)}.
 #' Override with \code{options(vlkr.angle.threshold=10)}.
+#' Override with \code{options(vlkr.trunc.columns=20)}.
+#' Override with \code{options(vlkr.trunc.cells=20)}.
 #'
 #' @keywords internal
 VLKR_PLOT_LABELWRAP <- 40
@@ -111,6 +114,8 @@ VLKR_PLOT_LEGENDWRAP <- 20
 VLKR_PLOT_SCALEWRAP <- 10
 VLKR_PLOT_ANGLE_VALUE <- 45
 VLKR_PLOT_ANGLE_THRESHOLD <- 20
+VLKR_TAB_TRUNC_COLUMNS <- 30
+VLKR_TAB_TRUNC_CELLS <- 40
 
 #' Word wrap separators
 #'

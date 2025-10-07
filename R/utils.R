@@ -58,6 +58,27 @@ zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
   to
 }
 
+#' Set an attribute value on selected columns of a data frame
+#'
+#' @keywords internal
+#'
+#' @param x A data frame containing the columns to modify.
+#' @param cols A tidyselect expression specifying which columns to modify
+#'   (e.g., \code{c(var1, var2)} or \code{starts_with("score")}).
+#' @param attr_name A character string giving the name of the attribute to set.
+#' @param attr_value The value to assign to the attribute for all selected columns.
+#' @return The data frame with the modified column attributes.
+.attr_setcolumn <- function(x, cols, attr_name, attr_value) {
+  cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = x)
+
+  for (col in names(cols_eval)) {
+    attr(x[[col]], attr_name) <- attr_value
+  }
+
+  return(x)
+}
+
+
 
 #' Create a factor vector and preserve all attributes
 #'

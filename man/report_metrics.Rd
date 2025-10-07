@@ -13,6 +13,7 @@ report_metrics(
   index = FALSE,
   factors = FALSE,
   clusters = FALSE,
+  model = FALSE,
   effect = FALSE,
   title = TRUE,
   close = TRUE,
@@ -30,7 +31,10 @@ or multiple columns selected by methods such as starts_with().}
 
 \item{metric}{When crossing variables, the cross column parameter can contain categorical or metric values.
 By default, the cross column selection is treated as categorical data.
-Set metric to TRUE, to treat it as metric and calculate correlations.}
+Set metric to TRUE, to treat it as metric and calculate correlations.
+Alternatively, for multivariable models (if the model parameter is TRUE),
+provide the metric column selection in the metric parameter
+and the categorical column selection in the cross parameter.}
 
 \item{...}{Parameters passed to the \link{plot_metrics} and \link{tab_metrics} and \link{effect_metrics} functions.}
 
@@ -52,6 +56,16 @@ Cluster are determined using kmeans after scaling the items.
 Set to FALSE to suppress cluster analysis.
 Set to TRUE to output a scree plot and automatically choose the number of clusters based on the elbow criterion.
 See \link{add_clusters}.}
+
+\item{model}{Set to TRUE for multivariable models.
+The dependent variable must be provided in the first parameter (cols).
+Independent categorical variables are provided in the second parameter (cross),
+which supports tidy column selections or vectors of multiple columns.
+Independent metric variables are provided in the metric parameter
+as tidy column selections or vectors of multiple columns.
+Interaction terms are provided in the interactions parameter and passed to the model functions.
+You can get diagnostic plots by setting the diagnostics parameter to TRUE.
+See \link{model_metrics_tab},  \link{model_metrics_plot} and  \link{add_model} for further options.}
 
 \item{effect}{Whether to report statistical tests and effect sizes. See \link{effect_counts} for further parameters.}
 

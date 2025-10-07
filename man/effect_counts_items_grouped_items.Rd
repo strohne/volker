@@ -9,6 +9,8 @@ effect_counts_items_grouped_items(
   cols,
   cross,
   method = "cramer",
+  adjust = "fdr",
+  category = NULL,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -21,7 +23,12 @@ effect_counts_items_grouped_items(
 
 \item{cross}{The columns holding groups to compare.}
 
-\item{method}{The output metrics: cramer = Cramer's V, f1 = F1-value (only for variable sets with the same labels).}
+\item{method}{The output metrics: cramer = Cramer's V, pmi = Pointwise Mutual Information, npmi = Normalized PMI.}
+
+\item{adjust}{Performing multiple significance tests inflates the alpha error.
+Thus, p values need to be adjusted according to the number of tests.
+Set a method supported by  \code{stats::\link[stats:p.adjust]{p.adjust}},
+e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

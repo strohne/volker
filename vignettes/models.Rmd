@@ -20,70 +20,107 @@ library(volker)
 
 # Load data 
 data <- volker::chatgpt
+data <- filter(data, sd_gender != "diverse") 
 ```
 
 ## One categorical and one metric independent variable
-```{r}
-data |> 
-  filter(sd_gender != "diverse") |> 
-  model_tab(use_work, categorical = sd_gender, metric = sd_age)
 
-data |> 
-  filter(sd_gender != "diverse") |> 
-  model_plot(use_work, categorical = sd_gender, metric = sd_age)
+The report_metrics-method generates everything needed for a basic linear model. 
+Other common terms for linear modeling are regression analysis or analysis of variance.
+
+- As always with volker package functions, the first parameter is the dataset.
+- The second parameter holds the variable of interest: Provide the variable to be explained (the dependent variable).
+- Set the model-parameter to TRUE. Optionally, output regression diagnostics using the respective parameter.
+
+Other parameters determine the independent variables:  
+- The cross parameter (3th parameter) always holds categorical variables such as gender.
+- The metric parameter (4th parameter) is used to provide a selection of metric independent variables such as age.
+- In case of interaction terms, add them to the interactions parameter (see example below, e.g. `c(sd_gender * sd_age)`)  
+
+
+```{r echo=TRUE}
+
+report_metrics(data, use_work, cross = sd_gender, metric = sd_age, model = TRUE, diagnostics = TRUE)
 
 ```
 
 
 ## Multiple categorical and metric independent variables
-```{r}
-data |> 
-  filter(sd_gender != "diverse") |> 
-  model_tab(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption"), sd_age))
+```{r echo=TRUE}
 
-data |> 
-  filter(sd_gender != "diverse") |> 
-  model_plot(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption"), sd_age))
+report_metrics(
+  data,
+  use_work, 
+  cross  = c(sd_gender, adopter), 
+  metric = c(starts_with("cg_adoption"), sd_age), 
+  model      = TRUE,
+  diagnostics = TRUE
+)
 
 ```
 
 
-## Index as independet variable
-```{r}
+## Index as independent variable
+
+```{r echo=TRUE}
 
 data |> 
-  filter(sd_gender != "diverse") |>
   add_index(starts_with("cg_adoption")) |> 
-  model_tab(use_work, categorical = c(sd_gender, adopter), metric = c(idx_cg_adoption, sd_age))
-
-data |> 
-  filter(sd_gender != "diverse") |>
-  add_index(starts_with("cg_adoption")) |> 
-  model_plot(use_work, categorical = c(sd_gender, adopter), metric = c(idx_cg_adoption, sd_age))
+  report_metrics(
+    use_work, 
+    cross  = c(sd_gender, adopter), 
+    metric = c(idx_cg_adoption, sd_age),
+    model = TRUE
+  )
 
 ```
 
 
 ## Interactions
+```{r echo=TRUE}
+
+data |> 
+  report_metrics(
+    use_work, 
+    cross        = c(sd_gender), 
+    metric       = c(sd_age),
+    interactions = c(sd_gender * sd_age),
+    model = TRUE
+  )
+
+```
+
+## Add predicted values to data frame
+
+To use the predicted values, first add the model. 
+This will result in a new column with the prefix "prd_".
+
+Instead of using the report-method, you can explicitly request the results 
+using model_tab() and model_plot().
+
+
+```{r echo=TRUE}
+
+data <- add_model(
+  data, 
+  use_work, 
+  categorical = c(sd_gender), 
+  metric = c(use_private),
+  interactions = c(sd_gender * use_private)
+)
+
+model_tab(data, prd_use_work)
+model_plot(data, prd_use_work)
+```
+
+After adding predicted values, you can use them as any other column. 
+The following example generates a scatter plot to inspect how well the
+predicted values correlate with the true values.
+
+
 ```{r}
 
-data |> 
-  filter(sd_gender != "diverse") |>
-  model_tab(
-    use_work, 
-    metric = c(sd_age),
-    categorical = c(sd_gender), 
-    interactions = c(sd_gender * sd_age)
-  )
-
-data |> 
-  filter(sd_gender != "diverse") |>
-  model_plot(
-    use_work, 
-    metric = c(sd_age),
-    categorical = c(sd_gender), 
-    interactions = c(sd_gender * sd_age)
-  )
+report_metrics(data, use_work, prd_use_work, metric = TRUE, jitter = TRUE)
 
 ```
 

@@ -68,6 +68,48 @@ check_has_column <- function(data, cols, msg = NULL) {
   TRUE
 }
 
+#' Check whether there is no overlap between two column sets
+#'
+#' @keywords internal
+#'
+#' @param data A data frame.
+#' @param cols A tidyselection of columns.
+#' @param cross A tidyselection of columns.
+#' @param msg A custom error message if the check fails.
+#' @return boolean Whether the two column sets are different.
+check_nonequal_columns <- function(data, cols, cross, msg = NULL) {
+
+  coleval <- tryCatch(
+    {
+      tidyselect::eval_select(expr = rlang::enquo(cols), data = data)
+    },
+    error = function(e) {
+      msg <- dplyr::coalesce(msg, paste0("The column selection is not valid, check your parameters."))
+      stop(msg, call. = FALSE)
+
+    }
+  )
+
+  crosseval <- tryCatch(
+    {
+      tidyselect::eval_select(expr = rlang::enquo(cross), data = data)
+    },
+    error = function(e) {
+      msg <- dplyr::coalesce(msg, paste0("The column selection is not valid, check your parameters."))
+      stop(msg, call. = FALSE)
+
+    }
+  )
+
+
+  if (any(names(coleval) %in% names(crosseval))) {
+    msg <- dplyr::coalesce(msg, paste0("The column selection overlaps, check your parameters."))
+    stop(msg, call. = FALSE)
+  }
+
+  TRUE
+}
+
 #' Check whether a column selection is numeric
 #'
 #' @keywords internal
@@ -149,7 +191,7 @@ check_is_categorical <- function(data, cols, msg = NULL) {
 #' @param stopit Whether to stop execution if the value is invalid.
 #' @param msg A custom error message if the check fails.
 #' @return logical whether method is valid.
-check_is_param <- function(value, allowed, allownull = FALSE, allowmultiple = FALSE, stopit = TRUE, msg = NULL) {
+check_is_param <- function(value, allowed, allownull = FALSE, allowmultiple = FALSE, expand = FALSE, stopit = TRUE, msg = NULL) {
 
   # Check for null
   if (is.null(value)) {
@@ -172,6 +214,13 @@ check_is_param <- function(value, allowed, allownull = FALSE, allowmultiple = FA
     return(FALSE)
   }
 
+  if (expand) {
+    value <- sapply(value, function(v) {
+      matches <- allowed[startsWith(allowed, v)]
+      ifelse (length(matches) == 0, NA_character_, matches[1])
+    }, USE.NAMES = FALSE)
+  }
+
   check <- tryCatch(
     {
       value %in% allowed
@@ -192,6 +241,6 @@ check_is_param <- function(value, allowed, allownull = FALSE, allowmultiple = FA
     return(FALSE)
   }
 
-  TRUE
+  value
 }
 

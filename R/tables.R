@@ -312,6 +312,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ col }}, {{ cross }}, cols.categorical = c({{ col }}, {{ cross }}), clean = clean)
 
+  check_nonequal_columns(data, {{ col }}, {{ cross }})
   check_is_param(prop, c("total", "cols", "rows"))
   check_is_param(values, c("n", "p"), allowmultiple = TRUE)
 
@@ -363,6 +364,7 @@ tab_counts_one_grouped <- function(data, col, cross, prop = "total", percent = T
     dplyr::summarise(n = sum(.data$n)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate("{{ col }}" := "total") %>%
+
     tidyr::pivot_wider(
       names_from = {{ cross }},
       values_from = "n",
@@ -717,7 +719,7 @@ tab_counts_items <- function(data, cols, ci = FALSE, percent = TRUE, values = c(
 #' @param category Summarizing multiple items (the cols parameter) by group requires a focus category.
 #'                By default, for logical column types, only TRUE values are counted.
 #'                For other column types, the first category is counted.
-#'                Accepts both character and numeric vectors to override default counting behavior.
+#'                Accepts both character and numeric values to override default counting behavior.
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param values The values to output: n (frequency) or p (percentage) or both (the default).
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
@@ -943,30 +945,25 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 #' @param data A tibble containing item measures.
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables (e.g. starts_with...).
-#' @param method The output metrics, cramer = Cramer's V, f1 = F1-value (only possible when the variable sets have the same labels).
+#' @param method The method of correlation calculation:
+#' - `cramer` for Cramer's V,
+#' - `npmi` for Normalized Pointwise Mutual Information. Not implemented yet.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_counts}.
 #' @return A volker tibble.
 #' @importFrom rlang .data
-tab_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", labels = TRUE, clean = TRUE, ...) {
+tab_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", category = NULL, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
 
-  check_is_param(method, c("cramer", "f1"))
+  check_is_param(method, c("cramer", "npmi"))
 
   # 2. Calculate correlations
-  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, labels = labels)
-
+  result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, category = category, test = FALSE, labels = labels)
   result_cols <- c("item1", "item2")
 
-  if(method == "cramer") {
-    result_cols <- c(result_cols, "Cramer's V")
-  }
-  if(method == "f1") {
-    result_cols <- c(result_cols, "F1")
-  }
-
+  result_cols <- c(result_cols, map_label(method, list("cramer"= "Cramer's V", "npmi" = "npmi")))
 
   result <- dplyr::select(result, tidyselect::all_of(result_cols))
 
@@ -979,18 +976,18 @@ tab_counts_items_grouped_items <- function(data, cols, cross, method = "cramer",
     dplyr::mutate(item2 = trim_prefix(.data$item2, prefix2))
 
   if ((prefix1 == prefix2) && (prefix1 != "")) {
-    prefix1 <- paste0("Item 1: ", prefix1)
-    prefix2 <- paste0("Item 2: ", prefix2)
+    prefix1 <- paste0("Item 1: ", trim_label(prefix1))
+    prefix2 <- paste0("Item 2: ", trim_label(prefix2))
   }
 
   # Rename first column
   if (prefix1 != "") {
-    colnames(result)[1] <- prefix1
+    colnames(result)[1] <- trim_label(prefix1)
   }
 
   # Rename second column
   if (prefix2 != "") {
-    colnames(result)[2] <- prefix2
+    colnames(result)[2] <- trim_label(prefix2)
   }
 
   result <- .attr_transfer(result, data, c("missings","cases"))
@@ -1008,7 +1005,7 @@ tab_counts_items_grouped_items <- function(data, cols, cross, method = "cramer",
 #' @param category Summarizing multiple items (the cols parameter) by group requires a focus category.
 #'                By default, for logical column types, only TRUE values are counted.
 #'                For other column types, the first category is counted.
-#'                Accepts both character and numeric vectors to override default counting behavior.
+#'                Accepts both character and numeric values to override default counting behavior.
 #' @param split Not implemented yet.
 #' @param percent Proportions are formatted as percent by default. Set to FALSE to get bare proportions.
 #' @param values The values to output: n (frequency) or p (percentage) or both (the default).
@@ -1295,7 +1292,7 @@ tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
   # 3. Calculate correlation
-  result <- .effect_correlations(data, {{ col }}, {{ cross}}, method = method, labels = labels)
+  result <- .effect_correlations(data, {{ col }}, {{ cross}}, method = method, test = FALSE, labels = labels)
 
   if (method=="spearman") {
     values <- c("item1", "item2", "n", "Spearman's rho")
@@ -1738,6 +1735,17 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
 
 #' Knit volker tables
 #'
+#' Numbers are rounded by three mechanisms:
+#' - Each column may have an attribute "round" with the numbers of digits.
+#'   This results in a character vector with a fixed number of digits.
+#'   NA values are replaced by an empty string.
+#' - The data frame may have a column ".digits" with a number of digits.
+#'   All numeric values are rounded to the number of digits in this column,
+#'   the column is discarded afterwards.
+#' - The data frame may have an attribute "digits" resulting
+#'   in all numbers in the data frame being rounded to that number.
+#'   The constant VLKR_NORMAL_DIGITS is used as a fallback.
+#'
 #' @keywords internal
 #'
 #' @param df Data frame.
@@ -1745,11 +1753,8 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
 .knit_table <- function(df, ...) {
   options(knitr.kable.NA = '')
 
-  digits <- attr(df, "digits", exact = TRUE)
-  if (is.null(digits)) {
-    digits <- getOption("vlkr.digits", VLKR_NORMAL_DIGITS)
-  }
-
+  # Get attributes before they are potentially destroyed
+  # - baseline
   baseline <- attr(df, "baseline", exact=TRUE)
   if (is.null(baseline)) {
     baseline <- get_baseline(df)
@@ -1757,7 +1762,23 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
     baseline <- NULL
   }
 
-  # Round
+  # - digits
+  digits <- attr(df, "digits", exact = TRUE)
+  if (is.null(digits)) {
+    digits <- getOption("vlkr.digits", VLKR_NORMAL_DIGITS)
+  }
+
+  # Round cells
+  for (col in names(df)) {
+    r <- attr(df[[col]], "round")
+    if (!is.null(r) && is.numeric(df[[col]])) {
+      df[[col]] <- round(df[[col]], r)
+      df[[col]] <- sprintf(paste0("%.", r, "f"), df[[col]])
+      df[[col]][df[[col]] == "NA"] <- ""
+    }
+  }
+
+  # Round rows
   if (".digits" %in% colnames(df)) {
     df <- df |>
       dplyr::rowwise() |>
@@ -1767,6 +1788,7 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
     df$.digits <- NULL
   }
 
+  # Global rounding
   if (!is.null(digits) && digits > 1) {
     numberformat = list(nsmall = digits)
   } else {
@@ -1815,14 +1837,18 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
         ...
       )
   } else {
+
     df <- df %>%
+      .knit_shorten() %>%
       knitr::kable(
         align = c("l", rep("r", ncol(df) - 1)),
         digits = digits,
         ...
       )
+
   }
 
+  # Base line
   if (!is.null(baseline)) {
     attr(df, "baseline") <- baseline
   }
@@ -1861,6 +1887,45 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
   x
 }
 
+#' Compact table printing with shortened names and values
+#'
+#' Truncates long column names and long character values,
+#' for more readable console output.
+#'
+#' The default column name length is 30 and the cell values length is 40.
+#' Override with \code{options(vlkr.trunc.columns=20)} and
+#'  \code{options(vlkr.trunc.cells=20)}.
+#'
+#' @keywords internal
+#'
+#' @param df A data frame or tibble.
+#' @return A data fram with shortened column names and cell content.
+.knit_shorten <- function(df) {
+
+  max_name <- dplyr::coalesce(getOption("vlkr.trunc.columns"), VLKR_TAB_TRUNC_COLUMNS)
+  max_char <- dplyr::coalesce(getOption("vlkr.trunc.cells"), VLKR_TAB_TRUNC_CELLS)
+
+  # Truncate column names
+  colnames(df) <- ifelse(
+    nchar(colnames(df)) > max_name,
+    paste0(substr(colnames(df), 1, max_name - 3), "..."),
+    colnames(df)
+  )
+
+  # Truncate long character or factor values
+
+  df <- lapply(df, function(x) {
+    if (is.character(x) || is.factor(x)) {
+      x <- as.character(x)
+      rows <- !is.na(x) & (nchar(x) > max_char)
+      x[rows] <- paste0(substr(x[rows], 1, max_char - 3), "...")
+    }
+    x
+  })
+
+  tibble::as_tibble(df)
+}
+
 #' Printing method for volker tables.
 #'
 #' @keywords internal
@@ -1895,6 +1960,8 @@ print.vlkr_tbl <- function(x, ...) {
       cat("\n",caption, sep="")
     }
 
+    #NextMethod("print")
+    class(x) <- setdiff(class(x), "vlkr_tbl")
     print(x, ...)
 
     if (!is.null(baseline)) {

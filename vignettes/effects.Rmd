@@ -20,6 +20,35 @@ library(volker)
 
 # Load data 
 data <- volker::chatgpt
+
+# Code some data for reliability calculations with TRUE/FALSE values.
+# Firstly, add a coder column to the already existing example data
+data_coder1 <- data |> 
+  mutate(coder = "coder one") %>% 
+  mutate(across(starts_with("cg_act_"), ~ ifelse(is.na(.), FALSE, TRUE))) %>% 
+  select(case, coder, starts_with("cg_act_"))
+  
+# Secondly, code the data using a simple dictionary approach.
+# Be aware that this is well suited to calculating classification performance. 
+# However, it is not exactly a procedure of manual content analysis. 
+# This is not what reliability calculation algorithms assume. 
+# A dictionary approach is deterministic, whereas some reliability coefficients are based on chance correction.
+# This is just for example purposes.
+data_coder2 <- data |> 
+  mutate(cg_activities = tolower(cg_activities)) |> 
+  mutate(
+    cg_act_write   = str_detect(cg_activities, "text|write|formulate|translate|create"),
+    cg_act_test    = str_detect(cg_activities, "test|fun|experiment"),
+    cg_act_search  = str_detect(cg_activities, "search|information|question|answer"),
+    coder="coder two"
+  ) %>% 
+  select(case, coder, starts_with("cg_act_"))
+
+data_coded <- bind_rows(
+  data_coder1,
+  data_coder2
+)
+
 ```
 
 | \# | function                           | implemented | effect calculations                                                                              |
@@ -52,7 +81,9 @@ data %>%
 
 ## 2. Cross table
 ```{r}
+
 effect_counts(data, adopter, sd_gender)
+
 ```
 
 ## 3. Logistic regression with one metric predictor
@@ -64,6 +95,7 @@ effect_counts(data, adopter, sd_gender)
 ## 4. Chi-square goodness-of-fit test for each item
 ```{r}
 effect_counts(data, starts_with("cg_adoption_advantage"))
+
 ```
 
 ## 5. Cramers v and Chi-square-test for each item
@@ -76,6 +108,10 @@ effect_counts(data, starts_with("cg_adoption_advantage"), sd_gender)
 
 effect_counts(data, starts_with("cg_adoption_adv"), starts_with("use_"))
 
+data %>% 
+  mutate(across(starts_with("cg_act_"), ~ ifelse(is.na(.), FALSE, TRUE))) %>% 
+  effect_counts(starts_with("cg_act_"), starts_with("cg_act_"), method="npmi")
+  
 ```
 
 ## 7. Explained variance of each item by the metric variable (Pseudo-R-squared of logistic regression) 
@@ -147,11 +183,11 @@ effect_metrics(
 ```{r}
 data |> 
   filter(sd_gender != "diverse") |> 
-  model_metrics_tab(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption"), sd_age))
+  model_metrics_tab(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption_advantage"), sd_age))
 
 data |> 
   filter(sd_gender != "diverse") |> 
-  model_metrics_plot(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption"), sd_age))
+  model_metrics_plot(use_work, categorical = c(sd_gender, adopter), metric = c(starts_with("cg_adoption_advantage"), sd_age))
 
 ```
 

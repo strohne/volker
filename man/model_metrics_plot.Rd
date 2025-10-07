@@ -11,6 +11,7 @@ model_metrics_plot(
   categorical,
   metric,
   interactions = NULL,
+  diagnostics = FALSE,
   labels = TRUE,
   clean = TRUE,
   ...

@@ -16,5 +16,7 @@ Override with \code{options(vlkr.wrap.legend=10)}.
 Override with \code{options(vlkr.wrap.scale=10)}.
 Override with \code{options(vlkr.angle.value=30)}.
 Override with \code{options(vlkr.angle.threshold=10)}.
+Override with \code{options(vlkr.trunc.columns=20)}.
+Override with \code{options(vlkr.trunc.cells=20)}.
 }
 \keyword{internal}

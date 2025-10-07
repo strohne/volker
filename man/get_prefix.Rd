@@ -4,7 +4,13 @@
 \alias{get_prefix}
 \title{Get the common prefix of character values}
 \usage{
-get_prefix(x, ignore.case = FALSE, trim = FALSE, delimiters = c(":", "\\n"))
+get_prefix(
+  x,
+  ignore.case = FALSE,
+  trim = FALSE,
+  delimiters = c(":", "\\n"),
+  minlength = 3
+)
 }
 \arguments{
 \item{x}{Character vector.}
@@ -20,6 +26,13 @@ Consider the following two items as an example:
 \code{c("Usage: in private context", "Usage: in work context")}.
 The common prefix would be \preformatted{"Usage: in "}, but it makes
 more sense to break it after the colon.}
+
+\item{minlength}{Minimum length of the prefix.
+Consider the following two items as an example:
+\code{c("coder one", "cg_act_write")}.
+The common prefix would be \preformatted{"c"},
+although the items have nothing in common.
+Requirung a minimum common prefix length should help in many cases.}
 }
 \value{
 The longest common prefix of the strings.

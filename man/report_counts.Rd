@@ -9,6 +9,8 @@ report_counts(
   cols,
   cross = NULL,
   metric = FALSE,
+  ids = NULL,
+  agree = FALSE,
   index = FALSE,
   effect = FALSE,
   numbers = NULL,
@@ -30,6 +32,14 @@ or multiple columns selected by methods such as starts_with().}
 \item{metric}{When crossing variables, the cross column parameter can contain categorical or metric values.
 By default, the cross column selection is treated as categorical data.
 Set metric to TRUE, to treat it as metric and calculate correlations.}
+
+\item{ids}{A column containing unique identifiers for the cases, used only in combination with the \code{agree}-parameter.}
+
+\item{agree}{Setting agree to "reliability" or \code{TRUE} adds reliability coefficients to the report (e.g. Kappa).
+Setting agree to "classification" adds classification performance indicators to the report (e.g. F1).
+You need to provide a column selection for values in the \code{cols}-parameter,
+provide a column with coders or classification source in the \code{cross}-parameter,
+and a column containing unique case ids to the \code{ids}-parameter.}
 
 \item{index}{When the cols contain items on a metric scale
 (as determined by \link{get_direction}),
