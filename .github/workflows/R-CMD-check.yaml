@@ -50,6 +50,11 @@ jobs:
           echo "R_LOCALTESTS=1" >> $GITHUB_ENV
           Rscript -e "install.packages('vdiffr', repos = 'https://cloud.r-project.org')"
 
+      - name: Debug environment
+        run: |
+          echo "R_LOCALTESTS is: $R_LOCALTESTS"
+          Rscript -e "cat('Sys.getenv(\"R_LOCALTESTS\") =', Sys.getenv('R_LOCALTESTS'), '\n')"
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
