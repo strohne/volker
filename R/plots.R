@@ -2529,6 +2529,7 @@ theme_vlkr <- function(base_size=11, base_color="black", base_fill = VLKR_FILLDI
   options(vlkr.gradient.fill=base_gradient)
   options(vlkr.discrete.fill=base_fill)
 
+  ggplot2::theme_test(base_size) %+replace%
   ggplot2::theme_bw(base_size) %+replace%
 
     ggplot2::theme(
