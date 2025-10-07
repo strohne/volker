@@ -47,7 +47,7 @@ jobs:
       - name: Install vdiffr on Windows
         if: matrix.config.os == 'windows-latest'
         env:
-          R_LOCALTESTS: true
+          R_LOCALTESTS: 1
         run: |
           echo "R_LOCALTESTS=$R_LOCALTESTS"
           Rscript -e "install.packages('vdiffr', repos = 'https://cloud.r-project.org')"
