@@ -53,6 +53,7 @@ jobs:
 
       - name: Debug R_LOCALTESTS value
         if: matrix.config.os == 'windows-latest'
+        shell: bash
         run: |
           echo "R_LOCALTESTS is: $R_LOCALTESTS"
           Rscript -e "cat('Sys.getenv(\"R_LOCALTESTS\") =', Sys.getenv('R_LOCALTESTS'), '\n')"
