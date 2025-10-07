@@ -38,7 +38,8 @@ test_that("Empty plots are empty", {
 
 if (Sys.getenv("R_LOCALTESTS") == "1") {
 
-  ggplot2::theme_set(volker::theme_vlkr())
+  ggplot2::theme_set(ggplot2::theme_minimal(base_family = "sans", base_size = 11))
+  #ggplot2::theme_set(volker::theme_vlkr())
 
   test_that("Categorical plots render as expected", {
 
