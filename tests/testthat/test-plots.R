@@ -69,13 +69,12 @@ if (Sys.getenv("R_LOCALTESTS") == "1") {
         plot_counts(adopter, sd_gender, prop = "cols")
     })
 
-
     expect_doppelganger("plot_counts_one_cor", {
-      plot_counts_one_cor(data, adopter, sd_age)
+      plot_counts(data, adopter, sd_age, metric = TRUE)
     })
 
     expect_doppelganger("plot_counts_one_cor with rows props", {
-      plot_counts_one_cor(data, adopter, sd_age, prop = "rows")
+      plot_counts(data, adopter, sd_age, metric = TRUE, prop = "rows")
     })
 
 
@@ -89,17 +88,22 @@ if (Sys.getenv("R_LOCALTESTS") == "1") {
     })
 
     expect_doppelganger("plot_counts_items_grouped", {
-      plot_counts_items_grouped(
+      plot_counts(
         data, starts_with("cg_adoption_"), adopter,
         category = c("agree", "strongly agree")
       )
     })
 
-    # TODO: Add plot_counts_items_grouped_items
+
+    expect_doppelganger("plot_counts_items_grouped_items", {
+      plot_counts(
+        data, starts_with("cg_adoption_"), starts_with("cg_adoption_")
+      )
+    })
 
     expect_doppelganger("plot_counts_items_cor", {
-      plot_counts_items_cor(
-        data, starts_with("cg_adoption_"), sd_age,
+      plot_counts(
+        data, starts_with("cg_adoption_"), sd_age, metric = TRUE,
         category = c(4, 5)
       )
     })
@@ -145,21 +149,22 @@ if (Sys.getenv("R_LOCALTESTS") == "1") {
     })
 
     expect_doppelganger("plot_metrics_items_cor with pearson's r", {
-      plot_metrics_items_cor(data, starts_with("use_"), sd_age)
+      plot_metrics(data, starts_with("use_"), sd_age, metric = TRUE)
     })
 
     expect_doppelganger("plot_metrics_items_cor with spearman's rho", {
-      plot_metrics_items_cor(data, starts_with("use_"), sd_age, method = "spearman")
+      plot_metrics(data, starts_with("use_"), sd_age, metric = TRUE, method = "spearman")
     })
 
     expect_doppelganger("plot_metrics_items_cor_items", {
-      plot_metrics_items_cor_items(data, starts_with("cg_adoption_adv"), starts_with("use_"))
+      plot_metrics(data, starts_with("cg_adoption_adv"), starts_with("use_"), metric = TRUE)
     })
 
     expect_doppelganger("plot_metrics_items_cor_items with numbers", {
-      plot_metrics_items_cor_items(
+      plot_metrics(
         data, starts_with("cg_adoption_adv"),
         starts_with("use_"),
+        metric = TRUE,
         numbers = TRUE
       )
     })
@@ -178,7 +183,7 @@ if (Sys.getenv("R_LOCALTESTS") == "1") {
           "idx_cg_adoption_fearofuse", "ChatGPT-Erwartung: Fear of Use",
           "idx_cg_adoption_advantage", "ChatGPT-Erwartung: Advantage"
         )) %>%
-        plot_metrics_items_grouped(starts_with("idx_cg_adoption"), adopter)
+        plot_metrics(starts_with("idx_cg_adoption"), adopter)
     })
 
   })
