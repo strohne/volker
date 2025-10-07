@@ -32,43 +32,20 @@ if (Sys.getenv("R_LOCALTESTS") == "1") {
 
   test_that("boxplot renders as expected", {
 
-    p <- plot_metrics(data, sd_age, box = F)
+    p <- plot_metrics(data, sd_age, box = T)
     expect_doppelganger("Univariable box plot", p)
-
-    # Save the plot to a temporary file
-    #plot_file <- tempfile(fileext = ".png")
-    #ggsave(plot_file, plot = p)
-
-    # Capture the plot as a snapshot
-    #expect_snapshot_file(plot_file, "plot_metrics_box.png")
-
   })
 
   test_that("Univariable denisity plot with CI", {
 
     p <- plot_metrics(data, sd_age, ci = TRUE)
     expect_doppelganger("Univariable density plot with CI", p)
-
-    # # Save the plot to a temporary file
-    # plot_file <- tempfile(fileext = ".png")
-    # ggsave(plot_file, plot = p)
-    #
-    # # Capture the plot as a snapshot
-    # expect_snapshot_file(plot_file, "plot_metrics_ci.png")
-
   })
 
   test_that("univariable bar plot with CI renders as expected", {
 
     p <- plot_counts(data, sd_gender, ci = TRUE)
     expect_doppelganger("Univariable bar plot with CI", p)
-    # # Save the plot to a temporary file
-    # plot_file <- tempfile(fileext = ".png")
-    # ggsave(plot_file, plot = p)
-    #
-    # # Capture the plot as a snapshot
-    # expect_snapshot_file(plot_file, "plot_counts_ci.png")
-
   })
 
 }
