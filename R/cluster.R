@@ -196,7 +196,12 @@ add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", cl
   # Check, clean, remove missings
   data <- data_prepare(data, {{ cols }}, cols.numeric = {{ cols }}, clean = clean)
 
-  # select columns
+  # For cluster analysis, always remove missings
+  if (!dplyr::coalesce(getOption("vlkr.na.omit"), VLKR_NA_OMIT)) {
+    data <- data_rm_missings(data, {{ cols }}, force = TRUE)
+  }
+
+  # Select columns
   items <- data %>%
     dplyr::select({{ cols }})
 
