@@ -13,6 +13,7 @@ private
 cache/
 *_cache/
 plots/examples/*.html
+tests/vdiffr.Rout.fail
 tests/testthat/_markdown/*.html
 tests/testthat/_snaps/vignette/*.new.html
 inst/rmarkdown/templates/**/*.html
