@@ -937,8 +937,6 @@ tab_counts_items_grouped <- function(data, cols, cross, category = NULL, percent
 
 #' Correlation of categorical items with categorical items
 #'
-#' \strong{Not yet implemented. The future will come.}
-#'
 #' @keywords internal
 #'
 #'

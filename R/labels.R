@@ -607,6 +607,26 @@ labs_impute <- function(data) {
   data
 }
 
+#' Remove common prefix from the first column
+#'
+#' @keywords internal
+#'
+#' @param result A tibble with item names in the first column
+#' @return A tibble with the first column renamed to the prefix and the prefix removed from column values.
+labs_prefix <- function(result) {
+
+  prefix1 <- get_prefix(result[[1]])
+  result[[1]] = trim_prefix(result[[1]], prefix1)
+
+  # Rename first column
+  if (prefix1 != "") {
+    colnames(result)[1] <- trim_label(prefix1)
+  }
+
+  result
+}
+
+
 #' Get a common title for a column selection
 #'
 #' @keywords internal

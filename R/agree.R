@@ -8,8 +8,8 @@
 #' Two types of comparing categories are provided:
 #'
 #' - Reliability: Compare codings of two or more raters in content analysis.
-#'                Usual reliability measures are percent agreement, also known as Hoslti,
-#'                Fleiss' or Cohen's Kappa, Krippendorff's Alpha or Gwets AC.
+#'                Common reliability measures are percent agreement (also known as Holsti),
+#'                Fleiss' or Cohen's Kappa, Krippendorff's Alpha and Gwets AC.
 #' - Classification: Compare true and predicted categories from classification methods.
 #'                   Common performance metrics include accuracy, precision, recall and F1.
 #'
@@ -19,10 +19,13 @@
 #' @param cols A tidy selection of item variables (e.g. starts_with...) with ratings.
 #' @param coders The column holding coders or methods to compare.
 #' @param ids The column with case IDs.
-#' @param category For classification performance indicators, if no category is provided, macro statistics are returned (along with the number of categories in the output).
+#' @param category For classification performance indicators, if no category is provided,
+#'                 macro statistics are returned (along with the number of categories in the output).
 #'                 Provide a category to get the statistics for this category only.
-#'                 If values are boolean (TRUE / FALSE) and no category is provided, the category is always assumed to be "TRUE".
-#' @param method The output metrics, one of `reliability` or `classification`. You can abbreviate it, e.g. `reli` or `class`.
+#'                 If values are boolean (TRUE / FALSE) and no category is provided,
+#'                 the category is always assumed to be "TRUE".
+#' @param method The output metrics, one of `reliability` or `classification`.
+#'               You can abbreviate it, e.g. `reli` or `class`.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{report_counts}.
@@ -90,7 +93,7 @@ agree_tab <- function(data, cols, coders, ids = NULL, category = NULL, method = 
   # 3. Labels
   result_coef$item2 <- NULL
   if (nrow(result_coef) > 1) {
-    result_coef <- .replace_first_col_labels(result_coef)
+    result_coef <- labs_prefix(result_coef)
   } else {
     colnames(result_coef)[1] <- "item"
   }
@@ -141,11 +144,7 @@ agree_tab <- function(data, cols, coders, ids = NULL, category = NULL, method = 
 
     dplyr::select(item = ".item", agree = ".agree", tidyselect::everything())
 
-
-
   df_agree
-
-
 }
 
 #' Calculate agreement coefficients for multiple items
@@ -313,7 +312,6 @@ agree_tab <- function(data, cols, coders, ids = NULL, category = NULL, method = 
       }
       gwet <- (Po - Pe) / (1 - Pe)
     }
-
   }
 
   kripp <- NA
@@ -359,11 +357,6 @@ agree_tab <- function(data, cols, coders, ids = NULL, category = NULL, method = 
 
   # TODO: round in print function, not here
 
-  # For debugging
-  #ids <- data_coded$case
-  #y <- data_coded$coder
-  #x <- data_coded$topic_write
-
   result <- list()
   df <- data.frame(id = ids, coder = y, value = x, stringsAsFactors = FALSE)
 
@@ -376,7 +369,6 @@ agree_tab <- function(data, cols, coders, ids = NULL, category = NULL, method = 
   n_cases <- nrow(mat)
   n_coders <- ncol(mat)
   n_categories <- length(unique(as.vector(mat)))
-
 
 
   # TODO: Implement multiple classification sources
@@ -478,21 +470,3 @@ agree_tab <- function(data, cols, coders, ids = NULL, category = NULL, method = 
   mean(dis)
 }
 
-#' Helper: Remove common prefix from the first column
-#'
-#' @keywords internal
-#'
-#' @param result A tibble with item names in the first column
-#' @return A tibble with the first column renamed to the prefix and the prefix removed from column values.
-.replace_first_col_labels <- function(result) {
-
-  prefix1 <- get_prefix(result[[1]])
-  result[[1]] = trim_prefix(result[[1]], prefix1)
-
-  # Rename first column
-  if (prefix1 != "") {
-    colnames(result)[1] <- trim_label(prefix1)
-  }
-
-  result
-}

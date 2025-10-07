@@ -333,8 +333,8 @@ Example:
     report_counts(data_coded, starts_with("topic_"), coder, ids = case, prop="cols", agree = "reliability")
 
 Alternatively, if you are only interested in the scores, not a plot, you
-get them using agree_tab. Hint: You may abbreviate the reliability
-value.
+get them using agree_tab. Hint: You may abbreviate the method name
+(e.g. “reli” instead of “reliability”).
 
     agree_tab(data_coded, starts_with("topic_"), coder, ids = case, method="reli")
 
