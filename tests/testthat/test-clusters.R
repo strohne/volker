@@ -26,8 +26,6 @@ test_that("Clusters with missings are added", {
     item2 = c(c(1:10), c(20:28, NA, NA))
   )
 
-  add_clusters(data_with_missings, c(item1, item2), k = NULL)
-
   data_with_missings <- suppressWarnings(add_clusters(data_with_missings, c(item1, item2), k = NULL))
 
   expect_snapshot({
