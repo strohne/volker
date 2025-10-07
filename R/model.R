@@ -104,7 +104,8 @@ model_metrics_tab <- function(data, col, categorical, metric, interactions = NUL
 
   if (nrow(lm_effects) > 2) {
 
-    lm_vif <- car::vif(fit, type = "terms") |>
+
+    lm_vif <- suppressMessages(car::vif(fit, type = "terms") )|>
       tibble::as_tibble(rownames = "Item") |>
       dplyr::select(-tidyselect::any_of("Df"))
 
