@@ -48,14 +48,14 @@
     Output
       
       
-      |Expectations                                                | Gini coefficient|  n| Chi-squared|     p| stars|
-      |:-----------------------------------------------------------|----------------:|--:|-----------:|-----:|-----:|
-      |ChatGPT has clear advantages compared to similar offerings. |             0.36| 99|       43.47| 0.000|   ***|
-      |Using ChatGPT brings financial benefits.                    |             0.19| 99|       14.28| 0.006|    **|
-      |Using ChatGPT is advantageous in many tasks.                |             0.36| 99|       47.01| 0.000|   ***|
-      |Compared to other systems, using ChatGPT is more fun.       |             0.40| 99|       53.68| 0.000|   ***|
+      |Expectations                             | Gini coefficient|  n| Chi-squared|     p| stars|
+      |:----------------------------------------|----------------:|--:|-----------:|-----:|-----:|
+      |ChatGPT has clear advantages compared... |             0.36| 99|       43.47| 0.000|   ***|
+      |Using ChatGPT brings financial benefits. |             0.19| 99|       14.28| 0.006|    **|
+      |Using ChatGPT is advantageous in many... |             0.36| 99|       47.01| 0.000|   ***|
+      |Compared to other systems, using Chat... |             0.40| 99|       53.68| 0.000|   ***|
       
-      2 missing case(s) omitted.
+      2 missing case(s) omitted. Adjusted significance p values with fdr method.
       
 
 # effect_counts_items_grouped
@@ -65,14 +65,14 @@
     Output
       
       
-      |Expectations: Correlation with Gender                       | Cramer's V| Chi-squared|  n| df|     p| stars|
-      |:-----------------------------------------------------------|----------:|-----------:|--:|--:|-----:|-----:|
-      |ChatGPT has clear advantages compared to similar offerings. |       0.14|        3.76| 99|   | 0.829|      |
-      |Using ChatGPT brings financial benefits.                    |       0.16|        4.99| 99|   | 0.814|      |
-      |Using ChatGPT is advantageous in many tasks.                |       0.14|        3.78| 99|   | 0.847|      |
-      |Compared to other systems, using ChatGPT is more fun.       |       0.13|        3.44| 99|   | 0.858|      |
+      |Expectations: Correlation w...           | Cramer's V| Chi-squared|  n| df|     p| stars|
+      |:----------------------------------------|----------:|-----------:|--:|--:|-----:|-----:|
+      |ChatGPT has clear advantages compared... |       0.14|        3.76| 99|   | 0.852|      |
+      |Using ChatGPT brings financial benefits. |       0.16|        4.99| 99|   | 0.852|      |
+      |Using ChatGPT is advantageous in many... |       0.14|        3.78| 99|   | 0.852|      |
+      |Compared to other systems, using Chat... |       0.13|        3.44| 99|   | 0.852|      |
       
-      2 missing case(s) omitted.
+      n=99. 2 missing case(s) omitted. Adjusted significance p values with fdr method.
       
 
 # effect_counts_items_grouped_items
@@ -82,18 +82,18 @@
     Output
       
       
-      |Expectations                                                |                   Usage| Cramer's V| Chi-squared|  n| df|     p| stars|
-      |:-----------------------------------------------------------|-----------------------:|----------:|-----------:|--:|--:|-----:|-----:|
-      |ChatGPT has clear advantages compared to similar offerings. |      in private context|       0.32|       41.27| 99|   | 0.001|    **|
-      |ChatGPT has clear advantages compared to similar offerings. | in professional context|       0.24|       23.46| 99|   | 0.104|      |
-      |Using ChatGPT brings financial benefits.                    |      in private context|       0.24|       22.48| 99|   | 0.124|      |
-      |Using ChatGPT brings financial benefits.                    | in professional context|       0.37|       53.99| 99|   | 0.000|   ***|
-      |Using ChatGPT is advantageous in many tasks.                |      in private context|       0.25|       24.15| 99|   | 0.089|     .|
-      |Using ChatGPT is advantageous in many tasks.                | in professional context|       0.30|       34.57| 99|   | 0.004|    **|
-      |Compared to other systems, using ChatGPT is more fun.       |      in private context|       0.30|       34.62| 99|   | 0.012|     *|
-      |Compared to other systems, using ChatGPT is more fun.       | in professional context|       0.20|       16.23| 99|   | 0.468|      |
+      |Expectations                             |                   Usage| Cramer's V| Chi-squared|  n| df|     p| stars|
+      |:----------------------------------------|-----------------------:|----------:|-----------:|--:|--:|-----:|-----:|
+      |ChatGPT has clear advantages compared... |      in private context|       0.32|       41.27| 99|   | 0.006|    **|
+      |ChatGPT has clear advantages compared... | in professional context|       0.24|       23.46| 99|   | 0.139|      |
+      |Using ChatGPT brings financial benefits. |      in private context|       0.24|       22.48| 99|   | 0.142|      |
+      |Using ChatGPT brings financial benefits. | in professional context|       0.37|       53.99| 99|   | 0.004|    **|
+      |Using ChatGPT is advantageous in many... |      in private context|       0.25|       24.15| 99|   | 0.139|      |
+      |Using ChatGPT is advantageous in many... | in professional context|       0.30|       34.57| 99|   | 0.012|     *|
+      |Compared to other systems, using Chat... |      in private context|       0.30|       34.62| 99|   | 0.024|     *|
+      |Compared to other systems, using Chat... | in professional context|       0.20|       16.23| 99|   | 0.468|      |
       
-      2 missing case(s) omitted.
+      n=99. 2 missing case(s) omitted. Adjusted significance p values with fdr method.
       
 
 # effect_metrics_one
@@ -536,13 +536,13 @@
     Output
       
       
-      |f  | Gini coefficient|  n| Chi-squared|     p| stars|
-      |:--|----------------:|--:|-----------:|-----:|-----:|
-      |1  |             0.00| 15|        0.00| 1.000|      |
-      |2  |             0.00| 15|        0.00| 1.000|      |
-      |3  |             0.00| 20|        0.00| 1.000|      |
+      |Item | Gini coefficient|  n| Chi-squared|     p| stars|
+      |:----|----------------:|--:|-----------:|-----:|-----:|
+      |f1   |             0.00| 15|        0.00| 1.000|      |
+      |f2   |             0.00| 15|        0.00| 1.000|      |
+      |f3   |             0.00| 20|        0.00| 1.000|      |
       
-      5 case(s) with missing values.
+      5 case(s) with missing values. Adjusted significance p values with fdr method.
       
 
 ---
@@ -552,13 +552,13 @@
     Output
       
       
-      |f  | skewness| kurtosis|    W|     p| stars|  normality|
-      |:--|--------:|--------:|----:|-----:|-----:|----------:|
-      |1  |     0.00|    -1.69| 0.80| 0.004|    **| not normal|
-      |2  |     0.00|    -1.69| 0.80| 0.004|    **| not normal|
-      |3  |     0.00|    -1.52| 0.86| 0.009|    **| not normal|
+      |Item | skewness| kurtosis|    W|     p| stars|  normality|
+      |:----|--------:|--------:|----:|-----:|-----:|----------:|
+      |f1   |     0.00|    -1.69| 0.80| 0.006|    **| not normal|
+      |f2   |     0.00|    -1.69| 0.80| 0.006|    **| not normal|
+      |f3   |     0.00|    -1.52| 0.86| 0.009|    **| not normal|
       
-      5 case(s) with missing values.
+      5 case(s) with missing values. Adjusted significance p values with fdr method.
       
 
 # Missing values are skipped in single variables
@@ -609,6 +609,18 @@
     Output
       
       
+      |f2 | gr|  n| p_x| p_y| p_xy| ratio|  pmi| npmi| fisher_p| fisher_stars|
+      |:--|--:|--:|---:|---:|----:|-----:|----:|----:|--------:|------------:|
+      |2  |  B|  1| 0.2| 0.2|  0.2|  5.00| 2.32| 1.00|    0.500|             |
+      |3  |  A|  1| 0.2| 0.6|  0.2|  1.67| 0.74| 0.32|    1.000|             |
+      |4  |  A|  1| 0.2| 0.6|  0.2|  1.67| 0.74| 0.32|    1.000|             |
+      |5  |   |  1| 0.2| 0.2|  0.2|  5.00| 2.32| 1.00|    0.500|             |
+      |   |  A|  1| 0.2| 0.6|  0.2|  1.67| 0.74| 0.32|    1.000|             |
+      
+      Adjusted significance p values with fdr method.
+      
+      
+      
       |Statistic   | Value|
       |:-----------|-----:|
       |Cramer's V  |      |
@@ -630,18 +642,21 @@
       
       |Term          | estimate| ci low| ci high|   se|     t|     p| stars|
       |:-------------|--------:|------:|-------:|----:|-----:|-----:|-----:|
-      |(Intercept)   |     3.50|  -2.85|    9.85| 0.50|  7.00| 0.090|     .|
+      |(Intercept)   |     3.50|  -2.85|    9.85| 0.50|  7.00| 0.181|      |
       |A (Reference) |         |       |        |     |      |      |      |
       |B             |    -1.50| -12.50|    9.50| 0.87| -1.73| 0.333|      |
+      
+      Adjusted significance p values with fdr method.
+      
       
       
       |Statistic          | Value|
       |:------------------|-----:|
-      |Adjusted R-squared |   0.5|
-      |F                  |     3|
+      |Adjusted R-squared |  0.50|
+      |F                  |  3.00|
       |df                 |     1|
       |residual df        |     1|
-      |p                  |  0.33|
+      |p                  | 0.333|
       |stars              |      |
       
       2 case(s) with missing values.
@@ -656,11 +671,11 @@
       
       |Statistic   | value|
       |:-----------|-----:|
-      |R-squared   |     1|
+      |Pearson's r |  1.00|
+      |R-squared   |  1.00|
       |n           |    18|
-      |Pearson's r |     1|
-      |ci low      |     1|
-      |ci high     |     1|
+      |ci low      |  1.00|
+      |ci high     |  1.00|
       |df          |    16|
       |t           |      |
       |p           | 0.000|
@@ -676,13 +691,13 @@
     Output
       
       
-      |f: Correlation with gr | R-squared|  n| Pearson's r| ci low| ci high| df|  t|     p| stars|
-      |:----------------------|---------:|--:|-----------:|------:|-------:|--:|--:|-----:|-----:|
-      |1                      |         1|  5|           1|      1|       1|  3|   | 0.000|   ***|
-      |2                      |         1|  4|           1|      1|       1|  2|   | 0.000|   ***|
-      |3                      |         1|  3|           1|       |        |  1|   | 0.000|   ***|
+      |item1 | Pearson's r| R-squared|  n| ci low| ci high| df|  t|     p| stars|
+      |:-----|-----------:|---------:|--:|------:|-------:|--:|--:|-----:|-----:|
+      |f1    |           1|         1|  5|      1|       1|  3|   | 0.000|   ***|
+      |f2    |           1|         1|  4|      1|       1|  2|   | 0.000|   ***|
+      |f3    |           1|         1|  3|       |        |  1|   | 0.000|   ***|
       
-      4 case(s) with missing values.
+      n=6. 4 case(s) with missing values. Adjusted significance p values with fdr method.
       
 
 # Missing values are skipped in item correlations with items
@@ -693,13 +708,13 @@
     Output
       
       
-      |f  |  g| R-squared|  n| Pearson's r| ci low| ci high| df|  t|     p| stars|
-      |:--|--:|---------:|--:|-----------:|------:|-------:|--:|--:|-----:|-----:|
-      |1  |  1|         1|  4|           1|      1|       1|  2|   | 0.000|   ***|
-      |1  |  2|         1|  5|           1|      1|       1|  3|   | 0.000|   ***|
-      |2  |  1|         1|  3|           1|       |        |  1|   | 0.000|   ***|
-      |2  |  2|         1|  4|           1|      1|       1|  2|   | 0.000|   ***|
+      |item1 | item2| Pearson's r| R-squared|  n| ci low| ci high| df|  t|     p| stars|
+      |:-----|-----:|-----------:|---------:|--:|------:|-------:|--:|--:|-----:|-----:|
+      |f1    |    g1|           1|         1|  4|      1|       1|  2|   | 0.000|   ***|
+      |f1    |    g2|           1|         1|  5|      1|       1|  3|   | 0.000|   ***|
+      |f2    |    g1|           1|         1|  3|       |        |  1|   | 0.000|   ***|
+      |f2    |    g2|           1|         1|  4|      1|       1|  2|   | 0.000|   ***|
       
-      4 case(s) with missing values.
+      n=6. 4 case(s) with missing values. Adjusted significance p values with fdr method.
       
 

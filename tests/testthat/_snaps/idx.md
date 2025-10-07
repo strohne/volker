@@ -94,13 +94,13 @@
     Output
       
       
-      |Innovator type                                    | min|  q1| median|  q3| max| mean|  sd|   n| items| alpha|
-      |:-------------------------------------------------|---:|---:|------:|---:|---:|----:|---:|---:|-----:|-----:|
-      |I try new offers immediately                      | 1.5| 3.2|    3.3| 4.1| 5.0|  3.5| 0.9|  15|    12|  0.81|
-      |I try new offers rather quickly                   | 1.8| 2.5|    2.8| 3.1| 3.8|  2.8| 0.5|  63|    12|  0.81|
-      |I wait until offers establish themselves          | 1.0| 2.4|    2.8| 3.1| 3.8|  2.7| 0.6|  22|    12|  0.81|
-      |I only use new offers when I have no other choice | 2.4| 2.4|    2.4| 2.4| 2.4|  2.4|    |   1|    12|  0.81|
-      |total                                             | 1.0| 2.5|    2.8| 3.2| 5.0|  2.9| 0.6| 101|    12|  0.81|
+      |Innovator type                           | min|  q1| median|  q3| max| mean|  sd|   n| items| alpha|
+      |:----------------------------------------|---:|---:|------:|---:|---:|----:|---:|---:|-----:|-----:|
+      |I try new offers immediately             | 1.5| 3.2|    3.3| 4.1| 5.0|  3.5| 0.9|  15|    12|  0.81|
+      |I try new offers rather quickly          | 1.8| 2.5|    2.8| 3.1| 3.8|  2.8| 0.5|  63|    12|  0.81|
+      |I wait until offers establish themselves | 1.0| 2.4|    2.8| 3.1| 3.8|  2.7| 0.6|  22|    12|  0.81|
+      |I only use new offers when I have no ... | 2.4| 2.4|    2.4| 2.4| 2.4|  2.4|    |   1|    12|  0.81|
+      |total                                    | 1.0| 2.5|    2.8| 3.2| 5.0|  2.9| 0.6| 101|    12|  0.81|
       
       n=101. 4 case(s) with missing values.
       
