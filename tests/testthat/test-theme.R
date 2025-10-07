@@ -33,7 +33,7 @@ if (Sys.getenv("R_LOCALTESTS") == "1") {
     library(ggplot2)
 
     # Set the custom theme
-    theme_set(theme_vlkr(base_size=15, base_color="blue", base_fill = list("red"), base_gradient = c("blue", "green")))
+    theme_set(theme_vlkr(base_size=15, base_color="blue", base_fill = list("red"), base_gradient = c("blue", "green")) + theme(plot.margin = margin(5, 5, 5, 5)))
 
     expect_doppelganger("bar_plot_theme_vlkr", {
       plot_counts(data, sd_gender)
