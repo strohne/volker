@@ -6,29 +6,17 @@ library(vdiffr)
 library(testthat)
 library(volker)
 
-# By default, if vdiffr is not installed, all visual tests are skipped unless
-# VDIFFR_RUN_TESTS is explicitly set to "true", which should be the case only on
-# a GitHub Actions CI runner with stable version of R.
-
+# If vdiffr is not installed, all visual tests are skipped.
 if (requireNamespace("vdiffr", quietly = TRUE) && utils::packageVersion('testthat') >= '3.0.3') {
   expect_doppelganger <- vdiffr::expect_doppelganger
 } else {
-  # If vdiffr is not available and visual tests are explicitly required, raise error.
-  if (identical(Sys.getenv("VDIFFR_RUN_TESTS"), "true")) {
-    abort("vdiffr is not installed")
-  }
-
-  # Otherwise, assign a dummy function
   expect_doppelganger <- function(...) skip("vdiffr is not installed.")
 }
-
-# Load the sample data
-data <- volker::chatgpt
 
 # Only run plot tests if explicitly configured
 # because they will fail on different machines due
 # to different rendering engines and fonts.
-# To enable, call oonce on your machine:
+# To enable, call once on your machine (or in a GitHub CI Pipeline):
 #
 #   Sys.setenv("R_LOCALTESTS" = "1")
 #
@@ -37,8 +25,10 @@ data <- volker::chatgpt
 # Sys.unsetenv("R_LOCALTESTS")
 #
 
+# Load the sample data
+data <- volker::chatgpt
 
-#if (Sys.getenv("R_LOCALTESTS") == "1") {
+if (Sys.getenv("R_LOCALTESTS") == "1") {
 
   test_that("boxplot", {
 
@@ -81,7 +71,7 @@ data <- volker::chatgpt
 
   })
 
-#}
+}
 
 test_that("Empty plots are empty", {
    test_data <- tibble(var1=c(NA))
