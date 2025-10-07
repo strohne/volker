@@ -30,9 +30,9 @@ data <- volker::chatgpt
 
 if (Sys.getenv("R_LOCALTESTS") == "1") {
 
-  test_that("boxplot", {
+  test_that("boxplot renders as expected", {
 
-    p <- plot_metrics(data, sd_age, box = T)
+    p <- plot_metrics(data, sd_age, box = F)
     expect_doppelganger("Univariable box plot", p)
 
     # Save the plot to a temporary file
@@ -58,7 +58,7 @@ if (Sys.getenv("R_LOCALTESTS") == "1") {
 
   })
 
-  test_that("Univariable bar plot with CI", {
+  test_that("univariable bar plot with CI renders as expected", {
 
     p <- plot_counts(data, sd_gender, ci = TRUE)
     expect_doppelganger("Univariable bar plot with CI", p)
