@@ -1292,7 +1292,7 @@ tab_metrics_one_cor <- function(data, col, cross, method = "pearson", ci = FALSE
   cross_eval <- tidyselect::eval_select(expr = enquo(cross), data = data)
 
   # 3. Calculate correlation
-  result <- .effect_correlations(data, {{ col }}, {{ cross}}, method = method, labels = labels)
+  result <- .effect_correlations(data, {{ col }}, {{ cross}}, method = method, test = FALSE, labels = labels)
 
   if (method=="spearman") {
     values <- c("item1", "item2", "n", "Spearman's rho")

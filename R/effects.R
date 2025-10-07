@@ -1500,8 +1500,10 @@ adjust_p <- function(df, col, method = "fdr", digits = 3, stars = TRUE) {
   }
 
   # Adjust p-values
-  df[[col_name]] <- stats::p.adjust(df[[col_name]], method = method)
-  attr(df, "adjust") <- method
+  if (nrow(df) > 1) {
+    df[[col_name]] <- stats::p.adjust(df[[col_name]], method = method)
+    attr(df, "adjust") <- method
+  }
 
   # Set 'round' attribute on p-value column
   df <- .attr_setcolumn(df, !!sym(col_name), "round", digits)

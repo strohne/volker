@@ -79,7 +79,6 @@ data |>
 ## Add predicted values to data frame
 ```{r}
 
-# TODO: After adding the model, because the column then exists, following add_model / report calls fail
 data <- add_model(
   data, 
   use_work, 
@@ -88,11 +87,9 @@ data <- add_model(
   interactions = c(sd_gender * use_private)
 )
 
-# TODO: Handle: vif note
 model_tab(data, prd_use_work)
 model_plot(data, prd_use_work)
 
-# TODO: Omit adjustment warning (no corresponding output)
 report_metrics(data, use_work, prd_use_work, metric = TRUE, jitter = TRUE)
 
 ```

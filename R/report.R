@@ -428,12 +428,12 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, ids = NULL, 
   chunks <- list()
 
   scores <- add_model(data, {{ cols }}, {{ categorical }}, {{ metric }}, ...)
-  newcols <- setdiff(colnames(scores), colnames(data))
+  newcol <- names(scores)[ncol(scores)] # Last col
 
-  plt <- model_plot(scores, tidyselect::all_of(newcols),  ...)
+  plt <- model_plot(scores, tidyselect::all_of(newcol),  ...)
   chunks <- .add_to_vlkr_rprt(plt, chunks, "Model: Plot")
 
-  tab <- model_tab(scores, tidyselect::all_of(newcols), ...)
+  tab <- model_tab(scores, tidyselect::all_of(newcol), ...)
   chunks <- .add_to_vlkr_rprt(tab ,chunks, "Model: Table")
 
 
