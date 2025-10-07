@@ -75,15 +75,16 @@ model_metrics_tab <- function(data, col, categorical, metric, interactions = NUL
   lm_params <- lm_params |>
     dplyr::mutate(
       Term = .data$term,
-      stars = get_stars(.data$p.value),
       "ci low" = .data$conf.low,
       "ci high" = .data$conf.high,
+      "standard beta" = .data$beta_std,
       "standard error" = .data$std.error,
       t = .data$statistic,
-      p = .data$p.value
+      p = .data$p.value,
+      stars = get_stars(.data$p.value),
     ) |>
     dplyr::select(tidyselect::all_of(c(
-      "Term","estimate","ci low","ci high","standard error","t","p"
+      "Term","estimate", "ci low","ci high", "standard beta", "standard error","t","p"
     )))
 
 
@@ -358,9 +359,12 @@ diagnostics_resid_fitted <- function(fit) {
     Residuals = stats::resid(fit)
   )
 
+  # TODO: Keep but set to 0?
+  df <- df[is.finite(df$Residuals),, drop = FALSE]
+
   ggplot2::ggplot(df, ggplot2::aes(x = .data$Fitted, y = .data$Residuals)) +
     ggplot2::geom_point() +
-    ggplot2::geom_smooth(method = "loess", se = FALSE, linewidth = 1, col = VLKR_COLOR_SMOOTH) +
+    ggplot2::geom_smooth(method = "loess", formula = stats::as.formula("y ~ x"), se = FALSE, linewidth = 1, col = VLKR_COLOR_SMOOTH) +
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
     ggplot2::labs(
       title = "Residuals vs Fitted",
@@ -388,6 +392,8 @@ diagnostics_resid_fitted <- function(fit) {
 diagnostics_qq <- function(fit) {
 
   df <- data.frame(stdres = stats::rstandard(fit))
+  # TODO: Keep but set to 0?
+  df <- df[is.finite(df$stdres),, drop = FALSE]
 
   ggplot2::ggplot(df, ggplot2::aes(sample = .data$stdres)) +
     ggplot2::stat_qq() +
@@ -422,9 +428,12 @@ diagnostics_scale_location <- function(fit) {
     Sqrt_Std_Resid = sqrt(abs(stats::rstandard(fit)))
   )
 
+  # TODO: Keep but set to 0?
+  df <- df[is.finite(df$Sqrt_Std_Resid),, drop = FALSE]
+
   ggplot2::ggplot(df, ggplot2::aes(x = .data$Fitted, y = .data$Sqrt_Std_Resid)) +
     ggplot2::geom_point() +
-    ggplot2::geom_smooth(method = "loess", se = FALSE, linewidth = 1, col = VLKR_COLOR_SMOOTH) +
+    ggplot2::geom_smooth(method = "loess", formula = stats::as.formula("y ~ x"), se = FALSE, linewidth = 1, col = VLKR_COLOR_SMOOTH) +
     ggplot2::labs(
       title = "Scale-Location",
       x = "Fitted values",
@@ -451,10 +460,14 @@ diagnostics_scale_location <- function(fit) {
 diagnostics_cooksd <- function(fit) {
 
   cooksd <- stats::cooks.distance(fit)
+  cooksd[!is.finite(cooksd)] <- 0
+
   df <- data.frame(
     Observation = seq_along(cooksd),
     CookD = cooksd
   )
+
+
   ggplot2::ggplot(df, ggplot2::aes(x = .data$Observation, y = .data$CookD)) +
     ggplot2::geom_bar(stat = "identity", width = 0.3, fill = vlkr_colors_discrete(1)) +
     ggplot2::labs(
@@ -463,4 +476,3 @@ diagnostics_cooksd <- function(fit) {
       y = "Cook's distance"
     )
 }
-

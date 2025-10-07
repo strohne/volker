@@ -240,15 +240,15 @@ data_rm_negatives <- function(data, cols) {
     #TODO: only drop rows that had negatives, not all missings
     tidyr::drop_na({{ cols }})
 
-    cases <-  nrow(data) - nrow(data_clean)
+  cases <-  nrow(data) - nrow(data_clean)
 
-    if (cases > 0) {
-      data <- data_clean
-      colnames <- rlang::as_label(rlang::enquo(cols))
-      data <- .attr_insert(data, "missings", "negative", list("cols" = colnames, "n"=cases))
-    }
+  if (cases > 0) {
+    data <- data_clean
+    colnames <- rlang::as_label(rlang::enquo(cols))
+    data <- .attr_insert(data, "missings", "negative", list("cols" = colnames, "n"=cases))
+  }
 
-    data
+  data
 }
 
 
@@ -304,11 +304,11 @@ data_rm_na_numbers <- function(data, na.numbers = TRUE, check.labels = TRUE, def
       dplyr::across(
         dplyr::where(is.numeric),
         ~ dplyr::if_else(
-            . %in% na.numbers &
+          . %in% na.numbers &
             (
               !check.labels |
-              (as.character(.) %in% names(attributes(.))) |
-              (as.character(.) %in% as.character(attr(., "labels", TRUE)))
+                (as.character(.) %in% names(attributes(.))) |
+                (as.character(.) %in% as.character(attr(., "labels", TRUE)))
             ),
           NA,
           .
@@ -531,7 +531,7 @@ get_baseline <- function(obj, ignore = c()) {
     if (isTRUE(missings$na$omit)) {
       baseline <- c(baseline, paste0(paste0(baseline_missing, collapse = ", "), " case(s) omitted."))
     } else {
-       baseline <- c(baseline, paste0(paste0(baseline_missing, collapse = ", "), " values."))
+      baseline <- c(baseline, paste0(paste0(baseline_missing, collapse = ", "), " values."))
     }
   }
 

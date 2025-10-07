@@ -1837,6 +1837,7 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
         ...
       )
   } else {
+
     df <- df %>%
       .knit_shorten() %>%
       knitr::kable(
@@ -1844,6 +1845,7 @@ tab_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", d
         digits = digits,
         ...
       )
+
   }
 
   # Base line
@@ -1958,6 +1960,8 @@ print.vlkr_tbl <- function(x, ...) {
       cat("\n",caption, sep="")
     }
 
+    #NextMethod("print")
+    class(x) <- setdiff(class(x), "vlkr_tbl")
     print(x, ...)
 
     if (!is.null(baseline)) {

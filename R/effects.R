@@ -1435,6 +1435,8 @@ effect_metrics_items_cor_items <- function(data, cols, cross, method = "pearson"
 #' @return A tibble with regression parameters.
 tidy_lm_levels <- function(fit) {
   lm_tidy <- broom::tidy(fit, conf.int = TRUE)
+  lm_tidy <- dplyr::left_join(lm_tidy, get_betas(fit), by = "term")
+
   lm_data <- fit$model
 
   # Work through each factor in the model frame
@@ -1768,6 +1770,33 @@ get_stars <- function(x) {
       return("")
     }
   })
+}
+
+#' Calculate standardized betas
+#'
+#' @param model A model fitted with lm()
+#' @return A data frame with a row for each term
+get_betas <- function(fit) {
+
+  # Raw betas (exclude intercept)
+  betas <- stats::coef(fit)[-1]
+
+  # Response SD
+  model_data <- stats::model.frame(fit)
+  y_sd <- stats::sd(model_data[[1]], na.rm = TRUE)
+
+  # Predictor SDs
+  mm <- stats::model.matrix(fit)[, -1, drop = FALSE]
+  x_sds <- apply(mm, 2, sd, na.rm = TRUE)
+
+
+  # Compute standardized betas
+  beta_std <- betas * (x_sds / y_sd)
+
+  tibble::tibble(
+    term = names(beta_std),
+    beta_std = beta_std
+  )
 }
 
 

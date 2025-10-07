@@ -443,8 +443,8 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
       .values = dplyr::if_else(
         (!tiles) & (
           (is.null(category) & (scale != 0) & (lastcategory == .data$value)) |
-          (.data$p < VLKR_LOWPERCENT)
-          ),
+            (.data$p < VLKR_LOWPERCENT)
+        ),
         "",
         .data$.values
       )
@@ -467,9 +467,9 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
 
   if (labels) {
     result <- labs_apply(result, items = list(
-        "value" = title_cross,
-        "item" =  title_col
-      )
+      "value" = title_cross,
+      "item" =  title_col
+    )
     )
   }
 
@@ -878,7 +878,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, limits
   # Remove common item prefix
   prefix <- get_prefix(result$item, trim=TRUE)
   result <- dplyr::mutate(result, item = trim_prefix(.data$item, prefix)) %>%
-            dplyr::ungroup()
+    dplyr::ungroup()
 
   # Order item levels
   result <- dplyr::mutate(result, item = factor(.data$item, levels=unique(.data$item)))
@@ -1577,7 +1577,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, title =
 #' @return A ggplot object.
 #' @importFrom rlang .data
 plot_metrics_items_grouped_items <- function(data, cols, cross, title = TRUE, labels = TRUE, clean = TRUE, ...) {
-    warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
+  warning("Not implemented yet. The future will come.", noBreaks. = TRUE)
 }
 
 #' Multiple items correlated with one metric variable
@@ -1841,8 +1841,8 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
           hjust = ifelse(angle > 0, 1, 0.5),
           size = ggplot2::theme_get()$axis.text.y$size,
           color = ggplot2::theme_get()$axis.text.y$color
+        )
       )
-    )
 
     plot_options = list(
       axis.text.y = !all(data$item == "TRUE"),
@@ -1931,13 +1931,13 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   if (ci) {
     pl <- pl +
       ggplot2::stat_summary(
-      geom = "errorbar",
-      fun.data = get_ci,
-      orientation ="y",
-      width=0.2,
-      #linewidth=1,
-      colour = VLKR_COLOR_CI
-    )
+        geom = "errorbar",
+        fun.data = get_ci,
+        orientation ="y",
+        width=0.2,
+        #linewidth=1,
+        colour = VLKR_COLOR_CI
+      )
   }
 
   if (!box && !ci) {
@@ -2055,7 +2055,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     ggplot2::scale_x_discrete(
       labels = scales::label_wrap(dplyr::coalesce(getOption("vlkr.wrap.labels"), VLKR_PLOT_LABELWRAP)),
       limits=rev
-      ) +
+    ) +
     ggplot2::scale_color_manual(
       values = vlkr_colors_discrete(length(unique(data$.cross))),
       labels = function(x) wrap_label(x, width = dplyr::coalesce(getOption("vlkr.wrap.legend"), VLKR_PLOT_LEGENDWRAP))
@@ -2063,8 +2063,8 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 
   # Limits
   if (!is.null(limits)){
-      pl <- pl +
-        ggplot2::coord_flip(ylim = limits)
+    pl <- pl +
+      ggplot2::coord_flip(ylim = limits)
   }
   else {
     pl <- pl +
@@ -2107,12 +2107,12 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       x = .data$item,
       y = .data$value
     )
-  ) +
+    ) +
     ggplot2::geom_point(
       size=VLKR_POINT_SIZE,
       shape=VLKR_POINT_COR_SHAPE,
       color = vlkr_colors_discrete(1)
-      )
+    )
 
   if (ci && ("low" %in% colnames(data)) && ("high" %in% colnames(data))) {
     pl <- pl +
@@ -2394,7 +2394,11 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     labels <- plot_data$layout$panel_scales_x[[1]]$range$range
     #labels <- layer_scales(pl)$x$range$range
     #labels <- pl$data[[1]]
-    maxlab <- max(nchar(as.character(labels)), na.rm= TRUE)
+    if (length(labels) > 0) {
+      maxlab <- max(nchar(as.character(labels)), na.rm= TRUE)
+    } else {
+      maxlab <- 20
+    }
 
   }
 
@@ -2470,7 +2474,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   # Override width with chunk options
   chunk_options <- knitr::opts_current$get()
   if (!is.null(chunk_options$vlkr.fig.width)) {
-     result$width <- as.numeric(chunk_options$vlkr.fig.width)
+    result$width <- as.numeric(chunk_options$vlkr.fig.width)
   }
 
   result
