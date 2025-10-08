@@ -44,6 +44,13 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - name: Install vdiffr on Windows
+        if: matrix.config.os == 'windows-latest'
+        shell: bash
+        run: |
+          echo "R_LOCALTESTS=1" >> $GITHUB_ENV
+          Rscript -e "install.packages('vdiffr', repos = 'https://cloud.r-project.org')"
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true

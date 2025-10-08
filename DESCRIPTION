@@ -52,6 +52,7 @@ Suggests:
   tidyverse,
   remotes,
   usethis,
-  testthat (>= 3.0.0)
+  testthat (>= 3.0.0),
+  vdiffr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
