@@ -30,7 +30,7 @@ Other common terms for linear modeling are regression analysis or analysis of va
 
 - As always with volker package functions, the first parameter is the dataset.
 - The second parameter holds the variable of interest: Provide the variable to be explained (the dependent variable).
-- Set the model-parameter to TRUE. Optionally, output regression diagnostics using the respective parameter.
+- Set the `model` parameter to `TRUE`. Optionally, output regression diagnostics using the respective parameter.
 
 Other parameters determine the independent variables:  
 - The cross parameter (3th parameter) always holds categorical variables such as gender.
@@ -96,7 +96,7 @@ To use the predicted values, first add the model.
 This will result in a new column with the prefix "prd_".
 
 Instead of using the report-method, you can explicitly request the results 
-using model_tab() and model_plot().
+using `model_tab()` and `model_plot()`.
 
 
 ```{r echo=TRUE}

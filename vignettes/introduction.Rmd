@@ -178,15 +178,14 @@ codebook(ds)
 
 Set specific column labels by providing a named list to the items-parameter of `labs_apply()`:
 
-
 ```{r eval = FALSE}
 ds %>%
   labs_apply(
     items = list(
-      "cg_adoption_advantage_01" = "Allgemeine Vorteile",
-      "cg_adoption_advantage_02" = "Finanzielle Vorteile",
-      "cg_adoption_advantage_03" = "Vorteile bei der Arbeit",
-      "cg_adoption_advantage_04" = "Macht mehr Spaß"
+      "cg_adoption_advantage_01" = "General advantages",
+      "cg_adoption_advantage_02" = "Financial advantages",
+      "cg_adoption_advantage_03" = "Work-related advantages",
+      "cg_adoption_advantage_04" = "More fun"
     )
   ) %>% 
   report_metrics(starts_with("cg_adoption_advantage_"))
@@ -199,13 +198,13 @@ Labels for values inside a column can be adjusted by providing a named list to t
 ```{r eval=FALSE}
 ds %>%
   labs_apply(
-    cols=starts_with("cg_adoption"),  
+    cols = starts_with("cg_adoption"),  
     values = list(
-      "1" = "Stimme überhaupt nicht zu",
-      "2" = "Stimme nicht zu",
-      "3" = "Unentschieden",
-      "4" = "Stimme zu",
-      "5" =  "Stimme voll und ganz zu"
+      "1" = "Strongly disagree",
+      "2" = "Disagree",
+      "3" = "Neutral",
+      "4" = "Agree",
+      "5" = "Strongly agree"
     ) 
   ) %>% 
   report_metrics(starts_with("cg_adoption"))
