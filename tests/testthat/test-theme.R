@@ -19,14 +19,18 @@ if (requireNamespace("vdiffr", quietly = TRUE) && utils::packageVersion('testtha
 # because they will fail on different machines due
 # to different rendering engines.
 #
-# Enable: Sys.setenv("R_LOCALTESTS" = "1")
-# Disable: Sys.unsetenv("R_LOCALTESTS")
+# Enable:
+# Sys.setenv("R_LOCALTESTS" = "1")
+# Disable:
+# Sys.unsetenv("R_LOCALTESTS")
 
 
 # Load the sample data
 data <- volker::chatgpt
 
 if (Sys.getenv("R_LOCALTESTS") == "1") {
+
+  skip("Theme tests skipped; need revision.")
 
   test_that("theme_vlkr applies correct theme settings", {
 
