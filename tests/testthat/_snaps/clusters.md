@@ -1,7 +1,7 @@
-# clusters are added
+# Clusters are added
 
     Code
-      cluster_tab(data, cls_item)
+      volker::cluster_tab(data, cls_item)
     Output
       
       

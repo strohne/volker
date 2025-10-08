@@ -349,6 +349,7 @@ test_that("Correlate two item batteries with spearman", {
 
 # ...with missings
 test_that("Missing values make no trouble", {
+  data <- volker::chatgpt
   data %>%
 #    volker::labs_store() |>
     dplyr::bind_rows(tibble::tibble(sd_gender = c("X", "X", "X"))) %>%
@@ -398,7 +399,7 @@ test_that("Values are relabeled", {
 test_that("Missing values are skipped in item batteries", {
   options(vlkr.na.omit=FALSE)
 
-  data_with_missings <-  tibble::tribble(
+  data_with_missings <- tibble::tribble(
     ~f1, ~f2, ~f3,
     1,     NA,    1,
     2,     2,    NA,
@@ -416,7 +417,7 @@ test_that("Missing values are skipped in item batteries", {
     cran = TRUE
   )
 
-  options(vlkr.na.omit=FALSE)
+  options(vlkr.na.omit=TRUE)
 })
 
 test_that("Missing values are skipped in single variables", {
@@ -447,7 +448,7 @@ test_that("Missing values are skipped in item comparisons", {
 
   options(vlkr.na.omit=FALSE)
 
-  data_with_missings <-  tibble::tribble(
+  data_with_missings <- tibble::tribble(
     ~f1, ~f2, ~f3,  ~gr,
     1,     NA,    1, "A",
     2,     2,    NA, "B",
@@ -473,7 +474,7 @@ test_that("Missing values are skipped in single variable comparisons", {
 
   options(vlkr.na.omit=FALSE)
 
-  data_with_missings <-  tibble::tribble(
+  data_with_missings <- tibble::tribble(
     ~f1, ~f2, ~f3,  ~gr,
     1,     NA,    1, "A",
     2,     2,    NA, "B",
@@ -500,7 +501,7 @@ test_that("Missing values are skipped in single variable correlations", {
 
   options(vlkr.na.omit=FALSE)
 
-  data_with_missings <-  tibble::tribble(
+  data_with_missings <- tibble::tribble(
     ~f1, ~f2, ~f3,  ~gr,
     1,     NA,    1, 1,
     2,     2,    NA, 2,
@@ -527,7 +528,7 @@ test_that("Missing values are skipped in item correlations with another variable
 
   options(vlkr.na.omit=FALSE)
 
-  data_with_missings <-  tibble::tribble(
+  data_with_missings <- tibble::tribble(
     ~f1, ~f2, ~f3,  ~gr,
     1,     NA,    1, 1,
     2,     2,    NA, 2,
@@ -554,7 +555,7 @@ test_that("Missing values are skipped in item correlations with items", {
 
   options(vlkr.na.omit=FALSE)
 
-  data_with_missings <-  tibble::tribble(
+  data_with_missings <- tibble::tribble(
     ~f1, ~f2, ~g1,  ~g2,
     1,     NA,    1, 1,
     2,     2,    NA, 2,

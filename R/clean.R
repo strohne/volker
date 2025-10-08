@@ -176,15 +176,18 @@ data_clean_default <- function(data, remove.na.levels = TRUE, remove.na.numbers 
 #'
 #' @param data Data frame.
 #' @param cols A tidy column selection.
+#' @param force By default, cases with missings are only removed
+#'             when the vlkr.na.omit option is TRUE.
+#'             Set force to TRUE to always remove such cases.
 #' @return Data frame.
-data_rm_missings <- function(data, cols) {
+data_rm_missings <- function(data, cols, force = FALSE) {
 
   cleaned <- tidyr::drop_na(data, {{ cols }})
   cases <-  nrow(data) - nrow(cleaned)
 
   if (cases > 0) {
 
-    na.omit <- dplyr::coalesce(getOption("vlkr.na.omit"), VLKR_NA_OMIT)
+    na.omit <- force || dplyr::coalesce(getOption("vlkr.na.omit"), VLKR_NA_OMIT)
     colnames <- rlang::as_label(rlang::enquo(cols))
 
     if (na.omit == TRUE) {
