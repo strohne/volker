@@ -1785,6 +1785,8 @@ get_stars <- function(x) {
 
 #' Calculate standardized betas
 #'
+#' @keywords internal
+#'
 #' @param fit A model fitted with lm()
 #' @return A data frame with a row for each term
 get_betas <- function(fit) {
