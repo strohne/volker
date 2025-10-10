@@ -17,8 +17,8 @@ High-level functions for tabulating, charting and reporting survey data.
 
 ## Getting started
 
-[![Video tutorial: Introduction to the volkeR package
-(German)](https://img.youtube.com/vi/9bjF_qxjJgU/0.jpg)](https://www.youtube.com/watch?v=9bjF_qxjJgU)
+[![Video tutorial: Introduction to the volkeR
+package](man/figures/youtube.png)](https://www.youtube.com/@volkerpackage)
 
 ``` r
 # Install the package (see below), then load it

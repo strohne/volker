@@ -15,3 +15,4 @@ A data frame with a row for each term
 \description{
 Calculate standardized betas
 }
+\keyword{internal}
