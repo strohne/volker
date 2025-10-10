@@ -190,30 +190,30 @@ of the variable. You can inspect all labels using the
 <code><a href="../reference/codebook.html">codebook()</a></code>-function:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/codebook.html">codebook</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 94 × 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 97 × 6</span></span></span>
 <span><span class="co">#&gt;    item_name     item_group item_class item_label         value_name value_label</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> case          case       numeric    case               <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>         </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> sd_age        sd         numeric    Age                <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>         </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> cg_activities cg         character  Activities with C… <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> adopter       adopter    factor     Innovator type     I try new… I try new …</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> adopter       adopter    factor     Innovator type     I try new… I try new …</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> adopter       adopter    factor     Innovator type     I wait un… I wait unt…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> adopter       adopter    factor     Innovator type     I only us… I only use…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> adopter       adopter    factor     Innovator type     [no answe… [no answer]</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> sd_gender     sd         factor     Gender             female     female     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> sd_gender     sd         factor     Gender             male       male       </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 84 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> cg_act_write  cg         character  cg_act_write       <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> cg_act_test   cg         character  cg_act_test        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> cg_act_search cg         character  cg_act_search      <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> adopter       adopter    factor     Innovator type     I try new… I try new …</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> adopter       adopter    factor     Innovator type     I try new… I try new …</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> adopter       adopter    factor     Innovator type     I wait un… I wait unt…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> adopter       adopter    factor     Innovator type     I only us… I only use…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 87 more rows</span></span></span></code></pre></div>
 <p>Set specific column labels by providing a named list to the
 items-parameter of <code><a href="../reference/labs_apply.html">labs_apply()</a></code>:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/labs_apply.html">labs_apply</a></span><span class="op">(</span></span>
 <span>    items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      <span class="st">"cg_adoption_advantage_01"</span> <span class="op">=</span> <span class="st">"Allgemeine Vorteile"</span>,</span>
-<span>      <span class="st">"cg_adoption_advantage_02"</span> <span class="op">=</span> <span class="st">"Finanzielle Vorteile"</span>,</span>
-<span>      <span class="st">"cg_adoption_advantage_03"</span> <span class="op">=</span> <span class="st">"Vorteile bei der Arbeit"</span>,</span>
-<span>      <span class="st">"cg_adoption_advantage_04"</span> <span class="op">=</span> <span class="st">"Macht mehr Spaß"</span></span>
+<span>      <span class="st">"cg_adoption_advantage_01"</span> <span class="op">=</span> <span class="st">"General advantages"</span>,</span>
+<span>      <span class="st">"cg_adoption_advantage_02"</span> <span class="op">=</span> <span class="st">"Financial advantages"</span>,</span>
+<span>      <span class="st">"cg_adoption_advantage_03"</span> <span class="op">=</span> <span class="st">"Work-related advantages"</span>,</span>
+<span>      <span class="st">"cg_adoption_advantage_04"</span> <span class="op">=</span> <span class="st">"More fun"</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/report_metrics.html">report_metrics</a></span><span class="op">(</span><span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_advantage_"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -223,13 +223,13 @@ addition, select the columns where value labels should be changed:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/labs_apply.html">labs_apply</a></span><span class="op">(</span></span>
-<span>    cols<span class="op">=</span><span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption"</span><span class="op">)</span>,  </span>
+<span>    cols <span class="op">=</span> <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption"</span><span class="op">)</span>,  </span>
 <span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      <span class="st">"1"</span> <span class="op">=</span> <span class="st">"Stimme überhaupt nicht zu"</span>,</span>
-<span>      <span class="st">"2"</span> <span class="op">=</span> <span class="st">"Stimme nicht zu"</span>,</span>
-<span>      <span class="st">"3"</span> <span class="op">=</span> <span class="st">"Unentschieden"</span>,</span>
-<span>      <span class="st">"4"</span> <span class="op">=</span> <span class="st">"Stimme zu"</span>,</span>
-<span>      <span class="st">"5"</span> <span class="op">=</span>  <span class="st">"Stimme voll und ganz zu"</span></span>
+<span>      <span class="st">"1"</span> <span class="op">=</span> <span class="st">"Strongly disagree"</span>,</span>
+<span>      <span class="st">"2"</span> <span class="op">=</span> <span class="st">"Disagree"</span>,</span>
+<span>      <span class="st">"3"</span> <span class="op">=</span> <span class="st">"Neutral"</span>,</span>
+<span>      <span class="st">"4"</span> <span class="op">=</span> <span class="st">"Agree"</span>,</span>
+<span>      <span class="st">"5"</span> <span class="op">=</span> <span class="st">"Strongly agree"</span></span>
 <span>    <span class="op">)</span> </span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="../reference/report_metrics.html">report_metrics</a></span><span class="op">(</span><span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -956,10 +956,27 @@ multiplication terms
 <span>   <span class="va">use_work</span>, </span>
 <span>   cross <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">sd_gender</span>, <span class="va">adopter</span><span class="op">)</span>, </span>
 <span>   metric <span class="op">=</span> <span class="va">sd_age</span>,</span>
-<span>   model <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>   model <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>   diagnostics <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span> <span class="op">)</span></span></code></pre></div>
+<p>Four selected diagnostic plots are generated if the
+diagnostics-parameter is TRUE:</p>
+<ul>
+<li>Residual vs. fitted: Residuals should be evenly distributed
+vertically. Horizontally, they should follow the straight line.
+Otherwise this could be an indicator for heteroscedasticity,
+non-linearity or auto-correlationb.</li>
+<li>Scale-location plot: Points should be evenly distributed, without a
+pattern, as in the residual plot.</li>
+<li>Q-Q-Plot of fitted values: All dots should be located on a straight
+line. Otherweise, this may indicate non-linearity or that residuals are
+not normally distributed.</li>
+<li>Cooks’ distance plot: High values indicate that single cases
+influence the model disproportionally. Rule of thumb: Cook’s distance
+&gt; 1 is a problem.</li>
+</ul>
 <p>To work with the predicted values, use add_model() instead of the
-report function. This will add a new variable prefixes with
+report function. This will add a new variable prefixed with
 <code>prd_</code> holding the target scores.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="va">ds</span> <span class="op">|&gt;</span> </span>
@@ -975,6 +992,114 @@ new column:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/model_metrics_tab.html">model_tab</a></span><span class="op">(</span><span class="va">ds</span>, <span class="va">prd_use_work</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/model_metrics_plot.html">model_plot</a></span><span class="op">(</span><span class="va">ds</span>, <span class="va">prd_use_work</span><span class="op">)</span></span></code></pre></div>
+<p>By default, p values are adjusted to the number of tests by
+controlling the false discovery rate (fdr). Set the adjust-parameter to
+FALSE for disabling p correction.</p>
+<div class="section level3">
+<h3 id="reliability-scores-and-classification-performance-indicators">Reliability scores (and classification performance indicators)<a class="anchor" aria-label="anchor" href="#reliability-scores-and-classification-performance-indicators"></a>
+</h3>
+<p>In content analysis, reliability is usually checked by coding the
+cases with different persons and then calculating the overlap. To
+calculate reliability scores, prepare one data frame for each
+person:</p>
+<ul>
+<li>All column names in the different data frames should be
+identical.<br>
+Codings must be either binary (TRUE/FALSE) or contain a fixed number of
+values such as “sports”, “politics”, “weather”.<br>
+</li>
+<li>Add a column holding initials or the name of the coder.<br>
+</li>
+<li>One column must contain unique IDs for each case, e.g. a running
+case number.</li>
+</ul>
+<p>Next, you row bind the data frames. The columns for coder and ID make
+sure that each coding is uniquely identified and can be related to the
+cases and coders.</p>
+<pre><code><span><span class="va">data_coded</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
+<span>  <span class="va">data_coder1</span>,</span>
+<span>  <span class="va">data_coder2</span></span>
+<span><span class="op">)</span></span></code></pre>
+<p>The final data, for example, looks like:</p>
+<table class="table">
+<thead><tr class="header">
+<th>case</th>
+<th>coder</th>
+<th>topic_sports</th>
+<th>topic_weather</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>anne</td>
+<td>TRUE</td>
+<td>FALSE</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>anne</td>
+<td>TRUE</td>
+<td>FALSE</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>anne</td>
+<td>FALSE</td>
+<td>TRUE</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>ben</td>
+<td>TRUE</td>
+<td>TRUE</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>ben</td>
+<td>TRUE</td>
+<td>FALSE</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>ben</td>
+<td>FALSE</td>
+<td>TRUE</td>
+</tr>
+</tbody>
+</table>
+<p>Calculating reliability is straight forward with report_counts():</p>
+<ul>
+<li>Provide the data to the first parameter.<br>
+</li>
+<li>Add the column with codings (or a selection of multiple columns,
+e.g. using <code><a href="../reference/starts_with.html">starts_with()</a></code>) to the second parameter.<br>
+</li>
+<li>Set the the third parameter to the column name with coder names or
+initials.<br>
+</li>
+<li>Set the ids-parameter to the column that contains case IDs or case
+numbers (this tells the volker-package which cases belong
+together).<br>
+</li>
+<li>Set the agree-parameter to “reliability” to request reliability
+scores.</li>
+</ul>
+<p>Example:</p>
+<pre><code><span><span class="fu"><a href="../reference/report_counts.html">report_counts</a></span><span class="op">(</span><span class="va">data_coded</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"topic_"</span><span class="op">)</span>, <span class="va">coder</span>, ids <span class="op">=</span> <span class="va">case</span>, prop<span class="op">=</span><span class="st">"cols"</span>, agree <span class="op">=</span> <span class="st">"reliability"</span><span class="op">)</span></span></code></pre>
+<p>Alternatively, if you are only interested in the scores, not a plot,
+you get them using agree_tab. Hint: You may abbreviate the reliability
+value.</p>
+<pre><code><span><span class="fu"><a href="../reference/agree_tab.html">agree_tab</a></span><span class="op">(</span><span class="va">data_coded</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"topic_"</span><span class="op">)</span>, <span class="va">coder</span>, ids <span class="op">=</span> <span class="va">case</span>, method<span class="op">=</span><span class="st">"reli"</span><span class="op">)</span></span></code></pre>
+<p>Further, you can request classification performance indicators
+(accuracy, precision, recall, F1) with the same function by setting the
+method to “classification” (may be abbreviated). Use this option if you
+compare manual codings to automated codings (classifiers, large language
+models). By default, you get macro statistics (average precision, recall
+and f1 over categories).</p>
+<p>Give you have multiple values in on column, you may focus one
+category to get micro statistics:</p>
+<pre><code><span><span class="fu"><a href="../reference/agree_tab.html">agree_tab</a></span><span class="op">(</span><span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"topic_"</span><span class="op">)</span>, <span class="va">coder</span>, ids <span class="op">=</span> <span class="va">case</span>, method <span class="op">=</span> <span class="st">"class"</span>, category <span class="op">=</span> <span class="st">"catcontent"</span><span class="op">)</span></span></code></pre>
+</div>
 </div>
 <div class="section level2">
 <h2 id="the-mystery-of-missing-values">The mystery of missing values<a class="anchor" aria-label="anchor" href="#the-mystery-of-missing-values"></a>
@@ -991,7 +1116,7 @@ Angabe”, “[no answer]” and “keine Angabe”).<br>
 <li>Residual numeric values defined in the <code>VLKR_NA_NUMBERS</code>
 constant are recoded to missing values (-9, -2, and -1).</li>
 </ul>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">volker</span><span class="fu">:::</span><span class="va"><a href="../reference/VLKR_NA_LEVELS.html">VLKR_NA_LEVELS</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "[NA] nicht beantwortet" "[NA] keine Angabe"      "[no answer]"           </span></span>
@@ -1006,8 +1131,8 @@ missings:</p>
 <li>Disable recoding by setting the <code>clean</code>-parameter of the
 functions to <code>FALSE</code>.<br>
 </li>
-<li>Override the values in VLKR_NA_LEVELS and VLKR_NA_NUMBERS by
-<code>options(vlkr.na.levels=c("Not answered"))</code> or
+<li>Override the values in VLKR_NA_LEVELS and VLKR_NA_NUMBERS by calls
+such as <code>options(vlkr.na.levels=c("Not answered"))</code> or
 <code>options(vlkr.na.numbers=c(-2,-9))</code>. If you set the value to
 <code>FALSE</code>, no values are recoded.<br>
 </li>

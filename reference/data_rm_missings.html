@@ -40,7 +40,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">data_rm_missings</span><span class="op">(</span><span class="va">data</span>, <span class="va">cols</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">data_rm_missings</span><span class="op">(</span><span class="va">data</span>, <span class="va">cols</span>, force <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -53,6 +53,12 @@
 
 <dt id="arg-cols">cols<a class="anchor" aria-label="anchor" href="#arg-cols"></a></dt>
 <dd><p>A tidy column selection.</p></dd>
+
+
+<dt id="arg-force">force<a class="anchor" aria-label="anchor" href="#arg-force"></a></dt>
+<dd><p>By default, cases with missings are only removed
+when the vlkr.na.omit option is TRUE.
+Set force to TRUE to always remove such cases.</p></dd>
 
 </dl></div>
     <div class="section level2">

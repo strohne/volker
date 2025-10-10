@@ -72,17 +72,27 @@ If any cell contains less than 5 observations, the exact-parameter is set.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A volker tibble with the following statistical measures:</p><ul><li><p><strong>Cramer's V</strong>: Effect size measuring the association between two variables.</p></li>
-<li><p><strong>n</strong>: Number of cases the calculation is based on.</p></li>
-<li><p><strong>Chi-squared</strong>: Chi-Squared test statistic.</p></li>
-<li><p><strong>df</strong>: Degrees of freedom.</p></li>
-<li><p><strong>p</strong>: p-value for the statistical test.</p></li>
-<li><p><strong>stars</strong>: Significance stars based on p-value (*, **, ***).</p></li>
+    <p>A volker list with two volker tibbles.
+The first tibble contains npmi values for each combinations:</p><ul><li><p>n Number the combination occurs.</p></li>
+<li><p>p_x Marginal share of the first category.</p></li>
+<li><p>p_y Marginal share of the second category.</p></li>
+<li><p>p_xy Share of the combination based on all combinations.</p></li>
+<li><p>ratio The ratio of p_xy to (p_x * p_y).</p></li>
+<li><p>pmi Pointwise Mutual information, derived from the ratio.</p></li>
+<li><p>npmi Normalized Pointwise Mutual Information, derived from the pmi.</p></li>
+</ul><p>The second tibble contains effect sizes based on the cross table:</p><ul><li><p>Cramer's V: Effect size measuring the association between the two variables.</p></li>
+<li><p>n: Number of cases the calculation is based on.</p></li>
+<li><p>Chi-squared: Chi-Squared test statistic.
+If expected values are below 5 in at least one cell, an exact Fisher test is conducted.</p></li>
+<li><p>df: Degrees of freedo of the chi-squared test. Empty for the exact Fisher test.</p></li>
+<li><p>p: p-value of the chi-squared test.</p></li>
+<li><p>stars: Significance stars based on p-value (*, **, ***).</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Phi is derived from the Chi squared value by <code>sqrt(fit$statistic / n)</code>.
-Cramer's V is derived by <code>sqrt(phi / (min(dim(contingency)[1], dim(contingency)[2]) - 1))</code>.</p>
+Cramer's V is derived by <code>sqrt(phi / (min(dim(contingency)[1], dim(contingency)[2]) - 1))</code>.
+Cramer's V is set to 1.0 for diagonal contingency matrices, indicating perfect association.</p>
     </div>
 
     <div class="section level2">
@@ -93,13 +103,28 @@ Cramer's V is derived by <code>sqrt(phi / (min(dim(contingency)[1], dim(continge
 <span class="r-in"><span><span class="fu">effect_counts_one_grouped</span><span class="op">(</span><span class="va">data</span>, <span class="va">adopter</span>, <span class="va">sd_gender</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |adopter                                  | sd_gender|  n|  p_x|  p_y| p_xy| ratio|   pmi|  npmi| fisher_p| fisher_stars|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |:----------------------------------------|---------:|--:|----:|----:|----:|-----:|-----:|-----:|--------:|------------:|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |I try new offers immediately             |    female|  2| 0.15| 0.40| 0.02|  0.34| -1.57| -0.28|    0.142|             |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |I try new offers immediately             |      male| 12| 0.15| 0.59| 0.12|  1.35|  0.43|  0.14|    0.187|             |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |I try new offers immediately             |   diverse|  1| 0.15| 0.01| 0.01|  6.73|  2.75|  0.41|    0.238|             |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |I try new offers rather quickly          |    female| 25| 0.62| 0.40| 0.25|  1.00|  0.00|  0.00|    1.000|             |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |I try new offers rather quickly          |      male| 38| 0.62| 0.59| 0.38|  1.02|  0.02|  0.02|    1.000|             |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |I wait until offers establish themselves |    female| 13| 0.22| 0.40| 0.13|  1.49|  0.58|  0.20|    0.142|             |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |I wait until offers establish themselves |      male|  9| 0.22| 0.59| 0.09|  0.69| -0.54| -0.15|    0.142|             |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |I only use new offers when I have no ... |      male|  1| 0.01| 0.59| 0.01|  1.68|  0.75|  0.11|    1.000|             |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Adjusted significance p values with fdr method.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |Statistic   | Value|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |:-----------|-----:|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |Cramer's V  |  0.26|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |Chi-squared | 13.48|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |n           |   101|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |df          |      |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |p           | 0.025|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |p           | 0.022|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |stars       |     *|</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

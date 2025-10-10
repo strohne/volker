@@ -46,7 +46,13 @@ See https://github.com/Bioconductor/Biobase</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_prefix</span><span class="op">(</span><span class="va">x</span>, ignore.case <span class="op">=</span> <span class="cn">FALSE</span>, trim <span class="op">=</span> <span class="cn">FALSE</span>, delimiters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">":"</span>, <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_prefix</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  ignore.case <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  trim <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  delimiters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">":"</span>, <span class="st">"\n"</span><span class="op">)</span>,</span>
+<span>  minlength <span class="op">=</span> <span class="fl">3</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -73,6 +79,15 @@ Consider the following two items as an example:
 <code>c("Usage: in private context", "Usage: in work context")</code>.
 The common prefix would be</p><div class="sourceCode"><pre><code><span><span class="st">"Usage: in "</span></span></code></pre></div><p>, but it makes
 more sense to break it after the colon.</p></dd>
+
+
+<dt id="arg-minlength">minlength<a class="anchor" aria-label="anchor" href="#arg-minlength"></a></dt>
+<dd><p>Minimum length of the prefix.
+Consider the following two items as an example:
+<code>c("coder one", "cg_act_write")</code>.
+The common prefix would be</p><div class="sourceCode"><pre><code><span><span class="st">"c"</span></span></code></pre></div><p>,
+although the items have nothing in common.
+Requirung a minimum common prefix length should help in many cases.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -53,6 +53,7 @@ using <code>effectsize::<a href="https://easystats.github.io/effectsize/referenc
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">cols</span>,</span>
 <span>  <span class="va">cross</span>,</span>
+<span>  adjust <span class="op">=</span> <span class="st">"fdr"</span>,</span>
 <span>  labels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  clean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -73,6 +74,13 @@ using <code>effectsize::<a href="https://easystats.github.io/effectsize/referenc
 
 <dt id="arg-cross">cross<a class="anchor" aria-label="anchor" href="#arg-cross"></a></dt>
 <dd><p>The column holding groups to compare.</p></dd>
+
+
+<dt id="arg-adjust">adjust<a class="anchor" aria-label="anchor" href="#arg-adjust"></a></dt>
+<dd><p>Performing multiple significance tests inflates the alpha error.
+Thus, p values need to be adjusted according to the number of tests.
+Set a method supported by  <code>stats::<a href="https://rdrr.io/r/stats/p.adjust.html" class="external-link">p.adjust</a></code>,
+e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.</p></dd>
 
 
 <dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
@@ -105,22 +113,22 @@ using <code>effectsize::<a href="https://easystats.github.io/effectsize/referenc
 <span class="r-in"><span><span class="fu"><a href="effect_metrics.html">effect_metrics</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_"</span><span class="op">)</span>, <span class="va">adopter</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Expectations                                                | Eta-squared|  Eta|  n|     F|     p| stars|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |:-----------------------------------------------------------|-----------:|----:|--:|-----:|-----:|-----:|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |ChatGPT has clear advantages compared to similar offerings. |        0.03| 0.18| 97|  1.03| 0.719|      |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT brings financial benefits.                    |        0.08| 0.29| 97|  2.88| 0.011|     *|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT is advantageous in many tasks.                |        0.01| 0.09| 97|  0.23| 0.578|      |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Compared to other systems, using ChatGPT is more fun.       |        0.03| 0.19| 97|  1.12| 0.103|      |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Much can go wrong when using ChatGPT.                       |        0.00| 0.07| 97|  0.16| 0.517|      |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |There are legal issues with using ChatGPT.                  |        0.05| 0.21| 97|  1.47| 0.166|      |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |The security of user data is not guaranteed with ChatGPT.   |        0.04| 0.21| 97|  1.37| 0.146|      |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT could bring personal disadvantages.           |        0.04| 0.20| 97|  1.36| 0.133|      |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |In my environment, using ChatGPT is standard.               |        0.22| 0.47| 97|  8.96| 0.000|   ***|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Almost everyone in my environment uses ChatGPT.             |        0.23| 0.48| 97|  9.05| 0.000|   ***|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Not using ChatGPT is considered being an outsider.          |        0.27| 0.52| 97| 11.63| 0.000|   ***|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT brings me recognition from my environment.    |        0.25| 0.50| 97| 10.13| 0.000|   ***|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Expectations                             | Eta-squared|  Eta|  n|     F|     p| stars|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |:----------------------------------------|-----------:|----:|--:|-----:|-----:|-----:|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |ChatGPT has clear advantages compared... |        0.03| 0.18| 97|  1.03| 0.719|      |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT brings financial benefits. |        0.08| 0.29| 97|  2.88| 0.026|     *|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT is advantageous in many... |        0.01| 0.09| 97|  0.23| 0.630|      |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Compared to other systems, using Chat... |        0.03| 0.19| 97|  1.12| 0.206|      |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Much can go wrong when using ChatGPT.    |        0.00| 0.07| 97|  0.16| 0.621|      |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |There are legal issues with using Cha... |        0.05| 0.21| 97|  1.47| 0.221|      |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |The security of user data is not guar... |        0.04| 0.21| 97|  1.37| 0.219|      |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT could bring personal di... |        0.04| 0.20| 97|  1.36| 0.219|      |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |In my environment, using ChatGPT is s... |        0.22| 0.47| 97|  8.96| 0.000|   ***|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Almost everyone in my environment use... |        0.23| 0.48| 97|  9.05| 0.000|   ***|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Not using ChatGPT is considered being... |        0.27| 0.52| 97| 11.63| 0.000|   ***|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT brings me recognition f... |        0.25| 0.50| 97| 10.13| 0.000|   ***|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 missing case(s) omitted.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 missing case(s) omitted. Adjusted significance p values with fdr method.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

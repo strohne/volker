@@ -43,7 +43,14 @@ The goodness-of-fit-test is calculated using  <code>stats::<a href="https://rdrr
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">effect_counts_items</span><span class="op">(</span><span class="va">data</span>, <span class="va">cols</span>, labels <span class="op">=</span> <span class="cn">TRUE</span>, clean <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">effect_counts_items</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">cols</span>,</span>
+<span>  adjust <span class="op">=</span> <span class="st">"fdr"</span>,</span>
+<span>  labels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  clean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -56,6 +63,13 @@ The goodness-of-fit-test is calculated using  <code>stats::<a href="https://rdrr
 
 <dt id="arg-cols">cols<a class="anchor" aria-label="anchor" href="#arg-cols"></a></dt>
 <dd><p>Tidyselect item variables (e.g. starts_with...).</p></dd>
+
+
+<dt id="arg-adjust">adjust<a class="anchor" aria-label="anchor" href="#arg-adjust"></a></dt>
+<dd><p>Performing multiple significance tests inflates the alpha error.
+Thus, p values need to be adjusted according to the number of tests.
+Set a method supported by  <code>stats::<a href="https://rdrr.io/r/stats/p.adjust.html" class="external-link">p.adjust</a></code>,
+e.g. "fdr" (the default) or "bonferroni". Disable adjustment with FALSE.</p></dd>
 
 
 <dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
@@ -87,14 +101,14 @@ The goodness-of-fit-test is calculated using  <code>stats::<a href="https://rdrr
 <span class="r-in"><span><span class="fu">effect_counts_items</span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_adv"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Expectations                                                | Gini coefficient|  n| Chi-squared|     p| stars|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |:-----------------------------------------------------------|----------------:|--:|-----------:|-----:|-----:|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |ChatGPT has clear advantages compared to similar offerings. |             0.36| 99|       43.47| 0.000|   ***|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT brings financial benefits.                    |             0.19| 99|       14.28| 0.006|    **|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT is advantageous in many tasks.                |             0.36| 99|       47.01| 0.000|   ***|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |Compared to other systems, using ChatGPT is more fun.       |             0.40| 99|       53.68| 0.000|   ***|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Expectations                             | Gini coefficient|  n| Chi-squared|     p| stars|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |:----------------------------------------|----------------:|--:|-----------:|-----:|-----:|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |ChatGPT has clear advantages compared... |             0.36| 99|       43.47| 0.000|   ***|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT brings financial benefits. |             0.19| 99|       14.28| 0.006|    **|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Using ChatGPT is advantageous in many... |             0.36| 99|       47.01| 0.000|   ***|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |Compared to other systems, using Chat... |             0.40| 99|       53.68| 0.000|   ***|</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 missing case(s) omitted.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 missing case(s) omitted. Adjusted significance p values with fdr method.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

@@ -9,10 +9,11 @@ articles:
   labels: labels.html
   models: models.html
   plots: plots.html
+  reliability: reliability.html
   reports: reports.html
   scales: scales.html
   tables: tables.html
-last_built: 2025-10-07T22:46Z
+last_built: 2025-10-10T22:13Z
 urls:
   reference: https://strohne.github.io/volker/reference
   article: https://strohne.github.io/volker/articles
