@@ -4,12 +4,16 @@
 \alias{data_rm_missings}
 \title{Remove missings and output a message}
 \usage{
-data_rm_missings(data, cols)
+data_rm_missings(data, cols, force = FALSE)
 }
 \arguments{
 \item{data}{Data frame.}
 
 \item{cols}{A tidy column selection.}
+
+\item{force}{By default, cases with missings are only removed
+when the vlkr.na.omit option is TRUE.
+Set force to TRUE to always remove such cases.}
 }
 \value{
 Data frame.

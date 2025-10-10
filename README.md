@@ -669,7 +669,7 @@ univariate and bivariate statistics and data representation using
 RStudio and R Markdown.
 
 Other packages with high-level reporting functions:  
-- <https://github.com/joon-e/tidycomm>  
+- <https://github.com/tidycomm/tidycomm>  
 - <https://github.com/kassambara/rstatix>  
 - <https://github.com/easystats/easystats>
 

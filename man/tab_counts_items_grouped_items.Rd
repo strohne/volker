@@ -38,6 +38,6 @@ tab_counts_items_grouped_items(
 A volker tibble.
 }
 \description{
-\strong{Not yet implemented. The future will come.}
+Correlation of categorical items with categorical items
 }
 \keyword{internal}

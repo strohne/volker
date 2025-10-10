@@ -1,4 +1,13 @@
-# volker (development version)
+# volker 3.2.0
+
+* Implemented linear modeling in `add_model()`
+  including effect sizes, standardised betas and  adjusted p values
+* Implemented reliability calculation and classification performance indicators
+  in `agree_tab()`
+* Implemented cooccurrence analysis: `report_counts()` generates 
+  heatmaps (tiles-parameter) and npmi values (method-parameter).
+* Option to keep missings if possible by setting `options(vlkr.na.omit=FALSE)`
+  (pairwise instead of listwise handling of missings)
 
 # volker 3.1.0
 

@@ -583,7 +583,7 @@ R](https://doi.org/10.1007/978-3-658-34285-2) (Gehrau & Maubach et al.,
 statistics and data representation using RStudio and R Markdown.
 
 Other packages with high-level reporting functions:\
-- <https://github.com/joon-e/tidycomm>\
+- <https://github.com/tidycomm/tidycomm>\
 - <https://github.com/kassambara/rstatix>\
 - <https://github.com/easystats/easystats>
 

@@ -25,11 +25,14 @@ agree_tab(
 
 \item{ids}{The column with case IDs.}
 
-\item{category}{For classification performance indicators, if no category is provided, macro statistics are returned (along with the number of categories in the output).
+\item{category}{For classification performance indicators, if no category is provided,
+macro statistics are returned (along with the number of categories in the output).
 Provide a category to get the statistics for this category only.
-If values are boolean (TRUE / FALSE) and no category is provided, the category is always assumed to be "TRUE".}
+If values are boolean (TRUE / FALSE) and no category is provided,
+the category is always assumed to be "TRUE".}
 
-\item{method}{The output metrics, one of \code{reliability} or \code{classification}. You can abbreviate it, e.g. \code{reli} or \code{class}.}
+\item{method}{The output metrics, one of \code{reliability} or \code{classification}.
+You can abbreviate it, e.g. \code{reli} or \code{class}.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
@@ -67,8 +70,8 @@ Two types of comparing categories are provided:
 \details{
 \itemize{
 \item Reliability: Compare codings of two or more raters in content analysis.
-Usual reliability measures are percent agreement, also known as Hoslti,
-Fleiss' or Cohen's Kappa, Krippendorff's Alpha or Gwets AC.
+Common reliability measures are percent agreement (also known as Holsti),
+Fleiss' or Cohen's Kappa, Krippendorff's Alpha and Gwets AC.
 \item Classification: Compare true and predicted categories from classification methods.
 Common performance metrics include accuracy, precision, recall and F1.
 }
