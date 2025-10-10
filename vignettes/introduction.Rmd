@@ -330,7 +330,7 @@ Cronbach's Alpha and the number of items are calculated with `psych::alpha()`
 and stored as column attribute named "psych.alpha". The reliability values 
 are printed by `report_metrics()`.
 
-```{r}
+```{r eval=FALSE}
 ds |> 
   report_metrics(starts_with("cg_adoption"), index = TRUE)
 ```
