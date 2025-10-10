@@ -2,6 +2,8 @@
 # Test effect calculations
 #
 
+options(vlkr.na.omit=TRUE)
+
 # Categorical
 test_that("effect_counts_one", {
 
