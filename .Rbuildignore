@@ -5,6 +5,9 @@
 ^\.github$
 ^\.idea$
 ^cran-comments\.md$
+tests/vdiffr.Rout.fail
+tests/testthat/_snaps/plots
+tests/testthat/_snaps/theme
 vignettes/tables.Rmd
 vignettes/tables.html
 vignettes/plots.Rmd
@@ -21,6 +24,10 @@ vignettes/clusters.Rmd
 vignettes/clusters.html
 vignettes/factors.Rmd
 vignettes/factors.html
+vignettes/reliability.Rmd
+vignettes/reliability.html
+vignettes/models.Rmd
+vignettes/models.html
 inst/rmarkdown/templates/volker-report/skeleton/skeleton.html
 ^CRAN-SUBMISSION$
 private

@@ -59,10 +59,8 @@ plot_counts(data, sd_gender)
 plot_counts(data, adopter, sd_gender, prop = "cols", numbers = "p")
 
 # The tiles=TRUE parameter generates a heatmap,
-# the npmi=TRUE parameter uses npmi values as base,
-# significance stars of a value-wise fisher test 
-# are added by including "stars" in the numbers parameter.
-plot_counts(data, sd_gender, adopter, tiles = TRUE, npmi = TRUE, numbers=c("n", "stars"))
+# the npmi=TRUE parameter uses npmi values as base.
+plot_counts(data, sd_gender, adopter, tiles = TRUE, npmi = TRUE, numbers = "n")
 
 
 ```
