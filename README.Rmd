@@ -595,8 +595,9 @@ Other packages with high-level reporting functions:\
 Jakob Jünger (University of Münster)\
 Henrieke Kotthoff (University of Münster)\
 
-**Contributers**\
-Chantal Gärtner (University of Münster)
+**Contributors**\
+Chantal Gärtner (University of Münster)\
+Sophia Rinne (University of Münster)
 
 **Citation**\
 Jünger, J. & Kotthoff, H. (2024). volker: High-level functions for tabulating, charting and reporting survey data. R package version 3.0.

@@ -679,8 +679,9 @@ Other packages with high-level reporting functions:
 Jakob Jünger (University of Münster)  
 Henrieke Kotthoff (University of Münster)  
 
-**Contributers**  
-Chantal Gärtner (University of Münster)
+**Contributors**  
+Chantal Gärtner (University of Münster)  
+Sophia Rinne (University of Münster)
 
 **Citation**  
 Jünger, J. & Kotthoff, H. (2024). volker: High-level functions for
