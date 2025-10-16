@@ -1503,7 +1503,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, title =
         dplyr::select(!!sym(col), {{ cols }}) %>%
         skim_metrics() %>%
         dplyr::ungroup() %>%
-        dplyr::select(item = "skim_variable", .cross = !!sym(col), value = "numeric.mean") %>%
+        dplyr::select(item = "skim_variable", .cross = !!sym(col), value = "mean") %>%
         tidyr::drop_na()
     }
   ) %>%
