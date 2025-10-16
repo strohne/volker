@@ -30,6 +30,7 @@ Authors:
 Other contributors:
 \itemize{
   \item Chantal Gärtner \email{chantal.gaertner@uni-muenster.de} (\href{https://orcid.org/0000-0002-3653-6013}{ORCID}) [contributor]
+  \item Sophia Rinne [contributor]
 }
 
 }
