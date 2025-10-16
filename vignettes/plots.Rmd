@@ -49,7 +49,7 @@ data <- volker::chatgpt
 
 ### 1. One variable: Frequency plot of Gender
 ```{r}
-plot_counts(data, sd_gender)
+plot_counts_one(data, sd_gender, numbers = "n")
 ```
 
 ### 2. Two variables: Stacked frequency plot and heatmap of innovator type by gender

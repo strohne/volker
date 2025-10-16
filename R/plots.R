@@ -1886,7 +1886,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   # Add numbers
   if (!is.null(numbers)) {
     pl <- pl +
-      ggplot2::geom_text(ggplot2::aes(label = .data$.values), position = ggplot2::position_stack(vjust = 0.5), color = "white") #size = 3
+      ggplot2::geom_text(ggplot2::aes(label = .data$.values), position = ggplot2::position_stack(vjust = 0.5), color = "white")
   }
 
   # Add title
