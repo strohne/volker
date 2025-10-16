@@ -37,10 +37,6 @@
 #
 # nocov start
 
-`%||%` <- function(x, y) {
-  if (!is.null(x)) x else y
-}
-
 map <- function(.x, .f, ...) {
   .f <- as_function(.f, env = global_env())
   lapply(.x, .f, ...)

@@ -1,3 +1,6 @@
+# Workaround for loading the coalescing operator for skimr
+library(purrr, include.only = "%||%")
+
 #' A reduced skimmer for metric variables
 #' Returns a five point summary, mean and sd, items count and alpha for scales added by add_index()
 #'
