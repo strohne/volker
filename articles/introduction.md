@@ -1,0 +1,659 @@
+# Introduction
+
+### How to use the volkeR package?
+
+First, load the package, set the plot theme and get some data.
+
+``` r
+# Load the package
+library(volker)
+
+# Set the basic plot theme
+theme_set(theme_vlkr())
+
+# Load an example dataset ds from the package
+ds <- volker::chatgpt
+```
+
+### How to generate tables and plots?
+
+Decide whether your data is categorical or metric and choose the
+appropriate function:
+
+- [`report_counts()`](https://strohne.github.io/volker/reference/report_counts.md)
+  shows frequency tables and generates simple and stacked bar charts.
+- [`report_metrics()`](https://strohne.github.io/volker/reference/report_metrics.md)
+  creates tables with distribution parameters, visualises distributions
+  in density plots, box plots or scatter plots.
+
+Report functions, under the hood, call functions that generate plots,
+tables or calculate effects. If you only need one of those outputs, you
+can call the functions directly:
+
+- [`tab_counts()`](https://strohne.github.io/volker/reference/tab_counts.md),
+  [`plot_counts()`](https://strohne.github.io/volker/reference/plot_counts.md)
+  or
+  [`effect_counts()`](https://strohne.github.io/volker/reference/effect_counts.md)
+  for categorical data.
+- [`tab_metrics()`](https://strohne.github.io/volker/reference/tab_metrics.md),
+  [`plot_metrics()`](https://strohne.github.io/volker/reference/plot_metrics.md)
+  or
+  [`effect_metrics()`](https://strohne.github.io/volker/reference/effect_metrics.md)
+  for metric data.
+
+All functions expect a dataset as their first parameter. The second and
+third parameters await your column selections. The column selections
+determine whether to analyse single variables, item lists or to compare
+and correlate multiple variables.
+
+*Try out the following examples!*
+
+#### Categorical variables
+
+``` r
+# A single variable
+report_counts(ds, use_private)
+```
+
+``` r
+# A list of variables
+report_counts(ds, c(use_private, use_work))
+```
+
+``` r
+# Variables matched by a pattern
+report_counts(ds, starts_with("use_"))
+```
+
+You can use all sorts of tidyverse style selections: A single column, a
+list of columns or patterns such as
+[`starts_with()`](https://strohne.github.io/volker/reference/starts_with.md),
+[`ends_with()`](https://strohne.github.io/volker/reference/ends_with.md),
+[`contains()`](https://tidyselect.r-lib.org/reference/starts_with.html)
+or
+[`matches()`](https://tidyselect.r-lib.org/reference/starts_with.html).
+
+#### Metric variables
+
+``` r
+# One metric variable
+report_metrics(ds, sd_age)
+```
+
+``` r
+# Multiple metric items
+report_metrics(ds, starts_with("cg_adoption_"))
+```
+
+#### Cross tabulation and group comparison
+
+Provide a grouping column in the third parameter to compare different
+groups.
+
+``` r
+report_counts(ds, adopter, sd_gender)
+```
+
+For metric variables, you can compare the mean values.
+
+``` r
+report_metrics(ds, sd_age, sd_gender)
+```
+
+By default, the crossing variable is treated as categorical. You can
+change this behavior using the metric-parameter to calculate
+correlations:
+
+``` r
+report_metrics(ds, sd_age, use_work, metric = TRUE)
+```
+
+The ci parameter, where possible, adds confidence intervals to the
+outputs.
+
+``` r
+ds |> 
+  filter(sd_gender != "diverse") |> 
+  report_metrics(sd_age, sd_gender, ci = TRUE)
+```
+
+Conduct statistical tests with the `effect`-parameter.
+
+``` r
+ds |> 
+  filter(sd_gender != "diverse") |> 
+  report_counts(adopter, sd_gender, effect = TRUE)
+```
+
+See the function help (F1 key) to learn more options. For example, you
+can use the `prop` parameter to grow bars to 100%. The `numbers`
+parameter prints frequencies and percentages onto the bars.
+
+``` r
+ds |> 
+  filter(sd_gender != "diverse") |> 
+  report_counts(adopter, sd_gender, prop="rows", numbers= "n")
+```
+
+## Theming
+
+The
+[`theme_vlkr()`](https://strohne.github.io/volker/reference/theme_vlkr.md)-function
+lets you customise colors:
+
+``` r
+theme_set(theme_vlkr(
+  base_fill = c("#F0983A","#3ABEF0","#95EF39","#E35FF5","#7A9B59"),
+  base_gradient = c("#FAE2C4","#F0983A")
+))
+```
+
+## Labeling
+
+Labels used in plots and tables are stored in the comment attribute of
+the variable. You can inspect all labels using the
+[`codebook()`](https://strohne.github.io/volker/reference/codebook.md)-function:
+
+``` r
+codebook(ds)
+#> # A tibble: 97 × 6
+#>    item_name     item_group item_class item_label         value_name value_label
+#>    <chr>         <chr>      <chr>      <chr>              <chr>      <chr>      
+#>  1 case          case       numeric    case               NA         NA         
+#>  2 sd_age        sd         numeric    Age                NA         NA         
+#>  3 cg_activities cg         character  Activities with C… NA         NA         
+#>  4 cg_act_write  cg         character  cg_act_write       NA         NA         
+#>  5 cg_act_test   cg         character  cg_act_test        NA         NA         
+#>  6 cg_act_search cg         character  cg_act_search      NA         NA         
+#>  7 adopter       adopter    factor     Innovator type     I try new… I try new …
+#>  8 adopter       adopter    factor     Innovator type     I try new… I try new …
+#>  9 adopter       adopter    factor     Innovator type     I wait un… I wait unt…
+#> 10 adopter       adopter    factor     Innovator type     I only us… I only use…
+#> # ℹ 87 more rows
+```
+
+Set specific column labels by providing a named list to the
+items-parameter of
+[`labs_apply()`](https://strohne.github.io/volker/reference/labs_apply.md):
+
+``` r
+ds %>%
+  labs_apply(
+    items = list(
+      "cg_adoption_advantage_01" = "General advantages",
+      "cg_adoption_advantage_02" = "Financial advantages",
+      "cg_adoption_advantage_03" = "Work-related advantages",
+      "cg_adoption_advantage_04" = "More fun"
+    )
+  ) %>% 
+  report_metrics(starts_with("cg_adoption_advantage_"))
+```
+
+Labels for values inside a column can be adjusted by providing a named
+list to the values-parameter of
+[`labs_apply()`](https://strohne.github.io/volker/reference/labs_apply.md).
+In addition, select the columns where value labels should be changed:
+
+``` r
+ds %>%
+  labs_apply(
+    cols = starts_with("cg_adoption"),  
+    values = list(
+      "1" = "Strongly disagree",
+      "2" = "Disagree",
+      "3" = "Neutral",
+      "4" = "Agree",
+      "5" = "Strongly agree"
+    ) 
+  ) %>% 
+  report_metrics(starts_with("cg_adoption"))
+```
+
+To conveniently manage all labels of a dataset, save the result of
+[`codebook()`](https://strohne.github.io/volker/reference/codebook.md)
+to an Excel file, change the labels manually in a copy of the Excel
+file, and finally call
+[`labs_apply()`](https://strohne.github.io/volker/reference/labs_apply.md)
+with your revised codebook.
+
+``` r
+library(readxl)
+library(writexl)
+
+# Save codebook to a file
+codes <- codebook(ds)
+write_xlsx(codes,"codebook.xlsx")
+
+# Load and apply a codebook from a file
+codes <- read_xlsx("codebook_revised.xlsx")
+ds <- labs_apply(ds, codes)
+```
+
+Be aware that some data operations such as
+[`mutate()`](https://strohne.github.io/volker/reference/mutate.md) from
+the tidyverse loose labels on their way. In this case, store the labels
+(in the codebook attribute of the data frame) before the operation and
+restore them afterwards:
+
+``` r
+ds %>%
+  labs_store() %>%
+  mutate(sd_age = 2024 - sd_age) %>% 
+  labs_restore() %>% 
+  
+  report_metrics(sd_age)
+```
+
+### The volker report template
+
+Reports combine plots, tables and effect calculations in an RMarkdown
+document. Optionally, for item batteries, an index, clusters or factors
+are calculated and reported.
+
+To see an example or develop own reports, use the volker report template
+in RStudio:
+
+- Create a new R Markdown document from the main menu  
+- In the popup select the “From Template” option  
+- Select the volker template.  
+- The template contains a working example. Just click knit to see the
+  result.
+
+Have fun with developing own reports!
+
+Without the template, to generate a volker-report from any R-Markdown
+document, add
+[`volker::html_report`](https://strohne.github.io/volker/reference/html_report.md)
+to the output options of your Markdown document:
+
+    ---
+    title: "How to create reports?"
+    output: 
+      volker::html_report
+    ---
+
+Then, you can generate combined outputs using the report-functions. One
+advantage of the report-functions is that plots are automatically scaled
+to fit the page. See the function help for further options (F1 key).
+
+``` r
+
+#> ```{r echo=FALSE}
+#> ds %>% 
+#>   filter(sd_gender != "diverse") %>% 
+#>   report_counts(adopter, sd_gender, 
+#> ```
+```
+
+#### Custom tab sheets
+
+By default, a header and tabsheets are automatically created. You can
+mix in custom content.
+
+- If you want to add content before the report outputs, set the title
+  parameter to `FALSE` and add your own title.
+- A good place for methodological details is a custom tabsheet next to
+  the “Plot” and the “Table” buttons. You can add a tab by setting the
+  close-parameter to `FALSE` and adding a new header on the fifth level
+  (5 x \# followed by the tab name). Close your custom new tabsheet with
+  `#### {-}` (4 x \#).
+
+Try out the following pattern in an RMarkdown document!
+
+``` r
+
+#> ### Adoption types
+#> 
+#> ```{r echo=FALSE}
+#> ds %>% 
+#>   filter(sd_gender != "diverse") %>% 
+#>   report_counts(adopter, sd_gender, prop="rows", title=FALSE, close=FALSE)
+#> ```
+#>
+#> ##### Method
+#> Basis: Only male and female respondents.
+#> 
+#> #### {-}
+```
+
+## Index calculation for item batteries
+
+For quick inspections of an index from a bunch of items, set the index
+parameter to `TRUE`. The index is calculated by the average value of all
+selected columns.
+
+Cronbach’s Alpha and the number of items are calculated with
+[`psych::alpha()`](https://rdrr.io/pkg/psych/man/alpha.html) and stored
+as column attribute named “psych.alpha”. The reliability values are
+printed by
+[`report_metrics()`](https://strohne.github.io/volker/reference/report_metrics.md).
+
+``` r
+ds |> 
+  report_metrics(starts_with("cg_adoption"), index = TRUE)
+```
+
+You can add an index as a new column using
+[`add_index()`](https://strohne.github.io/volker/reference/add_index.md).
+A new column is created with the average value of all selected columns
+for each case. Provide a custom name for the column using the `newcol`
+parameter. The
+[`report_metrics()`](https://strohne.github.io/volker/reference/report_metrics.md)
+function still outputs reliability values for the column.
+
+**Add a single index**
+
+``` r
+ds %>%
+  add_index(starts_with("cg_adoption_"), newcol = "idx_cg_adoption") %>%
+  report_metrics(idx_cg_adoption)
+```
+
+**Compare the index values by group**
+
+``` r
+ds %>%
+  add_index(starts_with("cg_adoption_"), newcol = "idx_cg_adoption") %>%
+  report_metrics(idx_cg_adoption, adopter)
+```
+
+**Add multiple indizes and summarize them**
+
+``` r
+ds %>%
+  add_index(starts_with("cg_adoption_")) %>%
+  add_index(starts_with("cg_adoption_advantage")) %>%
+  add_index(starts_with("cg_adoption_fearofuse")) %>%
+  add_index(starts_with("cg_adoption_social")) %>%
+  tab_metrics(starts_with("idx_cg_adoption"))
+```
+
+To reverse items, provide a selection of columns to the
+`cols.reverse`-parameter of
+[`add_index()`](https://strohne.github.io/volker/reference/add_index.md).
+
+## Factor and cluster analysis
+
+The easiest way to conduct factor analysis or cluster analyses is to use
+the respective parameters in the
+[`report_metrics()`](https://strohne.github.io/volker/reference/report_metrics.md)
+function.
+
+``` r
+ds |> 
+  report_metrics(starts_with("cg_adoption"), factors = TRUE, clusters = TRUE)
+```
+
+Currently, cluster analysis is performed using kmeans and factor
+analysis is a principal component analysis. Setting the parameters to
+true, automatically generates scree plots and selects the number of
+factors or clusters. Alternatively, you can explicitly specify the
+numbers.
+
+**Add factor or cluster analysis results to the original data**
+
+If you want to work with the results, use
+[`add_factors()`](https://strohne.github.io/volker/reference/add_factors.md)
+and
+[`add_clusters()`](https://strohne.github.io/volker/reference/add_clusters.md)
+respectively. For factor analysis, new columns prefixed with “fct\_” are
+created to store the factor loadings based on the specified number of
+factors. For clustering, an additional column prefixed with “cls\_” is
+added that assigns each observation to a cluster number.
+
+``` r
+
+ds |> 
+  add_factors(starts_with("cg_adoption"), k = 3) |> 
+  select(starts_with("fct_"))
+```
+
+Once you have added factor or cluster columns to your data set, you can
+use them with the report functions:
+
+``` r
+ds |> 
+  add_factors(starts_with("cg_adoption"), k = 3)  |>
+  report_metrics(fct_cg_adoption_1, fct_cg_adoption_2, metric = TRUE)
+```
+
+``` r
+ds |>
+  add_clusters(starts_with("cg_adoption"), k = 3) |>
+  report_counts(sd_gender, cls_cg_adoption, prop = "cols")
+```
+
+After explicitly adding factor or cluster columns, you can inspect the
+analysis results using
+[`factor_tab()`](https://strohne.github.io/volker/reference/factor_tab.md),
+[`factor_plot()`](https://strohne.github.io/volker/reference/factor_plot.md)
+or
+[`cluster_tab()`](https://strohne.github.io/volker/reference/cluster_tab.md),
+[`cluster_plot()`](https://strohne.github.io/volker/reference/cluster_plot.md).
+
+``` r
+ds |> 
+  add_factors(starts_with("cg_adoption"), k = 3)  |>
+  factor_tab(starts_with("fct_"))
+```
+
+**Automatically determine the number of factors or clusters**
+
+To automatically determine the optimal number of factors or clusters
+based on diagnostics, set k = NULL.
+
+``` r
+ds |> 
+  add_factors(starts_with("cg_adoption"), k = NULL) |>
+  factor_tab(starts_with("fct_cg_adoption"))
+```
+
+## Modeling: Regression and Analysis of Variance
+
+Modeling in the statistical sense is predicting an outcome (dependent
+variable) from one or multiple predictors (independent variables).
+
+The report_metrics() function calculates a linear model if the model
+parameter is TRUE. You provide the variables in the following
+parameters:
+
+- Dependent metric variable: first parameter after the dataset (cols
+  parameter).  
+- Independent categorical variables: a tidy column selection in the
+  second parameter (cross parameter).  
+- Independent metric variables: a tidy column selection in the third
+  parameter (metric parameter.  
+- Interaction effects: interactions-parameter with a vector of
+  multiplication terms (e.g. `interactions = c(sd_age * sd_gender)`)
+
+``` r
+ds |>
+ filter(sd_gender != "diverse") |>
+ report_metrics(
+   use_work, 
+   cross = c(sd_gender, adopter), 
+   metric = sd_age,
+   model = TRUE,
+   diagnostics = TRUE
+ )
+```
+
+Four selected diagnostic plots are generated if the
+diagnostics-parameter is TRUE:
+
+- Residual vs. fitted: Residuals should be evenly distributed
+  vertically. Horizontally, they should follow the straight line.
+  Otherwise this could be an indicator for heteroscedasticity,
+  non-linearity or auto-correlationb.
+- Scale-location plot: Points should be evenly distributed, without a
+  pattern, as in the residual plot.
+- Q-Q-Plot of fitted values: All dots should be located on a straight
+  line. Otherweise, this may indicate non-linearity or that residuals
+  are not normally distributed.
+- Cooks’ distance plot: High values indicate that single cases influence
+  the model disproportionally. Rule of thumb: Cook’s distance \> 1 is a
+  problem.
+
+To work with the predicted values, use add_model() instead of the report
+function. This will add a new variable prefixed with `prd_` holding the
+target scores.
+
+``` r
+ds <- ds |> 
+  add_model(
+   use_work,
+   categorical = c(sd_gender, adopter), 
+   metric = sd_age
+ )
+
+report_metrics(ds, use_work, prd_use_work, metric = T)
+```
+
+There are two functions to get the regression table or plot from the new
+column:
+
+``` r
+model_tab(ds, prd_use_work)
+model_plot(ds, prd_use_work)
+```
+
+By default, p values are adjusted to the number of tests by controlling
+the false discovery rate (fdr). Set the adjust-parameter to FALSE for
+disabling p correction.
+
+### Reliability scores (and classification performance indicators)
+
+In content analysis, reliability is usually checked by coding the cases
+with different persons and then calculating the overlap. To calculate
+reliability scores, prepare one data frame for each person:
+
+- All column names in the different data frames should be identical.  
+  Codings must be either binary (TRUE/FALSE) or contain a fixed number
+  of values such as “sports”, “politics”, “weather”.  
+- Add a column holding initials or the name of the coder.  
+- One column must contain unique IDs for each case, e.g. a running case
+  number.
+
+Next, you row bind the data frames. The columns for coder and ID make
+sure that each coding is uniquely identified and can be related to the
+cases and coders.
+
+    data_coded <-  bind_rows(
+      data_coder1,
+      data_coder2
+    )
+
+The final data, for example, looks like:
+
+| case | coder | topic_sports | topic_weather |
+|------|-------|--------------|---------------|
+| 1    | anne  | TRUE         | FALSE         |
+| 2    | anne  | TRUE         | FALSE         |
+| 3    | anne  | FALSE        | TRUE          |
+| 1    | ben   | TRUE         | TRUE          |
+| 2    | ben   | TRUE         | FALSE         |
+| 3    | ben   | FALSE        | TRUE          |
+
+Calculating reliability is straight forward with report_counts():
+
+- Provide the data to the first parameter.  
+- Add the column with codings (or a selection of multiple columns,
+  e.g. using
+  [`starts_with()`](https://strohne.github.io/volker/reference/starts_with.md))
+  to the second parameter.  
+- Set the the third parameter to the column name with coder names or
+  initials.  
+- Set the ids-parameter to the column that contains case IDs or case
+  numbers (this tells the volker-package which cases belong together).  
+- Set the agree-parameter to “reliability” to request reliability
+  scores.
+
+Example:
+
+    report_counts(data_coded, starts_with("topic_"), coder, ids = case, prop="cols", agree = "reliability")
+
+Alternatively, if you are only interested in the scores, not a plot, you
+get them using agree_tab. Hint: You may abbreviate the reliability
+value.
+
+    agree_tab(data_coded, starts_with("topic_"), coder, ids = case, method="reli")
+
+Further, you can request classification performance indicators
+(accuracy, precision, recall, F1) with the same function by setting the
+method to “classification” (may be abbreviated). Use this option if you
+compare manual codings to automated codings (classifiers, large language
+models). By default, you get macro statistics (average precision, recall
+and f1 over categories).
+
+Give you have multiple values in on column, you may focus one category
+to get micro statistics:
+
+    agree_tab(starts_with("topic_"), coder, ids = case, method = "class", category = "catcontent")
+
+## The mystery of missing values
+
+Cases with missing values, by default, are omitted in all methods. Thus,
+the calculations are only based on cases with complete values in the
+selected columns.
+
+Furthermore, each function first cleans the values:
+
+- Residual levels defined in the `VLKR_NA_LEVELS` constant are recoded
+  to missing values (“\[NA\] nicht beantwortet”, “\[NA\] keine Angabe”,
+  “\[no answer\]” and “keine Angabe”).  
+- Residual numeric values defined in the `VLKR_NA_NUMBERS` constant are
+  recoded to missing values (-9, -2, and -1).
+
+``` r
+
+print(volker:::VLKR_NA_LEVELS)
+#> [1] "[NA] nicht beantwortet" "[NA] keine Angabe"      "[no answer]"           
+#> [4] "keine Angabe"
+
+print(volker:::VLKR_NA_NUMBERS)
+#> [1] -9 -2 -1
+```
+
+The output always contains information about how many cases were removed
+due to missing values. You have three options to treat missings:
+
+1.  Disable recoding by setting the `clean`-parameter of the functions
+    to `FALSE`.  
+2.  Override the values in VLKR_NA_LEVELS and VLKR_NA_NUMBERS by calls
+    such as `options(vlkr.na.levels=c("Not answered"))` or
+    `options(vlkr.na.numbers=c(-2,-9))`. If you set the value to
+    `FALSE`, no values are recoded.  
+3.  When analysing items, use pairwise complete data by calling
+    `options(vlkr.na.omit=FALSE)` (maximal information from all items).
+
+## What’s behind the scenes?
+
+The volker-package is based on standard methods for data handling and
+visualisation. You could produce all outputs on your own. The package
+just makes your code dry - don’t repeat yourself - and wraps often used
+snippets into a simple interface.
+
+Report functions call subsidiary tab, plot and effect functions, which
+in turn call functions specifically designed for the provided column
+selection. Open the package help to see, to which specific functions the
+report functions are redirected.
+
+Console and markdown output is pimped by specific print- and
+knit-functions. To make this work, the cleaned data, produced plots,
+tables and markdown snippets gain new classes (`vlkr_df`, `vlkr_plt`,
+`vlkr_tbl`, `vlkr_list`, `vlkr_rprt`).
+
+The volker-package makes use of common tidyverse functions. Basically,
+most outputs are generated by three functions:
+
+- [`count()`](https://dplyr.tidyverse.org/reference/count.html) is used
+  to produce counts  
+- `skim()` is used to produce metrics  
+- [`ggplot()`](https://ggplot2.tidyverse.org/reference/ggplot.html) is
+  used to assemble plots.
+
+Statistical tests, clustering and factor analysis are largely based on
+the stats, psych, car and effectsize packages.
+
+Thanks to all the maintainers, authors and contributors of the packages
+that make the world of data a magical place.
