@@ -1033,7 +1033,7 @@ label_scale <- function(x, scale) {
 #'
 #' @param labels Vector of labels to check. The values are converted to characters.
 #' @param threshold Length threshold beyond which the angle is applied.
-#'                  Default is 20. Override with \code{options(vlkr.angle.threshold=10)}.
+#'                  Default is 7 Override with \code{options(vlkr.angle.threshold=10)}.
 #' @param angle The angle to apply if any label exceeds the threshold.
 #'            Default is 45. Override with \code{options(vlkr.angle.value=30)}.
 #' @return A single angle value.

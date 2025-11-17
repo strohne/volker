@@ -192,7 +192,7 @@ cluster_plot <- function(data, cols, newcol = NULL, k = NULL, method = NULL, lab
 #' volker::add_clusters(ds, starts_with("cg_adoption"), k = 3)
 #' @export
 #' @importFrom rlang .data
-add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", clean = TRUE) {
+add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", labels = TRUE, clean = TRUE) {
   # Check, clean, remove missings
   data <- data_prepare(data, {{ cols }}, cols.numeric = {{ cols }}, clean = clean)
 
@@ -212,11 +212,14 @@ add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", cl
   }
 
   # Create a label
-  newlabel <- codebook(items) %>%
-    dplyr::distinct(dplyr::across(tidyselect::all_of("item_label"))) %>%
-    stats::na.omit() %>%
-    dplyr::pull(.data$item_label) %>%
-    get_prefix(ignore.case = FALSE, trim = TRUE)
+  newlabel <- NA
+  if (labels) {
+    newlabel <- codebook(items) %>%
+      dplyr::distinct(dplyr::across(tidyselect::all_of("item_label"))) %>%
+      stats::na.omit() %>%
+      dplyr::pull(.data$item_label) %>%
+      get_prefix(ignore.case = FALSE, trim = TRUE)
+  }
 
   if (is.na(newlabel)) {
     newlabel <- prefix

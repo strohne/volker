@@ -162,9 +162,11 @@ plot_metrics(data, starts_with("cg_adoption_adv"), sd_age, ci = TRUE, metric = T
 ### 16. Correlation of metric items with metric items
 
 ```{r}
-plot_metrics(
-  data, starts_with("cg_adoption"), starts_with("cg_adoption"), 
-  metric = TRUE
+plot_metrics_items_cor_items(
+  data, 
+  starts_with("cg_adoption"), starts_with("cg_adoption"), 
+  metric = TRUE, 
+  labels = FALSE
 )
 ```
 

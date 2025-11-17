@@ -1715,7 +1715,8 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     values_col,
     values_col,
     get_baseline(result, ignore = "adjust"),
-    title, labels
+    title,
+    labels
   )
 }
 

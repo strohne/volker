@@ -4,7 +4,15 @@
 \alias{add_clusters}
 \title{Add cluster number to a data frame}
 \usage{
-add_clusters(data, cols, newcol = NULL, k = 2, method = "kmeans", clean = TRUE)
+add_clusters(
+  data,
+  cols,
+  newcol = NULL,
+  k = 2,
+  method = "kmeans",
+  labels = TRUE,
+  clean = TRUE
+)
 }
 \arguments{
 \item{data}{A dataframe.}
