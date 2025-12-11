@@ -1,0 +1,199 @@
+---
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+# volkeR-Package: High-level functions for tabulating, charting and reporting survey data.
+
+```{=html}
+<!--
+General specifications:
+- This specification of the Methods Hub friendly README often uses the word 'should' to indicate the usual case. If you feel you need to do it differently, add a comment to argue for your case when you submit your method.
+- A Methods Hub friendly README should contain all sections below that are not marked as optional, and can contain more sections.
+- A Methods Hub friendly README should contain as few technical terms as possible and explain (or link to an explanation of) all used technical terms.
+- A Methods Hub friendly README should link to all code files that it mentions using the [text](URL relative to this file) format. The relative URL (i.e., no "https://github.com") is neccessary for proper versioning in Methods Hub.
+- A Methods Hub friendly README should contain an explanation (in the text) and an alternative for each image it contains (e.g., data models, pipeline, schema structure). Format: ![alternative text that describes what is visible in the image](URL relative to this file).
+- A Methods Hub friendly README should link to authoritative sources rather than containing a copy of the information (e.g., documentation).
+- A Methods Hub friendly README should use a uniform citation style for all references, for example APA7 https://apastyle.apa.org/style-grammar-guidelines/references/examples
+
+Title:
+1. The title must be the README's only first-level heading (line starting with a single '#').
+2. The title should make the method's purpose clear.
+3. The title (line 1 of this file) must be changed by you, but all other headings should be kept as they are.
+4. The title must be appropriate (not harmful, derogatory, etc.).
+
+Section templates:
+The README template comes with text templates for each section (after each comment) that can be used, customized or removed as desired.
+-->
+```
+
+## Description
+
+```{=html}
+<!--
+1. Provide a brief and exact description of the method clearly mentioning its purpose i.e., what the method does or aims to achieve in abstract terms (avoiding technical details).
+2. The focus should be on explaining the method in a way that helps users with different levels of expertise understand what it does, without going into technical details. It should clearly describe what inputs are needed and what outputs can be expected.
+3. Briefly explain the input and output of the method and its note worthy features.
+4. Provide link(s) to related papers from the social science domain using the method or similar methods for solving social science research questions. 
+5. In a separate paragraph, highlight the reproducibility aspect of the method providing details or references to the resources used by the method, the data used in building the pre-trained modules etc.
+6. It should also discuss the decisions and parameters controlling the behavior of the method.
+-->
+```
+
+The volkeR-package provides high-level functions to quickly create reports from survey data.
+It is designed for social science workflows that require fast descriptive statistics, visualisations, and reproducible reporting.
+
+## Use Cases
+
+```{=html}
+<!--
+1. The use cases section should contain a list of use cases relevant to the social sciences.
+2. Each use case should start with a description of a task and then detail how one can use the method to assist in the task.
+3. Each use case may list publications in which the use case occurs (e.g., in APA7 style, https://apastyle.apa.org/style-grammar-guidelines/references/examples).
+-->
+```
+
+Descriptive analysis of survey data.
+Researchers can use `report_counts()`or `report_metrics()` to generate summary tables and plots and optionally for effect size calucalations for key variables.
+
+## Input Data {#input-data}
+
+```{=html}
+<!--
+1. The input data section should illustrate the input data format by showing a (possibly abbreviated) example item and explaining (or linking to an explanation of) the data fields.
+2. The input data section should specify which parts of the input data are optional and what effect it has to not provide these.
+3. The input data section should link to a small example input file in the same repository that can be used to test the method (this test should be described in the section "How to Use").
+-->
+```
+
+volkeR takes as input R data frames (data.frame, tibble) containing categorical and metric variables.
+Example data is implemented.
+
+``` R
+data <- volker::chatgpt
+```
+
+## Output Data {#output-data}
+
+```{=html}
+<!--
+1. The output data section should illustrate the output data format by showing a (possibly abbreviated) example item and explaining (or linking to an explanation of) the data fields.
+2. The output data section should link to a small example output file in the same repository that can be re-created (as far as the method is non-random) from the input data (as described in the section "How to Use").
+-->
+```
+
+The main functions of volkeR, `report_counts()` and `report_metrics()`, produce a volker report object.
+This object **list-based objects with the class `vlkr_rprt`**, which allows volkeR to dispatch appropriate print/plot methods for tables and graphics.
+
+-   A table as an R object (data.frame or tibble)
+
+    A volker tibble that includes the computed summary statistics, such as frequencies and percentages (for categorical variables), or means, standard deviations, and sample sizes (for metric variables).
+
+-   A ggplot2 plot object
+
+    The plot visualizes the same information contained in the table and can be printed, saved, or modified like any standard ggplot.
+
+Optional components include:
+
+-   effect-size tables (e.g., Cohen’s d, test statistics)
+-   statistical model summaries (when model estimation is enabled)
+-   additional diagnostic or comparison plots
+
+## Hardware Requirements
+
+```{=html}
+<!--
+1. The hardware requirements section should list all requirements (storage, memory, compute, GPUs, cluster software, ...) that exceed the capabilities of a cheap virtual machine provided by cloud computing company (2 x86 CPU core, 4 GB RAM, 40GB HDD).
+2. If the method requires a GPU, the hardware requirements section must list the minimal GPU requirements (especially VRAM).
+-->
+```
+
+No GPU or special hardware is required.
+
+## Environment Setup
+
+```{=html}
+<!--
+1. The environment setup section should list all requirements and provide all further steps to prepare an environment for running the method (installing requirements, downloading files, creating directoriees, etc.).
+2. The environment setup section should recommend to use a virtual environment or similar if the programming language supports one.
+-->
+```
+
+With R installed:
+
+```{R}
+install.packages("volker")
+```
+
+## How to Use
+
+```{=html}
+<!--
+1. The how to use section should provide the list of steps that are necessary to produce the example output file (see section Output Data) after having set up the environment (see section Environment Setup).
+2. The how to use section should explain how to customize the steps to one's own needs, usually through configuration files or command line parameters, or refer to the appropriate open documentation.
+-->
+```
+
+To apply volkeR to the [example input](#input-data) and generate the [example output](#output-data), proceed as follows:
+
+```{r}
+
+library(volker)
+
+data <- chatgpt
+# Create your first table and plot, counting answers to an item battery
+report_counts(data, starts_with("cg_adoption_social"))
+
+# Create your first table and plot, reporting mean values of the item battery
+report_metrics(data, starts_with("cg_adoption_social"))
+```
+
+## Technical Details
+
+```{=html}
+<!--
+1. The technical details section should proview a process overview, linking to key source code files at every step of the process.
+2. In case a publication provides the details mentioned below, the technical details section should link to this publication using a sentence like "See the [publication](url-of-publication-best-using-doi) for ...". In this case, the mentioned technical details can be omitted from the section.
+3. The technical details section should list all information needed to reproduce the method, including employed other methods and selected parameters.
+4. The input data section should link to external data it uses, preferably using a DOI to a dataset page or to API documentation.
+5. The technical details section should mention how other methods and their parameters were selected and which alternatives were tried.
+6. The technical details section should for employed machine learning models mention on what kind of data they were trained.
+-->
+```
+
+For details, see the package documentation on [CRAN](https://cran.r-project.org/web/packages/volker/index.html "CRAN").
+
+## Acknowledgements
+
+```{=html}
+<!--
+1. The acknowledgments section is optional.
+2. The acknowledgments section should list expressions of gratitude to people or organizations who contributed, supported or guided.
+-->
+```
+
+The volker package is inspired by outputs used in the textbook [Einfache
+Datenauswertung mit R](https://doi.org/10.1007/978-3-658-34285-2) (Gehrau & Maubach et al., 2022), which provides an introduction to
+univariate and bivariate statistics and data representation using RStudio and R Markdown.
+
+## Disclaimer
+
+```{=html}
+<!--
+1. The disclaimer section is optional.
+2. The disclaimer section should list disclaimers, legal notices, or usage restrictions for the method.
+-->
+```
+
+## Contact Details
+
+```{=html}
+<!-- 
+1. The contact details section should specify whom to contact for questions or contributions and how (can be separate entitites; for example email addresses or links to the GitHub issue board).
+-->
+```
+
+Maintainer: Jakob Jünger
+
+Issue Tracker: <https://github.com/strohne/volker/issues>

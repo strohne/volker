@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "A short introduction to volker"
+authors:
+  - family-names: Jünger
+    given-names: Jakob
+    email: jakob.juenger@uni-muenster.de
+    orcid: https://orcid.org/0000-0003-1860-6695
+    affiliation: University of Münster
+  - family-names: Kotthoff
+    given-names: Henrieke
+    email: henrieke.kotthoff@uni-muenster.de
+    orcid: https://orcid.org/0009-0007-2871-7416
+    affiliation: University of Münster
+  - family-names: Maubach
+    given-names: Katharina
+    orcid: https://orcid.org/0009-0005-1466-7943
+    affiliation: University of Münster
+repository-code: https://github.com/strohne/volker
+url: https://strohne.github.io/volker/
+keywords:
+  - tables
+  - visualization
+  - reporting
+license: MIT
+date-released: 2025-11-10
