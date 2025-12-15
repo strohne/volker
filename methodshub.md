@@ -42,7 +42,7 @@ The README template comes with text templates for each section (after each comme
 ```
 
 The volkeR-package provides high-level functions to quickly create reports from survey data.
-It is designed for social science workflows that require fast descriptive statistics, visualisations, and reproducible reporting.
+It is designed for social science workflows that require fast descriptive statistics, visualizations, and reproducible reporting.
 
 ## Use Cases
 
@@ -55,7 +55,7 @@ It is designed for social science workflows that require fast descriptive statis
 ```
 
 Descriptive analysis of survey data.
-Researchers can use `report_counts()`or `report_metrics()` to generate summary tables and plots and optionally for effect size calucalations for key variables.
+Researchers can use `report_counts()`or `report_metrics()` to generate summary tables and plots and optionally for effect size calculations for key variables.
 
 ## Input Data {#input-data}
 
@@ -68,9 +68,20 @@ Researchers can use `report_counts()`or `report_metrics()` to generate summary t
 ```
 
 volkeR takes as input R data frames (data.frame, tibble) containing categorical and metric variables.
+
+**Required input**
+
+-   A data frame containing the variables to be analyzed.
+-   A column selection specifying at least one variable.
+
+**Optional input**
+
+-   Grouping variables for comparisons.
+-   Additional arguments controlling summary statistics, effect size calculations, or plotting behavior.
+
 Example data is implemented.
 
-``` R
+```r
 data <- volker::chatgpt
 ```
 
@@ -84,19 +95,18 @@ data <- volker::chatgpt
 ```
 
 The main functions of volkeR, `report_counts()` and `report_metrics()`, produce a volker report object.
-This object **list-based objects with the class `vlkr_rprt`**, which allows volkeR to dispatch appropriate print/plot methods for tables and graphics.
+The output typically includes:
 
--   A table as an R object (data.frame or tibble)
+-   **A volkeR tibble**\
+    A structured table containing summary statistics such as frequencies and percentages (for categorical variables) or means, standard deviations, and sample sizes (for metric variables).
 
-    A volker tibble that includes the computed summary statistics, such as frequencies and percentages (for categorical variables), or means, standard deviations, and sample sizes (for metric variables).
-
--   A ggplot2 plot object
-
-    The plot visualizes the same information contained in the table and can be printed, saved, or modified like any standard ggplot.
+-   **A ggplot2 plot object**\
+    A visualization of the same information contained in the table.\
+    The plot can be printed, saved, or further customized like any standard ggplot object.
 
 Optional components include:
 
--   effect-size tables (e.g., Cohen’s d, test statistics)
+-   effect-size tables (e.g., Pearson's r, test statistics)
 -   statistical model summaries (when model estimation is enabled)
 -   additional diagnostic or comparison plots
 
@@ -122,7 +132,7 @@ No GPU or special hardware is required.
 
 With R installed:
 
-```{R}
+```r
 install.packages("volker")
 ```
 
@@ -137,17 +147,24 @@ install.packages("volker")
 
 To apply volkeR to the [example input](#input-data) and generate the [example output](#output-data), proceed as follows:
 
-```{r}
-
+```r
 library(volker)
-
 data <- chatgpt
+
 # Create your first table and plot, counting answers to an item battery
 report_counts(data, starts_with("cg_adoption_social"))
 
 # Create your first table and plot, reporting mean values of the item battery
 report_metrics(data, starts_with("cg_adoption_social"))
 ```
+
+To customize the analysis, users can:
+
+-   Select different variables or variable groups.
+-   Add grouping variables for comparisons.
+-   Enable or disable effect size calculations or model summaries.
+
+Further options and examples are documented in the package [help pages](https://strohne.github.io/volker/).
 
 ## Technical Details
 
@@ -173,9 +190,7 @@ For details, see the package documentation on [CRAN](https://cran.r-project.org/
 -->
 ```
 
-The volker package is inspired by outputs used in the textbook [Einfache
-Datenauswertung mit R](https://doi.org/10.1007/978-3-658-34285-2) (Gehrau & Maubach et al., 2022), which provides an introduction to
-univariate and bivariate statistics and data representation using RStudio and R Markdown.
+The volker package is inspired by outputs used in the textbook [Einfache Datenauswertung mit R](https://doi.org/10.1007/978-3-658-34285-2) (Gehrau & Maubach et al., 2022), which provides an introduction to univariate and bivariate statistics and data representation using RStudio and R Markdown.
 
 ## Disclaimer
 
