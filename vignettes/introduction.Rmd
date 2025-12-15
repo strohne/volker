@@ -502,7 +502,7 @@ By default, p-values are adjusted to the number of tests by controlling
 the false discovery rate (fdr). Set the `adjust` parameter to `FALSE` to
 disable p-value correction.
 
-## Reliability Scores (and Classification Performance Indicators)
+# Reliability Scores (and Classification Performance Indicators)
 
 In content analysis, reliability is usually checked by coding the cases
 with different persons and then calculating the overlap. To calculate
