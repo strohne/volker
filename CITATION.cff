@@ -1,6 +1,6 @@
-cff-version: 1.2.0
+ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-title: "A short introduction to volker"
+title: "volkeR-Package: High-level functions for tabulating, charting and reporting survey data."
 authors:
   - family-names: Jünger
     given-names: Jakob
@@ -12,10 +12,7 @@ authors:
     email: henrieke.kotthoff@uni-muenster.de
     orcid: https://orcid.org/0009-0007-2871-7416
     affiliation: University of Münster
-  - family-names: Maubach
-    given-names: Katharina
-    orcid: https://orcid.org/0009-0005-1466-7943
-    affiliation: University of Münster
+repository: https://CRAN.R-project.org/package=volker
 repository-code: https://github.com/strohne/volker
 url: https://strohne.github.io/volker/
 keywords:
