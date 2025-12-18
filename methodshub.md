@@ -1,6 +1,6 @@
 ---
-editor_options: 
-  markdown: 
+editor_options:
+  markdown:
     wrap: sentence
 ---
 
@@ -41,8 +41,8 @@ The README template comes with text templates for each section (after each comme
 -->
 ```
 
-The volkeR-package provides high-level functions to quickly create reports from survey data.
-It is designed for social science workflows that require fast descriptive statistics, visualizations, and reproducible reporting.
+The volkeR package provides high-level functions for rapidly creating reports from survey data.
+It is designed for social science workflows that require fast and easy generation of descriptive statistics, visualizations, and reproducible reports.
 
 ## Use Cases
 
@@ -55,7 +55,7 @@ It is designed for social science workflows that require fast descriptive statis
 ```
 
 Descriptive analysis of survey data.
-Researchers can use `report_counts()`or `report_metrics()` to generate summary tables and plots and optionally for effect size calculations for key variables.
+Researchers can use `report_counts()`or `report_metrics()` to generate summary tables and plots and optionally perform effect size calculations for key variables.
 
 ## Input Data {#input-data}
 
@@ -67,11 +67,11 @@ Researchers can use `report_counts()`or `report_metrics()` to generate summary t
 -->
 ```
 
-volkeR takes as input R data frames (data.frame, tibble) containing categorical and metric variables.
+volkeR takes R data frames (data.frame, tibble) as input, containing categorical and metric variables.
 
 **Required input**
 
--   A data frame containing the variables to be analyzed.
+-   An R data frame containing the variables to be analyzed.
 -   A column selection specifying at least one variable.
 
 **Optional input**
@@ -98,15 +98,15 @@ The main functions of volkeR, `report_counts()` and `report_metrics()`, produce 
 The output typically includes:
 
 -   **A volkeR tibble**\
-    A structured table containing summary statistics such as frequencies and percentages (for categorical variables) or means, standard deviations, and sample sizes (for metric variables).
+    A structured table containing summary statistics such as frequencies and percentages for categorical variables or means, standard deviations, and sample sizes for metric variables.
 
 -   **A ggplot2 plot object**\
-    A visualization of the same information contained in the table.\
+    A visualization of the same information displayed in the table.\
     The plot can be printed, saved, or further customized like any standard ggplot object.
 
 Optional components include:
 
--   effect-size tables (e.g., Pearson's r, test statistics)
+-   effect-size tables (e.g. Pearson's r, test statistics)
 -   statistical model summaries (when model estimation is enabled)
 -   additional diagnostic or comparison plots
 
@@ -164,7 +164,7 @@ To customize the analysis, users can:
 -   Add grouping variables for comparisons.
 -   Enable or disable effect size calculations or model summaries.
 
-Further options and examples are documented in the package [help pages](https://strohne.github.io/volker/).
+Further options, examples and documentation can be found in the [help pages](https://strohne.github.io/volker/) of the package.
 
 ## Technical Details
 
@@ -179,7 +179,7 @@ Further options and examples are documented in the package [help pages](https://
 -->
 ```
 
-For details, see the package documentation on [CRAN](https://cran.r-project.org/web/packages/volker/index.html "CRAN").
+See the package documentation on [CRAN](https://cran.r-project.org/web/packages/volker/index.html "CRAN") for details.
 
 ## Acknowledgements
 
