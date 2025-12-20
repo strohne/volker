@@ -67,12 +67,33 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
     data <- data_clean(data, clean)
   }
 
+  # Formula mode
+  col_q <- rlang::enquo(cols)
+  fun_mode <- rlang::quo_is_call(col_q, "~")
+  if (fun_mode) {
+    terms <- .extract_terms_from_formula(rlang::eval_tidy(col_q), data)
+
+    cols <- .cols_to_symbols(terms$lhs)
+
+    cross <-.cols_to_symbols(terms$categorical)
+    metric <- FALSE #.cols_to_symbols(terms$metric)
+
+    model.categorical <- cross
+    model.metric <- metric
+
+    interactions <- terms$interactions  # pass as character
+    model <- T
+  } else {
+    cols <- rlang::enquo(cols)
+    cross <- rlang::enquo(cross)
+  }
+
   chunks <- list()
 
   # Add title
   if (!is.null(knitr::pandoc_to())) {
     if (!is.character(title) && (title == TRUE)) {
-      title <- get_title(data, {{ cols }})
+      title <- get_title(data, !!cols)
     } else if (!is.character(title)) {
       title <- ""
     }
@@ -83,13 +104,15 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
     plot_title <- title
   }
 
-  # Prepare modeling
+  # Prepare modeling: Only show outcome variable
   if (model) {
-    model.categorical <- rlang::enquo(cross)
-    model.metric <- rlang::enquo(metric)
+    if (!fun_mode) {
+      model.categorical <- rlang::enquo(cross)
+      model.metric <- rlang::enquo(metric)
 
-    if ((!rlang::quo_is_symbol(model.metric) && rlang::as_label(model.metric) == "FALSE")) {
-      model.metric <- NULL
+      if ((!rlang::quo_is_symbol(model.metric) && rlang::as_label(model.metric) == "FALSE")) {
+        model.metric <- NULL
+      }
     }
 
     metric <-  FALSE
@@ -97,22 +120,22 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
   }
 
   # Add Plot
-  chunks <- plot_metrics(data, {{ cols }}, {{ cross }}, metric = metric, effect = effect, clean = clean, ..., title = plot_title) %>%
+  chunks <- plot_metrics(data, !!!cols, !!!cross, metric = metric, effect = effect, clean = clean, ..., title = plot_title) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
-  chunks <- tab_metrics(data, {{ cols}}, {{ cross }}, metric = metric, effect = effect, clean=clean, ...) %>%
+  chunks <- tab_metrics(data, !!cols, !!cross, metric = metric, effect = effect, clean=clean, ...) %>%
     .add_to_vlkr_rprt(chunks, "Table")
 
   # Add effect sizes
   if (effect) {
-    chunks <- effect_metrics(data, {{ cols }}, {{ cross }}, metric = metric, effect = effect, clean=clean, ...) %>%
+    chunks <- effect_metrics(data, !!cols, !!cross, metric = metric, effect = effect, clean=clean, ...) %>%
       .add_to_vlkr_rprt(chunks, "Effects")
   }
 
   # Add index
   if (index) {
-    idx <- .report_idx(data, {{ cols }}, {{ cross }}, metric = metric, ..., effect = effect, title = plot_title)
+    idx <- .report_idx(data, !!cols, !!cross, metric = metric, ..., effect = effect, title = plot_title)
     chunks <- append(chunks, idx)
   }
 
@@ -121,7 +144,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
     if (factors == TRUE) {
       factors <- NULL
     }
-    fct <- .report_fct(data, {{ cols }}, {{ cross }}, metric = metric, k = factors, ..., effect = effect, title = plot_title)
+    fct <- .report_fct(data, !!cols, !!cross, metric = metric, k = factors, ..., effect = effect, title = plot_title)
     chunks <- append(chunks, fct)
   }
 
@@ -130,13 +153,13 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
     if (all(clusters == TRUE)) {
       clusters <- NULL
     }
-    fct <- .report_cls(data, {{ cols }}, {{ cross }}, metric = metric, k = clusters, ..., effect = effect, title = plot_title)
+    fct <- .report_cls(data, !!cols, !!cross, metric = metric, k = clusters, ..., effect = effect, title = plot_title)
     chunks <- append(chunks, fct)
   }
 
   # Add model
   if (!any(isFALSE(model))) {
-    mdl <- .report_mdl(data,{{ cols }}, categorical = !!model.categorical, metric = !!model.metric, ..., title = plot_title)
+    mdl <- .report_mdl(data,!!cols, categorical = !!model.categorical, metric = !!model.metric, ..., title = plot_title)
     chunks <- append(chunks, mdl)
   }
 

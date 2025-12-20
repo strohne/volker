@@ -101,6 +101,22 @@ zip_tables <- function(x, y, newline = TRUE, brackets = FALSE) {
   x
 }
 
+#' Safely convert character to quosure for tidy-eval
+#' @param x character vector
+#' @return symbol, list of symbols or NULL
+.char_to_quosure <- function(x, zerovalue = NULL) {
+  if (length(x) == 0) return(zerovalue)
+  if (length(x) == 1) return(rlang::sym(x))
+  return(rlang::syms(x))
+}
+
+.cols_to_symbols <- function(x) {
+  # x: character vector
+  if (length(x) == 0) return(list())
+  rlang::syms(x)   # returns list of symbols
+}
+
+
 #' Convert a named vector to a list
 #'
 #' @keywords internal

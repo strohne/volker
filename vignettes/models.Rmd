@@ -57,6 +57,15 @@ report_metrics(
   diagnostics = TRUE
 )
 
+report_metrics(data,starts_with("cg_adoption"))
+report_metrics(data,starts_with("cg_adoption"), sd_gender)
+report_metrics(data,sd_age ~ sd_gender)
+
+report_metrics(
+  data,
+  use_work ~ sd_gender + adopter
+)
+
 ```
 
 
@@ -100,6 +109,11 @@ using `model_tab()` and `model_plot()`.
 
 
 ```{r echo=TRUE}
+
+data <- add_model(
+  data, 
+  use_work ~ sd_gender * use_private
+)
 
 data <- add_model(
   data, 
