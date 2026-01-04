@@ -45,8 +45,6 @@ ds <- volker::chatgpt
 
 ```
 
-
-
 ## How to generate tables and plots?
 
 Decide whether your data is categorical or metric
@@ -65,11 +63,9 @@ If you only need one of those outputs, you can call the functions directly:
 
 All functions expect a dataset as their first parameter.
 The second and third parameters await your column selections. 
-The column selections determine whether to analyse single variables, item lists 
-or to compare and correlate multiple variables.  
+The column selections determine whether to analyse single variables, item lists or to compare and correlate multiple variables.  
 
 *Try out the following examples!*
-
 
 ### Categorical variables
 
@@ -88,7 +84,6 @@ report_counts(ds, c(use_private, use_work))
 # Variables matched by a pattern
 report_counts(ds, starts_with("use_"))
 ```
-
 
 You can use all sorts of tidyverse style selections:
 A single column, a list of columns or patterns such as
@@ -121,13 +116,13 @@ report_metrics(ds, sd_age, sd_gender)
 ```
 
 By default, the crossing variable is treated as categorical. 
-You can change this behavior using the metric-parameter to calculate correlations:
+You can change this behavior using the `metric` parameter to calculate correlations:
 
 ```{r eval=FALSE}
 report_metrics(ds, sd_age, use_work, metric = TRUE)
 ```
 
-The ci parameter, where possible, adds confidence intervals to the outputs.
+The `ci` parameter, where possible, adds confidence intervals to the outputs.
 
 ```{r eval=FALSE}
 ds |> 
@@ -135,7 +130,7 @@ ds |>
   report_metrics(sd_age, sd_gender, ci = TRUE)
 ```
 
-Conduct statistical tests with the `effect`-parameter.
+Conduct statistical tests with the `effect` parameter.
 
 ```{r eval=FALSE}
 ds |> 
@@ -436,16 +431,20 @@ ds |>
 
 # Modeling: Regression and Analysis of Variance
 
-Modeling in the statistical sense is predicting an outcome (dependent variable) from one or multiple predictors (independent variables).
+Modeling in the statistical sense is predicting an outcome (dependent
+variable) from one or multiple predictors (independent variables).
 
-The report_metrics() function calculates a linear model if the model parameter is TRUE. You provide the variables in the following parameters:  
+The report_metrics() function calculates a linear model if the `model`
+parameter is set to `TRUE`. You provide the variables in the following
+parameters:
 
-- Dependent metric variable: first parameter after the dataset (cols parameter).  
-- Independent categorical variables: a tidy column selection in the second parameter (cross parameter).  
-- Independent metric variables: a tidy column selection in the third parameter (metric parameter.  
-- Interaction effects: interactions-parameter with a vector of multiplication terms (e.g. `interactions = c(sd_age * sd_gender)`)  
-
-
+-   Dependent metric variable: first parameter (a single column).\
+-   Independent categorical variables: second parameter (a tidy column
+    selection).\
+-   Independent metric variables: `metric` parameter (a tidy column
+    selection).\
+-   Interaction effects: interactions parameter with a vector of
+    multiplication terms (e.g. `c(sd_age * sd_gender)`). 
 
 ```{r, eval=FALSE}
 ds |>
@@ -459,19 +458,25 @@ ds |>
  )
 ```
 
-Four selected diagnostic plots are generated if the diagnostics-parameter is TRUE:
+Four selected diagnostic plots are generated if the `diagnostics`
+parameter is set to `TRUE`:
 
-- Residual vs. fitted: Residuals should be evenly distributed vertically. Horizontally, they should follow the straight line. 
-  Otherwise this could be an indicator for heteroscedasticity, non-linearity or auto-correlationb.
-- Scale-location plot: Points should be evenly distributed, without a pattern, as in the residual plot.
-- Q-Q-Plot of fitted values: All dots should be located on a straight line.
-Otherweise, this may indicate non-linearity or that residuals are not normally distributed.
-- Cooks' distance plot: High values indicate that single cases influence the model disproportionally. Rule of thumb: Cook's distance > 1 is a problem.
+-   Residual vs. fitted: Residuals should be evenly distributed
+    vertically. Horizontally, they should follow the straight line.
+    Otherwise this could be an indicator for heteroscedasticity,
+    non-linearity, or autocorrelation.
+-   Scale-location plot: Points should be evenly distributed without any
+    visible pattern, similar to the residual plot.
+-   Q-Q-Plot of fitted values: All points should lie along a straight
+    line. Deviations may suggest non-linearity or that residuals are not
+    normally distributed.
+-   Cook's distance plot: High values indicate that single cases
+    influence the model disproportionately. Rule of thumb: Cook's
+    distance \> 1 is a problem.
 
-
-To work with the predicted values, use add_model() instead of the report function.
-This will add a new variable prefixed with `prd_` holding the target scores.
-
+To work with the predicted values, use `add_model()` instead of the
+report function. This will add a new variable prefixes with `prd_`,
+holding the target scores.
 
 ```{r, eval=FALSE}
 ds <- ds |> 
@@ -484,8 +489,8 @@ ds <- ds |>
 report_metrics(ds, use_work, prd_use_work, metric = T)
 ```
 
-
-There are two functions to get the regression table or plot from the new column: 
+There are two functions to get the regression table or plot from the new
+column:
 
 ```{r, eval=FALSE}
 model_tab(ds, prd_use_work)
@@ -493,74 +498,91 @@ model_plot(ds, prd_use_work)
 
 ```
 
-By default, p values are adjusted to the number of tests by controlling the false discovery rate (fdr). Set the adjust-parameter to FALSE for disabling p correction.
+By default, p-values are adjusted to the number of tests by controlling
+the false discovery rate (fdr). Set the `adjust` parameter to `FALSE` to
+disable p-value correction.
 
-## Reliability scores (and classification performance indicators)
+# Reliability Scores (and Classification Performance Indicators)
 
-In content analysis, reliability is usually checked by coding the cases with different persons
-and then calculating the overlap. To calculate reliability scores, prepare one data frame for each person:  
+In content analysis, reliability is usually checked by coding the cases
+with different persons and then calculating the overlap. To calculate
+reliability scores, prepare one data frame for each person:
 
-- All column names in the different data frames should be identical.  
-  Codings must be either binary (TRUE/FALSE) or 
-  contain a fixed number of values such as "sports", "politics", "weather".  
-- Add a column holding  initials or the name of the coder.  
-- One column must contain unique IDs for each case, e.g. a running case number.  
+-   All column names in the different data frames should be identical.\
+    Codings must be either binary (`TRUE`/`FALSE`) or contain a fixed
+    number of values such as "sports", "politics", "weather".\
+-   Add a column holding initials or the name of the coder.\
+-   One column must contain unique IDs for each case (e.g., a running
+    case number).
 
-Next, you row bind the data frames. The columns for coder and ID make sure that each coding
-is uniquely identified and can be related to the cases and coders.
+Next, you row-bind the data frames. The coder and ID columns ensure that
+each coding can be uniquely matched to both the coder and the case.
 
-``` 
-data_coded <-  bind_rows(
+```{r, eval=FALSE}
+
+data_coded <- bind_rows(
   data_coder1,
   data_coder2
 )
+
 ```
 
 The final data, for example, looks like:
 
 | case | coder | topic_sports | topic_weather |
-| ---- | ----- | ------------ | ------------- |
-|    1 | anne  | TRUE         | FALSE         |
-|    2 | anne  | TRUE         | FALSE         |
-|    3 | anne  | FALSE        | TRUE          |
-|    1 | ben   | TRUE         | TRUE          |
-|    2 | ben   | TRUE         | FALSE         |
-|    3 | ben   | FALSE        | TRUE          |
+|------|-------|--------------|---------------|
+| 1    | anne  | TRUE         | FALSE         |
+| 2    | anne  | TRUE         | FALSE         |
+| 3    | anne  | FALSE        | TRUE          |
+| 1    | ben   | TRUE         | TRUE          |
+| 2    | ben   | TRUE         | FALSE         |
+| 3    | ben   | FALSE        | TRUE          |
 
+Calculating reliability is straightforward with `report_counts()`:
 
-Calculating reliability is straight forward with report_counts():  
-
-- Provide the data to the first parameter.  
-- Add the column with codings (or a selection of multiple columns, e.g. using `starts_with()`) 
-  to the second parameter.  
-- Set the the third parameter to the column name with coder names or initials.  
-- Set the ids-parameter to the column that contains case IDs or case numbers 
-  (this tells the volker-package which cases belong together).  
-- Set the agree-parameter to "reliability" to request reliability scores.  
+-   Provide the data to the first parameter.\
+-   Add the column with codings (or a selection of multiple columns,
+    e.g. using `starts_with()`) to the second parameter.\
+-   Set the the third parameter to the column name with coder names or
+    initials.\
+-   Set the `ids` parameter to the column that contains case IDs or case
+    numbers (this tells the volker-package which cases belong
+    together).\
+-   Set the `agree` parameter to "reliability" to request reliability
+    scores.
 
 Example:
 
-```
-report_counts(data_coded, starts_with("topic_"), coder, ids = case, prop="cols", agree = "reliability")
-```
+```{r, eval=FALSE}
 
-Alternatively, if you are only interested in the scores, not a plot, you get them 
-using agree_tab. Hint: You may abbreviate the reliability value.
+report_counts(data_coded, starts_with("topic_"), coder, ids = case, prop = "cols", agree = "reliability")
 
 ```
-agree_tab(data_coded, starts_with("topic_"), coder, ids = case, method="reli")
-```
 
-Further, you can request classification performance indicators 
-(accuracy, precision, recall, F1) with the same function by setting the method 
-to "classification" (may be abbreviated). Use this option if you compare 
-manual codings to automated codings (classifiers, large language models).
-By default, you get macro statistics (average precision, recall and f1 over categories).
+If you are only interested in the scores (without a plot), use
+`agree_tab`. Tip: You may abbreviate the method name (e.g., "reli"
+instead of "reliability").
 
-Give you have multiple values in on column, you may focus one category to get micro statistics:
+```{r, eval=FALSE}
+
+agree_tab(data_coded, starts_with("topic_"), coder, ids = case, method = "reli")
 
 ```
-agree_tab(starts_with("topic_"), coder, ids = case, method = "class", category = "catcontent")
+
+You can also request classification performance indicators (accuracy,
+precision, recall, F1) with the same function by setting the `method`
+parameter to "classification" (may be abbreviated). Use this option when
+comparing manual codings with automated codings (e.g., classifiers or
+large language models). By default, you get macro statistics (average
+precision, recall and f1 across categories).
+
+If you have multiple values in a column, you can focus on one category
+to get micro statistics:
+
+```{r, eval=FALSE}
+
+agree_tab(data_coded, starts_with("topic_"), coder, ids = case, method = "class", category = "catcontent")
+
 ```
 
 # The mystery of missing values
