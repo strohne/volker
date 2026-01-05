@@ -33,6 +33,8 @@ The within-sums of squares for the scree plot are calculated by
 All items are scaled before performing the cluster analysis using
 \code{base::\link[base:scale]{scale}}.}
 
+\item{labels}{Whether to get the label of the cluster column from the common prefix of item column labels}
+
 \item{clean}{Prepare data by \link{data_clean}.}
 }
 \value{

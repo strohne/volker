@@ -28,9 +28,9 @@ data <- filter(data, sd_gender != "diverse")
 The report_metrics-method generates everything needed for a basic linear model. 
 Other common terms for linear modeling are regression analysis or analysis of variance.
 
-- As always with volker package functions, the first parameter is the dataset.
-- The second parameter holds the variable of interest: Provide the variable to be explained (the dependent variable).
-- Set the `model` parameter to `TRUE`. Optionally, output regression diagnostics using the respective parameter.
+As always with volker package functions, the first parameter is the dataset.
+The second parameter holds the variable of interest: Provide the variable to be explained (the dependent variable).
+Set the `model` parameter to `TRUE`. Optionally, output regression diagnostics using the respective parameter.
 
 Other parameters determine the independent variables:  
 - The cross parameter (3th parameter) always holds categorical variables such as gender.
@@ -45,6 +45,10 @@ report_metrics(data, use_work, cross = sd_gender, metric = sd_age, model = TRUE,
 ```
 
 
+An alternative way to this syntax is providing 
+a regression formula instead of variable vectors. See the example down below (experimental, but highly recommended).
+
+
 ## Multiple categorical and metric independent variables
 ```{r echo=TRUE}
 
@@ -56,9 +60,7 @@ report_metrics(
   model      = TRUE,
   diagnostics = TRUE
 )
-
 ```
-
 
 ## Index as independent variable
 
@@ -68,10 +70,25 @@ data |>
   add_index(starts_with("cg_adoption")) |> 
   report_metrics(
     use_work, 
+    cross  = sd_gender, 
+    model      = TRUE
+  )  
+
+data |> 
+  add_index(starts_with("cg_adoption")) |> 
+  report_metrics(
+    use_work ~ sd_gender
+  )  
+
+data |> 
+  add_index(starts_with("cg_adoption")) |> 
+  report_metrics(
+    use_work, 
     cross  = c(sd_gender, adopter), 
-    metric = c(idx_cg_adoption, sd_age),
-    model = TRUE
-  )
+    metric = c(idx_cg_adoption, sd_age), 
+    model      = TRUE,
+    diagnostics = TRUE
+  )  
 
 ```
 
@@ -90,6 +107,26 @@ data |>
 
 ```
 
+
+## The formula interface
+
+If you are used to the formula interface of R, the same output can be generated using a formula instead of the term lists:
+
+- The left-hand side of the formula is the outcome variable
+- The right-hand side contains predictors. 
+  Multiple predictors are connected with `+`.
+  Interaction terms are added using `*`.
+  Factor values and logical values are treated as categorical, other terms as metric.
+
+
+```{r echo=TRUE}
+
+data |> 
+  report_metrics(use_work ~ sd_gender * sd_age)
+
+```
+
+
 ## Add predicted values to data frame
 
 To use the predicted values, first add the model. 
@@ -103,6 +140,11 @@ using `model_tab()` and `model_plot()`.
 
 data <- add_model(
   data, 
+  use_work ~ sd_gender * use_private
+)
+
+data <- add_model(
+  data, 
   use_work, 
   categorical = c(sd_gender), 
   metric = c(use_private),
@@ -110,7 +152,7 @@ data <- add_model(
 )
 
 model_tab(data, prd_use_work)
-model_plot(data, prd_use_work)
+model_plot(data, prd_use_work, diagnostics = T)
 ```
 
 After adding predicted values, you can use them as any other column. 

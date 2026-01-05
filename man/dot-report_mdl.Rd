@@ -4,7 +4,15 @@
 \alias{.report_mdl}
 \title{Generate an model table and plot}
 \usage{
-.report_mdl(data, cols, categorical = NULL, metric = NULL, ..., title = TRUE)
+.report_mdl(
+  data,
+  cols,
+  categorical = NULL,
+  metric = NULL,
+  interactions = NULL,
+  ...,
+  title = TRUE
+)
 }
 \arguments{
 \item{data}{A data frame.}
@@ -14,6 +22,8 @@
 \item{categorical}{A tidy column selection holding independet categorical variables.}
 
 \item{metric}{A tidy column selection holding independent metric variables.}
+
+\item{interactions}{A vector of interaction effects to calculate, passed to \code{add_model()}.}
 
 \item{title}{Add a plot title (default = TRUE).}
 }

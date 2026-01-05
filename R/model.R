@@ -40,8 +40,7 @@
 #' @export
 #' @aliases model_tab
 #' @importFrom rlang .data
-model_metrics_tab <- function(data, col, categorical, metric, interactions = NULL, adjust = "fdr", labels = TRUE, clean = TRUE, ...) {
-
+model_metrics_tab <- function(data, col, categorical = NULL, metric = NULL, interactions = NULL, adjust = "fdr", labels = TRUE, clean = TRUE, ...) {
 
   model_col <- dplyr::select(data, {{ col }})
   fit <- attr(model_col[[1]], "lm.fit")
@@ -56,20 +55,23 @@ model_metrics_tab <- function(data, col, categorical, metric, interactions = NUL
     }
 
     if (is.null(iexprs)) {
-      interactions <- character(0)
+      interactions <- NULL
     }
     else if (is.character(iexprs)) {
       interactions <- iexprs
     }
     else if (rlang::is_call(iexprs, "c")) {
       interactions <- vapply(as.list(iexprs)[-1], rlang::expr_text, character(1))
+      interaction_terms <- rlang::enquo(interaction_terms)
     } else {
       interactions <- rlang::expr_text(iexprs)
+      interaction_terms <- rlang::enquo(interaction_terms)
     }
 
-    scores <- add_model(data, {{ col }}, {{ categorical }}, {{ metric }}, rlang::enexpr(interactions), labels = labels, clean = clean, ...)
+    scores <- add_model(data, {{ col }}, {{ categorical }}, {{ metric }}, !!interactions, labels = labels, clean = clean, ...)
+
     newcol <- setdiff(colnames(scores), colnames(data))
-    result <- model_metrics_tab(scores, tidyselect::all_of(newcol), {{ categorical }}, {{ metric }}, rlang::enexpr(interactions), adjust = adjust, labels = labels, clean = clean, ...)
+    result <- model_metrics_tab(scores, tidyselect::all_of(newcol), adjust = adjust, labels = labels, clean = clean, ...)
     return(result)
   }
 
@@ -185,7 +187,7 @@ model_metrics_tab <- function(data, col, categorical, metric, interactions = NUL
 #' @export
 #' @aliases model_plot
 #' @importFrom rlang .data
-model_metrics_plot <- function(data, col, categorical, metric, interactions = NULL, diagnostics = FALSE, labels = TRUE, clean = TRUE, ...) {
+model_metrics_plot <- function(data, col, categorical = NULL, metric = NULL, interactions = NULL, diagnostics = FALSE, labels = TRUE, clean = TRUE, ...) {
 
   # Handle interactions
   iexprs <- rlang::enexpr(interactions)
@@ -194,19 +196,21 @@ model_metrics_plot <- function(data, col, categorical, metric, interactions = NU
   }
 
   if (is.null(iexprs)) {
-    interaction_terms <- character(0)
+    interaction_terms <- NULL
   }
   else if (is.character(iexprs)) {
     interaction_terms <- iexprs
   }
   else if (rlang::is_call(iexprs, "c")) {
     interaction_terms <- vapply(as.list(iexprs)[-1], rlang::expr_text, character(1))
+    interaction_terms <- rlang::enquo(interaction_terms)
   } else {
     interaction_terms <- rlang::expr_text(iexprs)
+    interaction_terms <- rlang::enquo(interaction_terms)
   }
 
 
-  model_data <- model_metrics_tab(data, {{ col }}, {{ categorical }}, {{ metric }}, interactions = rlang::enexpr(interaction_terms), labels = labels, clean = clean, ...)
+  model_data <- model_metrics_tab(data, {{ col }}, {{ categorical }}, {{ metric }}, interactions = !!interaction_terms, labels = labels, clean = clean, ...)
 
   coef_data <-  model_data$coefficients |>
     dplyr::filter(.data$Term != "(Intercept)") |>
@@ -251,6 +255,7 @@ model_plot <- model_metrics_plot
 model_tab <- model_metrics_tab
 
 
+
 #' Add a column with predicted values from a regression model
 #'
 #' @description
@@ -270,11 +275,12 @@ model_tab <- model_metrics_tab
 #'                     Each interaction effect should be provided as multiplication of the variables.
 #'                     The interaction effect can be provided as character value (e.g. `c("sd_gender * adopter")`)
 #'                     or as unquoted column names (e.g. `c(sd_gender * adopter)`).
+#' @param newcol Name of the new column with predicted values.
+#'              Set to NULL (default) to use the outcome variable name, prefixed with "prd_".
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{effect_metrics}.
 #' @return The input tibble with one additional column.
-#'         The new column name is derived from the target column, prefixed with "prd_".
 #'         The new column will have an attribute "lm.fit" with the fit model.
 #' @examples
 #' library(volker)
@@ -285,56 +291,59 @@ model_tab <- model_metrics_tab
 #'
 #' @export
 #' @importFrom rlang .data
-add_model <- function(data, col, categorical, metric, interactions = NULL, labels = TRUE, clean = TRUE, ...) {
+add_model <- function(data, col, categorical = NULL, metric = NULL, interactions = NULL, newcol = NULL, labels = TRUE, clean = TRUE, ...) {
+
+  col_q <- rlang::enquo(col)
+
+  # Formula mode
+  if (rlang::quo_is_call(col_q, "~")) {
+
+    terms <- .extract_terms_from_formula(rlang::eval_tidy(col_q), data)
+
+    lhs <- terms$lhs
+    categorical_vars <- terms$categorical
+    metric_vars <- terms$metric
+    interaction_terms <- terms$interactions
+
+  }
+
+  # Tidyselect mode
+  else {
+
+    lhs <- rlang::as_label(col_q)
+    categorical_vars <- names(tidyselect::eval_select(enquo(categorical), data = data))
+    metric_vars <- names(tidyselect::eval_select(enquo(metric), data = data))
+    interaction_terms <- .interactions_to_text(enquo(interactions))
+
+  }
+
   # 1. Checks, clean, remove missings
   data <- data_prepare(
     data,
-    {{ col }},
-    c({{ categorical }}, {{ metric }}),
-    cols.categorical = {{ categorical }},
-    cols.numeric = c({{ col }}, {{ metric }}),
+    !!rlang::sym(lhs),
+    c(categorical_vars, metric_vars),
+    cols.categorical = categorical_vars,
+    cols.numeric = c(lhs, metric_vars),
     clean = clean
   )
 
   # 2. Regression
-  result <- list()
 
-  # Construct formula
-  categorical_vars <- names(tidyselect::eval_select(expr = rlang::enquo(categorical), data = data))
-  metric_vars <-  names(tidyselect::eval_select(expr = rlang::enquo(metric), data = data))
+  rhs_terms <- .clean_terms(c(categorical_vars, metric_vars, interaction_terms))
+  rhs_full <- paste(rhs_terms, collapse = " + ")
+  formula_str <- paste0(lhs, " ~ ", rhs_full)
 
-  # Interaction terms to character vector
-  iexprs <- rlang::enexpr(interactions)
-  if (rlang::is_call(iexprs, "enexpr")) {
-    iexprs <- interactions
-  }
-
-  if (is.null(iexprs)) {
-    interaction_terms <- character(0)
-  }
-  else if (is.character(iexprs)) {
-    interaction_terms <- iexprs
-  }
-  else if (rlang::is_call(iexprs, "c")) {
-    interaction_terms <- vapply(as.list(iexprs)[-1], rlang::expr_text, character(1))
-  } else {
-    interaction_terms <- rlang::expr_text(iexprs)
-  }
-
-
-  rhs_terms <- c(categorical_vars, metric_vars, interaction_terms)
-  rhs <- paste(rhs_terms, collapse = " + ")
-  lhs <- rlang::as_label(rlang::enquo(col))
-  formula_str <- paste0(lhs, " ~ ", rhs)
-
-  # Fit
   fit <- stats::lm(stats::as.formula(formula_str), data = data)
 
+  # Determine column name
+  if (is.null(newcol)) {
+    newcol <- paste0("prd_", lhs)
+  }
+
   # Add column with fitted values and add the fit object as attribute
-  newcol <- paste0("prd_", lhs)
   data[[newcol]] <- fit$fitted.values
 
-  base_label <- get_title(data, {{ col }})
+  base_label <- get_title(data, !!rlang::sym(lhs))
   attr(data[[newcol]], "comment") <- paste0("Predicted: ", base_label)
   attr(data[[newcol]], "lm.fit") <- fit
 
@@ -480,4 +489,41 @@ diagnostics_cooksd <- function(fit) {
       x = "Observation",
       y = "Cook's distance"
     )
+}
+
+
+.interactions_to_text <- function(q) {
+  expr <- rlang::get_expr(q)
+
+  if (is.null(expr)) return(character(0))
+  if (is.character(expr)) return(expr)
+
+  if (rlang::is_call(expr, "c")) {
+    return(vapply(as.list(expr)[-1], rlang::expr_text, character(1)))
+  }
+
+  rlang::expr_text(expr)
+}
+
+.extract_terms_from_formula <- function(f, data) {
+  lhs <- all.vars(f[[2]])
+  rhs_terms <- attr(stats::terms(f), "term.labels")
+
+  interaction_terms <- rhs_terms[grepl("[:*]", rhs_terms)]
+  simple_terms <- setdiff(rhs_terms, interaction_terms)
+
+  categorical_vars <- simple_terms[vapply(data[simple_terms], is.factor, logical(1))]
+  metric_vars <- setdiff(simple_terms, categorical_vars)
+
+  list(
+    lhs = lhs,
+    categorical = categorical_vars,
+    metric = metric_vars,
+    interactions = interaction_terms
+  )
+}
+
+.clean_terms <- function(x) {
+  x <- unlist(x, use.names = FALSE)
+  x[!is.na(x) & nzchar(x)]
 }

@@ -7,9 +7,10 @@
 add_model(
   data,
   col,
-  categorical,
-  metric,
+  categorical = NULL,
+  metric = NULL,
   interactions = NULL,
+  newcol = NULL,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -29,6 +30,9 @@ Each interaction effect should be provided as multiplication of the variables.
 The interaction effect can be provided as character value (e.g. \code{c("sd_gender * adopter")})
 or as unquoted column names (e.g. \code{c(sd_gender * adopter)}).}
 
+\item{newcol}{Name of the new column with predicted values.
+Set to NULL (default) to use the outcome variable name, prefixed with "prd_".}
+
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
@@ -37,7 +41,6 @@ or as unquoted column names (e.g. \code{c(sd_gender * adopter)}).}
 }
 \value{
 The input tibble with one additional column.
-The new column name is derived from the target column, prefixed with "prd_".
 The new column will have an attribute "lm.fit" with the fit model.
 }
 \description{

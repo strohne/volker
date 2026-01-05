@@ -9,6 +9,7 @@ report_metrics(
   cols,
   cross = NULL,
   metric = FALSE,
+  interactions = NULL,
   ...,
   index = FALSE,
   factors = FALSE,
@@ -35,6 +36,8 @@ Set metric to TRUE, to treat it as metric and calculate correlations.
 Alternatively, for multivariable models (if the model parameter is TRUE),
 provide the metric column selection in the metric parameter
 and the categorical column selection in the cross parameter.}
+
+\item{interactions}{When model is set to \code{TRUE}, a vector of interaction effects to calculate. Will be passed to \code{add_model()}.}
 
 \item{...}{Parameters passed to the \link{plot_metrics} and \link{tab_metrics} and \link{effect_metrics} functions.}
 
