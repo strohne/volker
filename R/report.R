@@ -20,6 +20,7 @@
 #'            Alternatively, for multivariable models (if the model parameter is TRUE),
 #'            provide the metric column selection in the metric parameter
 #'            and the categorical column selection in the cross parameter.
+#' @param interactions When model is set to `TRUE`, a vector of interaction effects to calculate. Will be passed to `add_model()`.
 #' @param ... Parameters passed to the \link{plot_metrics} and \link{tab_metrics} and \link{effect_metrics} functions.
 #' @param index When the cols contain items on a metric scale
 #'              (as determined by \link{get_direction}),
@@ -61,31 +62,49 @@
 #' report_metrics(data, sd_age)
 #'
 #' @export
-report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index = FALSE, factors = FALSE, clusters = FALSE, model = FALSE, effect = FALSE, title = TRUE, close = TRUE, clean = TRUE) {
+report_metrics <- function(data, cols, cross = NULL, metric = FALSE, interactions = NULL, ..., index = FALSE, factors = FALSE, clusters = FALSE, model = FALSE, effect = FALSE, title = TRUE, close = TRUE, clean = TRUE) {
 
   if (clean) {
     data <- data_clean(data, clean)
   }
 
-  # Formula mode
   col_q <- rlang::enquo(cols)
   fun_mode <- rlang::quo_is_call(col_q, "~")
+
+  # Formula mode
   if (fun_mode) {
     terms <- .extract_terms_from_formula(rlang::eval_tidy(col_q), data)
 
-    cols <- .cols_to_symbols(terms$lhs)
+    model <- TRUE
+    cols <-  rlang::sym(terms$lhs)
+    cross <- NULL
 
-    cross <-.cols_to_symbols(terms$categorical)
-    metric <- FALSE #.cols_to_symbols(terms$metric)
+  }
 
-    model.categorical <- cross
-    model.metric <- metric
-
-    interactions <- terms$interactions  # pass as character
-    model <- T
-  } else {
+  # Tidyselect mode
+  else {
     cols <- rlang::enquo(cols)
     cross <- rlang::enquo(cross)
+
+    if (model) {
+
+      # Handle FALSE
+      if ((!rlang::quo_is_symbol(rlang::enquo(metric)) && rlang::as_label(rlang::enquo(metric)) == "FALSE")) {
+        metric <- NULL
+      }
+
+      terms <- list(
+        categorical = rlang::enquo(cross),
+        metric = rlang::enquo(metric),
+        interactions = rlang::enquo(interactions)
+      )
+    }
+  }
+
+  # For modeling: Only show descriptives of outcome variable
+  if (model) {
+      cross <- NULL
+      metric <-  FALSE
   }
 
   chunks <- list()
@@ -104,23 +123,8 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
     plot_title <- title
   }
 
-  # Prepare modeling: Only show outcome variable
-  if (model) {
-    if (!fun_mode) {
-      model.categorical <- rlang::enquo(cross)
-      model.metric <- rlang::enquo(metric)
-
-      if ((!rlang::quo_is_symbol(model.metric) && rlang::as_label(model.metric) == "FALSE")) {
-        model.metric <- NULL
-      }
-    }
-
-    metric <-  FALSE
-    cross <- NULL
-  }
-
   # Add Plot
-  chunks <- plot_metrics(data, !!!cols, !!!cross, metric = metric, effect = effect, clean = clean, ..., title = plot_title) %>%
+  chunks <- plot_metrics(data, !!cols, !!cross, metric = metric, effect = effect, clean = clean, ..., title = plot_title) %>%
     .add_to_vlkr_rprt(chunks, "Plot")
 
   # Add table
@@ -159,7 +163,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, ..., index 
 
   # Add model
   if (!any(isFALSE(model))) {
-    mdl <- .report_mdl(data,!!cols, categorical = !!model.categorical, metric = !!model.metric, ..., title = plot_title)
+    mdl <- .report_mdl(data, !!cols, categorical = !!terms$categorical, metric = !!terms$metric, interactions = !!terms$interactions, ..., title = plot_title)
     chunks <- append(chunks, mdl)
   }
 
@@ -444,14 +448,14 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, ids = NULL, 
 #' @param cols A a single column (without quotes).
 #' @param categorical A tidy column selection holding independet categorical variables.
 #' @param metric A tidy column selection holding independent metric variables.
-#'
+#' @param interactions A vector of interaction effects to calculate, passed to `add_model()`.
 #' @param title Add a plot title (default = TRUE).
 #' @return A list containing a table and a plot volker report chunk.
-.report_mdl <- function(data, cols, categorical = NULL, metric = NULL, ..., title = TRUE) {
+.report_mdl <- function(data, cols, categorical = NULL, metric = NULL, interactions = NULL, ..., title = TRUE) {
   chunks <- list()
 
-  scores <- add_model(data, {{ cols }}, {{ categorical }}, {{ metric }}, ...)
-  newcol <- names(scores)[ncol(scores)] # Last col
+  scores <- add_model(data, !!enquo(cols), !!enquo(categorical), !!enquo(metric), !!enquo(interactions), newcol = ".prd", ...)
+  newcol <- setdiff(colnames(scores), colnames(data))
 
   plt <- model_plot(scores, tidyselect::all_of(newcol),  ...)
   chunks <- .add_to_vlkr_rprt(plt, chunks, "Model: Plot")

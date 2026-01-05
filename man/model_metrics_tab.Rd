@@ -9,8 +9,8 @@ for multiple categorical or metric independent variables}
 model_metrics_tab(
   data,
   col,
-  categorical,
-  metric,
+  categorical = NULL,
+  metric = NULL,
   interactions = NULL,
   adjust = "fdr",
   labels = TRUE,
