@@ -19,6 +19,10 @@ if (requireNamespace("vdiffr", quietly = TRUE) && utils::packageVersion('testtha
 # Only run plot tests if explicitly enabled
 # because they will fail on different machines due
 # to different rendering engines.
+# We habe plot tests enabled in GitHub Actions for Windows.
+# Thus, test them locally before pushing by temporarily
+# enabling them. Make sure NOT to push the enabled setting,
+# just the test results.
 #
 # Enable:
 # Sys.setenv("R_LOCALTESTS" = "1")
