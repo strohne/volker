@@ -49,7 +49,7 @@ data <- volker::chatgpt
 
 ### 1. One variable: Frequency plot of Gender
 ```{r}
-plot_counts(data, sd_gender)
+plot_counts_one(data, sd_gender, numbers = "n")
 ```
 
 ### 2. Two variables: Stacked frequency plot and heatmap of innovator type by gender
@@ -162,9 +162,11 @@ plot_metrics(data, starts_with("cg_adoption_adv"), sd_age, ci = TRUE, metric = T
 ### 16. Correlation of metric items with metric items
 
 ```{r}
-plot_metrics(
-  data, starts_with("cg_adoption"), starts_with("cg_adoption"), 
-  metric = TRUE
+plot_metrics_items_cor_items(
+  data, 
+  starts_with("cg_adoption"), starts_with("cg_adoption"), 
+  metric = TRUE, 
+  labels = FALSE
 )
 ```
 

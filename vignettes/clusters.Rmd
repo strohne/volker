@@ -45,7 +45,7 @@ cluster_plot(data, starts_with("cg_adoption"), k = 3)
 ## Report
 ```{r}
 
-report_metrics(data, starts_with("cg_adoption"), clusters = 3)
+report_metrics(data, starts_with("cg_adoption"), clusters = 3, labels = FALSE)
 
 ```
 

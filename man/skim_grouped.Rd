@@ -4,7 +4,7 @@
 \alias{skim_grouped}
 \title{Calculate a metric by groups}
 \usage{
-skim_grouped(data, cols, cross, value = "numeric.mean", labels = TRUE)
+skim_grouped(data, cols, cross, value = "mean", labels = TRUE)
 }
 \arguments{
 \item{data}{A tibble.}
@@ -13,7 +13,7 @@ skim_grouped(data, cols, cross, value = "numeric.mean", labels = TRUE)
 
 \item{cross}{The column holding groups to compare.}
 
-\item{value}{The metric to extract from the skim result, e.g. numeric.mean or numeric.sd.}
+\item{value}{The metric to extract from the skim result, e.g. mean or sd.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 }

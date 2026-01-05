@@ -10,7 +10,7 @@ library(dplyr)
 
 # If vdiffr is not installed, skip all visual tests
 if (requireNamespace("vdiffr", quietly = TRUE) && utils::packageVersion('testthat') >= '3.0.3') {
-  library(vdiffr)
+  #library(vdiffr)
   expect_doppelganger <- vdiffr::expect_doppelganger
 } else {
   expect_doppelganger <- function(...) skip("vdiffr is not installed.")

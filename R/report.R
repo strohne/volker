@@ -399,7 +399,7 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, ids = NULL, 
 
   if (is_items && (is_scale != 0)) {
 
-    scores <- add_clusters(data, {{ cols }}, k = k, ...)
+    scores <- add_clusters(data, {{ cols }}, newcol = NULL, k = k, method = "kmeans", ...)
     newcol <- setdiff(colnames(scores), colnames(data))
 
     plt <- cluster_plot(scores, !!sym(newcol), k = k,  ...)

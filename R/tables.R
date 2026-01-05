@@ -1089,8 +1089,7 @@ tab_metrics_one <- function(data, col, ci = FALSE, digits = 1, labels = TRUE, cl
 
   # 2. Calculate values
   result <- data %>%
-    skim_metrics({{ col }}) %>%
-    dplyr::rename_with(function(x) sub("numeric.", "", x, fixed = TRUE))
+    skim_metrics({{ col }})
 
   if (ci) {
     result <- dplyr::select(
@@ -1103,22 +1102,6 @@ tab_metrics_one <- function(data, col, ci = FALSE, digits = 1, labels = TRUE, cl
       tidyselect::all_of(c("min","q1","median","q3","max","mean","sd","n","items","alpha"))
     )
   }
-
-  # |>
-  #   dplyr::select(
-  #     "item" = "skim_variable",
-  #     min = "numeric.min",
-  #     q1 = "numeric.q1",
-  #     median = "numeric.median",
-  #     q3 = "numeric.q3",
-  #     max = "numeric.max",
-  #     m = "numeric.mean",
-  #     sd = "numeric.sd",
-  #     "missing",
-  #     "n",
-  #     items = "numeric.items",
-  #     alpha = "numeric.alpha"
-  #   )
 
   # 3. Remove items and alpha if not an index
   if (all(is.na(result$items)) || all(is.na(result$alpha))) {
@@ -1184,8 +1167,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, digits = 1, la
     # dplyr::mutate(
     #   {{ cross }} := tidyr::replace_na(as.character({{ cross }}), "missing")
     # ) %>%
-    dplyr::select(-tidyselect::all_of(c("skim_variable","skim_type"))) |>
-    dplyr::rename_with(function(x) sub("numeric.", "", x, fixed = TRUE))
+    dplyr::select(-tidyselect::all_of(c("skim_variable")))
 
   if (labels) {
     result_grouped <- labs_replace(result_grouped,  {{ cross }}, codebook(data, {{ cross }}))
@@ -1194,9 +1176,7 @@ tab_metrics_one_grouped <- function(data, col, cross, ci = FALSE, digits = 1, la
   result_total <- data %>%
     skim_metrics({{ col }}) %>%
     dplyr::mutate({{ cross }} := "total") |>
-    dplyr::select(-tidyselect::all_of(c("skim_variable","skim_type"))) |>
-    dplyr::rename_with(function(x) sub("numeric.", "", x, fixed = TRUE))
-
+    dplyr::select(-tidyselect::all_of(c("skim_variable")))
 
   result <- dplyr::bind_rows(
     result_grouped,
@@ -1350,8 +1330,7 @@ tab_metrics_items <- function(data, cols, ci = FALSE, digits = 1, labels = TRUE,
   # 2. Calculate
   result <- data %>%
     dplyr::select({{ cols }}) |>
-    skim_metrics() |>
-    dplyr::rename_with(function(x) sub("numeric.", "", x, fixed = TRUE))
+    skim_metrics()
 
   if (ci) {
     result <- dplyr::select(
@@ -1433,39 +1412,14 @@ tab_metrics_items_grouped <- function(data, cols, cross, digits = 1, values = c(
   check_is_param(values, c("m", "sd"), allowmultiple = TRUE)
 
   # Means and SDs
-  result_mean <- skim_grouped(data, {{ cols }}, {{ cross }}, "numeric.mean", labels)
-  result_sd <- skim_grouped(data, {{ cols }}, {{ cross }}, "numeric.sd", labels)
+  result_mean <- skim_grouped(data, {{ cols }}, {{ cross }}, "mean", labels)
+  result_sd <- skim_grouped(data, {{ cols }}, {{ cross }}, "sd", labels)
 
   total_n <- data |>
     dplyr::count({{ cross }}) |>
     (\(.) dplyr::bind_rows(.,dplyr::summarise(., {{ cross }} := "total", n = sum(.$n))))()  |>
     tidyr::pivot_wider(names_from = {{ cross }}, values_from = "n") |>
     dplyr::mutate(item = "n")
-
-  # Significance of lm
-  # TODO
-  # grouped_p <- purrr::map(
-  #   col_group,
-  #   function(col) {
-  #     col <- names(data)[col]
-  #
-  #     data %>%
-  #       dplyr::filter(!is.na(!!sym(col))) %>%
-  #       dplyr::group_by(!!sym(col)) %>%
-  #       dplyr::select(!!sym(col),{{ cols }}) %>%
-  #       skim_metrics() %>%
-  #       dplyr::ungroup() %>%
-  #       dplyr::select("skim_variable", !!sym(col), !!sym(value)) %>%
-  #       tidyr::pivot_wider(
-  #         names_from = !!sym(col),
-  #         values_from = !!sym(value)
-  #       )
-  #   }
-  # ) %>%
-  #   purrr::reduce(
-  #     dplyr::inner_join,
-  #     by="skim_variable"
-  #   )
 
   # 7. Zip
   if (("m" %in% values) && ("sd" %in% values)) {

@@ -2,23 +2,21 @@
 % Please edit documentation in R/skim.R
 \name{skim_metrics}
 \alias{skim_metrics}
-\title{A reduced skimmer for metric variables
-Returns a five point summary, mean and sd, items count and alpha for scales added by add_index()}
+\title{A skimmer for metric variables}
 \usage{
-skim_metrics(data, ..., .data_name = NULL)
+skim_metrics(data, cols = tidyselect::where(is.numeric))
+}
+\arguments{
+\item{data}{A data frame or tibble (may be grouped with dplyr::group_by()).}
+
+\item{cols}{Columns to summarise, specified using tidyselect (e.g., where(is.numeric)).}
 }
 \value{
-A skimmer, see \link[skimr:skim_with]{skim_with}
+A tibble with summary statistics per variable (and per group if grouped).
 }
 \description{
-A reduced skimmer for metric variables
-Returns a five point summary, mean and sd, items count and alpha for scales added by add_index()
-}
-\examples{
-library(volker)
-data <- volker::chatgpt
-
-skim_metrics(data)
-
+Inspired by the skimr package.
+Computes descriptive statistics (min, quartiles, mean, sd, CI, items, alpha)
+for selected numeric variables, respecting dplyr groupings and preserving attributes.
 }
 \keyword{internal}

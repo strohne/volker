@@ -1503,7 +1503,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, title =
         dplyr::select(!!sym(col), {{ cols }}) %>%
         skim_metrics() %>%
         dplyr::ungroup() %>%
-        dplyr::select(item = "skim_variable", .cross = !!sym(col), value = "numeric.mean") %>%
+        dplyr::select(item = "skim_variable", .cross = !!sym(col), value = "mean") %>%
         tidyr::drop_na()
     }
   ) %>%
@@ -1715,7 +1715,8 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     values_col,
     values_col,
     get_baseline(result, ignore = "adjust"),
-    title, labels
+    title,
+    labels
   )
 }
 
@@ -1886,7 +1887,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   # Add numbers
   if (!is.null(numbers)) {
     pl <- pl +
-      ggplot2::geom_text(ggplot2::aes(label = .data$.values), position = ggplot2::position_stack(vjust = 0.5), color = "white") #size = 3
+      ggplot2::geom_text(ggplot2::aes(label = .data$.values), position = ggplot2::position_stack(vjust = 0.5), color = "white")
   }
 
   # Add title
