@@ -1,7 +1,7 @@
 ---
-editor_options:
-  markdown:
-    wrap: sentence
+format:
+  html:
+    embed-resources: true
 ---
 
 # volkeR-Package: High-level functions for tabulating, charting and reporting survey data.
@@ -41,8 +41,7 @@ The README template comes with text templates for each section (after each comme
 -->
 ```
 
-The volkeR package provides high-level functions for rapidly creating reports from survey data.
-It is designed for social science workflows that require fast and easy generation of descriptive statistics, visualizations, and reproducible reports.
+The volkeR package provides high-level functions for rapidly creating reports from survey data. It is designed for social science workflows that require fast and easy generation of descriptive statistics, visualizations, and reproducible reports.
 
 ## Use Cases
 
@@ -54,8 +53,7 @@ It is designed for social science workflows that require fast and easy generatio
 -->
 ```
 
-Descriptive analysis of survey data.
-Researchers can use `report_counts()`or `report_metrics()` to generate summary tables and plots and optionally perform effect size calculations for key variables.
+Descriptive analysis of survey data. Researchers can use `report_counts()`or `report_metrics()` to generate summary tables and plots and optionally perform effect size calculations for key variables.
 
 ## Input Data {#input-data}
 
@@ -67,7 +65,7 @@ Researchers can use `report_counts()`or `report_metrics()` to generate summary t
 -->
 ```
 
-volkeR takes R data frames (data.frame, tibble) as input, containing categorical and metric variables.
+VolkeR takes R data frames (data.frame, tibble) as input, containing categorical and metric variables.
 
 **Required input**
 
@@ -79,9 +77,9 @@ volkeR takes R data frames (data.frame, tibble) as input, containing categorical
 -   Grouping variables for comparisons.
 -   Additional arguments controlling summary statistics, effect size calculations, or plotting behavior.
 
-Example data is implemented.
+Example data are available as the `chatgpt` data frame with survey responses on ChatGPT usage.
 
-```r
+``` r
 data <- volker::chatgpt
 ```
 
@@ -94,8 +92,7 @@ data <- volker::chatgpt
 -->
 ```
 
-The main functions of volkeR, `report_counts()` and `report_metrics()`, produce a volker report object.
-The output typically includes:
+The main functions of volkeR, `report_counts()` and `report_metrics()`, produce a volker report object. The output typically includes:
 
 -   **A volkeR tibble**\
     A structured table containing summary statistics such as frequencies and percentages for categorical variables or means, standard deviations, and sample sizes for metric variables.
@@ -132,7 +129,7 @@ No GPU or special hardware is required.
 
 With R installed:
 
-```r
+``` r
 install.packages("volker")
 ```
 
@@ -147,7 +144,7 @@ install.packages("volker")
 
 To apply volkeR to the [example input](#input-data) and generate the [example output](#output-data), proceed as follows:
 
-```r
+``` r
 library(volker)
 data <- chatgpt
 
@@ -160,11 +157,18 @@ report_metrics(data, starts_with("cg_adoption_social"))
 
 To customize the analysis, users can:
 
--   Select different variables or variable groups.
--   Add grouping variables for comparisons.
--   Enable or disable effect size calculations or model summaries.
+-   Select different variables or variable groups, for example: `report_counts(data, sd_gender)`.
+-   Add grouping variables for comparisons, for example: `report_metrics(data, starts_with("cg_adoption_social"), sd_gender)`.
+-   Enable or disable effect size calculations, for example: `report_metrics(data, starts_with("cg_adoption_social"), sd_gender, effect = TRUE).`
 
-Further options, examples and documentation can be found in the [help pages](https://strohne.github.io/volker/) of the package.
+Beyond its main reporting functions, volkeR also supports:
+
+-   Factor and cluster analysis
+-   Statistical modeling (regression and analysis of variance)
+-   Reliability analysis for content analysis
+-   Labeling features to handle messy data outputs (variable and value names)
+
+For a comprehensive introduction, please refer to the [package overview](https://strohne.github.io/volker/articles/introduction.html). Further options, examples and documentation can be found in the [help pages](https://strohne.github.io/volker/) and [vignettes](https://github.com/strohne/volker/tree/main/vignettes).
 
 ## Technical Details
 
@@ -209,6 +213,14 @@ The volker package is inspired by outputs used in the textbook [Einfache Datenau
 -->
 ```
 
-Maintainer: Jakob Jünger
+**Authors**
+
+-   Jakob Jünger (University of Münster)
+-   Henrieke Kotthoff (University of Münster)
+
+**Contributors**
+
+-   Chantal Gärtner (University of Münster)
+-   Sophia Rinne (University of Münster)
 
 Issue Tracker: <https://github.com/strohne/volker/issues>
