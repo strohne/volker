@@ -431,16 +431,18 @@ variable) from one or multiple predictors (independent variables).</p>
 <code>model</code> parameter is set to <code>TRUE</code>. You provide
 the variables in the following parameters:</p>
 <ul>
-<li>Dependent metric variable: first parameter (a single column).<br>
+<li>Dependent metric variable: first parameter (a single column in the
+<code>cols</code> parameter).<br>
 </li>
 <li>Independent categorical variables: second parameter (a tidy column
-selection).<br>
+selection in the <code>cross</code> parameter).<br>
 </li>
-<li>Independent metric variables: <code>metric</code> parameter (a tidy
-column selection).<br>
+<li>Independent metric variables: third parameter (a tidy column
+selection in the <code>metric</code> parameter).<br>
 </li>
-<li>Interaction effects: interactions parameter with a vector of
-multiplication terms (e.g. <code>c(sd_age * sd_gender)</code>).</li>
+<li>Interaction effects: <code>interactions</code> parameter with a
+vector of multiplication terms
+(e.g. <code>c(sd_age * sd_gender)</code>).</li>
 </ul>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds</span> <span class="op">|&gt;</span></span>
@@ -452,6 +454,14 @@ multiplication terms (e.g. <code>c(sd_age * sd_gender)</code>).</li>
 <span>   model <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>   diagnostics <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span> <span class="op">)</span></span></code></pre></div>
+<p>If you are used to formulas, you can provide your model in formula
+notation instead of using column selections. This automatically enables
+the <code>model</code> parameter. The following example is equivalent to
+the preceding example:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ds</span> <span class="op">|&gt;</span></span>
+<span> <span class="fu"><a href="../reference/filter.html">filter</a></span><span class="op">(</span><span class="va">sd_gender</span> <span class="op">!=</span> <span class="st">"diverse"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span> <span class="fu"><a href="../reference/report_metrics.html">report_metrics</a></span><span class="op">(</span><span class="va">use_work</span> <span class="op">~</span> <span class="va">sd_gender</span> <span class="op">+</span> <span class="va">adopter</span> <span class="op">+</span> <span class="va">sd_age</span><span class="op">)</span></span></code></pre></div>
 <p>Four selected diagnostic plots are generated if the
 <code>diagnostics</code> parameter is set to <code>TRUE</code>:</p>
 <ul>
@@ -471,7 +481,7 @@ influence the model disproportionately. Rule of thumb: Cook’s distance
 <p>To work with the predicted values, use <code><a href="../reference/add_model.html">add_model()</a></code>
 instead of the report function. This will add a new variable prefixes
 with <code>prd_</code>, holding the target scores.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="va">ds</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="../reference/add_model.html">add_model</a></span><span class="op">(</span></span>
 <span>   <span class="va">use_work</span>,</span>
@@ -482,7 +492,7 @@ with <code>prd_</code>, holding the target scores.</p>
 <span><span class="fu"><a href="../reference/report_metrics.html">report_metrics</a></span><span class="op">(</span><span class="va">ds</span>, <span class="va">use_work</span>, <span class="va">prd_use_work</span>, metric <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p>There are two functions to get the regression table or plot from the
 new column:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/model_metrics_tab.html">model_tab</a></span><span class="op">(</span><span class="va">ds</span>, <span class="va">prd_use_work</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/model_metrics_plot.html">model_plot</a></span><span class="op">(</span><span class="va">ds</span>, <span class="va">prd_use_work</span><span class="op">)</span></span></code></pre></div>
 <p>By default, p-values are adjusted to the number of tests by
@@ -490,7 +500,7 @@ controlling the false discovery rate (fdr). Set the <code>adjust</code>
 parameter to <code>FALSE</code> to disable p-value correction.</p>
 </div>
 <div class="section level2">
-<h2 id="reliability-scores-and-classification-performance-indicators">Reliability Scores (and Classification Performance Indicators)<a class="anchor" aria-label="anchor" href="#reliability-scores-and-classification-performance-indicators"></a>
+<h2 id="reliability-scores-and-classification-performance-indicators">Reliability Scores and Classification Performance Indicators<a class="anchor" aria-label="anchor" href="#reliability-scores-and-classification-performance-indicators"></a>
 </h2>
 <p>In content analysis, reliability is usually checked by coding the
 cases with different persons and then calculating the overlap. To
@@ -509,9 +519,9 @@ contain a fixed number of values such as “sports”, “politics”,
 case number).</li>
 </ul>
 <p>Next, you row-bind the data frames. The coder and ID columns ensure
-that each coding can be uniquely matched to both the coder and the
+that each coding can be uniquely related to both the coder and the
 case.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">data_coded</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="va">data_coder1</span>,</span>
@@ -583,13 +593,13 @@ together).<br>
 reliability scores.</li>
 </ul>
 <p>Example:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/report_counts.html">report_counts</a></span><span class="op">(</span><span class="va">data_coded</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"topic_"</span><span class="op">)</span>, <span class="va">coder</span>, ids <span class="op">=</span> <span class="va">case</span>, prop <span class="op">=</span> <span class="st">"cols"</span>, agree <span class="op">=</span> <span class="st">"reliability"</span><span class="op">)</span></span></code></pre></div>
 <p>If you are only interested in the scores (without a plot), use
 <code>agree_tab</code>. Tip: You may abbreviate the method name (e.g.,
 “reli” instead of “reliability”).</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/agree_tab.html">agree_tab</a></span><span class="op">(</span><span class="va">data_coded</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"topic_"</span><span class="op">)</span>, <span class="va">coder</span>, ids <span class="op">=</span> <span class="va">case</span>, method <span class="op">=</span> <span class="st">"reli"</span><span class="op">)</span></span></code></pre></div>
 <p>You can also request classification performance indicators (accuracy,
@@ -600,7 +610,7 @@ Use this option when comparing manual codings with automated codings
 statistics (average precision, recall and f1 across categories).</p>
 <p>If you have multiple values in a column, you can focus on one
 category to get micro statistics:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/agree_tab.html">agree_tab</a></span><span class="op">(</span><span class="va">data_coded</span>, <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"topic_"</span><span class="op">)</span>, <span class="va">coder</span>, ids <span class="op">=</span> <span class="va">case</span>, method <span class="op">=</span> <span class="st">"class"</span>, category <span class="op">=</span> <span class="st">"catcontent"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -619,7 +629,7 @@ Angabe”, “[no answer]” and “keine Angabe”).<br>
 <li>Residual numeric values defined in the <code>VLKR_NA_NUMBERS</code>
 constant are recoded to missing values (-9, -2, and -1).</li>
 </ul>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">volker</span><span class="fu">:::</span><span class="va"><a href="../reference/VLKR_NA_LEVELS.html">VLKR_NA_LEVELS</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "[NA] nicht beantwortet" "[NA] keine Angabe"      "[no answer]"           </span></span>

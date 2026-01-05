@@ -72,7 +72,10 @@ See <a href="plot_metrics.html">plot_metrics</a> and <a href="tab_metrics.html">
 <dt id="arg-cols">cols<a class="anchor" aria-label="anchor" href="#arg-cols"></a></dt>
 <dd><p>A tidy column selection,
 e.g. a single column (without quotes)
-or multiple columns selected by methods such as starts_with().</p></dd>
+or multiple columns selected by methods such as <code><a href="starts_with.html">starts_with()</a></code>.
+To calculate linear models, you can provide a formula
+and skip the parameters for independent variables,
+see the <code>model</code> parameter.</p></dd>
 
 
 <dt id="arg-cross">cross<a class="anchor" aria-label="anchor" href="#arg-cross"></a></dt>
@@ -82,8 +85,8 @@ or multiple columns selected by methods such as starts_with().</p></dd>
 <dt id="arg-metric">metric<a class="anchor" aria-label="anchor" href="#arg-metric"></a></dt>
 <dd><p>When crossing variables, the cross column parameter can contain categorical or metric values.
 By default, the cross column selection is treated as categorical data.
-Set metric to TRUE, to treat it as metric and calculate correlations.
-Alternatively, for multivariable models (if the model parameter is TRUE),
+Set metric to <code>TRUE</code>, to treat it as metric and calculate correlations.
+Alternatively, for multivariable models (if the model parameter is <code>TRUE</code>),
 provide the metric column selection in the metric parameter
 and the categorical column selection in the cross parameter.</p></dd>
 
@@ -100,13 +103,13 @@ and the categorical column selection in the cross parameter.</p></dd>
 <dd><p>When the cols contain items on a metric scale
 (as determined by <a href="get_direction.html">get_direction</a>),
 an index will be calculated using the 'psych' package.
-Set to FALSE to suppress index generation.</p></dd>
+Set to <code>FALSE</code> to suppress index generation.</p></dd>
 
 
 <dt id="arg-factors">factors<a class="anchor" aria-label="anchor" href="#arg-factors"></a></dt>
 <dd><p>The number of factors to calculate.
-Set to FALSE to suppress factor analysis.
-Set to TRUE to output a scree plot and automatically choose the number of factors.
+Set to <code>FALSE</code> to suppress factor analysis.
+Set to <code>TRUE</code> to output a scree plot and automatically choose the number of factors.
 When the cols contain items on a metric scale
 (as determined by <a href="get_direction.html">get_direction</a>),
 factors will be calculated using the 'psych' package.
@@ -116,13 +119,13 @@ See <a href="add_factors.html">add_factors</a>.</p></dd>
 <dt id="arg-clusters">clusters<a class="anchor" aria-label="anchor" href="#arg-clusters"></a></dt>
 <dd><p>The number of clusters to calculate.
 Cluster are determined using kmeans after scaling the items.
-Set to FALSE to suppress cluster analysis.
-Set to TRUE to output a scree plot and automatically choose the number of clusters based on the elbow criterion.
+Set to <code>FALSE</code> to suppress cluster analysis.
+Set to <code>TRUE</code> to output a scree plot and automatically choose the number of clusters based on the elbow criterion.
 See <a href="add_clusters.html">add_clusters</a>.</p></dd>
 
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
-<dd><p>Set to TRUE for multivariable models.
+<dd><p>Set to <code>TRUE</code> for multivariable models if you don't provide your model as a formula.
 The dependent variable must be provided in the first parameter (cols).
 Independent categorical variables are provided in the second parameter (cross),
 which supports tidy column selections or vectors of multiple columns.
@@ -130,7 +133,9 @@ Independent metric variables are provided in the metric parameter
 as tidy column selections or vectors of multiple columns.
 Interaction terms are provided in the interactions parameter and passed to the model functions.
 You can get diagnostic plots by setting the diagnostics parameter to TRUE.
-See <a href="model_metrics_tab.html">model_metrics_tab</a>,  <a href="model_metrics_plot.html">model_metrics_plot</a> and  <a href="add_model.html">add_model</a> for further options.</p></dd>
+See <a href="model_metrics_tab.html">model_metrics_tab</a>,  <a href="model_metrics_plot.html">model_metrics_plot</a> and  <a href="add_model.html">add_model</a> for further options.
+Instead of providing the model variables as cols, cross, metric and interactions parameters,
+you can pass a model formula compatile with  <code>stats::<a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></code> to the cols parameter,</p></dd>
 
 
 <dt id="arg-effect">effect<a class="anchor" aria-label="anchor" href="#arg-effect"></a></dt>

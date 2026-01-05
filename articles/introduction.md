@@ -457,12 +457,13 @@ The report_metrics() function calculates a linear model if the `model`
 parameter is set to `TRUE`. You provide the variables in the following
 parameters:
 
-- Dependent metric variable: first parameter (a single column).  
+- Dependent metric variable: first parameter (a single column in the
+  `cols` parameter).  
 - Independent categorical variables: second parameter (a tidy column
-  selection).  
-- Independent metric variables: `metric` parameter (a tidy column
-  selection).  
-- Interaction effects: interactions parameter with a vector of
+  selection in the `cross` parameter).  
+- Independent metric variables: third parameter (a tidy column selection
+  in the `metric` parameter).  
+- Interaction effects: `interactions` parameter with a vector of
   multiplication terms (e.g. `c(sd_age * sd_gender)`).
 
 ``` r
@@ -475,6 +476,17 @@ ds |>
    model = TRUE,
    diagnostics = TRUE
  )
+```
+
+If you are used to formulas, you can provide your model in formula
+notation instead of using column selections. This automatically enables
+the `model` parameter. The following example is equivalent to the
+preceding example:
+
+``` r
+ds |>
+ filter(sd_gender != "diverse") |>
+ report_metrics(use_work ~ sd_gender + adopter + sd_age)
 ```
 
 Four selected diagnostic plots are generated if the `diagnostics`
@@ -521,7 +533,7 @@ By default, p-values are adjusted to the number of tests by controlling
 the false discovery rate (fdr). Set the `adjust` parameter to `FALSE` to
 disable p-value correction.
 
-## Reliability Scores (and Classification Performance Indicators)
+## Reliability Scores and Classification Performance Indicators
 
 In content analysis, reliability is usually checked by coding the cases
 with different persons and then calculating the overlap. To calculate
@@ -535,7 +547,7 @@ reliability scores, prepare one data frame for each person:
   number).
 
 Next, you row-bind the data frames. The coder and ID columns ensure that
-each coding can be uniquely matched to both the coder and the case.
+each coding can be uniquely related to both the coder and the case.
 
 ``` r
 

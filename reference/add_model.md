@@ -1,5 +1,8 @@
 # Add a column with predicted values from a regression model
 
+You can either provide variables in dedicated parameters or use a
+formula.
+
 The regression output comes from
 `stats::`[`lm`](https://rdrr.io/r/stats/lm.html). The effect sizes are
 calculated by
@@ -33,7 +36,8 @@ add_model(
 
 - col:
 
-  The target column holding metric values.
+  The target column holding metric values or a model formula. If you
+  provide a formula, skip the parameters for independent variables.
 
 - categorical:
 
