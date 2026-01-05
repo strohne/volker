@@ -17,14 +17,14 @@
 Source:
 [`DESCRIPTION`](https://github.com/strohne/volker/blob/main/DESCRIPTION)
 
-Jünger J, Kotthoff H (2025). *volker: High-Level Functions for
+Jünger J, Kotthoff H (2026). *volker: High-Level Functions for
 Tabulating, Charting and Reporting Survey Data*. R package version
 3.2.0.9000, <https://github.com/strohne/volker>.
 
     @Manual{,
       title = {volker: High-Level Functions for Tabulating, Charting and Reporting Survey Data},
       author = {Jakob Jünger and Henrieke Kotthoff},
-      year = {2025},
+      year = {2026},
       note = {R package version 3.2.0.9000},
       url = {https://github.com/strohne/volker},
     }

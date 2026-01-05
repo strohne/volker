@@ -14,6 +14,7 @@ report_metrics(
   cols,
   cross = NULL,
   metric = FALSE,
+  interactions = NULL,
   ...,
   index = FALSE,
   factors = FALSE,
@@ -50,6 +51,12 @@ report_metrics(
   models (if the model parameter is TRUE), provide the metric column
   selection in the metric parameter and the categorical column selection
   in the cross parameter.
+
+- interactions:
+
+  When model is set to `TRUE`, a vector of interaction effects to
+  calculate. Will be passed to
+  [`add_model()`](https://strohne.github.io/volker/reference/add_model.md).
 
 - ...:
 

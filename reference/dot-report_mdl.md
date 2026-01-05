@@ -5,7 +5,15 @@ Generate an model table and plot
 ## Usage
 
 ``` r
-.report_mdl(data, cols, categorical = NULL, metric = NULL, ..., title = TRUE)
+.report_mdl(
+  data,
+  cols,
+  categorical = NULL,
+  metric = NULL,
+  interactions = NULL,
+  ...,
+  title = TRUE
+)
 ```
 
 ## Arguments
@@ -25,6 +33,11 @@ Generate an model table and plot
 - metric:
 
   A tidy column selection holding independent metric variables.
+
+- interactions:
+
+  A vector of interaction effects to calculate, passed to
+  [`add_model()`](https://strohne.github.io/volker/reference/add_model.md).
 
 - title:
 

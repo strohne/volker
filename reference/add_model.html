@@ -52,9 +52,10 @@ The variance inflation is calculated by <code>car::<a href="https://rdrr.io/pkg/
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">add_model</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">col</span>,</span>
-<span>  <span class="va">categorical</span>,</span>
-<span>  <span class="va">metric</span>,</span>
+<span>  categorical <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  metric <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  interactions <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  newcol <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  labels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  clean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -88,6 +89,11 @@ The interaction effect can be provided as character value (e.g. <code>c("sd_gend
 or as unquoted column names (e.g. <code>c(sd_gender * adopter)</code>).</p></dd>
 
 
+<dt id="arg-newcol">newcol<a class="anchor" aria-label="anchor" href="#arg-newcol"></a></dt>
+<dd><p>Name of the new column with predicted values.
+Set to NULL (default) to use the outcome variable name, prefixed with "prd_".</p></dd>
+
+
 <dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
 <dd><p>If TRUE (default) extracts labels from the attributes, see <a href="codebook.html">codebook</a>.</p></dd>
 
@@ -103,7 +109,6 @@ or as unquoted column names (e.g. <code>c(sd_gender * adopter)</code>).</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>The input tibble with one additional column.
-The new column name is derived from the target column, prefixed with "prd_".
 The new column will have an attribute "lm.fit" with the fit model.</p>
     </div>
 

@@ -49,6 +49,11 @@ add_clusters(
   All items are scaled before performing the cluster analysis using
   `base::`[`scale`](https://rdrr.io/r/base/scale.html).
 
+- labels:
+
+  Whether to get the label of the cluster column from the common prefix
+  of item column labels
+
 - clean:
 
   Prepare data by

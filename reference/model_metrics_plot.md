@@ -11,8 +11,8 @@ The regression output comes from
 model_metrics_plot(
   data,
   col,
-  categorical,
-  metric,
+  categorical = NULL,
+  metric = NULL,
   interactions = NULL,
   diagnostics = FALSE,
   labels = TRUE,

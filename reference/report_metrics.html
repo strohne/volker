@@ -48,6 +48,7 @@ See <a href="plot_metrics.html">plot_metrics</a> and <a href="tab_metrics.html">
 <span>  <span class="va">cols</span>,</span>
 <span>  cross <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  interactions <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  index <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  factors <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -85,6 +86,10 @@ Set metric to TRUE, to treat it as metric and calculate correlations.
 Alternatively, for multivariable models (if the model parameter is TRUE),
 provide the metric column selection in the metric parameter
 and the categorical column selection in the cross parameter.</p></dd>
+
+
+<dt id="arg-interactions">interactions<a class="anchor" aria-label="anchor" href="#arg-interactions"></a></dt>
+<dd><p>When model is set to <code>TRUE</code>, a vector of interaction effects to calculate. Will be passed to <code><a href="add_model.html">add_model()</a></code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

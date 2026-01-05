@@ -15,9 +15,10 @@ The variance inflation is calculated by
 add_model(
   data,
   col,
-  categorical,
-  metric,
+  categorical = NULL,
+  metric = NULL,
   interactions = NULL,
+  newcol = NULL,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -50,6 +51,11 @@ add_model(
   `c("sd_gender * adopter")`) or as unquoted column names (e.g.
   `c(sd_gender * adopter)`).
 
+- newcol:
+
+  Name of the new column with predicted values. Set to NULL (default) to
+  use the outcome variable name, prefixed with "prd\_".
+
 - labels:
 
   If TRUE (default) extracts labels from the attributes, see
@@ -67,9 +73,8 @@ add_model(
 
 ## Value
 
-The input tibble with one additional column. The new column name is
-derived from the target column, prefixed with "prd\_". The new column
-will have an attribute "lm.fit" with the fit model.
+The input tibble with one additional column. The new column will have an
+attribute "lm.fit" with the fit model.
 
 ## Examples
 
