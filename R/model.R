@@ -255,10 +255,11 @@ model_plot <- model_metrics_plot
 model_tab <- model_metrics_tab
 
 
-
 #' Add a column with predicted values from a regression model
 #'
 #' @description
+#' You can either provide variables in dedicated parameters or use a formula.
+#'
 #' The regression output comes from \code{stats::\link[stats:lm]{lm}}.
 #' The effect sizes are calculated by \code{heplots::\link[heplots:etasq]{etasq}}.
 #' The variance inflation is calculated by \code{car::\link[car:vif]{vif}}.
@@ -268,7 +269,8 @@ model_tab <- model_metrics_tab
 #' @keywords internal
 #'
 #' @param data A tibble.
-#' @param col The target column holding metric values.
+#' @param col The target column holding metric values or a model formula.
+#'            If you provide a formula, skip the parameters for independent variables.
 #' @param categorical A tidy column selection holding categorical variables.
 #' @param metric A tidy column selection holding metric variables.
 #' @param interactions A vector of interaction effects to calculate.

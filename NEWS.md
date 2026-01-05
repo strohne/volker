@@ -1,4 +1,6 @@
 # volker (development version)
+* Removed skimr dependency
+* Support formulas in model functions
 
 # volker 3.2.0
 

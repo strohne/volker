@@ -19,7 +19,8 @@ add_model(
 \arguments{
 \item{data}{A tibble.}
 
-\item{col}{The target column holding metric values.}
+\item{col}{The target column holding metric values or a model formula.
+If you provide a formula, skip the parameters for independent variables.}
 
 \item{categorical}{A tidy column selection holding categorical variables.}
 
@@ -44,6 +45,8 @@ The input tibble with one additional column.
 The new column will have an attribute "lm.fit" with the fit model.
 }
 \description{
+You can either provide variables in dedicated parameters or use a formula.
+
 The regression output comes from \code{stats::\link[stats:lm]{lm}}.
 The effect sizes are calculated by \code{heplots::\link[heplots:etasq]{etasq}}.
 The variance inflation is calculated by \code{car::\link[car:vif]{vif}}.

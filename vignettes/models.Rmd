@@ -66,29 +66,14 @@ report_metrics(
 
 ```{r echo=TRUE}
 
-data |> 
-  add_index(starts_with("cg_adoption")) |> 
-  report_metrics(
-    use_work, 
-    cross  = sd_gender, 
-    model      = TRUE
-  )  
-
-data |> 
-  add_index(starts_with("cg_adoption")) |> 
-  report_metrics(
-    use_work ~ sd_gender
-  )  
-
-data |> 
+data |>
   add_index(starts_with("cg_adoption")) |> 
   report_metrics(
     use_work, 
     cross  = c(sd_gender, adopter), 
-    metric = c(idx_cg_adoption, sd_age), 
-    model      = TRUE,
-    diagnostics = TRUE
-  )  
+    metric = c(idx_cg_adoption, sd_age),
+    model  = TRUE
+  )
 
 ```
 
@@ -140,11 +125,6 @@ using `model_tab()` and `model_plot()`.
 
 data <- add_model(
   data, 
-  use_work ~ sd_gender * use_private
-)
-
-data <- add_model(
-  data, 
   use_work, 
   categorical = c(sd_gender), 
   metric = c(use_private),
@@ -152,7 +132,7 @@ data <- add_model(
 )
 
 model_tab(data, prd_use_work)
-model_plot(data, prd_use_work, diagnostics = T)
+model_plot(data, prd_use_work)
 ```
 
 After adding predicted values, you can use them as any other column. 

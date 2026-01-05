@@ -63,7 +63,8 @@ If you only need one of those outputs, you can call the functions directly:
 
 All functions expect a dataset as their first parameter.
 The second and third parameters await your column selections. 
-The column selections determine whether to analyse single variables, item lists or to compare and correlate multiple variables.  
+The column selections determine whether to analyse single variables, item lists
+or to compare and correlate multiple variables.
 
 *Try out the following examples!*
 
@@ -438,12 +439,12 @@ The report_metrics() function calculates a linear model if the `model`
 parameter is set to `TRUE`. You provide the variables in the following
 parameters:
 
--   Dependent metric variable: first parameter (a single column).\
+-   Dependent metric variable: first parameter (a single column in the `cols` parameter).\
 -   Independent categorical variables: second parameter (a tidy column
-    selection).\
--   Independent metric variables: `metric` parameter (a tidy column
-    selection).\
--   Interaction effects: interactions parameter with a vector of
+    selection in the `cross` parameter).\
+-   Independent metric variables: third parameter (a tidy column
+    selection in the `metric` parameter).\
+-   Interaction effects: `interactions` parameter with a vector of
     multiplication terms (e.g. `c(sd_age * sd_gender)`). 
 
 ```{r, eval=FALSE}
@@ -457,6 +458,17 @@ ds |>
    diagnostics = TRUE
  )
 ```
+
+If you are used to formulas, you can provide your model in formula notation 
+instead of using column selections. This automatically enables the `model` parameter.
+The following example is equivalent to the preceding example:
+
+```{r, eval=FALSE}
+ds |>
+ filter(sd_gender != "diverse") |>
+ report_metrics(use_work ~ sd_gender + adopter + sd_age)
+```
+
 
 Four selected diagnostic plots are generated if the `diagnostics`
 parameter is set to `TRUE`:
@@ -502,7 +514,7 @@ By default, p-values are adjusted to the number of tests by controlling
 the false discovery rate (fdr). Set the `adjust` parameter to `FALSE` to
 disable p-value correction.
 
-# Reliability Scores (and Classification Performance Indicators)
+# Reliability Scores and Classification Performance Indicators
 
 In content analysis, reliability is usually checked by coding the cases
 with different persons and then calculating the overlap. To calculate
@@ -516,7 +528,7 @@ reliability scores, prepare one data frame for each person:
     case number).
 
 Next, you row-bind the data frames. The coder and ID columns ensure that
-each coding can be uniquely matched to both the coder and the case.
+each coding can be uniquely related to both the coder and the case.
 
 ```{r, eval=FALSE}
 

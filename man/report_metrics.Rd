@@ -26,14 +26,17 @@ report_metrics(
 
 \item{cols}{A tidy column selection,
 e.g. a single column (without quotes)
-or multiple columns selected by methods such as starts_with().}
+or multiple columns selected by methods such as \code{starts_with()}.
+To calculate linear models, you can provide a formula
+and skip the parameters for independent variables,
+see the \code{model} parameter.}
 
 \item{cross}{Optional, a grouping or correlation column (without quotes).}
 
 \item{metric}{When crossing variables, the cross column parameter can contain categorical or metric values.
 By default, the cross column selection is treated as categorical data.
-Set metric to TRUE, to treat it as metric and calculate correlations.
-Alternatively, for multivariable models (if the model parameter is TRUE),
+Set metric to \code{TRUE}, to treat it as metric and calculate correlations.
+Alternatively, for multivariable models (if the model parameter is \code{TRUE}),
 provide the metric column selection in the metric parameter
 and the categorical column selection in the cross parameter.}
 
@@ -44,11 +47,11 @@ and the categorical column selection in the cross parameter.}
 \item{index}{When the cols contain items on a metric scale
 (as determined by \link{get_direction}),
 an index will be calculated using the 'psych' package.
-Set to FALSE to suppress index generation.}
+Set to \code{FALSE} to suppress index generation.}
 
 \item{factors}{The number of factors to calculate.
-Set to FALSE to suppress factor analysis.
-Set to TRUE to output a scree plot and automatically choose the number of factors.
+Set to \code{FALSE} to suppress factor analysis.
+Set to \code{TRUE} to output a scree plot and automatically choose the number of factors.
 When the cols contain items on a metric scale
 (as determined by \link{get_direction}),
 factors will be calculated using the 'psych' package.
@@ -56,11 +59,11 @@ See \link{add_factors}.}
 
 \item{clusters}{The number of clusters to calculate.
 Cluster are determined using kmeans after scaling the items.
-Set to FALSE to suppress cluster analysis.
-Set to TRUE to output a scree plot and automatically choose the number of clusters based on the elbow criterion.
+Set to \code{FALSE} to suppress cluster analysis.
+Set to \code{TRUE} to output a scree plot and automatically choose the number of clusters based on the elbow criterion.
 See \link{add_clusters}.}
 
-\item{model}{Set to TRUE for multivariable models.
+\item{model}{Set to \code{TRUE} for multivariable models if you don't provide your model as a formula.
 The dependent variable must be provided in the first parameter (cols).
 Independent categorical variables are provided in the second parameter (cross),
 which supports tidy column selections or vectors of multiple columns.
@@ -68,7 +71,9 @@ Independent metric variables are provided in the metric parameter
 as tidy column selections or vectors of multiple columns.
 Interaction terms are provided in the interactions parameter and passed to the model functions.
 You can get diagnostic plots by setting the diagnostics parameter to TRUE.
-See \link{model_metrics_tab},  \link{model_metrics_plot} and  \link{add_model} for further options.}
+See \link{model_metrics_tab},  \link{model_metrics_plot} and  \link{add_model} for further options.
+Instead of providing the model variables as cols, cross, metric and interactions parameters,
+you can pass a model formula compatile with  \code{stats::\link[stats:lm]{lm}} to the cols parameter,}
 
 \item{effect}{Whether to report statistical tests and effect sizes. See \link{effect_counts} for further parameters.}
 

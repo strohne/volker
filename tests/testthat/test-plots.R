@@ -10,7 +10,6 @@ library(dplyr)
 
 # If vdiffr is not installed, skip all visual tests
 if (requireNamespace("vdiffr", quietly = TRUE) && utils::packageVersion('testthat') >= '3.0.3') {
-  #library(vdiffr)
   expect_doppelganger <- vdiffr::expect_doppelganger
 } else {
   expect_doppelganger <- function(...) skip("vdiffr is not installed.")
@@ -19,7 +18,7 @@ if (requireNamespace("vdiffr", quietly = TRUE) && utils::packageVersion('testtha
 # Only run plot tests if explicitly enabled
 # because they will fail on different machines due
 # to different rendering engines.
-# We habe plot tests enabled in GitHub Actions for Windows.
+# We have plot tests enabled in GitHub Actions for Windows.
 # Thus, test them locally before pushing by temporarily
 # enabling them. Make sure NOT to push the enabled setting,
 # just the test results.
