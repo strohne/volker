@@ -100,54 +100,89 @@ Which one is best? That depends on your objective:
 ## Examples
 
 <table>
+
 <tbody>
+
 <tr>
+
 <td>
+
 </td>
+
 <td>
+
 <strong>Metric</strong>
 </td>
+
 <td>
+
 <strong>Categorical</strong>
 </td>
+
 </tr>
+
 <tr>
+
 <td style="vertical-align:middle">
+
 <strong style="display: inline-block;transform: rotate(-90deg);">One
 variable</strong>
 </td>
+
 <td valign="top">
+
 <img src="man/figures/plot_metrics_one.png" alt="Density plot" width="300">
 </td>
+
 <td valign="top">
+
 <img src="man/figures/plot_counts_one.png" alt="Bar chart" width="300">
 </td>
+
 </tr>
+
 <tr>
+
 <td style="vertical-align:middle">
+
 <strong style="display: inline-block;transform: rotate(-90deg);">Group
 comparison </strong>
 </td>
+
 <td valign="top">
+
 <img src="man/figures/plot_metrics_one_grouped.png" alt="Group comparison" width="300">
 </td>
+
 <td valign="top">
+
 <img src="man/figures/plot_counts_one_grouped.png" alt="Stacked bar chart" width="300">
 </td>
+
 </tr>
+
 <tr>
+
 <td style="vertical-align:middle">
+
 <strong style="display: inline-block;transform: rotate(-90deg);">Multiple
 items</strong>
 </td>
+
 <td valign="top">
+
 <img src="man/figures/plot_metrics_items.png" alt="Item battery boxplots" width="300">
 </td>
+
 <td valign="top">
+
 <img src="man/figures/plot_counts_items.png" alt="Item battery bar chart" width="300">
 </td>
+
 </tr>
+
 </tbody>
+
 </table>
 
 <br>
@@ -227,7 +262,7 @@ parameters:
   selection).  
 - Independent metric variables: `metric` parameter (a tidy column
   selection).  
-- Interaction effects: interactions parameter with a vector of
+- Interaction effects: `interactions` parameter with a vector of
   multiplication terms (e.g. `c(sd_age * sd_gender)`).
 
 ``` r
@@ -239,6 +274,17 @@ ds |>
    metric = sd_age,
    model = TRUE, diagnostics = TRUE
  )
+```
+
+If you are used to formulas, you can provide your model in formula
+notation instead of using column selections. This automatically enables
+the `model` parameter. The following example is equivalent to the
+preceding example:
+
+``` r
+ds |>
+ filter(sd_gender != "diverse") |>
+ report_metrics(use_work ~ sd_gender + adopter + sd_age)
 ```
 
 Four selected diagnostic plots are generated if the `diagnostics`
