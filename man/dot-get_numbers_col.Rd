@@ -16,26 +16,8 @@ A character string with the column name to be used for plotting numbers,
 or \code{NULL} if no numbers should be displayed.
 }
 \description{
-Determine the column used for plotting numbers
+This function is used internally by plotting helpers such as
+\code{.plot_bars()} and \code{.plot_heatmap()} to avoid hard-coding the
+label column name.
 }
-\keyword{This}
-\keyword{\code{.plot_bars()}}
-\keyword{\code{.plot_heatmap()}}
-\keyword{and}
-\keyword{as}
-\keyword{avoid}
-\keyword{by}
-\keyword{column}
-\keyword{function}
-\keyword{hard-coding}
-\keyword{helpers}
 \keyword{internal}
-\keyword{internally}
-\keyword{is}
-\keyword{label}
-\keyword{name.}
-\keyword{plotting}
-\keyword{such}
-\keyword{the}
-\keyword{to}
-\keyword{used}

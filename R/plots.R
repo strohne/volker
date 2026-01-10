@@ -2478,6 +2478,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #'
 #' @keywords internal
 #'
+#' @description
 #' This function is used internally by plotting helpers such as
 #' \code{.plot_bars()} and \code{.plot_heatmap()} to avoid hard-coding the
 #' label column name.
@@ -2487,8 +2488,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #' @return
 #' A character string with the column name to be used for plotting numbers,
 #' or `NULL` if no numbers should be displayed.
-#'
-#'
 .get_numbers_col <- function(numbers, col = ".values") {
   if (isFALSE(numbers) || is.null(numbers) || length(numbers) == 0) {
     return(NULL)
