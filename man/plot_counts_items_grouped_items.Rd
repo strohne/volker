@@ -9,6 +9,7 @@ plot_counts_items_grouped_items(
   cols,
   cross,
   method = "cramer",
+  numbers = TRUE,
   category = NULL,
   title = TRUE,
   labels = TRUE,
@@ -28,6 +29,12 @@ plot_counts_items_grouped_items(
 \item \code{cramer} for Cramer's V,
 \item \code{npmi} for Normalized Pointwise Mutual Information.
 }}
+
+\item{numbers}{Whether to print the association values on the tiles. Default is \code{TRUE}.}
+
+\item{category}{The value FALSE will force to plot all categories.
+A character value will focus a selected category.
+When NULL, in case of boolean values, only the TRUE category is plotted.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}
@@ -52,7 +59,7 @@ plot_counts_items_grouped_items(
   data,
   starts_with("cg_adoption_advantage"),
   starts_with("cg_adoption_fearofuse"),
-  method ="cramer"
+  method = "cramer"
 )
 
 }

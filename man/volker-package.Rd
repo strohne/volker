@@ -24,7 +24,7 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Henrieke Kotthoff \email{henrieke.kotthoff@uni-muenster.de} [contributor]
+  \item Henrieke Kotthoff \email{henrieke.kotthoff@uni-muenster.de} (\href{https://orcid.org/0009-0007-2871-7416}{ORCID}) [contributor]
 }
 
 Other contributors:

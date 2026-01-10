@@ -9,6 +9,7 @@ plot_metrics_items_cor_items(
   cols,
   cross,
   method = "pearson",
+  numbers = TRUE,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -23,6 +24,8 @@ plot_metrics_items_cor_items(
 \item{cross}{Tidyselect item variables to correlate (e.g. starts_with...).}
 
 \item{method}{The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.}
+
+\item{numbers}{Whether to plot correlation coefficents on tiles. Default to TRUE.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

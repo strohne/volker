@@ -63,7 +63,7 @@ Use the limits-parameter to manually fix any misleading graphs.
 Set to FALSE to suppress the title or provide a title of your choice as a character value.
 \item \strong{labels}: Labels are extracted from the column attributes.
 Set to FALSE to output bare column names and values.
-\item \strong{numbers}: Controls whether to display correlation coefficients on the plot.
+\item \strong{numbers}: Controls whether to display correlation coefficients on the plot. Use \code{TRUE} to show coefficients and \code{FALSE} (or \code{NULL}) to hide them.
 }
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

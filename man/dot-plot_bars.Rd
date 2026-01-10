@@ -8,9 +8,9 @@
   data,
   category = NULL,
   ci = FALSE,
-  scale = NULL,
+  scale = 0,
   limits = NULL,
-  numbers = NULL,
+  numbers_col = NULL,
   orientation = "horizontal",
   base = NULL,
   title = NULL
@@ -27,7 +27,7 @@ If w is provided, the column width is generated according the w value, resulting
 \item{scale}{Direction of the scale: 0 = no direction for categories,
 -1 = descending or 1 = ascending values.}
 
-\item{numbers}{Set to something that evaluates to TRUE and add the .values column to the data frame to ouput values on the bars.}
+\item{numbers_col}{Name of the column containing values to plot on the bars.}
 
 \item{orientation}{Whether to show bars (horizontal) or columns (vertical)}
 

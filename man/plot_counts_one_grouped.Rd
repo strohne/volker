@@ -42,7 +42,9 @@ and which on the vertical scale.}
 the bar or column width reflects the number of cases.
 You can disable this behavior by setting width to FALSE.}
 
-\item{tiles}{Set npmi to \code{TRUE} to generate a heatmap based on npmi values. Only valid in combination with tiles = TRUE.}
+\item{tiles}{Set tiles to \code{TRUE} to generate a heatmap with case numbers or npmi values see the npmi-parameter.}
+
+\item{npmi}{Set npmi to \code{TRUE} to generate a heatmap based on npmi values. Only valid in combination with tiles = TRUE.}
 
 \item{limits}{The scale limits, autoscaled by default.
 Set to \code{c(0,100)} to make a 100 \% plot.}
