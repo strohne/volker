@@ -6,6 +6,7 @@
 ^\.idea$
 ^binder$
 ^methodshub.md$
+^CITATION.cff$
 ^cran-comments\.md$
 tests/vdiffr.Rout.fail
 tests/testthat/_snaps/plots
