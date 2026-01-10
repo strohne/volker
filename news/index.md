@@ -1,6 +1,10 @@
 # Changelog
 
+## volker (development version)
+
 ## volker 3.3.0
+
+CRAN release: 2026-01-10
 
 - Support formulas in model functions
 - Removed skimr dependency
