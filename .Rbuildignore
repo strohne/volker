@@ -4,6 +4,8 @@
 ^README\.Rmd$
 ^\.github$
 ^\.idea$
+^binder$
+^methodshub.md$
 ^cran-comments\.md$
 tests/vdiffr.Rout.fail
 tests/testthat/_snaps/plots
