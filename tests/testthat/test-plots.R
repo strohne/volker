@@ -10,7 +10,6 @@ library(dplyr)
 
 # If vdiffr is not installed, skip all visual tests
 if (requireNamespace("vdiffr", quietly = TRUE) && utils::packageVersion('testthat') >= '3.0.3') {
-  #library(vdiffr)
   expect_doppelganger <- vdiffr::expect_doppelganger
 } else {
   expect_doppelganger <- function(...) skip("vdiffr is not installed.")
@@ -19,6 +18,10 @@ if (requireNamespace("vdiffr", quietly = TRUE) && utils::packageVersion('testtha
 # Only run plot tests if explicitly enabled
 # because they will fail on different machines due
 # to different rendering engines.
+# We have plot tests enabled in GitHub Actions for Windows.
+# Thus, test them locally before pushing by temporarily
+# enabling them. Make sure NOT to push the enabled setting,
+# just the test results.
 #
 # Enable:
 # Sys.setenv("R_LOCALTESTS" = "1")
@@ -35,6 +38,84 @@ test_that("Empty plots are empty", {
   plot_counts(test_data, var1) |>
     expect_error("Check your data: Are they empty?")
 
+})
+
+test_that("`.get_numbers_col()` toggles label column correctly", {
+  expect_null(volker:::.get_numbers_col(NULL))
+  expect_null(volker:::.get_numbers_col(FALSE))
+  expect_null(volker:::.get_numbers_col(character(0)))
+
+  # TRUE means: use prepared label col (default ".values")
+  expect_identical(volker:::.get_numbers_col(TRUE), ".values")
+
+  # character values also mean: use prepared label col
+  expect_identical(volker:::.get_numbers_col("p"), ".values")
+  expect_identical(volker:::.get_numbers_col(c("n","p")), ".values")
+
+  # custom label column name override
+  expect_identical(volker:::.get_numbers_col(TRUE, col = ".lab"), ".lab")
+})
+
+
+test_that(".plot_bars() adds text layer only when numbers_col is set", {
+  dat <- tibble::tibble(
+    item = factor("A"),
+    value = factor("TRUE"),
+    p = 35,
+    n = 3,
+    .values = "35%",
+    .lab = "X"
+  )
+
+  # No numbers -> no geom_text
+  p0 <- volker:::.plot_bars(dat, numbers_col = NULL)
+  geoms0 <- purrr::map_chr(p0$layers, ~ class(.x$geom)[1])
+  expect_false("GeomText" %in% geoms0)
+
+  # numbers_col=".values" -> geom_text exists and maps to ".values"
+  p1 <- volker:::.plot_bars(dat, numbers_col = ".values")
+  geoms1 <- purrr::map_chr(p1$layers, ~ class(.x$geom)[1])
+  expect_true("GeomText" %in% geoms1)
+
+  idx_text <- which(geoms1 == "GeomText")[1]
+  # mapping label should reference the chosen column
+  expect_true(!is.null(p1$layers[[idx_text]]$mapping$label))
+  expect_match(rlang::as_label(p1$layers[[idx_text]]$mapping$label), "\\.values")
+
+  # numbers_col=".lab" -> maps to ".lab"
+  p2 <- volker:::.plot_bars(dat, numbers_col = ".lab")
+  geoms2 <- purrr::map_chr(p2$layers, ~ class(.x$geom)[1])
+  idx_text2 <- which(geoms2 == "GeomText")[1]
+  expect_match(rlang::as_label(p2$layers[[idx_text2]]$mapping$label), "\\.lab")
+})
+
+
+test_that(".plot_heatmap() uses numbers_col for text labels", {
+  dat <- tibble::tibble(
+    item1 = factor(c("A","A","B","B")),
+    item2 = factor(c("A","B","A","B")),
+    n = c(1,2,3,4),
+    npmi = c(0.1, -0.2, 0.3, 0.0),
+    .values = c("1","2","3","4"),
+    .lab = c("a","b","c","d")
+  )
+
+  # Without numbers_col -> no geom_text
+  p0 <- volker:::.plot_heatmap(dat, values_col = "npmi", numbers_col = NULL, title = FALSE, labels = FALSE)
+  geoms0 <- purrr::map_chr(p0$layers, ~ class(.x$geom)[1])
+  expect_false("GeomText" %in% geoms0)
+  # With numbers_col -> geom_text and maps to the right column
+  p1 <- volker:::.plot_heatmap(dat, values_col = "npmi", numbers_col = ".values", title = FALSE, labels = FALSE)
+  geoms1 <- purrr::map_chr(p1$layers, ~ class(.x$geom)[1])
+  expect_true("GeomText" %in% geoms1)
+  idx_text <- which(geoms1 == "GeomText")[1]
+  expect_match(rlang::as_label(p1$layers[[idx_text]]$mapping$label), "\\.values")
+
+  # custom label column
+  p2 <- volker:::.plot_heatmap(dat, values_col = "npmi", numbers_col = ".lab", title = FALSE, labels = FALSE)
+  geoms2 <- purrr::map_chr(p2$layers, ~ class(.x$geom)[1])
+  idx_text2 <- which(geoms2 == "GeomText")[1]
+  expect_match(rlang::as_label(p2$layers[[idx_text2]]$mapping$label), "\\.lab")
 })
 
 

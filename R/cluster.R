@@ -178,6 +178,7 @@ cluster_plot <- function(data, cols, newcol = NULL, k = NULL, method = NULL, lab
 #' @param method The method as character value. Currently, only kmeans is supported.
 #'               All items are scaled before performing the cluster analysis using
 #'               \code{base::\link[base:scale]{scale}}.
+#' @param labels Whether to get the label of the cluster column from the common prefix of item column labels
 #' @param clean Prepare data by \link{data_clean}.
 #' @return The input tibble with additional column
 #'         containing cluster values as a factor.

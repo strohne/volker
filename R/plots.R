@@ -145,7 +145,7 @@ plot_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, 
 #'              Set to FALSE to suppress the title or provide a title of your choice as a character value.
 #' - **labels**: Labels are extracted from the column attributes.
 #'               Set to FALSE to output bare column names and values.
-#' - **numbers**: Controls whether to display correlation coefficients on the plot.
+#' - **numbers**: Controls whether to display correlation coefficients on the plot. Use `TRUE` to show coefficients and `FALSE` (or `NULL`) to hide them.
 #'
 #' `r lifecycle::badge("experimental")`
 #'
@@ -253,6 +253,8 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
     return(NULL)
   }
 
+  check_is_param(numbers, c("n", "p"), allowmultiple = TRUE, allownull = TRUE)
+
   # 2. Data
   # Count data
   result <- data %>%
@@ -321,8 +323,8 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
     category = category,
     ci = ci,
     scale = 0,
-    limits=limits,
-    numbers = numbers,
+    limits = limits,
+    numbers_col = .get_numbers_col(numbers),
     base = paste0("n=", base_n),
     title = title
   )
@@ -351,7 +353,7 @@ plot_counts_one <- function(data, col, category = NULL, ci = FALSE, limits = NUL
 #'              the bar or column width reflects the number of cases.
 #'              You can disable this behavior by setting width to FALSE.
 #' @param tiles Set tiles to `TRUE` to generate a heatmap with case numbers or npmi values see the npmi-parameter.
-#' @param tiles Set npmi to `TRUE` to generate a heatmap based on npmi values. Only valid in combination with tiles = TRUE.
+#' @param npmi Set npmi to `TRUE` to generate a heatmap based on npmi values. Only valid in combination with tiles = TRUE.
 #' @param limits The scale limits, autoscaled by default.
 #'               Set to \code{c(0,100)} to make a 100 % plot.
 #' @param numbers The numbers to print on the bars or tiles, a vector with one or more of:
@@ -513,9 +515,9 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
     .plot_heatmap(
       result,
       values_col = ifelse(npmi, "npmi", "n"),
-      numbers_col = ".values",
+      numbers_col = .get_numbers_col(numbers),
       labels = TRUE,
-      base =   paste0("n=", base_n),
+      base = paste0("n=", base_n),
       title = title
     )
   }
@@ -526,7 +528,7 @@ plot_counts_one_grouped <- function(data, col, cross, category = NULL, prop = "t
       result,
       category = category,
       scale = scale,
-      numbers = numbers,
+      numbers_col = .get_numbers_col(numbers),
       orientation = orientation,
       base = paste0("n=", base_n),
       title = title
@@ -725,8 +727,8 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
     category = category,
     ci = ci,
     scale = scale,
-    limits=limits,
-    numbers = numbers,
+    limits = limits,
+    numbers_col = .get_numbers_col(numbers),
     base = paste0("n=", base_n, "; multiple responses possible"),
     title = title
   )
@@ -898,7 +900,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, limits
   .plot_lines(
     result,
     title = title,
-    limits=limits,
+    limits = limits,
     base = paste0(
       "n=", base_n,
       "; multiple responses possible",
@@ -918,6 +920,10 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, limits
 #' @param method The method of correlation calculation:
 #' - `cramer` for Cramer's V,
 #' - `npmi` for Normalized Pointwise Mutual Information.
+#' @param numbers Whether to print the association values on the tiles. Default is `TRUE`.
+#' @param category The value FALSE will force to plot all categories.
+#'                  A character value will focus a selected category.
+#'                  When NULL, in case of boolean values, only the TRUE category is plotted.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -932,12 +938,12 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, limits
 #'   data,
 #'   starts_with("cg_adoption_advantage"),
 #'   starts_with("cg_adoption_fearofuse"),
-#'   method ="cramer"
+#'   method = "cramer"
 #' )
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", category = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_items_grouped_items <- function(data, cols, cross, method = "cramer", numbers = TRUE, category = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
   check_is_param(method, c("cramer", "npmi"))
@@ -951,7 +957,8 @@ plot_counts_items_grouped_items <- function(data, cols, cross, method = "cramer"
 
   .plot_heatmap(
     result,
-    value_label, value_label,
+    values_col = value_label,
+    numbers_col = .get_numbers_col(numbers, value_label),
     get_baseline(result, ignore = "adjust"),
     title, labels
   )
@@ -1684,6 +1691,7 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, method = "pear
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross Tidyselect item variables to correlate (e.g. starts_with...).
 #' @param method The method of correlation calculation, pearson = Pearson's R, spearman = Spearman's rho.
+#' @param numbers Whether to plot correlation coefficents on tiles. Default to TRUE.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1698,7 +1706,7 @@ plot_metrics_items_cor <- function(data, cols, cross, ci = FALSE, method = "pear
 #'
 #'@export
 #'@importFrom rlang .data
-plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", numbers = TRUE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.numeric = c({{ cols }}, {{ cross }}), clean = clean)
   check_is_param(method, c("pearson", "spearman"))
@@ -1710,13 +1718,20 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   values_col <- map_label(method, list("spearman"="Spearman's rho", "pearson" = "Pearson's r"))
   result <- .effect_correlations(data, {{ cols }}, {{ cross }}, method = method, test = FALSE, labels = labels)
 
+  if ((numbers)) {
+    result <- dplyr::mutate(
+      result,
+      .values = sprintf("%.2f", .data[[values_col]])
+    )
+  }
+
   .plot_heatmap(
     result,
     values_col,
-    values_col,
+    numbers_col = .get_numbers_col(numbers),
     get_baseline(result, ignore = "adjust"),
-    title,
-    labels
+    title = title,
+    labels = labels
   )
 }
 
@@ -1731,13 +1746,13 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #' @param ci Whether to plot error bars for 95% confidence intervals. Provide the columns ci.low and ci.high in data.
 #' @param scale Direction of the scale: 0 = no direction for categories,
 #'              -1 = descending or 1 = ascending values.
-#' @param numbers Set to something that evaluates to TRUE and add the .values column to the data frame to ouput values on the bars.
+#' @param numbers_col Name of the column containing values to plot on the bars.
 #' @param orientation Whether to show bars (horizontal) or columns (vertical)
 #' @param base The plot base as character or NULL.
 #' @param title The plot title as character or NULL.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-.plot_bars <- function(data, category = NULL, ci = FALSE, scale = NULL, limits = NULL, numbers = NULL, orientation = "horizontal", base = NULL, title = NULL) {
+.plot_bars <- function(data, category = NULL, ci = FALSE, scale = 0, limits = NULL, numbers_col = NULL, orientation = "horizontal", base = NULL, title = NULL) {
 
   data_missings <- attr(data, "missings", exact = TRUE)
 
@@ -1745,7 +1760,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   axis_titles = setequal(data$item, data$value)
   title_item <- get_title(data, tidyselect::all_of("item"))
   title_value <- get_title(data, tidyselect::all_of("value"))
-
 
   if (!is.null(category)) {
     data <- dplyr::filter(data, .data$value == category)
@@ -1808,7 +1822,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       )
   }
 
-
   pl <- pl + ggplot2::labs(x = title_item)
 
   if (orientation == "horizontal") {
@@ -1828,7 +1841,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
       axis.title.x = TRUE,
       legend.title = axis_titles
     )
-
 
   }
   else {
@@ -1860,34 +1872,39 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   # - Generate a color scale for ordinal scales by vlkr_colors_sequential()
   # - Use vlkr_colors_discrete() for other cases
 
+  k <- length(levels(as.factor(data$value)))
+
   if (!is.null(category)) {
+    fill_colors <- vlkr_colors_discrete(1)
     pl <- pl +
-      ggplot2::scale_fill_manual(
-        values = vlkr_colors_discrete(1),
-        name = title_value
-      ) +
+      ggplot2::scale_fill_manual(values = fill_colors, name = title_value) +
       ggplot2::theme(
         legend.position = ifelse(category == "TRUE" | category == TRUE, "none", "bottom"),
         legend.justification = "left"
       )
-  } else if ((scale > 0) || (scale < 0)) {
+  } else if (scale != 0) {
+    fill_colors <- vlkr_colors_sequential(k)
     pl <- pl +
       ggplot2::scale_fill_manual(
-        values = vlkr_colors_sequential(length(levels(as.factor(data$value)))),
+        values = fill_colors,
         guide = ggplot2::guide_legend(reverse = orientation == "horizontal", title = title_value)
       )
   } else {
+    fill_colors <- vlkr_colors_discrete(k)
     pl <- pl +
       ggplot2::scale_fill_manual(
-        values = vlkr_colors_discrete(length(levels(as.factor(data$value)))),
+        values = fill_colors,
         guide = ggplot2::guide_legend(reverse = orientation == "horizontal", title = title_value)
       )
   }
 
+  data$.fill_color <- fill_colors[as.integer(data$value)]
+  data$.text_color <- vlkr_colors_contrast(data$.fill_color)
+
   # Add numbers
-  if (!is.null(numbers)) {
+  if (!is.null(numbers_col)) {
     pl <- pl +
-      ggplot2::geom_text(ggplot2::aes(label = .data$.values), position = ggplot2::position_stack(vjust = 0.5), color = "white")
+      ggplot2::geom_text(ggplot2::aes(label = !!sym(numbers_col)), position = ggplot2::position_stack(vjust = 0.5), color = data$.text_color)
   }
 
   # Add title
@@ -2174,7 +2191,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 
   title1 <- get_title(data, 1)
   title2 <- get_title(data, 2)
-  axis_titles <- (values_col != numbers_col) & setequal(data[[1]],data[[2]])
+  axis_titles <- setequal(data[[1]],data[[2]])
 
   data$item1 <- trim_prefix(data[[1]], prefix1)
   data$item2 <- trim_prefix(data[[2]], prefix2)
@@ -2217,7 +2234,7 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     ggplot2::scale_color_identity(guide = "none")
 
   # Add labels
-  if (labels)  {
+  if (labels && axis_titles)  {
     pl <- pl + ggplot2::labs(
       x = title1,
       y = title2
@@ -2238,7 +2255,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     title <- NULL
   }
 
-
   if (!is.null(title)) {
     pl <- pl + ggplot2::ggtitle(label = title)
   }
@@ -2258,7 +2274,6 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
     ) +
     ggplot2::scale_x_discrete(labels = \(labels) trunc_labels(labels)) +
     ggplot2::coord_fixed()
-
 
   # Add base
   if (!is.null(base)) {
@@ -2457,6 +2472,31 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   } else {
     return(valuerange)
   }
+}
+
+#' Determine the column used for plotting numbers
+#'
+#' @keywords internal
+#'
+#' This function is used internally by plotting helpers such as
+#' \code{.plot_bars()} and \code{.plot_heatmap()} to avoid hard-coding the
+#' label column name.
+#'
+#' @param numbers The `numbers` parameter passed to the high-level plotting.
+#' @param col Name of the column containing the prepared label values. Defaults to \code{".values"}.
+#' @return
+#' A character string with the column name to be used for plotting numbers,
+#' or `NULL` if no numbers should be displayed.
+#'
+#'
+.get_numbers_col <- function(numbers, col = ".values") {
+  if (isFALSE(numbers) || is.null(numbers) || length(numbers) == 0) {
+    return(NULL)
+  }
+  if (isTRUE(numbers)) {
+    return(col)
+  }
+  col
 }
 
 #' Get plot size and resolution for the current output format from the config
