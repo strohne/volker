@@ -187,7 +187,7 @@ parameters:
   selection).  
 - Independent metric variables: `metric` parameter (a tidy column
   selection).  
-- Interaction effects: interactions parameter with a vector of
+- Interaction effects: `interactions` parameter with a vector of
   multiplication terms (e.g. `c(sd_age * sd_gender)`).
 
 ``` r
@@ -199,6 +199,17 @@ ds |>
    metric = sd_age,
    model = TRUE, diagnostics = TRUE
  )
+```
+
+If you are used to formulas, you can provide your model in formula
+notation instead of using column selections. This automatically enables
+the `model` parameter. The following example is equivalent to the
+preceding example:
+
+``` r
+ds |>
+ filter(sd_gender != "diverse") |>
+ report_metrics(use_work ~ sd_gender + adopter + sd_age)
 ```
 
 Four selected diagnostic plots are generated if the `diagnostics`

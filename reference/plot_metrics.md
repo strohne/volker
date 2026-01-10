@@ -59,7 +59,8 @@ respective function help):
   FALSE to output bare column names and values.
 
 - **numbers**: Controls whether to display correlation coefficients on
-  the plot.
+  the plot. Use `TRUE` to show coefficients and `FALSE` (or `NULL`) to
+  hide them.
 
 **\[experimental\]**
 

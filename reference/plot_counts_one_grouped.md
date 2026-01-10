@@ -60,6 +60,11 @@ plot_counts_one_grouped(
 
 - tiles:
 
+  Set tiles to `TRUE` to generate a heatmap with case numbers or npmi
+  values see the npmi-parameter.
+
+- npmi:
+
   Set npmi to `TRUE` to generate a heatmap based on npmi values. Only
   valid in combination with tiles = TRUE.
 

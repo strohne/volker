@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">volker</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,9 +44,9 @@
 <span>  <span class="va">data</span>,</span>
 <span>  category <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ci <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  scale <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scale <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  limits <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  numbers <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  numbers_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  orientation <span class="op">=</span> <span class="st">"horizontal"</span>,</span>
 <span>  base <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -75,8 +75,8 @@ If w is provided, the column width is generated according the w value, resulting
 -1 = descending or 1 = ascending values.</p></dd>
 
 
-<dt id="arg-numbers">numbers<a class="anchor" aria-label="anchor" href="#arg-numbers"></a></dt>
-<dd><p>Set to something that evaluates to TRUE and add the .values column to the data frame to ouput values on the bars.</p></dd>
+<dt id="arg-numbers-col">numbers_col<a class="anchor" aria-label="anchor" href="#arg-numbers-col"></a></dt>
+<dd><p>Name of the column containing values to plot on the bars.</p></dd>
 
 
 <dt id="arg-orientation">orientation<a class="anchor" aria-label="anchor" href="#arg-orientation"></a></dt>

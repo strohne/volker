@@ -23,7 +23,8 @@ Useful links:
 
 Authors:
 
-- Henrieke Kotthoff <henrieke.kotthoff@uni-muenster.de> \[contributor\]
+- Henrieke Kotthoff <henrieke.kotthoff@uni-muenster.de>
+  ([ORCID](https://orcid.org/0009-0007-2871-7416)) \[contributor\]
 
 Other contributors:
 

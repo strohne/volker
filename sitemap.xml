@@ -15,6 +15,7 @@
 <url><loc>https://strohne.github.io/volker/articles/tables.html</loc></url>
 <url><loc>https://strohne.github.io/volker/authors.html</loc></url>
 <url><loc>https://strohne.github.io/volker/index.html</loc></url>
+<url><loc>https://strohne.github.io/volker/methodshub.html</loc></url>
 <url><loc>https://strohne.github.io/volker/news/index.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/VLKR_FIG_SETTINGS.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/VLKR_FILLDISCRETE.html</loc></url>
@@ -76,6 +77,7 @@
 <url><loc>https://strohne.github.io/volker/reference/dot-factor_with_attr.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-get_density_mode.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-get_fig_settings.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-get_numbers_col.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-get_plot_limits.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-iqr.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-knit_plot.html</loc></url>

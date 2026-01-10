@@ -9,9 +9,9 @@ Helper function: plot grouped bar chart
   data,
   category = NULL,
   ci = FALSE,
-  scale = NULL,
+  scale = 0,
   limits = NULL,
-  numbers = NULL,
+  numbers_col = NULL,
   orientation = "horizontal",
   base = NULL,
   title = NULL
@@ -41,10 +41,9 @@ Helper function: plot grouped bar chart
   Direction of the scale: 0 = no direction for categories, -1 =
   descending or 1 = ascending values.
 
-- numbers:
+- numbers_col:
 
-  Set to something that evaluates to TRUE and add the .values column to
-  the data frame to ouput values on the bars.
+  Name of the column containing values to plot on the bars.
 
 - orientation:
 

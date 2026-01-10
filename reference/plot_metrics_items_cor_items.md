@@ -10,6 +10,7 @@ plot_metrics_items_cor_items(
   cols,
   cross,
   method = "pearson",
+  numbers = TRUE,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -35,6 +36,10 @@ plot_metrics_items_cor_items(
 
   The method of correlation calculation, pearson = Pearson's R, spearman
   = Spearman's rho.
+
+- numbers:
+
+  Whether to plot correlation coefficents on tiles. Default to TRUE.
 
 - title:
 

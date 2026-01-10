@@ -1,9 +1,9 @@
 # Changelog
 
-## volker (development version)
+## volker 3.3.0
 
-- Removed skimr dependency
 - Support formulas in model functions
+- Removed skimr dependency
 
 ## volker 3.2.0
 
