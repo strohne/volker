@@ -366,7 +366,7 @@
       n=99. 2 missing case(s) omitted.
       
 
-# Duplicate labels omit a warinng
+# Duplicate labels omit a warning
 
     Code
       tab_counts(data %>% labs_apply(cols = sd_gender, values = list(female = "Person",
