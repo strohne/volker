@@ -784,23 +784,23 @@
     Output
       
       
-      |cg_adoption  |     total|  diverse|    female|      male|
-      |:------------|---------:|--------:|---------:|---------:|
-      |advantage_01 | 3.2 (2.0)| 4.0 (NA)| 3.3 (2.2)| 3.1 (1.9)|
-      |advantage_02 | 2.7 (1.2)| 3.0 (NA)| 2.6 (1.3)| 2.7 (1.2)|
-      |advantage_03 | 3.6 (1.1)| 4.0 (NA)| 3.7 (1.0)| 3.5 (1.1)|
-      |advantage_04 | 3.5 (1.0)| 3.0 (NA)| 3.6 (1.0)| 3.5 (1.0)|
-      |fearofuse_01 | 3.1 (1.1)| 3.0 (NA)| 3.2 (1.0)| 3.1 (1.2)|
-      |fearofuse_02 | 3.1 (1.2)| 3.0 (NA)| 3.0 (1.0)| 3.1 (1.3)|
-      |fearofuse_03 | 3.1 (1.6)| 3.0 (NA)| 2.8 (2.1)| 3.3 (1.1)|
-      |fearofuse_04 | 2.7 (1.1)| 4.0 (NA)| 2.5 (0.9)| 2.8 (1.2)|
-      |social_01    | 2.4 (1.6)| 4.0 (NA)| 2.2 (2.0)| 2.5 (1.2)|
-      |social_02    | 2.4 (1.2)| 4.0 (NA)| 2.3 (1.0)| 2.4 (1.2)|
-      |social_03    | 1.9 (1.6)| 4.0 (NA)| 1.6 (2.0)| 2.0 (1.2)|
-      |social_04    | 2.3 (1.2)| 3.0 (NA)| 2.4 (1.2)| 2.3 (1.3)|
-      |n            |       101|        1|        40|        60|
+      |Expectations                             |     total|  diverse|    female|      male|
+      |:----------------------------------------|---------:|--------:|---------:|---------:|
+      |ChatGPT has clear advantages compared... | 3.4 (1.0)| 4.0 (NA)| 3.6 (1.0)| 3.3 (1.0)|
+      |Using ChatGPT brings financial benefits. | 2.7 (1.2)| 3.0 (NA)| 2.6 (1.2)| 2.7 (1.2)|
+      |Using ChatGPT is advantageous in many... | 3.6 (1.1)| 4.0 (NA)| 3.7 (1.0)| 3.5 (1.1)|
+      |Compared to other systems, using Chat... | 3.5 (1.0)| 3.0 (NA)| 3.6 (1.0)| 3.5 (1.0)|
+      |Much can go wrong when using ChatGPT.    | 3.1 (1.1)| 3.0 (NA)| 3.1 (1.0)| 3.1 (1.2)|
+      |There are legal issues with using Cha... | 3.1 (1.2)| 3.0 (NA)| 3.0 (1.0)| 3.1 (1.3)|
+      |The security of user data is not guar... | 3.2 (1.0)| 3.0 (NA)| 3.0 (1.0)| 3.3 (1.1)|
+      |Using ChatGPT could bring personal di... | 2.7 (1.1)| 4.0 (NA)| 2.5 (0.9)| 2.8 (1.2)|
+      |In my environment, using ChatGPT is s... | 2.5 (1.1)| 4.0 (NA)| 2.5 (0.9)| 2.5 (1.3)|
+      |Almost everyone in my environment use... | 2.4 (1.2)| 4.0 (NA)| 2.4 (1.0)| 2.3 (1.3)|
+      |Not using ChatGPT is considered being... | 2.0 (1.2)| 4.0 (NA)| 1.8 (1.0)| 2.1 (1.3)|
+      |Using ChatGPT brings me recognition f... | 2.3 (1.2)| 3.0 (NA)| 2.4 (1.2)| 2.3 (1.3)|
+      |n                                        |        97|        1|        37|        59|
       
-      n=101. 3 missing case(s) omitted.
+      n=97. 7 missing case(s) omitted.
       
 
 # Item order is kept
