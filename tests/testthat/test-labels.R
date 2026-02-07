@@ -198,6 +198,23 @@ test_that("Numeric values are relabeled by a named vector", {
   expect_identical(result_list, result_vector)
 })
 
+# Duplicate labels omit a warning
+test_that("Duplicate labels omit a warning", {
+
+  data %>%
+    labs_apply(
+      cols=sd_gender,
+      values = list(
+        "female" = "Person",
+        "male" = "Person",
+        "diverse" = "Divers"
+      )
+    )  |>
+    tab_counts(sd_gender) |>
+    expect_snapshot(cran = TRUE)
+
+})
+
 # Labeling uncoded factor values
 test_that("Factor values are relabeled", {
 

@@ -366,6 +366,27 @@
       n=99. 2 missing case(s) omitted.
       
 
+# Duplicate labels omit a warinng
+
+    Code
+      tab_counts(data %>% labs_apply(cols = sd_gender, values = list(female = "Person",
+        male = "Person", diverse = "Divers")), sd_gender)
+    Condition
+      Warning:
+      You have duplicate labels in your columns. Set the labels with `labs_apply()`!
+    Output
+      
+      
+      |Gender  |   n|    p|
+      |:-------|---:|----:|
+      |female  |  40|  40%|
+      |male    |  60|  59%|
+      |diverse |   1|   1%|
+      |total   | 101| 100%|
+      
+      n=101.
+      
+
 # Factor values are relabeled
 
     Code

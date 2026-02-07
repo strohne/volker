@@ -541,6 +541,13 @@ labs_replace <- function(data, col, codes, col_from="value_name", col_to="value_
     dplyr::distinct(dplyr::across(tidyselect::all_of(c(".from", ".to")))) %>%
     stats::na.omit()
 
+  # If any duplicates in codes$.to use codes$.from
+  if(any(duplicated(codes$.to))) {
+    warning("You have duplicate labels in your columns. Set the labels with `labs_apply()`!", call. = FALSE)
+    codes$.to <- codes$.from
+  }
+  codes <- dplyr::distinct(codes)
+
 
   if (nrow(codes) > 0) {
 
