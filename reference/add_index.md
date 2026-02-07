@@ -44,6 +44,7 @@ attribute named "psych.alpha".
 ``` r
 ds <- volker::chatgpt
 volker::add_index(ds, starts_with("cg_adoption"))
+#> Warning: response.frequency has been deprecated and replaced with responseFrequecy.  Please fix your call
 #> # A tibble: 97 × 23
 #>     case use_private use_work cg_adoption_advantage_01 cg_adoption_advantage_02
 #>    <dbl>       <dbl>    <dbl>                    <dbl>                    <dbl>

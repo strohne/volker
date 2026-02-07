@@ -91,7 +91,9 @@ following output.</p>
 <span>    <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_advantage"</span><span class="op">)</span>,</span>
 <span>    newcol <span class="op">=</span> <span class="st">"idx_advantage"</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/report_metrics.html">report_metrics</a></span><span class="op">(</span><span class="va">idx_advantage</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/report_metrics.html">report_metrics</a></span><span class="op">(</span><span class="va">idx_advantage</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in response.frequencies(x, max = max): response.frequency has been</span></span>
+<span><span class="co">#&gt; deprecated and replaced with responseFrequecy.  Please fix your call</span></span></code></pre></div>
 <div class="section level5">
 <h5 class="tabset tabset-pills" id="index-cg_adoption_advantage_0">Index: cg_adoption_advantage_0<a class="anchor" aria-label="anchor" href="#index-cg_adoption_advantage_0"></a>
 </h5>
@@ -219,7 +221,9 @@ of using starts_with() for multiple columns by a common prefix.</p>
 <span>    newcol <span class="op">=</span> <span class="st">"idx_advantage"</span>,</span>
 <span>    cols.reverse <span class="op">=</span> <span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_"</span><span class="op">)</span>,</span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/report_metrics.html">report_metrics</a></span><span class="op">(</span><span class="va">idx_advantage</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/report_metrics.html">report_metrics</a></span><span class="op">(</span><span class="va">idx_advantage</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in response.frequencies(x, max = max): response.frequency has been</span></span>
+<span><span class="co">#&gt; deprecated and replaced with responseFrequecy.  Please fix your call</span></span></code></pre></div>
 <div class="section level5">
 <h5 class="tabset tabset-pills" id="index-cg_adoption_advantage_0-1">Index: cg_adoption_advantage_0<a class="anchor" aria-label="anchor" href="#index-cg_adoption_advantage_0-1"></a>
 </h5>
@@ -342,7 +346,9 @@ from the common prefix of all selected items.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/add_index.html">add_index</a></span><span class="op">(</span><span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_advantage"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/report_metrics.html">report_metrics</a></span><span class="op">(</span><span class="va">idx_cg_adoption_advantage_0</span>, <span class="va">adopter</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/report_metrics.html">report_metrics</a></span><span class="op">(</span><span class="va">idx_cg_adoption_advantage_0</span>, <span class="va">adopter</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in response.frequencies(x, max = max): response.frequency has been</span></span>
+<span><span class="co">#&gt; deprecated and replaced with responseFrequecy.  Please fix your call</span></span></code></pre></div>
 <div class="section level5">
 <h5 class="tabset tabset-pills" id="index-cg_adoption_advantage_0-2">Index: cg_adoption_advantage_0<a class="anchor" aria-label="anchor" href="#index-cg_adoption_advantage_0-2"></a>
 </h5>
@@ -588,7 +594,15 @@ total
 <span>  <span class="fu"><a href="../reference/add_index.html">add_index</a></span><span class="op">(</span><span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_fearofuse"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/add_index.html">add_index</a></span><span class="op">(</span><span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"cg_adoption_social"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  </span>
-<span>  <span class="fu"><a href="../reference/report_metrics.html">report_metrics</a></span><span class="op">(</span><span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"idx_cg_adoption"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/report_metrics.html">report_metrics</a></span><span class="op">(</span><span class="fu"><a href="../reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"idx_cg_adoption"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in response.frequencies(x, max = max): response.frequency has been</span></span>
+<span><span class="co">#&gt; deprecated and replaced with responseFrequecy.  Please fix your call</span></span>
+<span><span class="co">#&gt; Warning in response.frequencies(x, max = max): response.frequency has been</span></span>
+<span><span class="co">#&gt; deprecated and replaced with responseFrequecy.  Please fix your call</span></span>
+<span><span class="co">#&gt; Warning in response.frequencies(x, max = max): response.frequency has been</span></span>
+<span><span class="co">#&gt; deprecated and replaced with responseFrequecy.  Please fix your call</span></span>
+<span><span class="co">#&gt; Warning in response.frequencies(x, max = max): response.frequency has been</span></span>
+<span><span class="co">#&gt; deprecated and replaced with responseFrequecy.  Please fix your call</span></span></code></pre></div>
 <div class="section level5">
 <h5 class="tabset tabset-pills" id="section-6"></h5>
 <div class="section level6">

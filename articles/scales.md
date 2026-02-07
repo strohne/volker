@@ -24,6 +24,8 @@ data %>%
     newcol = "idx_advantage"
   ) %>%
   report_metrics(idx_advantage)
+#> Warning in response.frequencies(x, max = max): response.frequency has been
+#> deprecated and replaced with responseFrequecy.  Please fix your call
 ```
 
 ##### Index: cg_adoption_advantage_0
@@ -69,6 +71,8 @@ data %>%
     cols.reverse = starts_with("cg_adoption_"),
   ) %>%
   report_metrics(idx_advantage)
+#> Warning in response.frequencies(x, max = max): response.frequency has been
+#> deprecated and replaced with responseFrequecy.  Please fix your call
 ```
 
 ##### Index: cg_adoption_advantage_0
@@ -109,6 +113,8 @@ the common prefix of all selected items.
 data %>%
   add_index(starts_with("cg_adoption_advantage")) %>%
   report_metrics(idx_cg_adoption_advantage_0, adopter)
+#> Warning in response.frequencies(x, max = max): response.frequency has been
+#> deprecated and replaced with responseFrequecy.  Please fix your call
 ```
 
 ##### Index: cg_adoption_advantage_0
@@ -145,6 +151,14 @@ data %>%
   add_index(starts_with("cg_adoption_social")) %>%
   
   report_metrics(starts_with("idx_cg_adoption"))
+#> Warning in response.frequencies(x, max = max): response.frequency has been
+#> deprecated and replaced with responseFrequecy.  Please fix your call
+#> Warning in response.frequencies(x, max = max): response.frequency has been
+#> deprecated and replaced with responseFrequecy.  Please fix your call
+#> Warning in response.frequencies(x, max = max): response.frequency has been
+#> deprecated and replaced with responseFrequecy.  Please fix your call
+#> Warning in response.frequencies(x, max = max): response.frequency has been
+#> deprecated and replaced with responseFrequecy.  Please fix your call
 ```
 
 ##### 
