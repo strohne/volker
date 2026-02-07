@@ -34,7 +34,7 @@ vignettes/models.html
 inst/rmarkdown/templates/volker-report/skeleton/skeleton.html
 ^CRAN-SUBMISSION$
 private
-revdep
+^revdep$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$

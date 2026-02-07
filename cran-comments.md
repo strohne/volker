@@ -2,6 +2,14 @@
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 
+* This is the release of version 3.3.1
+* No reverse dependencies found.
+* We updated the tests that previously failed in CRAN Package Check Results.
+
+## R CMD check results
+
+0 errors ✔ | 0 warnings ✔ | 0 notes ✔
+
 * This is the release of version 3.3.0
 * No reverse dependencies found.
 * No issues in the current CRAN Package Check Results.
