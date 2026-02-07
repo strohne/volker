@@ -302,22 +302,27 @@ data_rm_na_numbers <- function(data, na.numbers = TRUE, check.labels = TRUE, def
     na.numbers <- cfg_get_na_numbers(default)
   }
 
-  data %>%
-    dplyr::mutate(
-      dplyr::across(
-        dplyr::where(is.numeric),
-        ~ dplyr::if_else(
-          . %in% na.numbers &
-            (
-              !check.labels |
-                (as.character(.) %in% names(attributes(.))) |
-                (as.character(.) %in% as.character(attr(., "labels", TRUE)))
-            ),
-          NA,
-          .
-        )
-      )
-    )
+  for (col in names(data)) {
+    if (is.numeric(data[[col]])) {
+      x <- data[[col]]
+
+      idx <- x %in% na.numbers
+
+      if (check.labels) {
+
+        idx_labels <-
+          (as.character(x) %in% names(attributes(x))) |
+          (as.character(x) %in% as.character(attr(x, "labels", exact = TRUE)))
+
+        idx <- idx & idx_labels
+      }
+
+      x[idx] <- NA
+      data[[col]] <- x
+    }
+  }
+
+  data
 }
 
 #' Reverse item values
