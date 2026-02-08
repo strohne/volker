@@ -98,8 +98,11 @@ model_metrics_tab <- function(data, col, categorical = NULL, metric = NULL, inte
   lm_params <- lm_params %>%
     adjust_p("p", method = adjust)
 
-  # Effect sizes
-  lm_effects <- heplots::etasq(fit, anova = TRUE, partial = TRUE, type=2) |>
+  # Effect sizes (replace labels by numbers to avoid the message
+  # "one or more coefficients in the hypothesis include arithmetic operators in their names"
+  fit_cleaned <- fit
+  names(fit_cleaned$coefficients) <- c(1:length(fit_cleaned$coefficients))
+  lm_effects <- heplots::etasq(fit_cleaned, anova = TRUE, partial = TRUE, type=2) |>
     tibble::as_tibble(rownames = "Item")
 
   colnames(lm_effects) <- c("Item", "Partial Eta Squared", "Sum of Squares", "Df", "F","p")
@@ -221,6 +224,10 @@ model_metrics_plot <- function(data, col, categorical = NULL, metric = NULL, int
       low = tidyselect::all_of("ci low"),
       high = tidyselect::all_of("ci high")
     )
+
+  # Keep order of coefficients in plot
+  coef_levels <- unique(coef_data$item)
+  coef_data$item <- factor(coef_data$item, levels = coef_levels)
 
   pl_coef <- .plot_cor(coef_data, ci = TRUE) +
     ggplot2::geom_hline(yintercept = 0, linewidth = 0.5, color= VLKR_COLOR_SMOOTH) +
@@ -514,7 +521,9 @@ diagnostics_cooksd <- function(fit) {
   interaction_terms <- rhs_terms[grepl("[:*]", rhs_terms)]
   simple_terms <- setdiff(rhs_terms, interaction_terms)
 
-  categorical_vars <- simple_terms[vapply(data[simple_terms], is.factor, logical(1))]
+  factor_vars <- simple_terms[vapply(data[simple_terms], is.factor, logical(1))]
+  character_vars <- simple_terms[vapply(data[simple_terms], is.character, logical(1))]
+  categorical_vars <- c(factor_vars, character_vars)
   metric_vars <- setdiff(simple_terms, categorical_vars)
 
   list(
