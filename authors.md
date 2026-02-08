@@ -16,7 +16,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/strohne/volker/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/strohne/volker/blob/v3.3.1/DESCRIPTION)
 
 Jünger J, Kotthoff H (2026). *volker: High-Level Functions for
 Tabulating, Charting and Reporting Survey Data*. R package version

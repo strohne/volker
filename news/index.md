@@ -2,6 +2,8 @@
 
 ## volker 3.3.1
 
+CRAN release: 2026-02-07
+
 - Updated tests to take into account the latest changes in
   [`bind_rows()`](https://dplyr.tidyverse.org/reference/bind_rows.html).
 - Handle duplicate labels
