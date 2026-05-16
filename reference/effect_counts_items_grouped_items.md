@@ -80,14 +80,14 @@ effect_counts(
 #> 
 #> |Expectations                             |                   Usage| Cramer's V| Chi-squared|  n| df|     p| stars|
 #> |:----------------------------------------|-----------------------:|----------:|-----------:|--:|--:|-----:|-----:|
-#> |ChatGPT has clear advantages compared... |      in private context|       0.32|       41.27| 99|   | 0.006|    **|
-#> |ChatGPT has clear advantages compared... | in professional context|       0.24|       23.46| 99|   | 0.114|      |
-#> |Using ChatGPT brings financial benefits. |      in private context|       0.24|       22.48| 99|   | 0.135|      |
+#> |ChatGPT has clear advantages compared... |      in private context|       0.32|       41.27| 99|   | 0.008|    **|
+#> |ChatGPT has clear advantages compared... | in professional context|       0.24|       23.46| 99|   | 0.126|      |
+#> |Using ChatGPT brings financial benefits. |      in private context|       0.24|       22.48| 99|   | 0.126|      |
 #> |Using ChatGPT brings financial benefits. | in professional context|       0.37|       53.99| 99|   | 0.004|    **|
-#> |Using ChatGPT is advantageous in many... |      in private context|       0.25|       24.15| 99|   | 0.114|      |
-#> |Using ChatGPT is advantageous in many... | in professional context|       0.30|       34.57| 99|   | 0.019|     *|
-#> |Compared to other systems, using Chat... |      in private context|       0.30|       34.62| 99|   | 0.021|     *|
-#> |Compared to other systems, using Chat... | in professional context|       0.20|       16.23| 99|   | 0.441|      |
+#> |Using ChatGPT is advantageous in many... |      in private context|       0.25|       24.15| 99|   | 0.126|      |
+#> |Using ChatGPT is advantageous in many... | in professional context|       0.30|       34.57| 99|   | 0.015|     *|
+#> |Compared to other systems, using Chat... |      in private context|       0.30|       34.62| 99|   | 0.019|     *|
+#> |Compared to other systems, using Chat... | in professional context|       0.20|       16.23| 99|   | 0.445|      |
 #> 
 #> n=99. 2 missing case(s) omitted. Adjusted significance p values with fdr method.
 #> 

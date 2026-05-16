@@ -15,11 +15,9 @@ Cross tabulations:
 
 - Multiple categorical columns and one grouping column: see
   [effect_counts_items_grouped](https://strohne.github.io/volker/reference/effect_counts_items_grouped.md)
-  (not yet implemented)
 
 - Multiple categorical columns and multiple grouping columns:
   [effect_counts_items_grouped_items](https://strohne.github.io/volker/reference/effect_counts_items_grouped_items.md)
-  (not yet implemented)
 
 By default, if you provide two column selections, the second column is
 treated as categorical. Setting the metric-parameter to TRUE will call
@@ -110,6 +108,6 @@ effect_counts(data, sd_gender, adopter)
 #> |Chi-squared | 13.48|
 #> |n           |   101|
 #> |df          |      |
-#> |p           | 0.019|
+#> |p           | 0.017|
 #> |stars       |     *|
 ```

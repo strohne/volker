@@ -1,23 +1,23 @@
 # All kinds of statistics: effect sizes, parameter estimates, p values
 
-| \#  | function                           | implemented | effect calculations                                                                              |
-|-----|------------------------------------|-------------|--------------------------------------------------------------------------------------------------|
-| 1   | effect_counts_one                  |             | Compare to equality (Gini Coefficient, Goodness of fit)                                          |
-| 2   | effect_counts_one_grouped          |             | Contingency of two variables (Cramér’s V, Chi squared)                                           |
-| 3   | effect_counts_one_cor              | not yet     | Explained variance (Pseudo-R-squared of logistic regression)                                     |
-| 4   | effect_counts_items                |             | Compare each item to equality (Gini Coefficient, Goodness of fit)                                |
-| 5   | effect_counts_items_grouped        |             | Cramer’s V and Chi-square-test for each item                                                     |
-| 6   | effect_counts_items_grouped_items  |             | Correlation of categorical items with categorical items                                          |
-| 7   | effect_counts_items_cor            | not yet     | Explained variance of each item by the metric variable (Pseudo-R-squared of logistic regression) |
-| 8   | effect_counts_items_cor_items      | not yet     | Correlation of categorical items with metric items                                               |
-| 9   | effect_metrics_one                 |             | Compare to normality (Shapiro-Wilk-Normality-test)                                               |
-| 10  | effect_metrics_one_grouped         |             | Explained variance (R squared, t-test)                                                           |
-| 11  | effect_metrics_one_cor             |             | Correlation (Pearson’s r, Spearman’s rho, t-test)                                                |
-| 12  | effect_metrics_items               |             | Distribution test for each item (Shapiro-Wilk-Normality-test)                                    |
-| 13  | effect_metrics_items_grouped       |             | Explained variance of each item by the grouping variable (R squared)                             |
-| 14  | effect_metrics_items_grouped_items | not yet     | Correlation of metric items with categorical items                                               |
-| 15  | effect_metrics_items_cor           |             | Correlation between each item and the correlation variable (Pearson’s r, Spearman’s rho, t-test) |
-| 16  | effect_metrics_items_cor_items     |             | Correlation between each item and other items (Pearson’s r, Spearman’s rho, t-test)              |
+| \# | function | implemented | effect calculations |
+|----|----|----|----|
+| 1 | effect_counts_one |  | Compare to equality (Gini Coefficient, Goodness of fit) |
+| 2 | effect_counts_one_grouped |  | Contingency of two variables (Cramér’s V, Chi squared) |
+| 3 | effect_counts_one_cor | not yet | Explained variance (Pseudo-R-squared of logistic regression) |
+| 4 | effect_counts_items |  | Compare each item to equality (Gini Coefficient, Goodness of fit) |
+| 5 | effect_counts_items_grouped |  | Cramer’s V and Chi-square-test for each item |
+| 6 | effect_counts_items_grouped_items |  | Correlation of categorical items with categorical items |
+| 7 | effect_counts_items_cor | not yet | Explained variance of each item by the metric variable (Pseudo-R-squared of logistic regression) |
+| 8 | effect_counts_items_cor_items | not yet | Correlation of categorical items with metric items |
+| 9 | effect_metrics_one |  | Compare to normality (Shapiro-Wilk-Normality-test) |
+| 10 | effect_metrics_one_grouped |  | Explained variance (R squared, t-test) |
+| 11 | effect_metrics_one_cor |  | Correlation (Pearson’s r, Spearman’s rho, t-test) |
+| 12 | effect_metrics_items |  | Distribution test for each item (Shapiro-Wilk-Normality-test) |
+| 13 | effect_metrics_items_grouped |  | Explained variance of each item by the grouping variable (R squared) |
+| 14 | effect_metrics_items_grouped_items | not yet | Correlation of metric items with categorical items |
+| 15 | effect_metrics_items_cor |  | Correlation between each item and the correlation variable (Pearson’s r, Spearman’s rho, t-test) |
+| 16 | effect_metrics_items_cor_items |  | Correlation between each item and other items (Pearson’s r, Spearman’s rho, t-test) |
 
 ## Categorical variables
 
@@ -27,16 +27,16 @@
 
 ### 2. Cross table
 
-| adopter                                           | sd_gender |   n |  p_x |  p_y | p_xy | ratio |   pmi |  npmi | fisher_p | fisher_stars |
-|:--------------------------------------------------|----------:|----:|-----:|-----:|-----:|------:|------:|------:|---------:|-------------:|
-| I try new offers immediately                      |    female |   2 | 0.15 | 0.40 | 0.02 |  0.34 | -1.57 | -0.28 |    0.142 |              |
-| I try new offers immediately                      |      male |  12 | 0.15 | 0.59 | 0.12 |  1.35 |  0.43 |  0.14 |    0.187 |              |
-| I try new offers immediately                      |   diverse |   1 | 0.15 | 0.01 | 0.01 |  6.73 |  2.75 |  0.41 |    0.238 |              |
-| I try new offers rather quickly                   |    female |  25 | 0.62 | 0.40 | 0.25 |  1.00 |  0.00 |  0.00 |    1.000 |              |
-| I try new offers rather quickly                   |      male |  38 | 0.62 | 0.59 | 0.38 |  1.02 |  0.02 |  0.02 |    1.000 |              |
-| I wait until offers establish themselves          |    female |  13 | 0.22 | 0.40 | 0.13 |  1.49 |  0.58 |  0.20 |    0.142 |              |
-| I wait until offers establish themselves          |      male |   9 | 0.22 | 0.59 | 0.09 |  0.69 | -0.54 | -0.15 |    0.142 |              |
-| I only use new offers when I have no other choice |      male |   1 | 0.01 | 0.59 | 0.01 |  1.68 |  0.75 |  0.11 |    1.000 |              |
+| adopter | sd_gender | n | p_x | p_y | p_xy | ratio | pmi | npmi | fisher_p | fisher_stars |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| I try new offers immediately | female | 2 | 0.15 | 0.40 | 0.02 | 0.34 | -1.57 | -0.28 | 0.142 |  |
+| I try new offers immediately | male | 12 | 0.15 | 0.59 | 0.12 | 1.35 | 0.43 | 0.14 | 0.187 |  |
+| I try new offers immediately | diverse | 1 | 0.15 | 0.01 | 0.01 | 6.73 | 2.75 | 0.41 | 0.238 |  |
+| I try new offers rather quickly | female | 25 | 0.62 | 0.40 | 0.25 | 1.00 | 0.00 | 0.00 | 1.000 |  |
+| I try new offers rather quickly | male | 38 | 0.62 | 0.59 | 0.38 | 1.02 | 0.02 | 0.02 | 1.000 |  |
+| I wait until offers establish themselves | female | 13 | 0.22 | 0.40 | 0.13 | 1.49 | 0.58 | 0.20 | 0.142 |  |
+| I wait until offers establish themselves | male | 9 | 0.22 | 0.59 | 0.09 | 0.69 | -0.54 | -0.15 | 0.142 |  |
+| I only use new offers when I have no other choice | male | 1 | 0.01 | 0.59 | 0.01 | 1.68 | 0.75 | 0.11 | 1.000 |  |
 
 [TABLE]
 
@@ -44,55 +44,55 @@
 
 ### 4. Chi-square goodness-of-fit test for each item
 
-| Expectations                                                | Gini coefficient |   n | Chi-squared |     p |  stars |
-|:------------------------------------------------------------|-----------------:|----:|------------:|------:|-------:|
-| ChatGPT has clear advantages compared to similar offerings. |             0.36 |  99 |       43.47 | 0.000 | \*\*\* |
-| Using ChatGPT brings financial benefits.                    |             0.19 |  99 |       14.28 | 0.006 |   \*\* |
-| Using ChatGPT is advantageous in many tasks.                |             0.36 |  99 |       47.01 | 0.000 | \*\*\* |
-| Compared to other systems, using ChatGPT is more fun.       |             0.40 |  99 |       53.68 | 0.000 | \*\*\* |
+| Expectations | Gini coefficient | n | Chi-squared | p | stars |
+|:---|---:|---:|---:|---:|---:|
+| ChatGPT has clear advantages compared to similar offerings. | 0.36 | 99 | 43.47 | 0.000 | \*\*\* |
+| Using ChatGPT brings financial benefits. | 0.19 | 99 | 14.28 | 0.006 | \*\* |
+| Using ChatGPT is advantageous in many tasks. | 0.36 | 99 | 47.01 | 0.000 | \*\*\* |
+| Compared to other systems, using ChatGPT is more fun. | 0.40 | 99 | 53.68 | 0.000 | \*\*\* |
 
 2 missing case(s) omitted. Adjusted significance p values with fdr
 method.
 
 ### 5. Cramers v and Chi-square-test for each item
 
-| Expectations: Correlation with Gender                       | Cramer’s V | Chi-squared |   n |  df |     p | stars |
-|:------------------------------------------------------------|-----------:|------------:|----:|----:|------:|------:|
-| ChatGPT has clear advantages compared to similar offerings. |       0.14 |        3.76 |  99 |     | 0.865 |       |
-| Using ChatGPT brings financial benefits.                    |       0.16 |        4.99 |  99 |     | 0.865 |       |
-| Using ChatGPT is advantageous in many tasks.                |       0.14 |        3.78 |  99 |     | 0.865 |       |
-| Compared to other systems, using ChatGPT is more fun.       |       0.13 |        3.44 |  99 |     | 0.865 |       |
+| Expectations: Correlation with Gender | Cramer’s V | Chi-squared | n | df | p | stars |
+|:---|---:|---:|---:|---:|---:|---:|
+| ChatGPT has clear advantages compared to similar offerings. | 0.14 | 3.76 | 99 |  | 0.865 |  |
+| Using ChatGPT brings financial benefits. | 0.16 | 4.99 | 99 |  | 0.865 |  |
+| Using ChatGPT is advantageous in many tasks. | 0.14 | 3.78 | 99 |  | 0.865 |  |
+| Compared to other systems, using ChatGPT is more fun. | 0.13 | 3.44 | 99 |  | 0.865 |  |
 
 n=99. 2 missing case(s) omitted. Adjusted significance p values with fdr
 method.
 
 ### 6. Correlation of categorical items with categorical items
 
-| Expectations                                                |                   Usage | Cramer’s V | Chi-squared |   n |  df |     p | stars |
-|:------------------------------------------------------------|------------------------:|-----------:|------------:|----:|----:|------:|------:|
-| ChatGPT has clear advantages compared to similar offerings. |      in private context |       0.32 |       41.27 |  99 |     | 0.006 |  \*\* |
-| ChatGPT has clear advantages compared to similar offerings. | in professional context |       0.24 |       23.46 |  99 |     | 0.114 |       |
-| Using ChatGPT brings financial benefits.                    |      in private context |       0.24 |       22.48 |  99 |     | 0.136 |       |
-| Using ChatGPT brings financial benefits.                    | in professional context |       0.37 |       53.99 |  99 |     | 0.004 |  \*\* |
-| Using ChatGPT is advantageous in many tasks.                |      in private context |       0.25 |       24.15 |  99 |     | 0.114 |       |
-| Using ChatGPT is advantageous in many tasks.                | in professional context |       0.30 |       34.57 |  99 |     | 0.019 |    \* |
-| Compared to other systems, using ChatGPT is more fun.       |      in private context |       0.30 |       34.62 |  99 |     | 0.021 |    \* |
-| Compared to other systems, using ChatGPT is more fun.       | in professional context |       0.20 |       16.23 |  99 |     | 0.441 |       |
+| Expectations | Usage | Cramer’s V | Chi-squared | n | df | p | stars |
+|:---|---:|---:|---:|---:|---:|---:|---:|
+| ChatGPT has clear advantages compared to similar offerings. | in private context | 0.32 | 41.27 | 99 |  | 0.006 | \*\* |
+| ChatGPT has clear advantages compared to similar offerings. | in professional context | 0.24 | 23.46 | 99 |  | 0.114 |  |
+| Using ChatGPT brings financial benefits. | in private context | 0.24 | 22.48 | 99 |  | 0.136 |  |
+| Using ChatGPT brings financial benefits. | in professional context | 0.37 | 53.99 | 99 |  | 0.004 | \*\* |
+| Using ChatGPT is advantageous in many tasks. | in private context | 0.25 | 24.15 | 99 |  | 0.114 |  |
+| Using ChatGPT is advantageous in many tasks. | in professional context | 0.30 | 34.57 | 99 |  | 0.019 | \* |
+| Compared to other systems, using ChatGPT is more fun. | in private context | 0.30 | 34.62 | 99 |  | 0.021 | \* |
+| Compared to other systems, using ChatGPT is more fun. | in professional context | 0.20 | 16.23 | 99 |  | 0.441 |  |
 
 n=99. 2 missing case(s) omitted. Adjusted significance p values with fdr
 method.
 
-| Item 1: cg_act | Item 2: cg_act |   n |  p_x |  p_y | p_xy | ratio |   pmi |  npmi | fisher_p | fisher_stars |
-|:---------------|---------------:|----:|-----:|-----:|-----:|------:|------:|------:|---------:|-------------:|
-| search         |         search |  32 | 0.32 | 0.32 | 0.32 |  3.16 |  1.66 |  1.00 |    0.000 |       \*\*\* |
-| search         |           test |   2 | 0.32 | 0.17 | 0.02 |  0.37 | -1.43 | -0.25 |    0.084 |            . |
-| search         |          write |  10 | 0.32 | 0.53 | 0.10 |  0.58 | -0.77 | -0.23 |    0.005 |         \*\* |
-| test           |         search |   2 | 0.17 | 0.32 | 0.02 |  0.37 | -1.43 | -0.25 |    0.084 |            . |
-| test           |           test |  17 | 0.17 | 0.17 | 0.17 |  5.94 |  2.57 |  1.00 |    0.000 |       \*\*\* |
-| test           |          write |   4 | 0.17 | 0.53 | 0.04 |  0.44 | -1.18 | -0.25 |    0.010 |           \* |
-| write          |         search |  10 | 0.53 | 0.32 | 0.10 |  0.58 | -0.77 | -0.23 |    0.005 |         \*\* |
-| write          |           test |   4 | 0.53 | 0.17 | 0.04 |  0.44 | -1.18 | -0.25 |    0.010 |           \* |
-| write          |          write |  54 | 0.53 | 0.53 | 0.53 |  1.87 |  0.90 |  1.00 |    0.000 |       \*\*\* |
+| Item 1: cg_act | Item 2: cg_act | n | p_x | p_y | p_xy | ratio | pmi | npmi | fisher_p | fisher_stars |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| search | search | 32 | 0.32 | 0.32 | 0.32 | 3.16 | 1.66 | 1.00 | 0.000 | \*\*\* |
+| search | test | 2 | 0.32 | 0.17 | 0.02 | 0.37 | -1.43 | -0.25 | 0.084 | . |
+| search | write | 10 | 0.32 | 0.53 | 0.10 | 0.58 | -0.77 | -0.23 | 0.005 | \*\* |
+| test | search | 2 | 0.17 | 0.32 | 0.02 | 0.37 | -1.43 | -0.25 | 0.084 | . |
+| test | test | 17 | 0.17 | 0.17 | 0.17 | 5.94 | 2.57 | 1.00 | 0.000 | \*\*\* |
+| test | write | 4 | 0.17 | 0.53 | 0.04 | 0.44 | -1.18 | -0.25 | 0.010 | \* |
+| write | search | 10 | 0.53 | 0.32 | 0.10 | 0.58 | -0.77 | -0.23 | 0.005 | \*\* |
+| write | test | 4 | 0.53 | 0.17 | 0.04 | 0.44 | -1.18 | -0.25 | 0.010 | \* |
+| write | write | 54 | 0.53 | 0.53 | 0.53 | 1.87 | 0.90 | 1.00 | 0.000 | \*\*\* |
 
 n=101. Frequencies based on values: TRUE. Adjusted significance p values
 with fdr method.
@@ -119,13 +119,13 @@ with fdr method.
 
 ### 10. T-test / ANOVA
 
-| Term                                              | estimate | ci low | ci high |    se |     t |     p |  stars |
-|:--------------------------------------------------|---------:|-------:|--------:|------:|------:|------:|-------:|
-| (Intercept)                                       |    36.60 |  29.55 |   43.65 |  3.55 | 10.30 | 0.000 | \*\*\* |
-| I try new offers immediately (Reference)          |          |        |         |       |       |       |        |
-| I try new offers rather quickly                   |     4.21 |  -3.64 |   12.06 |  3.95 |  1.06 | 0.386 |        |
-| I wait until offers establish themselves          |     1.17 |  -7.97 |   10.32 |  4.61 |  0.25 | 0.800 |        |
-| I only use new offers when I have no other choice |    19.40 |  -8.81 |   47.61 | 14.21 |  1.36 | 0.351 |        |
+| Term | estimate | ci low | ci high | se | t | p | stars |
+|:---|---:|---:|---:|---:|---:|---:|---:|
+| (Intercept) | 36.60 | 29.55 | 43.65 | 3.55 | 10.30 | 0.000 | \*\*\* |
+| I try new offers immediately (Reference) |  |  |  |  |  |  |  |
+| I try new offers rather quickly | 4.21 | -3.64 | 12.06 | 3.95 | 1.06 | 0.386 |  |
+| I wait until offers establish themselves | 1.17 | -7.97 | 10.32 | 4.61 | 0.25 | 0.800 |  |
+| I only use new offers when I have no other choice | 19.40 | -8.81 | 47.61 | 14.21 | 1.36 | 0.351 |  |
 
 | Statistic          | Value |
 |:-------------------|------:|
@@ -152,40 +152,40 @@ with fdr method.
 
 ### 12. Distribution test for each item
 
-| Expectations                                                | skewness | kurtosis |    W |     p |  stars |  normality |
-|:------------------------------------------------------------|---------:|---------:|-----:|------:|-------:|-----------:|
-| ChatGPT has clear advantages compared to similar offerings. |    -0.51 |    -0.05 | 0.89 | 0.000 | \*\*\* | not normal |
-| Using ChatGPT brings financial benefits.                    |     0.09 |    -1.00 | 0.90 | 0.000 | \*\*\* | not normal |
-| Using ChatGPT is advantageous in many tasks.                |    -0.76 |    -0.02 | 0.86 | 0.000 | \*\*\* | not normal |
-| Compared to other systems, using ChatGPT is more fun.       |    -0.66 |     0.43 | 0.86 | 0.000 | \*\*\* | not normal |
-| Much can go wrong when using ChatGPT.                       |     0.12 |    -0.85 | 0.91 | 0.000 | \*\*\* | not normal |
-| There are legal issues with using ChatGPT.                  |     0.07 |    -0.66 | 0.90 | 0.000 | \*\*\* | not normal |
-| The security of user data is not guaranteed with ChatGPT.   |     0.22 |    -0.61 | 0.89 | 0.000 | \*\*\* | not normal |
-| Using ChatGPT could bring personal disadvantages.           |     0.33 |    -0.65 | 0.91 | 0.000 | \*\*\* | not normal |
-| In my environment, using ChatGPT is standard.               |     0.39 |    -0.68 | 0.90 | 0.000 | \*\*\* | not normal |
-| Almost everyone in my environment uses ChatGPT.             |     0.56 |    -0.51 | 0.88 | 0.000 | \*\*\* | not normal |
-| Not using ChatGPT is considered being an outsider.          |     1.08 |     0.22 | 0.79 | 0.000 | \*\*\* | not normal |
-| Using ChatGPT brings me recognition from my environment.    |     0.57 |    -0.77 | 0.87 | 0.000 | \*\*\* | not normal |
+| Expectations | skewness | kurtosis | W | p | stars | normality |
+|:---|---:|---:|---:|---:|---:|---:|
+| ChatGPT has clear advantages compared to similar offerings. | -0.51 | -0.05 | 0.89 | 0.000 | \*\*\* | not normal |
+| Using ChatGPT brings financial benefits. | 0.09 | -1.00 | 0.90 | 0.000 | \*\*\* | not normal |
+| Using ChatGPT is advantageous in many tasks. | -0.76 | -0.02 | 0.86 | 0.000 | \*\*\* | not normal |
+| Compared to other systems, using ChatGPT is more fun. | -0.66 | 0.43 | 0.86 | 0.000 | \*\*\* | not normal |
+| Much can go wrong when using ChatGPT. | 0.12 | -0.85 | 0.91 | 0.000 | \*\*\* | not normal |
+| There are legal issues with using ChatGPT. | 0.07 | -0.66 | 0.90 | 0.000 | \*\*\* | not normal |
+| The security of user data is not guaranteed with ChatGPT. | 0.22 | -0.61 | 0.89 | 0.000 | \*\*\* | not normal |
+| Using ChatGPT could bring personal disadvantages. | 0.33 | -0.65 | 0.91 | 0.000 | \*\*\* | not normal |
+| In my environment, using ChatGPT is standard. | 0.39 | -0.68 | 0.90 | 0.000 | \*\*\* | not normal |
+| Almost everyone in my environment uses ChatGPT. | 0.56 | -0.51 | 0.88 | 0.000 | \*\*\* | not normal |
+| Not using ChatGPT is considered being an outsider. | 1.08 | 0.22 | 0.79 | 0.000 | \*\*\* | not normal |
+| Using ChatGPT brings me recognition from my environment. | 0.57 | -0.77 | 0.87 | 0.000 | \*\*\* | not normal |
 
 4 missing case(s) omitted. Adjusted significance p values with fdr
 method.
 
 ### 13. Analysis of variance
 
-| Expectations                                                | Eta-squared |  Eta |   n |     F |     p |  stars |
-|:------------------------------------------------------------|------------:|-----:|----:|------:|------:|-------:|
-| ChatGPT has clear advantages compared to similar offerings. |        0.03 | 0.18 |  97 |  1.03 | 0.719 |        |
-| Using ChatGPT brings financial benefits.                    |        0.08 | 0.29 |  97 |  2.88 | 0.026 |     \* |
-| Using ChatGPT is advantageous in many tasks.                |        0.01 | 0.09 |  97 |  0.23 | 0.630 |        |
-| Compared to other systems, using ChatGPT is more fun.       |        0.03 | 0.19 |  97 |  1.12 | 0.206 |        |
-| Much can go wrong when using ChatGPT.                       |        0.00 | 0.07 |  97 |  0.16 | 0.621 |        |
-| There are legal issues with using ChatGPT.                  |        0.05 | 0.21 |  97 |  1.47 | 0.221 |        |
-| The security of user data is not guaranteed with ChatGPT.   |        0.04 | 0.21 |  97 |  1.37 | 0.219 |        |
-| Using ChatGPT could bring personal disadvantages.           |        0.04 | 0.20 |  97 |  1.36 | 0.219 |        |
-| In my environment, using ChatGPT is standard.               |        0.22 | 0.47 |  97 |  8.96 | 0.000 | \*\*\* |
-| Almost everyone in my environment uses ChatGPT.             |        0.23 | 0.48 |  97 |  9.05 | 0.000 | \*\*\* |
-| Not using ChatGPT is considered being an outsider.          |        0.27 | 0.52 |  97 | 11.63 | 0.000 | \*\*\* |
-| Using ChatGPT brings me recognition from my environment.    |        0.25 | 0.50 |  97 | 10.13 | 0.000 | \*\*\* |
+| Expectations | Eta-squared | Eta | n | F | p | stars |
+|:---|---:|---:|---:|---:|---:|---:|
+| ChatGPT has clear advantages compared to similar offerings. | 0.03 | 0.18 | 97 | 1.03 | 0.719 |  |
+| Using ChatGPT brings financial benefits. | 0.08 | 0.29 | 97 | 2.88 | 0.026 | \* |
+| Using ChatGPT is advantageous in many tasks. | 0.01 | 0.09 | 97 | 0.23 | 0.630 |  |
+| Compared to other systems, using ChatGPT is more fun. | 0.03 | 0.19 | 97 | 1.12 | 0.206 |  |
+| Much can go wrong when using ChatGPT. | 0.00 | 0.07 | 97 | 0.16 | 0.621 |  |
+| There are legal issues with using ChatGPT. | 0.05 | 0.21 | 97 | 1.47 | 0.221 |  |
+| The security of user data is not guaranteed with ChatGPT. | 0.04 | 0.21 | 97 | 1.37 | 0.219 |  |
+| Using ChatGPT could bring personal disadvantages. | 0.04 | 0.20 | 97 | 1.36 | 0.219 |  |
+| In my environment, using ChatGPT is standard. | 0.22 | 0.47 | 97 | 8.96 | 0.000 | \*\*\* |
+| Almost everyone in my environment uses ChatGPT. | 0.23 | 0.48 | 97 | 9.05 | 0.000 | \*\*\* |
+| Not using ChatGPT is considered being an outsider. | 0.27 | 0.52 | 97 | 11.63 | 0.000 | \*\*\* |
+| Using ChatGPT brings me recognition from my environment. | 0.25 | 0.50 | 97 | 10.13 | 0.000 | \*\*\* |
 
 4 missing case(s) omitted. Adjusted significance p values with fdr
 method.
@@ -194,44 +194,44 @@ method.
 
 ### 15. Correlation between items and one variable
 
-| Expectations: Correlation with Age                          | Pearson’s r | R-squared |   n | ci low | ci high |  df |     t |     p | stars |
-|:------------------------------------------------------------|------------:|----------:|----:|-------:|--------:|----:|------:|------:|------:|
-| ChatGPT has clear advantages compared to similar offerings. |       -0.12 |      0.02 |  97 |  -0.32 |    0.08 |  95 | -1.22 | 0.509 |       |
-| Using ChatGPT brings financial benefits.                    |       -0.13 |      0.02 |  97 |  -0.32 |    0.07 |  95 | -1.29 | 0.509 |       |
-| Using ChatGPT is advantageous in many tasks.                |       -0.09 |      0.01 |  97 |  -0.28 |    0.11 |  95 | -0.86 | 0.525 |       |
-| Compared to other systems, using ChatGPT is more fun.       |       -0.12 |      0.01 |  97 |  -0.31 |    0.08 |  95 | -1.15 | 0.509 |       |
-| Much can go wrong when using ChatGPT.                       |        0.18 |      0.03 |  97 |  -0.02 |    0.36 |  95 |  1.76 | 0.348 |       |
-| There are legal issues with using ChatGPT.                  |        0.24 |      0.06 |  97 |   0.05 |    0.42 |  95 |  2.45 | 0.194 |       |
-| The security of user data is not guaranteed with ChatGPT.   |       -0.10 |      0.01 |  97 |  -0.29 |    0.11 |  95 | -0.93 | 0.525 |       |
-| Using ChatGPT could bring personal disadvantages.           |        0.02 |      0.00 |  97 |  -0.18 |    0.22 |  95 |  0.20 | 0.846 |       |
-| In my environment, using ChatGPT is standard.               |       -0.17 |      0.03 |  97 |  -0.36 |    0.03 |  95 | -1.73 | 0.348 |       |
-| Almost everyone in my environment uses ChatGPT.             |       -0.06 |      0.00 |  97 |  -0.26 |    0.14 |  95 | -0.59 | 0.668 |       |
-| Not using ChatGPT is considered being an outsider.          |        0.09 |      0.01 |  97 |  -0.11 |    0.28 |  95 |  0.87 | 0.525 |       |
-| Using ChatGPT brings me recognition from my environment.    |       -0.02 |      0.00 |  97 |  -0.22 |    0.18 |  95 | -0.22 | 0.846 |       |
+| Expectations: Correlation with Age | Pearson’s r | R-squared | n | ci low | ci high | df | t | p | stars |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| ChatGPT has clear advantages compared to similar offerings. | -0.12 | 0.02 | 97 | -0.32 | 0.08 | 95 | -1.22 | 0.509 |  |
+| Using ChatGPT brings financial benefits. | -0.13 | 0.02 | 97 | -0.32 | 0.07 | 95 | -1.29 | 0.509 |  |
+| Using ChatGPT is advantageous in many tasks. | -0.09 | 0.01 | 97 | -0.28 | 0.11 | 95 | -0.86 | 0.525 |  |
+| Compared to other systems, using ChatGPT is more fun. | -0.12 | 0.01 | 97 | -0.31 | 0.08 | 95 | -1.15 | 0.509 |  |
+| Much can go wrong when using ChatGPT. | 0.18 | 0.03 | 97 | -0.02 | 0.36 | 95 | 1.76 | 0.348 |  |
+| There are legal issues with using ChatGPT. | 0.24 | 0.06 | 97 | 0.05 | 0.42 | 95 | 2.45 | 0.194 |  |
+| The security of user data is not guaranteed with ChatGPT. | -0.10 | 0.01 | 97 | -0.29 | 0.11 | 95 | -0.93 | 0.525 |  |
+| Using ChatGPT could bring personal disadvantages. | 0.02 | 0.00 | 97 | -0.18 | 0.22 | 95 | 0.20 | 0.846 |  |
+| In my environment, using ChatGPT is standard. | -0.17 | 0.03 | 97 | -0.36 | 0.03 | 95 | -1.73 | 0.348 |  |
+| Almost everyone in my environment uses ChatGPT. | -0.06 | 0.00 | 97 | -0.26 | 0.14 | 95 | -0.59 | 0.668 |  |
+| Not using ChatGPT is considered being an outsider. | 0.09 | 0.01 | 97 | -0.11 | 0.28 | 95 | 0.87 | 0.525 |  |
+| Using ChatGPT brings me recognition from my environment. | -0.02 | 0.00 | 97 | -0.22 | 0.18 | 95 | -0.22 | 0.846 |  |
 
 n=97. 4 missing case(s) omitted. Adjusted significance p values with fdr
 method.
 
 ### 16. Correlation of metric items with metric items
 
-| Item 1: Expectations                                        |                                        Item 2: Expectations | Pearson’s r | R-squared |   n | ci low | ci high |  df |    t |     p |  stars |
-|:------------------------------------------------------------|------------------------------------------------------------:|------------:|----------:|----:|-------:|--------:|----:|-----:|------:|-------:|
-| ChatGPT has clear advantages compared to similar offerings. | ChatGPT has clear advantages compared to similar offerings. |        1.00 |      1.00 |  99 |   1.00 |    1.00 |  97 |  Inf | 0.000 | \*\*\* |
-| ChatGPT has clear advantages compared to similar offerings. |                    Using ChatGPT brings financial benefits. |        0.36 |      0.13 |  99 |   0.18 |    0.52 |  97 | 3.84 | 0.000 | \*\*\* |
-| ChatGPT has clear advantages compared to similar offerings. |                Using ChatGPT is advantageous in many tasks. |        0.63 |      0.40 |  99 |   0.50 |    0.74 |  97 | 8.04 | 0.000 | \*\*\* |
-| ChatGPT has clear advantages compared to similar offerings. |       Compared to other systems, using ChatGPT is more fun. |        0.61 |      0.37 |  99 |   0.47 |    0.72 |  97 | 7.58 | 0.000 | \*\*\* |
-| Using ChatGPT brings financial benefits.                    | ChatGPT has clear advantages compared to similar offerings. |        0.36 |      0.13 |  99 |   0.18 |    0.52 |  97 | 3.84 | 0.000 | \*\*\* |
-| Using ChatGPT brings financial benefits.                    |                    Using ChatGPT brings financial benefits. |        1.00 |      1.00 |  99 |   1.00 |    1.00 |  97 |  Inf | 0.000 | \*\*\* |
-| Using ChatGPT brings financial benefits.                    |                Using ChatGPT is advantageous in many tasks. |        0.47 |      0.22 |  99 |   0.30 |    0.61 |  97 | 5.27 | 0.000 | \*\*\* |
-| Using ChatGPT brings financial benefits.                    |       Compared to other systems, using ChatGPT is more fun. |        0.40 |      0.16 |  99 |   0.22 |    0.55 |  97 | 4.25 | 0.000 | \*\*\* |
-| Using ChatGPT is advantageous in many tasks.                | ChatGPT has clear advantages compared to similar offerings. |        0.63 |      0.40 |  99 |   0.50 |    0.74 |  97 | 8.04 | 0.000 | \*\*\* |
-| Using ChatGPT is advantageous in many tasks.                |                    Using ChatGPT brings financial benefits. |        0.47 |      0.22 |  99 |   0.30 |    0.61 |  97 | 5.27 | 0.000 | \*\*\* |
-| Using ChatGPT is advantageous in many tasks.                |                Using ChatGPT is advantageous in many tasks. |        1.00 |      1.00 |  99 |   1.00 |    1.00 |  97 |  Inf | 0.000 | \*\*\* |
-| Using ChatGPT is advantageous in many tasks.                |       Compared to other systems, using ChatGPT is more fun. |        0.46 |      0.21 |  99 |   0.29 |    0.60 |  97 | 5.06 | 0.000 | \*\*\* |
-| Compared to other systems, using ChatGPT is more fun.       | ChatGPT has clear advantages compared to similar offerings. |        0.61 |      0.37 |  99 |   0.47 |    0.72 |  97 | 7.58 | 0.000 | \*\*\* |
-| Compared to other systems, using ChatGPT is more fun.       |                    Using ChatGPT brings financial benefits. |        0.40 |      0.16 |  99 |   0.22 |    0.55 |  97 | 4.25 | 0.000 | \*\*\* |
-| Compared to other systems, using ChatGPT is more fun.       |                Using ChatGPT is advantageous in many tasks. |        0.46 |      0.21 |  99 |   0.29 |    0.60 |  97 | 5.06 | 0.000 | \*\*\* |
-| Compared to other systems, using ChatGPT is more fun.       |       Compared to other systems, using ChatGPT is more fun. |        1.00 |      1.00 |  99 |   1.00 |    1.00 |  97 |  Inf | 0.000 | \*\*\* |
+| Item 1: Expectations | Item 2: Expectations | Pearson’s r | R-squared | n | ci low | ci high | df | t | p | stars |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| ChatGPT has clear advantages compared to similar offerings. | ChatGPT has clear advantages compared to similar offerings. | 1.00 | 1.00 | 99 | 1.00 | 1.00 | 97 | Inf | 0.000 | \*\*\* |
+| ChatGPT has clear advantages compared to similar offerings. | Using ChatGPT brings financial benefits. | 0.36 | 0.13 | 99 | 0.18 | 0.52 | 97 | 3.84 | 0.000 | \*\*\* |
+| ChatGPT has clear advantages compared to similar offerings. | Using ChatGPT is advantageous in many tasks. | 0.63 | 0.40 | 99 | 0.50 | 0.74 | 97 | 8.04 | 0.000 | \*\*\* |
+| ChatGPT has clear advantages compared to similar offerings. | Compared to other systems, using ChatGPT is more fun. | 0.61 | 0.37 | 99 | 0.47 | 0.72 | 97 | 7.58 | 0.000 | \*\*\* |
+| Using ChatGPT brings financial benefits. | ChatGPT has clear advantages compared to similar offerings. | 0.36 | 0.13 | 99 | 0.18 | 0.52 | 97 | 3.84 | 0.000 | \*\*\* |
+| Using ChatGPT brings financial benefits. | Using ChatGPT brings financial benefits. | 1.00 | 1.00 | 99 | 1.00 | 1.00 | 97 | Inf | 0.000 | \*\*\* |
+| Using ChatGPT brings financial benefits. | Using ChatGPT is advantageous in many tasks. | 0.47 | 0.22 | 99 | 0.30 | 0.61 | 97 | 5.27 | 0.000 | \*\*\* |
+| Using ChatGPT brings financial benefits. | Compared to other systems, using ChatGPT is more fun. | 0.40 | 0.16 | 99 | 0.22 | 0.55 | 97 | 4.25 | 0.000 | \*\*\* |
+| Using ChatGPT is advantageous in many tasks. | ChatGPT has clear advantages compared to similar offerings. | 0.63 | 0.40 | 99 | 0.50 | 0.74 | 97 | 8.04 | 0.000 | \*\*\* |
+| Using ChatGPT is advantageous in many tasks. | Using ChatGPT brings financial benefits. | 0.47 | 0.22 | 99 | 0.30 | 0.61 | 97 | 5.27 | 0.000 | \*\*\* |
+| Using ChatGPT is advantageous in many tasks. | Using ChatGPT is advantageous in many tasks. | 1.00 | 1.00 | 99 | 1.00 | 1.00 | 97 | Inf | 0.000 | \*\*\* |
+| Using ChatGPT is advantageous in many tasks. | Compared to other systems, using ChatGPT is more fun. | 0.46 | 0.21 | 99 | 0.29 | 0.60 | 97 | 5.06 | 0.000 | \*\*\* |
+| Compared to other systems, using ChatGPT is more fun. | ChatGPT has clear advantages compared to similar offerings. | 0.61 | 0.37 | 99 | 0.47 | 0.72 | 97 | 7.58 | 0.000 | \*\*\* |
+| Compared to other systems, using ChatGPT is more fun. | Using ChatGPT brings financial benefits. | 0.40 | 0.16 | 99 | 0.22 | 0.55 | 97 | 4.25 | 0.000 | \*\*\* |
+| Compared to other systems, using ChatGPT is more fun. | Using ChatGPT is advantageous in many tasks. | 0.46 | 0.21 | 99 | 0.29 | 0.60 | 97 | 5.06 | 0.000 | \*\*\* |
+| Compared to other systems, using ChatGPT is more fun. | Compared to other systems, using ChatGPT is more fun. | 1.00 | 1.00 | 99 | 1.00 | 1.00 | 97 | Inf | 0.000 | \*\*\* |
 
 n=99. 2 missing case(s) omitted. Adjusted significance p values with fdr
 method.
@@ -243,31 +243,31 @@ method.
     ## Warning: 'rgl.init' failed, will use the null device.
     ## See '?rgl.useNULL' for ways to avoid this warning.
 
-| Term                                              | estimate | ci low | ci high | standard beta | standard error |     t |     p | stars |
-|:--------------------------------------------------|---------:|-------:|--------:|--------------:|---------------:|------:|------:|------:|
-| (Intercept)                                       |     2.49 |   1.01 |    3.97 |               |           0.74 |  3.35 | 0.004 |  \*\* |
-| female (Reference)                                |          |        |         |               |                |       |       |       |
-| male                                              |    -0.40 |  -0.88 |    0.09 |         -0.14 |           0.24 | -1.63 | 0.188 |       |
-| I try new offers immediately (Reference)          |          |        |         |               |                |       |       |       |
-| I try new offers rather quickly                   |    -1.14 |  -1.85 |   -0.43 |         -0.40 |           0.36 | -3.20 | 0.005 |  \*\* |
-| I wait until offers establish themselves          |    -1.49 |  -2.32 |   -0.65 |         -0.44 |           0.42 | -3.54 | 0.003 |  \*\* |
-| I only use new offers when I have no other choice |    -0.66 |  -3.02 |    1.70 |         -0.05 |           1.19 | -0.55 | 0.726 |       |
-| cg_adoption_advantage_01                          |    -0.01 |  -0.33 |    0.32 |         -0.01 |           0.16 | -0.04 | 0.967 |       |
-| cg_adoption_advantage_02                          |     0.43 |   0.20 |    0.65 |          0.37 |           0.11 |  3.76 | 0.003 |  \*\* |
-| cg_adoption_advantage_03                          |     0.19 |  -0.10 |    0.48 |          0.15 |           0.14 |  1.33 | 0.268 |       |
-| cg_adoption_advantage_04                          |    -0.03 |  -0.33 |    0.27 |         -0.02 |           0.15 | -0.20 | 0.934 |       |
-| sd_age                                            |    -0.01 |  -0.03 |    0.00 |         -0.13 |           0.01 | -1.60 | 0.188 |       |
+| Term | estimate | ci low | ci high | standard beta | standard error | t | p | stars |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|
+| (Intercept) | 2.49 | 1.01 | 3.97 |  | 0.74 | 3.35 | 0.004 | \*\* |
+| female (Reference) |  |  |  |  |  |  |  |  |
+| male | -0.40 | -0.88 | 0.09 | -0.14 | 0.24 | -1.63 | 0.188 |  |
+| I try new offers immediately (Reference) |  |  |  |  |  |  |  |  |
+| I try new offers rather quickly | -1.14 | -1.85 | -0.43 | -0.40 | 0.36 | -3.20 | 0.005 | \*\* |
+| I wait until offers establish themselves | -1.49 | -2.32 | -0.65 | -0.44 | 0.42 | -3.54 | 0.003 | \*\* |
+| I only use new offers when I have no other choice | -0.66 | -3.02 | 1.70 | -0.05 | 1.19 | -0.55 | 0.726 |  |
+| cg_adoption_advantage_01 | -0.01 | -0.33 | 0.32 | -0.01 | 0.16 | -0.04 | 0.967 |  |
+| cg_adoption_advantage_02 | 0.43 | 0.20 | 0.65 | 0.37 | 0.11 | 3.76 | 0.003 | \*\* |
+| cg_adoption_advantage_03 | 0.19 | -0.10 | 0.48 | 0.15 | 0.14 | 1.33 | 0.268 |  |
+| cg_adoption_advantage_04 | -0.03 | -0.33 | 0.27 | -0.02 | 0.15 | -0.20 | 0.934 |  |
+| sd_age | -0.01 | -0.03 | 0.00 | -0.13 | 0.01 | -1.60 | 0.188 |  |
 
-| Item                     | Partial Eta Squared | Sum of Squares |  Df |     F |     p | stars | GVIF | GVIF^(1/(2\*Df)) |
-|:-------------------------|--------------------:|---------------:|----:|------:|------:|------:|-----:|-----------------:|
-| sd_gender                |                0.03 |           3.33 |   1 |  2.65 | 0.198 |       | 1.12 |             1.06 |
-| adopter                  |                0.13 |          16.92 |   3 |  4.48 | 0.020 |    \* | 1.28 |             1.04 |
-| cg_adoption_advantage_01 |                0.00 |           0.00 |   1 |  0.00 | 0.967 |       | 2.23 |             1.49 |
-| cg_adoption_advantage_02 |                0.14 |          17.82 |   1 | 14.16 | 0.002 |  \*\* | 1.47 |             1.21 |
-| cg_adoption_advantage_03 |                0.02 |           2.22 |   1 |  1.76 | 0.263 |       | 1.90 |             1.38 |
-| cg_adoption_advantage_04 |                0.00 |           0.05 |   1 |  0.04 | 0.967 |       | 1.77 |             1.33 |
-| sd_age                   |                0.03 |           3.23 |   1 |  2.56 | 0.198 |       | 1.06 |             1.03 |
-| Residuals                |                     |         110.70 |  88 |       |       |       |      |                  |
+| Item | Partial Eta Squared | Sum of Squares | Df | F | p | stars | GVIF | GVIF^(1/(2\*Df)) |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|
+| sd_gender | 0.03 | 3.33 | 1 | 2.65 | 0.198 |  | 1.12 | 1.06 |
+| adopter | 0.13 | 16.92 | 3 | 4.48 | 0.020 | \* | 1.28 | 1.04 |
+| cg_adoption_advantage_01 | 0.00 | 0.00 | 1 | 0.00 | 0.967 |  | 2.23 | 1.49 |
+| cg_adoption_advantage_02 | 0.14 | 17.82 | 1 | 14.16 | 0.002 | \*\* | 1.47 | 1.21 |
+| cg_adoption_advantage_03 | 0.02 | 2.22 | 1 | 1.76 | 0.263 |  | 1.90 | 1.38 |
+| cg_adoption_advantage_04 | 0.00 | 0.05 | 1 | 0.04 | 0.967 |  | 1.77 | 1.33 |
+| sd_age | 0.03 | 3.23 | 1 | 2.56 | 0.198 |  | 1.06 | 1.03 |
+| Residuals |  | 110.70 | 88 |  |  |  |  |  |
 
 | Statistic                     |  value |
 |:------------------------------|-------:|

@@ -35,6 +35,7 @@ Example data are available as the `chatgpt` data frame with survey
 responses on ChatGPT usage.
 
 ``` r
+
 data <- volker::chatgpt
 ```
 
@@ -71,6 +72,7 @@ No GPU or special hardware is required.
 With R installed:
 
 ``` r
+
 install.packages("volker")
 ```
 
@@ -80,6 +82,7 @@ To apply volkeR to the [example input](#input-data) and generate the
 [example output](#output-data), proceed as follows:
 
 ``` r
+
 library(volker)
 data <- chatgpt
 

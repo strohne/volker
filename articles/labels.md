@@ -7,6 +7,7 @@ the variable. You can inspect all labels using the
 [`codebook()`](https://strohne.github.io/volker/reference/codebook.md)-function:
 
 ``` r
+
 codebook(ds)
 #> # A tibble: 97 × 6
 #>    item_name     item_group item_class item_label         value_name value_label
@@ -34,6 +35,7 @@ with your revised codebook.
 
 ``` r
 
+
 library(readxl)
 library(writexl)
 
@@ -53,6 +55,7 @@ items-parameter of
 [`labs_apply()`](https://strohne.github.io/volker/reference/labs_apply.md):
 
 ``` r
+
 ds %>%
   labs_apply(
     items = list(
@@ -81,6 +84,7 @@ labels in the second column.
 The tribble function is a convenient way to construct the label tibble.
 
 ``` r
+
 newlabels <- tribble(
   ~item_name, ~item_label,
   "cg_adoption_advantage_01", "Allgemeine Vorteile",
@@ -125,6 +129,7 @@ In addition, select the columns where value labels should be changed:
 
 ``` r
 
+
 ds %>%
   labs_apply(
     cols=starts_with("cg_adoption"),  
@@ -144,6 +149,7 @@ ds %>%
 ### Uncoded (factor) values example
 
 ``` r
+
 ds %>%
   labs_apply(
     cols=sd_gender,  
@@ -170,6 +176,7 @@ values-parameter to TRUE.
 
 ``` r
 
+
 newlabels <-  tribble(
   ~value_name, ~value_label,
   1, "Stimme überhaupt nicht zu",
@@ -193,23 +200,25 @@ You can remove all labels with
 to get a plain dataset.
 
 ``` r
+
 ds %>%
   labs_clear(everything()) %>%
   tab_counts(starts_with("cg_adoption_advantage_"))
 ```
 
-| cg_adoption_advantage_0 |     -9 |        1 |        2 |        3 |        4 |        5 |      total |
-|:------------------------|-------:|---------:|---------:|---------:|---------:|---------:|-----------:|
-| 1                       | 2% (2) |   6% (6) |   8% (8) | 34% (34) | 37% (37) | 14% (14) | 100% (101) |
-| 2                       | 0% (0) | 22% (22) | 21% (21) | 30% (30) | 22% (22) |   6% (6) | 100% (101) |
-| 3                       | 0% (0) |   6% (6) | 10% (10) | 21% (21) | 47% (47) | 17% (17) | 100% (101) |
-| 4                       | 0% (0) |   6% (6) |   4% (4) | 36% (36) | 40% (40) | 15% (15) | 100% (101) |
+| cg_adoption_advantage_0 | -9 | 1 | 2 | 3 | 4 | 5 | total |
+|:---|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 2% (2) | 6% (6) | 8% (8) | 34% (34) | 37% (37) | 14% (14) | 100% (101) |
+| 2 | 0% (0) | 22% (22) | 21% (21) | 30% (30) | 22% (22) | 6% (6) | 100% (101) |
+| 3 | 0% (0) | 6% (6) | 10% (10) | 21% (21) | 47% (47) | 17% (17) | 100% (101) |
+| 4 | 0% (0) | 6% (6) | 4% (4) | 36% (36) | 40% (40) | 15% (15) | 100% (101) |
 
 n=101.
 
 With the labels parameter, you achieve a similar result.
 
 ``` r
+
 ds %>%
   tab_counts(starts_with("cg_adoption_advantage_"), labels= FALSE)
 ```

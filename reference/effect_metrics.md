@@ -16,8 +16,9 @@ Group comparisons:
 - Multiple metric columns and one grouping column: see
   [effect_metrics_items_grouped](https://strohne.github.io/volker/reference/effect_metrics_items_grouped.md)
 
-- Multiple metric columns and multiple grouping columns: not yet
-  implemented
+- Multiple metric columns and multiple grouping columns:
+  see[effect_metrics_items_grouped_items](https://strohne.github.io/volker/reference/effect_metrics_items_grouped_items.md)
+  (not yet implemented)
 
 By default, if you provide two column selections, the second column is
 treated as categorical. Setting the metric-parameter to TRUE will call

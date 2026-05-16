@@ -30,7 +30,7 @@ Generate an factor table and plot
 
 - cross:
 
-  Not yet implementedt. Optional, a grouping column (without quotes).
+  Not yet implemented. Optional, a grouping column (without quotes).
 
 - metric:
 

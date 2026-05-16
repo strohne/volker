@@ -18,14 +18,13 @@ see the items and alpha values in the following output.
 
 ``` r
 
+
 data %>%
   add_index(
     starts_with("cg_adoption_advantage"),
     newcol = "idx_advantage"
   ) %>%
   report_metrics(idx_advantage)
-#> Warning in response.frequencies(x, max = max): response.frequency has been
-#> deprecated and replaced with responseFrequecy.  Please fix your call
 ```
 
 ##### Index: cg_adoption_advantage_0
@@ -64,6 +63,7 @@ using starts_with() for multiple columns by a common prefix.
 
 ``` r
 
+
 data %>%
   add_index(
     starts_with("cg_adoption_advantage"),
@@ -71,8 +71,6 @@ data %>%
     cols.reverse = starts_with("cg_adoption_"),
   ) %>%
   report_metrics(idx_advantage)
-#> Warning in response.frequencies(x, max = max): response.frequency has been
-#> deprecated and replaced with responseFrequecy.  Please fix your call
 ```
 
 ##### Index: cg_adoption_advantage_0
@@ -110,11 +108,10 @@ Note: If you don’t name the index column explicitly, it is derived from
 the common prefix of all selected items.
 
 ``` r
+
 data %>%
   add_index(starts_with("cg_adoption_advantage")) %>%
   report_metrics(idx_cg_adoption_advantage_0, adopter)
-#> Warning in response.frequencies(x, max = max): response.frequency has been
-#> deprecated and replaced with responseFrequecy.  Please fix your call
 ```
 
 ##### Index: cg_adoption_advantage_0
@@ -127,13 +124,13 @@ data %>%
 
 ###### Table
 
-| Innovator type                                    | min |  q1 | median |  q3 | max | mean |  sd |   n | items | alpha |
-|:--------------------------------------------------|----:|----:|-------:|----:|----:|-----:|----:|----:|------:|------:|
-| I try new offers immediately                      | 1.2 | 3.4 |    3.5 | 4.2 | 5.0 |  3.7 | 1.0 |  15 |     4 |  0.79 |
-| I try new offers rather quickly                   | 1.0 | 2.8 |    3.4 | 3.8 | 5.0 |  3.3 | 0.8 |  62 |     4 |  0.79 |
-| I wait until offers establish themselves          | 1.0 | 2.8 |    3.2 | 4.0 | 4.5 |  3.1 | 1.0 |  21 |     4 |  0.79 |
-| I only use new offers when I have no other choice | 2.5 | 2.5 |    2.5 | 2.5 | 2.5 |  2.5 |     |   1 |     4 |  0.79 |
-| total                                             | 1.0 | 3.0 |    3.5 | 3.8 | 5.0 |  3.3 | 0.8 |  99 |     4 |  0.79 |
+| Innovator type | min | q1 | median | q3 | max | mean | sd | n | items | alpha |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| I try new offers immediately | 1.2 | 3.4 | 3.5 | 4.2 | 5.0 | 3.7 | 1.0 | 15 | 4 | 0.79 |
+| I try new offers rather quickly | 1.0 | 2.8 | 3.4 | 3.8 | 5.0 | 3.3 | 0.8 | 62 | 4 | 0.79 |
+| I wait until offers establish themselves | 1.0 | 2.8 | 3.2 | 4.0 | 4.5 | 3.1 | 1.0 | 21 | 4 | 0.79 |
+| I only use new offers when I have no other choice | 2.5 | 2.5 | 2.5 | 2.5 | 2.5 | 2.5 |  | 1 | 4 | 0.79 |
+| total | 1.0 | 3.0 | 3.5 | 3.8 | 5.0 | 3.3 | 0.8 | 99 | 4 | 0.79 |
 
 *n=99. 2 missing case(s) omitted.*
 
@@ -144,6 +141,7 @@ data %>%
 ### Add multiple indizes
 
 ``` r
+
 data %>%
   add_index(starts_with("cg_adoption_")) %>%
   add_index(starts_with("cg_adoption_advantage")) %>%
@@ -151,14 +149,6 @@ data %>%
   add_index(starts_with("cg_adoption_social")) %>%
   
   report_metrics(starts_with("idx_cg_adoption"))
-#> Warning in response.frequencies(x, max = max): response.frequency has been
-#> deprecated and replaced with responseFrequecy.  Please fix your call
-#> Warning in response.frequencies(x, max = max): response.frequency has been
-#> deprecated and replaced with responseFrequecy.  Please fix your call
-#> Warning in response.frequencies(x, max = max): response.frequency has been
-#> deprecated and replaced with responseFrequecy.  Please fix your call
-#> Warning in response.frequencies(x, max = max): response.frequency has been
-#> deprecated and replaced with responseFrequecy.  Please fix your call
 ```
 
 ##### 

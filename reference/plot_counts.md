@@ -18,7 +18,6 @@ Cross tabulations:
 
 - Two categorical column selections: see
   [plot_counts_items_grouped_items](https://strohne.github.io/volker/reference/plot_counts_items_grouped_items.md)
-  (not yet implemented)
 
 By default, if you provide two column selections, the second selection
 is treated as categorical. Setting the metric-parameter to TRUE will

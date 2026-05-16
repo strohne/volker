@@ -87,19 +87,19 @@ cluster_tab(data, starts_with("cg_adoption"), k = 2)
 #> 
 #> |Expectations                             |     total| Cluster 1| Cluster 2|
 #> |:----------------------------------------|---------:|---------:|---------:|
-#> |ChatGPT has clear advantages compared... | 3.4 (1.0)| 3.8 (0.9)| 3.2 (1.0)|
-#> |Using ChatGPT brings financial benefits. | 2.7 (1.2)| 3.5 (0.9)| 2.2 (1.1)|
-#> |Using ChatGPT is advantageous in many... | 3.6 (1.1)| 4.0 (0.8)| 3.3 (1.2)|
-#> |Compared to other systems, using Chat... | 3.5 (1.0)| 4.0 (0.8)| 3.2 (1.0)|
-#> |Much can go wrong when using ChatGPT.    | 3.1 (1.1)| 3.1 (1.1)| 3.1 (1.1)|
-#> |There are legal issues with using Cha... | 3.1 (1.2)| 3.5 (1.0)| 2.8 (1.2)|
-#> |The security of user data is not guar... | 3.2 (1.0)| 3.5 (1.0)| 3.0 (1.0)|
-#> |Using ChatGPT could bring personal di... | 2.7 (1.1)| 3.1 (1.2)| 2.5 (1.0)|
-#> |In my environment, using ChatGPT is s... | 2.5 (1.1)| 3.5 (0.9)| 1.9 (0.8)|
-#> |Almost everyone in my environment use... | 2.4 (1.2)| 3.4 (1.0)| 1.8 (0.8)|
-#> |Not using ChatGPT is considered being... | 2.0 (1.2)| 2.9 (1.2)| 1.4 (0.6)|
-#> |Using ChatGPT brings me recognition f... | 2.3 (1.2)| 3.4 (1.1)| 1.7 (0.8)|
-#> |n                                        |        97|        36|        61|
+#> |ChatGPT has clear advantages compared... | 3.4 (1.0)| 3.8 (0.9)| 3.1 (1.0)|
+#> |Using ChatGPT brings financial benefits. | 2.7 (1.2)| 3.4 (1.0)| 2.0 (0.9)|
+#> |Using ChatGPT is advantageous in many... | 3.6 (1.1)| 4.0 (0.7)| 3.1 (1.2)|
+#> |Compared to other systems, using Chat... | 3.5 (1.0)| 3.9 (0.8)| 3.2 (1.0)|
+#> |Much can go wrong when using ChatGPT.    | 3.1 (1.1)| 3.0 (1.1)| 3.2 (1.1)|
+#> |There are legal issues with using Cha... | 3.1 (1.2)| 3.2 (1.1)| 3.0 (1.2)|
+#> |The security of user data is not guar... | 3.2 (1.0)| 3.4 (1.0)| 3.0 (1.1)|
+#> |Using ChatGPT could bring personal di... | 2.7 (1.1)| 2.9 (1.2)| 2.6 (1.0)|
+#> |In my environment, using ChatGPT is s... | 2.5 (1.1)| 3.4 (0.9)| 1.7 (0.6)|
+#> |Almost everyone in my environment use... | 2.4 (1.2)| 3.3 (0.9)| 1.6 (0.6)|
+#> |Not using ChatGPT is considered being... | 2.0 (1.2)| 2.6 (1.3)| 1.4 (0.6)|
+#> |Using ChatGPT brings me recognition f... | 2.3 (1.2)| 3.0 (1.3)| 1.7 (0.8)|
+#> |n                                        |        97|        47|        50|
 #> 
 #> n=97. 4 missing case(s) omitted.
 #> 
@@ -107,8 +107,8 @@ cluster_tab(data, starts_with("cg_adoption"), k = 2)
 #> 
 #> |Cluster   |  n|    p|
 #> |:---------|--:|----:|
-#> |Cluster 1 | 36|  37%|
-#> |Cluster 2 | 61|  63%|
+#> |Cluster 1 | 47|  48%|
+#> |Cluster 2 | 50|  52%|
 #> |total     | 97| 100%|
 #> 
 #> n=97.
@@ -117,6 +117,6 @@ cluster_tab(data, starts_with("cg_adoption"), k = 2)
 #> 
 #> |Statistic                      |  Value|
 #> |:------------------------------|------:|
-#> |Within-Cluster Sum of Squares  | 907.02|
-#> |Between-Cluster Sum of Squares | 244.98|
+#> |Within-Cluster Sum of Squares  | 910.04|
+#> |Between-Cluster Sum of Squares | 241.96|
 ```

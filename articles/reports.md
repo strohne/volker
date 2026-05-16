@@ -25,6 +25,7 @@ to fit the page.
 ## A single categorical variable
 
 ``` r
+
 report_counts(data, sd_gender)
 ```
 
@@ -52,6 +53,7 @@ report_counts(data, sd_gender)
 ## A cross table
 
 ``` r
+
 data %>% 
   filter(sd_gender != "diverse") %>%
   filter(adopter != "I only use new offers when I have no other choice") %>% 
@@ -77,6 +79,7 @@ data %>%
 ## Group comparisons
 
 ``` r
+
 data %>% 
   filter(sd_gender != "diverse") %>% 
   filter(adopter != "I only use new offers when I have no other choice") %>% 
@@ -115,6 +118,7 @@ x \# followed by the tab name). Close your new tabsheet with `#### {-}`
 ##### Adoption types
 
 ``` r
+
 data %>% 
   filter(sd_gender != "diverse") %>% 
   filter(adopter != "I only use new offers when I have no other choice") %>% 
@@ -135,14 +139,14 @@ data %>%
 
 ###### Effects
 
-| adopter                                  | sd_gender |   n |  p_x | p_y | p_xy | ratio |   pmi |  npmi | fisher_p | fisher_stars |
-|:-----------------------------------------|----------:|----:|-----:|----:|-----:|------:|------:|------:|---------:|-------------:|
-| I try new offers immediately             |    female |   2 | 0.14 | 0.4 | 0.02 |  0.35 | -1.50 | -0.27 |    0.077 |            . |
-| I try new offers immediately             |      male |  12 | 0.14 | 0.6 | 0.12 |  1.44 |  0.52 |  0.17 |    0.077 |            . |
-| I try new offers rather quickly          |    female |  25 | 0.64 | 0.4 | 0.25 |  0.98 | -0.03 | -0.01 |    1.000 |              |
-| I try new offers rather quickly          |      male |  38 | 0.64 | 0.6 | 0.38 |  1.01 |  0.02 |  0.01 |    1.000 |              |
-| I wait until offers establish themselves |    female |  13 | 0.22 | 0.4 | 0.13 |  1.46 |  0.55 |  0.19 |    0.077 |            . |
-| I wait until offers establish themselves |      male |   9 | 0.22 | 0.6 | 0.09 |  0.69 | -0.54 | -0.16 |    0.077 |            . |
+| adopter | sd_gender | n | p_x | p_y | p_xy | ratio | pmi | npmi | fisher_p | fisher_stars |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| I try new offers immediately | female | 2 | 0.14 | 0.4 | 0.02 | 0.35 | -1.50 | -0.27 | 0.077 | . |
+| I try new offers immediately | male | 12 | 0.14 | 0.6 | 0.12 | 1.44 | 0.52 | 0.17 | 0.077 | . |
+| I try new offers rather quickly | female | 25 | 0.64 | 0.4 | 0.25 | 0.98 | -0.03 | -0.01 | 1.000 |  |
+| I try new offers rather quickly | male | 38 | 0.64 | 0.6 | 0.38 | 1.01 | 0.02 | 0.01 | 1.000 |  |
+| I wait until offers establish themselves | female | 13 | 0.22 | 0.4 | 0.13 | 1.46 | 0.55 | 0.19 | 0.077 | . |
+| I wait until offers establish themselves | male | 9 | 0.22 | 0.6 | 0.09 | 0.69 | -0.54 | -0.16 | 0.077 | . |
 
 *Adjusted significance p values with fdr method.*
 

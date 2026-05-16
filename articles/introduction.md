@@ -5,6 +5,7 @@
 First, load the package, set the plot theme and get some data.
 
 ``` r
+
 # Load the package
 library(volker)
 
@@ -51,16 +52,19 @@ and correlate multiple variables.
 #### Categorical variables
 
 ``` r
+
 # A single variable
 report_counts(ds, use_private)
 ```
 
 ``` r
+
 # A list of variables
 report_counts(ds, c(use_private, use_work))
 ```
 
 ``` r
+
 # Variables matched by a pattern
 report_counts(ds, starts_with("use_"))
 ```
@@ -76,11 +80,13 @@ or
 #### Metric variables
 
 ``` r
+
 # One metric variable
 report_metrics(ds, sd_age)
 ```
 
 ``` r
+
 # Multiple metric items
 report_metrics(ds, starts_with("cg_adoption_"))
 ```
@@ -91,12 +97,14 @@ Provide a grouping column in the third parameter to compare different
 groups.
 
 ``` r
+
 report_counts(ds, adopter, sd_gender)
 ```
 
 For metric variables, you can compare the mean values.
 
 ``` r
+
 report_metrics(ds, sd_age, sd_gender)
 ```
 
@@ -105,6 +113,7 @@ change this behavior using the `metric` parameter to calculate
 correlations:
 
 ``` r
+
 report_metrics(ds, sd_age, use_work, metric = TRUE)
 ```
 
@@ -112,6 +121,7 @@ The `ci` parameter, where possible, adds confidence intervals to the
 outputs.
 
 ``` r
+
 ds |> 
   filter(sd_gender != "diverse") |> 
   report_metrics(sd_age, sd_gender, ci = TRUE)
@@ -120,6 +130,7 @@ ds |>
 Conduct statistical tests with the `effect` parameter.
 
 ``` r
+
 ds |> 
   filter(sd_gender != "diverse") |> 
   report_counts(adopter, sd_gender, effect = TRUE)
@@ -130,6 +141,7 @@ can use the `prop` parameter to grow bars to 100%. The `numbers`
 parameter prints frequencies and percentages onto the bars.
 
 ``` r
+
 ds |> 
   filter(sd_gender != "diverse") |> 
   report_counts(adopter, sd_gender, prop="rows", numbers= "n")
@@ -142,6 +154,7 @@ The
 lets you customise colors:
 
 ``` r
+
 theme_set(theme_vlkr(
   base_fill = c("#F0983A","#3ABEF0","#95EF39","#E35FF5","#7A9B59"),
   base_gradient = c("#FAE2C4","#F0983A")
@@ -155,6 +168,7 @@ the variable. You can inspect all labels using the
 [`codebook()`](https://strohne.github.io/volker/reference/codebook.md)-function:
 
 ``` r
+
 codebook(ds)
 #> # A tibble: 97 × 6
 #>    item_name     item_group item_class item_label         value_name value_label
@@ -177,6 +191,7 @@ items-parameter of
 [`labs_apply()`](https://strohne.github.io/volker/reference/labs_apply.md):
 
 ``` r
+
 ds %>%
   labs_apply(
     items = list(
@@ -195,6 +210,7 @@ list to the values-parameter of
 In addition, select the columns where value labels should be changed:
 
 ``` r
+
 ds %>%
   labs_apply(
     cols = starts_with("cg_adoption"),  
@@ -217,6 +233,7 @@ file, and finally call
 with your revised codebook.
 
 ``` r
+
 library(readxl)
 library(writexl)
 
@@ -236,6 +253,7 @@ the tidyverse loose labels on their way. In this case, store the labels
 restore them afterwards:
 
 ``` r
+
 ds %>%
   labs_store() %>%
   mutate(sd_age = 2024 - sd_age) %>% 
@@ -278,6 +296,7 @@ to fit the page. See the function help for further options (F1 key).
 
 ``` r
 
+
 #> ```{r echo=FALSE}
 #> ds %>% 
 #>   filter(sd_gender != "diverse") %>% 
@@ -301,6 +320,7 @@ mix in custom content.
 Try out the following pattern in an RMarkdown document!
 
 ``` r
+
 
 #> ### Adoption types
 #> 
@@ -329,6 +349,7 @@ printed by
 [`report_metrics()`](https://strohne.github.io/volker/reference/report_metrics.md).
 
 ``` r
+
 ds |> 
   report_metrics(starts_with("cg_adoption"), index = TRUE)
 ```
@@ -344,6 +365,7 @@ function still outputs reliability values for the column.
 **Add a single index**
 
 ``` r
+
 ds %>%
   add_index(starts_with("cg_adoption_"), newcol = "idx_cg_adoption") %>%
   report_metrics(idx_cg_adoption)
@@ -352,6 +374,7 @@ ds %>%
 **Compare the index values by group**
 
 ``` r
+
 ds %>%
   add_index(starts_with("cg_adoption_"), newcol = "idx_cg_adoption") %>%
   report_metrics(idx_cg_adoption, adopter)
@@ -360,6 +383,7 @@ ds %>%
 **Add multiple indizes and summarize them**
 
 ``` r
+
 ds %>%
   add_index(starts_with("cg_adoption_")) %>%
   add_index(starts_with("cg_adoption_advantage")) %>%
@@ -380,6 +404,7 @@ the respective parameters in the
 function.
 
 ``` r
+
 ds |> 
   report_metrics(starts_with("cg_adoption"), factors = TRUE, clusters = TRUE)
 ```
@@ -403,6 +428,7 @@ added that assigns each observation to a cluster number.
 
 ``` r
 
+
 ds |> 
   add_factors(starts_with("cg_adoption"), k = 3) |> 
   select(starts_with("fct_"))
@@ -412,12 +438,14 @@ Once you have added factor or cluster columns to your data set, you can
 use them with the report functions:
 
 ``` r
+
 ds |> 
   add_factors(starts_with("cg_adoption"), k = 3)  |>
   report_metrics(fct_cg_adoption_1, fct_cg_adoption_2, metric = TRUE)
 ```
 
 ``` r
+
 ds |>
   add_clusters(starts_with("cg_adoption"), k = 3) |>
   report_counts(sd_gender, cls_cg_adoption, prop = "cols")
@@ -432,6 +460,7 @@ or
 [`cluster_plot()`](https://strohne.github.io/volker/reference/cluster_plot.md).
 
 ``` r
+
 ds |> 
   add_factors(starts_with("cg_adoption"), k = 3)  |>
   factor_tab(starts_with("fct_"))
@@ -443,6 +472,7 @@ To automatically determine the optimal number of factors or clusters
 based on diagnostics, set k = NULL.
 
 ``` r
+
 ds |> 
   add_factors(starts_with("cg_adoption"), k = NULL) |>
   factor_tab(starts_with("fct_cg_adoption"))
@@ -467,6 +497,7 @@ parameters:
   multiplication terms (e.g. `c(sd_age * sd_gender)`).
 
 ``` r
+
 ds |>
  filter(sd_gender != "diverse") |>
  report_metrics(
@@ -484,6 +515,7 @@ the `model` parameter. The following example is equivalent to the
 preceding example:
 
 ``` r
+
 ds |>
  filter(sd_gender != "diverse") |>
  report_metrics(use_work ~ sd_gender + adopter + sd_age)
@@ -511,6 +543,7 @@ instead of the report function. This will add a new variable prefixes
 with `prd_`, holding the target scores.
 
 ``` r
+
 ds <- ds |> 
   add_model(
    use_work,
@@ -525,6 +558,7 @@ There are two functions to get the regression table or plot from the new
 column:
 
 ``` r
+
 model_tab(ds, prd_use_work)
 model_plot(ds, prd_use_work)
 ```
@@ -550,6 +584,7 @@ Next, you row-bind the data frames. The coder and ID columns ensure that
 each coding can be uniquely related to both the coder and the case.
 
 ``` r
+
 
 data_coded <- bind_rows(
   data_coder1,
@@ -587,6 +622,7 @@ Example:
 
 ``` r
 
+
 report_counts(data_coded, starts_with("topic_"), coder, ids = case, prop = "cols", agree = "reliability")
 ```
 
@@ -595,6 +631,7 @@ If you are only interested in the scores (without a plot), use
 instead of “reliability”).
 
 ``` r
+
 
 agree_tab(data_coded, starts_with("topic_"), coder, ids = case, method = "reli")
 ```
@@ -610,6 +647,7 @@ If you have multiple values in a column, you can focus on one category
 to get micro statistics:
 
 ``` r
+
 
 agree_tab(data_coded, starts_with("topic_"), coder, ids = case, method = "class", category = "catcontent")
 ```
@@ -629,6 +667,7 @@ Furthermore, each function first cleans the values:
   recoded to missing values (-9, -2, and -1).
 
 ``` r
+
 
 print(volker:::VLKR_NA_LEVELS)
 #> [1] "[NA] nicht beantwortet" "[NA] keine Angabe"      "[no answer]"           

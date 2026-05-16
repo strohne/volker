@@ -18,7 +18,6 @@ Cross tabulations:
 
 - Multiple categorical columns and multiple grouping columns: see
   [tab_counts_items_grouped_items](https://strohne.github.io/volker/reference/tab_counts_items_grouped_items.md)
-  (not yet implemented)
 
 By default, if you provide two column selections, the second column is
 treated as categorical. Setting the metric-parameter to TRUE will call

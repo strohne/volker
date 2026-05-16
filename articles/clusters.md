@@ -89,20 +89,20 @@
 
 *4 missing case(s) omitted.*
 
-| Expectations                                                | min |  q1 | median |  q3 | max | mean |  sd |   n |
-|:------------------------------------------------------------|----:|----:|-------:|----:|----:|-----:|----:|----:|
-| ChatGPT has clear advantages compared to similar offerings. |   1 |   3 |      4 |   4 |   5 |  3.4 | 1.0 |  97 |
-| Using ChatGPT brings financial benefits.                    |   1 |   2 |      3 |   4 |   5 |  2.7 | 1.2 |  97 |
-| Using ChatGPT is advantageous in many tasks.                |   1 |   3 |      4 |   4 |   5 |  3.6 | 1.1 |  97 |
-| Compared to other systems, using ChatGPT is more fun.       |   1 |   3 |      4 |   4 |   5 |  3.5 | 1.0 |  97 |
-| Much can go wrong when using ChatGPT.                       |   1 |   2 |      3 |   4 |   5 |  3.1 | 1.1 |  97 |
-| There are legal issues with using ChatGPT.                  |   1 |   2 |      3 |   4 |   5 |  3.1 | 1.2 |  97 |
-| The security of user data is not guaranteed with ChatGPT.   |   1 |   3 |      3 |   4 |   5 |  3.2 | 1.0 |  97 |
-| Using ChatGPT could bring personal disadvantages.           |   1 |   2 |      3 |   3 |   5 |  2.7 | 1.1 |  97 |
-| In my environment, using ChatGPT is standard.               |   1 |   2 |      2 |   3 |   5 |  2.5 | 1.1 |  97 |
-| Almost everyone in my environment uses ChatGPT.             |   1 |   1 |      2 |   3 |   5 |  2.4 | 1.2 |  97 |
-| Not using ChatGPT is considered being an outsider.          |   1 |   1 |      2 |   3 |   5 |  2.0 | 1.2 |  97 |
-| Using ChatGPT brings me recognition from my environment.    |   1 |   1 |      2 |   3 |   5 |  2.3 | 1.2 |  97 |
+| Expectations | min | q1 | median | q3 | max | mean | sd | n |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|
+| ChatGPT has clear advantages compared to similar offerings. | 1 | 3 | 4 | 4 | 5 | 3.4 | 1.0 | 97 |
+| Using ChatGPT brings financial benefits. | 1 | 2 | 3 | 4 | 5 | 2.7 | 1.2 | 97 |
+| Using ChatGPT is advantageous in many tasks. | 1 | 3 | 4 | 4 | 5 | 3.6 | 1.1 | 97 |
+| Compared to other systems, using ChatGPT is more fun. | 1 | 3 | 4 | 4 | 5 | 3.5 | 1.0 | 97 |
+| Much can go wrong when using ChatGPT. | 1 | 2 | 3 | 4 | 5 | 3.1 | 1.1 | 97 |
+| There are legal issues with using ChatGPT. | 1 | 2 | 3 | 4 | 5 | 3.1 | 1.2 | 97 |
+| The security of user data is not guaranteed with ChatGPT. | 1 | 3 | 3 | 4 | 5 | 3.2 | 1.0 | 97 |
+| Using ChatGPT could bring personal disadvantages. | 1 | 2 | 3 | 3 | 5 | 2.7 | 1.1 | 97 |
+| In my environment, using ChatGPT is standard. | 1 | 2 | 2 | 3 | 5 | 2.5 | 1.1 | 97 |
+| Almost everyone in my environment uses ChatGPT. | 1 | 1 | 2 | 3 | 5 | 2.4 | 1.2 | 97 |
+| Not using ChatGPT is considered being an outsider. | 1 | 1 | 2 | 3 | 5 | 2.0 | 1.2 | 97 |
+| Using ChatGPT brings me recognition from my environment. | 1 | 1 | 2 | 3 | 5 | 2.3 | 1.2 | 97 |
 
 *n=97. 4 missing case(s) omitted.*
 

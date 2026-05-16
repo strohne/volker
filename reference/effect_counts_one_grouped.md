@@ -108,6 +108,6 @@ effect_counts_one_grouped(data, adopter, sd_gender)
 #> |Chi-squared | 13.48|
 #> |n           |   101|
 #> |df          |      |
-#> |p           | 0.022|
+#> |p           | 0.021|
 #> |stars       |     *|
 ```

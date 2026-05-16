@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">volker</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -239,7 +239,7 @@ All table functions return data frames that can be processed further. The tables
 <span> <span class="fu"><a href="reference/report_metrics.html">report_metrics</a></span><span class="op">(</span><span class="va">use_work</span> <span class="op">~</span> <span class="va">sd_gender</span> <span class="op">+</span> <span class="va">adopter</span> <span class="op">+</span> <span class="va">sd_age</span><span class="op">)</span></span></code></pre></div>
 <p>Four selected diagnostic plots are generated if the <code>diagnostics</code> parameter is set to <code>TRUE</code>:</p>
 <ul>
-<li>Residual vs. fitted: Residuals should be evenly distributed vertically. Horizontally, they should follow the straight line. Otherwise this could be an indicator for heteroscedasticity, non-linearity, or autocorrelation.</li>
+<li>Residuals vs. fitted: Residuals should be evenly distributed vertically. Horizontally, they should follow the straight line. Otherwise this could be an indicator for heteroscedasticity, non-linearity, or autocorrelation.</li>
 <li>Scale-location plot: Points should be evenly distributed without any visible pattern, similar to the residual plot.</li>
 <li>Q-Q-Plot of fitted values: All points should lie along a straight line. Deviations may suggest non-linearity or that residuals are not normally distributed.</li>
 <li>Cook’s distance plot: High values indicate that single cases influence the model disproportionately. Rule of thumb: Cook’s distance &gt; 1 is a problem.</li>
@@ -281,44 +281,44 @@ Codings must be either binary (<code>TRUE</code>/<code>FALSE</code>) or contain 
 <span><span class="op">)</span></span></code></pre></div>
 <p>The final data, for example, looks like:</p>
 <table class="table">
-<thead><tr class="header">
+<thead><tr>
 <th>case</th>
 <th>coder</th>
 <th>topic_sports</th>
 <th>topic_weather</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>1</td>
 <td>anne</td>
 <td>TRUE</td>
 <td>FALSE</td>
 </tr>
-<tr class="even">
+<tr>
 <td>2</td>
 <td>anne</td>
 <td>TRUE</td>
 <td>FALSE</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>3</td>
 <td>anne</td>
 <td>FALSE</td>
 <td>TRUE</td>
 </tr>
-<tr class="even">
+<tr>
 <td>1</td>
 <td>ben</td>
 <td>TRUE</td>
 <td>TRUE</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>2</td>
 <td>ben</td>
 <td>TRUE</td>
 <td>FALSE</td>
 </tr>
-<tr class="even">
+<tr>
 <td>3</td>
 <td>ben</td>
 <td>FALSE</td>
@@ -559,33 +559,33 @@ Codings must be either binary (<code>TRUE</code>/<code>FALSE</code>) or contain 
 <h2 id="roadmap">Roadmap<a class="anchor" aria-label="anchor" href="#roadmap"></a>
 </h2>
 <table class="table">
-<thead><tr class="header">
+<thead><tr>
 <th>Version</th>
 <th>Features</th>
 <th>Status</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>1.0</td>
 <td>Descriptives</td>
 <td>90% done</td>
 </tr>
-<tr class="even">
+<tr>
 <td>2.0</td>
 <td>Effects</td>
 <td>75% done</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>3.0</td>
 <td>Factors &amp; clusters</td>
 <td>80% done</td>
 </tr>
-<tr class="even">
+<tr>
 <td>4.0</td>
 <td>Linear models</td>
 <td>50% done</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>5.0</td>
 <td>Text analysis</td>
 <td>work in progress</td>

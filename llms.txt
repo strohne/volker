@@ -8,6 +8,7 @@ High-level functions for tabulating, charting and reporting survey data.
 package](reference/figures/youtube.png)](https://www.youtube.com/@volkerpackage)
 
 ``` r
+
 # Install the package (see below), then load it
 library(volker)
 
@@ -100,12 +101,12 @@ Which one is best? That depends on your objective:
 
 ## Examples
 
-|                      |                                                                     |                                                                     |
-|----------------------|---------------------------------------------------------------------|---------------------------------------------------------------------|
-|                      | **Metric**                                                          | **Categorical**                                                     |
-| **One variable**     | ![Density plot](reference/figures/plot_metrics_one.png)             | ![Bar chart](reference/figures/plot_counts_one.png)                 |
+|  |  |  |
+|----|----|----|
+|  | **Metric** | **Categorical** |
+| **One variable** | ![Density plot](reference/figures/plot_metrics_one.png) | ![Bar chart](reference/figures/plot_counts_one.png) |
 | **Group comparison** | ![Group comparison](reference/figures/plot_metrics_one_grouped.png) | ![Stacked bar chart](reference/figures/plot_counts_one_grouped.png) |
-| **Multiple items**   | ![Item battery boxplots](reference/figures/plot_metrics_items.png)  | ![Item battery bar chart](reference/figures/plot_counts_items.png)  |
+| **Multiple items** | ![Item battery boxplots](reference/figures/plot_metrics_items.png) | ![Item battery bar chart](reference/figures/plot_counts_items.png) |
 
   
 
@@ -142,6 +143,7 @@ Effect calculation is included in the reports if you request it by the
 effect-parameter, for example:
 
 ``` r
+
 report_counts(data, adopter, sd_gender, prop = "cols", effect = TRUE)
 ```
 
@@ -160,12 +162,14 @@ the diagnostics choose the optimal number:
 
 ``` r
 
+
 report_metrics(data, starts_with("cg_adoption"), factors = TRUE, clusters = TRUE)
 ```
 
 Set the desired number directly:
 
 ``` r
+
 
 report_metrics(data, starts_with("cg_adoption"), factors = 3, clusters = 4)
 ```
@@ -191,6 +195,7 @@ parameters:
   multiplication terms (e.g. `c(sd_age * sd_gender)`).
 
 ``` r
+
 ds |>
  filter(sd_gender != "diverse") |>
  report_metrics(
@@ -207,6 +212,7 @@ the `model` parameter. The following example is equivalent to the
 preceding example:
 
 ``` r
+
 ds |>
  filter(sd_gender != "diverse") |>
  report_metrics(use_work ~ sd_gender + adopter + sd_age)
@@ -215,7 +221,7 @@ ds |>
 Four selected diagnostic plots are generated if the `diagnostics`
 parameter is set to `TRUE`:
 
-- Residual vs. fitted: Residuals should be evenly distributed
+- Residuals vs. fitted: Residuals should be evenly distributed
   vertically. Horizontally, they should follow the straight line.
   Otherwise this could be an indicator for heteroscedasticity,
   non-linearity, or autocorrelation.
@@ -234,6 +240,7 @@ instead of the report function. This will add a new variable prefixes
 with `prd_`, holding the target scores.
 
 ``` r
+
 ds <- ds |> add_model(
    use_work,
    categorical = c(sd_gender, adopter), 
@@ -247,6 +254,7 @@ There are two functions to get the regression table or plot from the new
 column:
 
 ``` r
+
 
 model_tab(ds, prd_use_work)
 model_plot(ds, prd_use_work)
@@ -273,6 +281,7 @@ Next, you row-bind the data frames. The coder and ID columns ensure that
 each coding can be uniquely matched to both the coder and the case.
 
 ``` r
+
 
 data_coded <- bind_rows(
   data_coder1,
@@ -310,6 +319,7 @@ Example:
 
 ``` r
 
+
 report_counts(data_coded, starts_with("topic_"), coder, ids = case, prop = "cols", agree = "reliability")
 ```
 
@@ -318,6 +328,7 @@ If you are only interested in the scores (without a plot), use
 instead of “reliability”).
 
 ``` r
+
 
 agree_tab(data_coded, starts_with("topic_"), coder, ids = case, method = "reli")
 ```
@@ -334,6 +345,7 @@ to get micro statistics:
 
 ``` r
 
+
 agree_tab(data_coded, starts_with("topic_"), coder, ids = case, method = "class", category = "catcontent")
 ```
 
@@ -345,6 +357,7 @@ columns and values by the
 [`codebook()`](https://strohne.github.io/volker/reference/codebook.md)-function:
 
 ``` r
+
 codebook(data)
 ```
 
@@ -356,6 +369,7 @@ items-parameter of
 [`labs_apply()`](https://strohne.github.io/volker/reference/labs_apply.md):
 
 ``` r
+
 data %>%
   labs_apply(
     items = list(
@@ -374,6 +388,7 @@ list to the values-parameter of
 In addition, select the columns where value labels should be changed:
 
 ``` r
+
 
 data %>%
   labs_apply(
@@ -398,6 +413,7 @@ with your revised codebook.
 
 ``` r
 
+
 library(readxl)
 library(writexl)
 
@@ -417,6 +433,7 @@ the tidyverse loose labels on their way. In this case, store the labels
 restore them afterwards:
 
 ``` r
+
 data %>%
   labs_store() %>%
   mutate(sd_age = 2024 - sd_age) %>% 
@@ -433,6 +450,7 @@ stored in the column attributes. That’s why you can directly throw in
 labeled data from the SoSci Survey API:
 
 ``` r
+
 library(volker)
 
 # Get your API link from SoSci Survey with settings "Daten als CSV für R abrufen"
@@ -456,6 +474,7 @@ You can change plot colors using the
 [`theme_vlkr()`](https://strohne.github.io/volker/reference/theme_vlkr.md)-function:
 
 ``` r
+
 theme_set(
   theme_vlkr(
     base_fill = c("#F0983A","#3ABEF0","#95EF39","#E35FF5","#7A9B59"),
@@ -588,6 +607,7 @@ the specific function.
 As with all other packages you’ll have to install the package first.
 
 ``` r
+
 install.packages("strohne/volker")
 ```
 
@@ -598,6 +618,7 @@ You can try alternative versions:
   updates):
 
   ``` r
+
   if (!require(remotes)) { install.packages("remotes") }
   remotes::install_github("strohne/volker", upgrade="never", build_vignettes = TRUE)
   ```
@@ -606,6 +627,7 @@ You can try alternative versions:
   version which lives in the devel branch (if asked, skip the updates):
 
   ``` r
+
   if (!require(remotes)) { install.packages("remotes") }
   remotes::install_github("strohne/volker", ref="devel", upgrade="never", build_vignettes = TRUE)
   ```

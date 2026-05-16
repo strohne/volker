@@ -1,4 +1,4 @@
-pandoc: 3.1.11
+pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
@@ -13,7 +13,7 @@ articles:
   reports: reports.html
   scales: scales.html
   tables: tables.html
-last_built: 2026-02-08T14:17Z
+last_built: 2026-05-16T20:32Z
 urls:
   reference: https://strohne.github.io/volker/reference
   article: https://strohne.github.io/volker/articles
