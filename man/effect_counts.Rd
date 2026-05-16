@@ -36,8 +36,8 @@ The type of effect size depends on the number of selected columns:
 Cross tabulations:
 \itemize{
 \item One categorical column and one grouping column: see \link{effect_counts_one_grouped}
-\item Multiple categorical columns and one grouping column: see \link{effect_counts_items_grouped} (not yet implemented)
-\item Multiple categorical columns and multiple grouping columns: \link{effect_counts_items_grouped_items} (not yet implemented)
+\item Multiple categorical columns and one grouping column: see \link{effect_counts_items_grouped}
+\item Multiple categorical columns and multiple grouping columns: \link{effect_counts_items_grouped_items}
 }
 
 By default, if you provide two column selections, the second column is treated as categorical.

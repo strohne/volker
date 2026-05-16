@@ -37,7 +37,7 @@ Cross tabulations:
 \itemize{
 \item One categorical column and one grouping column: see \link{plot_counts_one_grouped}
 \item Multiple categorical columns and one grouping column: see \link{plot_counts_items_grouped}
-\item Two categorical column selections: see \link{plot_counts_items_grouped_items} (not yet implemented)
+\item Two categorical column selections: see \link{plot_counts_items_grouped_items}
 }
 
 By default, if you provide two column selections, the second selection is treated as categorical.

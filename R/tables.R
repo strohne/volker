@@ -2,6 +2,7 @@
 #'
 #' @description
 #' The type of frequency table depends on the number of selected columns:
+#'
 #' - One categorical column: see \link{tab_counts_one}
 #' - Multiple categorical columns: see \link{tab_counts_items}
 #'
@@ -9,7 +10,7 @@
 #'
 #' - One categorical column and one grouping column: see \link{tab_counts_one_grouped}
 #' - Multiple categorical columns and one grouping column: see \link{tab_counts_items_grouped}
-#' - Multiple categorical columns and multiple grouping columns: see \link{tab_counts_items_grouped_items} (not yet implemented)
+#' - Multiple categorical columns and multiple grouping columns: see \link{tab_counts_items_grouped_items}
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
@@ -103,6 +104,7 @@ tab_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE, .
 #'
 #' @description
 #' The table type depends on the number of selected columns:
+#'
 #' - One metric column: see \link{tab_metrics_one}
 #' - Multiple metric columns: see \link{tab_metrics_items}
 #'

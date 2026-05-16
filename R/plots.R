@@ -10,7 +10,7 @@
 #'
 #' - One categorical column and one grouping column: see \link{plot_counts_one_grouped}
 #' - Multiple categorical columns and one grouping column: see \link{plot_counts_items_grouped}
-#' - Two categorical column selections: see \link{plot_counts_items_grouped_items} (not yet implemented)
+#' - Two categorical column selections: see \link{plot_counts_items_grouped_items}
 #'
 #' By default, if you provide two column selections, the second selection is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:

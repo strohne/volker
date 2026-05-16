@@ -22,7 +22,7 @@
 e.g. a single column (without quotes)
 or multiple columns selected by methods such as starts_with().}
 
-\item{cross}{Not yet implementedt. Optional, a grouping column (without quotes).}
+\item{cross}{Not yet implemented. Optional, a grouping column (without quotes).}
 
 \item{metric}{Not yet implemented. When crossing variables, the cross column parameter can contain categorical or metric values.
 By default, the cross column selection is treated as categorical data.

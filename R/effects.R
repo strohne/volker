@@ -8,8 +8,8 @@
 #' Cross tabulations:
 #'
 #' - One categorical column and one grouping column: see \link{effect_counts_one_grouped}
-#' - Multiple categorical columns and one grouping column: see \link{effect_counts_items_grouped} (not yet implemented)
-#' - Multiple categorical columns and multiple grouping columns: \link{effect_counts_items_grouped_items} (not yet implemented)
+#' - Multiple categorical columns and one grouping column: see \link{effect_counts_items_grouped}
+#' - Multiple categorical columns and multiple grouping columns: \link{effect_counts_items_grouped_items}
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:
@@ -98,7 +98,7 @@ effect_counts <- function(data, cols, cross = NULL, metric = FALSE, clean = TRUE
 #'
 #' - One metric column and one grouping column: see \link{effect_metrics_one_grouped}
 #' - Multiple metric columns and one grouping column: see \link{effect_metrics_items_grouped}
-#' - Multiple metric columns and multiple grouping columns: not yet implemented
+#' - Multiple metric columns and multiple grouping columns: see\link{effect_metrics_items_grouped_items} (not yet implemented)
 #'
 #' By default, if you provide two column selections, the second column is treated as categorical.
 #' Setting the metric-parameter to TRUE will call the appropriate functions for correlation analysis:

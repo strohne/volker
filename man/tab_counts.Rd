@@ -37,7 +37,7 @@ Cross tabulations:
 \itemize{
 \item One categorical column and one grouping column: see \link{tab_counts_one_grouped}
 \item Multiple categorical columns and one grouping column: see \link{tab_counts_items_grouped}
-\item Multiple categorical columns and multiple grouping columns: see \link{tab_counts_items_grouped_items} (not yet implemented)
+\item Multiple categorical columns and multiple grouping columns: see \link{tab_counts_items_grouped_items}
 }
 
 By default, if you provide two column selections, the second column is treated as categorical.

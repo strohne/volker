@@ -290,7 +290,7 @@ ds |>
 Four selected diagnostic plots are generated if the `diagnostics`
 parameter is set to `TRUE`:
 
-- Residual vs. fitted: Residuals should be evenly distributed
+- Residuals vs. fitted: Residuals should be evenly distributed
   vertically. Horizontally, they should follow the straight line.
   Otherwise this could be an indicator for heteroscedasticity,
   non-linearity, or autocorrelation.

@@ -255,7 +255,7 @@ ds |>
 
 Four selected diagnostic plots are generated if the `diagnostics` parameter is set to `TRUE`:
 
-- Residual vs. fitted: Residuals should be evenly distributed vertically. Horizontally, they should follow the straight line. 
+- Residuals vs. fitted: Residuals should be evenly distributed vertically. Horizontally, they should follow the straight line. 
   Otherwise this could be an indicator for heteroscedasticity, non-linearity, or autocorrelation.
 - Scale-location plot: Points should be evenly distributed without any visible pattern, similar to the residual plot.
 - Q-Q-Plot of fitted values: All points should lie along a straight line.
