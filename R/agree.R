@@ -382,7 +382,8 @@ agree_tab <- function(data, cols, coders, ids = NULL, category = NULL, method = 
   total <- sum(contingency)
 
   # Calculate Precision, Recall, F1 for each class and average (macro)
-  acc_vec <- precision_vec <- recall_vec <- f1_vec <- numeric(length = nrow(contingency))
+  acc_vec <- precision_vec <- recall_vec <- f1_vec <- sensitivity_vec <- specificity_vec <- numeric(length = nrow(contingency))
+
   cat_vec <- character(length = nrow(contingency))
 
   for (i in 1:nrow(contingency)) {
@@ -390,10 +391,12 @@ agree_tab <- function(data, cols, coders, ids = NULL, category = NULL, method = 
     TP_i <- contingency[i, i]
     FP_i <- sum(contingency[-i, i])
     FN_i <- sum(contingency[i, -i])
+    TN_i <- sum(contingency[-i, -i])
 
     precision_vec[i] <- if ((TP_i + FP_i) > 0) TP_i / (TP_i + FP_i) else 0
     recall_vec[i] <- if ((TP_i + FN_i) > 0) TP_i / (TP_i + FN_i) else 0
-
+    sensitivity_vec[i] <- recall_vec[i]
+    specificity_vec[i] <- if ((TN_i + FP_i) > 0) TN_i / (TN_i + FP_i) else 0
 
     if ((precision_vec[i] + recall_vec[i]) > 0) {
       f1_vec[i] <- 2 * precision_vec[i] * recall_vec[i] / (precision_vec[i] + recall_vec[i])
@@ -412,6 +415,8 @@ agree_tab <- function(data, cols, coders, ids = NULL, category = NULL, method = 
     precision_vec <- precision_vec[as.character(cat_vec) == category]
     recall_vec <- recall_vec[as.character(cat_vec) == category]
     f1_vec <- f1_vec[as.character(cat_vec) == category]
+    sensitivity_vec <- sensitivity_vec[as.character(cat_vec) == category]
+    specificity_vec <- specificity_vec[as.character(cat_vec) == category]
     categories <- category
   }
 
@@ -420,6 +425,8 @@ agree_tab <- function(data, cols, coders, ids = NULL, category = NULL, method = 
   precision <- mean(precision_vec)
   recall <- mean(recall_vec)
   f1 <- mean(f1_vec)
+  sensitivity <- mean(sensitivity_vec)
+  specificity <- mean(specificity_vec)
 
   result <- list(
     "n" = n_cases,
@@ -429,7 +436,9 @@ agree_tab <- function(data, cols, coders, ids = NULL, category = NULL, method = 
     "Accuracy" = round(accuracy, 2),
     "Precision" = round(precision, 2),
     "Recall" = round(recall, 2),
-    "F1" = round(f1, 2)
+    "F1" = round(f1, 2),
+    "Sensitivity" = round(sensitivity, 2),
+    "Specificity" = round(specificity, 2)
   )
 
   return (result)
