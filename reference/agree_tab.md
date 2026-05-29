@@ -164,9 +164,9 @@ agree_tab(data_coded, cg_act_write,  coder, case, method = "reli")
 agree_tab(data_coded, cg_act_write,  coder, case, method = "class")
 #> 
 #> 
-#> |item         |   n| Ground truth| Categories| Accuracy| Precision| Recall|   F1|
-#> |:------------|---:|------------:|----------:|--------:|---------:|------:|----:|
-#> |cg_act_write | 101|    coder one|       TRUE|      0.7|      0.85|   0.54| 0.66|
+#> |item         |   n| Ground truth| Categories| Accuracy| Precision| Recall|   F1| Sensitivity| Specificity|
+#> |:------------|---:|------------:|----------:|--------:|---------:|------:|----:|-----------:|-----------:|
+#> |cg_act_write | 101|    coder one|       TRUE|      0.7|      0.85|   0.54| 0.66|        0.54|        0.89|
 #> 
 #> 
 #> |item         | agree| coder one| coder two|  n|    p|

@@ -106,9 +106,9 @@
 
 ## 3. F1 for a single item
 
-| item         |   n | Ground truth | Categories | Accuracy | Precision | Recall |   F1 |
-|:-------------|----:|-------------:|-----------:|---------:|----------:|-------:|-----:|
-| cg_act_write | 101 |    coder one |       TRUE |     0.71 |      0.84 |   0.57 | 0.68 |
+| item | n | Ground truth | Categories | Accuracy | Precision | Recall | F1 | Sensitivity | Specificity |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| cg_act_write | 101 | coder one | TRUE | 0.71 | 0.84 | 0.57 | 0.68 | 0.57 | 0.87 |
 
 | item         | agree | coder one | coder two |   n |    p |
 |:-------------|------:|----------:|----------:|----:|-----:|
@@ -119,11 +119,11 @@
 
 ## 4. F1 for multiple items
 
-| cg_act |   n | Ground truth | Categories | Accuracy | Precision | Recall |   F1 |
-|:-------|----:|-------------:|-----------:|---------:|----------:|-------:|-----:|
-| search | 101 |    coder one |       TRUE |     0.83 |      0.80 |   0.62 | 0.70 |
-| test   | 101 |    coder one |       TRUE |     0.87 |      0.83 |   0.29 | 0.43 |
-| write  | 101 |    coder one |       TRUE |     0.71 |      0.84 |   0.57 | 0.68 |
+| cg_act | n | Ground truth | Categories | Accuracy | Precision | Recall | F1 | Sensitivity | Specificity |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| search | 101 | coder one | TRUE | 0.83 | 0.80 | 0.62 | 0.70 | 0.62 | 0.93 |
+| test | 101 | coder one | TRUE | 0.87 | 0.83 | 0.29 | 0.43 | 0.29 | 0.99 |
+| write | 101 | coder one | TRUE | 0.71 | 0.84 | 0.57 | 0.68 | 0.57 | 0.87 |
 
 | item          | agree | coder one | coder two |   n |    p |
 |:--------------|------:|----------:|----------:|----:|-----:|
@@ -142,11 +142,11 @@
 
 ## 5. Choosing macro statistics vs. single categories
 
-| cg_act |   n | Ground truth | Categories | Accuracy | Precision | Recall |   F1 |
-|:-------|----:|-------------:|-----------:|---------:|----------:|-------:|-----:|
-| search | 101 |    coder one |         no |     0.83 |      0.84 |   0.93 | 0.88 |
-| test   | 101 |    coder one |         no |     0.87 |      0.87 |   0.99 | 0.93 |
-| write  | 101 |    coder one |         no |     0.71 |      0.64 |   0.87 | 0.74 |
+| cg_act | n | Ground truth | Categories | Accuracy | Precision | Recall | F1 | Sensitivity | Specificity |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| search | 101 | coder one | no | 0.83 | 0.84 | 0.93 | 0.88 | 0.93 | 0.62 |
+| test | 101 | coder one | no | 0.87 | 0.87 | 0.99 | 0.93 | 0.99 | 0.29 |
+| write | 101 | coder one | no | 0.71 | 0.64 | 0.87 | 0.74 | 0.87 | 0.57 |
 
 | item          | agree | coder one | coder two |   n |    p |
 |:--------------|------:|----------:|----------:|----:|-----:|
