@@ -141,6 +141,11 @@ factor_tab <- function(data, cols, newcols = NULL, k = 2, method = "pca", labels
 #'                Set to NULL (default) to automatically build a name
 #'                from the common column prefix, prefixed with "fct_", postfixed with the factor number.
 #' @param method The method as character value. Currently, only pca is supported.
+#' @param reorder Reorder items to minimize line crossings,
+#'   Either `TRUE` to automatically select a
+#'   method (`"olo"` if \pkg{seriation} is installed, otherwise `"min"`), or
+#'   one of the character values `"max"`, `"min"`, `"spread"`, `"gw"`, or
+#'   `"olo"`. Defaults to `FALSE` which disables reordering.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{plot_metrics}.
@@ -152,7 +157,7 @@ factor_tab <- function(data, cols, newcols = NULL, k = 2, method = "pca", labels
 #' volker::factor_plot(ds, starts_with("cg_adoption"), k = 3)
 #' @export
 #' @importFrom rlang .data
-factor_plot <- function(data, cols, newcols = NULL, k = 2, method = "pca", labels = TRUE, clean = TRUE, ...) {
+factor_plot <- function(data, cols, newcols = NULL, k = 2, method = "pca", reorder = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   # Get loading and scree data
   tabs <- factor_tab(data, {{ cols }}, newcols, k, method, labels = FALSE, clean, ...)
@@ -193,6 +198,7 @@ factor_plot <- function(data, cols, newcols = NULL, k = 2, method = "pca", label
 
   plot_loadings <- .plot_lines(
     loadings,
+    reorder = reorder,
     limits = limits,
     scale = limits,
     title = title,

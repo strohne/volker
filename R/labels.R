@@ -1056,3 +1056,88 @@ get_angle <- function(labels, threshold = VLKR_PLOT_ANGLE_THRESHOLD, angle = VLK
     return(0)
   }
 }
+
+#' Helper function: optimize the ordering of items for profile plots
+#'
+#' Determines an ordering of the `item` factor levels so that grouped line
+#' charts (e.g. cluster profile plots) read clearly, with as little line
+#' "jumping" / crossing as possible. The returned vector can be passed to
+#' [.plot_lines()] (or used directly to relevel the `item` factor).
+#'
+#' @details
+#' The following methods are supported:
+#' \describe{
+#'   \item{`TRUE`}{Automatically select a method (default). Uses `"olo"` if
+#'     the \pkg{seriation} package is available, otherwise falls back to
+#'     `"min"`.}
+#'   \item{`"max"`}{Order items by descending grand mean of `value`
+#'     (default). Produces a monotonic ladder.}
+#'   \item{`"min"`}{Order items by ascending grand mean of `value`.}
+#'   \item{`"spread"`}{Order items by the range (`max - min`) of `value`
+#'     across groups. Highlights the items that discriminate
+#'     the groups most.}
+#'   \item{`"gw"`, `"olo"`}{Use seriation to minimise crossings across all
+#'     groups simultaneously. `"gw"` = Gruvaeus–Wainer, `"olo"` = optimal
+#'     leaf ordering. Requires the \pkg{seriation} package.}
+#' }
+#'
+#' @keywords internal
+#'
+#' @param data A dataframe with the columns `item`, `value`, and `.cross`.
+#' @param method The ordering method. Either `TRUE` to automatically select a
+#'   method (`"olo"` if \pkg{seriation} is installed, otherwise `"min"`), or
+#'   one of the character values `"max"`, `"min"`, `"spread"`, `"gw"`, or
+#'   `"olo"`. Defaults to `TRUE`.
+#' @return A vector of `item` values in the optimized order.
+#' @importFrom rlang .data
+optimize_order <- function(data, method = TRUE) {
+
+  if (is_true(method)) {
+    if (requireNamespace("seriation", quietly = TRUE)) {
+      method <- "olo"
+    } else {
+      method <- "min"
+    }
+  }
+
+  check_is_param(method, c("min","max","spread", "gw", "olo"))
+
+  if (method %in% c("min", "max")) {
+    item_order <- data |>
+      dplyr::group_by(.data$item) |>
+      dplyr::summarise(m = mean(.data$value, na.rm = TRUE))
+
+    if (method == "min") {
+      item_order <- dplyr::arrange(item_order, dplyr::desc(.data$m))
+    } else {
+      item_order <- dplyr::arrange(item_order, .data$m)
+    }
+
+    return(item_order$item)
+
+  } else if (method %in% c("spread")) {
+    item_order <- data %>%
+      dplyr::group_by(.data$item) %>%
+      dplyr::summarise(spread = max(.data$value) - min(.data$value)) %>%
+      dplyr::arrange(.data$spread)
+
+    return(item_order$item)
+
+  } else if (method %in% c("gw", "olo")) {
+    if (!requireNamespace("seriation", quietly = TRUE)) {
+      stop("Reorder methods 'gw' and 'olo' require the seriation package. Please install the package!")
+    }
+
+    mat <- data %>%
+      tidyr::pivot_wider(names_from = .data$.cross, values_from = .data$value) %>%
+      tibble::column_to_rownames("item") %>%
+      as.matrix()
+
+    o <- seriation::seriate(stats::dist(mat), method = toupper(method))
+    item_order <- rownames(mat)[seriation::get_order(o)]
+    return(item_order)
+  }
+
+  # Fallback: original order
+  return(unique(data$item))
+}

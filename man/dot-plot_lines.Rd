@@ -4,10 +4,23 @@
 \alias{.plot_lines}
 \title{Helper function: plot grouped line chart}
 \usage{
-.plot_lines(data, scale = NULL, base = NULL, limits = NULL, title = NULL)
+.plot_lines(
+  data,
+  reorder = FALSE,
+  scale = NULL,
+  base = NULL,
+  limits = NULL,
+  title = NULL
+)
 }
 \arguments{
 \item{data}{Dataframe with the columns item, value, and .cross}
+
+\item{reorder}{Reorder items to minimize line crossings.
+Either \code{TRUE} to automatically select a
+method (\code{"olo"} if \pkg{seriation} is installed, otherwise \code{"min"}), or
+one of the character values \code{"max"}, \code{"min"}, \code{"spread"}, \code{"gw"}, or
+\code{"olo"}. Defaults to \code{FALSE} which disables reordering.}
 
 \item{scale}{Passed to the label scale function.}
 

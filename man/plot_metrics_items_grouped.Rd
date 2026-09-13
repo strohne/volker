@@ -9,6 +9,7 @@ plot_metrics_items_grouped(
   cols,
   cross,
   limits = NULL,
+  reorder = FALSE,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -23,6 +24,12 @@ plot_metrics_items_grouped(
 \item{cross}{The column holding groups to compare.}
 
 \item{limits}{The scale limits. Set NULL to extract limits from the labels.}
+
+\item{reorder}{Reorder items to minimize line crossings.
+Either \code{TRUE} to automatically select a
+method (\code{"olo"} if \pkg{seriation} is installed, otherwise \code{"min"}), or
+one of the character values \code{"max"}, \code{"min"}, \code{"spread"}, \code{"gw"}, or
+\code{"olo"}. Defaults to \code{FALSE} which disables reordering.}
 
 \item{title}{If TRUE (default) shows a plot title derived from the column labels.
 Disable the title with FALSE or provide a custom title as character value.}

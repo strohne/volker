@@ -12,6 +12,7 @@ report_counts(
   ids = NULL,
   agree = FALSE,
   index = FALSE,
+  clusters = FALSE,
   effect = FALSE,
   numbers = NULL,
   title = TRUE,
@@ -45,6 +46,12 @@ and a column containing unique case ids to the \code{ids}-parameter.}
 (as determined by \link{get_direction}),
 an index will be calculated using the 'psych' package.
 Set to FALSE to suppress index generation.}
+
+\item{clusters}{The number of clusters to calculate.
+Cluster are determined using pam.
+Set to \code{FALSE} to suppress cluster analysis.
+Set to \code{TRUE} to output a scree plot and automatically choose the number of clusters based on the elbow criterion.
+See \link{add_clusters}.}
 
 \item{effect}{Whether to report statistical tests and effect sizes. See \link{effect_counts} for further parameters.}
 

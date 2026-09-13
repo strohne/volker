@@ -10,6 +10,7 @@ factor_plot(
   newcols = NULL,
   k = 2,
   method = "pca",
+  reorder = TRUE,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -33,6 +34,12 @@ and automatically choose k. Eigenvalues and the decision on k are calculated by
 \code{psych::\link[psych:fa.parallel]{fa.parallel}}.}
 
 \item{method}{The method as character value. Currently, only pca is supported.}
+
+\item{reorder}{Reorder items to minimize line crossings,
+Either \code{TRUE} to automatically select a
+method (\code{"olo"} if \pkg{seriation} is installed, otherwise \code{"min"}), or
+one of the character values \code{"max"}, \code{"min"}, \code{"spread"}, \code{"gw"}, or
+\code{"olo"}. Defaults to \code{FALSE} which disables reordering.}
 
 \item{labels}{If TRUE (default) extracts labels from the attributes, see \link{codebook}.}
 

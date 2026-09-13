@@ -25,28 +25,30 @@ from the common column prefix, prefixed with "cls_".}
 
 \item{k}{Number of clusters to calculate.
 Set to NULL to output a scree plot for up to 10 clusters
-and automatically choose the number of clusters based on the elbow criterion.
-The within-sums of squares for the scree plot are calculated by
-\code{stats::\link[stats:kmeans]{kmeans}}.}
+and automatically choose the number of clusters based on the elbow criterion.}
 
-\item{method}{The method as character value. Currently, only kmeans is supported.
-All items are scaled before performing the cluster analysis using
-\code{base::\link[base:scale]{scale}}.}
+\item{method}{The method as character value. One of "kmeans" (default) or "pam".
+For "kmeans" all items are scaled using
+\code{base::\link[base:scale]{scale}} and euclidean distance is used.
+For "pam" a Gower dissimilarity matrix is used, which supports
+mixed data types (numeric and categorical) and normalises each
+variable internally, so no scaling is applied.}
 
-\item{labels}{Whether to get the label of the cluster column from the common prefix of item column labels}
+\item{labels}{Whether to get the label of the cluster column from the common prefix of item column labels.}
 
 \item{clean}{Prepare data by \link{data_clean}.}
 }
 \value{
-The input tibble with additional column
-containing cluster values as a factor.
-The new column is prefixed with "cls_".
-The new column contains the fit result in the attribute stats.kmeans.fit.
-The names of the items used for clustering are stored in the attribute stats.kmeans.items.
-The clustering diagnostics (Within-Cluster and Between-Cluster Sum of Squares) are stored in the attribute stats.kmeans.wss.
+The input tibble with an additional cluster column (factor, prefixed "cls_").
+The fit result is stored in the attribute stats.kmeans.fit, the item names in
+stats.kmeans.items, the scree-plot data in stats.kmeans.wss and the method in
+stats.cluster.method.
 }
 \description{
-Clustering is performed using \code{stats::\link[stats:kmeans]{kmeans}}.
+Clustering is performed using \code{stats::\link[stats:kmeans]{kmeans}}
+(method = "kmeans") or \code{cluster::\link[cluster:pam]{pam}} on a Gower
+dissimilarity matrix computed by \code{cluster::\link[cluster:daisy]{daisy}}
+(method = "pam").
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
@@ -55,4 +57,5 @@ library(volker)
 ds <- volker::chatgpt
 
 volker::add_clusters(ds, starts_with("cg_adoption"), k = 3)
+volker::add_clusters(ds, starts_with("cg_adoption"), k = 3, method = "pam")
 }

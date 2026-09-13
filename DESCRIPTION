@@ -46,11 +46,13 @@ Imports:
     psych,
     car,
     effectsize,
-    heplots
+    heplots,
+    cluster
 Depends:
   R (>= 4.2)
 Suggests:
   tidyverse,
+  seriation,
   remotes,
   usethis,
   testthat (>= 3.0.0),

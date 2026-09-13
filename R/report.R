@@ -162,7 +162,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, interaction
     if (all(clusters == TRUE)) {
       clusters <- NULL
     }
-    fct <- .report_cls(data, !!cols, !!cross, metric = metric, k = clusters, ..., effect = effect, title = plot_title)
+    fct <- .report_cls(data, !!cols, !!cross, metric = metric, k = clusters, method = "kmeans", ..., effect = effect, title = plot_title)
     chunks <- append(chunks, fct)
   }
 
@@ -214,6 +214,11 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, interaction
 #'              (as determined by \link{get_direction}),
 #'              an index will be calculated using the 'psych' package.
 #'              Set to FALSE to suppress index generation.
+#' @param clusters The number of clusters to calculate.
+#'                 Cluster are determined using pam.
+#'                Set to `FALSE` to suppress cluster analysis.
+#'                Set to `TRUE` to output a scree plot and automatically choose the number of clusters based on the elbow criterion.
+#'                 See \link{add_clusters}.
 #' @param effect Whether to report statistical tests and effect sizes. See \link{effect_counts} for further parameters.
 #' @param numbers The numbers to print on the bars: "n" (frequency), "p" (percentage) or both.
 #'                Set to NULL to remove numbers.
@@ -232,7 +237,7 @@ report_metrics <- function(data, cols, cross = NULL, metric = FALSE, interaction
 #' report_counts(data, sd_gender)
 #'
 #' @export
-report_counts <- function(data, cols, cross = NULL, metric = FALSE, ids = NULL, agree = FALSE, index = FALSE, effect = FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
+report_counts <- function(data, cols, cross = NULL, metric = FALSE, ids = NULL, agree = FALSE, index = FALSE, clusters = FALSE, effect = FALSE, numbers = NULL, title = TRUE, close = TRUE, clean = TRUE, ...) {
 
   if (clean) {
     data <- data_clean(data, clean)
@@ -275,8 +280,16 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, ids = NULL, 
     chunks <- append(chunks,idx)
   }
 
-  # Add reliability
+  # Add clusters
+  if (!any(isFALSE(clusters))) {
+    if (all(clusters == TRUE)) {
+      clusters <- NULL
+    }
+    fct <- .report_cls(data, !!cols, !!cross, metric = metric, k = clusters, method = "pam", ..., effect = effect, title = plot_title)
+    chunks <- append(chunks, fct)
+  }
 
+  # Add reliability
   if (!metric && (agree != FALSE)) {
     agree <- ifelse(agree == TRUE, "reliability", agree)
     agr <- .report_agr(data, {{ cols }}, {{ cross }}, {{ ids }}, method = agree, clean = TRUE, ...)
@@ -419,10 +432,11 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, ids = NULL, 
 #'            By default, the cross column selection is treated as categorical data.
 #'            Set metric to TRUE, to treat it as metric and calculate correlations.
 #' @param k Number of clusters to calculate.
+#' @param method Use `"kmeans"` for metric and `"pam"` for categorical variables.
 #' @param effect Not yet implemented. Whether to report statistical tests and effect sizes.
 #' @param title Add a plot title (default = TRUE).
 #' @return A list containing a table and a plot volker report chunk.
-.report_cls <- function(data, cols, cross, metric = FALSE, ..., k = 2, effect = FALSE, title = TRUE) {
+.report_cls <- function(data, cols, cross, metric = FALSE, ..., k = 2, method = NULL, effect = FALSE, title = TRUE) {
   chunks <- list()
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
@@ -431,7 +445,7 @@ report_counts <- function(data, cols, cross = NULL, metric = FALSE, ids = NULL, 
 
   if (is_items && (is_scale != 0)) {
 
-    scores <- add_clusters(data, {{ cols }}, newcol = NULL, k = k, method = "kmeans", ...)
+    scores <- add_clusters(data, {{ cols }}, newcol = NULL, k = k, method = method, ...)
     newcol <- setdiff(colnames(scores), colnames(data))
 
     plt <- cluster_plot(scores, !!sym(newcol), k = k,  ...)

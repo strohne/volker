@@ -3,7 +3,7 @@
 \docType{data}
 \name{VLKR_PLOT_LABELWRAP}
 \alias{VLKR_PLOT_LABELWRAP}
-\title{Wrapping threshold}
+\title{Wrapping and truncation thresholds}
 \format{
 An object of class \code{numeric} of length 1.
 }
@@ -16,6 +16,7 @@ Override with \code{options(vlkr.wrap.legend=10)}.
 Override with \code{options(vlkr.wrap.scale=10)}.
 Override with \code{options(vlkr.angle.value=30)}.
 Override with \code{options(vlkr.angle.threshold=10)}.
+Override with \code{options(vlkr.trunc.labels=50)}.
 Override with \code{options(vlkr.trunc.columns=20)}.
 Override with \code{options(vlkr.trunc.cells=20)}.
 }

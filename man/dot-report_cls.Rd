@@ -11,6 +11,7 @@
   metric = FALSE,
   ...,
   k = 2,
+  method = NULL,
   effect = FALSE,
   title = TRUE
 )
@@ -29,6 +30,8 @@ By default, the cross column selection is treated as categorical data.
 Set metric to TRUE, to treat it as metric and calculate correlations.}
 
 \item{k}{Number of clusters to calculate.}
+
+\item{method}{Use \code{"kmeans"} for metric and \code{"pam"} for categorical variables.}
 
 \item{effect}{Not yet implemented. Whether to report statistical tests and effect sizes.}
 

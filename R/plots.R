@@ -1472,6 +1472,11 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
 #' @param cols Tidyselect item variables (e.g. starts_with...).
 #' @param cross The column holding groups to compare.
 #' @param limits The scale limits. Set NULL to extract limits from the labels.
+#' @param reorder Reorder items to minimize line crossings.
+#'   Either `TRUE` to automatically select a
+#'   method (`"olo"` if \pkg{seriation} is installed, otherwise `"min"`), or
+#'   one of the character values `"max"`, `"min"`, `"spread"`, `"gw"`, or
+#'   `"olo"`. Defaults to `FALSE` which disables reordering.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -1486,7 +1491,7 @@ plot_metrics_items <- function(data, cols, ci = FALSE, box = FALSE, limits = NUL
 #'
 #' @export
 #' @importFrom rlang .data
-plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, reorder = FALSE, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = {{ cross }}, cols.numeric = {{ cols }}, clean = clean)
 
@@ -1558,6 +1563,7 @@ plot_metrics_items_grouped <- function(data, cols, cross, limits = NULL, title =
   # Plot
   .plot_lines(
     result,
+    reorder = reorder,
     scale = scale,
     title = title,
     limits = limits,
@@ -2038,13 +2044,23 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 #' @keywords internal
 #'
 #' @param data Dataframe with the columns item, value, and .cross
+#' @param reorder Reorder items to minimize line crossings.
+#'   Either `TRUE` to automatically select a
+#'   method (`"olo"` if \pkg{seriation} is installed, otherwise `"min"`), or
+#'   one of the character values `"max"`, `"min"`, `"spread"`, `"gw"`, or
+#'   `"olo"`. Defaults to `FALSE` which disables reordering.
 #' @param scale Passed to the label scale function.
 #' @param base The plot base as character or NULL.
 #' @param limits The scale limits.
 #' @param title The plot title as character or NULL.
 #' @return A ggplot object.
 #' @importFrom rlang .data
-.plot_lines <- function(data, scale = NULL, base = NULL, limits = NULL, title = NULL) {
+.plot_lines <- function(data, reorder = FALSE, scale = NULL, base = NULL, limits = NULL, title = NULL) {
+
+  if (!is_false(reorder)) {
+    item_order <- optimize_order(data, reorder)
+    data <- dplyr::mutate(data, item = factor(.data$item, levels = item_order))
+  }
 
   pl <- data %>%
     ggplot2::ggplot(ggplot2::aes(
