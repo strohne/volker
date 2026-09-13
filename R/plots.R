@@ -2349,6 +2349,41 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 }
 
 
+#' Helper function: silhouette plot
+#'
+#' @keywords internal
+#'
+#' @param data Dataframe with the number of clusters k in the first column
+#'             and the average silhouette width in the second.
+#' @param k Provide one of the values in the first column to highlight the
+#'          point at this value (the selected number of clusters).
+#' @param lab_x Label of the x axis
+#' @param lab_y Label of the y axis
+#' @return A vlkr_plot object
+#' @importFrom rlang .data
+.plot_silhouette <- function(data, k = NULL, lab_x = NULL, lab_y = NULL) {
+
+  data$selected <- data[[1]] == k
+  data <- data[!is.na(data[[2]]), ]
+
+  pl <- data %>%
+    ggplot2::ggplot(ggplot2::aes(
+      x = .data[[colnames(data)[1]]],
+      y = .data[[colnames(data)[2]]]
+    )) +
+    ggplot2::geom_line(alpha = VLKR_LINE_ALPHA, color = VLKR_COLOR_DISABLED) +
+    ggplot2::geom_point(ggplot2::aes(color = .data$selected), size=VLKR_POINT_SIZE, shape=VLKR_POINT_MEAN_SHAPE) +
+    ggplot2::scale_color_manual(values = c(VLKR_COLOR_DISABLED, vlkr_colors_discrete(1)), guide = "none") +
+    ggplot2::scale_x_continuous(breaks = data[[1]]) +
+    ggplot2::ggtitle(label = "Silhouette plot") +
+    ggplot2::labs(x = lab_x, y = lab_y)
+
+  .to_vlkr_plot(
+    pl, rows=10,
+    theme_options = list("axis.title.x" = TRUE, "axis.title.y" = TRUE)
+  )
+}
+
 #' Add the volker class and options
 #'
 #' @keywords internal

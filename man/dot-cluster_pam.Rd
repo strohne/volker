@@ -12,9 +12,9 @@
 \item{k}{Number of clusters.}
 }
 \value{
-A list mimicking a kmeans fit with elements cluster, size,
-tot.withinss, betweenss and totss. For k >= 2 it additionally
-contains medoids, avg.silwidth and the raw pam object.
+A list with elements cluster, size,
+tot.withinss, betweenss and totss, and avg.silwidth.
+For k > 1, returns also the raw pam object.
 }
 \description{
 Wraps \code{cluster::\link[cluster:pam]{pam}} on a precomputed dissimilarity

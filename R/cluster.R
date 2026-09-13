@@ -41,7 +41,7 @@
 cluster_tab <- function(data, cols, newcol = NULL, k = NULL, method = "kmeans", labels = TRUE, clean = TRUE, ...) {
 
   clst_col <- dplyr::select(data, {{ cols }})
-  fit <- attr(clst_col[[1]], "stats.kmeans.fit")
+  fit <- attr(clst_col[[1]], "stats.cluster.fit")
 
   # Add cluster
   if (is.null(fit)) {
@@ -63,7 +63,7 @@ cluster_tab <- function(data, cols, newcol = NULL, k = NULL, method = "kmeans", 
   )
 
   # Cluster means
-  cols_items <- attr(clst_col[[1]], "stats.kmeans.items")
+  cols_items <- attr(clst_col[[1]], "stats.cluster.items")
   if (method == "kmeans") {
     fit_centers <- tab_metrics(data, tidyselect::any_of(cols_items), {{ cols }}, labels = labels, ...)
   } else {
@@ -82,9 +82,15 @@ cluster_tab <- function(data, cols, newcol = NULL, k = NULL, method = "kmeans", 
   )
 
   # Add WSS for scree plot
-  fit_wss <- attr(clst_col[[1]], "stats.kmeans.wss")
-  if (!is.null(fit_wss)) {
-    result <- c(result, "wss" = list(.to_vlkr_tab(fit_wss, caption = "Within-Cluster Sum of Squares for Scree Plot")))
+  fit_diag <- attr(clst_col[[1]], "stats.cluster.diag")
+  if (!is.null(fit_diag)) {
+    if (method=="kmeans") {
+      result <- c(result, "wss" = list(.to_vlkr_tab(fit_diag, caption = "Within-Cluster Sum of Squares for Scree Plot")))
+    }
+    else if (method=="pam") {
+      result <- c(result, "sil" = list(.to_vlkr_tab(fit_diag, caption = "Average Silhouette Width")))
+    }
+
   }
 
   .to_vlkr_list(result)
@@ -135,7 +141,7 @@ cluster_tab <- function(data, cols, newcol = NULL, k = NULL, method = "kmeans", 
 cluster_plot <- function(data, cols, newcol = NULL, k = NULL, method = NULL, reorder = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   clst_col <- dplyr::select(data, {{ cols }})
-  fit <- attr(clst_col[[1]], "stats.kmeans.fit")
+  fit <- attr(clst_col[[1]], "stats.cluster.fit")
 
   # Add cluster
   if (is.null(fit)) {
@@ -149,7 +155,7 @@ cluster_plot <- function(data, cols, newcol = NULL, k = NULL, method = NULL, reo
   method <- dplyr::coalesce(attr(clst_col[[1]], "stats.cluster.method"), "kmeans")
 
   # Cluster mean plot
-  cols_items <- attr(clst_col[[1]], "stats.kmeans.items")
+  cols_items <- attr(clst_col[[1]], "stats.cluster.items")
   if (method == "kmeans") {
     plot_centers <- plot_metrics(data, tidyselect::all_of(cols_items), {{ cols }}, reorder = reorder, labels = labels, ...)
   } else {
@@ -162,16 +168,28 @@ cluster_plot <- function(data, cols, newcol = NULL, k = NULL, method = NULL, reo
   )
 
   # 2. Conditionally add scree plot
-  fit_wss <- attr(clst_col[[1]], "stats.kmeans.wss")
-  if (!is.null(fit_wss)) {
-    scree <- .plot_scree(
-      fit_wss, k = length(fit$size),
-      lab_x = "Number of Clusters k",
-      lab_y = "Within-Cluster Sum of Squares"
-    )
-    result <- c(result, "scree" = list(scree))
-  }
+  fit_diag <- attr(clst_col[[1]], "stats.cluster.diag")
+  if (!is.null(fit_diag)) {
 
+    if (method == "kmeans") {
+      scree <- .plot_scree(
+        fit_diag, k = length(fit$size),
+        lab_x = "Number of Clusters k",
+        lab_y = "Within-Cluster Sum of Squares"
+      )
+      result <- c(result, "scree" = list(scree))
+    }
+
+    else if (method == "pam") {
+      scree <- .plot_silhouette(
+        fit_diag, k = length(fit$size),
+        lab_x = "Number of Clusters k",
+        lab_y = "Average Silhouette Width"
+      )
+      result <- c(result, "sil" = list(scree))
+    }
+
+  }
 
   .to_vlkr_list(result)
 
@@ -204,8 +222,8 @@ cluster_plot <- function(data, cols, newcol = NULL, k = NULL, method = NULL, reo
 #' @param labels Whether to get the label of the cluster column from the common prefix of item column labels.
 #' @param clean Prepare data by \link{data_clean}.
 #' @return The input tibble with an additional cluster column (factor, prefixed "cls_").
-#'         The fit result is stored in the attribute stats.kmeans.fit, the item names in
-#'         stats.kmeans.items, the scree-plot data in stats.kmeans.wss and the method in
+#'         The fit result is stored in the attribute stats.cluster.fit, the item names in
+#'         stats.cluster.items, the scree-plot or silhouette-plot data in stats.cluster.diag and the method in
 #'         stats.cluster.method.
 #' @examples
 #' library(volker)
@@ -283,6 +301,7 @@ add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", la
   # Fit for each requested number of clusters
   fitlist <- vector("list", max(k))
   fit_wss <- c()
+  fit_sil <- c()
 
   for (i in k) {
 
@@ -294,41 +313,61 @@ add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", la
 
     fitlist[[i]] <- fit
     fit_wss <- c(fit_wss, fit$tot.withinss)
+    fit_sil <- c(fit_sil, dplyr::coalesce(fit$avg.silwidth, NA_real_))
   }
 
-  # Select k
   if (length(k) > 1) {
-    # Find the elbow: index of the maximum second difference of wss
-    if (length(k) > 2) {
-      second_diff <- diff(diff(fit_wss))
-      k.selected <- k[which.max(abs(second_diff)) + 1]
+
+    if (method == "pam") {
+      # Silhouette: choose k with the maximum average silhouette width
+      k.selected <- k[which.max(fit_sil)]
+
+      fit_diag <- tibble::tibble(
+        "Clusters k" = k,
+        "Silhouette" = fit_sil
+      )
+      attr(fit_diag, "auto") <- list(
+        k = k.selected,
+        msg = paste0(
+          "Automatically selected k=", k.selected,
+          " by the maximum average silhouette width."
+        )
+      )
+
     } else {
-      k.selected <- k[length(k)]
+      # kmeans: elbow criterion on within-cluster sum of squares
+      if (length(k) > 2) {
+        second_diff <- diff(diff(fit_wss))
+        k.selected <- k[which.max(abs(second_diff)) + 1]
+      } else {
+        k.selected <- k[length(k)]
+      }
+
+      fit_diag <- tibble::tibble(
+        "Clusters k" = k,
+        "WSS" = fit_wss
+      )
+      attr(fit_diag, "auto") <- list(
+        k = k.selected,
+        msg = paste0(
+          "Automatically selected k=", k.selected,
+          " by the elbow criterion."
+        )
+      )
     }
-
-    fit_wss <- tibble::tibble(
-      "Clusters k" = k,
-      "WSS" = fit_wss
-    )
-
-    attr(fit_wss, "auto") <- list(
-      k = k.selected,
-      msg = paste0("Automatically selected k=", k.selected, " by the elbow criterion.")
-    )
 
   } else {
     k.selected <- k
-    fit_wss <- NULL
+    fit_diag <- NULL
   }
 
   fit <- fitlist[[k.selected]]
 
   # Add fit result to column attribute
-  # (attribute names kept as "stats.kmeans.*" for compatibility with cluster_tab/cluster_plot)
   data[[newcol]] <- factor(paste0("Cluster ", fit$cluster))
-  attr(data[[newcol]], "stats.kmeans.fit")    <- fit
-  attr(data[[newcol]], "stats.kmeans.items")  <- itemnames
-  attr(data[[newcol]], "stats.kmeans.wss")    <- fit_wss
+  attr(data[[newcol]], "stats.cluster.fit")    <- fit
+  attr(data[[newcol]], "stats.cluster.items")  <- itemnames
+  attr(data[[newcol]], "stats.cluster.diag")   <- fit_diag
   attr(data[[newcol]], "stats.cluster.method") <- method
   attr(data[[newcol]], "comment") <- newlabel
 
@@ -393,9 +432,9 @@ add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", la
 #'
 #' @param dissim A dist object (e.g. from \code{cluster::\link[cluster:daisy]{daisy}}).
 #' @param k Number of clusters.
-#' @return A list mimicking a kmeans fit with elements cluster, size,
-#'         tot.withinss, betweenss and totss. For k >= 2 it additionally
-#'         contains medoids, avg.silwidth and the raw pam object.
+#' @return A list with elements cluster, size,
+#'         tot.withinss, betweenss and totss, and avg.silwidth.
+#'         For k > 1, returns also the raw pam object.
 #' @importFrom cluster pam
 .cluster_pam <- function(dissim, k) {
 
@@ -408,7 +447,8 @@ add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", la
       size         = n,
       tot.withinss = ss$tot.withinss,
       betweenss    = ss$betweenss,
-      totss        = ss$totss
+      totss        = ss$totss,
+      avg.silwidth = NA_real_   # silhouette undefined for k = 1
     ))
   }
 

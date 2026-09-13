@@ -40,8 +40,8 @@ variable internally, so no scaling is applied.}
 }
 \value{
 The input tibble with an additional cluster column (factor, prefixed "cls_").
-The fit result is stored in the attribute stats.kmeans.fit, the item names in
-stats.kmeans.items, the scree-plot data in stats.kmeans.wss and the method in
+The fit result is stored in the attribute stats.cluster.fit, the item names in
+stats.cluster.items, the scree-plot or silhouette-plot data in stats.cluster.diag and the method in
 stats.cluster.method.
 }
 \description{
