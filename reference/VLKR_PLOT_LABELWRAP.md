@@ -1,10 +1,11 @@
-# Wrapping threshold
+# Wrapping and truncation thresholds
 
 Override with `options(vlkr.wrap.labels=20)`. Override with
 `options(vlkr.wrap.legend=10)`. Override with
 `options(vlkr.wrap.scale=10)`. Override with
 `options(vlkr.angle.value=30)`. Override with
 `options(vlkr.angle.threshold=10)`. Override with
+`options(vlkr.trunc.labels=50)`. Override with
 `options(vlkr.trunc.columns=20)`. Override with
 `options(vlkr.trunc.cells=20)`.
 

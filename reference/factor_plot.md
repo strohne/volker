@@ -14,6 +14,7 @@ factor_plot(
   newcols = NULL,
   k = 2,
   method = "pca",
+  reorder = TRUE,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -52,6 +53,14 @@ factor_plot(
 - method:
 
   The method as character value. Currently, only pca is supported.
+
+- reorder:
+
+  Reorder items to minimize line crossings, Either `TRUE` to
+  automatically select a method (`"olo"` if seriation is installed,
+  otherwise `"min"`), or one of the character values `"max"`, `"min"`,
+  `"spread"`, `"gw"`, or `"olo"`. Defaults to `FALSE` which disables
+  reordering.
 
 - labels:
 

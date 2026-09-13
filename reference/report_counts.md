@@ -17,6 +17,7 @@ report_counts(
   ids = NULL,
   agree = FALSE,
   index = FALSE,
+  clusters = FALSE,
   effect = FALSE,
   numbers = NULL,
   title = TRUE,
@@ -69,6 +70,14 @@ report_counts(
   [get_direction](https://strohne.github.io/volker/reference/get_direction.md)),
   an index will be calculated using the 'psych' package. Set to FALSE to
   suppress index generation.
+
+- clusters:
+
+  The number of clusters to calculate. Cluster are determined using pam.
+  Set to `FALSE` to suppress cluster analysis. Set to `TRUE` to output a
+  scree plot and automatically choose the number of clusters based on
+  the elbow criterion. See
+  [add_clusters](https://strohne.github.io/volker/reference/add_clusters.md).
 
 - effect:
 

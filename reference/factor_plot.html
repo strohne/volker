@@ -49,6 +49,7 @@
 <span>  newcols <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"pca"</span>,</span>
+<span>  reorder <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  labels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  clean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -87,6 +88,14 @@ and automatically choose k. Eigenvalues and the decision on k are calculated by
 <dd><p>The method as character value. Currently, only pca is supported.</p></dd>
 
 
+<dt id="arg-reorder">reorder<a class="anchor" aria-label="anchor" href="#arg-reorder"></a></dt>
+<dd><p>Reorder items to minimize line crossings,
+Either <code>TRUE</code> to automatically select a
+method (<code>"olo"</code> if <span class="pkg">seriation</span> is installed, otherwise <code>"min"</code>), or
+one of the character values <code>"max"</code>, <code>"min"</code>, <code>"spread"</code>, <code>"gw"</code>, or
+<code>"olo"</code>. Defaults to <code>FALSE</code> which disables reordering.</p></dd>
+
+
 <dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
 <dd><p>If TRUE (default) extracts labels from the attributes, see <a href="codebook.html">codebook</a>.</p></dd>
 
@@ -123,7 +132,7 @@ and automatically choose k. Eigenvalues and the decision on k are calculated by
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

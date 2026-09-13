@@ -158,10 +158,10 @@ effect_metrics_one_grouped(data, sd_age, sd_gender)
 #> 
 #> |Term               | estimate| ci low| ci high|    se|     t|     p| stars|
 #> |:------------------|--------:|------:|-------:|-----:|-----:|-----:|-----:|
-#> |(Intercept)        |    37.53|  33.21|   41.84|  2.18| 17.24| 0.000|   ***|
+#> |(Intercept)        |    37.52|  33.21|   41.84|  2.18| 17.24| 0.000|   ***|
 #> |female (Reference) |         |       |        |      |      |      |      |
 #> |male               |     3.69|  -1.88|    9.27|  2.81|  1.31| 0.288|      |
-#> |diverse            |    -4.52| -32.18|   23.13| 13.94| -0.32| 0.746|      |
+#> |diverse            |    -4.53| -32.18|   23.13| 13.94| -0.32| 0.746|      |
 #> 
 #> Adjusted significance p values with fdr method.
 #> 

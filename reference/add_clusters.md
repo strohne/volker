@@ -1,7 +1,12 @@
 # Add cluster number to a data frame
 
 Clustering is performed using
-`stats::`[`kmeans`](https://rdrr.io/r/stats/kmeans.html).
+`stats::`[`kmeans`](https://rdrr.io/r/stats/kmeans.html) (method =
+"kmeans") or
+`cluster::`[`pam`](https://rdrr.io/pkg/cluster/man/pam.html) on a Gower
+dissimilarity matrix computed by
+`cluster::`[`daisy`](https://rdrr.io/pkg/cluster/man/daisy.html) (method
+= "pam").
 
 **\[experimental\]**
 
@@ -39,20 +44,21 @@ add_clusters(
 
   Number of clusters to calculate. Set to NULL to output a scree plot
   for up to 10 clusters and automatically choose the number of clusters
-  based on the elbow criterion. The within-sums of squares for the scree
-  plot are calculated by
-  `stats::`[`kmeans`](https://rdrr.io/r/stats/kmeans.html).
+  based on the elbow criterion.
 
 - method:
 
-  The method as character value. Currently, only kmeans is supported.
-  All items are scaled before performing the cluster analysis using
-  `base::`[`scale`](https://rdrr.io/r/base/scale.html).
+  The method as character value. One of "kmeans" (default) or "pam". For
+  "kmeans" all items are scaled using
+  `base::`[`scale`](https://rdrr.io/r/base/scale.html) and euclidean
+  distance is used. For "pam" a Gower dissimilarity matrix is used,
+  which supports mixed data types (numeric and categorical) and
+  normalises each variable internally, so no scaling is applied.
 
 - labels:
 
   Whether to get the label of the cluster column from the common prefix
-  of item column labels
+  of item column labels.
 
 - clean:
 
@@ -61,12 +67,10 @@ add_clusters(
 
 ## Value
 
-The input tibble with additional column containing cluster values as a
-factor. The new column is prefixed with "cls\_". The new column contains
-the fit result in the attribute stats.kmeans.fit. The names of the items
-used for clustering are stored in the attribute stats.kmeans.items. The
-clustering diagnostics (Within-Cluster and Between-Cluster Sum of
-Squares) are stored in the attribute stats.kmeans.wss.
+The input tibble with an additional cluster column (factor, prefixed
+"cls\_"). The fit result is stored in the attribute stats.cluster.fit,
+the item names in stats.cluster.items, the scree-plot or silhouette-plot
+data in stats.cluster.diag and the method in stats.cluster.method.
 
 ## Examples
 
@@ -95,4 +99,25 @@ volker::add_clusters(ds, starts_with("cg_adoption"), k = 3)
 #> #   cg_adoption_fearofuse_04 <dbl>, cg_adoption_social_01 <dbl>,
 #> #   cg_adoption_social_02 <dbl>, cg_adoption_social_03 <dbl>,
 #> #   cg_adoption_social_04 <dbl>, adopter <fct>, sd_age <dbl>, …
+volker::add_clusters(ds, starts_with("cg_adoption"), k = 3, method = "pam")
+#> # A tibble: 97 × 24
+#>     case use_private use_work cg_adoption_advantage_01 cg_adoption_advantage_02
+#>    <dbl>       <dbl>    <dbl> <chr>                    <chr>                   
+#>  1   170           4        4 3                        4                       
+#>  2   183           1        1 4                        3                       
+#>  3   195           2        4 5                        5                       
+#>  4   212           5        5 4                        4                       
+#>  5   222           2        3 3                        2                       
+#>  6   236           3        1 3                        2                       
+#>  7   255           3        1 3                        1                       
+#>  8   297           3        4 4                        3                       
+#>  9   309           3        3 3                        4                       
+#> 10   325           2        1 4                        1                       
+#> # ℹ 87 more rows
+#> # ℹ 19 more variables: cg_adoption_advantage_03 <chr>,
+#> #   cg_adoption_advantage_04 <chr>, cg_adoption_fearofuse_01 <chr>,
+#> #   cg_adoption_fearofuse_02 <chr>, cg_adoption_fearofuse_03 <chr>,
+#> #   cg_adoption_fearofuse_04 <chr>, cg_adoption_social_01 <chr>,
+#> #   cg_adoption_social_02 <chr>, cg_adoption_social_03 <chr>,
+#> #   cg_adoption_social_04 <chr>, adopter <fct>, sd_age <dbl>, …
 ```

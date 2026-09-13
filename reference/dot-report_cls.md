@@ -12,6 +12,7 @@ Generate an cluster table and plot
   metric = FALSE,
   ...,
   k = 2,
+  method = NULL,
   effect = FALSE,
   title = TRUE
 )
@@ -42,6 +43,10 @@ Generate an cluster table and plot
 - k:
 
   Number of clusters to calculate.
+
+- method:
+
+  Use `"kmeans"` for metric and `"pam"` for categorical variables.
 
 - effect:
 

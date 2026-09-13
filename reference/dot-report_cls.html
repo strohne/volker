@@ -47,6 +47,7 @@
 <span>  metric <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  method <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  effect <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -80,6 +81,10 @@ Set metric to TRUE, to treat it as metric and calculate correlations.</p></dd>
 <dd><p>Number of clusters to calculate.</p></dd>
 
 
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p>Use <code>"kmeans"</code> for metric and <code>"pam"</code> for categorical variables.</p></dd>
+
+
 <dt id="arg-effect">effect<a class="anchor" aria-label="anchor" href="#arg-effect"></a></dt>
 <dd><p>Not yet implemented. Whether to report statistical tests and effect sizes.</p></dd>
 
@@ -102,7 +107,7 @@ Set metric to TRUE, to treat it as metric and calculate correlations.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

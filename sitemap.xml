@@ -73,6 +73,8 @@
 <url><loc>https://strohne.github.io/volker/reference/dot-attr_insert.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-attr_setcolumn.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-attr_transfer.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-cluster_dist_ss.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-cluster_pam.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-effect_correlations.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-factor_with_attr.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-get_density_mode.html</loc></url>
@@ -92,6 +94,7 @@
 <url><loc>https://strohne.github.io/volker/reference/dot-plot_heatmap.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-plot_lines.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-plot_scree.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/dot-plot_silhouette.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-plot_summary.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-report_agr.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-report_cls.html</loc></url>
@@ -160,6 +163,7 @@
 <url><loc>https://strohne.github.io/volker/reference/model_metrics_tab.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/mutate.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/named.to.list.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/optimize_order.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/pdf_report.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/pipe.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/plot_counts.html</loc></url>

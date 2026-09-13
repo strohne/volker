@@ -14,6 +14,7 @@ cluster_plot(
   newcol = NULL,
   k = NULL,
   method = NULL,
+  reorder = TRUE,
   labels = TRUE,
   clean = TRUE,
   ...
@@ -55,6 +56,14 @@ cluster_plot(
   The method as character value. Currently, only kmeans is supported.
   All items are scaled before performing the cluster analysis using
   `base::`[`scale`](https://rdrr.io/r/base/scale.html).
+
+- reorder:
+
+  Reorder items to minimize line crossings, Either `TRUE` to
+  automatically select a method (`"olo"` if seriation is installed,
+  otherwise `"min"`), or one of the character values `"max"`, `"min"`,
+  `"spread"`, `"gw"`, or `"olo"`. Defaults to `FALSE` which disables
+  reordering.
 
 - labels:
 

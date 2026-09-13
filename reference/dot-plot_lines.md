@@ -5,7 +5,14 @@ Helper function: plot grouped line chart
 ## Usage
 
 ``` r
-.plot_lines(data, scale = NULL, base = NULL, limits = NULL, title = NULL)
+.plot_lines(
+  data,
+  reorder = FALSE,
+  scale = NULL,
+  base = NULL,
+  limits = NULL,
+  title = NULL
+)
 ```
 
 ## Arguments
@@ -13,6 +20,14 @@ Helper function: plot grouped line chart
 - data:
 
   Dataframe with the columns item, value, and .cross
+
+- reorder:
+
+  Reorder items to minimize line crossings. Either `TRUE` to
+  automatically select a method (`"olo"` if seriation is installed,
+  otherwise `"min"`), or one of the character values `"max"`, `"min"`,
+  `"spread"`, `"gw"`, or `"olo"`. Defaults to `FALSE` which disables
+  reordering.
 
 - scale:
 

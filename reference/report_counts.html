@@ -51,6 +51,7 @@ See <a href="plot_counts.html">plot_counts</a> and <a href="tab_counts.html">tab
 <span>  ids <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  agree <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  index <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  clusters <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  effect <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  numbers <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -101,6 +102,14 @@ and a column containing unique case ids to the <code>ids</code>-parameter.</p></
 (as determined by <a href="get_direction.html">get_direction</a>),
 an index will be calculated using the 'psych' package.
 Set to FALSE to suppress index generation.</p></dd>
+
+
+<dt id="arg-clusters">clusters<a class="anchor" aria-label="anchor" href="#arg-clusters"></a></dt>
+<dd><p>The number of clusters to calculate.
+Cluster are determined using pam.
+Set to <code>FALSE</code> to suppress cluster analysis.
+Set to <code>TRUE</code> to output a scree plot and automatically choose the number of clusters based on the elbow criterion.
+See <a href="add_clusters.html">add_clusters</a>.</p></dd>
 
 
 <dt id="arg-effect">effect<a class="anchor" aria-label="anchor" href="#arg-effect"></a></dt>
@@ -173,7 +182,7 @@ the different parts of the report are grouped under a tabsheet selector.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

@@ -10,6 +10,7 @@ plot_metrics_items_grouped(
   cols,
   cross,
   limits = NULL,
+  reorder = FALSE,
   title = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -34,6 +35,14 @@ plot_metrics_items_grouped(
 - limits:
 
   The scale limits. Set NULL to extract limits from the labels.
+
+- reorder:
+
+  Reorder items to minimize line crossings. Either `TRUE` to
+  automatically select a method (`"olo"` if seriation is installed,
+  otherwise `"min"`), or one of the character values `"max"`, `"min"`,
+  `"spread"`, `"gw"`, or `"olo"`. Defaults to `FALSE` which disables
+  reordering.
 
 - title:
 
