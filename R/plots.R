@@ -1848,7 +1848,9 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
 
     pl <- pl +
       ggplot2::scale_y_continuous(labels = scales::percent, limits = limits) +
-      ggplot2::scale_x_discrete(labels = \(labels) trunc_labels(labels)) +
+      ggplot2::scale_x_discrete(
+        labels = \(labels) trunc_labels(labels, dplyr::coalesce(getOption("vlkr.trunc.labels"), VLKR_PLOT_LABELTRUNC))
+      ) +
       ggplot2::ylab("Share in percent") +
       ggplot2::theme(
         axis.text.x = ggplot2::element_text(
@@ -2229,7 +2231,8 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
   pl <- pl +
     ggplot2::scale_fill_gradientn(
       colors = color_method(),
-      limits = scale_limits
+      limits = scale_limits,
+      na.value = VLKR_FILLNA
     ) +
     ggplot2::scale_color_identity(guide = "none")
 
@@ -2272,7 +2275,9 @@ plot_metrics_items_cor_items <- function(data, cols, cross, method = "pearson", 
         color = ggplot2::theme_get()$axis.text.y$color
       )
     ) +
-    ggplot2::scale_x_discrete(labels = \(labels) trunc_labels(labels)) +
+    ggplot2::scale_x_discrete(
+      labels = \(labels) trunc_labels(labels, dplyr::coalesce(getOption("vlkr.trunc.labels"), VLKR_PLOT_LABELTRUNC))
+    ) +
     ggplot2::coord_fixed()
 
   # Add base

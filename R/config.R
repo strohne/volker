@@ -74,6 +74,7 @@ VLKR_COLOR_BOX_FOREGROUND <- "#222222"
 VLKR_COLOR_CI <- "#222222"
 VLKR_COLOR_DISABLED <- "#aaaaaa"
 VLKR_COLOR_SMOOTH <- "#AA4499"
+VLKR_FILLNA <- "#eeeeee"
 
 #' Polarized colors
 #'
@@ -98,13 +99,14 @@ VLKR_FIG_SETTINGS <- list(
 VLKR_PLOT_OFFSETROWS <- 5
 VLKR_PLOT_TITLEROWS <- 2
 
-#' Wrapping threshold
+#' Wrapping and truncation thresholds
 #'
 #' Override with \code{options(vlkr.wrap.labels=20)}.
 #' Override with \code{options(vlkr.wrap.legend=10)}.
 #' Override with \code{options(vlkr.wrap.scale=10)}.
 #' Override with \code{options(vlkr.angle.value=30)}.
 #' Override with \code{options(vlkr.angle.threshold=10)}.
+#' Override with \code{options(vlkr.trunc.labels=50)}.
 #' Override with \code{options(vlkr.trunc.columns=20)}.
 #' Override with \code{options(vlkr.trunc.cells=20)}.
 #'
@@ -114,8 +116,10 @@ VLKR_PLOT_LEGENDWRAP <- 20
 VLKR_PLOT_SCALEWRAP <- 10
 VLKR_PLOT_ANGLE_VALUE <- 45
 VLKR_PLOT_ANGLE_THRESHOLD <- 7
+VLKR_PLOT_LABELTRUNC <- 20
 VLKR_TAB_TRUNC_COLUMNS <- 30
 VLKR_TAB_TRUNC_CELLS <- 40
+
 
 #' Word wrap separators
 #'
