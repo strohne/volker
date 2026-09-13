@@ -46,7 +46,7 @@ cluster_tab <- function(data, cols, newcol = NULL, k = NULL, method = "kmeans", 
   # Add cluster
   if (is.null(fit)) {
     scores <- add_clusters(data, {{ cols }}, newcol = newcol, k = k, method = method, clean = clean, ...)
-    newcol <- setdiff(colnames(scores), colnames(data))
+    newcol <- setdiff(colnames(scores), colnames(data))[1]
     result <- cluster_tab(scores,!!sym(newcol), labels = labels, ...)
     return(result)
   }
@@ -146,7 +146,7 @@ cluster_plot <- function(data, cols, newcol = NULL, k = NULL, method = NULL, reo
   # Add cluster
   if (is.null(fit)) {
     scores <- add_clusters(data, {{ cols }}, newcol = newcol, k = k, method = method, clean = clean, ...)
-    newcol <- setdiff(colnames(scores), colnames(data))
+    newcol <- setdiff(colnames(scores), colnames(data))[1]
     result <- cluster_plot(scores,!!sym(newcol), reorder = reorder, labels = labels, ...)
     return(result)
   }
@@ -290,7 +290,7 @@ add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", la
     features <- scale(items)
     itemnames <- colnames(features)
   } else if (method == "pam") {
-    # Treat all items as categorical: convert numerics to factors
+    # Treat all items as categorical
     items <- dplyr::mutate(items, dplyr::across(tidyselect::everything(), as.factor))
 
     # Gower distance
@@ -371,6 +371,13 @@ add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", la
   attr(data[[newcol]], "stats.cluster.method") <- method
   attr(data[[newcol]], "comment") <- newlabel
 
+  # Add per-case silhouette width for prototype selection (pam only)
+  if (method == "pam" && !is.null(fit$silwidth)) {
+    silcol <- paste0(newcol, "_sil")
+    data[[silcol]] <- fit$silwidth
+    attr(data[[silcol]], "comment") <- paste0("Silhouette width: ", prefix)
+  }
+
   # Add limits
   attr(data[[newcol]], "limits") <- limits
 
@@ -448,12 +455,22 @@ add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", la
       tot.withinss = ss$tot.withinss,
       betweenss    = ss$betweenss,
       totss        = ss$totss,
-      avg.silwidth = NA_real_   # silhouette undefined for k = 1
+      avg.silwidth = NA_real_,
+      silwidth     = rep(NA_real_, n)   # per-case silhouette undefined for k = 1
     ))
   }
 
   fit_pam <- cluster::pam(dissim, k = k, diss = TRUE)
   ss <- .cluster_dist_ss(dissim, fit_pam$clustering)
+
+  # Per-case silhouette width in original observation order.
+  # silinfo$widths is sorted by cluster/width, so remap via the dist labels.
+  sil <- fit_pam$silinfo$widths
+  labels <- attr(dissim, "Labels")
+  ord <- if (is.null(labels)) as.integer(rownames(sil)) else match(rownames(sil), labels)
+
+  silwidth <- rep(NA_real_, n)
+  silwidth[ord] <- sil[, "sil_width"]
 
   list(
     cluster      = as.integer(fit_pam$clustering),
@@ -463,6 +480,7 @@ add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", la
     totss        = ss$totss,
     medoids      = fit_pam$medoids,
     avg.silwidth = fit_pam$silinfo$avg.width,
+    silwidth     = silwidth,
     pam          = fit_pam
   )
 }
