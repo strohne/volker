@@ -461,6 +461,38 @@ data_onehot <- function(data, ...) {
   mm
 }
 
+
+#' Split a metric column into categories based on the median
+#'
+#' @keywords internal
+#'
+#' @param data A data frame containing the column to be split.
+#' @param col The column to split.
+#' @param labels Logical; if `TRUE` (default), use custom labels for the split categories based
+#'               on the column title. If `FALSE`, use the column name directly.
+#'
+#' @return A data frame with the specified column converted into categorical labels based on its median value.
+#'         The split threshold (median) is stored as an attribute of the column.
+data_split <- function(data, col, labels = TRUE) {
+  cross_name <- rlang::as_string(rlang::ensym(col))
+  cross_label <- ifelse(labels, get_title(data, {{ col }}), cross_name)
+  cross_median <- stats::median(data[[cross_name]], na.rm = TRUE)
+
+  cross_levels <- as.list(paste0(c("Low ", "High "), cross_label))
+  names(cross_levels) <- paste0(c("low: ", "high: "), cross_name)
+
+  data <- data |>
+    mutate("{{ col }}" := ifelse({{ col }} < cross_median, names(cross_levels)[1], names(cross_levels)[2])) |>
+    labs_apply(cols = {{ col }}, values = cross_levels)
+
+  attr(data[[ cross_name ]], "label")  <- cross_label
+  attr(data[[ cross_name ]], "split") <- paste0(cross_label, " split at median ", round(cross_median, 1))
+
+  data
+
+}
+
+
 #' Get a formatted baseline from attributes of an object.
 #'
 #' The following attributes are considered:

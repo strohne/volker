@@ -10,6 +10,7 @@ cluster_plot(
   newcol = NULL,
   k = NULL,
   method = NULL,
+  type = "lines",
   reorder = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -36,6 +37,8 @@ The within-sums of squares for the scree plot are calculated by
 \item{method}{The method as character value. Currently, only kmeans is supported.
 All items are scaled before performing the cluster analysis using
 \code{base::\link[base:scale]{scale}}.}
+
+\item{type}{The plot type, one of \code{"lines"} or \code{"heatmap"}.}
 
 \item{reorder}{Reorder items to minimize line crossings,
 Either \code{TRUE} to automatically select a

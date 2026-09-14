@@ -9,6 +9,7 @@ plot_counts_items_grouped(
   cols,
   cross,
   category = NULL,
+  type = "lines",
   limits = NULL,
   title = TRUE,
   labels = TRUE,
@@ -27,6 +28,8 @@ plot_counts_items_grouped(
 By default, for logical column types, only TRUE values are counted.
 For other column types, the first category is counted.
 To override the default behavior, provide a vector of values in the dataset or labels from the codebook.}
+
+\item{type}{Determines the plot type, one of \code{"lines"} for a profile plot or \code{"heatmap"} for a heatmap.}
 
 \item{limits}{The scale limits, autoscaled by default.
 Set to \code{c(0,100)} to make a 100\% plot.

@@ -584,7 +584,7 @@ plot_counts_one_cor <- function(data, col, cross, category = NULL, prop = "total
   }
 
   # 2. Split into groups
-  data <- .tab_split(data, {{ cross }}, labels = labels)
+  data <- data_split(data, {{ cross }}, labels = labels)
 
   # 3. Output
   result <- plot_counts_one_grouped(
@@ -748,6 +748,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #' @param limits The scale limits, autoscaled by default.
 #'               Set to \code{c(0,100)} to make a 100% plot.
 #'               If the data is binary or focused on a single category, by default a 100% plot is created.
+#' @param type Determines the plot type, one of `"lines"` for a profile plot or `"heatmap"` for a heatmap.
 #' @param title If TRUE (default) shows a plot title derived from the column labels.
 #'              Disable the title with FALSE or provide a custom title as character value.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
@@ -769,7 +770,7 @@ plot_counts_items <- function(data, cols, category = NULL, ordered = NULL, ci = 
 #'
 #' @export
 #' @importFrom rlang .data
-plot_counts_items_grouped <- function(data, cols, cross, category = NULL, limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
+plot_counts_items_grouped <- function(data, cols, cross, category = NULL, type = "lines", limits = NULL, title = TRUE, labels = TRUE, clean = TRUE, ...) {
   # 1. Checks, clean, remove missings
   data <- data_prepare(data, {{ cols }}, {{ cross }}, cols.categorical = c({{ cols }}, {{ cross }}), clean = clean)
 
@@ -818,7 +819,7 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, limits
 
   # Focus TRUE category or the first category
   if (is.null(category)) {
-    value_names <- unique(as.character(result$.value_name))
+    value_names <- sort(unique(as.character(result$.value_name)))
     if ((length(value_names) == 2) && ("TRUE" %in% value_names)) {
       base_category <- "TRUE"
     } else {
@@ -897,16 +898,34 @@ plot_counts_items_grouped <- function(data, cols, cross, category = NULL, limits
   result <- .attr_transfer(result, data, "missings")
 
   # Plot
-  .plot_lines(
-    result,
-    title = title,
-    limits = limits,
-    base = paste0(
-      "n=", base_n,
-      "; multiple responses possible",
-      "; values=", base_labels
+  if (type == "heatmap") {
+
+    result <- result[, c("item",".cross","value") ]
+
+    .plot_heatmap(
+      result,
+      values_col = "value",
+      title = title,
+      base = paste0(
+        "n=", base_n,
+        "; multiple responses possible",
+        "; values=", base_labels
+      )
     )
-  )
+  }
+
+  else {
+    .plot_lines(
+      result,
+      title = title,
+      limits = limits,
+      base = paste0(
+        "n=", base_n,
+        "; multiple responses possible",
+        "; values=", base_labels
+      )
+    )
+  }
 }
 
 
@@ -1007,7 +1026,7 @@ plot_counts_items_cor <- function(data, cols, cross, category = NULL, title = TR
   }
 
   # 2. Split into groups
-  data <- .tab_split(data, {{ cross }}, labels = labels)
+  data <- data_split(data, {{ cross }}, labels = labels)
 
   # 3. Output
   result <- plot_counts_items_grouped(

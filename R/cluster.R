@@ -121,6 +121,7 @@ cluster_tab <- function(data, cols, newcol = NULL, k = NULL, method = "kmeans", 
 #' @param method The method as character value. Currently, only kmeans is supported.
 #'               All items are scaled before performing the cluster analysis using
 #'               \code{base::\link[base:scale]{scale}}.
+#' @param type The plot type, one of `"lines"` or `"heatmap"`.
 #' @param reorder Reorder items to minimize line crossings,
 #'   Either `TRUE` to automatically select a
 #'   method (`"olo"` if \pkg{seriation} is installed, otherwise `"min"`), or
@@ -138,7 +139,7 @@ cluster_tab <- function(data, cols, newcol = NULL, k = NULL, method = "kmeans", 
 #'
 #' @export
 #' @importFrom rlang .data
-cluster_plot <- function(data, cols, newcol = NULL, k = NULL, method = NULL, reorder = TRUE, labels = TRUE, clean = TRUE, ...) {
+cluster_plot <- function(data, cols, newcol = NULL, k = NULL, method = NULL, type = "lines", reorder = TRUE, labels = TRUE, clean = TRUE, ...) {
 
   clst_col <- dplyr::select(data, {{ cols }})
   fit <- attr(clst_col[[1]], "stats.cluster.fit")
@@ -159,7 +160,7 @@ cluster_plot <- function(data, cols, newcol = NULL, k = NULL, method = NULL, reo
   if (method == "kmeans") {
     plot_centers <- plot_metrics(data, tidyselect::all_of(cols_items), {{ cols }}, reorder = reorder, labels = labels, ...)
   } else {
-    plot_centers <- plot_counts(data, tidyselect::all_of(cols_items), {{ cols }}, reorder = reorder, labels = labels, ...)
+    plot_centers <- plot_counts(data, tidyselect::all_of(cols_items), {{ cols }}, type = type, reorder = reorder, labels = labels, ...)
   }
 
   # Prepare output list
