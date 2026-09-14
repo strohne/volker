@@ -10,6 +10,7 @@ plot_counts_items_grouped(
   cols,
   cross,
   category = NULL,
+  type = "lines",
   limits = NULL,
   title = TRUE,
   labels = TRUE,
@@ -39,6 +40,11 @@ plot_counts_items_grouped(
   are counted. For other column types, the first category is counted. To
   override the default behavior, provide a vector of values in the
   dataset or labels from the codebook.
+
+- type:
+
+  Determines the plot type, one of `"lines"` for a profile plot or
+  `"heatmap"` for a heatmap.
 
 - limits:
 

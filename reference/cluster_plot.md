@@ -14,6 +14,7 @@ cluster_plot(
   newcol = NULL,
   k = NULL,
   method = NULL,
+  type = "lines",
   reorder = TRUE,
   labels = TRUE,
   clean = TRUE,
@@ -56,6 +57,10 @@ cluster_plot(
   The method as character value. Currently, only kmeans is supported.
   All items are scaled before performing the cluster analysis using
   `base::`[`scale`](https://rdrr.io/r/base/scale.html).
+
+- type:
+
+  The plot type, one of `"lines"` or `"heatmap"`.
 
 - reorder:
 

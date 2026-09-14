@@ -61,6 +61,7 @@
 <url><loc>https://strohne.github.io/volker/reference/data_rm_negatives.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_rm_zeros.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/data_round.html</loc></url>
+<url><loc>https://strohne.github.io/volker/reference/data_split.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/diagnostics_cooksd.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/diagnostics_qq.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/diagnostics_resid_fitted.html</loc></url>
@@ -101,7 +102,6 @@
 <url><loc>https://strohne.github.io/volker/reference/dot-report_fct.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-report_idx.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-report_mdl.html</loc></url>
-<url><loc>https://strohne.github.io/volker/reference/dot-tab_split.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-to_vlkr_df.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-to_vlkr_list.html</loc></url>
 <url><loc>https://strohne.github.io/volker/reference/dot-to_vlkr_plot.html</loc></url>
