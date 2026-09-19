@@ -25,6 +25,7 @@ set.seed(1852)
 
 ```
 
+# K-means clustering
 
 ## Tables
 ```{r}
@@ -66,5 +67,38 @@ report_metrics(data, starts_with("cg_adoption"), clusters = TRUE)
 data |>
   add_clusters(starts_with("cg_adoption"), k = 3) |>
   report_counts(sd_gender, cls_cg_adoption, prop = "cols")
+
+```
+
+
+# PAM clustering
+
+
+```{r}
+
+# Clustering with logical values assume asymmetric variables,
+# i.e. FALSE values only count for calculating the distance if 
+# at least on case in a pair of cases has a TRUE value.
+# This corresponds to caluclating the Jaccard coefficient.
+# Think of: `0` has no meaning.
+data |>
+  mutate(across(starts_with("cg_act_"), ~ ifelse(is.na(.), FALSE, TRUE)))  %>%
+  cluster_plot(starts_with("cg_act_"), k=2, method = "pam")
+
+# If you use character values, they are treated as symmetric.
+# Think of `yes` and `no` are equivalent choices.
+# Note that numeric values would be converted to characters automatically.
+data |>
+  mutate(across(starts_with("cg_act_"), ~ ifelse(is.na(.), "no", "yes")))  %>%
+  cluster_plot(starts_with("cg_act_"), k=2, method = "pam")
+
+# Since the columns are treated as characters, they are ordered alphabetically.
+# Watch out for the baseline of the plot, there you see the base value.
+# Change the alphabetic order, for example, by prefixing the values.
+data |>
+  mutate(across(starts_with("cg_act_"), ~ ifelse(is.na(.), "02 no", "01 yes")))  %>%
+  cluster_plot(starts_with("cg_act_"), k=2, method = "pam")
+
+
 ```
 

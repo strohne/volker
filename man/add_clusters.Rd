@@ -28,11 +28,12 @@ Set to NULL to output a scree plot for up to 10 clusters
 and automatically choose the number of clusters based on the elbow criterion.}
 
 \item{method}{The method as character value. One of "kmeans" (default) or "pam".
-For "kmeans" all items are scaled using
-\code{base::\link[base:scale]{scale}} and euclidean distance is used.
-For "pam" a Gower dissimilarity matrix is used, which supports
-mixed data types (numeric and categorical) and normalises each
-variable internally, so no scaling is applied.}
+For "kmeans" all items will be converted to numerical values and scaled using
+\code{base::\link[base:scale]{scale}}. Euclidean distance is used.
+For "pam", all items will be converted to categorical values by \link{data_cat}.
+A Gower dissimilarity matrix is used.
+Note that logical values are treated as asymmetrical, i.e. \code{FALSE} does not have a meaning, when computing the gower metric.
+Therefore cases with only \code{FALSE} values (no annotations, no codes) are removed.}
 
 \item{labels}{Whether to get the label of the cluster column from the common prefix of item column labels.}
 
@@ -45,8 +46,8 @@ stats.cluster.items, the scree-plot or silhouette-plot data in stats.cluster.dia
 stats.cluster.method.
 }
 \description{
-Clustering is performed using \code{stats::\link[stats:kmeans]{kmeans}}
-(method = "kmeans") or \code{cluster::\link[cluster:pam]{pam}} on a Gower
+Clustering is either performed using \code{stats::\link[stats:kmeans]{kmeans}}
+(method = "kmeans") on scaled numerical variables or using \code{cluster::\link[cluster:pam]{pam}} on a Gower
 dissimilarity matrix computed by \code{cluster::\link[cluster:daisy]{daisy}}
 (method = "pam").
 

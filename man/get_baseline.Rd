@@ -18,7 +18,7 @@ A formatted message or NULL if none of the supported attributes is present.
 The following attributes are considered:
 \itemize{
 \item cases: Number of cases.
-\item missing: Removed zero, negative, and missing cases.
+\item missing: Removed zero, negative, empty, and missing cases.
 \item focus: Focus category.
 \item auto: The k value of cluster methods.
 \item reversed: A list of reversed items.

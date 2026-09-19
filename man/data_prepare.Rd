@@ -9,6 +9,9 @@ data_prepare(
   cols,
   cross,
   cols.categorical,
+  cols.character,
+  cols.factor,
+  cols.logical,
   cols.numeric,
   cols.reverse,
   clean = TRUE
@@ -21,7 +24,17 @@ data_prepare(
 
 \item{cross}{The second column selection.}
 
-\item{cols.categorical}{A tidy selection of columns to be checked for categorical values.}
+\item{cols.categorical}{A tidy selection of columns to be checked for categorical values.
+Numeric columns will be converted to characters, other columns stay as they are.}
+
+\item{cols.character}{A tidy selection of columns to be checked for categorical values.
+The values will be converted to characters.}
+
+\item{cols.factor}{A tidy selection of columns to be checked for categorical values.
+The values will be converted to factors.}
+
+\item{cols.logical}{A tidy selection of columns to be checked for categorical values.
+The values will be converted to logicals.}
 
 \item{cols.numeric}{A tidy selection of columns to be converted to numeric values.}
 

@@ -7,25 +7,25 @@
 #' @keywords internal
 #'
 #' @description
-#' Kmeans clustering is performed using \link{add_clusters}.
+#' Clustering is performed using \link{add_clusters}.
 #'
 #' `r lifecycle::badge("experimental")`
 #'
 #' @param data A tibble.
-#' @param cols A tidy selection of item columns or a single column with cluster values as a factor.
+#' @param cols A tidy selection of item columns or a single column with cluster values as a factor or logical.
 #'             If the column already contains a cluster result from \link{add_clusters}, it is used, and other parameters are ignored.
 #'             If no cluster result exists, it is calculated with \link{add_clusters}.
 #' @param k Number of clusters to calculate.
-#'        Set to NULL to output a scree plot for up to 10 clusters
-#'        and automatically choose the number of clusters based on the elbow criterion.
-#'        The within-sums of squares for the scree plot are calculated by
-#'        \code{stats::\link[stats:kmeans]{kmeans}}.
+#'        Set to NULL to automatically determine an optimal cluster number.
+#'        For kmeans, the number of clusters is automatically chosed
+#'        based on the elbow criterion after calculating within-sums of squares
+#'        for up to 10 clusters.
+#'        For pam, the number of clusters is automatically chosen based
+#'        on the maximum average silhouette for up to 10 clusters.
 #' @param newcol Name of the new cluster column as a character vector.
 #'                Set to NULL (default) to automatically build a name
 #'                from the common column prefix, prefixed with "cls_".
-#' @param method The method as character value. Currently, only kmeans is supported.
-#'               All items are scaled before performing the cluster analysis using
-#'               \code{base::\link[base:scale]{scale}}.
+#' @param method The method as a character value, one of `kmeans` or `pam`. See \link{add_clusters} for further details.
 #' @param labels If TRUE (default) extracts labels from the attributes, see \link{codebook}.
 #' @param clean Prepare data by \link{data_clean}.
 #' @param ... Placeholder to allow calling the method with unused parameters from \link{tab_metrics}.
@@ -54,13 +54,24 @@ cluster_tab <- function(data, cols, newcol = NULL, k = NULL, method = "kmeans", 
 
   # Within-Cluster Sum of Squares & Between-Cluster Sum of Squares
   method <- dplyr::coalesce(attr(clst_col[[1]], "stats.cluster.method"), "kmeans")
-  ss_label <- if (method == "kmeans") "Sum of Squares" else "Sum of Squares (Gower distance)"
 
-  fit_sos <- tibble::tribble(
-    ~Statistic, ~Value,
-    paste0("Within-Cluster ", ss_label), sprintf("%.2f", round(fit$tot.withinss, 2)),
-    paste0("Between-Cluster ", ss_label), sprintf("%.2f", round(fit$betweenss, 2))
-  )
+  if (method == "kmeans") {
+    ss_label <- if (method == "kmeans") "Sum of Squares" else "Sum of Squares (Gower distance)"
+
+    fit_quality <- tibble::tribble(
+      ~Statistic, ~Value,
+      "Within-Cluster Sum of Squares", sprintf("%.2f", round(fit$tot.withinss, 2)),
+      "Between-Cluster Sum of Squares", sprintf("%.2f", round(fit$betweenss, 2))
+    )
+  }
+  else if (method == "pam") {
+    fit_quality <- tibble::tribble(
+      ~Statistic, ~Value,
+      "Within-Cluster Sum of Squares (Gower distance)", sprintf("%.2f", round(fit$tot.withinss, 2)),
+      "Between-Cluster Sum of Squares (Gower distance)", sprintf("%.2f", round(fit$betweenss, 2)),
+      "Average Silhouette Width", sprintf("%.2f", round(fit$avg.silwidth, 2)),
+    )
+  }
 
   # Cluster means
   cols_items <- attr(clst_col[[1]], "stats.cluster.items")
@@ -78,7 +89,7 @@ cluster_tab <- function(data, cols, newcol = NULL, k = NULL, method = "kmeans", 
   result <- c(
     "centers" = list(.to_vlkr_tab(fit_centers)),
     "clusters" = list(.to_vlkr_tab(fit_count)),
-    "sos" = list(.to_vlkr_tab(fit_sos))
+    "quality" = list(.to_vlkr_tab(fit_quality))
   )
 
   # Add WSS for scree plot
@@ -102,25 +113,24 @@ cluster_tab <- function(data, cols, newcol = NULL, k = NULL, method = "kmeans", 
 #' @keywords internal
 #'
 #' @description
-#' Kmeans clustering is performed using \link{add_clusters}.
+#' Clustering is performed using \link{add_clusters}.
 #'
 #' `r lifecycle::badge("experimental")`
 #'
 #' @param data A tibble.
-#' @param cols A tidy selection of item columns or a single column with cluster values as a factor.
+#' @param cols A tidy selection of item columns or a single column with cluster values as a factor or logical.
 #'             If the column already contains a cluster result from \link{add_clusters}, it is used, and other parameters are ignored.
 #'             If no cluster result exists, it is calculated with \link{add_clusters}.
 #' @param k Number of clusters to calculate.
-#'        Set to NULL to output a scree plot for up to 10 clusters
-#'        and automatically choose the number of clusters based on the elbow criterion.
-#'        The within-sums of squares for the scree plot are calculated by
-#'        \code{stats::\link[stats:kmeans]{kmeans}}.
+#'        Set to NULL to automatically determine an optimal cluster number.
+#'        For kmeans, outputs a scree plot based on within-sums of squares for up to 10 clusters.
+#'        In this case, the number of clusters is automatically chosed based on the elbow criterion.
+#'        For pam, outputs a silhoette plot for up to 10 clusters.
+#'        In this case, the number of clusters is automatically chosen based on the maximum average silhouette.
 #' @param newcol Name of the new cluster column as a character vector.
 #'                Set to NULL (default) to automatically build a name
 #'                from the common column prefix, prefixed with "cls_".
-#' @param method The method as character value. Currently, only kmeans is supported.
-#'               All items are scaled before performing the cluster analysis using
-#'               \code{base::\link[base:scale]{scale}}.
+#' @param method The method as a character value, one of `kmeans` or `pam`. See \link{add_clusters} for further details.
 #' @param type The plot type, one of `"lines"` or `"heatmap"`.
 #' @param reorder Reorder items to minimize line crossings,
 #'   Either `TRUE` to automatically select a
@@ -199,8 +209,8 @@ cluster_plot <- function(data, cols, newcol = NULL, k = NULL, method = NULL, typ
 #' Add cluster number to a data frame
 #'
 #' @description
-#' Clustering is performed using \code{stats::\link[stats:kmeans]{kmeans}}
-#' (method = "kmeans") or \code{cluster::\link[cluster:pam]{pam}} on a Gower
+#' Clustering is either performed using \code{stats::\link[stats:kmeans]{kmeans}}
+#' (method = "kmeans") on scaled numerical variables or using \code{cluster::\link[cluster:pam]{pam}} on a Gower
 #' dissimilarity matrix computed by \code{cluster::\link[cluster:daisy]{daisy}}
 #' (method = "pam").
 #'
@@ -215,11 +225,13 @@ cluster_plot <- function(data, cols, newcol = NULL, k = NULL, method = NULL, typ
 #'                Set to NULL (default) to automatically build a name
 #'                from the common column prefix, prefixed with "cls_".
 #' @param method The method as character value. One of "kmeans" (default) or "pam".
-#'               For "kmeans" all items are scaled using
-#'               \code{base::\link[base:scale]{scale}} and euclidean distance is used.
-#'               For "pam" a Gower dissimilarity matrix is used, which supports
-#'               mixed data types (numeric and categorical) and normalises each
-#'               variable internally, so no scaling is applied.
+#'               For "kmeans" all items will be converted to numerical values and scaled using
+#'               \code{base::\link[base:scale]{scale}}. Euclidean distance is used.
+#'               For "pam", all items will be converted to categorical values by \link{data_cat}.
+#'               A Gower dissimilarity matrix is used.
+#'               Note that logical values are treated as asymmetrical, i.e. `FALSE` does not have a meaning, when computing the gower metric.
+#'               Therefore cases with only `FALSE` values (no annotations, no codes) are removed.
+# for comparing cases if not at least one case has a `TRUE` value.
 #' @param labels Whether to get the label of the cluster column from the common prefix of item column labels.
 #' @param clean Prepare data by \link{data_clean}.
 #' @return The input tibble with an additional cluster column (factor, prefixed "cls_").
@@ -245,9 +257,24 @@ add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", la
     data <- data_prepare(data, {{ cols }}, cols.numeric = {{ cols }}, clean = clean)
   } else {
     data <- data_prepare(data, {{ cols }}, cols.categorical = {{ cols }}, clean = clean)
+
+    # daisy does not like characters
+    data <- dplyr::mutate(data, dplyr::across(
+      c({{ cols }}) & tidyselect::where(is.character),
+      as.factor
+    ))
+
+    # Logicals are treated as asymmetric, i.e. `FALSE` does not have a meaning
+    # for comparing cases if not at least one case has a `TRUE` value.
+    # Therefore, cases without any `TRUE` value (= no annotation, no code)
+    # are removed. This only applies when *all* selected columns are logical.
+    data <- data_rm_empty(data, {{ cols }})
+
   }
 
-  # For cluster analysis, always remove missings
+  # For cluster analysis, always remove missings.
+  # Usually, missings are removed in data_prepare() depending on the option.
+  # Therefore, if the option is FALSE, force removal.
   if (!dplyr::coalesce(getOption("vlkr.na.omit"), VLKR_NA_OMIT)) {
     data <- data_rm_missings(data, {{ cols }}, force = TRUE)
   }
@@ -291,11 +318,14 @@ add_clusters <- function(data, cols, newcol = NULL, k = 2, method = "kmeans", la
     features <- scale(items)
     itemnames <- colnames(features)
   } else if (method == "pam") {
-    # Treat all items as categorical
-    items <- dplyr::mutate(items, dplyr::across(tidyselect::everything(), as.factor))
 
-    # Gower distance
-    features <- cluster::daisy(items, metric = "gower")
+    # Use asymm for pure logical variables
+    typelist <- list()
+    if (all(vapply(items, is.logical, logical(1)))) {
+      typelist <- list(asymm = c(1:ncol(items)))
+    }
+
+    features <- cluster::daisy(items, metric = "gower", type = typelist)
     itemnames <- colnames(items)
   }
 

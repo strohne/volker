@@ -8,6 +8,13 @@
 #' @param cols The first column selection.
 #' @param cross The second column selection.
 #' @param cols.categorical A tidy selection of columns to be checked for categorical values.
+#'                         Numeric columns will be converted to characters, other columns stay as they are.
+#' @param cols.character A tidy selection of columns to be checked for categorical values.
+#'                         The values will be converted to characters.
+#' @param cols.factor A tidy selection of columns to be checked for categorical values.
+#'                   The values will be converted to factors.
+#' @param cols.logical A tidy selection of columns to be checked for categorical values.
+#'                   The values will be converted to logicals.
 #' @param cols.numeric A tidy selection of columns to be converted to numeric values.
 #' @param cols.reverse A tidy selection of columns with reversed codings.
 #' @param clean Whether to clean data using \link{data_clean}.
@@ -19,7 +26,7 @@
 #'
 #' @export
 #'
-data_prepare <- function(data, cols, cross, cols.categorical, cols.numeric, cols.reverse, clean = TRUE) {
+data_prepare <- function(data, cols, cross, cols.categorical, cols.character, cols.factor, cols.logical, cols.numeric, cols.reverse, clean = TRUE) {
   # 1. Checks
   check_is_dataframe(data)
   check_has_column(data, {{ cols }})
@@ -50,13 +57,28 @@ data_prepare <- function(data, cols, cross, cols.categorical, cols.numeric, cols
     data <- data_rev(data, {{ cols.reverse }})
   }
 
-  # 6. Check categorical values
+  # 6. Convert categorical values
   if (!missing(cols.categorical)) {
     check_is_categorical(data, {{ cols.categorical }})
     data <- data_cat(data, {{ cols.categorical }})
   }
 
-  # # 6. Remove negatives
+  if (!missing(cols.character)) {
+    check_is_categorical(data, {{ cols.character }})
+    data <- data_cat(data, {{ cols.character }}, type = "character")
+  }
+
+  if (!missing(cols.factor)) {
+    check_is_categorical(data, {{ cols.factor }})
+    data <- data_cat(data, {{ cols.factor }}, type = "factor")
+  }
+
+  if (!missing(cols.logical)) {
+    check_is_categorical(data, {{ cols.logical }})
+    data <- data_cat(data, {{ cols.logical }}, type = "logical")
+  }
+
+  # # 8. Remove negatives
   # if (isTRUE(rm.negatives) & !missing(cross)) {
   #   data <- data_rm_negatives(data, c({{ cols }}, {{ cross }}))
   # }
@@ -227,6 +249,34 @@ data_rm_zeros <- function(data, cols) {
   data
 }
 
+#' Remove cases with only FALSE values in logical columns
+#'
+#' @keywords internal
+#'
+#' @param data Data frame.
+#' @param cols A tidy column selection.
+#' @return Data frame without empty rows. Removal information is added to the misings attribute.
+data_rm_empty <- function(data, cols) {
+
+  cols_eval <- tidyselect::eval_select(expr = rlang::enquo(cols), data = data)
+  logical_cols <- cols_eval[vapply(data[cols_eval], is.logical, logical(1))]
+
+  # Only act if all selected columns are logical
+  if (length(logical_cols) > 0 && length(logical_cols) == length(cols_eval)) {
+
+    keep <- rowSums(as.matrix(data[logical_cols]), na.rm = TRUE) > 0
+    cases <- sum(!keep)
+
+    if (cases > 0) {
+      colnames <- rlang::as_label(rlang::enquo(cols))
+      data <- data[keep, , drop = FALSE]
+      data <- .attr_insert(data, "missings", "empty", list("cols" = colnames, "n" = cases))
+    }
+  }
+
+  data
+}
+
 #' Remove negatives and output a warning
 #'
 #' @keywords internal
@@ -248,7 +298,7 @@ data_rm_negatives <- function(data, cols) {
   if (cases > 0) {
     data <- data_clean
     colnames <- rlang::as_label(rlang::enquo(cols))
-    data <- .attr_insert(data, "missings", "negative", list("cols" = colnames, "n"=cases))
+    data <- .attr_insert(data, "missings", "negative", list("cols" = colnames, "n" = cases))
   }
 
   data
@@ -374,22 +424,40 @@ data_num <- function(data, cols) {
   data
 }
 
-#' Convert numeric values to string
+
+#' Convert numeric values to factors, characters or logical values
+#' while preserving attributes
 #'
 #' @keywords internal
 #'
 #' @param data A data frame containing the items to be converted.
 #' @param cols A tidy selection of columns to convert.
+#' @param type The target type, one of `factor`, `character`, or `logical`.
+#'             If the type is missing, only numeric values will be converted to character.
 #' @return A data frame with the converted values
-data_cat <- function(data, cols) {
+data_cat <- function(data, cols, type) {
 
   cols_eval <- tidyselect::eval_select(expr = enquo(cols), data = data)
   for (col in cols_eval) {
-    if (is.numeric(data[[col]])) {
+    if (!missing(type) || is.numeric(data[[col]])) {
       old_attr <- attributes(data[[col]])
       old_attr[c("class", "levels")] <- NULL
-      data[[col]] <- as.character(data[[col]])
-      attributes(data[[col]]) <- old_attr
+
+      if (missing(type) || (type == "character")) {
+        data[[col]] <- as.character(data[[col]])
+      }
+      else if (type == "factor") {
+        data[[col]] <- as.factor(data[[col]])
+      }
+      else if (type == "logical") {
+        data[[col]] <- as.logical(data[[col]])
+      }
+
+      # Merge: keep new class/levels, restore old attributes for the rest
+      new_attr <- attributes(data[[col]])
+      new_attr <- if (is.null(new_attr)) list() else new_attr
+      old_attr <- if (is.null(old_attr)) list() else old_attr
+      attributes(data[[col]]) <- utils::modifyList(old_attr, new_attr)
     }
   }
 
@@ -497,7 +565,7 @@ data_split <- function(data, col, labels = TRUE) {
 #'
 #' The following attributes are considered:
 #' - cases: Number of cases.
-#' - missing: Removed zero, negative, and missing cases.
+#' - missing: Removed zero, negative, empty, and missing cases.
 #' - focus: Focus category.
 #' - auto: The k value of cluster methods.
 #' - reversed: A list of reversed items.
@@ -563,6 +631,11 @@ get_baseline <- function(obj, ignore = c()) {
       baseline_missing <- c(baseline_missing, paste0(missings$zero$n, postfix))
     }
 
+    if (!is.null(missings$empty)) {
+      postfix <- ifelse(isTRUE(missings$na$omit), " empty", " case(s) with empty")
+      baseline_missing <- c(baseline_missing, paste0(missings$empty$n, postfix))
+    }
+
     if (!is.null(missings$negative)) {
       postfix <- ifelse(isTRUE(missings$na$omit), " negative", " case(s) with negative")
       baseline_missing <- c(baseline_missing, paste0(missings$negative$n,postfix))
@@ -582,7 +655,6 @@ get_baseline <- function(obj, ignore = c()) {
       baseline <- c(baseline, paste0("Adjusted significance p values with ", adjust, " method."))
     }
   }
-
 
   # Assemble baseline
   if (length(baseline) > 0) {

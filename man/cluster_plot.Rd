@@ -20,7 +20,7 @@ cluster_plot(
 \arguments{
 \item{data}{A tibble.}
 
-\item{cols}{A tidy selection of item columns or a single column with cluster values as a factor.
+\item{cols}{A tidy selection of item columns or a single column with cluster values as a factor or logical.
 If the column already contains a cluster result from \link{add_clusters}, it is used, and other parameters are ignored.
 If no cluster result exists, it is calculated with \link{add_clusters}.}
 
@@ -29,14 +29,13 @@ Set to NULL (default) to automatically build a name
 from the common column prefix, prefixed with "cls_".}
 
 \item{k}{Number of clusters to calculate.
-Set to NULL to output a scree plot for up to 10 clusters
-and automatically choose the number of clusters based on the elbow criterion.
-The within-sums of squares for the scree plot are calculated by
-\code{stats::\link[stats:kmeans]{kmeans}}.}
+Set to NULL to automatically determine an optimal cluster number.
+For kmeans, outputs a scree plot based on within-sums of squares for up to 10 clusters.
+In this case, the number of clusters is automatically chosed based on the elbow criterion.
+For pam, outputs a silhoette plot for up to 10 clusters.
+In this case, the number of clusters is automatically chosen based on the maximum average silhouette.}
 
-\item{method}{The method as character value. Currently, only kmeans is supported.
-All items are scaled before performing the cluster analysis using
-\code{base::\link[base:scale]{scale}}.}
+\item{method}{The method as a character value, one of \code{kmeans} or \code{pam}. See \link{add_clusters} for further details.}
 
 \item{type}{The plot type, one of \code{"lines"} or \code{"heatmap"}.}
 
@@ -56,7 +55,7 @@ one of the character values \code{"max"}, \code{"min"}, \code{"spread"}, \code{"
 A ggplot object.
 }
 \description{
-Kmeans clustering is performed using \link{add_clusters}.
+Clustering is performed using \link{add_clusters}.
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }

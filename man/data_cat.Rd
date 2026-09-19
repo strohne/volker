@@ -2,19 +2,24 @@
 % Please edit documentation in R/clean.R
 \name{data_cat}
 \alias{data_cat}
-\title{Convert numeric values to string}
+\title{Convert numeric values to factors, characters or logical values
+while preserving attributes}
 \usage{
-data_cat(data, cols)
+data_cat(data, cols, type)
 }
 \arguments{
 \item{data}{A data frame containing the items to be converted.}
 
 \item{cols}{A tidy selection of columns to convert.}
+
+\item{type}{The target type, one of \code{factor}, \code{character}, or \code{logical}.
+If the type is missing, only numeric values will be converted to character.}
 }
 \value{
 A data frame with the converted values
 }
 \description{
-Convert numeric values to string
+Convert numeric values to factors, characters or logical values
+while preserving attributes
 }
 \keyword{internal}
