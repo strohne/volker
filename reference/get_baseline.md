@@ -4,7 +4,7 @@ The following attributes are considered:
 
 - cases: Number of cases.
 
-- missing: Removed zero, negative, and missing cases.
+- missing: Removed zero, negative, empty, and missing cases.
 
 - focus: Focus category.
 

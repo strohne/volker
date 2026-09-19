@@ -1,6 +1,6 @@
 # Get tables for clustering result
 
-Kmeans clustering is performed using
+Clustering is performed using
 [add_clusters](https://strohne.github.io/volker/reference/add_clusters.md).
 
 **\[experimental\]**
@@ -29,8 +29,8 @@ cluster_tab(
 - cols:
 
   A tidy selection of item columns or a single column with cluster
-  values as a factor. If the column already contains a cluster result
-  from
+  values as a factor or logical. If the column already contains a
+  cluster result from
   [add_clusters](https://strohne.github.io/volker/reference/add_clusters.md),
   it is used, and other parameters are ignored. If no cluster result
   exists, it is calculated with
@@ -44,17 +44,18 @@ cluster_tab(
 
 - k:
 
-  Number of clusters to calculate. Set to NULL to output a scree plot
-  for up to 10 clusters and automatically choose the number of clusters
-  based on the elbow criterion. The within-sums of squares for the scree
-  plot are calculated by
-  `stats::`[`kmeans`](https://rdrr.io/r/stats/kmeans.html).
+  Number of clusters to calculate. Set to NULL to automatically
+  determine an optimal cluster number. For kmeans, the number of
+  clusters is automatically chosed based on the elbow criterion after
+  calculating within-sums of squares for up to 10 clusters. For pam, the
+  number of clusters is automatically chosen based on the maximum
+  average silhouette for up to 10 clusters.
 
 - method:
 
-  The method as character value. Currently, only kmeans is supported.
-  All items are scaled before performing the cluster analysis using
-  `base::`[`scale`](https://rdrr.io/r/base/scale.html).
+  The method as a character value, one of `kmeans` or `pam`. See
+  [add_clusters](https://strohne.github.io/volker/reference/add_clusters.md)
+  for further details.
 
 - labels:
 

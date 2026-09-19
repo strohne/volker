@@ -45,6 +45,9 @@
 <span>  <span class="va">cols</span>,</span>
 <span>  <span class="va">cross</span>,</span>
 <span>  <span class="va">cols.categorical</span>,</span>
+<span>  <span class="va">cols.character</span>,</span>
+<span>  <span class="va">cols.factor</span>,</span>
+<span>  <span class="va">cols.logical</span>,</span>
 <span>  <span class="va">cols.numeric</span>,</span>
 <span>  <span class="va">cols.reverse</span>,</span>
 <span>  clean <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -68,7 +71,23 @@
 
 
 <dt id="arg-cols-categorical">cols.categorical<a class="anchor" aria-label="anchor" href="#arg-cols-categorical"></a></dt>
-<dd><p>A tidy selection of columns to be checked for categorical values.</p></dd>
+<dd><p>A tidy selection of columns to be checked for categorical values.
+Numeric columns will be converted to characters, other columns stay as they are.</p></dd>
+
+
+<dt id="arg-cols-character">cols.character<a class="anchor" aria-label="anchor" href="#arg-cols-character"></a></dt>
+<dd><p>A tidy selection of columns to be checked for categorical values.
+The values will be converted to characters.</p></dd>
+
+
+<dt id="arg-cols-factor">cols.factor<a class="anchor" aria-label="anchor" href="#arg-cols-factor"></a></dt>
+<dd><p>A tidy selection of columns to be checked for categorical values.
+The values will be converted to factors.</p></dd>
+
+
+<dt id="arg-cols-logical">cols.logical<a class="anchor" aria-label="anchor" href="#arg-cols-logical"></a></dt>
+<dd><p>A tidy selection of columns to be checked for categorical values.
+The values will be converted to logicals.</p></dd>
 
 
 <dt id="arg-cols-numeric">cols.numeric<a class="anchor" aria-label="anchor" href="#arg-cols-numeric"></a></dt>

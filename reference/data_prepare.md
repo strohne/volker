@@ -10,6 +10,9 @@ data_prepare(
   cols,
   cross,
   cols.categorical,
+  cols.character,
+  cols.factor,
+  cols.logical,
   cols.numeric,
   cols.reverse,
   clean = TRUE
@@ -33,6 +36,23 @@ data_prepare(
 - cols.categorical:
 
   A tidy selection of columns to be checked for categorical values.
+  Numeric columns will be converted to characters, other columns stay as
+  they are.
+
+- cols.character:
+
+  A tidy selection of columns to be checked for categorical values. The
+  values will be converted to characters.
+
+- cols.factor:
+
+  A tidy selection of columns to be checked for categorical values. The
+  values will be converted to factors.
+
+- cols.logical:
+
+  A tidy selection of columns to be checked for categorical values. The
+  values will be converted to logicals.
 
 - cols.numeric:
 

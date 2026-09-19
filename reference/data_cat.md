@@ -1,11 +1,12 @@
-# Convert numeric values to string
+# Convert numeric values to factors, characters or logical values while preserving attributes
 
-Convert numeric values to string
+Convert numeric values to factors, characters or logical values while
+preserving attributes
 
 ## Usage
 
 ``` r
-data_cat(data, cols)
+data_cat(data, cols, type)
 ```
 
 ## Arguments
@@ -17,6 +18,11 @@ data_cat(data, cols)
 - cols:
 
   A tidy selection of columns to convert.
+
+- type:
+
+  The target type, one of `factor`, `character`, or `logical`. If the
+  type is missing, only numeric values will be converted to character.
 
 ## Value
 

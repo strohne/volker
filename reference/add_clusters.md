@@ -1,8 +1,8 @@
 # Add cluster number to a data frame
 
-Clustering is performed using
+Clustering is either performed using
 `stats::`[`kmeans`](https://rdrr.io/r/stats/kmeans.html) (method =
-"kmeans") or
+"kmeans") on scaled numerical variables or using
 `cluster::`[`pam`](https://rdrr.io/pkg/cluster/man/pam.html) on a Gower
 dissimilarity matrix computed by
 `cluster::`[`daisy`](https://rdrr.io/pkg/cluster/man/daisy.html) (method
@@ -49,11 +49,15 @@ add_clusters(
 - method:
 
   The method as character value. One of "kmeans" (default) or "pam". For
-  "kmeans" all items are scaled using
-  `base::`[`scale`](https://rdrr.io/r/base/scale.html) and euclidean
-  distance is used. For "pam" a Gower dissimilarity matrix is used,
-  which supports mixed data types (numeric and categorical) and
-  normalises each variable internally, so no scaling is applied.
+  "kmeans" all items will be converted to numerical values and scaled
+  using `base::`[`scale`](https://rdrr.io/r/base/scale.html). Euclidean
+  distance is used. For "pam", all items will be converted to
+  categorical values by
+  [data_cat](https://strohne.github.io/volker/reference/data_cat.md). A
+  Gower dissimilarity matrix is used. Note that logical values are
+  treated as asymmetrical, i.e. `FALSE` does not have a meaning, when
+  computing the gower metric. Therefore cases with only `FALSE` values
+  (no annotations, no codes) are removed.
 
 - labels:
 
@@ -102,7 +106,7 @@ volker::add_clusters(ds, starts_with("cg_adoption"), k = 3)
 volker::add_clusters(ds, starts_with("cg_adoption"), k = 3, method = "pam")
 #> # A tibble: 97 × 24
 #>     case use_private use_work cg_adoption_advantage_01 cg_adoption_advantage_02
-#>    <dbl>       <dbl>    <dbl> <chr>                    <chr>                   
+#>    <dbl>       <dbl>    <dbl> <fct>                    <fct>                   
 #>  1   170           4        4 3                        4                       
 #>  2   183           1        1 4                        3                       
 #>  3   195           2        4 5                        5                       
@@ -114,10 +118,10 @@ volker::add_clusters(ds, starts_with("cg_adoption"), k = 3, method = "pam")
 #>  9   309           3        3 3                        4                       
 #> 10   325           2        1 4                        1                       
 #> # ℹ 87 more rows
-#> # ℹ 19 more variables: cg_adoption_advantage_03 <chr>,
-#> #   cg_adoption_advantage_04 <chr>, cg_adoption_fearofuse_01 <chr>,
-#> #   cg_adoption_fearofuse_02 <chr>, cg_adoption_fearofuse_03 <chr>,
-#> #   cg_adoption_fearofuse_04 <chr>, cg_adoption_social_01 <chr>,
-#> #   cg_adoption_social_02 <chr>, cg_adoption_social_03 <chr>,
-#> #   cg_adoption_social_04 <chr>, adopter <fct>, sd_age <dbl>, …
+#> # ℹ 19 more variables: cg_adoption_advantage_03 <fct>,
+#> #   cg_adoption_advantage_04 <fct>, cg_adoption_fearofuse_01 <fct>,
+#> #   cg_adoption_fearofuse_02 <fct>, cg_adoption_fearofuse_03 <fct>,
+#> #   cg_adoption_fearofuse_04 <fct>, cg_adoption_social_01 <fct>,
+#> #   cg_adoption_social_02 <fct>, cg_adoption_social_03 <fct>,
+#> #   cg_adoption_social_04 <fct>, adopter <fct>, sd_age <dbl>, …
 ```
