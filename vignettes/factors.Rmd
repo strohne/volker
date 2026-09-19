@@ -54,6 +54,10 @@ data |>
   add_factors(starts_with("cg_adoption"), k = 2)  |>
   report_metrics(fct_cg_adoption_1, fct_cg_adoption_2, metric = TRUE)
 
+data |> 
+  add_factors(starts_with("cg_adoption"), k = 2, method="mds")  |>
+  report_metrics(fct_cg_adoption_1, fct_cg_adoption_2, metric = TRUE)
+
 ```
 
 

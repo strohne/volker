@@ -225,6 +225,47 @@ factor_plot <- function(data, cols, newcols = NULL, k = 2, method = "pca", reord
 
 }
 
+#' Add dimensionality-reduction columns to a data frame
+#'
+#' @description
+#' Dispatches to a specific method based on `method`:
+#' \itemize{
+#'   \item `"pca"`: Principal component analysis via \link{add_pca}.
+#'   \item `"mds"`: Multidimensional scaling via \link{add_mds}.
+#' }
+#'
+#' `r lifecycle::badge("experimental")`
+#'
+#' @param data A dataframe.
+#' @param cols A tidy selection of item columns.
+#' @param newcols Names of the new columns as a character vector.
+#'                Must be the same length as k or NULL.
+#'                Set to NULL (default) to automatically build names
+#'                from the common column prefix.
+#' @param k Number of factors/dimensions to calculate.
+#'          Set to NULL to automatically choose k (see the method functions).
+#' @param method The method as character value, one of "pca" (default) or "mds".
+#' @param clean Prepare data by \link{data_clean}.
+#' @param ... Further arguments passed to the method function
+#'            (e.g. `metric` for \link{add_mds}).
+#' @return The input tibble with additional columns. See the method functions
+#'         (\link{add_pca}, \link{add_mds}) for details on the attributes.
+#' @examples
+#' library(volker)
+#' ds <- volker::chatgpt
+#'
+#' volker::add_factors(ds, starts_with("cg_adoption"))
+#' @export
+add_factors <- function(data, cols, newcols = NULL, k = 2, method = "pca", clean = TRUE, ...) {
+
+  method <- match.arg(method, c("pca", "mds"))
+
+  if (method == "pca") {
+    add_pca(data, {{ cols }}, newcols = newcols, k = k, clean = clean, ...)
+  } else if (method == "mds") {
+    add_mds(data, {{ cols }}, newcols = newcols, k = k, clean = clean, ...)
+  }
+}
 
 #' Add PCA columns along with summary statistics (KMO and Bartlett test) to a data frame
 #'
@@ -245,21 +286,16 @@ factor_plot <- function(data, cols, newcols = NULL, k = 2, method = "pca", reord
 #'                Must be the same length as k or NULL.
 #'                Set to NULL (default) to automatically build a name
 #'                from the common column prefix, prefixed with "fct_", postfixed with the factor number.
-#' @param method The method as character value. Currently, only pca is supported.
 #' @param clean Prepare data by \link{data_clean}.
 #' @return The input tibble with additional columns containing factor values.
 #'         The new columns are prefixed with "fct_".
 #'         The first new column contains the fit result in the attribute psych.pca.fit.
 #'         The names of the items used for factor analysis are stored in the attribute psych.pca.items.
 #'         The summary diagnostics (Bartlett test and KMO) are stored in the attribute psych.kmo.bartlett.
-#' @examples
-#' library(volker)
-#' ds <- volker::chatgpt
 #'
-#' volker::add_factors(ds, starts_with("cg_adoption"))
-#' @export
+#' @keywords internal
 #' @importFrom rlang .data
-add_factors <- function(data, cols, newcols = NULL, k = 2, method = "pca", clean = TRUE) {
+add_pca <- function(data, cols, newcols = NULL, k = 2, clean = TRUE) {
   # Check, clean, remove missings
   data <- data_prepare(data, {{ cols }}, cols.numeric = {{ cols }}, clean = clean)
 
@@ -377,6 +413,154 @@ add_factors <- function(data, cols, newcols = NULL, k = 2, method = "pca", clean
   attr(data[[newcols[1]]], "psych.pca.items") <- colnames(items)
   attr(data[[newcols[1]]], "psych.kmo.bartlett") <- fit_stats
   attr(data[[newcols[1]]], "psych.fa.parallel") <- fit_parallel
+
+  data
+}
+
+
+#' Add MDS (Multidimensional Scaling) columns along with goodness-of-fit statistics
+#'
+#' @description
+#' Dissimilarities are computed with \code{cluster::\link[cluster:daisy]{daisy}}
+#' (Gower's coefficient by default, which handles mixed data types).
+#' Classical (metric) MDS is performed using \code{stats::\link[stats:cmdscale]{cmdscale}}.
+#'
+#' `r lifecycle::badge("experimental")`
+#'
+#' @param data A dataframe.
+#' @param cols A tidy selection of item columns.
+#' @param k Number of dimensions to calculate.
+#'          Set to NULL to inspect eigenvalues for all dimensions and
+#'          automatically choose k (dimensions with positive eigenvalues,
+#'          capped where the scree drops off).
+#' @param newcols Names of the coordinate columns as a character vector.
+#'                Must be the same length as k or NULL.
+#'                Set to NULL (default) to automatically build a name
+#'                from the common column prefix, prefixed with "mds_",
+#'                postfixed with the dimension number.
+#' @param metric The dissimilarity metric passed to \code{daisy}. One of
+#'               "gower" (default), "euclidean" or "manhattan".
+#' @param clean Prepare data by \link{data_clean}.
+#' @return The input tibble with additional columns containing MDS coordinates.
+#'         The new columns are prefixed with "mds_".
+#'         The first new column contains the fit result in the attribute stats.mds.fit.
+#'         The names of the items used are stored in the attribute stats.mds.items.
+#'         The goodness-of-fit diagnostics are stored in the attribute stats.mds.gof.
+#'
+#' @keywords internal
+#' @importFrom rlang .data
+add_mds <- function(data, cols, newcols = NULL, k = 2, metric = "gower", clean = TRUE) {
+
+  metric <- match.arg(metric, c("gower", "euclidean", "manhattan"))
+
+  # Check, clean, remove missings
+  data <- data_prepare(data, {{ cols }}, clean = clean)
+
+  # Remove asymmetric-logical cases that are all FALSE (see data_rm_empty)
+  data <- data_rm_empty(data, {{ cols }})
+
+  # Select columns
+  items <- dplyr::select(data, {{ cols }})
+
+  # Treat logicals as asymmetric binary only if *all* items are logical
+  typelist <- list()
+  if (all(vapply(items, is.logical, logical(1)))) {
+    typelist <- list(asymm = c(1:ncol(items)))
+  }
+
+  # Compute the dissimilarity matrix
+  diss <- cluster::daisy(items, metric = metric, type = typelist)
+
+  # Cases-to-variables ratio
+  fit_ratio <- dplyr::summarise(items, cases = dplyr::n())
+  fit_ratio$variables <- ncol(items)
+
+  # Run classical MDS on the full set to inspect eigenvalues
+  n_max <- nrow(items) - 1
+  fit_full <- stats::cmdscale(diss, k = n_max, eig = TRUE)
+  eig <- fit_full$eig
+
+  # Select k automatically if not provided
+  fit_scree <- NULL
+  if (is.null(k)) {
+    # Count positive eigenvalues; cap by an "elbow" heuristic (largest drop)
+    pos <- eig[eig > 0]
+    if (length(pos) < 2) {
+      k <- max(1, length(pos))
+    } else {
+      drops <- -diff(pos)
+      k <- which.max(drops)
+    }
+    k <- max(1, min(k, n_max))
+
+    fit_scree <- tibble::tibble(
+      "Dimension"  = c(1:length(eig)),
+      "Eigenvalue" = eig
+    )
+    attr(fit_scree, "auto") <- list(
+      k = k,
+      msg = paste0("Automatically selected k=", k, " by inspecting the eigenvalue scree.")
+    )
+  }
+
+  if (is.null(k)) {
+    stop("Could not automatically determine number of dimensions. Provide a k value, please.")
+  }
+
+  # Goodness of fit (proportion of variance captured by first k dimensions)
+  gof_abs <- sum(abs(eig[1:k])) / sum(abs(eig))
+  gof_pos <- sum(pmax(eig[1:k], 0)) / sum(pmax(eig, 0))
+
+  fit_stats <- tibble::tribble(
+    ~"Test", ~"Results",
+    "MDS Fit", list(
+      "Cases"                    = fit_ratio$cases,
+      "Variables"                = fit_ratio$variables,
+      "Dimensions (k)"           = k,
+      "Metric"                   = metric,
+      "Goodness of fit (|eig|)"  = sprintf("%.2f", round(gof_abs, 2)),
+      "Goodness of fit (+eig)"   = sprintf("%.2f", round(gof_pos, 2))
+    )
+  )
+
+  fit_stats <- fit_stats |>
+    tidyr::unnest_longer(
+      tidyselect::all_of("Results"),
+      indices_to = "Statistic",
+      values_to  = "value",
+      transform  = as.character
+    ) |>
+    dplyr::select("Test", "Statistic", "value")
+
+  # Extract the k-dimensional coordinates
+  fit <- stats::cmdscale(diss, k = k, eig = TRUE)
+  coords <- tibble::as_tibble(
+    fit$points,
+    .name_repair = ~ paste0("V", seq_along(.x))
+  )
+
+  # Determine column names
+  prefix <- get_prefix(colnames(items), FALSE, TRUE)
+  if (is.null(newcols)) {
+    newcols <- paste0("fct_", prefix, "_", c(1:k))
+  }
+
+  # Determine labels
+  newlabels <- paste0("Dimension ", 1:k)
+
+  # Bind coordinates
+  colnames(coords) <- newcols
+  for (i in c(1:k)) {
+    attr(coords[[i]], "comment") <- newlabels[i]
+  }
+
+  data <- dplyr::bind_cols(data, coords)
+
+  # Add fit results to first column attribute
+  attr(data[[newcols[1]]], "stats.mds.fit")   <- fit
+  attr(data[[newcols[1]]], "stats.mds.items") <- colnames(items)
+  attr(data[[newcols[1]]], "stats.mds.gof")   <- fit_stats
+  attr(data[[newcols[1]]], "stats.mds.scree") <- fit_scree
 
   data
 }
